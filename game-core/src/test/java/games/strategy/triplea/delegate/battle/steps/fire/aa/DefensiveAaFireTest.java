@@ -28,7 +28,7 @@ class DefensiveAaFireTest {
   @Mock BattleActions battleActions;
 
   @Nested
-  class GetOrder {
+  class GetNames {
     @Test
     void hasNamesIfAaIsAvailable() {
       final BattleState battleState =

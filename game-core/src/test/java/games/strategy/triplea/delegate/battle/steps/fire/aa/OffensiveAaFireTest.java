@@ -28,7 +28,7 @@ class OffensiveAaFireTest {
   @Mock BattleActions battleActions;
 
   @Nested
-  class GetStep {
+  class GetNames {
     @Test
     void hasNamesIfAaIsAvailable() {
       final BattleState battleState =
@@ -38,7 +38,7 @@ class OffensiveAaFireTest {
     }
 
     @Test
-    void hasNoNamesNoAaIsAvailable() {
+    void hasNoNamesIfNoAaIsAvailable() {
       final BattleState battleState = givenBattleStateBuilder().offensiveAa(List.of()).build();
       final OffensiveAaFire offensiveAaFire = new OffensiveAaFire(battleState, battleActions);
       assertThat(offensiveAaFire.getNames(), hasSize(0));
