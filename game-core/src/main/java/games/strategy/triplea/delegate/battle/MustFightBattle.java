@@ -2174,8 +2174,6 @@ public class MustFightBattle extends DependentBattle
     if (retreatTo != null) {
       // if attacker retreating non subs then its all over
       if (!defender && !subs && !planes && !partialAmphib) {
-        // this is illegal in ww2v2 revised and beyond (the fighters should die). still checking if
-        // illegal in classic.
         isOver = true;
       }
       if (!headless) {
