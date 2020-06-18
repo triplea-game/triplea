@@ -53,19 +53,6 @@ public class LobbyLogin {
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void promptLogin() {
-    if (serverProperties.isInactive()) {
-      SwingComponents.showDialogWithLinks(
-          DialogWithLinksParams.builder()
-              .title("Lobby Not Available")
-              .dialogText(
-                  String.format(
-                      "Your version of TripleA is too old, please download the latest:"
-                          + "<br><a href=\"%s\">%s</a>",
-                      UrlConstants.DOWNLOAD_WEBSITE, UrlConstants.DOWNLOAD_WEBSITE))
-              .dialogType(DialogWithLinksTypes.ERROR)
-              .build());
-      return;
-    }
     loginToServer()
         .ifPresent(
             lobbyClient -> {
