@@ -1,6 +1,6 @@
-latest: 2.0.20026
+latest: 2.0.20057
 servers:
-  - version: "2.0.20026"
+  - version: "2.0.20057"
     lobby_uri: https://prod2-lobby.triplea-game.org
     message: |
       Welcome to the TripleA 2.0 lobby!
@@ -10,6 +10,8 @@ servers:
 
       Conversations in the lobby are generally restricted to finding games and about TripleA game play.
       Please no politics, stay respectful, be welcoming, have fun.
+  - version: "2.0.19800"
+    inactive: true
   - version: "2.0.0"
     lobby_uri: https://prerelease.triplea-game.org
     message: |
