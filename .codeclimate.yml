@@ -10,6 +10,9 @@ checks:
   method-lines:
     config:
       threshold: 30
+  similar-code:
+    config:
+      threshold: 80
 plugins:
   # https://docs.codeclimate.com/docs/git-legal
   git-legal:
