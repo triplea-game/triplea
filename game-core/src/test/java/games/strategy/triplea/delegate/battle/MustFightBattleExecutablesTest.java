@@ -350,9 +350,7 @@ class MustFightBattleExecutablesTest {
         is(0));
 
     assertThat(
-        "FireDefensiveAaGuns should be second step",
-        getIndex(execs, DefensiveAaFire.class),
-        is(1));
+        "FireDefensiveAaGuns should be second step", getIndex(execs, DefensiveAaFire.class), is(1));
 
     assertThat(
         "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns",
