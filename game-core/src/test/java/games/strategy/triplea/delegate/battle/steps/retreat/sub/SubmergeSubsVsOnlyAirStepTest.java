@@ -34,7 +34,7 @@ class SubmergeSubsVsOnlyAirStepTest {
   void stepName(final String displayName, final BattleState battleState, final boolean expected) {
     final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(1));
+    assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(expected ? 1 : 0));
   }
 
   static List<Arguments> stepName() {
