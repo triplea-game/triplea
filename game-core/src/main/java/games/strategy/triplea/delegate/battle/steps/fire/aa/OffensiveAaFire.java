@@ -18,7 +18,7 @@ public class OffensiveAaFire extends AaFireAndCasualtyStep {
 
   @Override
   public Order getOrder() {
-    return valid() ? Order.AA_OFFENSIVE : Order.NOT_APPLICABLE;
+    return Order.AA_OFFENSIVE;
   }
 
   @Override

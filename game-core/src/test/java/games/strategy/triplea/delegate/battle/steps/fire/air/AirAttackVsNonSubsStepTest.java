@@ -6,13 +6,12 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.steps.BattleStep.Order;
 import java.util.List;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,14 +24,12 @@ class AirAttackVsNonSubsStepTest {
 
   @ParameterizedTest(name = "[{index}] {0} is {2}")
   @MethodSource
-  void stepOrder(final String displayName, final BattleState battleState, final boolean expected) {
+  void stepName(final String displayName, final BattleState battleState, final boolean expected) {
     final AirAttackVsNonSubsStep airAttackVsNonSubsStep = new AirAttackVsNonSubsStep(battleState);
-    assertThat(
-        airAttackVsNonSubsStep.getOrder(),
-        is(expected ? Order.AIR_OFFENSIVE_NON_SUBS : Order.NOT_APPLICABLE));
+    assertThat(airAttackVsNonSubsStep.getNames(), hasSize(expected ? 1 : 0));
   }
 
-  static List<Arguments> stepOrder() {
+  static List<Arguments> stepName() {
     return List.of(
         Arguments.of(
             "Attacker has air units and no destroyers vs Defender subs",

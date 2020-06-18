@@ -1,8 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitWithTypeAa;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -12,7 +13,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.steps.BattleStep.Order;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,18 +30,18 @@ class DefensiveAaFireTest {
   @Nested
   class GetOrder {
     @Test
-    void aaDefensiveIfAaIsAvailable() {
+    void hasNamesIfAaIsAvailable() {
       final BattleState battleState =
-          givenBattleStateBuilder().defendingAa(List.of(mock(Unit.class))).build();
+          givenBattleStateBuilder().defendingAa(List.of(givenUnitWithTypeAa())).build();
       final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
-      assertThat(defensiveAaFire.getOrder(), is(Order.AA_DEFENSIVE));
+      assertThat(defensiveAaFire.getNames(), hasSize(3));
     }
 
     @Test
-    void skipIfNoAaIsAvailable() {
+    void hasNoNamesIfNoAaIsAvailable() {
       final BattleState battleState = givenBattleStateBuilder().defendingAa(List.of()).build();
       final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
-      assertThat(defensiveAaFire.getOrder(), is(Order.NOT_APPLICABLE));
+      assertThat(defensiveAaFire.getNames(), hasSize(0));
     }
   }
 

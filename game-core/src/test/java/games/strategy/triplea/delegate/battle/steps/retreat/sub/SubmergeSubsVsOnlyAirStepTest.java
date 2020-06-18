@@ -5,7 +5,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -14,7 +14,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.steps.BattleStep.Order;
 import java.util.List;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,15 +31,13 @@ class SubmergeSubsVsOnlyAirStepTest {
 
   @ParameterizedTest(name = "[{index}] {0} is {2}")
   @MethodSource
-  void stepOrder(final String displayName, final BattleState battleState, final boolean expected) {
+  void stepName(final String displayName, final BattleState battleState, final boolean expected) {
     final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(
-        submergeSubsVsOnlyAirStep.getOrder(),
-        is(expected ? Order.SUBMERGE_SUBS_VS_ONLY_AIR : Order.NOT_APPLICABLE));
+    assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(1));
   }
 
-  static List<Arguments> stepOrder() {
+  static List<Arguments> stepName() {
     return List.of(
         Arguments.of(
             "Attacking evaders vs NO air",

@@ -71,12 +71,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
 
     final List<String> steps = new ArrayList<>();
-    if (offensiveAaStep.getOrder() != BattleStep.Order.NOT_APPLICABLE) {
-      steps.addAll(offensiveAaStep.getNames());
-    }
-    if (defensiveAaStep.getOrder() != BattleStep.Order.NOT_APPLICABLE) {
-      steps.addAll(defensiveAaStep.getNames());
-    }
+    steps.addAll(offensiveAaStep.getNames());
+    steps.addAll(defensiveAaStep.getNames());
 
     if (showFirstRun) {
       if (!isBattleSiteWater && !bombardingUnits.isEmpty()) {
@@ -112,9 +108,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
             || defendingUnits.stream().anyMatch(Matches.unitIsTransport()))) {
       steps.add(REMOVE_UNESCORTED_TRANSPORTS);
     }
-    if (submergeSubsVsOnlyAir.getOrder() != BattleStep.Order.NOT_APPLICABLE) {
-      steps.addAll(submergeSubsVsOnlyAir.getNames());
-    }
+    steps.addAll(submergeSubsVsOnlyAir.getNames());
 
     final boolean defenderSubsFireFirst =
         SubsChecks.defenderSubsFireFirst(attackingUnits, defendingUnits, gameData);
@@ -166,9 +160,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
 
-    if (airAttackVsNonSubs.getOrder() != BattleStep.Order.NOT_APPLICABLE) {
-      steps.addAll(airAttackVsNonSubs.getNames());
-    }
+    steps.addAll(airAttackVsNonSubs.getNames());
 
     if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(attacker.getName() + FIRE);
@@ -185,9 +177,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
-    if (airDefendVsNonSubs.getOrder() != BattleStep.Order.NOT_APPLICABLE) {
-      steps.addAll(airDefendVsNonSubs.getNames());
-    }
+    steps.addAll(airDefendVsNonSubs.getNames());
     if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(defender.getName() + FIRE);
       steps.add(attacker.getName() + SELECT_CASUALTIES);

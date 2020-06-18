@@ -30,12 +30,12 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    return List.of(SUBMERGE_SUBS_VS_AIR_ONLY);
+    return valid() ? List.of(SUBMERGE_SUBS_VS_AIR_ONLY) : List.of();
   }
 
   @Override
   public Order getOrder() {
-    return valid() ? Order.SUBMERGE_SUBS_VS_ONLY_AIR : Order.NOT_APPLICABLE;
+    return Order.SUBMERGE_SUBS_VS_ONLY_AIR;
   }
 
   private boolean valid() {

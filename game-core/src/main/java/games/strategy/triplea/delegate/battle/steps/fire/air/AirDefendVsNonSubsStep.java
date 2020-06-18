@@ -13,12 +13,12 @@ public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
 
   @Override
   public List<String> getNames() {
-    return List.of(AIR_DEFEND_NON_SUBS);
+    return valid() ? List.of(AIR_DEFEND_NON_SUBS) : List.of();
   }
 
   @Override
   public Order getOrder() {
-    return valid() ? Order.AIR_DEFENSIVE_NON_SUBS : Order.NOT_APPLICABLE;
+    return Order.AIR_DEFENSIVE_NON_SUBS;
   }
 
   private boolean valid() {
