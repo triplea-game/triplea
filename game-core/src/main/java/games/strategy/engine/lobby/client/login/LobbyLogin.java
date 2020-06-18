@@ -6,7 +6,6 @@ import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.triplea.UrlConstants;
 import java.awt.Window;
 import java.io.IOException;
 import java.util.Optional;
@@ -24,8 +23,6 @@ import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnec
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
-import org.triplea.swing.SwingComponents.DialogWithLinksParams;
-import org.triplea.swing.SwingComponents.DialogWithLinksTypes;
 
 /**
  * The client side of the lobby authentication protocol.
