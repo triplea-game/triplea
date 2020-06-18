@@ -4,7 +4,6 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitWithTypeAa;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -27,24 +26,6 @@ class OffensiveAaFireTest {
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
-
-  @Nested
-  class IsValid {
-    @Test
-    void validIfAaIsAvailable() {
-      final BattleState battleState =
-          givenBattleStateBuilder().offensiveAa(List.of(mock(Unit.class))).build();
-      final OffensiveAaFire offensiveAaFire = new OffensiveAaFire(battleState, battleActions);
-      assertThat(offensiveAaFire.valid(), is(true));
-    }
-
-    @Test
-    void notValidIfNoAaIsAvailable() {
-      final BattleState battleState = givenBattleStateBuilder().offensiveAa(List.of()).build();
-      final OffensiveAaFire offensiveAaFire = new OffensiveAaFire(battleState, battleActions);
-      assertThat(offensiveAaFire.valid(), is(false));
-    }
-  }
 
   @Nested
   class GetNames {

@@ -350,11 +350,12 @@ class MustFightBattleExecutablesTest {
         is(0));
 
     assertThat(
+        "FireDefensiveAaGuns should be second step", getIndex(execs, DefensiveAaFire.class), is(1));
+
+    assertThat(
         "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns",
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(1));
-
-    assertThatStepIsMissing(execs, DefensiveAaFire.class);
+        is(2));
   }
 
   @Test
@@ -382,16 +383,19 @@ class MustFightBattleExecutablesTest {
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
     assertThat(
+        "FireOffensiveAaGuns should be the first step",
+        getIndex(execs, OffensiveAaFire.class),
+        is(0));
+
+    assertThat(
         "FireDefensiveAaGuns should be the first step",
         getIndex(execs, DefensiveAaFire.class),
-        is(0));
+        is(1));
 
     assertThat(
         "ClearAaWaitingToDieAndDamagedChangesInto is after FireDefensiveAaGuns",
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(1));
-
-    assertThatStepIsMissing(execs, OffensiveAaFire.class);
+        is(2));
   }
 
   @Test

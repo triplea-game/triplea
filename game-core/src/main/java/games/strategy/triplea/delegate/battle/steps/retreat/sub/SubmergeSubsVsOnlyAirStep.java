@@ -34,7 +34,11 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
   }
 
   @Override
-  public boolean valid() {
+  public Order getOrder() {
+    return Order.SUBMERGE_SUBS_VS_ONLY_AIR;
+  }
+
+  private boolean valid() {
     return (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())
         || isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits()));
   }

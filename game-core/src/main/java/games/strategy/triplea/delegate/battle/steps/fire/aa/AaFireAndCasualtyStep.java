@@ -37,8 +37,7 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
     return steps;
   }
 
-  @Override
-  public boolean valid() {
+  protected boolean valid() {
     return !aaGuns().isEmpty();
   }
 

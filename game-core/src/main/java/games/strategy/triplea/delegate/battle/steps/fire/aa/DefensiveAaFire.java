@@ -17,6 +17,11 @@ public class DefensiveAaFire extends AaFireAndCasualtyStep {
   }
 
   @Override
+  public Order getOrder() {
+    return Order.AA_DEFENSIVE;
+  }
+
+  @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (valid()) {
       battleActions.fireDefensiveAaGuns();

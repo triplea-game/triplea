@@ -6,7 +6,6 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -32,19 +31,13 @@ class SubmergeSubsVsOnlyAirStepTest {
 
   @ParameterizedTest(name = "[{index}] {0} is {2}")
   @MethodSource
-  void testWhatIsValid(
-      final String displayName, final BattleState battleState, final boolean expected) {
+  void stepName(final String displayName, final BattleState battleState, final boolean expected) {
     final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(submergeSubsVsOnlyAirStep.valid(), is(expected));
-    if (expected) {
-      assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(1));
-    } else {
-      assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(0));
-    }
+    assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(expected ? 1 : 0));
   }
 
-  static List<Arguments> testWhatIsValid() {
+  static List<Arguments> stepName() {
     return List.of(
         Arguments.of(
             "Attacking evaders vs NO air",
@@ -96,7 +89,7 @@ class SubmergeSubsVsOnlyAirStepTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource
-  void testSubmerging(
+  void submergeUnits(
       final String displayName,
       final BattleState battleState,
       final List<Unit> expectedSubmergingSubs,
@@ -109,7 +102,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     verify(battleActions).submergeUnits(expectedSubmergingSubs, expectedSide, delegateBridge);
   }
 
-  static List<Arguments> testSubmerging() {
+  static List<Arguments> submergeUnits() {
     final Unit sub = givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit();
     return List.of(
         Arguments.of(

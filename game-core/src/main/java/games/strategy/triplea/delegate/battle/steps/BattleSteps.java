@@ -72,7 +72,6 @@ public class BattleSteps implements BattleStepStrings, BattleState {
 
     final List<String> steps = new ArrayList<>();
     steps.addAll(offensiveAaStep.getNames());
-
     steps.addAll(defensiveAaStep.getNames());
 
     if (showFirstRun) {

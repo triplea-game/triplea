@@ -1102,9 +1102,7 @@ public class MustFightBattle extends DependentBattle
     final boolean defendingAa = canFireDefendingAa();
     final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
     final BattleStep defensiveAaStep = new DefensiveAaFire(this, this);
-    if (offensiveAaStep.valid()) {
-      steps.add(offensiveAaStep);
-    }
+    steps.add(offensiveAaStep);
     new IExecutable() {
       private static final long serialVersionUID = 3802352588499530533L;
 
@@ -1115,9 +1113,7 @@ public class MustFightBattle extends DependentBattle
         offensiveAaStep.execute(stack, bridge);
       }
     };
-    if (defensiveAaStep.valid()) {
-      steps.add(defensiveAaStep);
-    }
+    steps.add(defensiveAaStep);
     new IExecutable() {
       private static final long serialVersionUID = -1370090785540214199L;
 

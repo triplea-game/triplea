@@ -17,13 +17,17 @@ import java.util.List;
  */
 public interface BattleStep extends IExecutable {
 
+  enum Order {
+    AA_OFFENSIVE,
+    AA_DEFENSIVE,
+    SUBMERGE_SUBS_VS_ONLY_AIR,
+    AIR_OFFENSIVE_NON_SUBS,
+    AIR_DEFENSIVE_NON_SUBS,
+  }
+
   /** @return a list of names that will be shown in {@link games.strategy.triplea.ui.BattlePanel} */
   List<String> getNames();
 
-  /**
-   * Determine if this step should run based on the request
-   *
-   * @return true if valid
-   */
-  boolean valid();
+  /** @return The order in which this step should be called */
+  Order getOrder();
 }

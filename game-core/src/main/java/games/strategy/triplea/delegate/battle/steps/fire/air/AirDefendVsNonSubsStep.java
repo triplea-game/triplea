@@ -17,7 +17,11 @@ public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  public boolean valid() {
+  public Order getOrder() {
+    return Order.AIR_DEFENSIVE_NON_SUBS;
+  }
+
+  private boolean valid() {
     return airWillMissSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits());
   }
 }
