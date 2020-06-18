@@ -1,6 +1,6 @@
-latest: 2.0.20054
+latest: 2.0.20057
 servers:
-  - version: "2.0.20054"
+  - version: "2.0.20057"
     lobby_uri: https://prod2-lobby.triplea-game.org
     message: |
       Welcome to the TripleA 2.0 lobby!
