@@ -1830,30 +1830,8 @@ public class MustFightBattle extends DependentBattle
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size()
                 == 0) {
-              if (!Properties.getTransportCasualtiesRestricted(gameData)) {
-                endBattle(bridge);
-                defenderWins(bridge);
-              } else {
-                // Get all allied transports in the territory
-                final Predicate<Unit> matchAllied =
-                    Matches.unitIsTransport()
-                        .and(Matches.unitIsNotCombatTransport())
-                        .and(Matches.isUnitAllied(attacker, gameData));
-                final List<Unit> alliedTransports =
-                    CollectionUtils.getMatches(battleSite.getUnits(), matchAllied);
-                // If no transports, just end the battle
-                if (alliedTransports.isEmpty()) {
-                  endBattle(bridge);
-                  defenderWins(bridge);
-                } else if (round <= 1) {
-                  attackingUnits =
-                      CollectionUtils.getMatches(
-                          battleSite.getUnits(), Matches.unitIsOwnedBy(attacker));
-                } else {
-                  endBattle(bridge);
-                  defenderWins(bridge);
-                }
-              }
+              endBattle(bridge);
+              defenderWins(bridge);
             } else if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure())
                     .size()
                 == 0) {
