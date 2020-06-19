@@ -2032,7 +2032,8 @@ public class MustFightBattle extends DependentBattle
     Collection<Unit> units = defender ? defendingUnits : attackingUnits;
     if (!defender) {
       units = new HashSet<>(units);
-      units.addAll(battleSite.getUnitCollection().getMatches(Matches.unitIsOwnedBy(attacker)));
+      units.addAll(battleSite.getUnitCollection().getMatches(
+          Matches.unitIsOwnedBy(attacker).and(Matches.unitIsSubmerged().negate())));
       units.removeAll(killed);
     }
     if (subs) {
