@@ -16,8 +16,8 @@ public interface BattleActions {
   void submergeUnits(Collection<Unit> units, boolean defender, IDelegateBridge bridge);
 
   void queryRetreat(
-      final boolean defender,
-      final RetreatType retreatType,
-      final IDelegateBridge bridge,
-      final Collection<Territory> initialAvailableTerritories);
+      boolean defender,
+      RetreatType retreatType,
+      IDelegateBridge bridge,
+      Collection<Territory> initialAvailableTerritories);
 }
