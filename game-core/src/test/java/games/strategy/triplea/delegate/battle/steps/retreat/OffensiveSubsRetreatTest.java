@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle.steps.sub;
+package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
