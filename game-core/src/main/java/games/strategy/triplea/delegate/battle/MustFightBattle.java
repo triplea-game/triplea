@@ -5,6 +5,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -782,18 +783,20 @@ public class MustFightBattle extends DependentBattle
       return;
     }
     final Set<GamePlayer> playersWithUnits = battleSite.getUnitCollection().getPlayersWithUnits();
+    final var relationshipTracker = gameData.getRelationshipTracker();
 
-    final Collection<GamePlayer> attackers = findAllies(playersWithUnits, attacker);
+    final Collection<GamePlayer> attackers =
+        findAllies(playersWithUnits, attacker, relationshipTracker);
     addPlayerCombatHistoryText(attackers, attackingUnits, true, bridge.getHistoryWriter());
-    if (defender != null) {
-      final Collection<GamePlayer> defenders = findAllies(playersWithUnits, defender);
-      addPlayerCombatHistoryText(defenders, defendingUnits, false, bridge.getHistoryWriter());
-    }
+    final Collection<GamePlayer> defenders =
+        findAllies(playersWithUnits, defender, relationshipTracker);
+    addPlayerCombatHistoryText(defenders, defendingUnits, false, bridge.getHistoryWriter());
   }
 
   private static Collection<GamePlayer> findAllies(
-      final Collection<GamePlayer> candidatePlayers, final GamePlayer player) {
-    final var relationshipTracker = player.getData().getRelationshipTracker();
+      final Collection<GamePlayer> candidatePlayers,
+      final GamePlayer player,
+      final RelationshipTracker relationshipTracker) {
     final Collection<GamePlayer> allies = new ArrayList<>();
     for (final GamePlayer current : candidatePlayers) {
       if (current.equals(player) || relationshipTracker.isAllied(player, current)) {
