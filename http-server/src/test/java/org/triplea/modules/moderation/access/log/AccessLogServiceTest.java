@@ -39,7 +39,6 @@ class AccessLogServiceTest {
 
   @Test
   void fetchAccessLog() {
-    assertThat(true, is(false));
     when(accessLogDao.fetchAccessLogRows(
             PAGING_PARAMS.getRowNumber(),
             PAGING_PARAMS.getPageSize(),
