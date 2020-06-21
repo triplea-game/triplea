@@ -134,7 +134,7 @@ public class NodeBbForumPoster {
       final CloseableHttpClient client,
       final String token,
       final String text,
-      final SaveGameParameter saveGame)
+      @Nullable final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
