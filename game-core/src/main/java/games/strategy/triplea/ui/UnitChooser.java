@@ -418,7 +418,9 @@ public final class UnitChooser extends JPanel {
       defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
       final int numUnits = category.getUnits().size();
       int hitsUsedSoFar = 0;
-      for (int i = 0; i < Math.max(1, category.getHitPoints() - category.getDamaged()); i++) {
+      for (int i = 0, m = Math.max(1, category.getHitPoints() - category.getDamaged());
+          i < m;
+          i++) {
         // TODO: check if default value includes damaged points or not
         final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar));
         hitsUsedSoFar += hitsToUse;
