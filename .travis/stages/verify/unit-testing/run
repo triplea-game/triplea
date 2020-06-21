@@ -21,5 +21,3 @@ result="$0"
 # upload coverage report - https://github.com/codecov/example-gradle
 bash <(curl -s https://codecov.io/bash)
 
-exit "$result"
-
