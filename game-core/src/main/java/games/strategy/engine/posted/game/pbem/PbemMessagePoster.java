@@ -7,6 +7,7 @@ import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
+import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.SaveGameParameter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
@@ -103,7 +104,10 @@ public class PbemMessagePoster implements Serializable {
                 .postTurnSummary(
                     (gameNameAndInfo + "\n\n" + turnSummary),
                     "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber,
-                    saveGameFile.toPath());
+                    SaveGameParameter.builder()
+                        .path(saveGameFile.toPath())
+                        .displayName(saveGameName)
+                        .build());
         final AtomicBoolean success = new AtomicBoolean(false);
         turnSummaryRef =
             forumSuccess
