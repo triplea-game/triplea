@@ -14,8 +14,12 @@ chmod +x ./cc-test-reporter
 
 ./gradlew -x :smoke-testing:test -parallel test jacocoTestReport
 
-./cc-test-reporter after-build --exit-code "$TRAVIS_TEST_RESULT"
+result="$0"
+
+./cc-test-reporter after-build --exit-code "$result"
 
 # upload coverage report - https://github.com/codecov/example-gradle
 bash <(curl -s https://codecov.io/bash)
+
+exit "$result"
 
