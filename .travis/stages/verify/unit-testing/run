@@ -18,7 +18,9 @@ result="$?"
 
 ./cc-test-reporter after-build --exit-code "$result"
 
-# upload coverage report - https://github.com/codecov/example-gradle
-bash <(curl -s https://codecov.io/bash)
+if [ "$result" = 0 ]; then
+  # upload coverage report - https://github.com/codecov/example-gradle
+  bash <(curl -s https://codecov.io/bash)
+fi
 
 exit "$result"
