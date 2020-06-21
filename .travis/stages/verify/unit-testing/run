@@ -1,10 +1,20 @@
 #!/bin/bash
 
-set -eEux
+set -ux
 
-# Run Tests
+export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
+
+curl -L \
+  https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
+  > ./cc-test-reporter
+
+chmod +x ./cc-test-reporter
+
+./cc-test-reporter before-build
+
 ./gradlew -x :smoke-testing:test -parallel test jacocoTestReport
 
+./cc-test-reporter after-build --exit-code "$TRAVIS_TEST_RESULT"
 
 # upload coverage report - https://github.com/codecov/example-gradle
 bash <(curl -s https://codecov.io/bash)
