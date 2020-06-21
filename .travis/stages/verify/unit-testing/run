@@ -16,7 +16,7 @@ chmod +x ./cc-test-reporter
 
 result="$?"
 
-./cc-test-reporter after-build --exit-code "$result"
+./cc-test-reporter after-build -t jacoco --exit-code "$result"
 
 if [ "$result" = 0 ]; then
   # upload coverage report - https://github.com/codecov/example-gradle
