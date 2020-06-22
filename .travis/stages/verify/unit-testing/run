@@ -2,7 +2,24 @@
 
 set -ux
 
-export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
+#export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
+
+
+function main() {
+  downloadCodeClimateReporter
+  runTests
+  result="$?"
+
+  # Run coverage reports only if tests passed
+  if [ "$result" = 0 ]; then
+    compileCodeClimateReports
+    mergeCodeClimateReports
+    uploadCoverageReports
+  fi
+
+  return $result
+}
+
 
 function downloadCodeClimateReporter() {
   curl -L \
@@ -12,14 +29,9 @@ function downloadCodeClimateReporter() {
  ./cc-test-reporter before-build
 }
 
-downloadCodeClimateReporter
-./gradlew -x :smoke-testing:test -parallel test jacocoTestReport
-result="$?"
-
-# Abort any report processing if tests failed.
-if [ "$result" != 0 ]; then
-  exit "$result"
-fi
+function runTests() {
+  ./gradlew -x :smoke-testing:test -parallel test jacocoTestReport
+}
 
 function compileCodeClimateReports() {
   # Find all jacoco.xml files, we need those to format codeclimate coverage reports
@@ -53,10 +65,6 @@ function mergeCodeClimateReports() {
   ./cc-test-reporter sum-coverage $(find . -name "codeclimate.json" | tr '\n' ' ')
 }
 
-compileCodeClimateReports
-mergeCodeClimateReports
-
-
 function uploadCoverageReports() {
   # upload coverage report to codeclimate
   ./cc-test-reporter upload-coverage
@@ -65,5 +73,5 @@ function uploadCoverageReports() {
   bash <(curl -s https://codecov.io/bash)
 }
 
-uploadCoverageReports
+main
 
