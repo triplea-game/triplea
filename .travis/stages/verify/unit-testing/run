@@ -20,14 +20,14 @@ if [ "$result" != 0 ]; then
   exit "$result"
 fi
 
-for i in $(find -name "jacoco.xml" | xargs dirname | xargs dirname);
+for i in $(find . -name "jacoco.xml" -exec dirname {} + | xargs dirname)
 do
 (
-  cd $i
+  cd "$i" || return
   ../../../../cc-test-reporter format-coverage -t jacoco ../../../build/jacoco.xml
 )
 done
-./cc-test-reporter sum-coverage $(find . -name "codeclimate.json")
+./cc-test-reporter sum-coverage "$(find . -name "codeclimate.json")"
 
 ./cc-test-reporter upload-coverage
 
