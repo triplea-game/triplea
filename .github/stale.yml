@@ -4,8 +4,7 @@ daysUntilStale: 30
 daysUntilClose: 30
 # Issues with these labels will never be considered stale
 exemptLabels:
-  - "Release Problem"
-  - "Pre-Release Problem"
+  - "Problem"
 # Label to use when marking an issue as stale
 staleLabel: 'Stale'
 
