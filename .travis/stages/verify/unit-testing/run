@@ -16,11 +16,21 @@ chmod +x ./cc-test-reporter
 
 result="$?"
 
-./cc-test-reporter after-build -t jacoco --exit-code "$result"
-
-if [ "$result" = 0 ]; then
-  # upload coverage report - https://github.com/codecov/example-gradle
-  bash <(curl -s https://codecov.io/bash)
+if [ "$result" != 0 ]; then
+  exit "$result"
 fi
 
-exit "$result"
+for i in $(find -name "jacoco.xml" | xargs dirname | xargs dirname);
+do
+(
+  cd $i
+  ../../../../cc-test-reporter format-coverage -t jacoco ../../../build/jacoco.xml
+)
+done
+./cc-test-reporter sum-coverage $(find . -name "codeclimate.json")
+
+./cc-test-reporter upload-coverage
+
+# upload coverage report - https://github.com/codecov/example-gradle
+bash <(curl -s https://codecov.io/bash)
+
