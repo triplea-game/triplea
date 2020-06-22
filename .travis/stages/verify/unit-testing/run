@@ -65,11 +65,15 @@ function mergeCodeClimateReports() {
 }
 
 function uploadCoverageReports() {
+  # upload coverage report to codecov - https://github.com/codecov/example-gradle
+  bash <(curl -s https://codecov.io/bash)
+
+  # upload coverage report to codacy
+   bash <(curl -Ls https://coverage.codacy.com/get.sh)
+
   # upload coverage report to codeclimate
   ./cc-test-reporter upload-coverage
 
-  # upload coverage report to codecov - https://github.com/codecov/example-gradle
-  bash <(curl -s https://codecov.io/bash)
 }
 
 main
