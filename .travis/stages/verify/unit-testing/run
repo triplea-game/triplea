@@ -4,41 +4,66 @@ set -ux
 
 export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
 
-curl -L \
-  https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
-  > ./cc-test-reporter
+function downloadCodeClimateReporter() {
+  curl -L \
+    https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
+    > ./cc-test-reporter
+  chmod +x ./cc-test-reporter
+ ./cc-test-reporter before-build
+}
 
-chmod +x ./cc-test-reporter
-
-./cc-test-reporter before-build
-
+downloadCodeClimateReporter
 ./gradlew -x :smoke-testing:test -parallel test jacocoTestReport
-
 result="$?"
 
+# Abort any report processing if tests failed.
 if [ "$result" != 0 ]; then
   exit "$result"
 fi
 
+function compileCodeClimateReports() {
+  # Find all jacoco.xml files, we need those to format codeclimate coverage reports
+  # With those jacoco.xml files, strip everything off after (and including) the build
+  # folder so we get the name of the subproject. We will then 'cd' into the subproject
+  # next and run the code climate format command to create codeclimate.json files.
+  find . -name "jacoco.xml" | sed 's|/build/jacoco.xml||' | while read -r i
+  do
+  (
+    # codeclimate tool works relative to the java source code directory
+    # (note, it appears the '-p' flag which should do this is broken and does not)
+    # To account for this, cd into the src/main/java directory of any subproject
+    # that contains a jacoco.xml file
+    cd "$i/src/main/java" || return
+    ../../../../cc-test-reporter format-coverage -t jacoco ../../../build/jacoco.xml
+  )
+  done
+}
 
-find . -name "jacoco.xml" | sed 's|/build/jacoco.xml||' | while read -r i
-do
-(
-  cd "$i/src/main/java" || return
-  ../../../../cc-test-reporter format-coverage -t jacoco ../../../build/jacoco.xml
-)
-done
+function mergeCodeClimateReports() {
+ # Use the codeclimate reporter to squash together all of the codeclimate.json
+ # files into one. To do this we find all codeclimate.json files and pass them
+ # all as arguments to the test-reporter script.
+
+  # Disable shellcheck here as we need wordsplitting to pass each filename 
+  # as a separate parameter. Shellcheck otherwise wants us to quote the find
+  # command below and then each file found is passed all as a single argument 
+  # (which does not work).
+
+  # shellcheck disable=SC2046
+  ./cc-test-reporter sum-coverage $(find . -name "codeclimate.json" | tr '\n' ' ')
+}
+
+compileCodeClimateReports
+mergeCodeClimateReports
 
 
-# We need wordsplitting to pass each filename as a separate parameter.
-# Shellcheck otherwise wants us to quote the find command below and then
-# each file found is passed all as a single argument (which does not work).
+function uploadCoverageReports() {
+  # upload coverage report to codeclimate
+  ./cc-test-reporter upload-coverage
 
-# shellcheck disable=SC2046
-./cc-test-reporter sum-coverage $(find . -name "codeclimate.json" | tr '\n' ' ')
+  # upload coverage report to codecov - https://github.com/codecov/example-gradle
+  bash <(curl -s https://codecov.io/bash)
+}
 
-./cc-test-reporter upload-coverage
-
-# upload coverage report - https://github.com/codecov/example-gradle
-bash <(curl -s https://codecov.io/bash)
+uploadCoverageReports
 
