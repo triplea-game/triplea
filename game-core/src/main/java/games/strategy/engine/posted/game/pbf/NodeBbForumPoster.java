@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.Builder;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -54,6 +55,12 @@ public class NodeBbForumPoster {
     @Nonnull private final char[] username;
     @Nonnull private final char[] password;
     @Nonnull private final String forumUrl;
+  }
+
+  @Builder
+  public static class SaveGameParameter {
+    @Nonnull private final Path path;
+    @Nonnull private final String displayName;
   }
 
   private NodeBbForumPoster(final ForumPostingParameters forumPostingParameters) {
@@ -106,12 +113,12 @@ public class NodeBbForumPoster {
    * @return true if the post was successful
    */
   public CompletableFuture<String> postTurnSummary(
-      final String summary, final String title, final Path path) {
+      final String summary, final String title, @Nullable final SaveGameParameter saveGame) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       final int userId = getUserId(client);
       final String token = getToken(client, userId);
       try {
-        post(client, token, "### " + title + "\n" + summary, path);
+        post(client, token, "### " + title + "\n" + summary, saveGame);
         return CompletableFuture.completedFuture("Successfully posted!");
       } finally {
         deleteToken(client, userId, token);
@@ -124,7 +131,10 @@ public class NodeBbForumPoster {
   }
 
   private void post(
-      final CloseableHttpClient client, final String token, final String text, final Path path)
+      final CloseableHttpClient client,
+      final String token,
+      final String text,
+      @Nullable final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
@@ -132,7 +142,8 @@ public class NodeBbForumPoster {
         new UrlEncodedFormEntity(
             List.of(
                 new BasicNameValuePair(
-                    "content", text + ((path != null) ? uploadSaveGame(client, token, path) : ""))),
+                    "content",
+                    text + ((saveGame != null) ? uploadSaveGame(client, token, saveGame) : ""))),
             StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
@@ -149,15 +160,16 @@ public class NodeBbForumPoster {
   }
 
   private String uploadSaveGame(
-      final CloseableHttpClient client, final String token, final Path path) throws IOException {
+      final CloseableHttpClient client, final String token, final SaveGameParameter saveGame)
+      throws IOException {
     final HttpPost fileUpload = new HttpPost(forumUrl + "/api/v2/util/upload");
     fileUpload.setEntity(
         MultipartEntityBuilder.create()
             .addBinaryBody(
                 "files[]",
-                path.toFile(),
+                saveGame.path.toFile(),
                 ContentType.APPLICATION_OCTET_STREAM,
-                path.getFileName().toString())
+                saveGame.displayName)
             .build());
     HttpProxy.addProxy(fileUpload);
     addTokenHeader(fileUpload, token);
