@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
+import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.SaveGameParameter;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -53,7 +54,12 @@ public class TestPostAction implements BiConsumer<String, Integer> {
                           + ", time: "
                           + DateTimeUtil.getLocalizedTime(),
                       "Testing Forum poster",
-                      f != null ? f.toPath() : null);
+                      f != null
+                          ? SaveGameParameter.builder()
+                              .path(f.toPath())
+                              .displayName("Test.jpg")
+                              .build()
+                          : null);
               testPostProgressDisplay.close();
               try {
                 // now that we have a result, marshall it back unto the swing thread
