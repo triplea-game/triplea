@@ -130,6 +130,12 @@ public class BattleStepsTest {
     return unitAndAttachment.unit;
   }
 
+  public static Unit givenUnitFirstStrike() {
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    return unitAndAttachment.unit;
+  }
+
   public static Unit givenUnitAttackerFirstStrike() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
@@ -242,7 +248,8 @@ public class BattleStepsTest {
         .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
         .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
         .battleActions(battleActions)
-        .isAmphibious(false);
+        .isAmphibious(false)
+        .isOver(false);
   }
 
   @Test
@@ -568,108 +575,6 @@ public class BattleStepsTest {
 
   @Test
   @DisplayName(
-      "Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
-  void attackingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitCanEvade();
-    final Unit unit2 = givenAnyUnit();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps, is(mergeSteps(List.of(attacker.getName() + SUBS_SUBMERGE), basicFightSteps())));
-
-    verify(getDependentUnits, never()).apply(any());
-    verify(battleSite, never()).getUnits();
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
-  void attackingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitCanEvade();
-    final Unit unit2 = givenUnitDestroyer();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(steps, is(basicFightSteps()));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
-  void attackingSubsRetreatIfCanNotRetreatBeforeBattle() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitCanEvade();
-    final Unit unit2 = givenAnyUnit();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(steps, is(basicFightSteps()));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking firstStrike submerge before battle "
-          + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
-  void attackingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenAnyUnit();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + SUBS_SUBMERGE,
-                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
-                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                defender.getName() + FIRE,
-                attacker.getName() + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES)));
-  }
-
-  @Test
-  @DisplayName(
       "Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
@@ -890,7 +795,7 @@ public class BattleStepsTest {
   void attackingFirstStrikeWithDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDestroyer();
 
     final List<String> steps =
@@ -1139,7 +1044,7 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
     final Unit unit4 = givenUnitDestroyer();
@@ -1210,7 +1115,7 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithWW2v2AndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
     final Unit unit4 = givenUnitDestroyer();
@@ -1249,7 +1154,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
 
@@ -1322,7 +1227,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
 
@@ -1424,7 +1329,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit2 = givenUnitIsAir();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1545,39 +1450,6 @@ public class BattleStepsTest {
                 attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
                 defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
-                defender.getName() + FIRE,
-                attacker.getName() + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker.getName() + SUBS_SUBMERGE)));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
-  void attackingFirstStrikeCanSubmergeIfSubmersibleSubsAndDestroyers() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitDestroyer();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
-                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
                 defender.getName() + FIRE,
                 attacker.getName() + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,
@@ -1719,7 +1591,7 @@ public class BattleStepsTest {
   void attackingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDestroyer();
 
     final List<String> steps =
@@ -1739,69 +1611,6 @@ public class BattleStepsTest {
                 attacker.getName() + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker.getName() + ATTACKER_WITHDRAW)));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking firstStrike can't withdraw when "
-          + "SUBMERSIBLE_SUBS is false and destroyers waiting to die")
-  void attackingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
-    givenPlayers();
-    givenAttackerRetreatTerritories(battleSite);
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitDestroyer();
-    final Unit unit3 = givenAnyUnit();
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit3))
-            .defendingWaitingToDie(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
-                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                defender.getName() + FIRE,
-                attacker.getName() + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker.getName() + ATTACKER_WITHDRAW)));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking firstStrike can't withdraw when "
-          + "SUBMERSIBLE_SUBS is false and defenseless transports with restricted casualties")
-  void attackingFirstStrikeNoWithdrawIfDefenselessTransports() {
-    givenPlayers();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitTransport();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                REMOVE_UNESCORTED_TRANSPORTS,
-                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
-                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                defender.getName() + FIRE,
-                attacker.getName() + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES)));
   }
 
   @Test
