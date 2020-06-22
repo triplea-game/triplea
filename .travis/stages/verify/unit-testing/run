@@ -2,7 +2,7 @@
 
 set -ux
 
-export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
+#export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
 
 curl -L \
   https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
@@ -20,7 +20,8 @@ if [ "$result" != 0 ]; then
   exit "$result"
 fi
 
-find . -name "jacoco.xml" -print0 | sed 's|/build/jacoco.xml||' | while read -r i
+
+find . -name "jacoco.xml" | sed 's|/build/jacoco.xml||' | while read -r i
 do
 (
   cd "$i" || return
