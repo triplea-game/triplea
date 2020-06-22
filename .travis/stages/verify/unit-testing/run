@@ -2,7 +2,7 @@
 
 set -ux
 
-#export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
+export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
 
 curl -L \
   https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
@@ -28,7 +28,14 @@ do
   ../../../../cc-test-reporter format-coverage -t jacoco ../../../build/jacoco.xml
 )
 done
-./cc-test-reporter sum-coverage "$(find . -name "codeclimate.json")"
+
+
+# We need wordsplitting to pass each filename as a separate parameter.
+# Shellcheck otherwise wants us to quote the find command below and then
+# each file found is passed all as a single argument (which does not work).
+
+# shellcheck disable=SC2046
+./cc-test-reporter sum-coverage $(find . -name "codeclimate.json" | tr '\n' ' ')
 
 ./cc-test-reporter upload-coverage
 
