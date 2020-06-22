@@ -2,8 +2,7 @@
 
 set -ux
 
-#export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
-
+export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
 
 function main() {
   downloadCodeClimateReporter
