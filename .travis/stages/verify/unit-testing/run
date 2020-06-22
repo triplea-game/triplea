@@ -24,7 +24,7 @@ fi
 find . -name "jacoco.xml" | sed 's|/build/jacoco.xml||' | while read -r i
 do
 (
-  cd "$i" || return
+  cd "$i/src/main/java" || return
   ../../../../cc-test-reporter format-coverage -t jacoco ../../../build/jacoco.xml
 )
 done
