@@ -1,23 +1,22 @@
 ---
-name: "\U0001F41E  Problem Report"
-about: Report a problem for the release version (downloaded from triplea-game.org)
+name: "\U0001F41E  Report a Problem"
+about: Report a bug, crash, or any problem with TripleA
 title: ''
-labels: 'Release Problem'
+labels: 'Problem'
 assignees: ''
 ---
 
 ### How can the problem be recreated?
 <!-- What list of steps can we take to see the problem, please be specific -->
 
-### What is an expected fix?
-<!-- So we are all on the same page, what would a fix look like? -->
+### Do you have any ideas for an expected fix?
 
-### (Optional) Additional information
+
+### Attach a Save Game
+<!-- Do you have a save game? These help us greatly! -->
+
 
 <!--
-  Place here any additional information, screenshots, and a save game,
-  it really helps.
-
   To zip and attach a save game:
     - save games will be in your home folder > triplea > saved games
     - find the save game file ending with '.tsvg'
@@ -26,3 +25,16 @@ assignees: ''
     - drag and drop the zip file into this window
 -->
 
+
+### If playing a prerelease, which version are you using?
+<!-- If you downloaded the game from the triplea-game.org website, leave this blank -->
+
+Game Version:
+
+### If playing a prerelease, does this happen on the latest release?
+<!-- If you downloaded the game from the triplea-game.org website, leave this blank -->
+
+- [ ] yes
+- [ ] no
+
+### Is there anything else we should know? 
