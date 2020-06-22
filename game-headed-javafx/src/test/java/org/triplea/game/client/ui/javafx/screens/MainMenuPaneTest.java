@@ -49,7 +49,6 @@ class MainMenuPaneTest extends UserAgentStylesheetTestCase {
     assertEquals(mock4, children.get(0));
 
     verify(mock).registerScreen(FxmlManager.GAME_SELECTION_CONTROLS);
-    verify(mock).registerScreen(FxmlManager.ABOUT_INFORMATION);
     verify(mock).registerScreen(FxmlManager.MAIN_MENU_CONTROLS);
 
     verify(mock).switchScreen(FxmlManager.MAIN_MENU_CONTROLS);

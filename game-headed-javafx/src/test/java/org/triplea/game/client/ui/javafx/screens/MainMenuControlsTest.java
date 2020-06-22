@@ -83,11 +83,5 @@ class MainMenuControlsTest {
       aboutInformation.showSettingsMenu();
       verify(mock).switchScreen(FxmlManager.SETTINGS_PANE);
     }
-
-    @Test
-    void testShowAboutSection() {
-      aboutInformation.showAboutSection();
-      verify(mock).switchScreen(FxmlManager.ABOUT_INFORMATION);
-    }
   }
 }

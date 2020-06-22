@@ -1,14 +1,12 @@
 package org.triplea.game.client.ui.javafx.screens;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import java.util.function.Function;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import javax.swing.SwingUtilities;
 import lombok.NoArgsConstructor;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
@@ -61,20 +59,8 @@ public class MainMenuControls implements ControlledScreen<ScreenController<FxmlM
 
   @FXML
   @VisibleForTesting
-  void showDownloadMenu() {
-    SwingUtilities.invokeLater(DownloadMapsWindow::showDownloadMapsWindow);
-  }
-
-  @FXML
-  @VisibleForTesting
   void showSettingsMenu() {
     screenController.switchScreen(FxmlManager.SETTINGS_PANE);
-  }
-
-  @FXML
-  @VisibleForTesting
-  void showAboutSection() {
-    screenController.switchScreen(FxmlManager.ABOUT_INFORMATION);
   }
 
   @FXML

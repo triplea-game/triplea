@@ -15,8 +15,6 @@ public enum FxmlManager {
 
   SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml"),
 
-  ABOUT_INFORMATION("/org/triplea/game/client/ui/javafx/fxml/AboutInformation.fxml"),
-
   GAME_SELECTION_CONTROLS("/org/triplea/game/client/ui/javafx/fxml/GameSelectionControls.fxml"),
 
   MAIN_MENU_CONTROLS("/org/triplea/game/client/ui/javafx/fxml/MainMenuControls.fxml"),
