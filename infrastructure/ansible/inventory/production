@@ -4,7 +4,6 @@
 
 [botHosts]
 bot05.triplea-game.org  bot_prefix=1  bot_name=Dallas
-bot07.triplea-game.org  bot_prefix=8  bot_name=California
 
 [forums]
 forums.triplea-game.org
