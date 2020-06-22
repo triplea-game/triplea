@@ -5,12 +5,6 @@
   port: 3304
   https_port: 5432
   message: |
-    Welcome to the TripleA lobby, we are pleased you are here.
-    
-    Join the TripleA ranked ladder by posting here:
-    https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
-
-    Conversations in the lobby are restricted to finding games and about TripleA game play.
-    People of all ages play TripleA, conversations here should be appropriate and welcoming.
-    Disrespect, off-topic conversations, *anything* about current politics will result in bans without warning.
+    Triplea 2.0 is released!
+    Download it here: https://triplea-game.org/download/
   error_message:
