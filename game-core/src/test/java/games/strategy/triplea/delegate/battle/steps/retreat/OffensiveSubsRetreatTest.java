@@ -46,10 +46,6 @@ class OffensiveSubsRetreatTest {
             .gameData(MockGameData.givenGameData().build())
             .attackerRetreatTerritories(List.of(mock(Territory.class)))
             .build();
-    thenRetreatHappens(battleState);
-  }
-
-  private void thenRetreatHappens(final BattleState battleState) {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
@@ -71,7 +67,13 @@ class OffensiveSubsRetreatTest {
                     .build())
             .attackerRetreatTerritories(List.of())
             .build();
-    thenRetreatHappens(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions)
+        .queryRetreat(eq(false), eq(MustFightBattle.RetreatType.SUBS), eq(delegateBridge), any());
   }
 
   @Test
@@ -87,17 +89,19 @@ class OffensiveSubsRetreatTest {
             .defendingUnits(List.of(givenUnitTransport(), givenAnyUnit()))
             .build();
 
-    thenRetreatHappens(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions)
+        .queryRetreat(eq(false), eq(MustFightBattle.RetreatType.SUBS), eq(delegateBridge), any());
   }
 
   @Test
   void retreatDoesNotHappenWhenBattleIsOver() {
     final BattleState battleState =
         givenBattleStateBuilder().attackingUnits(List.of(mock(Unit.class))).over(true).build();
-    thenRetreatDoesNotHappen(battleState);
-  }
-
-  void thenRetreatDoesNotHappen(final BattleState battleState) {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
@@ -113,7 +117,12 @@ class OffensiveSubsRetreatTest {
             .attackingUnits(List.of(mock(Unit.class)))
             .defendingUnits(List.of(givenUnitDestroyer()))
             .build();
-    thenRetreatDoesNotHappen(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
   @Test
@@ -123,7 +132,12 @@ class OffensiveSubsRetreatTest {
             .attackingUnits(List.of(mock(Unit.class)))
             .defendingWaitingToDie(List.of(givenUnitDestroyer()))
             .build();
-    thenRetreatDoesNotHappen(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
   @Test
@@ -134,7 +148,12 @@ class OffensiveSubsRetreatTest {
             .gameData(MockGameData.givenGameData().build())
             .amphibious(true)
             .build();
-    thenRetreatDoesNotHappen(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
   @Test
@@ -150,7 +169,12 @@ class OffensiveSubsRetreatTest {
             .defendingUnits(List.of(givenUnitTransport()))
             .attackerRetreatTerritories(List.of(mock(Territory.class)))
             .build();
-    thenRetreatDoesNotHappen(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
   @Test
@@ -165,7 +189,12 @@ class OffensiveSubsRetreatTest {
                     .build())
             .defendingUnits(List.of(givenUnitTransport()))
             .build();
-    thenRetreatDoesNotHappen(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
   @Test
@@ -175,7 +204,12 @@ class OffensiveSubsRetreatTest {
             .gameData(MockGameData.givenGameData().build())
             .attackerRetreatTerritories(List.of())
             .build();
-    thenRetreatDoesNotHappen(battleState);
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    offensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+    verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
   static class MockGameData {
