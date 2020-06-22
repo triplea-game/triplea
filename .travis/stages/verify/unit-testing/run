@@ -20,7 +20,7 @@ if [ "$result" != 0 ]; then
   exit "$result"
 fi
 
-for i in $(find . -name "jacoco.xml" -exec dirname {} + | xargs dirname)
+find . -name "jacoco.xml" -print0 -exec dirname {} \; | xargs --null dirname | sort | uniq | while read -r i
 do
 (
   cd "$i" || return
