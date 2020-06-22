@@ -4,24 +4,19 @@ servers:
     lobby_uri: https://prod2-lobby.triplea-game.org
     message: |
       Welcome to the TripleA 2.0 lobby!
+      Please no politics, stay respectful, be welcoming, have fun.
 
       Join the TripleA ranked ladder by posting here:
       https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
-
-      Conversations in the lobby are generally restricted to finding games and about TripleA game play.
-      Please no politics, stay respectful, be welcoming, have fun.
   - version: "2.0.19800"
     inactive: true
   - version: "2.0.0"
     lobby_uri: https://prerelease.triplea-game.org
     message: |
-      Welcome to the TripleA lobby, we are pleased you are here.
+      Welcome to the TripleA 2.0 lobby!
+      Please no politics, stay respectful, be welcoming, have fun.
 
       Join the TripleA ranked ladder by posting here:
       https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
-
-      Conversations in the lobby are restricted to finding games and about TripleA game play.
-      People of all ages play TripleA, conversations here should be appropriate and welcoming.
-      Disrespect, off-topic conversations, *anything* about current politics will result in bans without warning.
   - version: "0.0"
     inactive: true
