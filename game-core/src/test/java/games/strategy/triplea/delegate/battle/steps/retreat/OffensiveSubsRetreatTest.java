@@ -10,6 +10,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -17,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -24,10 +26,8 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -38,9 +38,18 @@ class OffensiveSubsRetreatTest {
   @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
 
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource
-  void retreatHappens(final String displayName, final BattleState battleState) {
+  @Test
+  void retreatHappensWhenNotSubmersibleButHasRetreatTerritories() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(MockGameData.givenGameData().build())
+            .attackerRetreatTerritories(List.of(mock(Territory.class)))
+            .build();
+    thenRetreatHappens(battleState);
+  }
+
+  private void thenRetreatHappens(final BattleState battleState) {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
@@ -50,43 +59,45 @@ class OffensiveSubsRetreatTest {
         .queryRetreat(eq(false), eq(MustFightBattle.RetreatType.SUBS), eq(delegateBridge), any());
   }
 
-  static List<Arguments> retreatHappens() {
-    return List.of(
-        Arguments.of(
-            "Can not submerge but has retreat territories",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .gameData(
-                    MockGameData.givenGameData().withTransportCasualtiesRestricted(false).build())
-                .attackerRetreatTerritories(List.of(mock(Territory.class)))
-                .build()),
-        Arguments.of(
-            "Has no retreat territories but can submerge",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .gameData(
-                    MockGameData.givenGameData()
-                        .withTransportCasualtiesRestricted(false)
-                        .withSubmersibleSubs(true)
-                        .build())
-                .attackerRetreatTerritories(List.of())
-                .build()),
-        Arguments.of(
-            "Transports with other units on the defense",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .gameData(
-                    MockGameData.givenGameData()
-                        .withTransportCasualtiesRestricted(true)
-                        .withSubmersibleSubs(true)
-                        .build())
-                .defendingUnits(List.of(givenUnitTransport(), givenAnyUnit()))
-                .build()));
+  @Test
+  void retreatHappensWhenHasNoRetreatTerritoriesButIsSubmersible() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(
+                MockGameData.givenGameData()
+                    .withTransportCasualtiesRestricted(false)
+                    .withSubmersibleSubs(true)
+                    .build())
+            .attackerRetreatTerritories(List.of())
+            .build();
+    thenRetreatHappens(battleState);
   }
 
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource
-  void retreatDoesNotHappen(final String displayName, final BattleState battleState) {
+  @Test
+  void retreatHappensWhenTransportsOnDefenseButNotDefenseless() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(
+                MockGameData.givenGameData()
+                    .withTransportCasualtiesRestricted(true)
+                    .withSubmersibleSubs(true)
+                    .build())
+            .defendingUnits(List.of(givenUnitTransport(), givenAnyUnit()))
+            .build();
+
+    thenRetreatHappens(battleState);
+  }
+
+  @Test
+  void retreatDoesNotHappenWhenBattleIsOver() {
+    final BattleState battleState =
+        givenBattleStateBuilder().attackingUnits(List.of(mock(Unit.class))).over(true).build();
+    thenRetreatDoesNotHappen(battleState);
+  }
+
+  void thenRetreatDoesNotHappen(final BattleState battleState) {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
@@ -95,74 +106,84 @@ class OffensiveSubsRetreatTest {
     verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
-  static List<Arguments> retreatDoesNotHappen() {
-    return List.of(
-        Arguments.of(
-            "Battle is over",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .over(true)
-                .build()),
-        Arguments.of(
-            "Defending Destroyer exists",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .defendingUnits(List.of(givenUnitDestroyer()))
-                .build()),
-        Arguments.of(
-            "Waiting to Die Defending Destroyer exists",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .defendingWaitingToDie(List.of(givenUnitDestroyer()))
-                .build()),
-        Arguments.of(
-            "Amphibious assault",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .gameData(
-                    MockGameData.givenGameData().withTransportCasualtiesRestricted(false).build())
-                .amphibious(true)
-                .build()),
-        Arguments.of(
-            "Can withdraw but only defenseless transports on the defense",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .gameData(
-                    MockGameData.givenGameData()
-                        .withTransportCasualtiesRestricted(true)
-                        .withSubmersibleSubs(false)
-                        .build())
-                .defendingUnits(List.of(givenUnitTransport()))
-                .attackerRetreatTerritories(List.of(mock(Territory.class)))
-                .build()),
-        Arguments.of(
-            "Can submerge but only defenseless transports on the defense",
-            givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvade()))
-                .gameData(
-                    MockGameData.givenGameData()
-                        .withTransportCasualtiesRestricted(true)
-                        .withSubmersibleSubs(true)
-                        .build())
-                .defendingUnits(List.of(givenUnitTransport()))
-                .build()),
-        Arguments.of(
-            "No retreat territories and can not submerge",
-            givenBattleStateBuilder()
-                .gameData(
-                    MockGameData.givenGameData().withTransportCasualtiesRestricted(false).build())
-                .attackerRetreatTerritories(List.of())
-                .build()));
+  @Test
+  void retreatDoesNotHappenWhenDestroyerIsOnDefense() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(mock(Unit.class)))
+            .defendingUnits(List.of(givenUnitDestroyer()))
+            .build();
+    thenRetreatDoesNotHappen(battleState);
+  }
+
+  @Test
+  void retreatDoesNotHappenWhenWaitingToDieDestroyerIsOnDefense() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(mock(Unit.class)))
+            .defendingWaitingToDie(List.of(givenUnitDestroyer()))
+            .build();
+    thenRetreatDoesNotHappen(battleState);
+  }
+
+  @Test
+  void retreatDoesNotHappenWhenAmphibiousAssault() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(MockGameData.givenGameData().build())
+            .amphibious(true)
+            .build();
+    thenRetreatDoesNotHappen(battleState);
+  }
+
+  @Test
+  void retreatDoesNotHappenWhenDefenselessTransportsEvenIfCanWithdraw() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(
+                MockGameData.givenGameData()
+                    .withTransportCasualtiesRestricted(true)
+                    .withSubmersibleSubs(false)
+                    .build())
+            .defendingUnits(List.of(givenUnitTransport()))
+            .attackerRetreatTerritories(List.of(mock(Territory.class)))
+            .build();
+    thenRetreatDoesNotHappen(battleState);
+  }
+
+  @Test
+  void retreatDoesNotHappenWhenDefenselessTransportsEvenIfCanSubmerge() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(
+                MockGameData.givenGameData()
+                    .withTransportCasualtiesRestricted(true)
+                    .withSubmersibleSubs(true)
+                    .build())
+            .defendingUnits(List.of(givenUnitTransport()))
+            .build();
+    thenRetreatDoesNotHappen(battleState);
+  }
+
+  @Test
+  void retreatDoesNotHappenWhenCanNotSubmergeAndNoRetreatTerritories() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .gameData(MockGameData.givenGameData().build())
+            .attackerRetreatTerritories(List.of())
+            .build();
+    thenRetreatDoesNotHappen(battleState);
   }
 
   static class MockGameData {
-    private final GameData gameData;
-    private final GameProperties gameProperties;
-    private boolean propertiesSetup = false;
+    private final GameData gameData = mock(GameData.class);
+    private final GameProperties gameProperties = mock(GameProperties.class);
 
     private MockGameData() {
-      gameData = mock(GameData.class);
-      gameProperties = mock(GameProperties.class);
+      lenient().when(gameData.getProperties()).thenReturn(gameProperties);
     }
 
     static MockGameData givenGameData() {
@@ -174,20 +195,11 @@ class OffensiveSubsRetreatTest {
     }
 
     MockGameData withTransportCasualtiesRestricted(final boolean value) {
-      setupProperties();
       when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(value);
       return this;
     }
 
-    private void setupProperties() {
-      if (!propertiesSetup) {
-        propertiesSetup = true;
-        when(gameData.getProperties()).thenReturn(gameProperties);
-      }
-    }
-
     MockGameData withSubmersibleSubs(final boolean value) {
-      setupProperties();
       when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(value);
       return this;
     }
