@@ -20,7 +20,7 @@ if [ "$result" != 0 ]; then
   exit "$result"
 fi
 
-find . -name "jacoco.xml" -print0 -exec dirname {} \; | xargs --null dirname | sort | uniq | while read -r i
+find . -name "jacoco.xml" -print0 | sed 's|/build/jacoco.xml||' | while read -r i
 do
 (
   cd "$i" || return
