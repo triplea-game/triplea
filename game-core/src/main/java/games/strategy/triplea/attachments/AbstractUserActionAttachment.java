@@ -215,12 +215,10 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("text", MutableProperty.ofString(this::setText, this::getText, this::resetText))
-        .put("costPU",
+        .put(
+            "costPU",
             MutableProperty.of(
-                this::setCostPu,
-                this::setCostPu,
-                this::getCostPu,
-                this::resetCostPu))
+                this::setCostPu, this::setCostPu, this::getCostPu, this::resetCostPu))
         .put(
             "costResources",
             MutableProperty.of(
