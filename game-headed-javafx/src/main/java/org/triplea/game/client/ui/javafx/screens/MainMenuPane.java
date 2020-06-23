@@ -51,7 +51,6 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
     content.getChildren().add(0, navigationPane.getNode());
 
     navigationPane.registerScreen(FxmlManager.GAME_SELECTION_CONTROLS);
-    navigationPane.registerScreen(FxmlManager.ABOUT_INFORMATION);
     navigationPane.registerScreen(FxmlManager.MAIN_MENU_CONTROLS);
     navigationPane.registerScreen(FxmlManager.MAP_SELECTION);
     navigationPane.registerScreen(FxmlManager.ROLE_SELECTION);
