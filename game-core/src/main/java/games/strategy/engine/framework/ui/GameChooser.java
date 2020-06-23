@@ -40,11 +40,11 @@ public class GameChooser extends JDialog {
     final JList<GameChooserEntry> gameList = new JList<>(gameChooserModel);
     if (gameName == null || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
-      return;
+    } else {
+      gameChooserModel
+          .findByName(gameName)
+          .ifPresent(entry -> gameList.setSelectedValue(entry, true));
     }
-    gameChooserModel
-        .findByName(gameName)
-        .ifPresent(entry -> gameList.setSelectedValue(entry, true));
     setLayout(new BorderLayout());
 
     final JSplitPane mainSplit = new JSplitPane();
