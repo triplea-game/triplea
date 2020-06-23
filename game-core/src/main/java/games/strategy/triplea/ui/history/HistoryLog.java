@@ -174,7 +174,7 @@ public class HistoryLog extends JFrame {
       for (final Object pathNode : pathToNode) {
         final HistoryNode node = (HistoryNode) pathNode;
         stringBuilder.append(moreIndent.repeat(Math.max(0, node.getLevel())));
-        stringBuilder.append(node.getTitle());
+        stringBuilder.append(node.getTitle()).append('\n');
         if (node.getLevel() == 0) {
           stringBuilder.append('\n');
         }
