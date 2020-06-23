@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public abstract class AaFireAndCasualtyStep implements BattleStep {
+  private static final long serialVersionUID = -3195299749378932928L;
 
   protected final BattleState battleState;
 
