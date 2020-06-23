@@ -355,8 +355,7 @@ public class HistoryLog extends JFrame {
         } else if (node instanceof Step) {
           final GamePlayer gamePlayer = ((Step) node).getPlayerId();
           if (!title.equals("Initializing Delegates")) {
-            stringBuilder.append('\n');
-            stringBuilder.append(indent).append(title);
+            stringBuilder.append('\n').append(indent).append(title);
             if (gamePlayer != null) {
               currentPlayer = gamePlayer;
               players.add(currentPlayer);
@@ -365,12 +364,11 @@ public class HistoryLog extends JFrame {
             stringBuilder.append('\n');
           }
         } else if (node instanceof Round) {
-          stringBuilder.append('\n');
-          stringBuilder.append(indent).append(title).append('\n');
+          stringBuilder.append('\n').append(indent).append(title).append('\n');
         } else {
           stringBuilder.append(indent).append(title).append('\n');
         }
-      } // while (nodeEnum.hasMoreElements())
+      }
       curNode = curNode.getNextSibling();
     } while ((curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
     // if we are mid-phase, this might not get flushed
@@ -383,8 +381,7 @@ public class HistoryLog extends JFrame {
     }
     stringBuilder.append('\n');
     if (verbose) {
-      stringBuilder.append("Combat Hit Differential Summary :").append('\n');
-      stringBuilder.append('\n');
+      stringBuilder.append("Combat Hit Differential Summary :\n\n");
       for (final String player : hitDifferentialMap.keySet()) {
         stringBuilder
             .append(moreIndent)
@@ -485,8 +482,7 @@ public class HistoryLog extends JFrame {
     stringBuilder
         .append("Territory Summary for ")
         .append(MyFormatter.defaultNamedToTextList(players))
-        .append(" : \n")
-        .append('\n');
+        .append(" : \n\n");
     for (final Territory t : territories) {
       final List<Unit> ownedUnits =
           t.getUnitCollection().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
