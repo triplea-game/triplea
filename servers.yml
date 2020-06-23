@@ -8,6 +8,9 @@ servers:
 
       Join the TripleA ranked ladder by posting here:
       https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
+
+      Report any problems here:
+      https://github.com/triplea-game/triplea/issues
   - version: "2.0.19800"
     inactive: true
   - version: "2.0.0"
