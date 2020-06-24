@@ -39,7 +39,7 @@ abstract class AbstractBattle implements IBattle {
    */
   boolean headless = false;
 
-  final Territory battleSite;
+  @Getter final Territory battleSite;
   final GamePlayer attacker;
   GamePlayer defender;
   final BattleTracker battleTracker;

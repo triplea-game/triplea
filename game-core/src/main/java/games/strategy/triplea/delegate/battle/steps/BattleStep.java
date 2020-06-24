@@ -20,6 +20,7 @@ public interface BattleStep extends IExecutable {
   enum Order {
     AA_OFFENSIVE,
     AA_DEFENSIVE,
+    NAVAL_BOMBARDMENT,
     SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE,
     SUBMERGE_SUBS_VS_ONLY_AIR,
     AIR_OFFENSIVE_NON_SUBS,
