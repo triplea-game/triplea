@@ -1,25 +1,50 @@
 # Infrastructure Project
 
-Home to infrastructure deployment, notably done with a technology
-called [ansible](https://www.ansible.com)
+Hosts [ansible](https://www.ansible.com) code that maintains
+[infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code)
 
-See the "operations" section of
-[wiki](https://github.com/triplea-game/triplea/wik)
-for more documentation, on how to add servers, run ad-hoc commands,
-check logs etc..
+In short, we should never log in to a server, all changes are checked
+in and then applied by running a deployment. This creates
+a consistent and documented server state that anyone can reproduce.
 
-Infrastructure deployment refers to how we set up and deploy software
-to test and production servers.
+More operations details are on the [wiki](https://github.com/triplea-game/triplea/wik)
 
-Notably ansible is designed to be idempotent, we run deployments to
-prerelease and production on every merge to master. This is triggered
-from [travis](https://travis-ci.org/github/triplea-game/triplea) which
-builds the TripleA master branch after each PR is merged.
 
-Each ansible 'role' can be thought of as an application that is deployed.
-Roles should be pretty atomic and granular so that we can easily configure
-and re-use them between different hosts. Each [role folder](./ansible/roles)
-should have a README.md file that describes what is deployed by that role.
+## Deployments
+
+Deployments to prerelease and production are automated.
+Prerelease will receive the latest code after every merge. Production
+deployments are controlled by a version number variable in configuration.
+If the version value does not change, the deployment is idempotent
+and nothing will change on the server.
+
+Deployments are triggered as part of 
+[travis](https://travis-ci.org/github/triplea-game/triplea) builds.
+
+## Production Deployment
+
+It can be useful to make changes locally, run a production deployment,
+and then check in the changes after-the fact. This is very risky,
+user beware. Typical command to do this will be with a limit
+to restrict deployments to specific hosts. EG:
+```
+./run_ansible_production --limit prod2-bot02.triplea-game.org
+```
+
+## Ansible Structure
+
+Ansible has three parts:
+  - inventory (lists hosts)
+  - roles (can be thought of as applications)
+  - playbooks, binds hosts to roles.
+
+The only different between environments should be the list
+of hosts in an inventory file. Each environment (IE: prerelease, prod)
+will have its own inventory file. Each inventory file has the same
+set of hostgroups, only the hostnames are different between them.
+
+Each [role](./ansible/roles) should have a short README.md file that
+describes  what is deployed by that role.
 
 ## Local Development with Vagrant
 
