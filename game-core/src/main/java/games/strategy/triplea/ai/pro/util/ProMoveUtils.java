@@ -336,7 +336,7 @@ public final class ProMoveUtils {
 
         // Skip if unit is already in move to territory
         final Territory startTerritory = proData.getUnitTerritory(u);
-        if (startTerritory.equals(bombardFromTerritory)) {
+        if (startTerritory == null || startTerritory.equals(bombardFromTerritory)) {
           continue;
         }
 
