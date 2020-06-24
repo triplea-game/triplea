@@ -69,12 +69,12 @@ function uploadCoverageReports() {
   # ID tokens will be defined for branches that are part of the triplea-game repo,
   # will not be available to branches present on forks.
   # Travis will have these values defined in the build setting environment variables.
-  if [ ! -z "${CODACY_PROJECT_TOKEN-}" ]; then
+  if [ -n "${CODACY_PROJECT_TOKEN-}" ]; then
     # upload coverage report to codacy
     bash <(curl -Ls https://coverage.codacy.com/get.sh)
   fi
   
-  if [ ! -z "${CC_TEST_REPORTER_ID-}" ]; then
+  if [ -n "${CC_TEST_REPORTER_ID-}" ]; then
    # upload coverage report to codeclimate
     ./cc-test-reporter upload-coverage
   fi
