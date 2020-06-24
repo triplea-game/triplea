@@ -287,17 +287,16 @@ public class MustFightBattle extends DependentBattle
         if (ua.getCarrierCapacity() == -1) {
           continue;
         }
-        final Collection<Unit> fighters = dependencies.get(carrier);
-        // Dependencies count both land and air units. Land units could be allied or owned, while
-        // air is just allied
-        // since owned already launched at beginning of turn
-        fighters.retainAll(CollectionUtils.getMatches(fighters, Matches.unitIsAir()));
-        for (final Unit fighter : fighters) {
-          // Set transportedBy for fighter
-          change.add(ChangeFactory.unitPropertyChange(fighter, carrier, Unit.TRANSPORTED_BY));
-        }
-        // remove transported fighters from battle display
-        this.attackingUnits.removeAll(fighters);
+
+        // set transported by on each figher and remove each one from battle display
+        dependencies.get(carrier).stream()
+            .filter(Matches.unitIsAir())
+            .forEach(
+                fighter -> {
+                  change.add(
+                      ChangeFactory.unitPropertyChange(fighter, carrier, Unit.TRANSPORTED_BY));
+                  this.attackingUnits.remove(fighter);
+                });
       }
     }
     addDependentUnits(dependencies);
