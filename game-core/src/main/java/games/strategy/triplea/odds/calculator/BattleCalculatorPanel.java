@@ -1193,7 +1193,6 @@ class BattleCalculatorPanel extends JPanel {
     new Thread(
             () -> {
               try {
-                // find a territory to fight in
                 final Territory location = findPotentialBattleSite();
                 if (location == null) {
                   throw new IllegalStateException("No territory found that is land:" + isLand());
