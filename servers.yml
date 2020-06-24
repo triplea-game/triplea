@@ -1,4 +1,4 @@
-latest: 2.0.20183
+latest: 2.0.20234
 servers:
   - version: "2.0.20057"
     lobby_uri: https://prod2-lobby.triplea-game.org
@@ -6,8 +6,10 @@ servers:
       Welcome to the TripleA 2.0 lobby!
       Please no politics, stay respectful, be welcoming, have fun.
 
-      Join the TripleA ranked ladder by posting here:
-      https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
+      Bots are currently not loading saves of World War II Revised map
+      properly. We are investigating and will fix the bots as soon
+      as we identify the problem. Please report to us if any other
+      maps are having issues.
 
       Report any problems here:
       https://github.com/triplea-game/triplea/issues
