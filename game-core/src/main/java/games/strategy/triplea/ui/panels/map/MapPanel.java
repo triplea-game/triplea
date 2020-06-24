@@ -644,8 +644,14 @@ public class MapPanel extends ImageScrollerLargeView {
   public void paint(final Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
     g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+    // Note: Using nearest neighbor interpolation produces the best results compared to
+    // bilinear and bicubic. Bilinear has problems with sometimes producing white lines at
+    // certain zoom levels and scroll offsets. Bicubic is extremely slow (2ms per tile drawn).
+    // Nearest neighbor does not appear to have the white line problem and is actually the
+    // fastest.
     g2d.setRenderingHint(
-        RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+
     super.paint(g2d);
     g2d.scale(scale, scale);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight()));
@@ -808,10 +814,7 @@ public class MapPanel extends ImageScrollerLargeView {
       } else {
         images.add(tile);
       }
-      g.drawImage(
-          tile.getImage(),
-          AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
-          this);
+      g.drawImage(tile.getImage(), tile.getBounds().x, tile.getBounds().y, this);
     }
     g.translate(bounds.getX(), bounds.getY());
   }
