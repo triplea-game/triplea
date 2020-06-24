@@ -70,6 +70,10 @@ final class AvailableGames {
                     gameRepository.availableMapFolderOrZipNames);
               }
             });
+    log.info(
+        String.format(
+            "Done loading maps, loaded %s maps, loaded: %s",
+            gameRepository.availableGames.keySet().size(), gameRepository.availableGames.keySet()));
     return gameRepository;
   }
 
