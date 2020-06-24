@@ -29,7 +29,7 @@ public class PerfTimer implements Closeable {
   private final long startMillis;
   private final int reportingFrequency;
 
-  private PerfTimer(final String title, int reportingFrequency) {
+  private PerfTimer(final String title, final int reportingFrequency) {
     this.title = title;
     this.reportingFrequency = reportingFrequency;
     this.startMillis = this.reportingFrequency > 0 ? System.nanoTime() : 0;
@@ -66,7 +66,9 @@ public class PerfTimer implements Closeable {
     final long newCount = totalCount.get() + 1;
     totalCount.set(newCount);
 
-    if ((newCount % perfTimer.reportingFrequency) == 0) return;
+    if ((newCount % perfTimer.reportingFrequency) == 0) {
+      return;
+    }
 
     final long totalMillis = (totalNano / (1000 * 1000));
     final long avgNanos = totalNano / newCount;
