@@ -20,7 +20,7 @@ public class JEditorPaneWithClickableLinks extends JEditorPane {
     setBorder(new EmptyBorder(10, 0, 20, 0));
     addHyperlinkListener(
         e -> {
-          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+          if (e != null && HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
             OpenFileUtility.openUrl(e.getURL().toString());
           }
         });

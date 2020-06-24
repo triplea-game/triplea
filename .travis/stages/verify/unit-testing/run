@@ -2,8 +2,6 @@
 
 set -ux
 
-export CC_TEST_REPORTER_ID="$CODE_CLIMATE_TEST_COVERAGE_ID"
-
 function main() {
   downloadCodeClimateReporter
   runTests
@@ -68,12 +66,18 @@ function uploadCoverageReports() {
   # upload coverage report to codecov - https://github.com/codecov/example-gradle
   bash <(curl -s https://codecov.io/bash)
 
-  # upload coverage report to codacy
-   bash <(curl -Ls https://coverage.codacy.com/get.sh)
-
-  # upload coverage report to codeclimate
-  ./cc-test-reporter upload-coverage
-
+  # ID tokens will be defined for branches that are part of the triplea-game repo,
+  # will not be available to branches present on forks.
+  # Travis will have these values defined in the build setting environment variables.
+  if [ -n "${CODACY_PROJECT_TOKEN-}" ]; then
+    # upload coverage report to codacy
+    bash <(curl -Ls https://coverage.codacy.com/get.sh)
+  fi
+  
+  if [ -n "${CC_TEST_REPORTER_ID-}" ]; then
+   # upload coverage report to codeclimate
+    ./cc-test-reporter upload-coverage
+  fi
 }
 
 main

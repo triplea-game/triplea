@@ -16,27 +16,24 @@
 [] Feature Removal
 [] Code Cleanup or refactor
 [] Configuration Change
-[] Problem fix:  <!-- Link to bug issue or forum post here -->
+[] Problem fix
 [] Other:   <!-- Please specify -->
 
 ## Testing
-<!--
-  Describe any manual testing performed below.
--->
+<!-- Describe any manual testing performed below. -->
 
-<!-- If there are UI updates, uncomment and include screenshots below -->
-<!--
 ## Screens Shots
+<!-- If there are UI updates, include screenshots below -->
 
-### Before
+## Additional Notes to Reviewer
+<!-- Add any additional details that would be helpful to reviewers -->
 
-### After
--->
+## Release Note
 
 <!--
-  Uncomment the below and add any additional details that would be helpful for reviewers.
--->
-<!--
-## Additional Review Notes
+Include a release note if there is a bug fix or a visible change for players.
+For format & syntax help, see:
+https://github.com/triplea-game/triplea/wiki/PR-Release-Notes
 -->
 
+<!--RELEASE_NOTE--><!--END_RELEASE_NOTE-->
