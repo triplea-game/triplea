@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 
 /**
  * Builds http feign clients, each feign interface class should have a static {@code newClient}
@@ -58,11 +59,27 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
         .retryer(new Retryer.Default(100, SECONDS.toMillis(1), maxAttempts))
         .logger(
             new Logger() {
+              @Override
+              protected Response logAndRebufferResponse(
+                  final String configKey,
+                  final Level logLevel,
+                  final Response response,
+                  final long elapsedTime)
+                  throws IOException {
+                // Do not log 'sendKeepAlive' requests (very noisy)
+                return configKey.contains("sendKeepAlive")
+                    ? response
+                    : super.logAndRebufferResponse(configKey, logLevel, response, elapsedTime);
+              }
+
               @FormatMethod
               @Override
               protected void log(
                   final String configKey, final String format, final Object... args) {
-                log.info(configKey + ": " + String.format(format, args));
+                final String logMessage = String.format(format, args);
+                if (!logMessage.contains(LobbyWatcherClient.KEEP_ALIVE_PATH)) {
+                  log.info(configKey + ": " + String.format(format, args));
+                }
               }
             })
         .logLevel(Logger.Level.BASIC)
