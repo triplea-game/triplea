@@ -37,4 +37,3 @@ https://github.com/triplea-game/triplea/wiki/PR-Release-Notes
 -->
 
 <!--RELEASE_NOTE--><!--END_RELEASE_NOTE-->
-
