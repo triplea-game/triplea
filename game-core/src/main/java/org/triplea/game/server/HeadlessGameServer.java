@@ -134,11 +134,6 @@ public class HeadlessGameServer {
       }
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
       if (!availableGames.containsMapName(mapNameProperty)) {
-        log.warning(
-            "Game mapName not in available games listing: "
-                + mapNameProperty
-                + ", available maps = "
-                + availableGames.getGameNames());
         return;
       }
       gameSelectorModel.load(data, fileName);

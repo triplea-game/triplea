@@ -72,8 +72,13 @@ final class AvailableGames {
             });
     log.info(
         String.format(
-            "Done loading maps, loaded %s maps, loaded: %s",
-            gameRepository.availableGames.keySet().size(), gameRepository.availableGames.keySet()));
+            "Done loading maps, "
+                + "availableMapFolderOrZipNames count: %s, contents: %s;"
+                + "availableGames count: %s, contents: %s",
+            gameRepository.availableMapFolderOrZipNames.size(),
+            gameRepository.availableMapFolderOrZipNames,
+            gameRepository.availableGames.keySet().size(),
+            gameRepository.availableGames.keySet()));
     return gameRepository;
   }
 
@@ -175,7 +180,13 @@ final class AvailableGames {
   }
 
   boolean containsMapName(final String mapNameProperty) {
-    return availableMapFolderOrZipNames.contains(mapNameProperty)
-        || availableMapFolderOrZipNames.contains(mapNameProperty + "-master");
+    final boolean found =
+        availableMapFolderOrZipNames.contains(mapNameProperty)
+            || availableMapFolderOrZipNames.contains(mapNameProperty + "-master");
+    if (!found) {
+      log.warning(
+          mapNameProperty + " not in available games listing: " + availableMapFolderOrZipNames);
+    }
+    return found;
   }
 }
