@@ -129,12 +129,16 @@ public class HeadlessGameServer {
       }
       final GameData data = gameSelectorModel.getGameData(input);
       if (data == null) {
-        log.info("Loading GameData failed for: " + fileName);
+        log.severe("Loading GameData failed for: " + fileName);
         return;
       }
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
       if (!availableGames.containsMapName(mapNameProperty)) {
-        log.info("Game mapName not in available games listing: " + mapNameProperty);
+        log.warning(
+            "Game mapName not in available games listing: "
+                + mapNameProperty
+                + ", available maps = "
+                + availableGames.getGameNames());
         return;
       }
       gameSelectorModel.load(data, fileName);
