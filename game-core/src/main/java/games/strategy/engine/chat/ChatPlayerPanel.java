@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.imageio.ImageIO;
@@ -206,7 +207,11 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     SwingAction.invokeNowOrLater(
         () -> {
           listModel.clear();
-          updatedPlayers.forEach(listModel::addElement);
+          updatedPlayers.stream()
+              .sorted(
+                  Comparator.comparing(
+                      chatParticipant -> chatParticipant.getUserName().getValue().toUpperCase()))
+              .forEach(listModel::addElement);
         });
   }
 
