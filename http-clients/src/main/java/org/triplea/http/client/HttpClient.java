@@ -78,7 +78,7 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
                   final String configKey, final String format, final Object... args) {
                 final String logMessage = String.format(format, args);
                 if (!logMessage.contains(LobbyWatcherClient.KEEP_ALIVE_PATH)) {
-                  log.info(configKey + ": " + String.format(format, args));
+                  log.info(configKey + ": " + logMessage);
                 }
               }
             })
