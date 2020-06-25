@@ -125,7 +125,6 @@ public class HeadlessGameServer {
     if (setupPanelModel.getPanel() != null && game == null) {
       final GameData data = getGameData(input);
       if (data == null) {
-        log.severe("Loading GameData failed for: " + fileName);
         return;
       }
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
