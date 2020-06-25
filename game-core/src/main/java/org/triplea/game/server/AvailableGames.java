@@ -43,9 +43,9 @@ final class AvailableGames {
             map -> {
               log.info("Loading map: " + map);
               if (map.isDirectory()) {
-                populateFromDirectory(map, availableGames);
+                availableGames.putAll(getGamesFromDirectory(map));
               } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-                populateFromZip(map, availableGames);
+                availableGames.putAll(getGamesFromZip(map));
               }
             });
     log.info(
@@ -54,17 +54,20 @@ final class AvailableGames {
             availableGames.keySet().size(), availableGames.keySet()));
   }
 
-  private static void populateFromDirectory(
-      final File mapDir, final Map<String, URI> availableGames) {
+  private static Map<String, URI> getGamesFromDirectory(final File mapDir) {
+    final Map<String, URI> availableGames = new HashMap<>();
     final File games = new File(mapDir, "games");
     for (final File game : FileUtils.listFiles(games)) {
       if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-        addToAvailableGames(game.toURI(), availableGames);
+        availableGames.putAll(getAvailableGames(game.toURI()));
       }
     }
+    return availableGames;
   }
 
-  private static void populateFromZip(final File map, final Map<String, URI> availableGames) {
+  private static Map<String, URI> getGamesFromZip(final File map) {
+    final Map<String, URI> availableGames = new HashMap<>();
+
     try (InputStream fis = new FileInputStream(map);
         ZipInputStream zis = new ZipInputStream(fis);
         URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -73,8 +76,8 @@ final class AvailableGames {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
           final URL url = loader.getResource(entry.getName());
           if (url != null) {
-            final boolean added =
-                addToAvailableGames(URI.create(url.toString().replace(" ", "%20")), availableGames);
+            availableGames.putAll(
+                getAvailableGames(URI.create(url.toString().replace(" ", "%20"))));
           }
         }
         // we have to close the loader to allow files to be deleted on windows
@@ -82,26 +85,25 @@ final class AvailableGames {
         entry = zis.getNextEntry();
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Map: " + map, e);
+      log.log(Level.SEVERE, "Error reading zip file in: " + map.getAbsolutePath(), e);
     }
+    return availableGames;
   }
 
-  private static boolean addToAvailableGames(
-      @Nonnull final URI uri, @Nonnull final Map<String, URI> availableGames) {
+  private static Map<String, URI> getAvailableGames(@Nonnull final URI uri) {
+    final Map<String, URI> availableGames = new HashMap<>();
+
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
         final GameData data = GameParser.parseShallow(uri.toString(), input);
         final String name = data.getGameName();
-        if (!availableGames.containsKey(name)) {
-          availableGames.put(name, uri);
-          return true;
-        }
+        availableGames.put(name, uri);
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Exception while parsing: " + uri.toString(), e);
       }
     }
-    return false;
+    return availableGames;
   }
 
   boolean hasGame(final String gameName) {
