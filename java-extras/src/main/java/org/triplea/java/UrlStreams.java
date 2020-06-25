@@ -8,8 +8,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
+import lombok.extern.java.Log;
 
 /** Utility class for opening input streams from URL and URI objects. */
+@Log
 public final class UrlStreams {
   /** Used to obtain a connection from a given URL. */
   private final Function<URL, URLConnection> urlConnectionFactory;
@@ -69,6 +72,7 @@ public final class UrlStreams {
       connection.setUseCaches(false);
       return Optional.of(connection.getInputStream());
     } catch (final IOException e) {
+      log.log(Level.SEVERE, "Unable to open: " + url, e);
       return Optional.empty();
     }
   }
