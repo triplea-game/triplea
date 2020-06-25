@@ -15,6 +15,7 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.ServerModel;
@@ -22,6 +23,7 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Set;
@@ -121,7 +123,7 @@ public class HeadlessGameServer {
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
-      final GameData data = gameSelectorModel.getGameData(input);
+      final GameData data = getGameData(input);
       if (data == null) {
         log.severe("Loading GameData failed for: " + fileName);
         return;
@@ -132,6 +134,15 @@ public class HeadlessGameServer {
       }
       gameSelectorModel.load(data, fileName);
       log.info("Changed to user savegame: " + fileName);
+    }
+  }
+
+  public GameData getGameData(final InputStream input) {
+    try {
+      return GameDataManager.loadGame(input);
+    } catch (final IOException e) {
+      log.log(Level.SEVERE, "Failed to load game", e);
+      return null;
     }
   }
 
