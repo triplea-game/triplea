@@ -12,7 +12,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -36,19 +35,15 @@ import org.triplea.java.UrlStreams;
 final class AvailableGames {
   private static final String ZIP_EXTENSION = ".zip";
   private final Map<String, URI> availableGames;
-  private final Set<String> availableMapFolderOrZipNames;
 
   AvailableGames() {
     final GameRepository gameRepository = newGameRepository();
     availableGames = Collections.unmodifiableMap(new TreeMap<>(gameRepository.availableGames));
-    availableMapFolderOrZipNames =
-        Collections.unmodifiableSet(new HashSet<>(gameRepository.availableMapFolderOrZipNames));
   }
 
   @ThreadSafe
   private static final class GameRepository {
     final Map<String, URI> availableGames = Collections.synchronizedMap(new HashMap<>());
-    final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
   }
 
   private static GameRepository newGameRepository() {
@@ -59,48 +54,29 @@ final class AvailableGames {
             map -> {
               log.info("Loading map: " + map);
               if (map.isDirectory()) {
-                populateFromDirectory(
-                    map,
-                    gameRepository.availableGames,
-                    gameRepository.availableMapFolderOrZipNames);
+                populateFromDirectory(map, gameRepository.availableGames);
               } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-                populateFromZip(
-                    map,
-                    gameRepository.availableGames,
-                    gameRepository.availableMapFolderOrZipNames);
+                populateFromZip(map, gameRepository.availableGames);
               }
             });
     log.info(
         String.format(
-            "Done loading maps, "
-                + "availableMapFolderOrZipNames count: %s, contents: %s;"
-                + "availableGames count: %s, contents: %s",
-            gameRepository.availableMapFolderOrZipNames.size(),
-            gameRepository.availableMapFolderOrZipNames,
-            gameRepository.availableGames.keySet().size(),
-            gameRepository.availableGames.keySet()));
+            "Done loading maps, " + "availableGames count: %s, contents: %s",
+            gameRepository.availableGames.keySet().size(), gameRepository.availableGames.keySet()));
     return gameRepository;
   }
 
   private static void populateFromDirectory(
-      final File mapDir,
-      final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames) {
+      final File mapDir, final Map<String, URI> availableGames) {
     final File games = new File(mapDir, "games");
     for (final File game : FileUtils.listFiles(games)) {
       if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-        final boolean added = addToAvailableGames(game.toURI(), availableGames);
-        if (added) {
-          availableMapFolderOrZipNames.add(mapDir.getName());
-        }
+        addToAvailableGames(game.toURI(), availableGames);
       }
     }
   }
 
-  private static void populateFromZip(
-      final File map,
-      final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames) {
+  private static void populateFromZip(final File map, final Map<String, URI> availableGames) {
     try (InputStream fis = new FileInputStream(map);
         ZipInputStream zis = new ZipInputStream(fis);
         URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -111,10 +87,6 @@ final class AvailableGames {
           if (url != null) {
             final boolean added =
                 addToAvailableGames(URI.create(url.toString().replace(" ", "%20")), availableGames);
-            if (added && map.getName().length() > 4) {
-              availableMapFolderOrZipNames.add(
-                  map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
-            }
           }
         }
         // we have to close the loader to allow files to be deleted on windows
