@@ -124,16 +124,14 @@ public class HeadlessGameServer {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
       getGameData(input)
-          .ifPresent(
-              data -> {
-                final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-                if (!availableGames.containsMapName(mapNameProperty)) {
-                  return;
-                }
-                gameSelectorModel.load(data, fileName);
-                log.info("Changed to user savegame: " + fileName);
-              });
+          .filter(this::checkGameIsAvailableOnServer)
+          .ifPresent(data -> gameSelectorModel.load(data, fileName));
     }
+  }
+
+  private boolean checkGameIsAvailableOnServer(final GameData gameData) {
+    final String mapNameProperty = gameData.getProperties().get(Constants.MAP_NAME, "");
+    return availableGames.containsMapName(mapNameProperty);
   }
 
   public Optional<GameData> getGameData(final InputStream input) {

@@ -14,12 +14,10 @@ import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,6 +54,9 @@ public class GameSelectorModel extends Observable implements GameSelector {
   public void load(final @Nullable GameData data, final @Nullable String fileName) {
     setGameData(data);
     this.fileName = fileName;
+    if (data != null) {
+      log.info("Loaded game: " + data.getGameName() + ", in file: " + fileName);
+    }
   }
 
   public void load(final GameChooserEntry entry) {
