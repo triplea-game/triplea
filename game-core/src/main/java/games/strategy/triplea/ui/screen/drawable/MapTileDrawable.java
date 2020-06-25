@@ -1,9 +1,10 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import static games.strategy.triplea.ui.screen.TileManager.TILE_SIZE;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.Tile;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -49,7 +50,7 @@ public abstract class MapTileDrawable extends AbstractDrawable {
     graphics.setRenderingHint(
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-    graphics.drawImage(img, x * Tile.TILE_SIZE - bounds.x, y * Tile.TILE_SIZE - bounds.y, null);
+    graphics.drawImage(img, x * TILE_SIZE - bounds.x, y * TILE_SIZE - bounds.y, null);
     if (oldAlphaValue == null) {
       graphics.setRenderingHint(
           RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);

@@ -630,10 +630,7 @@ public class MapPanel extends ImageScrollerLargeView {
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
       for (final Tile tile : tileList) {
         tile.drawImage(gameData, uiContext.getMapData());
-        g2d.drawImage(
-            tile.getImage(),
-            AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
-            this);
+        g2d.drawImage(tile.getImage(), tile.getBounds().x, tile.getBounds().y, this);
       }
     } finally {
       gameData.releaseReadLock();
@@ -808,10 +805,7 @@ public class MapPanel extends ImageScrollerLargeView {
       } else {
         images.add(tile);
       }
-      g.drawImage(
-          tile.getImage(),
-          AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
-          this);
+      g.drawImage(tile.getImage(), tile.getBounds().x, tile.getBounds().y, this);
     }
     g.translate(bounds.getX(), bounds.getY());
   }
