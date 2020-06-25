@@ -4,7 +4,6 @@ import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
