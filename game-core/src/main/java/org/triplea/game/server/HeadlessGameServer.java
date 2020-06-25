@@ -121,9 +121,6 @@ public class HeadlessGameServer {
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
-      if (input == null || fileName == null) {
-        return;
-      }
       final GameData data = gameSelectorModel.getGameData(input);
       if (data == null) {
         log.severe("Loading GameData failed for: " + fileName);
