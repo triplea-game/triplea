@@ -207,7 +207,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         public Set<String> getAvailableGames() {
           final HeadlessGameServer headless = HeadlessGameServer.getInstance();
           if (headless == null) {
-            return null;
+            return Set.of();
           }
           return headless.getAvailableGames();
         }

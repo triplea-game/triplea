@@ -144,8 +144,12 @@ final class AvailableGames {
     return false;
   }
 
+  boolean hasGame(final String gameName) {
+    return availableGames.containsKey(gameName);
+  }
+
   Set<String> getGameNames() {
-    return new HashSet<>(availableGames.keySet());
+    return availableGames.keySet();
   }
 
   /**

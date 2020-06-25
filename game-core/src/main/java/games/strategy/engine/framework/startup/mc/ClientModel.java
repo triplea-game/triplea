@@ -284,12 +284,8 @@ public class ClientModel implements IMessengerErrorListener {
     return (IServerStartupRemote) messengers.getRemote(ServerModel.SERVER_REMOTE_NAME);
   }
 
-  private List<String> getAvailableServerGames() {
-    final Set<String> games = getServerStartup().getAvailableGames();
-    if (games == null) {
-      return new ArrayList<>();
-    }
-    return new ArrayList<>(games);
+  private Collection<String> getAvailableServerGames() {
+    return getServerStartup().getAvailableGames();
   }
 
   /** Resets stats and nulls out references, keeps chat alive. */

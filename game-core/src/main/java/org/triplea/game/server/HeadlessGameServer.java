@@ -88,11 +88,8 @@ public class HeadlessGameServer {
   }
 
   public synchronized void setGameMapTo(final String gameName) {
-    // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (!availableGames.getGameNames().contains(gameName)) {
-        return;
-      }
+    // don't change mid-game and only if we have the game
+    if (setupPanelModel.getPanel() != null && game == null && availableGames.hasGame(gameName)) {
       gameSelectorModel.load(
           availableGames.getGameData(gameName), availableGames.getGameFilePath(gameName));
       log.info("Changed to game map: " + gameName);
