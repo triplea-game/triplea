@@ -19,6 +19,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -116,19 +117,16 @@ public class UnitsDrawer extends AbstractDrawable {
         uiContext.getUnitImageFactory().getImage(type, owner, damagedImage, disabledImage);
 
     if (img.isEmpty() && !uiContext.isShutDown()) {
-      final StringBuilder prefix = new StringBuilder();
+      final List<String> imageQualifiers = new ArrayList<>();
       if (damagedImage) {
-        prefix.append("damaged ");
+        imageQualifiers.add("damaged ");
       }
       if (disabledImage) {
-        if (damagedImage) {
-          prefix.append("and ");
-        }
-        prefix.append("disabled ");
+        imageQualifiers.add("disabled ");
       }
       log.severe(
           "MISSING UNIT IMAGE (won't be displayed): "
-              + prefix.toString()
+              + String.join("and ", imageQualifiers)
               + type.getName()
               + " owned by "
               + owner.getName()
