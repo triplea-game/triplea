@@ -328,7 +328,7 @@ public class AaCasualtySelector {
         (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getAaUnitPowerAndRollsForNormalBattles(
-            defendingAa, allEnemyUnits, allFriendlyUnits, defending, bridge.getData());
+            defendingAa, allFriendlyUnits, allEnemyUnits, defending, bridge.getData());
     if (DiceRoll.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
