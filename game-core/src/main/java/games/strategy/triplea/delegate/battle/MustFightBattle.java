@@ -639,7 +639,7 @@ public class MustFightBattle extends DependentBattle
       if (landedTerritory == null) {
         throw new IllegalStateException("not unloaded?:" + units);
       }
-      remove(lost, bridge, landedTerritory, false);
+      remove(new ArrayList<>(lost), bridge, landedTerritory, false);
     }
   }
 
