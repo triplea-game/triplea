@@ -15,13 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.ThreadSafe;
 import lombok.extern.java.Log;
 import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
@@ -37,33 +35,23 @@ final class AvailableGames {
   private final Map<String, URI> availableGames;
 
   AvailableGames() {
-    final GameRepository gameRepository = newGameRepository();
-    availableGames = Collections.unmodifiableMap(new TreeMap<>(gameRepository.availableGames));
-  }
+    availableGames = Collections.synchronizedMap(new HashMap<>());
 
-  @ThreadSafe
-  private static final class GameRepository {
-    final Map<String, URI> availableGames = Collections.synchronizedMap(new HashMap<>());
-  }
-
-  private static GameRepository newGameRepository() {
-    final GameRepository gameRepository = new GameRepository();
     FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
         .parallelStream()
         .forEach(
             map -> {
               log.info("Loading map: " + map);
               if (map.isDirectory()) {
-                populateFromDirectory(map, gameRepository.availableGames);
+                populateFromDirectory(map, availableGames);
               } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-                populateFromZip(map, gameRepository.availableGames);
+                populateFromZip(map, availableGames);
               }
             });
     log.info(
         String.format(
             "Done loading maps, " + "availableGames count: %s, contents: %s",
-            gameRepository.availableGames.keySet().size(), gameRepository.availableGames.keySet()));
-    return gameRepository;
+            availableGames.keySet().size(), availableGames.keySet()));
   }
 
   private static void populateFromDirectory(
