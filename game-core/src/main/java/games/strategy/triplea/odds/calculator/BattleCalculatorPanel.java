@@ -1193,18 +1193,7 @@ class BattleCalculatorPanel extends JPanel {
     new Thread(
             () -> {
               try {
-                // find a territory to fight in
-                Territory location = null;
-                if (this.location == null || this.location.isWater() == isLand()) {
-                  for (final Territory t : data.getMap()) {
-                    if (t.isWater() == !isLand()) {
-                      location = t;
-                      break;
-                    }
-                  }
-                } else {
-                  location = this.location;
-                }
+                final Territory location = findPotentialBattleSite();
                 if (location == null) {
                   throw new IllegalStateException("No territory found that is land:" + isLand());
                 }
@@ -1310,6 +1299,21 @@ class BattleCalculatorPanel extends JPanel {
     }
   }
 
+  private Territory findPotentialBattleSite() {
+    Territory location = null;
+    if (this.location == null || this.location.isWater() == isLand()) {
+      for (final Territory t : data.getMap()) {
+        if (t.isWater() == !isLand()) {
+          location = t;
+          break;
+        }
+      }
+    } else {
+      location = this.location;
+    }
+    return location;
+  }
+
   private static String formatPercentage(final double percentage) {
     return new DecimalFormat("#%").format(percentage);
   }
@@ -1413,6 +1417,7 @@ class BattleCalculatorPanel extends JPanel {
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data).reversed());
+      final Territory location = findPotentialBattleSite();
       final int attackPower =
           DiceRoll.getTotalPower(
               DiceRoll.getUnitPowerAndRollsForNormalBattles(
