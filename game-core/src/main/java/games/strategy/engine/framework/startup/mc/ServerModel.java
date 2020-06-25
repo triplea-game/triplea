@@ -209,7 +209,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           if (headless == null) {
             return Set.of();
           }
-          return headless.getAvailableGames();
+          // Copy available games collection into a serializable collection
+          // so it can be sent over network.
+          return new HashSet<>(headless.getAvailableGames());
         }
 
         @Override
