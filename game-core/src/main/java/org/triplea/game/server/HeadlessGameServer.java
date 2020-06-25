@@ -20,7 +20,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.IOException;
@@ -130,8 +129,12 @@ public class HeadlessGameServer {
   }
 
   private boolean checkGameIsAvailableOnServer(final GameData gameData) {
-    final String mapNameProperty = gameData.getProperties().get(Constants.MAP_NAME, "");
-    return availableGames.containsMapName(mapNameProperty);
+    if (availableGames.hasGame(gameData.getGameName())) {
+      return true;
+    } else {
+      log.warning("Game is not installed on this server: " + gameData.getGameName());
+      return false;
+    }
   }
 
   public Optional<GameData> getGameData(final InputStream input) {

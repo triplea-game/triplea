@@ -182,15 +182,4 @@ final class AvailableGames {
     }
     return Optional.empty();
   }
-
-  boolean containsMapName(final String mapNameProperty) {
-    final boolean found =
-        availableMapFolderOrZipNames.contains(mapNameProperty)
-            || availableMapFolderOrZipNames.contains(mapNameProperty + "-master");
-    if (!found) {
-      log.warning(
-          mapNameProperty + " not in available games listing: " + availableMapFolderOrZipNames);
-    }
-    return found;
-  }
 }
