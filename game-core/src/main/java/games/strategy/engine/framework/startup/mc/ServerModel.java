@@ -224,7 +224,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         @Override
         public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
           final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
-          if (headlessGameServer != null) {
+          if (headlessGameServer != null && autoSaveType.getFile().exists()) {
             headlessGameServer.loadGameSave(autoSaveType.getFile());
           }
         }

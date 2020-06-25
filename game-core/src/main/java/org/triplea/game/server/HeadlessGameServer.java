@@ -9,6 +9,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
@@ -97,11 +98,10 @@ public class HeadlessGameServer {
   }
 
   public synchronized void loadGameSave(final File file) {
+    Preconditions.checkArgument(
+        file.exists(), "File must exist to load it: " + file.getAbsolutePath());
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
-      if (file == null || !file.exists()) {
-        return;
-      }
       try {
         gameSelectorModel.load(file);
         log.info("Changed to save: " + file.getName());
