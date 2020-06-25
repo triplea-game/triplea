@@ -123,25 +123,25 @@ public class HeadlessGameServer {
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
-      final GameData data = getGameData(input);
-      if (data == null) {
-        return;
-      }
-      final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-      if (!availableGames.containsMapName(mapNameProperty)) {
-        return;
-      }
-      gameSelectorModel.load(data, fileName);
-      log.info("Changed to user savegame: " + fileName);
+      getGameData(input)
+          .ifPresent(
+              data -> {
+                final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
+                if (!availableGames.containsMapName(mapNameProperty)) {
+                  return;
+                }
+                gameSelectorModel.load(data, fileName);
+                log.info("Changed to user savegame: " + fileName);
+              });
     }
   }
 
-  public GameData getGameData(final InputStream input) {
+  public Optional<GameData> getGameData(final InputStream input) {
     try {
-      return GameDataManager.loadGame(input);
+      return Optional.of(GameDataManager.loadGame(input));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to load game", e);
-      return null;
+      return Optional.empty();
     }
   }
 
