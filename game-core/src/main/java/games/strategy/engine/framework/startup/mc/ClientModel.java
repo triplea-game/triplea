@@ -41,12 +41,10 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -284,12 +282,8 @@ public class ClientModel implements IMessengerErrorListener {
     return (IServerStartupRemote) messengers.getRemote(ServerModel.SERVER_REMOTE_NAME);
   }
 
-  private List<String> getAvailableServerGames() {
-    final Set<String> games = getServerStartup().getAvailableGames();
-    if (games == null) {
-      return new ArrayList<>();
-    }
-    return new ArrayList<>(games);
+  private Collection<String> getAvailableServerGames() {
+    return getServerStartup().getAvailableGames();
   }
 
   /** Resets stats and nulls out references, keeps chat alive. */

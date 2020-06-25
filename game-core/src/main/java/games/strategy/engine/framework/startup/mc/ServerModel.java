@@ -207,9 +207,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         public Set<String> getAvailableGames() {
           final HeadlessGameServer headless = HeadlessGameServer.getInstance();
           if (headless == null) {
-            return null;
+            return Set.of();
           }
-          return headless.getAvailableGames();
+          // Copy available games collection into a serializable collection
+          // so it can be sent over network.
+          return new HashSet<>(headless.getAvailableGames());
         }
 
         @Override
@@ -224,7 +226,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         @Override
         public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
           final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
-          if (headlessGameServer != null) {
+          if (headlessGameServer != null && autoSaveType.getFile().exists()) {
             headlessGameServer.loadGameSave(autoSaveType.getFile());
           }
         }

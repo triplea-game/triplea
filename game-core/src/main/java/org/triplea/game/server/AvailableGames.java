@@ -12,17 +12,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.ThreadSafe;
 import lombok.extern.java.Log;
 import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
@@ -36,71 +33,41 @@ import org.triplea.java.UrlStreams;
 final class AvailableGames {
   private static final String ZIP_EXTENSION = ".zip";
   private final Map<String, URI> availableGames;
-  private final Set<String> availableMapFolderOrZipNames;
 
   AvailableGames() {
-    final GameRepository gameRepository = newGameRepository();
-    availableGames = Collections.unmodifiableMap(new TreeMap<>(gameRepository.availableGames));
-    availableMapFolderOrZipNames =
-        Collections.unmodifiableSet(new HashSet<>(gameRepository.availableMapFolderOrZipNames));
-  }
+    availableGames = Collections.synchronizedMap(new HashMap<>());
 
-  @ThreadSafe
-  private static final class GameRepository {
-    final Map<String, URI> availableGames = Collections.synchronizedMap(new HashMap<>());
-    final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
-  }
-
-  private static GameRepository newGameRepository() {
-    final GameRepository gameRepository = new GameRepository();
     FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
         .parallelStream()
         .forEach(
             map -> {
               log.info("Loading map: " + map);
               if (map.isDirectory()) {
-                populateFromDirectory(
-                    map,
-                    gameRepository.availableGames,
-                    gameRepository.availableMapFolderOrZipNames);
+                availableGames.putAll(getGamesFromDirectory(map));
               } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-                populateFromZip(
-                    map,
-                    gameRepository.availableGames,
-                    gameRepository.availableMapFolderOrZipNames);
+                availableGames.putAll(getGamesFromZip(map));
               }
             });
     log.info(
         String.format(
-            "Done loading maps, "
-                + "availableMapFolderOrZipNames count: %s, contents: %s;"
-                + "availableGames count: %s, contents: %s",
-            gameRepository.availableMapFolderOrZipNames.size(),
-            gameRepository.availableMapFolderOrZipNames,
-            gameRepository.availableGames.keySet().size(),
-            gameRepository.availableGames.keySet()));
-    return gameRepository;
+            "Done loading maps, " + "availableGames count: %s, contents: %s",
+            availableGames.keySet().size(), availableGames.keySet()));
   }
 
-  private static void populateFromDirectory(
-      final File mapDir,
-      final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames) {
+  private static Map<String, URI> getGamesFromDirectory(final File mapDir) {
+    final Map<String, URI> availableGames = new HashMap<>();
     final File games = new File(mapDir, "games");
     for (final File game : FileUtils.listFiles(games)) {
       if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-        final boolean added = addToAvailableGames(game.toURI(), availableGames);
-        if (added) {
-          availableMapFolderOrZipNames.add(mapDir.getName());
-        }
+        availableGames.putAll(getAvailableGames(game.toURI()));
       }
     }
+    return availableGames;
   }
 
-  private static void populateFromZip(
-      final File map,
-      final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames) {
+  private static Map<String, URI> getGamesFromZip(final File map) {
+    final Map<String, URI> availableGames = new HashMap<>();
+
     try (InputStream fis = new FileInputStream(map);
         ZipInputStream zis = new ZipInputStream(fis);
         URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -109,12 +76,8 @@ final class AvailableGames {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
           final URL url = loader.getResource(entry.getName());
           if (url != null) {
-            final boolean added =
-                addToAvailableGames(URI.create(url.toString().replace(" ", "%20")), availableGames);
-            if (added && map.getName().length() > 4) {
-              availableMapFolderOrZipNames.add(
-                  map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
-            }
+            availableGames.putAll(
+                getAvailableGames(URI.create(url.toString().replace(" ", "%20"))));
           }
         }
         // we have to close the loader to allow files to be deleted on windows
@@ -122,30 +85,33 @@ final class AvailableGames {
         entry = zis.getNextEntry();
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Map: " + map, e);
+      log.log(Level.SEVERE, "Error reading zip file in: " + map.getAbsolutePath(), e);
     }
+    return availableGames;
   }
 
-  private static boolean addToAvailableGames(
-      @Nonnull final URI uri, @Nonnull final Map<String, URI> availableGames) {
+  private static Map<String, URI> getAvailableGames(@Nonnull final URI uri) {
+    final Map<String, URI> availableGames = new HashMap<>();
+
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
         final GameData data = GameParser.parseShallow(uri.toString(), input);
         final String name = data.getGameName();
-        if (!availableGames.containsKey(name)) {
-          availableGames.put(name, uri);
-          return true;
-        }
+        availableGames.put(name, uri);
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Exception while parsing: " + uri.toString(), e);
       }
     }
-    return false;
+    return availableGames;
+  }
+
+  boolean hasGame(final String gameName) {
+    return availableGames.containsKey(gameName);
   }
 
   Set<String> getGameNames() {
-    return new HashSet<>(availableGames.keySet());
+    return availableGames.keySet();
   }
 
   /**
@@ -177,16 +143,5 @@ final class AvailableGames {
       }
     }
     return Optional.empty();
-  }
-
-  boolean containsMapName(final String mapNameProperty) {
-    final boolean found =
-        availableMapFolderOrZipNames.contains(mapNameProperty)
-            || availableMapFolderOrZipNames.contains(mapNameProperty + "-master");
-    if (!found) {
-      log.warning(
-          mapNameProperty + " not in available games listing: " + availableMapFolderOrZipNames);
-    }
-    return found;
   }
 }

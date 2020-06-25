@@ -9,18 +9,20 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Set;
@@ -88,11 +90,8 @@ public class HeadlessGameServer {
   }
 
   public synchronized void setGameMapTo(final String gameName) {
-    // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (!availableGames.getGameNames().contains(gameName)) {
-        return;
-      }
+    // don't change mid-game and only if we have the game
+    if (setupPanelModel.getPanel() != null && game == null && availableGames.hasGame(gameName)) {
       gameSelectorModel.load(
           availableGames.getGameData(gameName), availableGames.getGameFilePath(gameName));
       log.info("Changed to game map: " + gameName);
@@ -100,11 +99,10 @@ public class HeadlessGameServer {
   }
 
   public synchronized void loadGameSave(final File file) {
+    Preconditions.checkArgument(
+        file.exists(), "File must exist to load it: " + file.getAbsolutePath());
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
-      if (file == null || !file.exists()) {
-        return;
-      }
       try {
         gameSelectorModel.load(file);
         log.info("Changed to save: " + file.getName());
@@ -124,20 +122,27 @@ public class HeadlessGameServer {
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
-      if (input == null || fileName == null) {
-        return;
-      }
-      final GameData data = gameSelectorModel.getGameData(input);
-      if (data == null) {
-        log.severe("Loading GameData failed for: " + fileName);
-        return;
-      }
-      final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-      if (!availableGames.containsMapName(mapNameProperty)) {
-        return;
-      }
-      gameSelectorModel.load(data, fileName);
-      log.info("Changed to user savegame: " + fileName);
+      getGameData(input)
+          .filter(this::checkGameIsAvailableOnServer)
+          .ifPresent(data -> gameSelectorModel.load(data, fileName));
+    }
+  }
+
+  private boolean checkGameIsAvailableOnServer(final GameData gameData) {
+    if (availableGames.hasGame(gameData.getGameName())) {
+      return true;
+    } else {
+      log.warning("Game is not installed on this server: " + gameData.getGameName());
+      return false;
+    }
+  }
+
+  public Optional<GameData> getGameData(final InputStream input) {
+    try {
+      return Optional.of(GameDataManager.loadGame(input));
+    } catch (final IOException e) {
+      log.log(Level.SEVERE, "Failed to load game", e);
+      return Optional.empty();
     }
   }
 

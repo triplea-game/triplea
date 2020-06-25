@@ -3,8 +3,9 @@ package games.strategy.engine.framework.network.ui;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -21,12 +22,11 @@ public class SetMapClientAction extends AbstractAction {
   public SetMapClientAction(
       final Component parent,
       final IServerStartupRemote serverStartupRemote,
-      final List<String> availableGames) {
+      final Collection<String> games) {
     super("Change Game To");
     this.parent = JOptionPane.getFrameForComponent(parent);
     this.serverStartupRemote = serverStartupRemote;
-    this.availableGames = availableGames;
-    Collections.sort(this.availableGames);
+    this.availableGames = games.stream().sorted().collect(Collectors.toList());
   }
 
   @Override
