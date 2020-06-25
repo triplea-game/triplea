@@ -1,7 +1,7 @@
 package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
-import static games.strategy.triplea.ui.screen.Tile.TILE_SIZE;
+import static games.strategy.triplea.ui.screen.TileManager.TILE_SIZE;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;

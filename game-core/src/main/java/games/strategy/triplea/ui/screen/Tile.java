@@ -20,13 +20,11 @@ import lombok.Getter;
 
 /** Responsible for rendering a single map tile. */
 public class Tile {
-  public static final int TILE_SIZE = 256;
-
   private volatile boolean isDirty = true;
   private AtomicBoolean isDrawing = new AtomicBoolean(false);
 
   /** Current de facto immutable state of this tile. */
-  @Getter private Image image = Util.newImage(TILE_SIZE, TILE_SIZE, true);
+  @Getter private Image image;
 
   private final Rectangle bounds;
   private final Object mutex = new Object();
@@ -34,6 +32,7 @@ public class Tile {
 
   Tile(final Rectangle bounds) {
     this.bounds = bounds;
+    this.image = Util.newImage(bounds.width, bounds.height, true);
   }
 
   public boolean needsRedraw() {
@@ -43,7 +42,7 @@ public class Tile {
   /** Returns the image representing this tile, re-rendering it first if the tile is dirty. */
   public void drawImage(final GameData data, final MapData mapData) {
     if (isDirty && !isDrawing.getAndSet(true)) {
-      final Image backImage = Util.newImage(TILE_SIZE, TILE_SIZE, true);
+      final Image backImage = Util.newImage(bounds.width, bounds.height, true);
       final Graphics2D g = (Graphics2D) backImage.getGraphics();
       g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       g.setRenderingHint(
@@ -63,7 +62,7 @@ public class Tile {
     final AffineTransform original = g.getTransform();
     // clear
     g.setColor(Color.BLACK);
-    g.fill(new Rectangle(0, 0, TILE_SIZE, TILE_SIZE));
+    g.fill(new Rectangle(0, 0, bounds.width, bounds.height));
     synchronized (mutex) {
       final Queue<IDrawable> queue = new PriorityQueue<>(contents);
       while (!queue.isEmpty()) {
