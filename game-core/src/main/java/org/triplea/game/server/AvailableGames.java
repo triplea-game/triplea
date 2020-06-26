@@ -114,9 +114,7 @@ final class AvailableGames {
     return availableGames.containsKey(gameName);
   }
 
-  /**
-   * Returns a read-only view of available games.
-   */
+  /** Returns a read-only view of available games. */
   Set<String> getGameNames() {
     return availableGames.keySet();
   }
