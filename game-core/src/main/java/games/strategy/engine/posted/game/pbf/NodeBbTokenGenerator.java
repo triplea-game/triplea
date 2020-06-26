@@ -3,6 +3,7 @@ package games.strategy.engine.posted.game.pbf;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.system.HttpProxy;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,8 @@ public class NodeBbTokenGenerator {
 
   private Map<?, ?> queryUserInfo(final CloseableHttpClient client, final String username)
       throws IOException {
-    final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + username);
+    final String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
+    final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + encodedUsername);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       return (Map<?, ?>) load.loadFromString(EntityUtils.toString(response.getEntity()));
