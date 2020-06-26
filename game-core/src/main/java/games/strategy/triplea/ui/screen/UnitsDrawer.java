@@ -112,21 +112,21 @@ public class UnitsDrawer extends AbstractDrawable {
     }
     final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
     final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;
-    final boolean disabledImage = disabled;
     final Optional<Image> img =
-        uiContext.getUnitImageFactory().getImage(type, owner, damagedImage, disabledImage);
+        uiContext.getUnitImageFactory().getImage(type, owner, damagedImage, disabled);
 
     if (img.isEmpty() && !uiContext.isShutDown()) {
-      final List<String> imageQualifiers = new ArrayList<>();
-      if (damagedImage) {
-        imageQualifiers.add("damaged ");
-      }
-      if (disabledImage) {
-        imageQualifiers.add("disabled ");
+      final String imageQualifier;
+      if (disabled) {
+        imageQualifier = "disabled ";
+      } else if (damagedImage) {
+        imageQualifier = "damaged ";
+      } else {
+        imageQualifier = "";
       }
       log.severe(
           "MISSING UNIT IMAGE (won't be displayed): "
-              + String.join("and ", imageQualifiers)
+              + imageQualifier
               + type.getName()
               + " owned by "
               + owner.getName()
