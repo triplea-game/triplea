@@ -10,6 +10,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.github.npathai.hamcrestopt.OptionalMatchers;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
@@ -281,6 +282,23 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumPassword(new char[] {'a'});
     assertThat(viewModel.isForumPasswordValid(), is(true));
+  }
+
+  @Test
+  @DisplayName("If password form UI is the dummy password, then it should not be set")
+  void doNotSetADummyPassword() {
+    ClientSetting.aaForumUsername.setValueAndFlush(new char[] {'a'});
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumSelection(NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
+    viewModel.setForumPassword(new char[] {'*', '*'});
+
+    assertThat(
+        "No password shoudl be set on the model, the dummy password is rejected",
+        viewModel.getForumPassword(),
+        is(emptyString()));
+    assertThat(
+        ClientSetting.aaForumUsername.getValue(),
+        OptionalMatchers.isPresentAndIs(new char[] {'a'}));
   }
 
   @Test
