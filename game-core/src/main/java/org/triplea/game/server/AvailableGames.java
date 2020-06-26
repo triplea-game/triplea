@@ -10,12 +10,13 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.annotation.Nonnull;
@@ -35,19 +36,22 @@ final class AvailableGames {
   private final Map<String, URI> availableGames;
 
   AvailableGames() {
-    availableGames = Collections.synchronizedMap(new HashMap<>());
-
-    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
-        .parallelStream()
-        .forEach(
-            map -> {
-              log.info("Loading map: " + map);
-              if (map.isDirectory()) {
-                availableGames.putAll(getGamesFromDirectory(map));
-              } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-                availableGames.putAll(getGamesFromZip(map));
-              }
-            });
+    availableGames =
+        FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
+            .parallelStream()
+            .<Map<String, URI>>map(
+                map -> {
+                  log.info("Loading map: " + map);
+                  if (map.isDirectory()) {
+                    return getGamesFromDirectory(map);
+                  } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
+                    return getGamesFromZip(map);
+                  }
+                  return Map.of();
+                })
+            .map(Map::entrySet)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     log.info(
         String.format(
             "Done loading maps, " + "availableGames count: %s, contents: %s",
@@ -110,6 +114,9 @@ final class AvailableGames {
     return availableGames.containsKey(gameName);
   }
 
+  /**
+   * Returns a read-only view of available games.
+   */
   Set<String> getGameNames() {
     return availableGames.keySet();
   }
