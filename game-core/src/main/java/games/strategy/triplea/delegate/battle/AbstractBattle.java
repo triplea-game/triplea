@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -102,9 +103,7 @@ abstract class AbstractBattle implements IBattle {
     if (dependentUnits.isEmpty()) {
       return units;
     }
-    final var unitsCopy = new ArrayList<>(units);
-    unitsCopy.addAll(dependentUnits);
-    return Collections.unmodifiableList(unitsCopy);
+    return ImmutableList.copyOf(Iterables.concat(units, dependentUnits));
   }
 
   void addDependentTransportingUnits(final Collection<Unit> units) {
