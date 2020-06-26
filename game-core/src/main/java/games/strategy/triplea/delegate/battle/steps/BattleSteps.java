@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps;
 
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE;
 
@@ -19,6 +21,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsStep;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.ArrayList;
@@ -109,6 +112,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
     final BattleStep navalBombardment = new NavalBombardment(this, battleActions);
     final BattleStep offensiveSubsSubmerge = new OffensiveSubsRetreat(this, battleActions);
+    final BattleStep defensiveSubsSubmerge = new DefensiveSubsRetreat(this, battleActions);
 
     final List<String> steps = new ArrayList<>();
     steps.addAll(offensiveAaStep.getNames());
@@ -131,12 +135,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     if (offensiveSubsSubmerge.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.addAll(offensiveSubsSubmerge.getNames());
     }
-    // Check if defending subs can submerge before battle
-    if (Properties.getSubRetreatBeforeBattle(gameData)) {
-      if (attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-          && defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
-        steps.add(defender.getName() + SUBS_SUBMERGE);
-      }
+    if (defensiveSubsSubmerge.getOrder() == SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE) {
+      steps.addAll(defensiveSubsSubmerge.getNames());
     }
     // See if there any unescorted transports
     if (isBattleSiteWater
@@ -241,23 +241,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
         || RetreatChecks.canAttackerRetreatPlanes(attackingUnits, gameData, isAmphibious)) {
       steps.add(attacker.getName() + ATTACKER_WITHDRAW);
     }
-    // retreat defending subs
-    if (defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
-      if (Properties.getSubmersibleSubs(gameData)) {
-        // TODO: BUG? Should the presence of destroyers be checked?
-        if (!Properties.getSubRetreatBeforeBattle(gameData)) {
-          steps.add(defender.getName() + SUBS_SUBMERGE);
-        }
-      } else {
-        if (RetreatChecks.canDefenderRetreatSubs(
-            attackingUnits,
-            attackingWaitingToDie,
-            defendingUnits,
-            gameData,
-            getEmptyOrFriendlySeaNeighbors)) {
-          steps.add(defender.getName() + SUBS_WITHDRAW);
-        }
-      }
+    if (defensiveSubsSubmerge.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
+      steps.addAll(defensiveSubsSubmerge.getNames());
     }
     return steps;
   }

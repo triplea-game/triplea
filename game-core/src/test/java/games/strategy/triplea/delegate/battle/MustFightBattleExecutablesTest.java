@@ -52,6 +52,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -383,7 +384,7 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(canEvadeUnit), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
+    final int index = getIndex(execs, DefensiveSubsRetreat.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
@@ -409,7 +410,7 @@ class MustFightBattleExecutablesTest {
         List.of(canEvadeUnit), List.of(destroyer), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
+    final int index = getIndex(execs, DefensiveSubsRetreat.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
@@ -439,38 +440,13 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(unit), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
+    final int index = getIndex(execs, DefensiveSubsRetreat.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     step.execute(null, delegateBridge);
 
     verify(battle, never()).queryRetreat(anyBoolean(), any(), any(), any());
-  }
-
-  @Test
-  @DisplayName("Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE")
-  void defenderSubsRetreatBeforeBattleIsAdded() {
-    final MustFightBattle battle = newBattle(WATER);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThatStepExists(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
-  }
-
-  @Test
-  @DisplayName(
-      "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
-  void defendingSubsRetreatIfCanNotRetreatBeforeBattle() {
-    final MustFightBattle battle = newBattle(WATER);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThatStepIsMissing(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
   }
 
   @Test
@@ -494,7 +470,7 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(canEvadeUnit), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
+    final int index = getIndex(execs, DefensiveSubsRetreat.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);

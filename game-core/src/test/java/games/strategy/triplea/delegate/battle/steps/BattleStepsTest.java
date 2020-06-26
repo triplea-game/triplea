@@ -587,7 +587,6 @@ public class BattleStepsTest {
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitCanEvade();
 
@@ -661,9 +660,6 @@ public class BattleStepsTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
-    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1))
