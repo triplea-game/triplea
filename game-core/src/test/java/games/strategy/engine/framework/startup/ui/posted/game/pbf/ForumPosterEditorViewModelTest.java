@@ -304,13 +304,12 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   @Test
   void changingForumSelectionToAxisAndAlliesOrgTogglesUsernameAndPassword() {
     ClientSetting.aaForumUsername.setValueAndFlush(new char[] {'a'});
-    ClientSetting.aaForumPassword.setValueAndFlush(new char[] {'b'});
 
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumSelection(NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
 
     assertThat(viewModel.getForumUsername(), is("a"));
-    assertThat(viewModel.getForumPassword().length() > 0, is(true));
+    assertThat(viewModel.getForumPassword().length(), is(4));
     assertThat(
         "we do not store the actual password, we'll set a dummy password in the text field "
             + "to represent it being set, password is only stored in ClientSettings.",
@@ -321,12 +320,11 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   @Test
   void changingForumSelectionToTripleATogglesUsernameAndPassword() {
     ClientSetting.tripleaForumUsername.setValueAndFlush(new char[] {'c'});
-    ClientSetting.tripleaForumPassword.setValueAndFlush(new char[] {'d'});
 
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumSelection(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
 
     assertThat(viewModel.getForumUsername(), is("c"));
-    assertThat(viewModel.getForumPassword().length() > 0, is(true));
+    assertThat(viewModel.getForumPassword().length(), is(4));
   }
 }
