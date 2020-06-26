@@ -6,9 +6,12 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.text.IsEmptyString.emptyString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.github.npathai.hamcrestopt.OptionalMatchers;
 import com.google.common.base.Preconditions;
@@ -16,10 +19,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
+import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import java.util.function.BiConsumer;
+import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -180,7 +185,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void forumPostButtonIsActiveWithValidData() {
+  void forumPostButtonIsActiveWithValidData() throws Exception {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
     viewModel.setTestPostAction(testPostAction);
     viewModel.setForumSelection("forumSelection");
@@ -189,10 +194,17 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
         viewModel.isTopicIdValid(), "Test makes sense only if topic id is valid");
     viewModel.setForumUsername("username");
     viewModel.setForumPassword(new char[] {'a', 'b'});
+    final NodeBbTokenGenerator tokenGenerator = mock(NodeBbTokenGenerator.class);
+    viewModel.setTokenGeneratorSupplier(() -> tokenGenerator);
+    final NodeBbTokenGenerator.TokenInfo tokenInfo = mock(NodeBbTokenGenerator.TokenInfo.class);
+    when(tokenGenerator.generateToken(any(), any(), any())).thenReturn(tokenInfo);
+    when(tokenInfo.getToken()).thenReturn("");
 
-    viewModel.testPostButtonClicked();
+    SwingUtilities.invokeAndWait(viewModel::testPostButtonClicked);
 
     verify(testPostAction).accept("forumSelection", 20);
+    // No Token to revoke
+    verify(tokenGenerator, times(0)).revokeToken(any(), anyInt());
   }
 
   @DisplayName("Ensure fields are valid if forum selection, topic id and credentials are set")
@@ -304,6 +316,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   @Test
   void changingForumSelectionToAxisAndAlliesOrgTogglesUsernameAndPassword() {
     ClientSetting.aaForumUsername.setValueAndFlush(new char[] {'a'});
+    ClientSetting.aaForumToken.setValueAndFlush(new char[] {'b'});
 
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumSelection(NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
@@ -312,7 +325,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     assertThat(viewModel.getForumPassword().length(), is(4));
     assertThat(
         "we do not store the actual password, we'll set a dummy password in the text field "
-            + "to represent it being set, password is only stored in ClientSettings.",
+            + "to represent it being set, only a token is stored in ClientSettings.",
         String.valueOf(viewModel.getForumPassword()),
         is(not("b")));
   }
@@ -325,6 +338,6 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     viewModel.setForumSelection(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
 
     assertThat(viewModel.getForumUsername(), is("c"));
-    assertThat(viewModel.getForumPassword().length(), is(4));
+    assertThat(viewModel.getForumPassword().length(), is(0));
   }
 }

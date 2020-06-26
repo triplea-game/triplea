@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.Interruptibles;
@@ -49,6 +50,10 @@ class ForumPosterEditorViewModel {
   private char[] tempPassword = new char[0];
   @Setter private String otpCode = "";
   @Setter private boolean rememberPassword;
+
+  @Setter(onMethod_ = {@VisibleForTesting})
+  private Supplier<NodeBbTokenGenerator> tokenGeneratorSupplier =
+      () -> new NodeBbTokenGenerator(getForumUrl());
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
@@ -93,7 +98,7 @@ class ForumPosterEditorViewModel {
                     () -> {
                       revokeToken();
 
-                      final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
+                      final var nodeBbTokenGenerator = tokenGeneratorSupplier.get();
 
                       return nodeBbTokenGenerator.generateToken(
                           forumUsername, new String(tempPassword), Strings.emptyToNull(otpCode));
@@ -246,7 +251,7 @@ class ForumPosterEditorViewModel {
     final ClientSetting<char[]> tokenSetting = getTokenSetting();
     final ClientSetting<Integer> uidSetting = getUidSetting();
 
-    final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
+    final var nodeBbTokenGenerator = tokenGeneratorSupplier.get();
 
     tokenSetting
         .getValue()
