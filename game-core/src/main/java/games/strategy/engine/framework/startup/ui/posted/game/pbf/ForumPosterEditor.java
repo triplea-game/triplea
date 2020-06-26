@@ -364,7 +364,11 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
     testForum.setEnabled(forumPosterEditorViewModel.isTestForumPostButtonEnabled());
   }
 
-  boolean isForgetPasswordOnShutdown() {
-    return viewModel.isForgetPasswordOnShutdown();
+  boolean shouldRevokeTokenOnShutdown() {
+    return viewModel.shouldRevokeTokenOnShutdown();
+  }
+
+  void revokeToken() {
+    viewModel.revokeToken();
   }
 }

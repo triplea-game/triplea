@@ -7,19 +7,26 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.TestPostAction;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
+import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import java.nio.CharBuffer;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
+import org.triplea.java.Interruptibles;
 import org.triplea.java.Postconditions;
 import org.triplea.java.StringUtils;
 import org.triplea.java.ViewModelListener;
 
 class ForumPosterEditorViewModel {
+  private static final int DUMMY_PASSWORD_LENGTH = 4;
+
   private final Runnable readyCallback;
 
   @Setter(onMethod_ = @VisibleForTesting)
@@ -37,7 +44,7 @@ class ForumPosterEditorViewModel {
   @Setter @Getter private boolean attachSaveGameToSummary = true;
   @Setter @Getter private boolean alsoPostAfterCombatMove;
   @Getter private String forumUsername;
-  private boolean forumPasswordIsSet;
+  private boolean forumTokenExists;
   @Setter private boolean rememberPassword;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
@@ -58,36 +65,65 @@ class ForumPosterEditorViewModel {
     // was thrown from UI for another reason and the password field still has the
     // dummy password, then ignore it.
     if (isDummyPassword(password)) {
+      readyCallback.run();
       return;
     }
-    /* final ClientSetting<char[]> passwordSetting =
-        forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-            ? ClientSetting.tripleaForumPassword
-            : ClientSetting.aaForumPassword;
+    final ClientSetting<char[]> tokenSetting = getTokenSetting();
+    final ClientSetting<Integer> uidSetting = getUidSetting();
 
-    passwordSetting.setValueAndFlush(password);*/
-    forumPasswordIsSet = password.length > 0;
-    readyCallback.run();
+    Interruptibles.awaitResult(
+            () ->
+                BackgroundTaskRunner.runInBackgroundAndReturn(
+                    "Logging in...",
+                    () -> {
+                      revokeToken();
+
+                      final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
+
+                      return nodeBbTokenGenerator.generateToken(
+                          forumUsername, new String(password), null);
+                    }))
+        .result
+        .ifPresent(
+            tokenInfo -> {
+              tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
+              uidSetting.setValueAndFlush(tokenInfo.getUserId());
+
+              forumTokenExists =
+                  tokenSetting.getValue().map(token -> token.length > 0).orElse(false);
+              readyCallback.run();
+            });
+  }
+
+  private ClientSetting<char[]> getTokenSetting() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? ClientSetting.tripleaForumToken
+        : ClientSetting.aaForumToken;
+  }
+
+  private ClientSetting<Integer> getUidSetting() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? ClientSetting.tripleaForumUserId
+        : ClientSetting.aaForumUserId;
+  }
+
+  private String getForumUrl() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? UrlConstants.TRIPLEA_FORUM
+        : UrlConstants.AXIS_AND_ALLIES_FORUM;
   }
 
   private boolean isDummyPassword(final char[] password) {
-    boolean dummyPassword = true;
-    for (final Character passwordChar : password) {
-      if (passwordChar != '*') {
-        dummyPassword = false;
-        break;
-      }
-    }
-    return password.length > 0 && dummyPassword;
+    return password.length > 0 && CharBuffer.wrap(password).chars().allMatch(c -> c == '*');
   }
 
   void setForumUsername(final String username) {
-    /*final ClientSetting<char[]> usernameSetting =
+    final ClientSetting<char[]> usernameSetting =
         forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername
             : ClientSetting.aaForumUsername;
 
-    usernameSetting.setValueAndFlush(username.toCharArray());*/
+    usernameSetting.setValueAndFlush(username.toCharArray());
     forumUsername = username;
     readyCallback.run();
   }
@@ -107,16 +143,16 @@ class ForumPosterEditorViewModel {
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
-    forumPasswordIsSet = false;
+    forumTokenExists = false;
     readyCallback.run();
   }
 
   /**
-   * Returns a dummy password value that has the same length as the real password. This should only
-   * be used to set the UI text value and never used as the actual users password.
+   * Returns a dummy password value that has the value of {@link #DUMMY_PASSWORD_LENGTH}. This
+   * should only be used to set the UI text value and never used as the actual users password.
    */
   String getForumPassword() {
-    return forumPasswordIsSet ? Strings.repeat("*", 4) : "";
+    return forumTokenExists ? Strings.repeat("*", DUMMY_PASSWORD_LENGTH) : "";
   }
 
   public String getForumSelection() {
@@ -140,10 +176,7 @@ class ForumPosterEditorViewModel {
   }
 
   synchronized boolean areFieldsValid() {
-    return isTopicIdValid()
-        && ((isForumUsernameValid() && isForumPasswordValid())
-            || ClientSetting.aaForumToken.isSet()
-            || ClientSetting.tripleaForumToken.isSet());
+    return isTopicIdValid() && isForumUsernameValid() && isForumPasswordValid();
   }
 
   String getForumProviderHelpText() {
@@ -153,7 +186,7 @@ class ForumPosterEditorViewModel {
   }
 
   boolean isForumPasswordValid() {
-    return forumPasswordIsSet;
+    return forumTokenExists;
   }
 
   boolean isForumUsernameValid() {
@@ -192,7 +225,22 @@ class ForumPosterEditorViewModel {
     }
   }
 
-  boolean isForgetPasswordOnShutdown() {
+  boolean shouldRevokeTokenOnShutdown() {
     return !rememberPassword;
+  }
+
+  void revokeToken() {
+    final ClientSetting<char[]> tokenSetting = getTokenSetting();
+    final ClientSetting<Integer> uidSetting = getUidSetting();
+
+    final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
+
+    tokenSetting
+        .getValue()
+        .ifPresent(
+            token ->
+                uidSetting
+                    .getValue()
+                    .ifPresent(uid -> nodeBbTokenGenerator.revokeToken(new String(token), uid)));
   }
 }
