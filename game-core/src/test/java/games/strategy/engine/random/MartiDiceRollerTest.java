@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 public class MartiDiceRollerTest {
   private static final String successMessage =
-      "Some text before<br>your dice are: 2,5,1<p><p>\t</body>\nsome text after";
+      "Some text before<br>your dice are: 22,5,100<p><p>\t</body>\nsome text after";
 
   private static final String failureMessage =
       "some text before\t\tfatal error: Error description.!\nsome text after";
@@ -32,7 +32,7 @@ public class MartiDiceRollerTest {
     final Integer[] dice =
         Arrays.stream(martiDiceRoller.getDice(successMessage, 0)).boxed().toArray(Integer[]::new);
 
-    assertThat(dice, is(array(equalTo(1), equalTo(4), equalTo(0))));
+    assertThat(dice, is(array(equalTo(21), equalTo(4), equalTo(99))));
   }
 
   @Test

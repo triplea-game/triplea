@@ -43,7 +43,7 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   // Matches a comma separated list of integers like this:
   // your dice are: 1,2,3 <p>
   private final Pattern dicePattern =
-      Pattern.compile("your dice are:\\s*((?:\\d(?:,\\d+)*)?)\\s*<p>");
+      Pattern.compile("your dice are:\\s*((?:\\d+(?:,\\d+)*)?)\\s*<p>");
 
   @Nonnull private final URI diceRollerUri;
 
