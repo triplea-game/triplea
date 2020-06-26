@@ -104,7 +104,7 @@ abstract class AbstractBattle implements IBattle {
     }
     final var unitsCopy = new ArrayList<>(units);
     unitsCopy.addAll(dependentUnits);
-    return unitsCopy;
+    return Collections.unmodifiableList(unitsCopy);
   }
 
   void addDependentTransportingUnits(final Collection<Unit> units) {
