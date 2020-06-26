@@ -906,12 +906,13 @@ public class AirBattle extends AbstractBattle {
   }
 
   private void remove(
-      final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite) {
-    if (killed.isEmpty()) {
+      final Collection<Unit> killedUnits,
+      final IDelegateBridge bridge,
+      final Territory battleSite) {
+    if (killedUnits.isEmpty()) {
       return;
     }
-    final Collection<Unit> dependent = getDependentUnits(killed);
-    killed.addAll(dependent);
+    final Collection<Unit> killed = getWithDependents(killedUnits);
     final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
     final String transcriptText =
         MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();

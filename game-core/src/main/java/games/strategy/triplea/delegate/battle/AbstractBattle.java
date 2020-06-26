@@ -86,7 +86,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public List<Unit> getDependentUnits(final Collection<Unit> units) {
+  public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
     final List<Unit> dependentUnits = new ArrayList<>();
     for (final Unit unit : units) {
       final Collection<Unit> dependent = this.dependentUnits.get(unit);
@@ -95,6 +95,16 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     return Collections.unmodifiableList(dependentUnits);
+  }
+
+  protected Collection<Unit> getWithDependents(final Collection<Unit> units) {
+    final Collection<Unit> dependentUnits = getDependentUnits(units);
+    if (dependentUnits.isEmpty()) {
+      return units;
+    }
+    final var unitsCopy = new ArrayList<>(units);
+    unitsCopy.addAll(dependentUnits);
+    return unitsCopy;
   }
 
   void addDependentTransportingUnits(final Collection<Unit> units) {
