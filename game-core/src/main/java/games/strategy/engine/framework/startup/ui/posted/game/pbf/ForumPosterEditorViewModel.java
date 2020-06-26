@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
@@ -52,6 +53,14 @@ class ForumPosterEditorViewModel {
   }
 
   void setForumPassword(final char[] password) {
+    // Check if the password is a dummy. Document model events are only supposed
+    // to fire if a user types and enters a valid password, in case an event from UI
+    // was thrown from UI for another reason and the password field still has the
+    // dummy password, then ignore it.
+    if (isDummyPassword(password)) {
+      return;
+    }
+
     final ClientSetting<char[]> passwordSetting =
         forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumPassword
@@ -60,6 +69,17 @@ class ForumPosterEditorViewModel {
     passwordSetting.setValueAndFlush(password);
     forumPasswordIsSet = password.length > 0;
     readyCallback.run();
+  }
+
+  private boolean isDummyPassword(final char[] password) {
+    boolean dummyPassword = true;
+    for (final Character passwordChar : password) {
+      if (passwordChar != '*') {
+        dummyPassword = false;
+        break;
+      }
+    }
+    return password.length > 0 && dummyPassword;
   }
 
   void setForumUsername(final String username) {
@@ -88,15 +108,22 @@ class ForumPosterEditorViewModel {
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
-    forumPasswordIsSet =
-        this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0]).length > 0
-            : ClientSetting.aaForumPassword.getValue().orElse(new char[0]).length > 0;
+    forumPasswordIsSet = getPasswordLength() > 0;
     readyCallback.run();
   }
 
+  private int getPasswordLength() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0]).length
+        : ClientSetting.aaForumPassword.getValue().orElse(new char[0]).length;
+  }
+
+  /**
+   * Returns a dummy password value that has the same length as the real password. This should only
+   * be used to set the UI text value and never used as the actual users password.
+   */
   String getForumPassword() {
-    return forumPasswordIsSet ? "********" : "";
+    return forumPasswordIsSet ? Strings.repeat("*", getPasswordLength()) : "";
   }
 
   public String getForumSelection() {
