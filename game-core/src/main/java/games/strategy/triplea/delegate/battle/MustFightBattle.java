@@ -583,7 +583,7 @@ public class MustFightBattle extends DependentBattle
       final IDelegateBridge bridge,
       final Territory battleSite,
       final Boolean defenderDying) {
-    if (killed.isEmpty()) {
+    if (killedUnits.isEmpty()) {
       return;
     }
     final Collection<Unit> killed = getWithDependents(killedUnits);
