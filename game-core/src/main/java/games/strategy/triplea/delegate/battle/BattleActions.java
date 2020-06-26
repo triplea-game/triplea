@@ -22,4 +22,8 @@ public interface BattleActions {
       Collection<Territory> initialAvailableTerritories);
 
   void fireNavalBombardment(IDelegateBridge bridge);
+
+  void endBattle(IDelegateBridge bridge);
+
+  void attackerWins(IDelegateBridge bridge);
 }

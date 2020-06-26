@@ -156,6 +156,7 @@ public class MustFightBattle extends DependentBattle
 
   private static final long serialVersionUID = 5879502298361231540L;
 
+  @Getter(onMethod = @__({@Override}))
   private final Collection<Unit> attackingWaitingToDie = new ArrayList<>();
 
   @Getter(onMethod = @__({@Override}))
@@ -433,7 +434,8 @@ public class MustFightBattle extends DependentBattle
     endBattle(bridge);
   }
 
-  private void endBattle(final IDelegateBridge bridge) {
+  @Override
+  public void endBattle(final IDelegateBridge bridge) {
     clearWaitingToDieAndDamagedChangesInto(bridge);
     isOver = true;
     battleTracker.removeBattle(this, bridge.getData());
@@ -1012,8 +1014,8 @@ public class MustFightBattle extends DependentBattle
     return possible;
   }
 
-  @VisibleForTesting
-  protected Collection<Territory> getEmptyOrFriendlySeaNeighbors(
+  @Override
+  public Collection<Territory> getEmptyOrFriendlySeaNeighbors(
       final Collection<Unit> unitsToRetreat) {
     Collection<Territory> possible = gameData.getMap().getNeighbors(battleSite);
     if (headless) {
@@ -2433,7 +2435,8 @@ public class MustFightBattle extends DependentBattle
     checkDefendingPlanesCanLand();
   }
 
-  private void attackerWins(final IDelegateBridge bridge) {
+  @Override
+  public void attackerWins(final IDelegateBridge bridge) {
     whoWon = WhoWon.ATTACKER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, attacker.getName() + " win");
     if (headless) {

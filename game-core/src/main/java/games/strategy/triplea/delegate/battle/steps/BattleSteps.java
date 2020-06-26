@@ -56,6 +56,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingUnits;
 
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> attackingWaitingToDie;
 
   @Getter(onMethod = @__({@Override}))
@@ -81,6 +82,11 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   @Override
   public Collection<Territory> getAttackerRetreatTerritories() {
     return getAttackerRetreatTerritories.get();
+  }
+
+  @Override
+  public Collection<Territory> getEmptyOrFriendlySeaNeighbors(final Collection<Unit> units) {
+    return getEmptyOrFriendlySeaNeighbors.apply(units);
   }
 
   @Override
