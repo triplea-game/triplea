@@ -371,4 +371,8 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   void revokeToken() {
     viewModel.revokeToken();
   }
+
+  void requestToken() {
+      viewModel.acquireTokenAndDeletePassword();
+  }
 }

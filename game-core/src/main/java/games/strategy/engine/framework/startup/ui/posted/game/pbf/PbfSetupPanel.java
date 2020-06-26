@@ -245,6 +245,7 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             + "this error indicates a programming bug that allowed for the start game button to be "
             + "enabled without first valid game data being loaded. ");
 
+    forumPosterEditor.requestToken();
     if (forumPosterEditor.shouldRevokeTokenOnShutdown()) {
       ExitStatus.addExitAction(forumPosterEditor::revokeToken);
     }

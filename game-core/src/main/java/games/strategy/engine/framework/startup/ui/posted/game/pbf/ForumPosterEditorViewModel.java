@@ -14,6 +14,7 @@ import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.nio.CharBuffer;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -45,6 +46,7 @@ class ForumPosterEditorViewModel {
   @Setter @Getter private boolean alsoPostAfterCombatMove;
   @Getter private String forumUsername;
   private boolean forumTokenExists;
+  private char[] tempPassword = new char[0];
   @Setter private boolean rememberPassword;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
@@ -65,34 +67,42 @@ class ForumPosterEditorViewModel {
     // was thrown from UI for another reason and the password field still has the
     // dummy password, then ignore it.
     if (isDummyPassword(password)) {
-      readyCallback.run();
+      return;
+    }
+    tempPassword = password;
+    forumTokenExists = password.length > 0 ||
+            getTokenSetting().getValue().map(token -> token.length > 0).orElse(false);
+    readyCallback.run();
+  }
+
+  void acquireTokenAndDeletePassword() {
+    if (CharBuffer.wrap(tempPassword).chars().allMatch(c -> c == 0)) {
       return;
     }
     final ClientSetting<char[]> tokenSetting = getTokenSetting();
+
     final ClientSetting<Integer> uidSetting = getUidSetting();
 
     Interruptibles.awaitResult(
             () ->
-                BackgroundTaskRunner.runInBackgroundAndReturn(
-                    "Logging in...",
-                    () -> {
-                      revokeToken();
+                    BackgroundTaskRunner.runInBackgroundAndReturn(
+                            "Logging in...",
+                            () -> {
+                              revokeToken();
 
-                      final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
+                              final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
 
-                      return nodeBbTokenGenerator.generateToken(
-                          forumUsername, new String(password), null);
-                    }))
-        .result
-        .ifPresent(
-            tokenInfo -> {
-              tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
-              uidSetting.setValueAndFlush(tokenInfo.getUserId());
+                              return nodeBbTokenGenerator.generateToken(
+                                      forumUsername, new String(tempPassword), null);
+                            }))
+            .result
+            .ifPresent(
+                    tokenInfo -> {
+                      tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
+                      uidSetting.setValueAndFlush(tokenInfo.getUserId());
 
-              forumTokenExists =
-                  tokenSetting.getValue().map(token -> token.length > 0).orElse(false);
-              readyCallback.run();
-            });
+                    });
+    Arrays.fill(tempPassword, '\0');
   }
 
   private ClientSetting<char[]> getTokenSetting() {
@@ -143,7 +153,7 @@ class ForumPosterEditorViewModel {
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
-    forumTokenExists = false;
+    forumTokenExists = getTokenSetting().getValue().map(token -> token.length > 0).orElse(false);
     readyCallback.run();
   }
 
@@ -221,6 +231,7 @@ class ForumPosterEditorViewModel {
 
   synchronized void testPostButtonClicked() {
     if (areFieldsValid()) {
+      acquireTokenAndDeletePassword();
       testPostAction.accept(forumSelection, Integer.parseInt(topicId));
     }
   }
