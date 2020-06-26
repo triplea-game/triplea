@@ -47,6 +47,7 @@ class ForumPosterEditorViewModel {
   @Getter private String forumUsername;
   private boolean forumTokenExists;
   private char[] tempPassword = new char[0];
+  @Setter private String otpCode = "";
   @Setter private boolean rememberPassword;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
@@ -69,9 +70,11 @@ class ForumPosterEditorViewModel {
     if (isDummyPassword(password)) {
       return;
     }
+    Arrays.fill(tempPassword, '\0');
     tempPassword = password;
-    forumTokenExists = password.length > 0 ||
-            getTokenSetting().getValue().map(token -> token.length > 0).orElse(false);
+    forumTokenExists =
+        password.length > 0
+            || getTokenSetting().getValue().map(token -> token.length > 0).orElse(false);
     readyCallback.run();
   }
 
@@ -85,23 +88,22 @@ class ForumPosterEditorViewModel {
 
     Interruptibles.awaitResult(
             () ->
-                    BackgroundTaskRunner.runInBackgroundAndReturn(
-                            "Logging in...",
-                            () -> {
-                              revokeToken();
+                BackgroundTaskRunner.runInBackgroundAndReturn(
+                    "Logging in...",
+                    () -> {
+                      revokeToken();
 
-                              final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
+                      final var nodeBbTokenGenerator = new NodeBbTokenGenerator(getForumUrl());
 
-                              return nodeBbTokenGenerator.generateToken(
-                                      forumUsername, new String(tempPassword), null);
-                            }))
-            .result
-            .ifPresent(
-                    tokenInfo -> {
-                      tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
-                      uidSetting.setValueAndFlush(tokenInfo.getUserId());
-
-                    });
+                      return nodeBbTokenGenerator.generateToken(
+                          forumUsername, new String(tempPassword), Strings.emptyToNull(otpCode));
+                    }))
+        .result
+        .ifPresent(
+            tokenInfo -> {
+              tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
+              uidSetting.setValueAndFlush(tokenInfo.getUserId());
+            });
     Arrays.fill(tempPassword, '\0');
   }
 

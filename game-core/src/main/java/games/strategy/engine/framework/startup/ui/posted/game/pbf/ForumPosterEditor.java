@@ -41,6 +41,8 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   private final JTextField usernameField = new JTextField();
   private final JLabel passwordLabel = new JLabel("Forum Password");
   private final JPasswordField passwordField = new JPasswordField();
+  private final JLabel otpLabel = new JLabel("2FA OTP-Code (optional)");
+  private final JTextField otpField = new JTextField();
   private final JLabel topicIdLabel = new JLabel("Topic Id:");
   private final JLabel forumLabel = new JLabel("Forums:");
   private final JCheckBox attachSaveGameToSummary = new JCheckBox("Attach save game to summary");
@@ -262,6 +264,36 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0));
     row++;
     add(
+        otpLabel,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    add(
+        otpField,
+        new GridBagConstraints(
+            1,
+            row,
+            1,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
+    new DocumentListenerBuilder(() -> viewModel.setOtpCode(otpField.getText())).attachTo(otpField);
+    row++;
+    add(
         new JPanelBuilder()
             .boxLayoutHorizontal()
             .add(rememberPassword)
@@ -373,6 +405,6 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   }
 
   void requestToken() {
-      viewModel.acquireTokenAndDeletePassword();
+    viewModel.acquireTokenAndDeletePassword();
   }
 }
