@@ -49,7 +49,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JComboBox<String> forums = new JComboBox<>();
   private final JCheckBox rememberPassword =
-      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberEmailPassword).build();
+      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberForumPassword).build();
   private final JButton rememberPasswordHelpButton =
       new JButtonBuilder("Help")
           .actionListener(
@@ -65,6 +65,10 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
     super(new GridBagLayout());
     this.viewModel = viewModel;
     viewModel.setView(this);
+    // If password is already stored we already remember
+    if (viewModel.isForumPasswordValid()) {
+      rememberPassword.setSelected(true);
+    }
     rememberPassword.addActionListener(
         e -> viewModel.setRememberPassword(rememberPassword.isSelected()));
 
