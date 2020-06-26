@@ -102,7 +102,7 @@ class ForumPosterEditorViewModel {
     final ClientSetting<Integer> uidSetting = getUidSetting();
 
     // Testing doesn't support EDT on headless devices so we need the check
-    Optional<NodeBbTokenGenerator.TokenInfo> result =
+    final Optional<NodeBbTokenGenerator.TokenInfo> result =
         SwingUtilities.isEventDispatchThread()
             ? Interruptibles.awaitResult(
                     () ->
