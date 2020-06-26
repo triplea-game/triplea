@@ -3,6 +3,7 @@ package org.triplea.performance;
 import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import lombok.extern.java.Log;
@@ -26,17 +27,22 @@ public class PerfTimer implements Closeable {
   private static final Map<String, AtomicLong> runningTotal = new HashMap<>();
   private static final Map<String, AtomicLong> runningCount = new HashMap<>();
   private final String title;
-  private final long startMillis;
+  private final Optional<Long> startNanos;
   private final int reportingFrequency;
 
   private PerfTimer(final String title, final int reportingFrequency) {
     this.title = title;
     this.reportingFrequency = reportingFrequency;
-    this.startMillis = this.reportingFrequency > 0 ? System.nanoTime() : 0;
+    // If reporting frequency is 0, avoid the overhead of querying the time.
+    if (this.reportingFrequency > 0) {
+      this.startNanos = Optional.of(System.nanoTime());
+    } else {
+      this.startNanos = Optional.empty();
+    }
   }
 
   private long stopTimer() {
-    return System.nanoTime() - startMillis;
+    return System.nanoTime() - startNanos.get();
   }
 
   @Override
@@ -51,6 +57,17 @@ public class PerfTimer implements Closeable {
     return startTimer(title, 1);
   }
 
+  /**
+   * Creates a perf timer with a reporting frequency. The reporting frequency specifies N specifies
+   * that performance information should be printed every N executions of the timer. If 0, no
+   * information is printed (and no timings are taken), which can be useful to have some places in
+   * the code to be always instrumented, but not always enabled.
+   *
+   * @param title The name of the timer
+   * @param title The reporting frequency.
+   * @return the perf timer object
+   */
+  @SuppressWarnings("unused")
   public static PerfTimer startTimer(final String title, final int reportingFrequency) {
     return new PerfTimer(title, reportingFrequency);
   }
