@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.Interruptibles;
@@ -83,6 +84,15 @@ class ForumPosterEditorViewModel {
     readyCallback.run();
   }
 
+  private NodeBbTokenGenerator.TokenInfo renewToken() {
+    revokeToken();
+
+    final var nodeBbTokenGenerator = tokenGeneratorSupplier.get();
+
+    return nodeBbTokenGenerator.generateToken(
+        forumUsername, new String(tempPassword), Strings.emptyToNull(otpCode));
+  }
+
   void acquireTokenAndDeletePassword() {
     if (CharBuffer.wrap(tempPassword).chars().allMatch(c -> c == 0)) {
       return;
@@ -91,24 +101,21 @@ class ForumPosterEditorViewModel {
 
     final ClientSetting<Integer> uidSetting = getUidSetting();
 
-    Interruptibles.awaitResult(
-            () ->
-                BackgroundTaskRunner.runInBackgroundAndReturn(
-                    "Logging in...",
-                    () -> {
-                      revokeToken();
+    // Testing doesn't support EDT on headless devices so we need the check
+    Optional<NodeBbTokenGenerator.TokenInfo> result =
+        SwingUtilities.isEventDispatchThread()
+            ? Interruptibles.awaitResult(
+                    () ->
+                        BackgroundTaskRunner.runInBackgroundAndReturn(
+                            "Logging in...", this::renewToken))
+                .result
+            : Optional.of(renewToken());
 
-                      final var nodeBbTokenGenerator = tokenGeneratorSupplier.get();
-
-                      return nodeBbTokenGenerator.generateToken(
-                          forumUsername, new String(tempPassword), Strings.emptyToNull(otpCode));
-                    }))
-        .result
-        .ifPresent(
-            tokenInfo -> {
-              tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
-              uidSetting.setValueAndFlush(tokenInfo.getUserId());
-            });
+    result.ifPresent(
+        tokenInfo -> {
+          tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
+          uidSetting.setValueAndFlush(tokenInfo.getUserId());
+        });
     Arrays.fill(tempPassword, '\0');
   }
 

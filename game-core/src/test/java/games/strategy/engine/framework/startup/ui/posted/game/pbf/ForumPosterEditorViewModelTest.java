@@ -24,7 +24,6 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import java.util.function.BiConsumer;
-import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -185,7 +184,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void forumPostButtonIsActiveWithValidData() throws Exception {
+  void forumPostButtonIsActiveWithValidData() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
     viewModel.setTestPostAction(testPostAction);
     viewModel.setForumSelection("forumSelection");
@@ -200,7 +199,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     when(tokenGenerator.generateToken(any(), any(), any())).thenReturn(tokenInfo);
     when(tokenInfo.getToken()).thenReturn("");
 
-    SwingUtilities.invokeAndWait(viewModel::testPostButtonClicked);
+    viewModel.testPostButtonClicked();
 
     verify(testPostAction).accept("forumSelection", 20);
     // No Token to revoke
