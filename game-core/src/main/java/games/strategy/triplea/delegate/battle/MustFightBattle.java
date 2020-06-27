@@ -1579,25 +1579,6 @@ public class MustFightBattle extends DependentBattle
         });
   }
 
-  private void defenderRetreatSubs(final IDelegateBridge bridge) {
-    if (!RetreatChecks.canDefenderRetreatSubs(
-        attackingUnits,
-        attackingWaitingToDie,
-        defendingUnits,
-        gameData,
-        this::getEmptyOrFriendlySeaNeighbors)) {
-      return;
-    }
-    if (!isOver && defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
-      queryRetreat(
-          true,
-          RetreatType.SUBS,
-          bridge,
-          getEmptyOrFriendlySeaNeighbors(
-              CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())));
-    }
-  }
-
   /** Check for unescorted transports and kill them immediately. */
   private void checkUndefendedTransports(final IDelegateBridge bridge, final GamePlayer player) {
     // if we are the attacker, we can retreat instead of dying

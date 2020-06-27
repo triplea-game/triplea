@@ -4,8 +4,6 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBM
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE;
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
@@ -15,7 +13,6 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
@@ -31,34 +28,22 @@ public class DefensiveSubsRetreat implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    // Check if defending subs can submerge before battle
-    if (Properties.getSubRetreatBeforeBattle(battleState.getGameData())) {
-      if (battleState.getAttackingUnits().stream().noneMatch(Matches.unitIsDestroyer())
-          && battleState.getDefendingUnits().stream().anyMatch(Matches.unitCanEvade())) {
-        return List.of(battleState.getDefender().getName() + SUBS_SUBMERGE);
-      }
+    if (!isEvaderPresent() || !isRetreatPossible()) {
+      return List.of();
     }
 
-    // retreat defending subs
-    if (battleState.getDefendingUnits().stream().anyMatch(Matches.unitCanEvade())) {
-      if (Properties.getSubmersibleSubs(battleState.getGameData())) {
-        // TODO: BUG? Should the presence of destroyers be checked?
-        if (!Properties.getSubRetreatBeforeBattle(battleState.getGameData())) {
-          return List.of(battleState.getDefender().getName() + SUBS_SUBMERGE);
-        }
-      } else {
-        if (RetreatChecks.canDefenderRetreatSubs(
-            battleState.getAttackingUnits(),
-            battleState.getAttackingWaitingToDie(),
-            battleState.getDefendingUnits(),
-            battleState.getGameData(),
-            battleState::getEmptyOrFriendlySeaNeighbors)) {
-          return List.of(battleState.getDefender().getName() + SUBS_WITHDRAW);
-        }
-      }
+    if (getOrder() == SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE && isDestroyerPresent()) {
+      // only check for destroyers if subs can retreat before battle
+      // because the destroyer could be killed during the battle which would
+      // allow the sub to withdraw at the end of the battle
+      return List.of();
     }
 
-    return List.of();
+    if (Properties.getSubmersibleSubs(battleState.getGameData())) {
+      return List.of(battleState.getDefender().getName() + SUBS_SUBMERGE);
+    } else {
+      return List.of(battleState.getDefender().getName() + SUBS_WITHDRAW);
+    }
   }
 
   @Override
@@ -72,14 +57,24 @@ public class DefensiveSubsRetreat implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (battleState.isOver()) {
+    if (battleState.isOver()
+        || isDestroyerPresent()
+        || !isEvaderPresent()
+        || !isRetreatPossible()) {
       return;
     }
-    defenderRetreatSubs(bridge);
+
+    battleActions.queryRetreat(
+        true,
+        RetreatType.SUBS,
+        bridge,
+        battleState.getEmptyOrFriendlySeaNeighbors(
+            CollectionUtils.getMatches(battleState.getDefendingUnits(), Matches.unitCanEvade())));
 
     if (getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
       // If no defenders left, then battle is over. The reason we test a "second" time here,
-      // is because otherwise the attackers can retreat even though the battle is over (illegal).
+      // is because otherwise the battle will try and do one more round and nothing will
+      // happen in that round.
       if (battleState.getDefendingUnits().isEmpty()) {
         battleActions.endBattle(bridge);
         battleActions.attackerWins(bridge);
@@ -87,22 +82,20 @@ public class DefensiveSubsRetreat implements BattleStep {
     }
   }
 
-  private void defenderRetreatSubs(final IDelegateBridge bridge) {
-    if (!RetreatChecks.canDefenderRetreatSubs(
-        battleState.getAttackingUnits(),
-        battleState.getAttackingWaitingToDie(),
-        battleState.getDefendingUnits(),
-        battleState.getGameData(),
-        battleState::getEmptyOrFriendlySeaNeighbors)) {
-      return;
-    }
-    if (!battleState.isOver() && battleState.getDefendingUnits().stream().anyMatch(Matches.unitCanEvade())) {
-      battleActions.queryRetreat(
-          true,
-          RetreatType.SUBS,
-          bridge,
-          battleState.getEmptyOrFriendlySeaNeighbors(
-              CollectionUtils.getMatches(battleState.getDefendingUnits(), Matches.unitCanEvade())));
-    }
+  private boolean isEvaderPresent() {
+    return battleState.getDefendingUnits().stream().anyMatch(Matches.unitCanEvade());
+  }
+
+  private boolean isDestroyerPresent() {
+    return battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsDestroyer())
+        || battleState.getAttackingWaitingToDie().stream().anyMatch(Matches.unitIsDestroyer());
+  }
+
+  private boolean isRetreatPossible() {
+    return Properties.getSubmersibleSubs(battleState.getGameData())
+        || !battleState
+            .getEmptyOrFriendlySeaNeighbors(
+                CollectionUtils.getMatches(battleState.getDefendingUnits(), Matches.unitCanEvade()))
+            .isEmpty();
   }
 }

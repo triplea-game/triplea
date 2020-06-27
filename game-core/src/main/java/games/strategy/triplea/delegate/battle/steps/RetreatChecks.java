@@ -7,7 +7,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -15,24 +14,6 @@ import org.triplea.java.collections.CollectionUtils;
 
 @UtilityClass
 public class RetreatChecks {
-
-  public static boolean canDefenderRetreatSubs(
-      final @NonNull Collection<Unit> attackingUnits,
-      final @NonNull Collection<Unit> attackingWaitingToDie,
-      final @NonNull Collection<Unit> defendingUnits,
-      final @NonNull GameData gameData,
-      final @NonNull Function<Collection<Unit>, Collection<Territory>>
-              getEmptyOrFriendlySeaNeighbors) {
-    if (attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (getEmptyOrFriendlySeaNeighbors
-                    .apply(CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
-                    .size()
-                != 0
-            || Properties.getSubmersibleSubs(gameData));
-  }
 
   public static boolean canAttackerRetreatPartialAmphib(
       final @NonNull Collection<Unit> attackingUnits,

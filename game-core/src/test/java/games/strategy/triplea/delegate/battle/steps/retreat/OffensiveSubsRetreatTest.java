@@ -80,10 +80,7 @@ class OffensiveSubsRetreatTest {
             .attackingUnits(List.of(givenUnitCanEvade()))
             // it shouldn't even care if the defending unit is a destroyer
             .defendingUnits(List.of(mock(Unit.class)))
-            .gameData(
-                MockGameData.givenGameData()
-                    .withSubmersibleSubs(true)
-                    .build())
+            .gameData(MockGameData.givenGameData().withSubmersibleSubs(true).build())
             .build();
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
@@ -97,9 +94,11 @@ class OffensiveSubsRetreatTest {
         givenBattleStateBuilder()
             .attackingUnits(List.of(givenUnitCanEvade()))
             .defendingUnits(List.of(givenUnitDestroyer()))
-            .gameData(MockGameData.givenGameData()
-                .withSubmersibleSubs(true)
-                .withSubRetreatBeforeBattle(true).build())
+            .gameData(
+                MockGameData.givenGameData()
+                    .withSubmersibleSubs(true)
+                    .withSubRetreatBeforeBattle(true)
+                    .build())
             .build();
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);

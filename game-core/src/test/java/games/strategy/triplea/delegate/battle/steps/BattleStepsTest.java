@@ -591,6 +591,7 @@ public class BattleStepsTest {
     final Unit unit2 = givenUnitCanEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
 
     final List<String> steps =
         newStepBuilder()
@@ -609,6 +610,7 @@ public class BattleStepsTest {
   void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitCanEvade();
 
@@ -657,7 +659,7 @@ public class BattleStepsTest {
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
     final List<String> steps =
@@ -892,6 +894,7 @@ public class BattleStepsTest {
   void defendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
@@ -955,6 +958,7 @@ public class BattleStepsTest {
   void defendingFirstStrikeWithWW2v2AndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
@@ -1053,6 +1057,7 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
@@ -1126,6 +1131,7 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithWW2v2AndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
@@ -1204,6 +1210,7 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndAttackingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitAttackerFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
@@ -1276,6 +1283,7 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithWW2v2AndAttackingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitAttackerFirstStrike();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
@@ -1414,6 +1422,7 @@ public class BattleStepsTest {
   void defendingFirstStrikeVsAirAndDestroyer() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
@@ -1733,6 +1742,7 @@ public class BattleStepsTest {
   void defendingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
@@ -1740,36 +1750,6 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + FIRE,
-                defender.getName() + SELECT_CASUALTIES,
-                defender.getName() + FIRST_STRIKE_UNITS_FIRE,
-                attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_CASUALTIES)));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify defending firstStrike can't withdraw when "
-          + "SUBMERSIBLE_SUBS is false and destroyers waiting to die")
-  void defendingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
-    final Unit unit3 = givenUnitDestroyer();
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .attackingWaitingToDie(List.of(unit3))
             .build()
             .get();
 

@@ -4,7 +4,6 @@ import static games.strategy.engine.data.Unit.ALREADY_MOVED;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.LAND_BATTLE_ROUNDS;
 import static games.strategy.triplea.Constants.SEA_BATTLE_ROUNDS;
-import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
 import static games.strategy.triplea.Constants.WW2V2;
@@ -14,7 +13,6 @@ import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesT
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.UnitAndAttachment;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.newUnitAndAttachment;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,7 +22,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -52,7 +49,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
-import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -366,117 +362,6 @@ class MustFightBattleExecutablesTest {
             + "FireOffensiveAaGuns and FireDefensiveAaGuns",
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(2));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify defending canEvade units can retreat if "
-          + "SUB_RETREAT_BEFORE_BATTLE, no destroyers, and retreat territory")
-  void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
-    doReturn(List.of(battleSite)).when(battle).getEmptyOrFriendlySeaNeighbors(any());
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-
-    final Unit canEvadeUnit = givenUnitCanEvade();
-    when(canEvadeUnit.getOwner()).thenReturn(defender);
-
-    battle.setUnits(List.of(canEvadeUnit), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, DefensiveSubsRetreat.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(battle).queryRetreat(anyBoolean(), any(), any(), any());
-  }
-
-  @Test
-  @DisplayName(
-      "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
-  void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-
-    // it doesn't even check if the unit can evade
-    final Unit canEvadeUnit = givenAnyUnit();
-    when(canEvadeUnit.getOwner()).thenReturn(defender);
-
-    final Unit destroyer = givenUnitDestroyer();
-
-    battle.setUnits(
-        List.of(canEvadeUnit), List.of(destroyer), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, DefensiveSubsRetreat.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(battle, never()).queryRetreat(anyBoolean(), any(), any(), any());
-  }
-
-  @Test
-  @DisplayName(
-      "Verify defending canEvade units can not retreat if "
-          + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, and no retreat")
-  void defendingSubsCanNotRetreatIfRetreatBeforeBattleAndSubmersibleAndNoRetreatTerritories() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any());
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(false);
-
-    // it doesn't even check if the unit can evade
-    final Unit unit = givenAnyUnit();
-    when(unit.getOwner()).thenReturn(attacker);
-
-    battle.setUnits(List.of(), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, DefensiveSubsRetreat.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(battle, never()).queryRetreat(anyBoolean(), any(), any(), any());
-  }
-
-  @Test
-  // firstStrike is actually not checked, unlike in BattleSteps
-  @DisplayName(
-      "Verify defending firstStrike submerge before battle if "
-          + "SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true and no destroyers")
-  void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
-    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any());
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-
-    final Unit canEvadeUnit = givenUnitCanEvade();
-    when(canEvadeUnit.getOwner()).thenReturn(defender);
-
-    battle.setUnits(List.of(canEvadeUnit), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, DefensiveSubsRetreat.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(battle).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
   @Test
