@@ -114,6 +114,23 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getIsFirstStrike();
   }
 
+  public static Predicate<Unit> unitIsFirstStrikeOnDefense(final GameData gameData) {
+    Predicate<Unit> matcher = Matches.unitIsFirstStrike();
+
+    // units with the deprecated isSuicide attribute automatically get isFirstStrike
+    // but they shouldn't have first strike on defense if
+    // DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE is true.
+    if (Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(gameData)) {
+      matcher = matcher.and(
+          // normal isFirstStrike units won't have suicideOnAttack
+          Matches.unitIsSuicideOnAttack().negate()
+              // deprecated isSuicide units won't have suicideOnDefense
+              .or(Matches.unitIsSuicideOnDefense())
+      );
+    }
+    return matcher;
+  }
+
   public static Predicate<Unit> unitCanMoveThroughEnemies() {
     return unit -> UnitAttachment.get(unit.getType()).getCanMoveThroughEnemies();
   }
