@@ -74,7 +74,8 @@ public class DefensiveSubsRetreat implements BattleStep {
     // If no defenders left, then battle is over. The reason we test a "second" time here,
     // is because otherwise the battle will try and do one more round and nothing will
     // happen in that round.
-    if (getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE && battleState.getDefendingUnits().isEmpty()) {
+    if (getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE
+        && battleState.getDefendingUnits().isEmpty()) {
       battleActions.endBattle(bridge);
       battleActions.attackerWins(bridge);
     }
