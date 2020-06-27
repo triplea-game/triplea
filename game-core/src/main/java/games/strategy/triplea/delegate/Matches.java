@@ -121,12 +121,13 @@ public final class Matches {
     // but they shouldn't have first strike on defense if
     // DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE is true.
     if (Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(gameData)) {
-      matcher = matcher.and(
-          // normal isFirstStrike units won't have suicideOnAttack
-          Matches.unitIsSuicideOnAttack().negate()
-              // deprecated isSuicide units won't have suicideOnDefense
-              .or(Matches.unitIsSuicideOnDefense())
-      );
+      matcher =
+          matcher.and(
+              // normal isFirstStrike units won't have suicideOnAttack
+              Matches.unitIsSuicideOnAttack()
+                  .negate()
+                  // deprecated isSuicide units won't have suicideOnDefense
+                  .or(Matches.unitIsSuicideOnDefense()));
     }
     return matcher;
   }

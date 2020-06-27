@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
-import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
@@ -150,7 +149,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
         SubsChecks.returnFireAgainstDefendingSubs(attackingUnits, defendingUnits, gameData);
     // if attacker has no sneak attack subs, then defender sneak attack subs fire first and remove
     // casualties
-    if (defenderSubsFireFirst && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData))) {
+    if (defenderSubsFireFirst
+        && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData))) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
