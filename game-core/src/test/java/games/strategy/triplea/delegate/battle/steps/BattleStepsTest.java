@@ -143,14 +143,14 @@ public class BattleStepsTest {
     return unitAndAttachment.unit;
   }
 
-  public static Unit givenUnitAttackerFirstStrike() {
+  public static Unit givenUnitFirstStrikeAndEvade() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
     when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
-  public static Unit givenUnitAttackerFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
+  public static Unit givenUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(final UnitType otherType) {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
     when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
@@ -168,25 +168,6 @@ public class BattleStepsTest {
 
   public static Unit givenUnitCanNotBeTargetedBy(final UnitType otherType) {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
-    return unitAndAttachment.unit;
-  }
-
-  public static Unit givenUnitDefenderFirstStrike() {
-    final UnitType canNotTargetType = mock(UnitType.class);
-    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
-    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
-    when(unitAndAttachment.unitAttachment.getCanNotTarget()).thenReturn(Set.of(canNotTargetType));
-    return unitAndAttachment.unit;
-  }
-
-  public static Unit givenUnitDefenderFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
-    final UnitType canNotTargetType = mock(UnitType.class);
-    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
-    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
-    when(unitAndAttachment.unitAttachment.getCanNotTarget()).thenReturn(Set.of(canNotTargetType));
     when(unitAndAttachment.unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
     return unitAndAttachment.unit;
   }
@@ -656,7 +637,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -783,7 +764,7 @@ public class BattleStepsTest {
   void attackingFirstStrikeBasic() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
@@ -840,7 +821,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         newStepBuilder()
@@ -867,7 +848,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -902,7 +883,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -936,7 +917,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -969,7 +950,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -1004,8 +985,8 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         newStepBuilder()
@@ -1032,8 +1013,8 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1069,7 +1050,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
     final Unit unit4 = givenUnitDestroyer();
 
@@ -1107,8 +1088,8 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1142,7 +1123,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
     final Unit unit4 = givenUnitDestroyer();
 
@@ -1182,7 +1163,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1219,8 +1200,8 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndAttackingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1257,7 +1238,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1291,8 +1272,8 @@ public class BattleStepsTest {
   void attackingDefendingFirstStrikeWithWW2v2AndAttackingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1327,7 +1308,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit2 = givenUnitIsAir();
-    final Unit unit1 = givenUnitAttackerFirstStrikeCanNotBeTargetedBy(unit2.getType());
+    final Unit unit1 = givenUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(unit2.getType());
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1395,7 +1376,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnitDefenderFirstStrikeCanNotBeTargetedBy(mock(UnitType.class));
+    final Unit unit2 = givenUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1430,7 +1411,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1463,7 +1444,7 @@ public class BattleStepsTest {
   void attackingFirstStrikeCanSubmergeIfSubmersibleSubs() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1499,7 +1480,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -1537,7 +1518,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -1572,7 +1553,7 @@ public class BattleStepsTest {
   void attackingFirstStrikeWithdrawIfAble() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
@@ -1603,7 +1584,7 @@ public class BattleStepsTest {
   void attackingFirstStrikeNoWithdrawIfEmptyTerritories() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
@@ -1661,7 +1642,7 @@ public class BattleStepsTest {
   void attackingFirstStrikeWithdrawIfNonRestrictedDefenselessTransports() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
-    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     final Unit unit2 = unitAndAttachment.unit;
 
@@ -1697,7 +1678,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderRetreatTerritories(battleSite);
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         newStepBuilder()
@@ -1727,7 +1708,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         newStepBuilder()
@@ -1755,7 +1736,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         newStepBuilder()
@@ -1783,7 +1764,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
     final List<String> steps =
