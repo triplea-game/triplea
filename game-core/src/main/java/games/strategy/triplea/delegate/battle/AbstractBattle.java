@@ -95,13 +95,13 @@ abstract class AbstractBattle implements IBattle {
         dependentUnits.addAll(dependent);
       }
     }
-    return Collections.unmodifiableList(dependentUnits);
+    return Collections.unmodifiableCollection(dependentUnits);
   }
 
-  protected Collection<Unit> getWithDependents(final Collection<Unit> units) {
+  protected Collection<Unit> getUnitsWithDependents(final Collection<Unit> units) {
     final Collection<Unit> dependentUnits = getDependentUnits(units);
     if (dependentUnits.isEmpty()) {
-      return units;
+      return Collections.unmodifiableCollection(units);
     }
     return ImmutableList.copyOf(Iterables.concat(units, dependentUnits));
   }

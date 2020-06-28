@@ -586,7 +586,7 @@ public class MustFightBattle extends DependentBattle
     if (killedUnits.isEmpty()) {
       return;
     }
-    final Collection<Unit> killed = getWithDependents(killedUnits);
+    final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
 
     // Set max damage for any units that will change into another unit
     final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();

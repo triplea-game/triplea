@@ -912,7 +912,7 @@ public class AirBattle extends AbstractBattle {
     if (killedUnits.isEmpty()) {
       return;
     }
-    final Collection<Unit> killed = getWithDependents(killedUnits);
+    final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
     final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
     final String transcriptText =
         MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
