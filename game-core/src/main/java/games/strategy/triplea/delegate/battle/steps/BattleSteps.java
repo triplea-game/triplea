@@ -202,7 +202,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     // also, ww2v3/global rules, defending subs without sneak attack fire with all defenders
     final Collection<Unit> defendingUnitsAliveAndDamaged = new ArrayList<>(defendingUnits);
     defendingUnitsAliveAndDamaged.addAll(defendingWaitingToDie);
-    if (defendingUnitsAliveAndDamaged.stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData))
+    if (defendingUnitsAliveAndDamaged.stream()
+            .anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData))
         && !defenderSubsFireFirst
         && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways)) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
