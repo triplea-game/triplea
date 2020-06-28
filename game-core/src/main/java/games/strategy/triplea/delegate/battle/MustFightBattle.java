@@ -579,15 +579,14 @@ public class MustFightBattle extends DependentBattle
 
   @VisibleForTesting
   protected void remove(
-      final Collection<Unit> killed,
+      final Collection<Unit> killedUnits,
       final IDelegateBridge bridge,
       final Territory battleSite,
       final Boolean defenderDying) {
-    if (killed.isEmpty()) {
+    if (killedUnits.isEmpty()) {
       return;
     }
-    final Collection<Unit> dependent = getDependentUnits(killed);
-    killed.addAll(dependent);
+    final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
 
     // Set max damage for any units that will change into another unit
     final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();
