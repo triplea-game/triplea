@@ -9,7 +9,6 @@ a consistent and documented server state that anyone can reproduce.
 
 More operations details are on the [wiki](https://github.com/triplea-game/triplea/wik)
 
-
 ## Deployments
 
 Deployments to prerelease and production are automated.
@@ -18,7 +17,7 @@ deployments are controlled by a version number variable in configuration.
 If the version value does not change, the deployment is idempotent
 and nothing will change on the server.
 
-Deployments are triggered as part of 
+Deployments are triggered as part of
 [travis](https://travis-ci.org/github/triplea-game/triplea) builds.
 
 ## Production Deployment
@@ -27,6 +26,7 @@ It can be useful to make changes locally, run a production deployment,
 and then check in the changes after-the fact. This is very risky,
 user beware. Typical command to do this will be with a limit
 to restrict deployments to specific hosts. EG:
+
 ```
 ./run_ansible_production --limit prod2-bot02.triplea-game.org
 ```
@@ -34,9 +34,10 @@ to restrict deployments to specific hosts. EG:
 ## Ansible Structure
 
 Ansible has three parts:
-  - inventory (lists hosts)
-  - roles (can be thought of as applications)
-  - playbooks, binds hosts to roles.
+
+- inventory (lists hosts)
+- roles (can be thought of as applications)
+- playbooks, binds hosts to roles.
 
 The only different between environments should be the list
 of hosts in an inventory file. Each environment (IE: prerelease, prod)
