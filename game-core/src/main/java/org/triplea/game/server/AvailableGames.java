@@ -39,16 +39,7 @@ final class AvailableGames {
     availableGames =
         FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
             .parallelStream()
-            .<Map<String, URI>>map(
-                map -> {
-                  log.info("Loading map: " + map);
-                  if (map.isDirectory()) {
-                    return getGamesFromDirectory(map);
-                  } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-                    return getGamesFromZip(map);
-                  }
-                  return Map.of();
-                })
+            .map(AvailableGames::getGames)
             .map(Map::entrySet)
             .flatMap(Collection::stream)
             .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -56,6 +47,16 @@ final class AvailableGames {
         String.format(
             "Done loading maps, " + "availableGames count: %s, contents: %s",
             availableGames.keySet().size(), availableGames.keySet()));
+  }
+
+  private static Map<String, URI> getGames(final File map) {
+    log.info("Loading map: " + map);
+    if (map.isDirectory()) {
+      return getGamesFromDirectory(map);
+    } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
+      return getGamesFromZip(map);
+    }
+    return Map.of();
   }
 
   private static Map<String, URI> getGamesFromDirectory(final File mapDir) {
