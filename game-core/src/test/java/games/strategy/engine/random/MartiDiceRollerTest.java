@@ -96,7 +96,7 @@ public class MartiDiceRollerTest {
     assertThat(dice, is(array(equalTo(21), equalTo(4), equalTo(99))));
   }
 
-  private static Integer[] boxedArray(int[] array) {
+  private static Integer[] boxedArray(final int[] array) {
     return Arrays.stream(array).boxed().toArray(Integer[]::new);
   }
 
