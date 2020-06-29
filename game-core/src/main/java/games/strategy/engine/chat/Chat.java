@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import com.google.common.collect.EvictingQueue;
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class Chat implements ChatClient {
   @Getter(AccessLevel.PACKAGE)
   private final SentMessagesHistory sentMessagesHistory;
 
-  private final Collection<ChatParticipant> chatters = new HashSet<>();
+  private final Collection<ChatParticipant> chatters = Sets.newConcurrentHashSet();
 
   /**
    * ChatHistory is used to copy chat contents from a game staging screen to an actual game once it
