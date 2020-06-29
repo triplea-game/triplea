@@ -24,11 +24,19 @@ import org.apache.http.util.EntityUtils;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
+/**
+ * Helper class containing the necessary logic to fetch and revoke login tokens for NodeBB forum
+ * software.
+ */
 @AllArgsConstructor
 public class NodeBbTokenGenerator {
   private final String forumUrl;
   private final Load load = new Load(LoadSettings.builder().build());
 
+  /**
+   * Data class used to wrap a newly generated token and the {@link #userId} the token was created
+   * for in a single object.
+   */
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public static class TokenInfo {
@@ -36,6 +44,16 @@ public class NodeBbTokenGenerator {
     private final int userId;
   }
 
+  /**
+   * Generates a NodeBB login token.
+   *
+   * @param username The username to create the token for.
+   * @param password The password used by the user to login.
+   * @param otp (optional, can be null) The One-Time-Password in case the User has 2FA enabled for
+   *     their account.
+   * @return The {@link TokenInfo} object containing the newly generated token and the associated
+   *     userId of the provided username.
+   */
   public TokenInfo generateToken(
       final String username, final String password, @Nullable final String otp) {
     Preconditions.checkNotNull(username);
@@ -49,6 +67,12 @@ public class NodeBbTokenGenerator {
     }
   }
 
+  /**
+   * Revokes a NodeBB login token.
+   *
+   * @param token The login token to revoke.
+   * @param userId The userId that the token was issued for.
+   */
   public void revokeToken(final String token, final int userId) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       deleteToken(client, userId, token);
