@@ -790,7 +790,7 @@ final class SelectionComponentFactory {
                 final NodeBbTokenGenerator tokenGenerator = new NodeBbTokenGenerator(forumUrl);
                 final Optional<Integer> oldUserId = uidSetting.getValue();
                 final Optional<char[]> oldToken = tokenSetting.getValue();
-                if (!usernameField.getText().isEmpty()) {
+                if (!usernameField.getText().isBlank()) {
                   final TokenInfo tokenInfo =
                       tokenGenerator.generateToken(
                           usernameField.getText(),
