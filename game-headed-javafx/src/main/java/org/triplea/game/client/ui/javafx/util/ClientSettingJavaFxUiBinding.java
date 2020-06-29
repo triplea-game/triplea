@@ -162,13 +162,6 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
     }
   },
 
-  USER_MAPS_FOLDER_PATH_BINDING(SettingType.FOLDER_LOCATIONS) {
-    @Override
-    public SelectionComponent<Region> newSelectionComponent() {
-      return folderPath(ClientSetting.userMapsFolderPath);
-    }
-  },
-
   WHEEL_SCROLL_AMOUNT_BINDING(SettingType.MAP_SCROLLING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
