@@ -155,7 +155,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
         SubsChecks.returnFireAgainstDefendingSubs(attackingUnits, defendingUnits, gameData);
     // if attacker has no sneak attack subs, then defender sneak attack subs fire first and remove
     // casualties
-    if (defenderSubsFireFirst && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
+    if (defenderSubsFireFirst
+        && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData))) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
@@ -184,12 +185,12 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     if (!defendingSubsFireWithAllDefendersAlways
         && !defendingSubsFireWithAllDefenders
         && !defenderSubsFireFirst
-        && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
+        && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData))) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
     if ((attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike())
-            || defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike()))
+            || defendingUnits.stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData)))
         && !defenderSubsFireFirst
         && !onlyAttackerSneakAttack
         && (returnFireAgainstDefendingSubs != ReturnFire.ALL
@@ -207,15 +208,15 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     // also, ww2v3/global rules, defending subs without sneak attack fire with all defenders
     final Collection<Unit> defendingUnitsAliveAndDamaged = new ArrayList<>(defendingUnits);
     defendingUnitsAliveAndDamaged.addAll(defendingWaitingToDie);
-    // TODO: BUG? why is unitCanNotTargetAll used instead of unitIsFirstStrike?
-    if (defendingUnitsAliveAndDamaged.stream().anyMatch(Matches.unitCanNotTargetAll())
+    if (defendingUnitsAliveAndDamaged.stream()
+            .anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData))
         && !defenderSubsFireFirst
         && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways)) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
     steps.addAll(airDefendVsNonSubs.getNames());
-    if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
+    if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(gameData).negate())) {
       steps.add(defender.getName() + FIRE);
       steps.add(attacker.getName() + SELECT_CASUALTIES);
     }

@@ -110,14 +110,22 @@ public class UnitsDrawer extends AbstractDrawable {
       throw new IllegalStateException("Type not found:" + unitType);
     }
     final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
+    final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;
     final Optional<Image> img =
-        uiContext
-            .getUnitImageFactory()
-            .getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
+        uiContext.getUnitImageFactory().getImage(type, owner, damagedImage, disabled);
 
     if (img.isEmpty() && !uiContext.isShutDown()) {
+      final String imageQualifier;
+      if (disabled) {
+        imageQualifier = "disabled ";
+      } else if (damagedImage) {
+        imageQualifier = "damaged ";
+      } else {
+        imageQualifier = "";
+      }
       log.severe(
           "MISSING UNIT IMAGE (won't be displayed): "
+              + imageQualifier
               + type.getName()
               + " owned by "
               + owner.getName()

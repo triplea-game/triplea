@@ -147,12 +147,20 @@ public final class ProSimulateTurnUtils {
                   usedUnits,
                   toData,
                   player);
+          if (toTransport == null) {
+            continue;
+          }
           toUnits.addAll(TransportTracker.transporting(toTransport));
         } else {
           toTransport = transferUnit(transport, unitTerritoryMap, usedUnits, toData, player);
+          if (toTransport == null) {
+            continue;
+          }
           for (final Unit u : amphibAttackMap.get(transport)) {
             final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
-            toUnits.add(toUnit);
+            if (toUnit != null) {
+              toUnits.add(toUnit);
+            }
           }
         }
         patd.addUnits(toUnits);
@@ -181,28 +189,34 @@ public final class ProSimulateTurnUtils {
       for (final Unit u : moveMap.get(fromTerritory).getUnits()) {
         if (!amphibUnits.contains(u)) {
           final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
-          patd.addUnit(toUnit);
-          ProLogger.trace("---Transferring unit " + u + " to " + toUnit);
+          if (toUnit != null) {
+            patd.addUnit(toUnit);
+            ProLogger.trace("---Transferring unit " + u + " to " + toUnit);
+          }
         }
       }
       for (final Unit u : moveMap.get(fromTerritory).getBombers()) {
         final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
-        patd.getBombers().add(toUnit);
-        ProLogger.trace("---Transferring bomber " + u + " to " + toUnit);
+        if (toUnit != null) {
+          patd.getBombers().add(toUnit);
+          ProLogger.trace("---Transferring bomber " + u + " to " + toUnit);
+        }
       }
       for (final Unit u : bombardMap.keySet()) {
         final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
-        patd.getBombardTerritoryMap()
-            .put(toUnit, toData.getMap().getTerritory(bombardMap.get(u).getName()));
-        ProLogger.trace(
-            "---Transferring bombard="
-                + u
-                + ", bombardFromTerritory="
-                + bombardMap.get(u)
-                + " to bombard="
-                + toUnit
-                + ", bombardFromTerritory="
-                + patd.getBombardTerritoryMap().get(toUnit));
+        if (toUnit != null) {
+          patd.getBombardTerritoryMap()
+              .put(toUnit, toData.getMap().getTerritory(bombardMap.get(u).getName()));
+          ProLogger.trace(
+              "---Transferring bombard="
+                  + u
+                  + ", bombardFromTerritory="
+                  + bombardMap.get(u)
+                  + " to bombard="
+                  + toUnit
+                  + ", bombardFromTerritory="
+                  + patd.getBombardTerritoryMap().get(toUnit));
+        }
       }
     }
     return result;
@@ -248,7 +262,7 @@ public final class ProSimulateTurnUtils {
     return false;
   }
 
-  private static Unit transferUnit(
+  private static @Nullable Unit transferUnit(
       final Unit u,
       final Map<Unit, Territory> unitTerritoryMap,
       final List<Unit> usedUnits,
@@ -272,7 +286,7 @@ public final class ProSimulateTurnUtils {
     return null;
   }
 
-  private static Unit transferLoadedTransport(
+  private static @Nullable Unit transferLoadedTransport(
       final Unit transport,
       final List<Unit> transportingUnits,
       final Map<Unit, Territory> unitTerritoryMap,

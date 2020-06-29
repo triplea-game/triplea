@@ -574,15 +574,14 @@ public class MustFightBattle extends DependentBattle
 
   @VisibleForTesting
   protected void remove(
-      final Collection<Unit> killed,
+      final Collection<Unit> killedUnits,
       final IDelegateBridge bridge,
       final Territory battleSite,
       final Boolean defenderDying) {
-    if (killed.isEmpty()) {
+    if (killedUnits.isEmpty()) {
       return;
     }
-    final Collection<Unit> dependent = getDependentUnits(killed);
-    killed.addAll(dependent);
+    final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
 
     // Set max damage for any units that will change into another unit
     final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();
@@ -1686,7 +1685,7 @@ public class MustFightBattle extends DependentBattle
         attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
         true,
         defender,
-        Matches.unitIsFirstStrike(),
+        Matches.unitIsFirstStrikeOnDefense(gameData),
         defendingUnits,
         defendingWaitingToDie,
         attackingUnits,
@@ -1726,7 +1725,7 @@ public class MustFightBattle extends DependentBattle
         attacker.getName() + SELECT_CASUALTIES,
         true,
         defender,
-        Matches.unitIsFirstStrike().negate(),
+        Matches.unitIsFirstStrikeOnDefense(gameData).negate(),
         defendingUnits,
         defendingWaitingToDie,
         attackingUnits,
