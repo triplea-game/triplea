@@ -66,6 +66,7 @@ public class LobbyWatcherController extends HttpController {
    * duplicate posts, the same gameId will be returned.
    */
   @RateLimited(
+      reportOnly = true,
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 20, duration = 4, timeUnit = TimeUnit.MINUTES)})
   @POST
@@ -104,6 +105,7 @@ public class LobbyWatcherController extends HttpController {
 
   /** Explicit remove of a game from the lobby. */
   @RateLimited(
+      reportOnly = true,
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @POST
@@ -120,6 +122,7 @@ public class LobbyWatcherController extends HttpController {
    * kept alive, or false indicates the game was already removed and the client should re-post.
    */
   @RateLimited(
+      reportOnly = true,
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @POST
@@ -130,6 +133,7 @@ public class LobbyWatcherController extends HttpController {
 
   /** Replaces an existing game with new game data details. */
   @RateLimited(
+      reportOnly = true,
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @POST
@@ -146,6 +150,7 @@ public class LobbyWatcherController extends HttpController {
   @POST
   @Path(LobbyWatcherClient.UPLOAD_CHAT_PATH)
   @RateLimited(
+      reportOnly = true,
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @RolesAllowed(UserRole.HOST)
@@ -173,6 +178,7 @@ public class LobbyWatcherController extends HttpController {
   @POST
   @Path(LobbyWatcherClient.PLAYER_JOINED_PATH)
   @RateLimited(
+      reportOnly = true,
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @RolesAllowed(UserRole.HOST)
@@ -190,6 +196,7 @@ public class LobbyWatcherController extends HttpController {
   @POST
   @Path(LobbyWatcherClient.PLAYER_LEFT_PATH)
   @RateLimited(
+      reportOnly = true,
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @RolesAllowed(UserRole.HOST)
