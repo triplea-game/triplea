@@ -49,7 +49,6 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     if (msg instanceof HasEndPointImplementor) {
       synchronized (endPointMutex) {
         final HasEndPointImplementor hasEndPoint = (HasEndPointImplementor) msg;
-        log.info("Adding endpoint: " + hasEndPoint + ", from: " + from);
         final Collection<INode> nodes =
             endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
         if (nodes.contains(from)) {
