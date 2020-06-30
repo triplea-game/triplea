@@ -319,8 +319,7 @@ public class ServerGame extends AbstractGame {
     // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
     for (final Player player : gamePlayers.values()) {
       // not sure whether to put this before or after we delegate execution block, but definitely
-      // before the game loader
-      // shutdown
+      // before the game loader shutdown
       player.stopGame();
     }
     // block delegate execution to prevent outbound messages to the players while we shut down.
