@@ -30,6 +30,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.common.UriEncoder;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.util.Arrays;
 
@@ -217,7 +218,8 @@ public class NodeBbForumPoster {
   }
 
   private Map<?, ?> queryUserInfo(final CloseableHttpClient client) throws IOException {
-    final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + username);
+    final String getUserInfoUri = forumUrl + "/api/user/username/" + UriEncoder.encode(username);
+    final HttpGet post = new HttpGet(getUserInfoUri);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       return (Map<?, ?>) load.loadFromString(EntityUtils.toString(response.getEntity()));
