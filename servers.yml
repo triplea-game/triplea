@@ -6,8 +6,7 @@ servers:
       Welcome to the TripleA 2.0 lobby!
       Please no politics, stay respectful, be welcoming, have fun.
 
-      The WWII Revised save-game loading problem has been fixed
-      on all bots.
+      Bots not starting games and changing maps problem has been fixed.
 
       Report any problems here:
       https://github.com/triplea-game/triplea/issues
