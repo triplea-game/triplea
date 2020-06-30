@@ -1517,7 +1517,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + ": Unable to get the value for "
               + propertyName
               + " from "
-              + propertyAttachmentName, e);
+              + propertyAttachmentName,
+          e);
     }
 
     if (!isValueTheSame) {
