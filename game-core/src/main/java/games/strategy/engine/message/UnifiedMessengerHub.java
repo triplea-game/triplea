@@ -14,10 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.extern.java.Log;
 
 /** The hub node in a spoke-hub messaging architecture. */
-@Log
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
   private final UnifiedMessenger localUnified;
   // the messenger we are based on
