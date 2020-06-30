@@ -105,7 +105,7 @@ public final class ClientFileSystemHelper {
    *     installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    return getUserMapsFolder(ClientFileSystemHelper::getRootFolder);
+    return getUserMapsFolder(ClientFileSystemHelper::getUserRootFolder);
   }
 
   @VisibleForTesting
