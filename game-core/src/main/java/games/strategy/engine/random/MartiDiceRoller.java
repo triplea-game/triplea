@@ -1,5 +1,6 @@
 package games.strategy.engine.random;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.ClientContext;
@@ -40,10 +41,13 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   private static final String DICE_ROLLER_PATH = "/MARTI.php";
 
   private final Pattern errorPattern = Pattern.compile("fatal error:(.*)!");
-  // Matches a comma separated list of integers like this:
-  // your dice are: 1,2,3 <p>
+
+  /**
+   * Matches a comma separated list of integers like this: {@literal your dice are: 1,2,3 <p>} or
+   * this: {@literal your dice are: 12,34,56 <p>}
+   */
   private final Pattern dicePattern =
-      Pattern.compile("your dice are:\\s*((?:\\d(?:,\\d+)*)?)\\s*<p>");
+      Pattern.compile("your dice are:\\s*((?:\\d+(?:,\\d+)*)?)\\s*<p>");
 
   @Nonnull private final URI diceRollerUri;
 
@@ -107,6 +111,7 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
     }
     return Splitter.on(',').omitEmptyStrings().splitToList(diceMatcher.group(1)).stream()
         .mapToInt(Integer::parseInt)
+        .peek(i -> Preconditions.checkState(i != 0, "Die can't be zero: '" + string + "'"))
         // -1 since we are 0 based
         .map(i -> i - 1)
         .toArray();
