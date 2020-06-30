@@ -24,18 +24,20 @@ public class AddUnits extends Change {
 
   AddUnits(final UnitCollection collection, final Collection<Unit> units) {
     this.units = units;
-    unitPlayerMap =
-        units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit.getOwner().getName()));
+    unitPlayerMap = getUnitPlayerMap(units);
     name = collection.getHolder().getName();
     type = collection.getHolder().getType();
   }
 
   AddUnits(final String name, final String type, final Collection<Unit> units) {
     this.units = units;
-    unitPlayerMap =
-        units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit.getOwner().getName()));
+    unitPlayerMap = getUnitPlayerMap(units);
     this.type = type;
     this.name = name;
+  }
+
+  private Map<UUID, String> getUnitPlayerMap(final Collection<Unit> units) {
+    return units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit.getOwner().getName()));
   }
 
   @Override
@@ -46,16 +48,20 @@ public class AddUnits extends Change {
   @Override
   protected void perform(final GameData data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
-    final Collection<Unit> unitsWithCorrectOwner = getUnitsWithOwner(unitPlayerMap, data);
+    final Collection<Unit> unitsWithCorrectOwner = getUnitsWithOwner(data);
     holder.getUnitCollection().addAll(unitsWithCorrectOwner);
   }
 
-  private Collection<Unit> getUnitsWithOwner(
-      final Map<UUID, String> unitPlayerMap, final GameData data) {
+  private Collection<Unit> getUnitsWithOwner(final GameData data) {
+    final Map<UUID, Unit> uuidToUnits =
+        units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit));
     return unitPlayerMap.entrySet().stream()
         .map(
             entry -> {
-              final Unit unit = data.getUnits().get(entry.getKey());
+              Unit unit = data.getUnits().get(entry.getKey());
+              if (unit == null) {
+                unit = uuidToUnits.get(entry.getKey());
+              }
               final GamePlayer player = data.getPlayerList().getPlayerId(entry.getValue());
               unit.setOwner(player);
               return unit;
@@ -71,8 +77,7 @@ public class AddUnits extends Change {
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
     if (unitPlayerMap == null) {
-      unitPlayerMap =
-          units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit.getOwner().getName()));
+      unitPlayerMap = getUnitPlayerMap(units);
     }
   }
 }
