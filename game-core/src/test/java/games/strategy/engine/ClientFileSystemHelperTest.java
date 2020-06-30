@@ -5,10 +5,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import games.strategy.triplea.settings.GameSetting;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
@@ -64,32 +65,24 @@ final class ClientFileSystemHelperTest {
     }
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
-  final class GetUserMapsFolderTest {
-    @Mock private GameSetting<Path> currentSetting;
-    @Mock private GameSetting<Path> overrideSetting;
-
-    private Path getUserMapsFolder() {
-      return ClientFileSystemHelper.getUserMapsFolder(currentSetting, overrideSetting);
-    }
-
+  final class GetUserMapsFolderTest extends AbstractClientSettingTestCase {
     @Test
     void shouldReturnCurrentFolderWhenOverrideFolderNotSet() {
-      when(overrideSetting.isSet()).thenReturn(false);
-      final Path currentFolder = Paths.get("/path", "to", "current");
-      when(currentSetting.getValueOrThrow()).thenReturn(currentFolder);
+      final File result =
+          ClientFileSystemHelper.getUserMapsFolder(() -> new File("/path/to/current"));
 
-      assertThat(getUserMapsFolder(), is(currentFolder));
+      assertThat(result, is(Paths.get("/path", "to", "current", "downloadedMaps").toFile()));
     }
 
     @Test
     void shouldReturnOverrideFolderWhenOverrideFolderSet() {
-      when(overrideSetting.isSet()).thenReturn(true);
-      final Path overrideFolder = Paths.get("/path", "to", "override");
-      when(overrideSetting.getValueOrThrow()).thenReturn(overrideFolder);
+      ClientSetting.mapFolderOverride.setValue(Paths.get("/path", "to", "override"));
 
-      assertThat(getUserMapsFolder(), is(overrideFolder));
+      final File result =
+          ClientFileSystemHelper.getUserMapsFolder(() -> new File("/path/to/current"));
+
+      assertThat(result, is(Paths.get("/path", "to", "override").toFile()));
     }
   }
 }

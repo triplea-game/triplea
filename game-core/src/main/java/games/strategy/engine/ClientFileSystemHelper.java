@@ -3,12 +3,12 @@ package games.strategy.engine;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.security.CodeSource;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.game.ApplicationContext;
@@ -105,25 +105,22 @@ public final class ClientFileSystemHelper {
    *     installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    final File mapsFolder =
-        getUserMapsFolder(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride)
-            .toFile();
-    if (!mapsFolder.exists()) {
-      mapsFolder.mkdirs();
-    }
-    if (!mapsFolder.exists()) {
-      log.severe("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
-    }
-    return mapsFolder;
+    return getUserMapsFolder(ClientFileSystemHelper::getUserRootFolder);
   }
 
   @VisibleForTesting
-  static Path getUserMapsFolder(
-      final GameSetting<Path> currentUserMapsFolderSetting,
-      final GameSetting<Path> overrideUserMapsFolderSetting) {
-    return overrideUserMapsFolderSetting.isSet()
-        ? overrideUserMapsFolderSetting.getValueOrThrow()
-        : currentUserMapsFolderSetting.getValueOrThrow();
+  static File getUserMapsFolder(final Supplier<File> userHomeRootFolderSupplier) {
+    final File mapsFolder =
+        ClientSetting.mapFolderOverride
+            .getValue()
+            .map(Path::toFile)
+            .orElseGet(
+                () -> userHomeRootFolderSupplier.get().toPath().resolve("downloadedMaps").toFile());
+
+    if (!mapsFolder.exists() && !mapsFolder.mkdirs()) {
+      log.severe("Error, could not create map download folder: " + mapsFolder.getAbsolutePath());
+    }
+    return mapsFolder;
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked. */
