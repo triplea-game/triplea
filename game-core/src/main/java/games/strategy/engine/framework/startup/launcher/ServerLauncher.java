@@ -206,10 +206,10 @@ public class ServerLauncher extends AbstractLauncher<Void> {
     launchAction.handleGameInterruption(gameSelectorModel, serverModel);
     serverModel.setServerLauncher(null);
     serverModel.newGame();
+    launchAction.onGameInterrupt();
     if (inGameLobbyWatcher != null) {
       inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
     }
-    launchAction.onGameInterrupt();
     log.info("Game Status: Waiting For Players");
   }
 
