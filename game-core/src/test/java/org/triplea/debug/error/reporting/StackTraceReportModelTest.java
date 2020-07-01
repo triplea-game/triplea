@@ -1,11 +1,12 @@
 package org.triplea.debug.error.reporting;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.LogRecord;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,7 @@ class StackTraceReportModelTest {
 
   @Mock private Consumer<ErrorReportRequest> preview;
 
-  @Mock private BiFunction<String, LogRecord, ErrorReportRequest> formatter;
+  @Mock private Function<ErrorReportRequestParams, ErrorReportRequest> formatter;
 
   @Mock private ErrorReportRequest errorReport;
 
@@ -60,7 +61,8 @@ class StackTraceReportModelTest {
 
     private void givenUploadSuccessResult(final boolean result) {
       when(stackTraceReportView.readUserDescription()).thenReturn(STRING_VALUE);
-      when(formatter.apply(STRING_VALUE, logRecord)).thenReturn(errorReport);
+      when(stackTraceReportView.readMapName()).thenReturn("mapName");
+      when(formatter.apply(any())).thenReturn(errorReport);
       when(uploader.test(errorReport)).thenReturn(result);
     }
 
@@ -77,7 +79,8 @@ class StackTraceReportModelTest {
   @Test
   void preview() {
     when(stackTraceReportView.readUserDescription()).thenReturn(STRING_VALUE);
-    when(formatter.apply(STRING_VALUE, logRecord)).thenReturn(errorReport);
+    when(stackTraceReportView.readMapName()).thenReturn("mapName");
+    when(formatter.apply(any())).thenReturn(errorReport);
 
     viewModel.previewAction();
 

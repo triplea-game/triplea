@@ -13,7 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import org.triplea.debug.error.reporting.StackTraceReportView;
+import org.triplea.debug.error.reporting.UploadDecisionModule;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.JButtonBuilder;
@@ -141,7 +141,7 @@ public enum ErrorMessage {
     INSTANCE.uploadButton.addActionListener(
         e -> {
           hide();
-          StackTraceReportView.showWindow(windowReference, errorReportClient, logRecord);
+          UploadDecisionModule.processUploadDecision(windowReference, errorReportClient, logRecord);
         });
   }
 

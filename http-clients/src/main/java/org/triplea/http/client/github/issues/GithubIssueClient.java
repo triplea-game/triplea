@@ -69,7 +69,7 @@ public class GithubIssueClient {
         githubOrg,
         githubRepo,
         CreateIssueRequest.builder()
-            .title(uploadRequest.getTitle())
+            .title(uploadRequest.getGameVersion() + ": " + uploadRequest.getTitle())
             .body(uploadRequest.getBody())
             .labels(new String[] {"Error Report"})
             .build());

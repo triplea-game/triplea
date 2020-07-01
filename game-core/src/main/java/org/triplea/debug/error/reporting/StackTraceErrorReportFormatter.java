@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 import javax.annotation.Nullable;
@@ -22,7 +22,8 @@ import org.triplea.http.client.error.report.ErrorReportRequest;
  * ErrorReport} object that we can send to the HTTP server.
  */
 @AllArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
-class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, ErrorReportRequest> {
+class StackTraceErrorReportFormatter
+    implements Function<ErrorReportRequestParams, ErrorReportRequest> {
 
   private final Supplier<String> versionSupplier;
 
@@ -31,10 +32,15 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
   }
 
   @Override
-  public ErrorReportRequest apply(final String userDescription, final LogRecord logRecord) {
+  public ErrorReportRequest apply(final ErrorReportRequestParams errorReportRequestParams) {
     return ErrorReportRequest.builder()
-        .title(versionSupplier.get() + ": " + createTitle(logRecord))
-        .body(buildBody(userDescription, logRecord))
+        .title(createTitle(errorReportRequestParams.getLogRecord()))
+        .body(
+            buildBody(
+                errorReportRequestParams.getUserDescription(),
+                errorReportRequestParams.getMapName(),
+                errorReportRequestParams.getLogRecord()))
+        .gameVersion(versionSupplier.get())
         .build();
   }
 
@@ -44,7 +50,7 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
    * logging or exception, and we expect for there to always either be at least a log message or an
    * exception.
    */
-  private static String createTitle(final LogRecord logRecord) {
+  static String createTitle(final LogRecord logRecord) {
     // if we have a stack trace with a triplea class in it, use that for the title;
     // EG: org.triplea.TripleaClass.method:[lineNumber] - [exception]; Caused by: [exception cause]
     return extractTripleAClassAndLine(logRecord)
@@ -132,9 +138,15 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
    * exception message (but that is okay!). Otherwise we will log base information like OS, TripleA
    * version and Java version.
    */
-  private String buildBody(@Nullable final String userDescription, final LogRecord logRecord) {
+  private String buildBody(
+      @Nullable final String userDescription,
+      @Nullable final String mapName,
+      final LogRecord logRecord) {
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
             .map(description -> "## User Description\n" + description + "\n\n")
+            .orElse("")
+        + Optional.ofNullable(Strings.emptyToNull(mapName))
+            .map(description -> "## Map\n" + mapName + "\n\n")
             .orElse("")
         + Optional.ofNullable(logRecord.getMessage())
             .map(msg -> "## Log Message\n" + msg + "\n\n")
@@ -158,11 +170,6 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
     try (PrintWriter printWriter = new PrintWriter(outputStream, false, StandardCharsets.UTF_8)) {
       e.printStackTrace(printWriter);
     }
-    return "## Exception \n"
-        + e.getClass().getName()
-        + Optional.ofNullable(e.getMessage()).map(msg -> ": " + msg).orElse("")
-        + "\n\n## Stack Trace\n```\n"
-        + outputStream.toString(StandardCharsets.UTF_8)
-        + "\n```\n\n";
+    return "## Stack Trace\n```\n" + outputStream.toString(StandardCharsets.UTF_8) + "\n```\n\n";
   }
 }

@@ -5,7 +5,7 @@ import es.moki.ratelimij.dropwizard.annotation.Rate;
 import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -15,6 +15,9 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.AppConfig;
 import org.triplea.http.HttpController;
+import org.triplea.http.client.SystemIdHeader;
+import org.triplea.http.client.error.report.CanUploadErrorReportResponse;
+import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
@@ -23,8 +26,8 @@ import org.triplea.http.client.github.issues.GithubIssueClient;
 /** Http controller that binds the error upload endpoint with the error report upload handler. */
 @Builder
 public class ErrorReportController extends HttpController {
-  @Nonnull
-  private final BiFunction<String, ErrorReportRequest, ErrorReportResponse> errorReportIngestion;
+  @Nonnull private final Function<CreateIssueParams, ErrorReportResponse> errorReportIngestion;
+  @Nonnull private final Function<CanUploadRequest, CanUploadErrorReportResponse> canReportModule;
 
   public static ErrorReportController build(final AppConfig configuration, final Jdbi jdbi) {
     final boolean isTest = configuration.getGithubApiToken().equals("test");
@@ -44,7 +47,24 @@ public class ErrorReportController extends HttpController {
 
     return ErrorReportController.builder()
         .errorReportIngestion(CreateIssueStrategy.build(githubIssueClient, jdbi))
+        .canReportModule(CanUploadErrorReportStrategy.build(jdbi))
         .build();
+  }
+
+  @POST
+  @Path(ErrorReportClient.CAN_UPLOAD_ERROR_REPORT_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
+  public CanUploadErrorReportResponse canUploadErrorReport(
+      final CanUploadRequest canUploadRequest) {
+    if (canUploadRequest == null
+        || canUploadRequest.getErrorTitle() == null
+        || canUploadRequest.getGameVersion() == null) {
+      throw new IllegalArgumentException("Missing request attributes title or game version");
+    }
+
+    return canReportModule.apply(canUploadRequest);
   }
 
   @POST
@@ -57,10 +77,18 @@ public class ErrorReportController extends HttpController {
   public ErrorReportResponse uploadErrorReport(
       @Context final HttpServletRequest request, final ErrorReportRequest errorReport) {
 
-    if (errorReport.getBody() == null || errorReport.getTitle() == null) {
-      throw new IllegalArgumentException("Missing error report body and/or title");
+    if (errorReport == null
+        || errorReport.getBody() == null
+        || errorReport.getTitle() == null
+        || errorReport.getGameVersion() == null) {
+      throw new IllegalArgumentException("Missing attribute, body, title, or game version");
     }
 
-    return errorReportIngestion.apply(request.getRemoteAddr(), errorReport);
+    return errorReportIngestion.apply(
+        CreateIssueParams.builder()
+            .ip(request.getRemoteAddr())
+            .systemId(request.getHeader(SystemIdHeader.SYSTEM_ID_HEADER))
+            .errorReportRequest(errorReport)
+            .build());
   }
 }
