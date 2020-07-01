@@ -1781,6 +1781,11 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
+  @Deprecated
+  public boolean getIsSuicide() {
+    return isSuicideOnAttack || isSuicideOnDefense;
+  }
+
   private void setIsSuicideOnAttack(final Boolean s) {
     isSuicideOnAttack = s;
   }
@@ -3841,7 +3846,8 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsMarine, this::setIsMarine, this::getIsMarine, this::resetIsMarine))
         .put(
             "isSuicide",
-            MutableProperty.<Boolean>ofWriteOnly(this::setIsSuicide, this::setIsSuicide))
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool, this::setIsSuicide, this::getIsSuicide, () -> false))
         .put(
             "isSuicideOnAttack",
             MutableProperty.ofMapper(
