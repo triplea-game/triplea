@@ -10,6 +10,9 @@ public interface StackTraceReportView {
   /** Returns the data user has entered in the error description field. */
   String readUserDescription();
 
+  /** Returns the data user entered for map name. */
+  String readMapName();
+
   /** Method where UI components should bind components actions to model methods. */
   void bindActions(StackTraceReportModel viewModel);
 

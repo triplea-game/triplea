@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 import javax.annotation.Nullable;
@@ -22,7 +22,8 @@ import org.triplea.http.client.error.report.ErrorReportRequest;
  * ErrorReport} object that we can send to the HTTP server.
  */
 @AllArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
-class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, ErrorReportRequest> {
+class StackTraceErrorReportFormatter
+    implements Function<ErrorReportRequestParams, ErrorReportRequest> {
 
   private final Supplier<String> versionSupplier;
 
@@ -31,10 +32,14 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
   }
 
   @Override
-  public ErrorReportRequest apply(final String userDescription, final LogRecord logRecord) {
+  public ErrorReportRequest apply(final ErrorReportRequestParams errorReportRequestParams) {
     return ErrorReportRequest.builder()
-        .title(createTitle(logRecord))
-        .body(buildBody(userDescription, logRecord))
+        .title(createTitle(errorReportRequestParams.getLogRecord()))
+        .body(
+            buildBody(
+                errorReportRequestParams.getUserDescription(),
+                errorReportRequestParams.getMapName(),
+                errorReportRequestParams.getLogRecord()))
         .gameVersion(versionSupplier.get())
         .build();
   }
@@ -133,9 +138,15 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
    * exception message (but that is okay!). Otherwise we will log base information like OS, TripleA
    * version and Java version.
    */
-  private String buildBody(@Nullable final String userDescription, final LogRecord logRecord) {
+  private String buildBody(
+      @Nullable final String userDescription,
+      @Nullable final String mapName,
+      final LogRecord logRecord) {
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
             .map(description -> "## User Description\n" + description + "\n\n")
+            .orElse("")
+        + Optional.ofNullable(Strings.emptyToNull(mapName))
+            .map(description -> "## Map\n" + mapName + "\n\n")
             .orElse("")
         + Optional.ofNullable(logRecord.getMessage())
             .map(msg -> "## Log Message\n" + msg + "\n\n")
