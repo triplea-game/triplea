@@ -170,11 +170,6 @@ class StackTraceErrorReportFormatter
     try (PrintWriter printWriter = new PrintWriter(outputStream, false, StandardCharsets.UTF_8)) {
       e.printStackTrace(printWriter);
     }
-    return "## Exception \n"
-        + e.getClass().getName()
-        + Optional.ofNullable(e.getMessage()).map(msg -> ": " + msg).orElse("")
-        + "\n\n## Stack Trace\n```\n"
-        + outputStream.toString(StandardCharsets.UTF_8)
-        + "\n```\n\n";
+    return "## Stack Trace\n```\n" + outputStream.toString(StandardCharsets.UTF_8) + "\n```\n\n";
   }
 }
