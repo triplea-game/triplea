@@ -20,23 +20,28 @@ public class AddUnits extends Change {
   private final String name;
   private final Collection<Unit> units;
   private final String type;
-  private Map<UUID, String> unitPlayerMap;
+  /**
+   * The unit's owner can be modified sometime after this Change is created but before it is
+   * performed. To ensure that the newly created units have the correct ownership, their original
+   * owners are stored in this separate map.
+   */
+  private Map<UUID, String> unitOwnerMap;
 
   AddUnits(final UnitCollection collection, final Collection<Unit> units) {
     this.units = units;
-    unitPlayerMap = getUnitPlayerMap(units);
+    unitOwnerMap = buildUnitOwnerMap(units);
     name = collection.getHolder().getName();
     type = collection.getHolder().getType();
   }
 
   AddUnits(final String name, final String type, final Collection<Unit> units) {
     this.units = units;
-    unitPlayerMap = getUnitPlayerMap(units);
+    unitOwnerMap = buildUnitOwnerMap(units);
     this.type = type;
     this.name = name;
   }
 
-  private Map<UUID, String> getUnitPlayerMap(final Collection<Unit> units) {
+  private Map<UUID, String> buildUnitOwnerMap(final Collection<Unit> units) {
     return units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit.getOwner().getName()));
   }
 
@@ -48,14 +53,14 @@ public class AddUnits extends Change {
   @Override
   protected void perform(final GameData data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
-    final Collection<Unit> unitsWithCorrectOwner = getUnitsWithOwner(data);
+    final Collection<Unit> unitsWithCorrectOwner = buildUnitsWithOwner(data);
     holder.getUnitCollection().addAll(unitsWithCorrectOwner);
   }
 
-  private Collection<Unit> getUnitsWithOwner(final GameData data) {
+  private Collection<Unit> buildUnitsWithOwner(final GameData data) {
     final Map<UUID, Unit> uuidToUnits =
         units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit));
-    return unitPlayerMap.entrySet().stream()
+    return unitOwnerMap.entrySet().stream()
         .map(
             entry -> {
               Unit unit = data.getUnits().get(entry.getKey());
@@ -76,8 +81,8 @@ public class AddUnits extends Change {
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
-    if (unitPlayerMap == null) {
-      unitPlayerMap = getUnitPlayerMap(units);
+    if (unitOwnerMap == null) {
+      unitOwnerMap = buildUnitOwnerMap(units);
     }
   }
 }
