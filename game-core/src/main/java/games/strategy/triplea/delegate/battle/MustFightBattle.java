@@ -710,7 +710,7 @@ public class MustFightBattle extends DependentBattle
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
     }
     // push on stack in opposite order of execution
-    pushFightLoopOnStack(true);
+    pushFightLoopOnStack();
     stack.execute(bridge);
   }
 
@@ -1019,11 +1019,11 @@ public class MustFightBattle extends DependentBattle
     return possible;
   }
 
-  private void pushFightLoopOnStack(final boolean firstRun) {
+  private void pushFightLoopOnStack() {
     if (isOver) {
       return;
     }
-    final List<IExecutable> steps = getBattleExecutables(firstRun);
+    final List<IExecutable> steps = getBattleExecutables();
     // add in the reverse order we create them
     Collections.reverse(steps);
     for (final IExecutable step : steps) {
@@ -1059,15 +1059,15 @@ public class MustFightBattle extends DependentBattle
    * still needed. They can be safely removed once save compatibility can be broken.
    */
   @VisibleForTesting
-  public List<IExecutable> getBattleExecutables(final boolean firstRun) {
+  public List<IExecutable> getBattleExecutables() {
     final List<IExecutable> steps = new ArrayList<>();
-    addFightStartSteps(firstRun, steps);
+    addFightStartSteps(steps);
     addFightSteps(steps);
     addCheckEndBattleAndRetreatingSteps(steps);
     return steps;
   }
 
-  private void addFightStartSteps(final boolean firstRun, final List<IExecutable> steps) {
+  private void addFightStartSteps(final List<IExecutable> steps) {
     if (offensiveAa == null) {
       updateOffensiveAaUnits();
     }
@@ -1922,7 +1922,7 @@ public class MustFightBattle extends DependentBattle
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            pushFightLoopOnStack(false);
+            pushFightLoopOnStack();
           }
         };
     steps.add(
