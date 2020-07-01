@@ -22,10 +22,12 @@ public interface BattleStep extends IExecutable {
     AA_DEFENSIVE,
     NAVAL_BOMBARDMENT,
     SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE,
+    SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE,
     SUBMERGE_SUBS_VS_ONLY_AIR,
     AIR_OFFENSIVE_NON_SUBS,
     AIR_DEFENSIVE_NON_SUBS,
     SUB_OFFENSIVE_RETREAT_AFTER_BATTLE,
+    SUB_DEFENSIVE_RETREAT_AFTER_BATTLE,
   }
 
   /** @return a list of names that will be shown in {@link games.strategy.triplea.ui.BattlePanel} */
