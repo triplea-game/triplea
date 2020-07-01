@@ -23,7 +23,6 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -1121,8 +1120,7 @@ public class MustFightBattle extends DependentBattle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep removeNonCombatants =
-            new RemoveNonCombatants(MustFightBattle.this);
+        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
       }
     };
@@ -1143,8 +1141,7 @@ public class MustFightBattle extends DependentBattle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep removeNonCombatants =
-            new RemoveNonCombatants(MustFightBattle.this);
+        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
       }
     };
@@ -1165,7 +1162,8 @@ public class MustFightBattle extends DependentBattle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep markNoMovementLeft = new MarkNoMovementLeft(MustFightBattle.this, MustFightBattle.this);
+        final BattleStep markNoMovementLeft =
+            new MarkNoMovementLeft(MustFightBattle.this, MustFightBattle.this);
         markNoMovementLeft.execute(stack, bridge);
       }
     };
@@ -1394,7 +1392,10 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void landParatroopers(final IDelegateBridge bridge, final Collection<Unit> airTransports, final Collection<Unit> dependents) {
+  public void landParatroopers(
+      final IDelegateBridge bridge,
+      final Collection<Unit> airTransports,
+      final Collection<Unit> dependents) {
     final CompositeChange change = new CompositeChange();
     // remove dependency from paratroopers by unloading the air transports
     for (final Unit unit : dependents) {

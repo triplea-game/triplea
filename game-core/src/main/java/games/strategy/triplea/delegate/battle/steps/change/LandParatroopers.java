@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -26,20 +27,9 @@ public class LandParatroopers implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    if (battleState.getBattleRound() == 1) {
-      if (!battleState.getBattleSite().isWater()
-          && TechAttachment.isAirTransportable(battleState.getAttacker())) {
-        final Collection<Unit> bombers =
-            CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport());
-        if (!bombers.isEmpty()) {
-          final Collection<Unit> dependents = battleState.getDependentUnits(bombers);
-          if (!dependents.isEmpty()) {
-            return List.of(LAND_PARATROOPS);
-          }
-        }
-      }
-    }
-    return List.of();
+    final TransportsAndParatroopers transportsAndParatroopers = getTransportsAndParatroopers();
+
+    return transportsAndParatroopers.hasParatroopers() ? List.of(LAND_PARATROOPS) : List.of();
   }
 
   @Override
@@ -49,16 +39,38 @@ public class LandParatroopers implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    final TransportsAndParatroopers transportsAndParatroopers = getTransportsAndParatroopers();
+
+    if (transportsAndParatroopers.hasParatroopers()) {
+      battleActions.landParatroopers(
+          bridge, transportsAndParatroopers.airTransports, transportsAndParatroopers.paratroopers);
+    }
+  }
+
+  private static class TransportsAndParatroopers {
+    private Collection<Unit> airTransports = new ArrayList<>();
+    private Collection<Unit> paratroopers = new ArrayList<>();
+
+    private boolean hasParatroopers() {
+      return !airTransports.isEmpty() && !paratroopers.isEmpty();
+    }
+  }
+
+  private TransportsAndParatroopers getTransportsAndParatroopers() {
+    final TransportsAndParatroopers transportsAndParatroopers = new TransportsAndParatroopers();
     if (!battleState.getBattleSite().isWater()
-     && TechAttachment.isAirTransportable(battleState.getAttacker())) {
+        && TechAttachment.isAirTransportable(battleState.getAttacker())) {
       final Collection<Unit> airTransports =
-          CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport());
+          CollectionUtils.getMatches(
+              battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport());
       if (!airTransports.isEmpty()) {
-        final Collection<Unit> dependents = battleState.getDependentUnits(airTransports);
-        if (!dependents.isEmpty()) {
-          battleActions.landParatroopers(bridge, airTransports, dependents);
+        final Collection<Unit> paratroopers = battleState.getDependentUnits(airTransports);
+        if (!paratroopers.isEmpty()) {
+          transportsAndParatroopers.airTransports = airTransports;
+          transportsAndParatroopers.paratroopers = paratroopers;
         }
       }
     }
+    return transportsAndParatroopers;
   }
 }
