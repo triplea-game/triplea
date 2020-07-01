@@ -5,8 +5,9 @@ servers:
     message: |
       Welcome to the TripleA 2.0 lobby!
       Please no politics, stay respectful, be welcoming, have fun.
-
-      Bots not starting games and changing maps problem has been fixed.
+      
+      Join the TripleA ranked ladder by posting here:
+      https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
 
       Report any problems here:
       https://github.com/triplea-game/triplea/issues
