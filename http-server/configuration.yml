@@ -37,3 +37,11 @@ database:
 
   # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
   minIdleTime: 1 minute
+
+
+logging:
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+  loggers:
+    # Set this to DEBUG to troubleshoot HTTP 400 "Unable to process JSON" errors.
+    io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper: INFO
