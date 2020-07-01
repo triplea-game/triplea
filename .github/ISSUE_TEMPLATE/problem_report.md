@@ -31,7 +31,7 @@ Game Version:
 ### If playing a prerelease, does this happen on the latest release?
 <!-- If you downloaded the game from the triplea-game.org website, leave this blank -->
 
-- [ ] yes
-- [ ] no
+- [] yes
+- [] no
 
 ### Is there anything else we should know?
