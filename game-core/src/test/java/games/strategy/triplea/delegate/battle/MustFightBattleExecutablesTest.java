@@ -47,6 +47,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import java.math.BigDecimal;
@@ -143,7 +144,7 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    assertThatStepExists(execs, MustFightBattle.LandParatroopers.class);
+    assertThatStepExists(execs, LandParatroopers.class);
   }
 
   @Test
@@ -167,7 +168,7 @@ class MustFightBattleExecutablesTest {
 
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.LandParatroopers.class);
+    final int index = getIndex(execs, LandParatroopers.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
@@ -187,7 +188,7 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.LandParatroopers.class);
+    final int index = getIndex(execs, LandParatroopers.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
@@ -204,7 +205,13 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(false);
 
-    assertThatStepIsMissing(execs, MustFightBattle.LandParatroopers.class);
+    final int index = getIndex(execs, LandParatroopers.class);
+    final IExecutable step = execs.get(index);
+
+    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
+    step.execute(null, delegateBridge);
+
+    verify(delegateBridge, never()).addChange(any());
   }
 
   @Test
@@ -228,7 +235,7 @@ class MustFightBattleExecutablesTest {
 
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.LandParatroopers.class);
+    final int index = getIndex(execs, LandParatroopers.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);

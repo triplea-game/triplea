@@ -23,6 +23,12 @@ public interface BattleActions {
 
   void fireNavalBombardment(IDelegateBridge bridge);
 
+  void landParatroopers(final IDelegateBridge bridge, final Collection<Unit> airTransports, final Collection<Unit> dependents);
+
+  void removeNonCombatants(final IDelegateBridge bridge);
+
+  void markNoMovementLeft(final IDelegateBridge bridge);
+
   void endBattle(IDelegateBridge bridge);
 
   void attackerWins(IDelegateBridge bridge);

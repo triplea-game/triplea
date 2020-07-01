@@ -35,6 +35,9 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
+import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
+import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -95,16 +98,6 @@ public class MustFightBattle extends DependentBattle
    */
   public abstract static class ClearAaWaitingToDieAndDamagedChangesInto implements IExecutable {
     private static final long serialVersionUID = -3223166334485741752L;
-  }
-
-  /**
-   * An action representing landing paratroopers.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class LandParatroopers implements IExecutable {
-    private static final long serialVersionUID = 5936225914851941086L;
   }
 
   /**
@@ -1083,6 +1076,9 @@ public class MustFightBattle extends DependentBattle
       updateDefendingAaUnits();
     }
     final BattleStep navalBombardment = new NavalBombardment(this, this);
+    final BattleStep landParatroopers = new LandParatroopers(this, this);
+    final BattleStep removeNonCombatants = new RemoveNonCombatants(this);
+    final BattleStep markNoMovementLeft = new MarkNoMovementLeft(this, this);
     final boolean offensiveAa = canFireOffensiveAa();
     final boolean defendingAa = canFireDefendingAa();
     final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
@@ -1120,18 +1116,18 @@ public class MustFightBattle extends DependentBattle
             }
           });
     }
-    if (round > 1) {
-      steps.add(
-          new IExecutable() {
-            private static final long serialVersionUID = 2781652892457063082L;
+    new IExecutable() {
+      private static final long serialVersionUID = 2781652892457063082L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              removeNonCombatants(bridge);
-            }
-          });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep removeNonCombatants =
+            new RemoveNonCombatants(MustFightBattle.this);
+        removeNonCombatants.execute(stack, bridge);
+      }
+    };
     steps.add(navalBombardment);
+    steps.add(removeNonCombatants);
     new IExecutable() {
       private static final long serialVersionUID = -2255284529092427441L;
 
@@ -1142,35 +1138,37 @@ public class MustFightBattle extends DependentBattle
         navalBombardment.execute(stack, bridge);
       }
     };
-    if (firstRun) {
-      steps.add(
-          new IExecutable() {
-            private static final long serialVersionUID = 3389635558184415797L;
+    new IExecutable() {
+      private static final long serialVersionUID = 3389635558184415797L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              removeNonCombatants(bridge);
-            }
-          });
-      steps.add(
-          new LandParatroopers() {
-            private static final long serialVersionUID = 7193353768857658286L;
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep removeNonCombatants =
+            new RemoveNonCombatants(MustFightBattle.this);
+        removeNonCombatants.execute(stack, bridge);
+      }
+    };
+    steps.add(landParatroopers);
+    new IExecutable() {
+      private static final long serialVersionUID = 7193353768857658286L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              landParatroops(bridge);
-            }
-          });
-      steps.add(
-          new IExecutable() {
-            private static final long serialVersionUID = -6676316363537467594L;
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep landParatroopers =
+            new LandParatroopers(MustFightBattle.this, MustFightBattle.this);
+        landParatroopers.execute(stack, bridge);
+      }
+    };
+    steps.add(markNoMovementLeft);
+    new IExecutable() {
+      private static final long serialVersionUID = -6676316363537467594L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              markNoMovementLeft(bridge);
-            }
-          });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep markNoMovementLeft = new MarkNoMovementLeft(MustFightBattle.this, MustFightBattle.this);
+        markNoMovementLeft.execute(stack, bridge);
+      }
+    };
   }
 
   @Override
@@ -1331,7 +1329,8 @@ public class MustFightBattle extends DependentBattle
     return result;
   }
 
-  private void removeNonCombatants(final IDelegateBridge bridge) {
+  @Override
+  public void removeNonCombatants(final IDelegateBridge bridge) {
     final List<Unit> notRemovedDefending = removeNonCombatants(defendingUnits, false, true);
     final List<Unit> notRemovedAttacking = removeNonCombatants(attackingUnits, true, true);
     final Collection<Unit> toRemoveDefending =
@@ -1394,29 +1393,22 @@ public class MustFightBattle extends DependentBattle
     return unitList;
   }
 
-  private void landParatroops(final IDelegateBridge bridge) {
-    if (TechAttachment.isAirTransportable(attacker)) {
-      final Collection<Unit> airTransports =
-          CollectionUtils.getMatches(battleSite.getUnits(), Matches.unitIsAirTransport());
-      if (!airTransports.isEmpty()) {
-        final Collection<Unit> dependents = getDependentUnits(airTransports);
-        if (!dependents.isEmpty()) {
-          final CompositeChange change = new CompositeChange();
-          // remove dependency from paratroopers by unloading the air transports
-          for (final Unit unit : dependents) {
-            change.add(TransportTracker.unloadAirTransportChange(unit, battleSite, false));
-          }
-          bridge.addChange(change);
-          // remove bombers from dependentUnits
-          for (final Unit unit : airTransports) {
-            dependentUnits.remove(unit);
-          }
-        }
-      }
+  @Override
+  public void landParatroopers(final IDelegateBridge bridge, final Collection<Unit> airTransports, final Collection<Unit> dependents) {
+    final CompositeChange change = new CompositeChange();
+    // remove dependency from paratroopers by unloading the air transports
+    for (final Unit unit : dependents) {
+      change.add(TransportTracker.unloadAirTransportChange(unit, battleSite, false));
+    }
+    bridge.addChange(change);
+    // remove bombers from dependentUnits
+    for (final Unit unit : airTransports) {
+      dependentUnits.remove(unit);
     }
   }
 
-  private void markNoMovementLeft(final IDelegateBridge bridge) {
+  @Override
+  public void markNoMovementLeft(final IDelegateBridge bridge) {
     if (headless) {
       return;
     }
