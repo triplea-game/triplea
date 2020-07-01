@@ -4,6 +4,7 @@ import com.google.common.base.Ascii;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.triplea.http.client.github.issues.GithubIssueClient;
@@ -17,6 +18,7 @@ import org.triplea.http.client.github.issues.GithubIssueClient;
 public class ErrorReportRequest {
   private String title;
   private String body;
+  @Getter private String gameVersion;
 
   public String getTitle() {
     return title == null ? null : Ascii.truncate(title, GithubIssueClient.TITLE_MAX_LENGTH, "...");

@@ -36,6 +36,19 @@ class StackTraceErrorReportFormatterTest {
   @Mock private LogRecord logRecord;
 
   @Nested
+  final class VerifyVersion {
+    @Test
+    void verifyVersion() {
+      when(logRecord.getSourceClassName()).thenReturn("org.ClassName");
+
+      final ErrorReportRequest errorReportResult =
+          new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
+
+      assertThat(errorReportResult.getGameVersion(), is("4.1"));
+    }
+  }
+
+  @Nested
   final class VerifyTitle {
     @Test
     void logMessageOnly() {
@@ -47,7 +60,7 @@ class StackTraceErrorReportFormatterTest {
           new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
-          errorReportResult.getTitle(), is("4.1: ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
+          errorReportResult.getTitle(), is("ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
     }
 
     @Test
@@ -60,7 +73,7 @@ class StackTraceErrorReportFormatterTest {
           new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
-          errorReportResult.getTitle(), is("4.1: ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
+          errorReportResult.getTitle(), is("ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
     }
 
     @Test
@@ -73,8 +86,7 @@ class StackTraceErrorReportFormatterTest {
       assertThat(
           errorReportResult.getTitle(),
           is(
-              "5.6: "
-                  + StackTraceErrorReportFormatterTest.class.getSimpleName()
+              StackTraceErrorReportFormatterTest.class.getSimpleName()
                   + "#<clinit>:"
                   + EXCEPTION_WITH_NO_MESSAGE.getStackTrace()[0].getLineNumber()
                   + " - "
@@ -102,8 +114,7 @@ class StackTraceErrorReportFormatterTest {
       assertThat(
           errorReportResult.getTitle(),
           is(
-              "5.6: "
-                  + StackTraceErrorReportFormatterTest.class.getSimpleName()
+              StackTraceErrorReportFormatterTest.class.getSimpleName()
                   + "#<clinit>:"
                   + EXCEPTION_WITH_CAUSE.getCause().getStackTrace()[0].getLineNumber()
                   + " - "

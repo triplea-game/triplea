@@ -33,8 +33,9 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
   @Override
   public ErrorReportRequest apply(final String userDescription, final LogRecord logRecord) {
     return ErrorReportRequest.builder()
-        .title(versionSupplier.get() + ": " + createTitle(logRecord))
+        .title(createTitle(logRecord))
         .body(buildBody(userDescription, logRecord))
+        .gameVersion(versionSupplier.get())
         .build();
   }
 
@@ -44,7 +45,7 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
    * logging or exception, and we expect for there to always either be at least a log message or an
    * exception.
    */
-  private static String createTitle(final LogRecord logRecord) {
+  static String createTitle(final LogRecord logRecord) {
     // if we have a stack trace with a triplea class in it, use that for the title;
     // EG: org.triplea.TripleaClass.method:[lineNumber] - [exception]; Caused by: [exception cause]
     return extractTripleAClassAndLine(logRecord)
