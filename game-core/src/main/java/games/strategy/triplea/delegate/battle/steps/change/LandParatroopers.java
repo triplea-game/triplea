@@ -58,7 +58,8 @@ public class LandParatroopers implements BattleStep {
 
   private TransportsAndParatroopers getTransportsAndParatroopers() {
     final TransportsAndParatroopers transportsAndParatroopers = new TransportsAndParatroopers();
-    if (!battleState.getBattleSite().isWater()
+    if (battleState.getBattleRound() == 1
+        && !battleState.getBattleSite().isWater()
         && TechAttachment.isAirTransportable(battleState.getAttacker())) {
       final Collection<Unit> airTransports =
           CollectionUtils.getMatches(
