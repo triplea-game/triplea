@@ -1053,18 +1053,19 @@ public class MustFightBattle extends DependentBattle
     if (defendingAa == null) {
       updateDefendingAaUnits();
     }
-    final List<BattleStep> startSteps = List.of(
-        new OffensiveAaFire(this, this),
-        new DefensiveAaFire(this, this),
-        new ClearAaCasualties(this, this),
-        new NavalBombardment(this, this),
-        new RemoveNonCombatants(this),
-        new LandParatroopers(this, this),
-        new MarkNoMovementLeft(this, this)
-    );
-    steps.addAll(startSteps.stream()
-        .sorted(Comparator.comparing(BattleStep::getOrder))
-        .collect(Collectors.toList()));
+    final List<BattleStep> startSteps =
+        List.of(
+            new OffensiveAaFire(this, this),
+            new DefensiveAaFire(this, this),
+            new ClearAaCasualties(this, this),
+            new NavalBombardment(this, this),
+            new RemoveNonCombatants(this),
+            new LandParatroopers(this, this),
+            new MarkNoMovementLeft(this, this));
+    steps.addAll(
+        startSteps.stream()
+            .sorted(Comparator.comparing(BattleStep::getOrder))
+            .collect(Collectors.toList()));
   }
 
   // the IExecutables in this block can be deleted when save compatibility can be broken
