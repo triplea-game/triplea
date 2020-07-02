@@ -20,6 +20,7 @@ public interface BattleStep extends IExecutable {
   enum Order {
     AA_OFFENSIVE,
     AA_DEFENSIVE,
+    AA_REMOVE_CASUALTIES,
     NAVAL_BOMBARDMENT,
     REMOVE_NON_COMBATANTS,
     LAND_PARATROOPERS,

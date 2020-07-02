@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
+import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
@@ -87,16 +88,6 @@ public class MustFightBattle extends DependentBattle
     SUBS,
     PLANES,
     PARTIAL_AMPHIB
-  }
-
-  /**
-   * An action representing clearing damaged units during the aa round.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class ClearAaWaitingToDieAndDamagedChangesInto implements IExecutable {
-    private static final long serialVersionUID = -3223166334485741752L;
   }
 
   /**
@@ -441,7 +432,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  private void clearWaitingToDieAndDamagedChangesInto(final IDelegateBridge bridge) {
+  @Override
+  public void clearWaitingToDieAndDamagedChangesInto(final IDelegateBridge bridge) {
     final Collection<Unit> unitsToRemove = new ArrayList<>();
     unitsToRemove.addAll(attackingWaitingToDie);
     unitsToRemove.addAll(defendingWaitingToDie);
@@ -1074,15 +1066,25 @@ public class MustFightBattle extends DependentBattle
     if (defendingAa == null) {
       updateDefendingAaUnits();
     }
+    final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
+    final BattleStep defensiveAaStep = new DefensiveAaFire(this, this);
+    final BattleStep clearAaCasualties = new ClearAaCasualties(this, this);
     final BattleStep navalBombardment = new NavalBombardment(this, this);
     final BattleStep landParatroopers = new LandParatroopers(this, this);
     final BattleStep removeNonCombatants = new RemoveNonCombatants(this);
     final BattleStep markNoMovementLeft = new MarkNoMovementLeft(this, this);
-    final boolean offensiveAa = canFireOffensiveAa();
-    final boolean defendingAa = canFireDefendingAa();
-    final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
-    final BattleStep defensiveAaStep = new DefensiveAaFire(this, this);
     steps.add(offensiveAaStep);
+    steps.add(defensiveAaStep);
+    steps.add(clearAaCasualties);
+    steps.add(navalBombardment);
+    steps.add(removeNonCombatants);
+    steps.add(landParatroopers);
+    steps.add(markNoMovementLeft);
+  }
+
+  // the IExecutables in this block can be deleted when save compatibility can be broken
+  {
+    // Removed in 2.0
     new IExecutable() {
       private static final long serialVersionUID = 3802352588499530533L;
 
@@ -1093,7 +1095,7 @@ public class MustFightBattle extends DependentBattle
         offensiveAaStep.execute(stack, bridge);
       }
     };
-    steps.add(defensiveAaStep);
+    // Removed in 2.0
     new IExecutable() {
       private static final long serialVersionUID = -1370090785540214199L;
 
@@ -1104,17 +1106,18 @@ public class MustFightBattle extends DependentBattle
         defensiveAaStep.execute(stack, bridge);
       }
     };
-    if (offensiveAa || defendingAa) {
-      steps.add(
-          new ClearAaWaitingToDieAndDamagedChangesInto() {
-            private static final long serialVersionUID = 8762796262264296436L;
+    // Removed in 2.1
+    new IExecutable() {
+      private static final long serialVersionUID = 8762796262264296436L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              clearWaitingToDieAndDamagedChangesInto(bridge);
-            }
-          });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep clearAaCasualties =
+            new ClearAaCasualties(MustFightBattle.this, MustFightBattle.this);
+        clearAaCasualties.execute(stack, bridge);
+      }
+    };
+    // Removed in 2.1
     new IExecutable() {
       private static final long serialVersionUID = 2781652892457063082L;
 
@@ -1124,8 +1127,7 @@ public class MustFightBattle extends DependentBattle
         removeNonCombatants.execute(stack, bridge);
       }
     };
-    steps.add(navalBombardment);
-    steps.add(removeNonCombatants);
+    // Removed in 2.0
     new IExecutable() {
       private static final long serialVersionUID = -2255284529092427441L;
 
@@ -1136,6 +1138,7 @@ public class MustFightBattle extends DependentBattle
         navalBombardment.execute(stack, bridge);
       }
     };
+    // Removed in 2.1
     new IExecutable() {
       private static final long serialVersionUID = 3389635558184415797L;
 
@@ -1145,7 +1148,7 @@ public class MustFightBattle extends DependentBattle
         removeNonCombatants.execute(stack, bridge);
       }
     };
-    steps.add(landParatroopers);
+    // Removed in 2.1
     new IExecutable() {
       private static final long serialVersionUID = 7193353768857658286L;
 
@@ -1156,7 +1159,7 @@ public class MustFightBattle extends DependentBattle
         landParatroopers.execute(stack, bridge);
       }
     };
-    steps.add(markNoMovementLeft);
+    // Removed in 2.1
     new IExecutable() {
       private static final long serialVersionUID = -6676316363537467594L;
 

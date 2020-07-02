@@ -30,6 +30,8 @@ public interface BattleActions {
 
   void markNoMovementLeft(IDelegateBridge bridge);
 
+  void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge);
+
   void endBattle(IDelegateBridge bridge);
 
   void attackerWins(IDelegateBridge bridge);
