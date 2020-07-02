@@ -52,6 +52,7 @@ import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -871,20 +872,6 @@ public class MustFightBattle extends DependentBattle
         .get();
   }
 
-  private boolean canFireOffensiveAa() {
-    if (offensiveAa == null) {
-      updateOffensiveAaUnits();
-    }
-    return !offensiveAa.isEmpty();
-  }
-
-  private boolean canFireDefendingAa() {
-    if (defendingAa == null) {
-      updateDefendingAaUnits();
-    }
-    return !defendingAa.isEmpty();
-  }
-
   private boolean canAttackerRetreatInStalemate() {
     // First check if any units have an explicit "can retreat on stalemate"
     // property. If none do (all are null), then we will use a fallback algorithm.
@@ -1066,20 +1053,18 @@ public class MustFightBattle extends DependentBattle
     if (defendingAa == null) {
       updateDefendingAaUnits();
     }
-    final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
-    final BattleStep defensiveAaStep = new DefensiveAaFire(this, this);
-    final BattleStep clearAaCasualties = new ClearAaCasualties(this, this);
-    final BattleStep navalBombardment = new NavalBombardment(this, this);
-    final BattleStep landParatroopers = new LandParatroopers(this, this);
-    final BattleStep removeNonCombatants = new RemoveNonCombatants(this);
-    final BattleStep markNoMovementLeft = new MarkNoMovementLeft(this, this);
-    steps.add(offensiveAaStep);
-    steps.add(defensiveAaStep);
-    steps.add(clearAaCasualties);
-    steps.add(navalBombardment);
-    steps.add(removeNonCombatants);
-    steps.add(landParatroopers);
-    steps.add(markNoMovementLeft);
+    final List<BattleStep> startSteps = List.of(
+        new OffensiveAaFire(this, this),
+        new DefensiveAaFire(this, this),
+        new ClearAaCasualties(this, this),
+        new NavalBombardment(this, this),
+        new RemoveNonCombatants(this),
+        new LandParatroopers(this, this),
+        new MarkNoMovementLeft(this, this)
+    );
+    steps.addAll(startSteps.stream()
+        .sorted(Comparator.comparing(BattleStep::getOrder))
+        .collect(Collectors.toList()));
   }
 
   // the IExecutables in this block can be deleted when save compatibility can be broken
