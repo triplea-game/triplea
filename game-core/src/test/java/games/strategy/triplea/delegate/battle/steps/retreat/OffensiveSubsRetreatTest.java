@@ -368,7 +368,8 @@ public class OffensiveSubsRetreatTest {
     }
 
     public MockGameData withDefendingSuicideAndMunitionUnitsDoNotFire(final boolean value) {
-      when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(value);
+      when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+          .thenReturn(value);
       return this;
     }
   }

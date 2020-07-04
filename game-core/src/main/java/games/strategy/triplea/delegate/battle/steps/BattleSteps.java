@@ -15,7 +15,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
-import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -149,29 +148,33 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     }
     steps.addAll(submergeSubsVsOnlyAir.getNames());
 
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_DEFENDER_FIRST_NONE)) {
+    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK)) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_OFFENDER_ALL)
-        || firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_OFFENDER_SUBS)
-        || firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_OFFENDER_NONE)) {
+    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.OFFENDER_NO_SNEAK_ATTACK)
+        || firstStrikeStepOrders.contains(
+            FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+        || firstStrikeStepOrders.contains(FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK)) {
       steps.add(attacker.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
-      if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_OFFENDER_NONE)) {
+      if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK)) {
         steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
       }
     }
 
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_DEFENDER_SECOND_ALL)
+    if (firstStrikeStepOrders.contains(
+            FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)
         || firstStrikeStepOrders.contains(
-            FirstStrikeStepOrder.FIRST_STRIKE_DEFENDER_SECOND_SUBS)) {
+            FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_OFFENDER_SUBS)
-        || firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_DEFENDER_SECOND_SUBS)) {
+    if (firstStrikeStepOrders.contains(
+            FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+        || firstStrikeStepOrders.contains(
+            FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
 
@@ -181,7 +184,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
       steps.add(attacker.getName() + FIRE);
       steps.add(defender.getName() + SELECT_CASUALTIES);
     }
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.FIRST_STRIKE_DEFENDER_STANDARD_ALL)) {
+    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK)) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }

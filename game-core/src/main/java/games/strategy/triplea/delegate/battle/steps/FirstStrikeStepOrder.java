@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
@@ -9,121 +10,105 @@ import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import lombok.NonNull;
 
 public enum FirstStrikeStepOrder {
-  FIRST_STRIKE_DEFENDER_FIRST_NONE,
+  DEFENDER_SNEAK_ATTACK,
 
-  FIRST_STRIKE_DEFENDER_SECOND_ALL,
-  FIRST_STRIKE_DEFENDER_SECOND_SUBS,
+  DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK,
+  DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
 
-  FIRST_STRIKE_DEFENDER_STANDARD_ALL,
+  DEFENDER_NO_SNEAK_ATTACK,
 
-  FIRST_STRIKE_OFFENDER_ALL,
-  FIRST_STRIKE_OFFENDER_SUBS,
-  FIRST_STRIKE_OFFENDER_NONE;
+  OFFENDER_SNEAK_ATTACK,
+  OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
+  OFFENDER_NO_SNEAK_ATTACK;
 
-  public static List<FirstStrikeStepOrder> calculate(final BattleState battleState) {
+  public static List<FirstStrikeStepOrder> calculate(final @NonNull BattleState battleState) {
     final List<FirstStrikeStepOrder> steps = new ArrayList<>();
 
-    if (!(battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike())
-        || battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData())))) {
-      return steps;
-    }
-
-    final boolean defenderSubsFireFirst =
-        SubsChecks.defenderSubsFireFirst(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData());
-    final ReturnFire returnFireAgainstAttackingSubs =
-        SubsChecks.returnFireAgainstAttackingSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData());
-    final ReturnFire returnFireAgainstDefendingSubs =
-        SubsChecks.returnFireAgainstDefendingSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData());
-    // if attacker has no sneak attack subs, then defender sneak attack subs fire first and remove
-    // casualties
-    if (defenderSubsFireFirst
-        && battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
-      steps.add(FIRST_STRIKE_DEFENDER_FIRST_NONE);
-    }
-    final boolean onlyAttackerSneakAttack =
-        !defenderSubsFireFirst
-            && returnFireAgainstAttackingSubs == ReturnFire.NONE
-            && returnFireAgainstDefendingSubs == ReturnFire.ALL;
-
-    if (battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike())) {
-      if (onlyAttackerSneakAttack) {
-        steps.add(FIRST_STRIKE_OFFENDER_NONE);
-      } else {
-        switch (returnFireAgainstAttackingSubs) {
-          case ALL:
-            steps.add(FIRST_STRIKE_OFFENDER_ALL);
-            break;
-          case SUBS:
-            steps.add(FIRST_STRIKE_OFFENDER_SUBS);
-            break;
-          default:
-            throw new IllegalStateException("Invalid return fire");
+    if (hasDefendingFirstStrike(battleState)) {
+      final ReturnFire returnFireAgainstDefendingSubs =
+          returnFireAgainstDefendingSubs(
+              battleState.getAttackingUnits(),
+              battleState.getDefendingUnits(),
+              battleState.getGameData());
+      if (returnFireAgainstDefendingSubs == ReturnFire.ALL) {
+        if (Properties.getWW2V2(battleState.getGameData())) {
+          // ww2v2 rules require defending subs to always fire before the standard units
+          steps.add(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK);
+        } else {
+          steps.add(DEFENDER_NO_SNEAK_ATTACK);
         }
-      }
-    }
-    // ww2v2 rules, all subs fire FIRST in combat, regardless of presence of destroyers.
-    final boolean defendingSubsFireWithAllDefenders =
-        !defenderSubsFireFirst
-            && !Properties.getWW2V2(battleState.getGameData())
-            && returnFireAgainstDefendingSubs == ReturnFire.ALL;
-    // defender subs sneak attack, no sneak attack in Pacific/Europe Theaters or if destroyers are
-    // present
-    final boolean defendingSubsFireWithAllDefendersAlways =
-        !SubsChecks.defendingSubsSneakAttack(battleState.getGameData());
-    if (!defendingSubsFireWithAllDefendersAlways
-        && !defendingSubsFireWithAllDefenders
-        && !defenderSubsFireFirst
-        && battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
-      switch (returnFireAgainstDefendingSubs) {
-        case ALL:
-          steps.add(FIRST_STRIKE_DEFENDER_SECOND_ALL);
-          break;
-        case SUBS:
-          steps.add(FIRST_STRIKE_DEFENDER_SECOND_SUBS);
-          break;
-        default:
-          throw new IllegalStateException("Invalid return fire");
-      }
-    }
-    if ((battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike())
-        || battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData())))
-        && !defenderSubsFireFirst
-        && !onlyAttackerSneakAttack
-        && ((returnFireAgainstDefendingSubs != ReturnFire.ALL
-        && battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData())))
-        || (returnFireAgainstAttackingSubs != ReturnFire.ALL
-        && battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike())))) {
-
-      if (steps.contains(FIRST_STRIKE_OFFENDER_SUBS)
-          || steps.contains(FIRST_STRIKE_DEFENDER_SECOND_SUBS)) {
-        //steps.add(FIRST_STRIKE_REMOVE_CASUALTIES_FROM_FIRST_STRIKE);
+      } else if (returnFireAgainstDefendingSubs == ReturnFire.SUBS) {
+        steps.add(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
+      } else if (returnFireAgainstDefendingSubs == ReturnFire.NONE) {
+        steps.add(DEFENDER_SNEAK_ATTACK);
       }
     }
 
-    // classic rules, subs fire with all defenders
-    // also, ww2v3/global rules, defending subs without sneak attack fire with all defenders
-    final Collection<Unit> defendingUnitsAliveAndDamaged = new ArrayList<>(battleState.getDefendingUnits());
-    defendingUnitsAliveAndDamaged.addAll(battleState.getDefendingWaitingToDie());
-    if (defendingUnitsAliveAndDamaged.stream()
-        .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))
-        && !defenderSubsFireFirst
-        && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways)) {
-      steps.add(FIRST_STRIKE_DEFENDER_STANDARD_ALL);
-    }
-
-    if ((returnFireAgainstAttackingSubs == ReturnFire.ALL
-        && battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike()))
-        || (returnFireAgainstDefendingSubs == ReturnFire.ALL
-        && battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData())))) {
-      if (steps.contains(FIRST_STRIKE_OFFENDER_ALL)
-          || steps.contains(FIRST_STRIKE_DEFENDER_SECOND_ALL)
-          || steps.contains(FIRST_STRIKE_DEFENDER_STANDARD_ALL)) {
-        //steps.add(FIRST_STRIKE_REMOVE_CASUALTIES);
+    if (hasAttackingFirstStrike(battleState)) {
+      final ReturnFire returnFireAgainstAttackingSubs =
+          returnFireAgainstAttackingSubs(
+              battleState.getAttackingUnits(),
+              battleState.getDefendingUnits(),
+              battleState.getGameData());
+      if (returnFireAgainstAttackingSubs == ReturnFire.ALL) {
+        steps.add(OFFENDER_NO_SNEAK_ATTACK);
+      } else if (returnFireAgainstAttackingSubs == ReturnFire.SUBS) {
+        steps.add(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
+      } else if (returnFireAgainstAttackingSubs == ReturnFire.NONE) {
+        steps.add(OFFENDER_SNEAK_ATTACK);
       }
     }
 
     return steps;
+  }
+
+  private static boolean hasAttackingFirstStrike(final BattleState battleState) {
+    return battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike());
+  }
+
+  private static boolean hasDefendingFirstStrike(final BattleState battleState) {
+    return battleState.getDefendingUnits().stream()
+        .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()));
+  }
+
+  private static MustFightBattle.ReturnFire returnFireAgainstAttackingSubs(
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final GameData gameData) {
+    final boolean canSneakAttack = defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+    final boolean enemyCanSneakAttack = defendingSubsSneakAttack(attackingUnits, gameData);
+    return getReturnFire(gameData, canSneakAttack, enemyCanSneakAttack);
+  }
+
+  private static ReturnFire getReturnFire(
+      final GameData gameData, final boolean canSneakAttack, final boolean enemyCanSneakAttack) {
+    final ReturnFire returnFireAgainstAttackingSubs;
+    if (!canSneakAttack) {
+      returnFireAgainstAttackingSubs = ReturnFire.ALL;
+    } else if (enemyCanSneakAttack || Properties.getWW2V2(gameData)) {
+      returnFireAgainstAttackingSubs = ReturnFire.SUBS;
+    } else {
+      returnFireAgainstAttackingSubs = ReturnFire.NONE;
+    }
+    return returnFireAgainstAttackingSubs;
+  }
+
+  private static MustFightBattle.ReturnFire returnFireAgainstDefendingSubs(
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final GameData gameData) {
+    final boolean canSneakAttack = defendingSubsSneakAttack(attackingUnits, gameData);
+    final boolean enemyCanSneakAttack =
+        defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+    return getReturnFire(gameData, canSneakAttack, enemyCanSneakAttack);
+  }
+
+  private static boolean defendingSubsSneakAttack(
+      final Collection<Unit> attackingUnits, final GameData gameData) {
+    return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
+        && (Properties.getWW2V2(gameData) || Properties.getDefendingSubsSneakAttack(gameData));
   }
 }
