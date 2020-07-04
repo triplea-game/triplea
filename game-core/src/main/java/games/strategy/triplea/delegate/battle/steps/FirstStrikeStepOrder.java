@@ -15,14 +15,12 @@ public enum FirstStrikeStepOrder {
 
   FIRST_STRIKE_DEFENDER_SECOND_ALL,
   FIRST_STRIKE_DEFENDER_SECOND_SUBS,
-  
+
   FIRST_STRIKE_DEFENDER_STANDARD_ALL,
 
   FIRST_STRIKE_OFFENDER_ALL,
   FIRST_STRIKE_OFFENDER_SUBS,
   FIRST_STRIKE_OFFENDER_NONE;
-
-
 
   public static List<FirstStrikeStepOrder> calculate(final BattleState battleState) {
     final List<FirstStrikeStepOrder> steps = new ArrayList<>();
@@ -123,89 +121,6 @@ public enum FirstStrikeStepOrder {
           || steps.contains(FIRST_STRIKE_DEFENDER_SECOND_ALL)
           || steps.contains(FIRST_STRIKE_DEFENDER_STANDARD_ALL)) {
         //steps.add(FIRST_STRIKE_REMOVE_CASUALTIES);
-      }
-    }
-
-    return steps;
-  }
-
-  public static List<FirstStrikeStepOrder> calculate2(final BattleState battleState) {
-    final List<FirstStrikeStepOrder> steps = new ArrayList<>();
-
-    if (!(battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike())
-        || battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData())))) {
-      return steps;
-    }
-
-    final ReturnFire returnFireAgainstDefendingSubs =
-        SubsChecks.returnFireAgainstDefendingSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData());
-    if (SubsChecks.defenderSubsFireFirst(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData())) {
-      if (battleState.getDefendingUnits().stream()
-          .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
-        switch (returnFireAgainstDefendingSubs) {
-          case NONE:
-            steps.add(FIRST_STRIKE_DEFENDER_FIRST_NONE);
-            break;
-          default:
-            throw new IllegalStateException("Invalid return fire");
-        }
-      }
-    }
-    final MustFightBattle.ReturnFire returnFireAgainstAttackingSubs =
-        SubsChecks.returnFireAgainstAttackingSubs(
-            battleState.getAttackingUnits(),
-            battleState.getDefendingUnits(),
-            battleState.getGameData());
-    if (battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike())) {
-      switch (returnFireAgainstAttackingSubs) {
-        case ALL:
-          steps.add(FIRST_STRIKE_OFFENDER_ALL);
-          break;
-        case SUBS:
-          steps.add(FIRST_STRIKE_OFFENDER_SUBS);
-          break;
-        case NONE:
-          steps.add(FIRST_STRIKE_OFFENDER_NONE);
-          break;
-        default:
-          throw new IllegalStateException("Invalid return fire");
-      }
-    }
-
-    final boolean defendingSubsFireWithAllDefenders =
-        !SubsChecks.defenderSubsFireFirst(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData())
-            && !Properties.getWW2V2(battleState.getGameData())
-            && SubsChecks.returnFireAgainstDefendingSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData())
-            == ReturnFire.ALL;
-    if (SubsChecks.defendingSubsSneakAttack(battleState.getGameData())
-        && !SubsChecks.defenderSubsFireFirst(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData())
-        && !defendingSubsFireWithAllDefenders) {
-      if (battleState.getDefendingUnits().stream()
-          .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
-        switch (returnFireAgainstDefendingSubs) {
-          case ALL:
-            steps.add(FIRST_STRIKE_DEFENDER_SECOND_ALL);
-            break;
-          case SUBS:
-            steps.add(FIRST_STRIKE_DEFENDER_SECOND_SUBS);
-            break;
-          default:
-            throw new IllegalStateException("Invalid return fire");
-        }
-      }
-   }
-
-    if (!SubsChecks.defenderSubsFireFirst(battleState.getAttackingUnits(), battleState.getDefendingUnits(), battleState.getGameData())
-        && (!SubsChecks.defendingSubsSneakAttack(battleState.getGameData()) || defendingSubsFireWithAllDefenders)) {
-      if (battleState.getDefendingUnits().stream()
-          .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
-        switch (returnFireAgainstDefendingSubs) {
-          case ALL:
-            steps.add(FIRST_STRIKE_DEFENDER_STANDARD_ALL);
-            break;
-          default:
-            throw new IllegalStateException("Invalid return fire");
-        }
       }
     }
 

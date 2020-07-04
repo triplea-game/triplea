@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate.battle;
 
 import static games.strategy.engine.data.Unit.ALREADY_MOVED;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
+import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
 import static games.strategy.triplea.Constants.LAND_BATTLE_ROUNDS;
 import static games.strategy.triplea.Constants.SEA_BATTLE_ROUNDS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
@@ -14,6 +15,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.UnitA
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrike;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.newUnitAndAttachment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -368,6 +370,7 @@ class MustFightBattleExecutablesTest {
   @DisplayName("Verify transports are removed if TRANSPORT_CASUALTIES_RESTRICTED is true")
   void transportsAreRemovedIfTransportCasualtiesRestricted() {
     final MustFightBattle battle = newBattle(WATER);
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
@@ -381,6 +384,7 @@ class MustFightBattleExecutablesTest {
   @DisplayName("Verify transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is false")
   void transportsAreNotRemovedIfTransportCasualtiesUnRestricted() {
     final MustFightBattle battle = newBattle(WATER);
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
 
@@ -396,6 +400,7 @@ class MustFightBattleExecutablesTest {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
     doNothing().when(battle).remove(any(), any(), any(), any());
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
@@ -441,7 +446,7 @@ class MustFightBattleExecutablesTest {
   void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButHasRetreat() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of(retreatSite)).when(battle).getAttackerRetreatTerritories();
-    // doNothing().when(battle).remove(any(), any(), any(), any());
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
@@ -468,10 +473,11 @@ class MustFightBattleExecutablesTest {
   void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoTransports() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
-    final Unit unit = givenUnitDestroyer();
+    final Unit unit = givenAnyUnit();
     when(unit.getOwner()).thenReturn(attacker);
 
     final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
@@ -503,6 +509,7 @@ class MustFightBattleExecutablesTest {
   void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoDefenders() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
@@ -543,6 +550,7 @@ class MustFightBattleExecutablesTest {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
     doNothing().when(battle).remove(any(), any(), any(), any());
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
@@ -588,10 +596,11 @@ class MustFightBattleExecutablesTest {
   void defendingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoTransports() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
-    final Unit unit = givenUnitDestroyer();
+    final Unit unit = givenAnyUnit();
     when(unit.getOwner()).thenReturn(defender);
 
     final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
@@ -622,6 +631,7 @@ class MustFightBattleExecutablesTest {
   void defendingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoDefenders() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
@@ -678,6 +688,7 @@ class MustFightBattleExecutablesTest {
     lenient().doNothing().when(battle).firstStrikeAttackersFire(any());
     lenient().doNothing().when(battle).firstStrikeDefendersFire(any());
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false)).thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(ww2v2);
@@ -690,7 +701,7 @@ class MustFightBattleExecutablesTest {
     final Unit defenderUnit = defenderDestroyer ? givenUnitDestroyer() : givenAnyUnit();
 
     battle.setUnits(
-        List.of(defenderUnit), List.of(attackerUnit), List.of(), List.of(), defender, List.of());
+        List.of(defenderUnit, givenUnitFirstStrike()), List.of(attackerUnit, givenUnitFirstStrike()), List.of(), List.of(), defender, List.of());
 
     return battle;
   }
