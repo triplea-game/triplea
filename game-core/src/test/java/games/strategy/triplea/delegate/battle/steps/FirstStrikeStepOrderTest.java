@@ -45,6 +45,7 @@ class FirstStrikeStepOrderTest {
     if (parameters.contains(BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE)) {
       attackingUnits.add(givenUnitFirstStrike());
     }
+
     final List<Unit> defendingUnits = new ArrayList<>();
     defendingUnits.add(givenAnyUnit());
     if (parameters.contains(BattleStateVariation.HAS_DEFENDING_DESTROYER)) {
@@ -53,17 +54,9 @@ class FirstStrikeStepOrderTest {
     if (parameters.contains(BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE)) {
       defendingUnits.add(givenUnitFirstStrike());
     }
+
     final MockGameData gameData = MockGameData.givenGameData();
-
-    if (parameters.contains(BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE)
-        && !parameters.contains(BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE)) {
-      gameData.withDefendingSuicideAndMunitionUnitsDoNotFire(false);
-    }
-
     if (parameters.contains(BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK)) {
-      if (!parameters.contains(BattleStateVariation.HAS_WW2V2)) {
-        gameData.withWW2V2(false);
-      }
       gameData.withDefendingSubsSneakAttack(true);
     }
     if (parameters.contains(BattleStateVariation.HAS_WW2V2)) {
