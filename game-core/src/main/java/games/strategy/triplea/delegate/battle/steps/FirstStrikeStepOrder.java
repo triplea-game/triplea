@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 
 public enum FirstStrikeStepOrder {
@@ -27,39 +28,12 @@ public enum FirstStrikeStepOrder {
   public static List<FirstStrikeStepOrder> calculate(final @NonNull BattleState battleState) {
     final List<FirstStrikeStepOrder> steps = new ArrayList<>();
 
-    if (hasDefendingFirstStrike(battleState)) {
-      final ReturnFire returnFireAgainstDefendingSubs =
-          returnFireAgainstDefendingSubs(
-              battleState.getAttackingUnits(),
-              battleState.getDefendingUnits(),
-              battleState.getGameData());
-      if (returnFireAgainstDefendingSubs == ReturnFire.ALL) {
-        if (Properties.getWW2V2(battleState.getGameData())) {
-          // ww2v2 rules require defending subs to always fire before the standard units
-          steps.add(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK);
-        } else {
-          steps.add(DEFENDER_NO_SNEAK_ATTACK);
-        }
-      } else if (returnFireAgainstDefendingSubs == ReturnFire.SUBS) {
-        steps.add(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
-      } else if (returnFireAgainstDefendingSubs == ReturnFire.NONE) {
-        steps.add(DEFENDER_SNEAK_ATTACK);
-      }
+    if (hasAttackingFirstStrike(battleState)) {
+      calculateAttackerSteps(battleState).ifPresent(steps::add);
     }
 
-    if (hasAttackingFirstStrike(battleState)) {
-      final ReturnFire returnFireAgainstAttackingSubs =
-          returnFireAgainstAttackingSubs(
-              battleState.getAttackingUnits(),
-              battleState.getDefendingUnits(),
-              battleState.getGameData());
-      if (returnFireAgainstAttackingSubs == ReturnFire.ALL) {
-        steps.add(OFFENDER_NO_SNEAK_ATTACK);
-      } else if (returnFireAgainstAttackingSubs == ReturnFire.SUBS) {
-        steps.add(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
-      } else if (returnFireAgainstAttackingSubs == ReturnFire.NONE) {
-        steps.add(OFFENDER_SNEAK_ATTACK);
-      }
+    if (hasDefendingFirstStrike(battleState)) {
+      calculateDefenderSteps(battleState).ifPresent(steps::add);
     }
 
     return steps;
@@ -69,9 +43,23 @@ public enum FirstStrikeStepOrder {
     return battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike());
   }
 
-  private static boolean hasDefendingFirstStrike(final BattleState battleState) {
-    return battleState.getDefendingUnits().stream()
-        .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()));
+  private static Optional<FirstStrikeStepOrder> calculateAttackerSteps(
+      final @NonNull BattleState battleState) {
+    final ReturnFire returnFireAgainstAttackingSubs =
+        returnFireAgainstAttackingSubs(
+            battleState.getAttackingUnits(),
+            battleState.getDefendingUnits(),
+            battleState.getGameData());
+    switch (returnFireAgainstAttackingSubs) {
+      case ALL:
+        return Optional.of(OFFENDER_NO_SNEAK_ATTACK);
+      case SUBS:
+        return Optional.of(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
+      case NONE:
+        return Optional.of(OFFENDER_SNEAK_ATTACK);
+      default:
+        return Optional.empty();
+    }
   }
 
   private static MustFightBattle.ReturnFire returnFireAgainstAttackingSubs(
@@ -94,6 +82,35 @@ public enum FirstStrikeStepOrder {
       returnFireAgainstAttackingSubs = ReturnFire.NONE;
     }
     return returnFireAgainstAttackingSubs;
+  }
+
+  private static boolean hasDefendingFirstStrike(final BattleState battleState) {
+    return battleState.getDefendingUnits().stream()
+        .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()));
+  }
+
+  private static Optional<FirstStrikeStepOrder> calculateDefenderSteps(
+      final @NonNull BattleState battleState) {
+    final ReturnFire returnFireAgainstDefendingSubs =
+        returnFireAgainstDefendingSubs(
+            battleState.getAttackingUnits(),
+            battleState.getDefendingUnits(),
+            battleState.getGameData());
+    switch (returnFireAgainstDefendingSubs) {
+      case ALL:
+        if (Properties.getWW2V2(battleState.getGameData())) {
+          // ww2v2 rules require defending subs to always fire before the standard units
+          return Optional.of(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK);
+        } else {
+          return Optional.of(DEFENDER_NO_SNEAK_ATTACK);
+        }
+      case SUBS:
+        return Optional.of(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
+      case NONE:
+        return Optional.of(DEFENDER_SNEAK_ATTACK);
+      default:
+        return Optional.empty();
+    }
   }
 
   private static MustFightBattle.ReturnFire returnFireAgainstDefendingSubs(
