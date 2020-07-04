@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
+import com.google.common.base.Objects;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -68,28 +69,7 @@ class CasualtyOrderOfLosses {
       amphibTypes.add(u.getType());
     }
     // Calculate hashes and cache key
-    int targetsHashCode = 1;
-    for (final UnitType ut : targetTypes) {
-      targetsHashCode += ut.hashCode();
-    }
-    targetsHashCode *= 31;
-    int amphibHashCode = 1;
-    for (final UnitType ut : amphibTypes) {
-      amphibHashCode += ut.hashCode();
-    }
-    amphibHashCode *= 31;
-    String key =
-        parameters.player.getName()
-            + "|"
-            + parameters.battlesite.getName()
-            + "|"
-            + parameters.combatModifiers.isDefending()
-            + "|"
-            + parameters.combatModifiers.isAmphibious()
-            + "|"
-            + targetsHashCode
-            + "|"
-            + amphibHashCode;
+    String key = computeOolCacheKey(parameters, targetTypes, amphibTypes);
     // Check OOL cache
     final List<UnitType> stored = oolCache.get(key);
     if (stored != null) {
@@ -278,30 +258,26 @@ class CasualtyOrderOfLosses {
           < Collections.frequency(amphibTypes, unitTypeToRemove)) {
         amphibTypes.remove(unitTypeToRemove);
       }
-      targetsHashCode = 1;
-      for (final UnitType ut : targetTypes) {
-        targetsHashCode += ut.hashCode();
-      }
-      targetsHashCode *= 31;
-      amphibHashCode = 1;
-      for (final UnitType ut : amphibTypes) {
-        amphibHashCode += ut.hashCode();
-      }
-      amphibHashCode *= 31;
-      key =
-          parameters.player.getName()
-              + "|"
-              + parameters.battlesite.getName()
-              + "|"
-              + parameters.combatModifiers.isDefending()
-              + "|"
-              + parameters.combatModifiers.isAmphibious()
-              + "|"
-              + targetsHashCode
-              + "|"
-              + amphibHashCode;
+      key = computeOolCacheKey(parameters, targetTypes, amphibTypes);
       it.remove();
     }
     return sortedWellEnoughUnitsList;
+  }
+
+  static String computeOolCacheKey(
+      final Parameters parameters,
+      final List<UnitType> targetTypes,
+      final List<UnitType> amphibTypes) {
+    return parameters.player.getName()
+        + "|"
+        + parameters.battlesite.getName()
+        + "|"
+        + parameters.combatModifiers.isDefending()
+        + "|"
+        + parameters.combatModifiers.isAmphibious()
+        + "|"
+        + Objects.hashCode(targetTypes)
+        + "|"
+        + Objects.hashCode(amphibTypes);
   }
 }
