@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
-import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
