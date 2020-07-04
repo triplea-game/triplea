@@ -7,43 +7,56 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Value;
 
+@AllArgsConstructor
 public enum FirstStrikeStepOrder {
-  DEFENDER_SNEAK_ATTACK,
+  DEFENDER_SNEAK_ATTACK(ReturnFire.NONE),
 
-  DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK,
-  DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
+  DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK(ReturnFire.ALL),
+  DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE(ReturnFire.SUBS),
 
-  DEFENDER_NO_SNEAK_ATTACK,
+  DEFENDER_NO_SNEAK_ATTACK(ReturnFire.ALL),
 
-  OFFENDER_SNEAK_ATTACK,
-  OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
-  OFFENDER_NO_SNEAK_ATTACK;
+  OFFENDER_SNEAK_ATTACK(ReturnFire.NONE),
+  OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE(ReturnFire.SUBS),
+  OFFENDER_NO_SNEAK_ATTACK(ReturnFire.ALL),
 
-  public static List<FirstStrikeStepOrder> calculate(final @NonNull BattleState battleState) {
-    final List<FirstStrikeStepOrder> steps = new ArrayList<>();
+  NOT_APPLICABLE(ReturnFire.ALL);
+
+  @Getter private final ReturnFire returnFire;
+
+  public static FirstStrikeResult calculate(final @NonNull BattleState battleState) {
+    final FirstStrikeResult.FirstStrikeResultBuilder result = FirstStrikeResult.builder();
 
     if (hasAttackingFirstStrike(battleState)) {
-      calculateAttackerSteps(battleState).ifPresent(steps::add);
+      result.attacker(calculateAttackerSteps(battleState));
     }
 
     if (hasDefendingFirstStrike(battleState)) {
-      calculateDefenderSteps(battleState).ifPresent(steps::add);
+      result.defender(calculateDefenderSteps(battleState));
     }
 
-    return steps;
+    return result.build();
+  }
+
+  @Value
+  @Builder
+  public static class FirstStrikeResult {
+    @Builder.Default FirstStrikeStepOrder attacker = NOT_APPLICABLE;
+    @Builder.Default FirstStrikeStepOrder defender = NOT_APPLICABLE;
   }
 
   private static boolean hasAttackingFirstStrike(final BattleState battleState) {
     return battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike());
   }
 
-  private static Optional<FirstStrikeStepOrder> calculateAttackerSteps(
+  private static FirstStrikeStepOrder calculateAttackerSteps(
       final @NonNull BattleState battleState) {
     final ReturnFire returnFireAgainstAttackingSubs =
         returnFireAgainstAttackingSubs(
@@ -52,13 +65,13 @@ public enum FirstStrikeStepOrder {
             battleState.getGameData());
     switch (returnFireAgainstAttackingSubs) {
       case ALL:
-        return Optional.of(OFFENDER_NO_SNEAK_ATTACK);
+        return OFFENDER_NO_SNEAK_ATTACK;
       case SUBS:
-        return Optional.of(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
+        return OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE;
       case NONE:
-        return Optional.of(OFFENDER_SNEAK_ATTACK);
+        return OFFENDER_SNEAK_ATTACK;
       default:
-        return Optional.empty();
+        return NOT_APPLICABLE;
     }
   }
 
@@ -89,7 +102,7 @@ public enum FirstStrikeStepOrder {
         .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()));
   }
 
-  private static Optional<FirstStrikeStepOrder> calculateDefenderSteps(
+  private static FirstStrikeStepOrder calculateDefenderSteps(
       final @NonNull BattleState battleState) {
     final ReturnFire returnFireAgainstDefendingSubs =
         returnFireAgainstDefendingSubs(
@@ -100,16 +113,16 @@ public enum FirstStrikeStepOrder {
       case ALL:
         if (Properties.getWW2V2(battleState.getGameData())) {
           // ww2v2 rules require defending subs to always fire before the standard units
-          return Optional.of(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK);
+          return DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK;
         } else {
-          return Optional.of(DEFENDER_NO_SNEAK_ATTACK);
+          return DEFENDER_NO_SNEAK_ATTACK;
         }
       case SUBS:
-        return Optional.of(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE);
+        return DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE;
       case NONE:
-        return Optional.of(DEFENDER_SNEAK_ATTACK);
+        return DEFENDER_SNEAK_ATTACK;
       default:
-        return Optional.empty();
+        return NOT_APPLICABLE;
     }
   }
 

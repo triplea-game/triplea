@@ -1429,7 +1429,8 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addFightSteps(final List<IExecutable> steps) {
-    final List<FirstStrikeStepOrder> firstStrikeStepOrders = FirstStrikeStepOrder.calculate(this);
+    final FirstStrikeStepOrder.FirstStrikeResult firstStrikeOrder =
+        FirstStrikeStepOrder.calculate(this);
     final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
     final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
@@ -1495,58 +1496,39 @@ public class MustFightBattle extends DependentBattle
       }
     };
 
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK)) {
+    if (firstStrikeOrder.getDefender() == FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK) {
       steps.add(
           new FirstStrikeDefendersFire() {
             private static final long serialVersionUID = 99992L;
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              firstStrikeDefendersFire(ReturnFire.NONE);
+              firstStrikeDefendersFire(firstStrikeOrder.getDefender().getReturnFire());
             }
           });
     }
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.OFFENDER_NO_SNEAK_ATTACK)
-        || firstStrikeStepOrders.contains(
-            FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
-        || firstStrikeStepOrders.contains(FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK)) {
+    if (firstStrikeOrder.getAttacker() != FirstStrikeStepOrder.NOT_APPLICABLE) {
       steps.add(
           new FirstStrikeAttackersFire() {
             private static final long serialVersionUID = 99991L;
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              final ReturnFire returnFire;
-              if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.OFFENDER_NO_SNEAK_ATTACK)) {
-                returnFire = ReturnFire.ALL;
-              } else if (firstStrikeStepOrders.contains(
-                  FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)) {
-                returnFire = ReturnFire.SUBS;
-              } else {
-                returnFire = ReturnFire.NONE;
-              }
-              firstStrikeAttackersFire(returnFire);
+              firstStrikeAttackersFire(firstStrikeOrder.getAttacker().getReturnFire());
             }
           });
     }
-    if (firstStrikeStepOrders.contains(
-            FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
-        || firstStrikeStepOrders.contains(
-            FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)) {
+    if (firstStrikeOrder.getDefender()
+            == FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE
+        || firstStrikeOrder.getDefender()
+            == FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK) {
       steps.add(
           new FirstStrikeDefendersFire() {
             private static final long serialVersionUID = 99992L;
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              final ReturnFire returnFire;
-              if (firstStrikeStepOrders.contains(
-                  FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)) {
-                returnFire = ReturnFire.ALL;
-              } else {
-                returnFire = ReturnFire.SUBS;
-              }
-              firstStrikeDefendersFire(returnFire);
+              firstStrikeDefendersFire(firstStrikeOrder.getDefender().getReturnFire());
             }
           });
     }
@@ -1569,14 +1551,14 @@ public class MustFightBattle extends DependentBattle
             standardAttackersFire();
           }
         });
-    if (firstStrikeStepOrders.contains(FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK)) {
+    if (firstStrikeOrder.getDefender() == FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK) {
       steps.add(
           new FirstStrikeDefendersFire() {
             private static final long serialVersionUID = 999921L;
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              firstStrikeDefendersFire(ReturnFire.ALL);
+              firstStrikeDefendersFire(firstStrikeOrder.getDefender().getReturnFire());
             }
           });
     }

@@ -12,11 +12,11 @@ import static games.strategy.triplea.delegate.battle.steps.FirstStrikeStepOrder.
 import static games.strategy.triplea.delegate.battle.steps.FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK;
 import static games.strategy.triplea.delegate.battle.steps.FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.steps.FirstStrikeStepOrder.FirstStrikeResult;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreatTest.MockGameData;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,21 +74,20 @@ class FirstStrikeStepOrderTest {
   void noFirstStrikeUnitsShouldReturnNothing() {
     final BattleState battleState = givenBattleState(List.of());
 
-    final List<FirstStrikeStepOrder> steps = FirstStrikeStepOrder.calculate(battleState);
+    final FirstStrikeResult steps = FirstStrikeStepOrder.calculate(battleState);
 
-    assertThat(steps, hasSize(0));
+    assertThat(steps, is(FirstStrikeResult.builder().build()));
   }
 
   @ParameterizedTest
   @MethodSource
-  void getStep(
-      final List<BattleStateVariation> parameters, final List<FirstStrikeStepOrder> expected) {
+  void getStep(final List<BattleStateVariation> parameters, final FirstStrikeResult expected) {
 
     final BattleState battleState = givenBattleState(parameters);
 
-    final List<FirstStrikeStepOrder> steps = FirstStrikeStepOrder.calculate(battleState);
+    final FirstStrikeResult order = FirstStrikeStepOrder.calculate(battleState);
 
-    assertThat(steps, containsInAnyOrder(expected.toArray()));
+    assertThat(order, is(expected));
   }
 
   @SuppressWarnings("unused")
@@ -96,83 +95,91 @@ class FirstStrikeStepOrderTest {
     return List.of(
         Arguments.of(
             List.of(BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE),
-            List.of(OFFENDER_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
-            List.of(OFFENDER_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE, BattleStateVariation.HAS_WW2V2),
-            List.of(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -180,86 +187,100 @@ class FirstStrikeStepOrderTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().attacker(OFFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE),
-            List.of(DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().defender(DEFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
-            List.of(DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().defender(DEFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
-            List.of(DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().defender(DEFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE, BattleStateVariation.HAS_WW2V2),
-            List.of(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
-            List.of(DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().defender(DEFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().defender(DEFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(DEFENDER_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().defender(DEFENDER_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder().defender(DEFENDER_NO_SNEAK_ATTACK).build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -267,86 +288,113 @@ class FirstStrikeStepOrderTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)),
+            FirstStrikeResult.builder()
+                .defender(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE),
-            List.of(OFFENDER_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
-            List.of(OFFENDER_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
-            List.of(OFFENDER_NO_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(
-                OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
-                DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(
-                OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
-                DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
-            List.of(OFFENDER_NO_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(
-                OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
-                DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .defender(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(OFFENDER_NO_SNEAK_ATTACK, DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_NO_SNEAK_ATTACK, DEFENDER_SNEAK_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_SNEAK_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(
-                OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE,
-                DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -354,7 +402,10 @@ class FirstStrikeStepOrderTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
-            List.of(OFFENDER_NO_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -362,7 +413,10 @@ class FirstStrikeStepOrderTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_NO_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -370,7 +424,10 @@ class FirstStrikeStepOrderTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(OFFENDER_NO_SNEAK_ATTACK, DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)),
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE)
+                .build()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -379,7 +436,9 @@ class FirstStrikeStepOrderTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
-            List.of(
-                OFFENDER_NO_SNEAK_ATTACK, DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)));
+            FirstStrikeResult.builder()
+                .attacker(OFFENDER_NO_SNEAK_ATTACK)
+                .defender(DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK)
+                .build()));
   }
 }
