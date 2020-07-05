@@ -308,7 +308,11 @@ public class ResourceLoader implements Closeable {
       return Optional.empty();
     }
     try {
-      return Optional.ofNullable(ImageIO.read(url));
+      BufferedImage bi = ImageIO.read(url);
+      if(bi == null) {
+        log.severe("Unsupported Image Format: " + url);
+      }
+      return Optional.ofNullable(bi);
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
       return Optional.empty();
