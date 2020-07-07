@@ -8,6 +8,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -308,7 +309,11 @@ public class ResourceLoader implements Closeable {
       return Optional.empty();
     }
     try {
-      return Optional.of(ImageIO.read(url));
+      final BufferedImage bufferedImage = ImageIO.read(url);
+      if (bufferedImage == null) {
+        log.severe("Unsupported Image Format: " + url);
+      }
+      return Optional.ofNullable(bufferedImage);
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
       return Optional.empty();
