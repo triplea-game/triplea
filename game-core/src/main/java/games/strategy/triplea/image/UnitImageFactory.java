@@ -272,6 +272,7 @@ public class UnitImageFactory {
         }
       }
       if (UnitAttachment.get(type).getIsFirstStrike()
+          && UnitAttachment.get(type).getCanEvade()
           && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
               || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
           && TechTracker.hasSuperSubs(gamePlayer)) {
