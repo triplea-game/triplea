@@ -328,7 +328,7 @@ public class MustFightBattle extends DependentBattle
    */
   @Override
   public List<Unit> getRemainingAttackingUnits() {
-    final List<Unit> remaining = new ArrayList<>(attackingUnitsRetreated);
+    final Set<Unit> remaining = new HashSet<>(attackingUnitsRetreated);
     final Collection<Unit> unitsLeftInTerritory = new ArrayList<>(battleSite.getUnits());
     unitsLeftInTerritory.removeAll(killed);
     remaining.addAll(
@@ -339,7 +339,7 @@ public class MustFightBattle extends DependentBattle
                 : Matches.unitOwnedBy(attacker)
                     .and(Matches.unitIsAir())
                     .and(Matches.unitIsNotInfrastructure())));
-    return remaining;
+    return new ArrayList<>(remaining);
   }
 
   /**
