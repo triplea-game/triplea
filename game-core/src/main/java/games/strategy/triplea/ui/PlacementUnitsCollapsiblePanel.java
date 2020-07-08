@@ -4,7 +4,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.util.UnitSeparator;
+import java.util.Collection;
+import java.util.List;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import org.triplea.swing.CollapsiblePanel;
@@ -28,18 +31,19 @@ class PlacementUnitsCollapsiblePanel {
   private void updateStep() {
     final GameStep step = gameData.getSequence().getStep();
 
+    // Compute data now so that the swing event task is working with unmodifiable data.
+    final boolean shouldRenderPanelForThisGameStep =
+        !GameStep.isPlaceStep(step.getName())
+            && !isInitializationStep(step)
+            && stepIsAfterPurchaseAndBeforePlacement(step);
+
+    final Collection<Unit> playerUnits =
+        shouldRenderPanelForThisGameStep ? List.copyOf(step.getPlayerId().getUnits()) : List.of();
+
     SwingUtilities.invokeLater(
         () -> {
-          if (GameStep.isPlaceStep(step.getName()) || isInitializationStep(step)) {
-            panel.setVisible(false);
-            return;
-          }
-
-          final boolean hasUnitsToPlace = !step.getPlayerId().getUnits().isEmpty();
-
-          if (hasUnitsToPlace || stepIsAfterPurchaseAndBeforePlacement(step)) {
-            unitsToPlacePanel.setUnitsFromCategories(
-                UnitSeparator.categorize(step.getPlayerId().getUnits()));
+          if (shouldRenderPanelForThisGameStep && !playerUnits.isEmpty()) {
+            unitsToPlacePanel.setUnitsFromCategories(UnitSeparator.categorize(playerUnits));
             panel.setVisible(true);
           } else {
             panel.setVisible(false);
