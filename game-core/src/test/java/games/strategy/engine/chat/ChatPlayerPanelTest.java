@@ -1,7 +1,9 @@
 package games.strategy.engine.chat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.awt.Dimension;
 import org.junit.jupiter.api.Test;
@@ -12,20 +14,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ChatPlayerPanelTest {
 
-    @Mock private PlayerChatRenderer renderer;
+  @Mock private PlayerChatRenderer renderer;
 
-    private ChatPlayerPanel chatPlayerPanel;
+  @Test
+  public void setPlayerRendererWhenChatIsNull() {
 
-    @Test
-    public void setPlayerRenderer_whenChatIsNull_thenDynamicPreferredSizeIsSet() {
+    ChatPlayerPanel chatPlayerPanel = new ChatPlayerPanel(null);
 
-        chatPlayerPanel = new ChatPlayerPanel(null);
+    when(renderer.getMaxIconCounter()).thenReturn(1);
+    chatPlayerPanel.setPlayerRenderer(renderer);
 
-        when(renderer.getMaxIconCounter()).thenReturn(1);
-        chatPlayerPanel.setPlayerRenderer(renderer);
-
-        verify(renderer, times(1)).getMaxIconCounter();
-        assertEquals(chatPlayerPanel.getPreferredSize(), new Dimension(54, 80));
-    }
-
+    verify(renderer, times(1)).getMaxIconCounter();
+    assertEquals(chatPlayerPanel.getPreferredSize(), new Dimension(54, 80));
+  }
 }
