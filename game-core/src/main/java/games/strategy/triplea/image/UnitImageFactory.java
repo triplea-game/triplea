@@ -221,7 +221,7 @@ public class UnitImageFactory {
     return Optional.of(icon);
   }
 
-  private static String getBaseImageName(
+  public static String getBaseImageName(
       final UnitType type,
       final GamePlayer gamePlayer,
       final boolean damaged,
