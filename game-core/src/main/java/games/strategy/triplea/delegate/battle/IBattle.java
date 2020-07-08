@@ -146,8 +146,6 @@ public interface IBattle extends Serializable {
 
   WhoWon getWhoWon();
 
-  BattleResultDescription getBattleResultDescription();
-
   GamePlayer getAttacker();
 
   GamePlayer getDefender();
