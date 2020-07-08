@@ -185,7 +185,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   @Override
   public String placeUnits(
       final Collection<Unit> units, final Territory at, final BidMode bidMode) {
-    if (units == null || units.isEmpty()) {
+    if (units.isEmpty()) {
       return null;
     }
     final String error = isValidPlacement(units, at, player);

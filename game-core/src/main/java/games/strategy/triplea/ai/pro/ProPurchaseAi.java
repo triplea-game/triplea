@@ -509,8 +509,8 @@ class ProPurchaseAi {
 
     // Place regular then isConstruction units (placeDelegate.getPlaceableUnits doesn't handle
     // combined)
-    placeUnits(prioritizedTerritories, placeDelegate, false);
-    placeUnits(prioritizedTerritories, placeDelegate, true);
+    placeUnits(prioritizedTerritories, placeDelegate, Matches.unitIsNotConstruction());
+    placeUnits(prioritizedTerritories, placeDelegate, Matches.unitIsConstruction());
 
     territoryManager = null;
   }
@@ -1433,7 +1433,7 @@ class ProPurchaseAi {
       }
       final boolean hasLocalNavalSuperiority =
           ProBattleUtils.territoryHasLocalNavalSuperiority(
-              proData, t, player, null, new ArrayList<>());
+              proData, t, player, Map.of(), List.of());
       if (!hasLocalNavalSuperiority) {
         needDefenders = 1;
       }
@@ -1941,7 +1941,7 @@ class ProPurchaseAi {
                     player,
                     transport,
                     territoriesToLoadFrom,
-                    new ArrayList<>(potentialUnitsToLoad),
+                    potentialUnitsToLoad,
                     ProMatches.unitIsOwnedCombatTransportableUnit(player));
             potentialUnitsToLoad.addAll(units);
           }
@@ -2137,7 +2137,7 @@ class ProPurchaseAi {
             purchaseOptionsForTerritory,
             resourceTracker,
             remainingUnitProduction,
-            new ArrayList<>(),
+            List.of(),
             purchaseTerritories);
         if (purchaseOptionsForTerritory.isEmpty()) {
           break;
@@ -2512,14 +2512,9 @@ class ProPurchaseAi {
   private void placeUnits(
       final List<ProPlaceTerritory> prioritizedTerritories,
       final IAbstractPlaceDelegate placeDelegate,
-      final boolean isConstruction) {
+      final Predicate<Unit> unitMatch) {
 
-    ProLogger.info("Place with isConstruction=" + isConstruction + ", units=" + player.getUnits());
-
-    Predicate<Unit> unitMatch = Matches.unitIsNotConstruction();
-    if (isConstruction) {
-      unitMatch = Matches.unitIsConstruction();
-    }
+    ProLogger.info("Place units=" + player.getUnits());
 
     // Loop through prioritized territories and place units
     for (final ProPlaceTerritory placeTerritory : prioritizedTerritories) {
@@ -2588,10 +2583,8 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     // Add units to place territory
-    for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt :
-          purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
-
+    for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+      for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         // If place territory is equal to the current place territory
         if (placeTerritory.equals(ppt)) {
           ppt.setCanHold(false);
@@ -2618,7 +2611,7 @@ class ProPurchaseAi {
       final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
       final String message =
-          del.placeUnits(new ArrayList<>(List.of(unit)), t, IAbstractPlaceDelegate.BidMode.NOT_BID);
+          del.placeUnits(List.of(unit), t, IAbstractPlaceDelegate.BidMode.NOT_BID);
       if (message != null) {
         ProLogger.warn(message);
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);
