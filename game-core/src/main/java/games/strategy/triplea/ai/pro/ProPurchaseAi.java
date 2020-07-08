@@ -1432,8 +1432,7 @@ class ProPurchaseAi {
         }
       }
       final boolean hasLocalNavalSuperiority =
-          ProBattleUtils.territoryHasLocalNavalSuperiority(
-              proData, t, player, Map.of(), List.of());
+          ProBattleUtils.territoryHasLocalNavalSuperiority(proData, t, player, Map.of(), List.of());
       if (!hasLocalNavalSuperiority) {
         needDefenders = 1;
       }
