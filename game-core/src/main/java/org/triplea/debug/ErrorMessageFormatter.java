@@ -2,8 +2,11 @@ package org.triplea.debug;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import games.strategy.triplea.UrlConstants;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import org.triplea.swing.JEditorPaneWithClickableLinks;
 
 /** Converts a 'LogRecord' to the text that we display to a user in an alert pop-up. */
 class ErrorMessageFormatter implements Function<LogRecord, String> {
@@ -15,7 +18,15 @@ class ErrorMessageFormatter implements Function<LogRecord, String> {
         logRecord.getThrown() != null || logRecord.getMessage() != null,
         "LogRecord should have one or both, a message or exception: " + logRecord);
 
-    return TextUtils.textToHtml(format(logRecord));
+    final String baseMessage = format(logRecord);
+
+    final String additionalMessageForWarnings =
+        (logRecord.getLevel().intValue() == Level.WARNING.intValue())
+            ? "<br><br>If this problem happens frequently and is something you cannot fix,<br>"
+                + JEditorPaneWithClickableLinks.toLink(
+                    "please report it to TripleA ", UrlConstants.GITHUB_ISSUES)
+            : "";
+    return TextUtils.textToHtml(baseMessage + additionalMessageForWarnings);
   }
 
   /**
