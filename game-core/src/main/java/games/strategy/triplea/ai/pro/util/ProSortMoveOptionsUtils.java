@@ -3,7 +3,9 @@ package games.strategy.triplea.ai.pro.util;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -12,10 +14,14 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI attack options utilities. */
 public final class ProSortMoveOptionsUtils {
@@ -65,39 +71,23 @@ public final class ProSortMoveOptionsUtils {
         new ArrayList<>(unitAttackOptions.entrySet());
     list.sort(
         (o1, o2) -> {
+          final Collection<Territory> territories1 =
+              filterOutWinningTerritories(o1.getValue(), player, attackMap, calc);
+          final Collection<Territory> territories2 =
+              filterOutWinningTerritories(o2.getValue(), player, attackMap, calc);
 
-          // Find number of territories that still need units
-          int numOptions1 = 0;
-          for (final Territory t : o1.getValue()) {
-            final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.estimateBattleResult(calc, player);
-            }
-            if (!patd.isCurrentlyWins()) {
-              numOptions1++;
-            }
+          // Sort by number of territories that still need units
+          if (territories1.size() != territories2.size()) {
+            return territories1.size() - territories2.size();
           }
-          int numOptions2 = 0;
-          for (final Territory t : o2.getValue()) {
-            final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.estimateBattleResult(calc, player);
-            }
-            if (!patd.isCurrentlyWins()) {
-              numOptions2++;
-            }
+          final UnitType unitType1 = o1.getKey().getType();
+          final UnitType unitType2 = o2.getKey().getType();
+          final int value1 = proData.getUnitValue(unitType1);
+          final int value2 = proData.getUnitValue(unitType2);
+          if (value1 != value2) {
+            return value1 - value2;
           }
-
-          // Sort by number of move options then cost of unit then unit type
-          if (numOptions1 != numOptions2) {
-            return (numOptions1 - numOptions2);
-          }
-          if (proData.getUnitValue(o1.getKey().getType())
-              != proData.getUnitValue(o2.getKey().getType())) {
-            return (proData.getUnitValue(o1.getKey().getType())
-                - proData.getUnitValue(o2.getKey().getType()));
-          }
-          return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
+          return unitType1.getName().compareTo(unitType2.getName());
         });
     final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<>();
     for (final Map.Entry<Unit, Set<Territory>> entry : list) {
@@ -125,195 +115,126 @@ public final class ProSortMoveOptionsUtils {
         new ArrayList<>(unitAttackOptions.entrySet());
     list.sort(
         (o1, o2) -> {
+          final Collection<Territory> territories1 =
+              filterOutWinningTerritories(o1.getValue(), player, attackMap, calc);
+          final Collection<Territory> territories2 =
+              filterOutWinningTerritories(o2.getValue(), player, attackMap, calc);
 
           // Sort by number of territories that still need units
-          int numOptions1 = 0;
-          for (final Territory t : o1.getValue()) {
-            final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.estimateBattleResult(calc, player);
-            }
-            if (!patd.isCurrentlyWins()) {
-              numOptions1++;
-            }
+          if (territories1.size() != territories2.size()) {
+            return territories1.size() - territories2.size();
           }
-          int numOptions2 = 0;
-          for (final Territory t : o2.getValue()) {
-            final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.estimateBattleResult(calc, player);
-            }
-            if (!patd.isCurrentlyWins()) {
-              numOptions2++;
-            }
-          }
-          if (numOptions1 != numOptions2) {
-            return (numOptions1 - numOptions2);
-          }
-          if (numOptions1 == 0) {
+          if (territories1.size() == 0) {
             return 0;
           }
 
+          final Unit unit1 = o1.getKey();
+          final Unit unit2 = o2.getKey();
+
           // Sort by attack efficiency
-          int minPower1 = Integer.MAX_VALUE;
-          for (final Territory t : o1.getValue()) {
-            if (!attackMap.get(t).isCurrentlyWins()) {
-              final List<Unit> defendingUnits =
-                  t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
-              final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
-              sortedUnitsList.sort(
-                  new UnitBattleComparator(
-                          false,
-                          proData.getUnitValueMap(),
-                          TerritoryEffectHelper.getEffects(t),
-                          data)
-                      .reversed());
-              final int powerWithout =
-                  DiceRoll.getTotalPower(
-                      DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                          sortedUnitsList,
-                          defendingUnits,
-                          sortedUnitsList,
-                          false,
-                          data,
-                          t,
-                          TerritoryEffectHelper.getEffects(t),
-                          false,
-                          null),
-                      data);
-              sortedUnitsList.add(o1.getKey());
-              sortedUnitsList.sort(
-                  new UnitBattleComparator(
-                          false,
-                          proData.getUnitValueMap(),
-                          TerritoryEffectHelper.getEffects(t),
-                          data)
-                      .reversed());
-              final int powerWith =
-                  DiceRoll.getTotalPower(
-                      DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                          sortedUnitsList,
-                          defendingUnits,
-                          sortedUnitsList,
-                          false,
-                          data,
-                          t,
-                          TerritoryEffectHelper.getEffects(t),
-                          false,
-                          null),
-                      data);
-              final int power = powerWith - powerWithout;
-              if (power < minPower1) {
-                minPower1 = power;
-              }
-            }
-          }
-          final UnitAttachment ua1 = UnitAttachment.get(o1.getKey().getType());
-          if (ua1.getIsAir()) {
-            minPower1 *= 10;
-          }
           final double attackEfficiency1 =
-              (double) minPower1 / proData.getUnitValue(o1.getKey().getType());
-          int minPower2 = Integer.MAX_VALUE;
-          for (final Territory t : o2.getValue()) {
-            if (!attackMap.get(t).isCurrentlyWins()) {
-              final List<Unit> defendingUnits =
-                  t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
-              final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
-              sortedUnitsList.sort(
-                  new UnitBattleComparator(
-                          false,
-                          proData.getUnitValueMap(),
-                          TerritoryEffectHelper.getEffects(t),
-                          data)
-                      .reversed());
-              final int powerWithout =
-                  DiceRoll.getTotalPower(
-                      DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                          sortedUnitsList,
-                          defendingUnits,
-                          sortedUnitsList,
-                          false,
-                          data,
-                          t,
-                          TerritoryEffectHelper.getEffects(t),
-                          false,
-                          null),
-                      data);
-              sortedUnitsList.add(o2.getKey());
-              sortedUnitsList.sort(
-                  new UnitBattleComparator(
-                          false,
-                          proData.getUnitValueMap(),
-                          TerritoryEffectHelper.getEffects(t),
-                          data)
-                      .reversed());
-              final int powerWith =
-                  DiceRoll.getTotalPower(
-                      DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                          sortedUnitsList,
-                          defendingUnits,
-                          sortedUnitsList,
-                          false,
-                          data,
-                          t,
-                          TerritoryEffectHelper.getEffects(t),
-                          false,
-                          null),
-                      data);
-              final int power = powerWith - powerWithout;
-              if (power < minPower2) {
-                minPower2 = power;
-              }
-            }
-          }
-          final UnitAttachment ua2 = UnitAttachment.get(o2.getKey().getType());
-          if (ua2.getIsAir()) {
-            minPower2 *= 10;
-          }
+              calculateAttackEfficiency(proData, player, attackMap, territories1, unit1);
           final double attackEfficiency2 =
-              (double) minPower2 / proData.getUnitValue(o2.getKey().getType());
+              calculateAttackEfficiency(proData, player, attackMap, territories2, unit2);
           if (attackEfficiency1 != attackEfficiency2) {
             return (attackEfficiency1 < attackEfficiency2) ? 1 : -1;
           }
 
-          // Check if unit types are equal and is air then sort by average distance
-          if (o1.getKey().getType().equals(o2.getKey().getType())) {
-            final boolean isAirUnit = UnitAttachment.get(o1.getKey().getType()).getIsAir();
-            if (isAirUnit) {
-              int distance1 = 0;
-              for (final Territory t : o1.getValue()) {
-                if (!attackMap.get(t).isCurrentlyWins()) {
-                  distance1 +=
-                      data.getMap()
-                          .getDistanceIgnoreEndForCondition(
-                              unitTerritoryMap.get(o1.getKey()),
-                              t,
-                              ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
-                }
-              }
-              int distance2 = 0;
-              for (final Territory t : o2.getValue()) {
-                if (!attackMap.get(t).isCurrentlyWins()) {
-                  distance2 +=
-                      data.getMap()
-                          .getDistanceIgnoreEndForCondition(
-                              unitTerritoryMap.get(o2.getKey()),
-                              t,
-                              ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
-                }
-              }
-              if (distance1 != distance2) {
-                return distance1 - distance2;
-              }
+          final UnitType unitType1 = unit1.getType();
+          final UnitType unitType2 = unit2.getType();
+
+          // If unit types are equal and are air, then sort by average distance.
+          if (unitType1.equals(unitType2) && UnitAttachment.get(unitType1).getIsAir()) {
+            final Predicate<Territory> predicate =
+                ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true);
+            final Territory territory1 = unitTerritoryMap.get(unit1);
+            final Territory territory2 = unitTerritoryMap.get(unit2);
+            int distance1 = 0;
+            for (final Territory t : territories1) {
+              distance1 += data.getMap().getDistanceIgnoreEndForCondition(territory1, t, predicate);
+            }
+            int distance2 = 0;
+            for (final Territory t : territories2) {
+              distance2 += data.getMap().getDistanceIgnoreEndForCondition(territory2, t, predicate);
+            }
+            if (distance1 != distance2) {
+              return distance1 - distance2;
             }
           }
-          return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
+
+          return unitType1.getName().compareTo(unitType2.getName());
         });
     final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<>();
     for (final Map.Entry<Unit, Set<Territory>> entry : list) {
       sortedUnitAttackOptions.put(entry.getKey(), entry.getValue());
     }
     return sortedUnitAttackOptions;
+  }
+
+  private static Collection<Territory> filterOutWinningTerritories(
+      final Collection<Territory> territories,
+      final GamePlayer player,
+      final Map<Territory, ProTerritory> attackMap,
+      final ProOddsCalculator calc) {
+    return territories.stream()
+        .filter(
+            t -> {
+              final ProTerritory patd = attackMap.get(t);
+              if (patd.getBattleResult() == null) {
+                patd.estimateBattleResult(calc, player);
+              }
+              return !patd.isCurrentlyWins();
+            })
+        .collect(Collectors.toList());
+  }
+
+  private static double calculateAttackEfficiency(
+      final ProData proData,
+      final GamePlayer player,
+      final Map<Territory, ProTerritory> attackMap,
+      final Collection<Territory> territories,
+      final Unit unit) {
+    final GameData data = proData.getData();
+
+    int minPower = Integer.MAX_VALUE;
+    for (final Territory t : territories) {
+      final Collection<TerritoryEffect> effects = TerritoryEffectHelper.getEffects(t);
+      final UnitBattleComparator comparator =
+          new UnitBattleComparator(false, proData.getUnitValueMap(), effects, data);
+
+      final List<Unit> defendingUnits =
+          t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
+      final Collection<Unit> sortedUnits =
+          CollectionUtils.createSortedCollection(attackMap.get(t).getUnits(), comparator);
+      // Compare the difference in total power when including the unit or not.
+      int powerDifference = 0;
+      for (final boolean includeUnit : new boolean[] {false, true}) {
+        if (includeUnit) {
+          sortedUnits.add(unit);
+        }
+        powerDifference +=
+            (includeUnit ? 1 : -1)
+                * DiceRoll.getTotalPower(
+                    DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                        sortedUnits,
+                        defendingUnits,
+                        sortedUnits,
+                        false,
+                        data,
+                        t,
+                        effects,
+                        false,
+                        null),
+                    data);
+      }
+      if (powerDifference < minPower) {
+        minPower = powerDifference;
+      }
+    }
+
+    if (UnitAttachment.get(unit.getType()).getIsAir()) {
+      minPower *= 10;
+    }
+    return (double) minPower / proData.getUnitValue(unit.getType());
   }
 }

@@ -9,7 +9,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.concurrent.ThreadSafe;
@@ -112,5 +114,16 @@ public class CollectionUtils {
 
     return Iterables.elementsEqual(c1, c2)
         || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
+  }
+
+  /**
+   * Creates a sorted, mutable collection containing the specified elements that will maintain its
+   * sort order according to the specified comparator as elements are added or removed.
+   */
+  public static <T> Collection<T> createSortedCollection(
+      final Collection<T> elements, final Comparator<T> comparator) {
+    final PriorityQueue<T> sortedCollection = new PriorityQueue<T>(elements.size(), comparator);
+    sortedCollection.addAll(elements);
+    return sortedCollection;
   }
 }
