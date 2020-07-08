@@ -27,9 +27,7 @@ public class LandParatroopers implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    final TransportsAndParatroopers transportsAndParatroopers = getTransportsAndParatroopers();
-
-    return transportsAndParatroopers.hasParatroopers() ? List.of(LAND_PARATROOPS) : List.of();
+    return new TransportsAndParatroopers().hasParatroopers() ? List.of(LAND_PARATROOPS) : List.of();
   }
 
   @Override
@@ -39,7 +37,7 @@ public class LandParatroopers implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    final TransportsAndParatroopers transportsAndParatroopers = getTransportsAndParatroopers();
+    final TransportsAndParatroopers transportsAndParatroopers = new TransportsAndParatroopers();
 
     if (transportsAndParatroopers.hasParatroopers()) {
       battleActions.landParatroopers(
@@ -47,31 +45,29 @@ public class LandParatroopers implements BattleStep {
     }
   }
 
-  private static class TransportsAndParatroopers {
+  private class TransportsAndParatroopers {
     private Collection<Unit> airTransports = new ArrayList<>();
     private Collection<Unit> paratroopers = new ArrayList<>();
+
+    private TransportsAndParatroopers() {
+      if (battleState.getBattleRound() == 1
+          && !battleState.getBattleSite().isWater()
+          && TechAttachment.isAirTransportable(battleState.getAttacker())) {
+        final Collection<Unit> airTransports =
+            CollectionUtils.getMatches(
+                battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport());
+        if (!airTransports.isEmpty()) {
+          final Collection<Unit> paratroopers = battleState.getDependentUnits(airTransports);
+          if (!paratroopers.isEmpty()) {
+            this.airTransports = airTransports;
+            this.paratroopers = paratroopers;
+          }
+        }
+      }
+    }
 
     private boolean hasParatroopers() {
       return !airTransports.isEmpty() && !paratroopers.isEmpty();
     }
-  }
-
-  private TransportsAndParatroopers getTransportsAndParatroopers() {
-    final TransportsAndParatroopers transportsAndParatroopers = new TransportsAndParatroopers();
-    if (battleState.getBattleRound() == 1
-        && !battleState.getBattleSite().isWater()
-        && TechAttachment.isAirTransportable(battleState.getAttacker())) {
-      final Collection<Unit> airTransports =
-          CollectionUtils.getMatches(
-              battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport());
-      if (!airTransports.isEmpty()) {
-        final Collection<Unit> paratroopers = battleState.getDependentUnits(airTransports);
-        if (!paratroopers.isEmpty()) {
-          transportsAndParatroopers.airTransports = airTransports;
-          transportsAndParatroopers.paratroopers = paratroopers;
-        }
-      }
-    }
-    return transportsAndParatroopers;
   }
 }
