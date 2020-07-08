@@ -305,9 +305,6 @@ public final class ProPurchaseUtils {
       final Territory t, final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     final List<Unit> placeUnits = new ArrayList<>();
-    if (purchaseTerritories == null) {
-      return placeUnits;
-    }
     for (final ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
       for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
         if (t.equals(ppt.getTerritory())) {

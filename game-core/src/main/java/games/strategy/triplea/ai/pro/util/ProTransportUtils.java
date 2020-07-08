@@ -50,7 +50,7 @@ public final class ProTransportUtils {
       final GamePlayer player,
       final Unit transport,
       final Set<Territory> territoriesToLoadFrom,
-      final List<Unit> unitsToIgnore,
+      final Collection<Unit> unitsToIgnore,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
@@ -90,7 +90,7 @@ public final class ProTransportUtils {
       final GamePlayer player,
       final Unit transport,
       final Set<Territory> territoriesToLoadFrom,
-      final List<Unit> unitsToIgnore) {
+      final Collection<Unit> unitsToIgnore) {
     return getUnitsToTransportFromTerritories(
         player,
         transport,
@@ -105,7 +105,7 @@ public final class ProTransportUtils {
       final GamePlayer player,
       final Unit transport,
       final Set<Territory> territoriesToLoadFrom,
-      final List<Unit> unitsToIgnore,
+      final Collection<Unit> unitsToIgnore,
       final Predicate<Unit> validUnitMatch) {
     final List<Unit> selectedUnits = new ArrayList<>();
 
