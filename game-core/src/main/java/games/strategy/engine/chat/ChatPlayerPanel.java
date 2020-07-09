@@ -85,9 +85,11 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
    */
   private void setDynamicPreferredSize() {
     int maxNameLength = 0;
-    final FontMetrics fontMetrics = this.getFontMetrics(UIManager.getFont("TextField.font"));
-    for (final UserName onlinePlayer : chat.getOnlinePlayers()) {
-      maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(onlinePlayer.getValue()));
+    if (chat != null) {
+      final FontMetrics fontMetrics = this.getFontMetrics(UIManager.getFont("TextField.font"));
+      for (final UserName onlinePlayer : chat.getOnlinePlayers()) {
+        maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(onlinePlayer.getValue()));
+      }
     }
     int iconCounter = 0;
     if (setCellRenderer instanceof PlayerChatRenderer) {
