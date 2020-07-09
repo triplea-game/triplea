@@ -27,22 +27,17 @@ public class PerfTimer implements Closeable {
   private static final Map<String, AtomicLong> runningTotal = new HashMap<>();
   private static final Map<String, AtomicLong> runningCount = new HashMap<>();
   private final String title;
-  private final Optional<Long> startNanos;
   private final int reportingFrequency;
+  private final long startNanos;
 
   private PerfTimer(final String title, final int reportingFrequency) {
     this.title = title;
     this.reportingFrequency = reportingFrequency;
-    // If reporting frequency is 0, avoid the overhead of querying the time.
-    if (this.reportingFrequency > 0) {
-      this.startNanos = Optional.of(System.nanoTime());
-    } else {
-      this.startNanos = Optional.empty();
-    }
+    this.startNanos = System.nanoTime();
   }
 
   private long stopTimer() {
-    return System.nanoTime() - startNanos.get();
+    return System.nanoTime() - startNanos;
   }
 
   @Override
@@ -60,8 +55,7 @@ public class PerfTimer implements Closeable {
   /**
    * Creates a perf timer with a reporting frequency. The reporting frequency specifies N specifies
    * that performance information should be printed every N executions of the timer. If 0, no
-   * information is printed (and no timings are taken), which can be useful to have some places in
-   * the code to be always instrumented, but not always enabled.
+   * information is printed.
    *
    * @param title The name of the timer
    * @param reportingFrequency The reporting frequency.
