@@ -121,14 +121,14 @@ final class CollectionUtilsTest {
     @Test
     void staysSortedWhenModified() {
       final Collection<Integer> collection =
-          CollectionUtils.createSortedCollection(List.of(45, 43), null);
-      assertThat(collection.toArray(), is(new Integer[] {35, 53}));
+          CollectionUtils.createSortedCollection(List.of(35, 53, 9), null);
+      assertThat(collection.toArray(), is(new Integer[] {9, 35, 53}));
       collection.add(10);
-      assertThat(collection.toArray(), is(new Integer[] {10, 35, 53}));
+      assertThat(collection.toArray(), is(new Integer[] {9, 10, 35, 53}));
       collection.remove(35);
-      assertThat(collection.toArray(), is(new Integer[] {10, 53}));
+      assertThat(collection.toArray(), is(new Integer[] {9, 10, 53}));
       collection.addAll(List.of(25, -100));
-      assertThat(collection.toArray(), is(new Integer[] {-100, 10, 25, 53}));
+      assertThat(collection.toArray(), is(new Integer[] {-100, 9, 10, 25, 53}));
     }
 
     @Test
