@@ -3,7 +3,6 @@ package org.triplea.performance;
 import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import lombok.extern.java.Log;
