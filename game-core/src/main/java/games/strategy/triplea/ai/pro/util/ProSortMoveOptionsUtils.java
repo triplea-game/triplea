@@ -124,7 +124,7 @@ public final class ProSortMoveOptionsUtils {
           if (territories1.size() != territories2.size()) {
             return territories1.size() - territories2.size();
           }
-          if (territories1.size() == 0) {
+          if (territories1.isEmpty()) {
             return 0;
           }
 

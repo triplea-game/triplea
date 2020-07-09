@@ -7,13 +7,14 @@ import static java.util.function.Predicate.not;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.TreeMultiset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.experimental.UtilityClass;
 
@@ -121,8 +122,8 @@ public class CollectionUtils {
    * sort order according to the specified comparator as elements are added or removed.
    */
   public static <T> Collection<T> createSortedCollection(
-      final Collection<T> elements, final Comparator<T> comparator) {
-    final PriorityQueue<T> sortedCollection = new PriorityQueue<T>(elements.size(), comparator);
+      final Collection<T> elements, final @Nullable Comparator<T> comparator) {
+    final TreeMultiset<T> sortedCollection = TreeMultiset.create(comparator);
     sortedCollection.addAll(elements);
     return sortedCollection;
   }
