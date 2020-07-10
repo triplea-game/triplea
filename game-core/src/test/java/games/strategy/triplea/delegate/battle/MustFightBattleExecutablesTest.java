@@ -8,21 +8,17 @@ import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
 import static games.strategy.triplea.Constants.WW2V2;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
-import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.LAND;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.WATER;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.UnitAndAttachment;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.newUnitAndAttachment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -40,19 +36,13 @@ import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
-import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
-import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Set;
 import junit.framework.AssertionFailedError;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,14 +63,6 @@ class MustFightBattleExecutablesTest {
   @Mock Territory retreatSite;
   @Mock GamePlayer attacker;
   @Mock GamePlayer defender;
-
-  @Mock Unit unit1;
-  @Mock UnitType unit1Type;
-  @Mock UnitAttachment unit1Attachment;
-
-  @Mock Unit unit2;
-  @Mock UnitType unit2Type;
-  @Mock UnitAttachment unit2Attachment;
 
   enum BattleTerrain {
     WATER,
@@ -136,235 +118,6 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify paratrooper battle steps on first run")
-  void paratrooperStepAddedOnFirstRound() {
-    final MustFightBattle battle = newBattle(LAND);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThatStepExists(execs, MustFightBattle.LandParatroopers.class);
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with paratroopers on first run")
-  void paratroopersFirstRun() {
-    final MustFightBattle battle = spy(newBattle(LAND));
-    final TechAttachment techAttachment = mock(TechAttachment.class);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
-    when(attacker.getTechAttachment()).thenReturn(techAttachment);
-    when(techAttachment.getParatroopers()).thenReturn(true);
-
-    final Unit unit1 = givenAnyUnit();
-    when(unit1.getOwner()).thenReturn(attacker);
-    final Unit unit3 = givenUnitAirTransport();
-    when(unit3.getOwner()).thenReturn(attacker);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));
-    doReturn(List.of(unit1)).when(battle).getDependentUnits(any());
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, MustFightBattle.LandParatroopers.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge).addChange(any());
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with no AirTransport tech on first run")
-  void noAirTransportTech() {
-    final MustFightBattle battle = newBattle(LAND);
-    final TechAttachment techAttachment = mock(TechAttachment.class);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
-    when(techAttachment.getParatroopers()).thenReturn(false);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, MustFightBattle.LandParatroopers.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge, never()).addChange(any());
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with paratroopers on subsequent run")
-  void paratroopersSubsequentRun() {
-    final MustFightBattle battle = newBattle(LAND);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
-
-    assertThatStepIsMissing(execs, MustFightBattle.LandParatroopers.class);
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with empty paratroopers on first run")
-  void emptyParatroopersFirstRun() {
-    final MustFightBattle battle = spy(newBattle(LAND));
-    final TechAttachment techAttachment = mock(TechAttachment.class);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
-    when(attacker.getTechAttachment()).thenReturn(techAttachment);
-    when(techAttachment.getParatroopers()).thenReturn(true);
-
-    final Unit unit1 = givenAnyUnit();
-    when(unit1.getOwner()).thenReturn(attacker);
-    final Unit unit3 = givenUnitAirTransport();
-    when(unit3.getOwner()).thenReturn(attacker);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));
-    doReturn(List.of()).when(battle).getDependentUnits(any());
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, MustFightBattle.LandParatroopers.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge, never()).addChange(any());
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with offensive Aa")
-  void offensiveAaFire() {
-    final MustFightBattle battle = newBattle(LAND);
-    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
-    when(unit1.getType()).thenReturn(unit1Type);
-    when(unit1.getOwner()).thenReturn(attacker);
-    when(unit1.getData()).thenReturn(gameData);
-    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
-    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit1Attachment.getOffensiveAttackAa(attacker)).thenReturn(1);
-    when(unit1Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit1Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit1Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit2Type));
-    when(unit1Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    when(unit2.getType()).thenReturn(unit2Type);
-    when(unit2.getOwner()).thenReturn(defender);
-    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
-
-    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThat(
-        "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, OffensiveAaFire.class),
-        is(0));
-
-    assertThat(
-        "FireDefensiveAaGuns should be second step", getIndex(execs, DefensiveAaFire.class), is(1));
-
-    assertThat(
-        "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns",
-        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(2));
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with defensive Aa")
-  void defensiveAaFire() {
-    final MustFightBattle battle = newBattle(LAND);
-    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
-
-    when(unit2.getType()).thenReturn(unit2Type);
-    when(unit2.getOwner()).thenReturn(defender);
-    when(unit2.getData()).thenReturn(gameData);
-    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
-    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit2Attachment.getAttackAa(defender)).thenReturn(1);
-    when(unit2Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit2Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit2Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit1Type));
-    when(unit2Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    when(unit1.getType()).thenReturn(unit1Type);
-    when(unit1.getOwner()).thenReturn(attacker);
-    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
-
-    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThat(
-        "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, OffensiveAaFire.class),
-        is(0));
-
-    assertThat(
-        "FireDefensiveAaGuns should be the first step",
-        getIndex(execs, DefensiveAaFire.class),
-        is(1));
-
-    assertThat(
-        "ClearAaWaitingToDieAndDamagedChangesInto is after FireDefensiveAaGuns",
-        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(2));
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with offensive and defensive Aa")
-  void offensiveAndDefensiveAaFire() {
-    final MustFightBattle battle = newBattle(LAND);
-    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
-
-    // Unit1 is an AA attacker that can target Unit2
-    when(unit1.getType()).thenReturn(unit1Type);
-    when(unit1.getOwner()).thenReturn(attacker);
-    when(unit1.getData()).thenReturn(gameData);
-    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
-    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit1Attachment.getOffensiveAttackAa(attacker)).thenReturn(1);
-    when(unit1Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit1Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit1Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit2Type));
-    when(unit1Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    // Unit2 is an AA defender that can target Unit1
-    when(unit2.getType()).thenReturn(unit2Type);
-    when(unit2.getOwner()).thenReturn(defender);
-    when(unit2.getData()).thenReturn(gameData);
-    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
-    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit2Attachment.getAttackAa(defender)).thenReturn(1);
-    when(unit2Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit2Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit2Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit1Type));
-    when(unit2Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThat(
-        "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, OffensiveAaFire.class),
-        is(0));
-
-    assertThat(
-        "FireDefensiveAaGuns should be the second step",
-        getIndex(execs, DefensiveAaFire.class),
-        is(1));
-
-    assertThat(
-        "ClearAaWaitingToDieAndDamagedChangesInto is after "
-            + "FireOffensiveAaGuns and FireDefensiveAaGuns",
-        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(2));
-  }
-
-  @Test
   @DisplayName("Verify transports are removed if TRANSPORT_CASUALTIES_RESTRICTED is true")
   void transportsAreRemovedIfTransportCasualtiesRestricted() {
     final MustFightBattle battle = newBattle(WATER);
@@ -372,7 +125,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     assertThatStepExists(execs, MustFightBattle.RemoveUndefendedTransports.class);
   }
@@ -385,7 +138,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
 
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     assertThatStepIsMissing(execs, MustFightBattle.RemoveUndefendedTransports.class);
   }
@@ -422,7 +175,7 @@ class MustFightBattleExecutablesTest {
     when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
 
     battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
     final IExecutable step = execs.get(index);
@@ -449,7 +202,7 @@ class MustFightBattleExecutablesTest {
     when(unit.getOwner()).thenReturn(attacker);
 
     battle.setUnits(List.of(), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
     final IExecutable step = execs.get(index);
@@ -484,7 +237,7 @@ class MustFightBattleExecutablesTest {
     when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
 
     battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
     final IExecutable step = execs.get(index);
@@ -525,7 +278,7 @@ class MustFightBattleExecutablesTest {
     when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
 
     battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
     final IExecutable step = execs.get(index);
@@ -569,7 +322,7 @@ class MustFightBattleExecutablesTest {
     when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
 
     battle.setUnits(List.of(unit), List.of(unit2), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
     final IExecutable step = execs.get(index);
@@ -603,7 +356,7 @@ class MustFightBattleExecutablesTest {
     when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
 
     battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
     final IExecutable step = execs.get(index);
@@ -643,7 +396,7 @@ class MustFightBattleExecutablesTest {
     when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
 
     battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
     final IExecutable step = execs.get(index);
@@ -703,7 +456,7 @@ class MustFightBattleExecutablesTest {
 
   private void assertThatFirstStrikeStepOrder(
       final MustFightBattle battle, final List<FirstStrikeBattleStep> stepOrder) {
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
 
     final EnumMap<FirstStrikeBattleStep, Integer> indices =
         new EnumMap<>(FirstStrikeBattleStep.class);
@@ -726,7 +479,7 @@ class MustFightBattleExecutablesTest {
       final MustFightBattle battle,
       final MustFightBattle.ReturnFire returnFire,
       final boolean attacker) {
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
+    final List<IExecutable> execs = battle.getBattleExecutables();
     final int index =
         getIndex(
             execs,

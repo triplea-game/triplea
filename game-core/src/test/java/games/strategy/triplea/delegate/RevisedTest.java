@@ -1066,7 +1066,7 @@ class RevisedTest {
                 defender + SUBS_SUBMERGE)
             .toString(),
         steps.toString());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
+    final List<IExecutable> execs = battle.getBattleExecutables();
     final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
     final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
@@ -1126,7 +1126,7 @@ class RevisedTest {
                 defender + SUBS_SUBMERGE)
             .toString(),
         steps.toString());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
+    final List<IExecutable> execs = battle.getBattleExecutables();
     final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
     final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
@@ -1199,7 +1199,7 @@ class RevisedTest {
                 defender + SUBS_SUBMERGE)
             .toString(),
         steps.toString());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
+    final List<IExecutable> execs = battle.getBattleExecutables();
     final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
     final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
@@ -1254,7 +1254,7 @@ class RevisedTest {
                 defender + SUBS_SUBMERGE)
             .toString(),
         steps.toString());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
+    final List<IExecutable> execs = battle.getBattleExecutables();
     final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
     final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
@@ -1324,7 +1324,7 @@ class RevisedTest {
                 defender + SUBS_SUBMERGE)
             .toString(),
         steps.toString());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
+    final List<IExecutable> execs = battle.getBattleExecutables();
     final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
     final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
@@ -1381,7 +1381,7 @@ class RevisedTest {
                 defender + SUBS_SUBMERGE)
             .toString(),
         steps.toString());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
+    final List<IExecutable> execs = battle.getBattleExecutables();
     final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
     final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
