@@ -9,6 +9,7 @@ import static org.triplea.java.collections.CollectionUtils.getMatches;
 import static org.triplea.java.collections.CollectionUtils.getNMatches;
 import static org.triplea.java.collections.CollectionUtils.haveEqualSizeAndEquivalentElements;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -105,6 +106,40 @@ final class CollectionUtilsTest {
     void shouldReturnFalseWhenCollectionsHaveSameSizeButElementsAreNotEquivalent() {
       assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 2)), is(false));
       assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 2), List.of(1, 2, 3)), is(false));
+    }
+  }
+
+  @Nested
+  final class CreateSortedCollectionTest {
+    @Test
+    void supportsDuplicates() {
+      final Collection<Integer> collection =
+          CollectionUtils.createSortedCollection(List.of(1, 2, 3, -1, 2, 2), null);
+      assertThat(collection.toArray(), is(new Integer[] {-1, 1, 2, 2, 2, 3}));
+    }
+
+    @Test
+    void staysSortedWhenModified() {
+      final Collection<Integer> collection =
+          CollectionUtils.createSortedCollection(List.of(35, 53, 9), null);
+      assertThat(collection.toArray(), is(new Integer[] {9, 35, 53}));
+      collection.add(10);
+      assertThat(collection.toArray(), is(new Integer[] {9, 10, 35, 53}));
+      collection.remove(35);
+      assertThat(collection.toArray(), is(new Integer[] {9, 10, 53}));
+      collection.addAll(List.of(25, -100));
+      assertThat(collection.toArray(), is(new Integer[] {-100, 9, 10, 25, 53}));
+    }
+
+    @Test
+    void iterationOrder() {
+      final Collection<Integer> collection =
+          CollectionUtils.createSortedCollection(List.of(9, 5, 4, 12), null);
+      final List<Integer> entries = new ArrayList<>();
+      for (final Integer value : collection) {
+        entries.add(value);
+      }
+      assertThat(entries.toArray(), is(new Integer[] {4, 5, 9, 12}));
     }
   }
 }
