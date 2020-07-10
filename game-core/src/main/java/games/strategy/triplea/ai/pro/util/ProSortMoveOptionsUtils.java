@@ -72,9 +72,9 @@ public final class ProSortMoveOptionsUtils {
     list.sort(
         (o1, o2) -> {
           final Collection<Territory> territories1 =
-              filterOutWinningTerritories(o1.getValue(), player, attackMap, calc);
+              removeWinningTerritories(o1.getValue(), player, attackMap, calc);
           final Collection<Territory> territories2 =
-              filterOutWinningTerritories(o2.getValue(), player, attackMap, calc);
+              removeWinningTerritories(o2.getValue(), player, attackMap, calc);
 
           // Sort by number of territories that still need units
           if (territories1.size() != territories2.size()) {
@@ -116,9 +116,9 @@ public final class ProSortMoveOptionsUtils {
     list.sort(
         (o1, o2) -> {
           final Collection<Territory> territories1 =
-              filterOutWinningTerritories(o1.getValue(), player, attackMap, calc);
+              removeWinningTerritories(o1.getValue(), player, attackMap, calc);
           final Collection<Territory> territories2 =
-              filterOutWinningTerritories(o2.getValue(), player, attackMap, calc);
+              removeWinningTerritories(o2.getValue(), player, attackMap, calc);
 
           // Sort by number of territories that still need units
           if (territories1.size() != territories2.size()) {
@@ -171,7 +171,7 @@ public final class ProSortMoveOptionsUtils {
     return sortedUnitAttackOptions;
   }
 
-  private static Collection<Territory> filterOutWinningTerritories(
+  private static Collection<Territory> removeWinningTerritories(
       final Collection<Territory> territories,
       final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap,
