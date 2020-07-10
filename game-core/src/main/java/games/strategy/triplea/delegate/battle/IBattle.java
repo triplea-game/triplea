@@ -6,7 +6,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
@@ -145,8 +144,6 @@ public interface IBattle extends Serializable {
   Collection<Unit> getRemainingDefendingUnits();
 
   WhoWon getWhoWon();
-
-  BattleResultDescription getBattleResultDescription();
 
   GamePlayer getAttacker();
 

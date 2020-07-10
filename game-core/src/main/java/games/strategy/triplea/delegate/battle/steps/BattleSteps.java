@@ -10,11 +10,11 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
+import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import org.triplea.java.collections.CollectionUtils;
 
 /** Get the steps that will occurr in the battle */
 @Builder
@@ -92,6 +91,11 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   }
 
   @Override
+  public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
+    return getDependentUnits.apply(units);
+  }
+
+  @Override
   public boolean isOver() {
     return isOver;
   }
@@ -110,6 +114,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this);
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
     final BattleStep navalBombardment = new NavalBombardment(this, battleActions);
+    final BattleStep landParatroopers = new LandParatroopers(this, battleActions);
     final BattleStep offensiveSubsSubmerge = new OffensiveSubsRetreat(this, battleActions);
     final BattleStep defensiveSubsSubmerge = new DefensiveSubsRetreat(this, battleActions);
 
@@ -121,18 +126,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     steps.addAll(defensiveAaStep.getNames());
 
     steps.addAll(navalBombardment.getNames());
-    if (battleRound == 1) {
-      if (!isBattleSiteWater && TechAttachment.isAirTransportable(attacker)) {
-        final Collection<Unit> bombers =
-            CollectionUtils.getMatches(battleSite.getUnits(), Matches.unitIsAirTransport());
-        if (!bombers.isEmpty()) {
-          final Collection<Unit> dependents = getDependentUnits.apply(bombers);
-          if (!dependents.isEmpty()) {
-            steps.add(LAND_PARATROOPS);
-          }
-        }
-      }
-    }
+    steps.addAll(landParatroopers.getNames());
 
     if (offensiveSubsSubmerge.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.addAll(offensiveSubsSubmerge.getNames());

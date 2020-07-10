@@ -40,4 +40,6 @@ public interface BattleState {
   Collection<Territory> getAttackerRetreatTerritories();
 
   Collection<Territory> getEmptyOrFriendlySeaNeighbors(Collection<Unit> units);
+
+  Collection<Unit> getDependentUnits(Collection<Unit> units);
 }

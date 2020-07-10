@@ -7,17 +7,18 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 import org.triplea.debug.error.reporting.UploadDecisionModule;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.JEditorPaneWithClickableLinks;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -38,7 +39,7 @@ public enum ErrorMessage {
 
   private static final String DEFAULT_LOGGER = "";
   private final JFrame windowReference = new JFrame("TripleA Error");
-  private final JLabel errorMessage = JLabelBuilder.builder().errorIcon().iconTextGap(10).build();
+  private final JEditorPaneWithClickableLinks errorMessage = new JEditorPaneWithClickableLinks("");
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
   private volatile boolean enableErrorPopup = false;
 
@@ -58,6 +59,7 @@ public enum ErrorMessage {
             hide();
           }
         });
+    errorMessage.setBorder(new EmptyBorder(5, 20, 5, 10));
     windowReference.add(
         new JPanelBuilder()
             .border(10)
@@ -130,7 +132,12 @@ public enum ErrorMessage {
   }
 
   private void activateUploadErrorReportButton(final URI lobbyUri, final LogRecord logRecord) {
-    INSTANCE.uploadButton.setVisible(true);
+    // Set upload button to be visible only if the logging is greater than a 'warning'.
+    // Warning logging should tell a user how to correct the error and it should be something
+    // that is 'normal' (but maybe not happy, like no internet) and something they can fix
+    // (or perhaps something that we simply can never fix). Hence, for warning we want to inform
+    // the user that the problem happened, how to fix it, and let them create a bug report manually.
+    INSTANCE.uploadButton.setVisible(logRecord.getLevel().intValue() > Level.WARNING.intValue());
 
     final ErrorReportClient errorReportClient = ErrorReportClient.newClient(lobbyUri);
 

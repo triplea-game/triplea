@@ -221,7 +221,7 @@ public class UnitImageFactory {
     return Optional.of(icon);
   }
 
-  private static String getBaseImageName(
+  public static String getBaseImageName(
       final UnitType type,
       final GamePlayer gamePlayer,
       final boolean damaged,
@@ -272,6 +272,7 @@ public class UnitImageFactory {
         }
       }
       if (UnitAttachment.get(type).getIsFirstStrike()
+          && UnitAttachment.get(type).getCanEvade()
           && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
               || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
           && TechTracker.hasSuperSubs(gamePlayer)) {

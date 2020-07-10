@@ -2,9 +2,12 @@ package org.triplea.debug;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.UrlConstants;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +31,7 @@ class ErrorMessageFormatterTest {
   @Test
   void logMessageOnly() {
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
+    when(logRecord.getLevel()).thenReturn(Level.SEVERE);
     when(logRecord.getThrown()).thenReturn(null);
 
     final String result = errorMessageFormatter.apply(logRecord);
@@ -54,6 +58,7 @@ class ErrorMessageFormatterTest {
   private static void givenLogRecordWithNoMessageOnlyAnException(
       final LogRecord logRecord, final Exception exception) {
     when(logRecord.getMessage()).thenReturn(exception.getMessage());
+    when(logRecord.getLevel()).thenReturn(Level.SEVERE);
     when(logRecord.getThrown()).thenReturn(exception);
   }
 
@@ -70,6 +75,7 @@ class ErrorMessageFormatterTest {
   @Test
   void bothMessageAndExceptionWithExceptionMessage() {
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
+    when(logRecord.getLevel()).thenReturn(Level.SEVERE);
     when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
     final String result = errorMessageFormatter.apply(logRecord);
@@ -89,6 +95,7 @@ class ErrorMessageFormatterTest {
   @Test
   void messageAndExceptionWithoutExceptionMessage() {
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
+    when(logRecord.getLevel()).thenReturn(Level.SEVERE);
     when(logRecord.getThrown()).thenReturn(EXCEPTION_WITHOUT_MESSAGE);
 
     final String result = errorMessageFormatter.apply(logRecord);
@@ -101,5 +108,16 @@ class ErrorMessageFormatterTest {
                 + "<br/><br/>"
                 + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName()
                 + "</html>"));
+  }
+
+  @Test
+  void warningLevelAppendsBugReportLink() {
+    when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
+    when(logRecord.getLevel()).thenReturn(Level.WARNING);
+    when(logRecord.getThrown()).thenReturn(EXCEPTION_WITHOUT_MESSAGE);
+
+    final String result = errorMessageFormatter.apply(logRecord);
+
+    assertThat(result, containsString(UrlConstants.GITHUB_ISSUES));
   }
 }

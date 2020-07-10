@@ -233,11 +233,6 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public BattleResultDescription getBattleResultDescription() {
-    return battleResultDescription;
-  }
-
-  @Override
   public UUID getBattleId() {
     return battleId;
   }

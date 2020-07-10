@@ -79,14 +79,18 @@ public final class Util {
     w.setLocation(x, y);
   }
 
-  /** Returns the size of the screen associated with the passed window. */
+  /**
+   * Returns the size of the screen associated with the passed window. Note: The returned size is in
+   * logical pixels, rather than screen pixels - which is the same unit Swing UI sizes are in.
+   */
   public static Dimension getScreenSize(final Window window) {
     final var graphicsConfiguration = window.getGraphicsConfiguration();
     if (graphicsConfiguration == null) {
       return Toolkit.getDefaultToolkit().getScreenSize();
     }
-    final var displayMode = graphicsConfiguration.getDevice().getDisplayMode();
-    return new Dimension(displayMode.getWidth(), displayMode.getHeight());
+    // Note: The bounds of the graphic config is in logical pixels, which
+    // is what we want, unlike gc.getDevice().getDisplayMode().getWidth().
+    return graphicsConfiguration.getBounds().getSize();
   }
 
   /**

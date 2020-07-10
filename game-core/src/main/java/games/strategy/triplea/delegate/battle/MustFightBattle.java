@@ -23,7 +23,6 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -35,6 +34,10 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.FirstStrikeStepOrder;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
+import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
+import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -49,6 +52,7 @@ import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -85,26 +89,6 @@ public class MustFightBattle extends DependentBattle
     SUBS,
     PLANES,
     PARTIAL_AMPHIB
-  }
-
-  /**
-   * An action representing clearing damaged units during the aa round.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class ClearAaWaitingToDieAndDamagedChangesInto implements IExecutable {
-    private static final long serialVersionUID = -3223166334485741752L;
-  }
-
-  /**
-   * An action representing landing paratroopers.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class LandParatroopers implements IExecutable {
-    private static final long serialVersionUID = 5936225914851941086L;
   }
 
   /**
@@ -328,7 +312,7 @@ public class MustFightBattle extends DependentBattle
    */
   @Override
   public List<Unit> getRemainingAttackingUnits() {
-    final List<Unit> remaining = new ArrayList<>(attackingUnitsRetreated);
+    final Set<Unit> remaining = new HashSet<>(attackingUnitsRetreated);
     final Collection<Unit> unitsLeftInTerritory = new ArrayList<>(battleSite.getUnits());
     unitsLeftInTerritory.removeAll(killed);
     remaining.addAll(
@@ -339,7 +323,7 @@ public class MustFightBattle extends DependentBattle
                 : Matches.unitOwnedBy(attacker)
                     .and(Matches.unitIsAir())
                     .and(Matches.unitIsNotInfrastructure())));
-    return remaining;
+    return new ArrayList<>(remaining);
   }
 
   /**
@@ -449,7 +433,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  private void clearWaitingToDieAndDamagedChangesInto(final IDelegateBridge bridge) {
+  @Override
+  public void clearWaitingToDieAndDamagedChangesInto(final IDelegateBridge bridge) {
     final Collection<Unit> unitsToRemove = new ArrayList<>();
     unitsToRemove.addAll(attackingWaitingToDie);
     unitsToRemove.addAll(defendingWaitingToDie);
@@ -718,7 +703,7 @@ public class MustFightBattle extends DependentBattle
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
     }
     // push on stack in opposite order of execution
-    pushFightLoopOnStack(true);
+    pushFightLoopOnStack();
     stack.execute(bridge);
   }
 
@@ -887,20 +872,6 @@ public class MustFightBattle extends DependentBattle
         .get();
   }
 
-  private boolean canFireOffensiveAa() {
-    if (offensiveAa == null) {
-      updateOffensiveAaUnits();
-    }
-    return !offensiveAa.isEmpty();
-  }
-
-  private boolean canFireDefendingAa() {
-    if (defendingAa == null) {
-      updateDefendingAaUnits();
-    }
-    return !defendingAa.isEmpty();
-  }
-
   private boolean canAttackerRetreatInStalemate() {
     // First check if any units have an explicit "can retreat on stalemate"
     // property. If none do (all are null), then we will use a fallback algorithm.
@@ -1027,11 +998,11 @@ public class MustFightBattle extends DependentBattle
     return possible;
   }
 
-  private void pushFightLoopOnStack(final boolean firstRun) {
+  private void pushFightLoopOnStack() {
     if (isOver) {
       return;
     }
-    final List<IExecutable> steps = getBattleExecutables(firstRun);
+    final List<IExecutable> steps = getBattleExecutables();
     // add in the reverse order we create them
     Collections.reverse(steps);
     for (final IExecutable step : steps) {
@@ -1067,27 +1038,39 @@ public class MustFightBattle extends DependentBattle
    * still needed. They can be safely removed once save compatibility can be broken.
    */
   @VisibleForTesting
-  public List<IExecutable> getBattleExecutables(final boolean firstRun) {
+  public List<IExecutable> getBattleExecutables() {
     final List<IExecutable> steps = new ArrayList<>();
-    addFightStartSteps(firstRun, steps);
+    addFightStartSteps(steps);
     addFightSteps(steps);
     addCheckEndBattleAndRetreatingSteps(steps);
     return steps;
   }
 
-  private void addFightStartSteps(final boolean firstRun, final List<IExecutable> steps) {
+  private void addFightStartSteps(final List<IExecutable> steps) {
     if (offensiveAa == null) {
       updateOffensiveAaUnits();
     }
     if (defendingAa == null) {
       updateDefendingAaUnits();
     }
-    final BattleStep navalBombardment = new NavalBombardment(this, this);
-    final boolean offensiveAa = canFireOffensiveAa();
-    final boolean defendingAa = canFireDefendingAa();
-    final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
-    final BattleStep defensiveAaStep = new DefensiveAaFire(this, this);
-    steps.add(offensiveAaStep);
+    final List<BattleStep> startSteps =
+        List.of(
+            new OffensiveAaFire(this, this),
+            new DefensiveAaFire(this, this),
+            new ClearAaCasualties(this, this),
+            new NavalBombardment(this, this),
+            new RemoveNonCombatants(this),
+            new LandParatroopers(this, this),
+            new MarkNoMovementLeft(this, this));
+    steps.addAll(
+        startSteps.stream()
+            .sorted(Comparator.comparing(BattleStep::getOrder))
+            .collect(Collectors.toList()));
+  }
+
+  // the IExecutables in this block can be deleted when save compatibility can be broken
+  {
+    // Removed in 2.0
     new IExecutable() {
       private static final long serialVersionUID = 3802352588499530533L;
 
@@ -1098,7 +1081,7 @@ public class MustFightBattle extends DependentBattle
         offensiveAaStep.execute(stack, bridge);
       }
     };
-    steps.add(defensiveAaStep);
+    // Removed in 2.0
     new IExecutable() {
       private static final long serialVersionUID = -1370090785540214199L;
 
@@ -1109,29 +1092,28 @@ public class MustFightBattle extends DependentBattle
         defensiveAaStep.execute(stack, bridge);
       }
     };
-    if (offensiveAa || defendingAa) {
-      steps.add(
-          new ClearAaWaitingToDieAndDamagedChangesInto() {
-            private static final long serialVersionUID = 8762796262264296436L;
+    // Removed in 2.1
+    new IExecutable() {
+      private static final long serialVersionUID = 8762796262264296436L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              clearWaitingToDieAndDamagedChangesInto(bridge);
-            }
-          });
-    }
-    if (round > 1) {
-      steps.add(
-          new IExecutable() {
-            private static final long serialVersionUID = 2781652892457063082L;
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep clearAaCasualties =
+            new ClearAaCasualties(MustFightBattle.this, MustFightBattle.this);
+        clearAaCasualties.execute(stack, bridge);
+      }
+    };
+    // Removed in 2.1
+    new IExecutable() {
+      private static final long serialVersionUID = 2781652892457063082L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              removeNonCombatants(bridge);
-            }
-          });
-    }
-    steps.add(navalBombardment);
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
+        removeNonCombatants.execute(stack, bridge);
+      }
+    };
+    // Removed in 2.0
     new IExecutable() {
       private static final long serialVersionUID = -2255284529092427441L;
 
@@ -1142,35 +1124,38 @@ public class MustFightBattle extends DependentBattle
         navalBombardment.execute(stack, bridge);
       }
     };
-    if (firstRun) {
-      steps.add(
-          new IExecutable() {
-            private static final long serialVersionUID = 3389635558184415797L;
+    // Removed in 2.1
+    new IExecutable() {
+      private static final long serialVersionUID = 3389635558184415797L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              removeNonCombatants(bridge);
-            }
-          });
-      steps.add(
-          new LandParatroopers() {
-            private static final long serialVersionUID = 7193353768857658286L;
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
+        removeNonCombatants.execute(stack, bridge);
+      }
+    };
+    // Removed in 2.1
+    new IExecutable() {
+      private static final long serialVersionUID = 7193353768857658286L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              landParatroops(bridge);
-            }
-          });
-      steps.add(
-          new IExecutable() {
-            private static final long serialVersionUID = -6676316363537467594L;
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep landParatroopers =
+            new LandParatroopers(MustFightBattle.this, MustFightBattle.this);
+        landParatroopers.execute(stack, bridge);
+      }
+    };
+    // Removed in 2.1
+    new IExecutable() {
+      private static final long serialVersionUID = -6676316363537467594L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              markNoMovementLeft(bridge);
-            }
-          });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep markNoMovementLeft =
+            new MarkNoMovementLeft(MustFightBattle.this, MustFightBattle.this);
+        markNoMovementLeft.execute(stack, bridge);
+      }
+    };
   }
 
   @Override
@@ -1331,7 +1316,8 @@ public class MustFightBattle extends DependentBattle
     return result;
   }
 
-  private void removeNonCombatants(final IDelegateBridge bridge) {
+  @Override
+  public void removeNonCombatants(final IDelegateBridge bridge) {
     final List<Unit> notRemovedDefending = removeNonCombatants(defendingUnits, false, true);
     final List<Unit> notRemovedAttacking = removeNonCombatants(attackingUnits, true, true);
     final Collection<Unit> toRemoveDefending =
@@ -1394,29 +1380,25 @@ public class MustFightBattle extends DependentBattle
     return unitList;
   }
 
-  private void landParatroops(final IDelegateBridge bridge) {
-    if (TechAttachment.isAirTransportable(attacker)) {
-      final Collection<Unit> airTransports =
-          CollectionUtils.getMatches(battleSite.getUnits(), Matches.unitIsAirTransport());
-      if (!airTransports.isEmpty()) {
-        final Collection<Unit> dependents = getDependentUnits(airTransports);
-        if (!dependents.isEmpty()) {
-          final CompositeChange change = new CompositeChange();
-          // remove dependency from paratroopers by unloading the air transports
-          for (final Unit unit : dependents) {
-            change.add(TransportTracker.unloadAirTransportChange(unit, battleSite, false));
-          }
-          bridge.addChange(change);
-          // remove bombers from dependentUnits
-          for (final Unit unit : airTransports) {
-            dependentUnits.remove(unit);
-          }
-        }
-      }
+  @Override
+  public void landParatroopers(
+      final IDelegateBridge bridge,
+      final Collection<Unit> airTransports,
+      final Collection<Unit> dependents) {
+    final CompositeChange change = new CompositeChange();
+    // remove dependency from paratroopers by unloading the air transports
+    for (final Unit unit : dependents) {
+      change.add(TransportTracker.unloadAirTransportChange(unit, battleSite, false));
+    }
+    bridge.addChange(change);
+    // remove bombers from dependentUnits
+    for (final Unit unit : airTransports) {
+      dependentUnits.remove(unit);
     }
   }
 
-  private void markNoMovementLeft(final IDelegateBridge bridge) {
+  @Override
+  public void markNoMovementLeft(final IDelegateBridge bridge) {
     if (headless) {
       return;
     }
@@ -1924,7 +1906,7 @@ public class MustFightBattle extends DependentBattle
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            pushFightLoopOnStack(false);
+            pushFightLoopOnStack();
           }
         };
     steps.add(
@@ -2027,7 +2009,10 @@ public class MustFightBattle extends DependentBattle
     Collection<Unit> units = defender ? defendingUnits : attackingUnits;
     if (!defender) {
       units = new HashSet<>(units);
-      units.addAll(battleSite.getUnitCollection().getMatches(Matches.unitIsOwnedBy(attacker)));
+      units.addAll(
+          battleSite
+              .getUnitCollection()
+              .getMatches(Matches.unitIsOwnedBy(attacker).and(Matches.unitIsSubmerged().negate())));
       units.removeAll(killed);
     }
     if (subs) {

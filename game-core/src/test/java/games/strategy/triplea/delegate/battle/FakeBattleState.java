@@ -65,12 +65,19 @@ public class FakeBattleState implements BattleState {
 
   final Collection<Territory> emptyOrFriendlySeaNeighbors;
 
+  final Collection<Unit> dependentUnits;
+
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> bombardingUnits;
 
   @Override
   public Collection<Territory> getEmptyOrFriendlySeaNeighbors(final Collection<Unit> units) {
     return emptyOrFriendlySeaNeighbors;
+  }
+
+  @Override
+  public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
+    return dependentUnits;
   }
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
@@ -86,6 +93,7 @@ public class FakeBattleState implements BattleState {
         .offensiveAa(List.of())
         .defendingAa(List.of())
         .bombardingUnits(List.of())
+        .dependentUnits(List.of())
         .gameData(mock(GameData.class))
         .amphibious(false)
         .over(false)
