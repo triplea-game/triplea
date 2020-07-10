@@ -1,11 +1,7 @@
 package games.strategy.engine.chat;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoInteractions;
 
-import java.awt.Dimension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,10 +17,8 @@ public class ChatPlayerPanelTest {
 
     final ChatPlayerPanel chatPlayerPanel = new ChatPlayerPanel(null);
 
-    when(renderer.getMaxIconCounter()).thenReturn(1);
     chatPlayerPanel.setPlayerRenderer(renderer);
 
-    verify(renderer, times(1)).getMaxIconCounter();
-    assertEquals(chatPlayerPanel.getPreferredSize(), new Dimension(54, 80));
+    verifyNoInteractions(renderer);
   }
 }
