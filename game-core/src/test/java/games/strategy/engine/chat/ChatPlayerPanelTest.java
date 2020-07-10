@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,6 @@ public class ChatPlayerPanelTest {
 
     chatPlayerPanel.setPlayerRenderer(renderer);
 
-    verifyNoInteractions(renderer);
+    verify(renderer, never()).getMaxIconCounter();
   }
 }
