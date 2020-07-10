@@ -21,7 +21,12 @@ class ReportPreviewSwingView implements Consumer<ErrorReportRequest> {
                 .columns(45)
                 .rows(12)
                 .readOnly()
-                .text(errorReport.getTitle() + "\n\n" + errorReport.getBody())
+                .text(
+                    errorReport.getGameVersion()
+                        + ": "
+                        + errorReport.getTitle()
+                        + "\n\n"
+                        + errorReport.getBody())
                 .build()),
         "Preview - The Following Data Will Be Uploaded",
         JOptionPane.INFORMATION_MESSAGE);

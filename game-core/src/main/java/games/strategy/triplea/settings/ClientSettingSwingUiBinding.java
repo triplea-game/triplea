@@ -288,7 +288,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "The folder where game engine will download and find map files.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return folderPath(ClientSetting.userMapsFolderPath);
+      return folderPath(ClientSetting.mapFolderOverride);
     }
   },
 

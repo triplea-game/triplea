@@ -15,6 +15,8 @@ public interface BattleState {
 
   Collection<Unit> getAttackingUnits();
 
+  Collection<Unit> getAttackingWaitingToDie();
+
   Collection<Unit> getDefendingUnits();
 
   Collection<Unit> getDefendingWaitingToDie();
@@ -36,4 +38,8 @@ public interface BattleState {
   boolean isOver();
 
   Collection<Territory> getAttackerRetreatTerritories();
+
+  Collection<Territory> getEmptyOrFriendlySeaNeighbors(Collection<Unit> units);
+
+  Collection<Unit> getDependentUnits(Collection<Unit> units);
 }

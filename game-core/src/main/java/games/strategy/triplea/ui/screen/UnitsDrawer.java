@@ -9,6 +9,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -110,15 +111,19 @@ public class UnitsDrawer extends AbstractDrawable {
       throw new IllegalStateException("Type not found:" + unitType);
     }
     final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
+    final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;
     final Optional<Image> img =
-        uiContext
-            .getUnitImageFactory()
-            .getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
+        uiContext.getUnitImageFactory().getImage(type, owner, damagedImage, disabled);
 
     if (img.isEmpty() && !uiContext.isShutDown()) {
+      final String imageName =
+          UnitImageFactory.getBaseImageName(type, owner, damagedImage, disabled);
       log.severe(
           "MISSING UNIT IMAGE (won't be displayed): "
               + type.getName()
+              + " ("
+              + imageName
+              + ")"
               + " owned by "
               + owner.getName()
               + " in "

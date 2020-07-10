@@ -13,6 +13,7 @@
 *.png
 *.gif
 *.mp3
+*.attach_pid*
 
 bin/
 build/

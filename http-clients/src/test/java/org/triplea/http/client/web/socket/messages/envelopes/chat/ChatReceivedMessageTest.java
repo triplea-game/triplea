@@ -13,49 +13,13 @@ import org.triplea.domain.data.UserName;
 class ChatReceivedMessageTest {
 
   @Test
-  @DisplayName("Verify a message under max line length is left untouched")
-  void messageUnderMaxLineLength() {
-    final String testString = createStringWithLength(ChatReceivedMessage.MAX_LINE_LENGTH - 1);
-
-    final String result = chatMessage(testString);
-
-    assertThat("expecting no difference, string is under the length limit", result, is(testString));
-  }
-
-  @Test
-  @DisplayName("Verify a message at max line length is left untouched")
-  void messageAtMaxLineLength() {
-    final String testString = createStringWithLength(ChatReceivedMessage.MAX_LINE_LENGTH);
-
-    final String result = chatMessage(testString);
-
-    assertThat("expecting no difference, string is at the limit", result, is(testString));
-  }
-
-  @Test
-  @DisplayName("Verify a message over max line length is split untouched")
-  void messageOverMaxLineLength() {
-    final String testString = createStringWithLength(ChatReceivedMessage.MAX_LINE_LENGTH + 1);
-
-    final String result = chatMessage(testString);
-
-    assertThat(
-        "String is expected to be split, should see a newline at the max line length",
-        String.valueOf(result.charAt(ChatReceivedMessage.MAX_LINE_LENGTH)),
-        is("\n"));
-    assertThat(
-        "Expecting a single new line to have been inserted",
-        result.length(),
-        is(testString.length() + "\n".length()));
-  }
-
-  @Test
   @DisplayName("Verify message at max length is not truncated")
   void messageAtMaxLimit() {
     final String testString = createStringWithLength(ChatReceivedMessage.MAX_MESSAGE_LENGTH);
 
     final String result = chatMessage(testString);
 
+    assertThat(result, is(testString));
     assertThat(result, not(endsWith(ChatReceivedMessage.ELLIPSES)));
   }
 
@@ -66,6 +30,7 @@ class ChatReceivedMessageTest {
 
     final String result = chatMessage(testString);
 
+    assertThat(result.length(), is(ChatReceivedMessage.MAX_MESSAGE_LENGTH));
     assertThat(result, endsWith(ChatReceivedMessage.ELLIPSES));
   }
 

@@ -1508,8 +1508,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final boolean clearFirst = clearFirstNewValue.getFirst();
     final String newValue = clearFirstNewValue.getSecond();
 
-    final boolean isValueTheSame =
-        newValue.equals(propertyAttachment.getRawPropertyString(propertyName));
+    final boolean isValueTheSame;
+    try {
+      isValueTheSame = newValue.equals(propertyAttachment.getRawPropertyString(propertyName));
+    } catch (final UnsupportedOperationException e) {
+      throw new UnsupportedOperationException(
+          triggerAttachment.getName()
+              + ": Unable to get the value for "
+              + propertyName
+              + " from "
+              + propertyAttachmentName,
+          e);
+    }
 
     if (!isValueTheSame) {
 

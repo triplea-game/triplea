@@ -1,7 +1,7 @@
 package org.triplea.debug.error.reporting;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.LogRecord;
 import javax.annotation.Nonnull;
@@ -13,7 +13,7 @@ class StackTraceReportModel {
 
   @Nonnull private final StackTraceReportView view;
   @Nonnull private final LogRecord stackTraceRecord;
-  @Nonnull private final BiFunction<String, LogRecord, ErrorReportRequest> formatter;
+  @Nonnull private final Function<ErrorReportRequestParams, ErrorReportRequest> formatter;
   @Nonnull private final Predicate<ErrorReportRequest> uploader;
   @Nonnull private final Consumer<ErrorReportRequest> preview;
 
@@ -24,7 +24,12 @@ class StackTraceReportModel {
   }
 
   private ErrorReportRequest readErrorReportFromUi() {
-    return formatter.apply(view.readUserDescription(), stackTraceRecord);
+    return formatter.apply(
+        ErrorReportRequestParams.builder()
+            .userDescription(view.readUserDescription())
+            .mapName(view.readMapName())
+            .logRecord(stackTraceRecord)
+            .build());
   }
 
   void previewAction() {

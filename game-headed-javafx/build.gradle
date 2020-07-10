@@ -1,7 +1,7 @@
 plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 archivesBaseName = "$group-$name"

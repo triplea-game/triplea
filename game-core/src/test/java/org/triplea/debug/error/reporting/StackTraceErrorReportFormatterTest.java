@@ -36,6 +36,25 @@ class StackTraceErrorReportFormatterTest {
   @Mock private LogRecord logRecord;
 
   @Nested
+  final class VerifyVersion {
+    @Test
+    void verifyVersion() {
+      when(logRecord.getSourceClassName()).thenReturn("org.ClassName");
+
+      final ErrorReportRequest errorReportResult =
+          new StackTraceErrorReportFormatter(() -> "4.1")
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
+
+      assertThat(errorReportResult.getGameVersion(), is("4.1"));
+    }
+  }
+
+  @Nested
   final class VerifyTitle {
     @Test
     void logMessageOnly() {
@@ -44,10 +63,16 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter(() -> "4.1")
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(
-          errorReportResult.getTitle(), is("4.1: ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
+          errorReportResult.getTitle(), is("ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
     }
 
     @Test
@@ -57,10 +82,16 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter(() -> "4.1")
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(
-          errorReportResult.getTitle(), is("4.1: ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
+          errorReportResult.getTitle(), is("ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
     }
 
     @Test
@@ -68,13 +99,18 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter(() -> "5.6").apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter(() -> "5.6")
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(
           errorReportResult.getTitle(),
           is(
-              "5.6: "
-                  + StackTraceErrorReportFormatterTest.class.getSimpleName()
+              StackTraceErrorReportFormatterTest.class.getSimpleName()
                   + "#<clinit>:"
                   + EXCEPTION_WITH_NO_MESSAGE.getStackTrace()[0].getLineNumber()
                   + " - "
@@ -87,7 +123,13 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getSourceClassName()).thenReturn("ClassInDefaultPackage");
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter()
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertDoesNotThrow(errorReportResult::getTitle);
     }
@@ -97,13 +139,18 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_CAUSE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter(() -> "5.6").apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter(() -> "5.6")
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(
           errorReportResult.getTitle(),
           is(
-              "5.6: "
-                  + StackTraceErrorReportFormatterTest.class.getSimpleName()
+              StackTraceErrorReportFormatterTest.class.getSimpleName()
                   + "#<clinit>:"
                   + EXCEPTION_WITH_CAUSE.getCause().getStackTrace()[0].getLineNumber()
                   + " - "
@@ -119,9 +166,32 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter()
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(errorReportResult.getBody(), containsString(SAMPLE_USER_DESCRIPTION));
+    }
+
+    @Test
+    void containsMapName() {
+      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
+      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
+
+      final ErrorReportRequest errorReportResult =
+          new StackTraceErrorReportFormatter()
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
+
+      assertThat(errorReportResult.getBody(), containsString("mapName"));
     }
 
     @Test
@@ -130,7 +200,13 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter()
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(errorReportResult.getBody(), containsString(SAMPLE_USER_DESCRIPTION));
       assertThat(
@@ -144,7 +220,13 @@ class StackTraceErrorReportFormatterTest {
     void containsStackTraceData() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_CAUSE);
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter()
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       Stream.of(EXCEPTION_WITH_CAUSE, EXCEPTION_WITH_MESSAGE)
           .map(Throwable::getStackTrace)
@@ -168,7 +250,13 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter()
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(
           errorReportResult.getBody(), containsString(EXCEPTION_WITH_MESSAGE.getClass().getName()));
@@ -183,7 +271,13 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter()
+              .apply(
+                  ErrorReportRequestParams.builder()
+                      .userDescription(SAMPLE_USER_DESCRIPTION)
+                      .mapName("mapName")
+                      .logRecord(logRecord)
+                      .build());
 
       assertThat(
           errorReportResult.getBody(),

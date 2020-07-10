@@ -1,12 +1,15 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
+import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -39,6 +42,117 @@ class OffensiveSubsRetreatTest {
   @Mock BattleActions battleActions;
 
   @Test
+  void hasNamesWhenNotSubmersibleButHasRetreatTerritories() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(MockGameData.givenGameData().build())
+            .attackerRetreatTerritories(List.of(mock(Territory.class)))
+            .build();
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
+  }
+
+  @Test
+  void hasNamesWhenHasNoRetreatTerritoriesButIsSubmersible() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(
+                MockGameData.givenGameData()
+                    .withSubRetreatBeforeBattle(false)
+                    .withSubmersibleSubs(true)
+                    .build())
+            .attackerRetreatTerritories(List.of())
+            .build();
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
+  }
+
+  @Test
+  void hasNameWhenDestroyerIsOnDefenseAndWithdrawIsAfterBattle() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            // it shouldn't even care if the defending unit is a destroyer
+            .defendingUnits(List.of(mock(Unit.class)))
+            .gameData(MockGameData.givenGameData().withSubmersibleSubs(true).build())
+            .build();
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
+  }
+
+  @Test
+  void hasNoNamesWhenDestroyerIsOnDefenseAndWithdrawIsBeforeBattle() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .defendingUnits(List.of(givenUnitDestroyer()))
+            .gameData(
+                MockGameData.givenGameData()
+                    .withSubmersibleSubs(true)
+                    .withSubRetreatBeforeBattle(true)
+                    .build())
+            .build();
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+  }
+
+  @Test
+  void hasNoNamesWhenAmphibiousAssault() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(MockGameData.givenGameData().build())
+            .amphibious(true)
+            .build();
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+  }
+
+  @Test
+  void hasNoNamesWhenDefenselessTransportsEvenIfCanWithdraw() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .attackingUnits(List.of(givenUnitCanEvade()))
+            .gameData(
+                MockGameData.givenGameData()
+                    .withTransportCasualtiesRestricted(true)
+                    .withSubmersibleSubs(false)
+                    .build())
+            .defendingUnits(List.of(givenUnitTransport()))
+            .attackerRetreatTerritories(List.of(mock(Territory.class)))
+            .build();
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+  }
+
+  @Test
+  void hasNoNamesWhenCanNotSubmergeAndNoRetreatTerritories() {
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .gameData(MockGameData.givenGameData().build())
+            .attackerRetreatTerritories(List.of())
+            .build();
+    final OffensiveSubsRetreat offensiveSubsRetreat =
+        new OffensiveSubsRetreat(battleState, battleActions);
+
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+  }
+
+  @Test
   void retreatHappensWhenNotSubmersibleButHasRetreatTerritories() {
     final BattleState battleState =
         givenBattleStateBuilder()
@@ -49,10 +163,7 @@ class OffensiveSubsRetreatTest {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    offensiveSubsRetreat.execute(executionStack, delegateBridge);
-
-    verify(battleActions)
-        .queryRetreat(eq(false), eq(MustFightBattle.RetreatType.SUBS), eq(delegateBridge), any());
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
   }
 
   @Test
@@ -235,6 +346,11 @@ class OffensiveSubsRetreatTest {
 
     MockGameData withSubmersibleSubs(final boolean value) {
       when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(value);
+      return this;
+    }
+
+    MockGameData withSubRetreatBeforeBattle(final boolean value) {
+      when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(value);
       return this;
     }
   }

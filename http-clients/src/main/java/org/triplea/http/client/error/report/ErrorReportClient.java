@@ -12,6 +12,7 @@ import org.triplea.http.client.SystemIdHeader;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorReportClient {
   public static final String ERROR_REPORT_PATH = "/error-report";
+  public static final String CAN_UPLOAD_ERROR_REPORT_PATH = "/error-report-check";
   public static final int MAX_REPORTS_PER_DAY = 5;
 
   private final Map<String, Object> headers;
@@ -30,5 +31,14 @@ public class ErrorReportClient {
    */
   public ErrorReportResponse uploadErrorReport(final ErrorReportRequest request) {
     return errorReportFeignClient.uploadErrorReport(headers, request);
+  }
+
+  /**
+   * Checks if user can upload a request. A request can be uploaded if: - it has not yet been
+   * reported - reporting version is greater than fix version - user is not banned
+   */
+  public CanUploadErrorReportResponse canUploadErrorReport(
+      final CanUploadRequest canUploadRequest) {
+    return errorReportFeignClient.canUploadErrorReport(headers, canUploadRequest);
   }
 }

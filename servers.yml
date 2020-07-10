@@ -1,13 +1,13 @@
-latest: 2.0.20234
+latest: 2.1.20365
 servers:
   - version: "2.0.20057"
     lobby_uri: https://prod2-lobby.triplea-game.org
     message: |
-      Welcome to the TripleA 2.0 lobby!
+      Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
-
-      The WWII Revised save-game loading problem has been fixed
-      on all bots.
+      
+      Join the TripleA ranked ladder by posting here:
+      https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
 
       Report any problems here:
       https://github.com/triplea-game/triplea/issues
@@ -16,10 +16,6 @@ servers:
   - version: "2.0.0"
     lobby_uri: https://prerelease.triplea-game.org
     message: |
-      Welcome to the TripleA 2.0 lobby!
-      Please no politics, stay respectful, be welcoming, have fun.
-
-      Join the TripleA ranked ladder by posting here:
-      https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
+      Welcome to the TripleA PRE-RELEASE lobby!
   - version: "0.0"
     inactive: true

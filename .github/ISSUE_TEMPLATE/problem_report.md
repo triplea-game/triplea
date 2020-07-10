@@ -11,10 +11,8 @@ assignees: ''
 
 ### Do you have any ideas for an expected fix?
 
-
 ### Attach a Save Game
 <!-- Do you have a save game? These help us greatly! -->
-
 
 <!--
   To zip and attach a save game:
@@ -25,7 +23,6 @@ assignees: ''
     - drag and drop the zip file into this window
 -->
 
-
 ### If playing a prerelease, which version are you using?
 <!-- If you downloaded the game from the triplea-game.org website, leave this blank -->
 
@@ -34,7 +31,7 @@ Game Version:
 ### If playing a prerelease, does this happen on the latest release?
 <!-- If you downloaded the game from the triplea-game.org website, leave this blank -->
 
-- [ ] yes
-- [ ] no
+- [] yes
+- [] no
 
-### Is there anything else we should know? 
+### Is there anything else we should know?

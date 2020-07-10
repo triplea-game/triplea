@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -86,7 +87,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public List<Unit> getDependentUnits(final Collection<Unit> units) {
+  public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
     final List<Unit> dependentUnits = new ArrayList<>();
     for (final Unit unit : units) {
       final Collection<Unit> dependent = this.dependentUnits.get(unit);
@@ -94,7 +95,15 @@ abstract class AbstractBattle implements IBattle {
         dependentUnits.addAll(dependent);
       }
     }
-    return Collections.unmodifiableList(dependentUnits);
+    return Collections.unmodifiableCollection(dependentUnits);
+  }
+
+  protected Collection<Unit> getUnitsWithDependents(final Collection<Unit> units) {
+    final Collection<Unit> dependentUnits = getDependentUnits(units);
+    if (dependentUnits.isEmpty()) {
+      return Collections.unmodifiableCollection(units);
+    }
+    return ImmutableList.copyOf(Iterables.concat(units, dependentUnits));
   }
 
   void addDependentTransportingUnits(final Collection<Unit> units) {
@@ -221,11 +230,6 @@ abstract class AbstractBattle implements IBattle {
   @Override
   public WhoWon getWhoWon() {
     return whoWon;
-  }
-
-  @Override
-  public BattleResultDescription getBattleResultDescription() {
-    return battleResultDescription;
   }
 
   @Override

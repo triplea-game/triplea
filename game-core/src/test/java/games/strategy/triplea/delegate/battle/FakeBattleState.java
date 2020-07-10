@@ -37,6 +37,9 @@ public class FakeBattleState implements BattleState {
   final @NonNull Collection<Unit> attackingUnits;
 
   @Getter(onMethod = @__({@Override}))
+  final @NonNull Collection<Unit> attackingWaitingToDie;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingUnits;
 
   @Getter(onMethod = @__({@Override}))
@@ -60,8 +63,22 @@ public class FakeBattleState implements BattleState {
   @Getter(onMethod = @__({@Override}))
   final Collection<Territory> attackerRetreatTerritories;
 
+  final Collection<Territory> emptyOrFriendlySeaNeighbors;
+
+  final Collection<Unit> dependentUnits;
+
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> bombardingUnits;
+
+  @Override
+  public Collection<Territory> getEmptyOrFriendlySeaNeighbors(final Collection<Unit> units) {
+    return emptyOrFriendlySeaNeighbors;
+  }
+
+  @Override
+  public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
+    return dependentUnits;
+  }
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
     return FakeBattleState.builder()
@@ -69,15 +86,18 @@ public class FakeBattleState implements BattleState {
         .battleSite(mock(Territory.class))
         .attackingUnits(List.of())
         .defendingUnits(List.of())
+        .attackingWaitingToDie(List.of())
         .defendingWaitingToDie(List.of())
         .attacker(mock(GamePlayer.class))
         .defender(mock(GamePlayer.class))
         .offensiveAa(List.of())
         .defendingAa(List.of())
         .bombardingUnits(List.of())
+        .dependentUnits(List.of())
         .gameData(mock(GameData.class))
         .amphibious(false)
         .over(false)
-        .attackerRetreatTerritories(List.of());
+        .attackerRetreatTerritories(List.of())
+        .emptyOrFriendlySeaNeighbors(List.of());
   }
 }
