@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.annotation.Nonnull;
@@ -36,13 +35,23 @@ final class AvailableGames {
   private final Map<String, URI> availableGames;
 
   AvailableGames() {
-    availableGames =
-        FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
-            .parallelStream()
-            .map(AvailableGames::getGames)
-            .map(Map::entrySet)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    availableGames = new HashMap<>();
+    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
+        .parallelStream()
+        .map(AvailableGames::getGames)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .forEach(
+            gameEntry -> {
+              if (!availableGames.containsKey(gameEntry.getKey())) {
+                availableGames.put(gameEntry.getKey(), gameEntry.getValue());
+              } else {
+                log.warning(
+                    String.format(
+                        "DUPLICATE GAME ENTRY! Ignoring game entry: %s, " + "existing value is: %s",
+                        gameEntry, availableGames.get(gameEntry.getKey())));
+              }
+            });
     log.info(
         String.format(
             "Done loading maps, " + "availableGames count: %s, contents: %s",
