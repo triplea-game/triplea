@@ -214,9 +214,10 @@ public class SimpleUnitPanel extends JPanel {
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
       final UnitType unitType = (UnitType) unit;
-      final Optional<ImageIcon> icon =
-          uiContext.getUnitImageFactory().getIcon(unitType, player, damaged, disabled);
-      icon.ifPresent(label::setIcon);
+      uiContext
+          .getUnitImageFactory()
+          .getIcon(unitType, player, damaged, disabled)
+          .ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
       label.setIcon(
