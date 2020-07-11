@@ -84,7 +84,7 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
   }
 
   private Node createMapListing(final GameChooserEntry gameChooserEntry) {
-    final var button = new Button(gameChooserEntry.getGameName());
+    final var button = new Button(gameChooserEntry.getGameData().getGameName());
     // TODO Placeholder image, ship with engine
     // or implement real map thumbnails
     final var imageView =

@@ -17,8 +17,6 @@ public interface GameChooserEntry extends Comparable<GameChooserEntry> {
 
   boolean isGameDataLoaded();
 
-  String getGameName();
-
   @Nonnull
   GameData getGameData();
 
