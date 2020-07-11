@@ -8,7 +8,6 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.AbstractUiContext;
 import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.FlagDrawMode;
 import games.strategy.triplea.ui.TripleAFrame;

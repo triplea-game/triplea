@@ -2,7 +2,7 @@ package org.triplea.util;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.AbstractUiContext;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
