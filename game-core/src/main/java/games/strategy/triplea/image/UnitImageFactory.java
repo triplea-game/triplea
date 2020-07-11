@@ -43,8 +43,8 @@ public class UnitImageFactory {
   private final int unitCounterOffsetHeight;
   // maps Path -> scaled image
   private final Map<String, Image> scaledImages = new HashMap<>();
-  // maps Path -> unscaled Icon
-  private final Map<String, ImageIcon> unscaledIcons = new HashMap<>();
+  // maps URL -> unscaled Image
+  private final Map<URL, Image> unscaledImages = new HashMap<>();
   // Scaling factor for unit images
   private final double scaleFactor;
   private final ResourceLoader resourceLoader;
@@ -92,7 +92,8 @@ public class UnitImageFactory {
   }
 
   public Image getScaledImage(final UnitCategory unit) {
-    return getScaledImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
+    return getScaledImage(
+            unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
         .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
   }
 
@@ -143,6 +144,11 @@ public class UnitImageFactory {
   private Optional<Image> getTransformedImage(
       final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, gamePlayer);
+
+    if (imageLocation.isPresent() && unscaledImages.containsKey(imageLocation.get())) {
+      return Optional.of(unscaledImages.get(imageLocation.get()));
+    }
+
     Image image = null;
     if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());
@@ -158,6 +164,7 @@ public class UnitImageFactory {
           image = ImageTransformer.flipHorizontally((BufferedImage) image);
         }
       }
+      unscaledImages.put(imageLocation.get(), image);
     }
     return Optional.ofNullable(image);
   }
@@ -206,18 +213,8 @@ public class UnitImageFactory {
   public Optional<ImageIcon> getUnscaledIcon(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
-    final String fullName = baseName + player.getName();
-    if (unscaledIcons.containsKey(fullName)) {
-      return Optional.of(unscaledIcons.get(fullName));
-    }
-    final Optional<Image> image = getTransformedImage(baseName, player, type);
-    if (image.isEmpty()) {
-      return Optional.empty();
-    }
 
-    final ImageIcon icon = new ImageIcon(image.get());
-    unscaledIcons.put(fullName, icon);
-    return Optional.of(icon);
+    return getTransformedImage(baseName, player, type).map(ImageIcon::new);
   }
 
   public static String getBaseImageName(
