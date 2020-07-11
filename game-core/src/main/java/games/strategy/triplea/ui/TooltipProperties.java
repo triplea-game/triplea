@@ -28,7 +28,7 @@ public final class TooltipProperties {
   private final Properties properties = new Properties();
 
   private TooltipProperties() {
-    final ResourceLoader loader = AbstractUiContext.getResourceLoader();
+    final ResourceLoader loader = HeadedUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);

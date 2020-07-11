@@ -31,7 +31,7 @@ public class UserActionText {
   private final Properties properties = new Properties();
 
   private UserActionText() {
-    final ResourceLoader loader = AbstractUiContext.getResourceLoader();
+    final ResourceLoader loader = HeadedUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);

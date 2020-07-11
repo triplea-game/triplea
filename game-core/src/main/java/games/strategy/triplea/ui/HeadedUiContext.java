@@ -40,11 +40,9 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-
 import org.triplea.io.FileUtils;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
@@ -52,6 +50,18 @@ import org.triplea.sound.ClipPlayer;
 /** A place to find images and map data for a ui. */
 @Log
 public class HeadedUiContext implements UiContext {
+  @Getter protected static String mapDir;
+  @Getter protected static ResourceLoader resourceLoader;
+
+  static final String UNIT_SCALE_PREF = "UnitScale";
+  static final String MAP_SCALE_PREF = "MapScale";
+
+  private static final String MAP_SKIN_PREF = "MapSkin";
+  private static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
+  private static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
+  private static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
+  private static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
+
   protected MapData mapData;
   private final TileImageFactory tileImageFactory = new TileImageFactory();
   private UnitImageFactory unitImageFactory;
@@ -68,6 +78,20 @@ public class HeadedUiContext implements UiContext {
 
   @Getter(onMethod_ = {@Override})
   private Cursor cursor = Cursor.getDefaultCursor();
+
+  @Getter(onMethod_ = {@Override})
+  @Setter(onMethod_ = {@Override})
+  protected LocalPlayers localPlayers;
+
+  @Getter(onMethod_ = {@Override})
+  protected double scale = 1;
+
+  @Getter(onMethod_ = {@Override})
+  private boolean isShutDown = false;
+
+  private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
+  private final List<Runnable> activeToDeactivate = new ArrayList<>();
+  private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
   HeadedUiContext() {
     mapImage = new MapImage();
@@ -236,33 +260,6 @@ public class HeadedUiContext implements UiContext {
       log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
-
-
-  @Getter protected static String mapDir;
-  @Getter protected static ResourceLoader resourceLoader;
-
-  static final String UNIT_SCALE_PREF = "UnitScale";
-  static final String MAP_SCALE_PREF = "MapScale";
-
-  private static final String MAP_SKIN_PREF = "MapSkin";
-  private static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
-  private static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
-  private static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
-  private static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
-
-  @Getter(onMethod_ = {@Override})
-  @Setter(onMethod_ = {@Override})
-  protected LocalPlayers localPlayers;
-
-  @Getter(onMethod_ = {@Override})
-  protected double scale = 1;
-
-  @Getter(onMethod_ = {@Override})
-  private boolean isShutDown = false;
-
-  private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
-  private final List<Runnable> activeToDeactivate = new ArrayList<>();
-  private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
   @Override
   public void setScale(final double scale) {
