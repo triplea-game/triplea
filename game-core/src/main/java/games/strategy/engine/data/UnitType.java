@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.UiContext;
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -144,10 +142,14 @@ public class UnitType extends NamedAttachable {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
-              if (unitImage.isPresent() && !unitTypes.contains(ut)) {
-                unitTypes.add(ut);
-              }
+              imageFactory
+                  .getImage(ut, player, false, false)
+                  .ifPresent(
+                      image -> {
+                        if (!unitTypes.contains(ut)) {
+                          unitTypes.add(ut);
+                        }
+                      });
             }
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);
