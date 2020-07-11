@@ -93,10 +93,7 @@ public class UnitImageFactory {
 
   public Optional<Image> getImage(final UnitCategory unit) {
     return getImage(
-            unit.getType(),
-            unit.getOwner(),
-            unit.hasDamageOrBombingUnitDamage(),
-            unit.getDisabled());
+        unit.getType(), unit.getOwner(), unit.hasDamageOrBombingUnitDamage(), unit.getDisabled());
   }
 
   /** Return the appropriate unit image. */
