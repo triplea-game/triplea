@@ -127,11 +127,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
           .getMap()
           .getUiContext()
           .getUnitImageFactory()
-          .getIcon(
-              category.getType(),
-              category.getOwner(),
-              category.hasDamageOrBombingUnitDamage(),
-              category.getDisabled())
+          .getIcon(category)
           .ifPresent(
               icon -> {
                 final JLabel label =
