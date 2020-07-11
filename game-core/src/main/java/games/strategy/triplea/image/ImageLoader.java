@@ -2,7 +2,6 @@ package games.strategy.triplea.image;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

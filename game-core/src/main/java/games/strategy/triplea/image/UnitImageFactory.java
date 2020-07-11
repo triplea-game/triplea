@@ -146,7 +146,7 @@ public class UnitImageFactory {
       final GamePlayer gamePlayer, final UnitType type, final MapData mapData) {
     return !mapData.ignoreTransformingUnit(type.getName())
         && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
-        || mapData.shouldFlipUnit(gamePlayer.getName()));
+            || mapData.shouldFlipUnit(gamePlayer.getName()));
   }
 
   private BufferedImage transformImage(final BufferedImage rawImage, final GamePlayer gamePlayer) {

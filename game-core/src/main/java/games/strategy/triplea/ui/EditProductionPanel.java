@@ -91,7 +91,8 @@ class EditProductionPanel extends ProductionPanel {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Optional<Image> unitImage = imageFactory.getScaledImage(ut, player, false, false);
+              final Optional<Image> unitImage =
+                  imageFactory.getScaledImage(ut, player, false, false);
               if (unitImage.isPresent()) {
                 unitsAllowed.add(ut);
                 final IntegerMap<NamedAttachable> result = new IntegerMap<>();
