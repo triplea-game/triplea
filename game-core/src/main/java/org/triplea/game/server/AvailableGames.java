@@ -23,6 +23,7 @@ import javax.annotation.concurrent.Immutable;
 import lombok.extern.java.Log;
 import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
+import org.triplea.performance.PerfTimer;
 
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in
@@ -36,8 +37,9 @@ final class AvailableGames {
 
   AvailableGames() {
     availableGames = new HashMap<>();
+    PerfTimer.time("loading" , () ->
     FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
-        .parallelStream()
+        .stream()
         .map(AvailableGames::getGames)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
@@ -51,7 +53,7 @@ final class AvailableGames {
                         "DUPLICATE GAME ENTRY! Ignoring game entry: %s, " + "existing value is: %s",
                         gameEntry, availableGames.get(gameEntry.getKey())));
               }
-            });
+            }));
     log.info(
         String.format(
             "Done loading maps, " + "availableGames count: %s, contents: %s",
@@ -110,7 +112,7 @@ final class AvailableGames {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        final GameData data = GameParser.parseShallow(uri.toString(), input);
+        final GameData data = GameParser.parse(uri.toString(), input);
         final String name = data.getGameName();
         availableGames.put(name, uri);
       } catch (final Exception e) {
