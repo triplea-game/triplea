@@ -223,7 +223,7 @@ https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/ga
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/Ozteas_1941_Global_Setup.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40_2nd_edition.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40_2ndEd_move1st.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40_balanced2_0.xml
+https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40_balanced.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40_balanced_move1st.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global42_2nd_edition.xml
