@@ -627,11 +627,10 @@ public final class UnitChooser extends JPanel {
         int index = 1;
         for (final UnitOwner holder : category.getDependents()) {
           final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
-          final Optional<Image> unitImg =
-              uiContext
-                  .getUnitImageFactory()
-                  .getImage(holder.getType(), holder.getOwner(), false, false);
-          unitImg.ifPresent(image1 -> g.drawImage(image1, x, 0, this));
+          uiContext
+              .getUnitImageFactory()
+              .getImage(holder.getType(), holder.getOwner())
+              .ifPresent(image1 -> g.drawImage(image1, x, 0, this));
           index++;
         }
       }

@@ -97,6 +97,11 @@ public class UnitImageFactory {
   }
 
   /** Return the appropriate unit image. */
+  public Optional<Image> getImage(final UnitType type, final GamePlayer player) {
+    return getImage(type, player, false, false);
+  }
+
+  /** Return the appropriate unit image. */
   public Optional<Image> getImage(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);

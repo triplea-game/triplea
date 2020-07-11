@@ -10,10 +10,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
-import java.awt.Image;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import javax.swing.JFrame;
 import org.triplea.java.collections.IntegerMap;
@@ -91,18 +89,21 @@ class EditProductionPanel extends ProductionPanel {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
-              if (unitImage.isPresent()) {
-                unitsAllowed.add(ut);
-                final IntegerMap<NamedAttachable> result = new IntegerMap<>();
-                result.add(ut, 1);
-                final IntegerMap<Resource> cost = new IntegerMap<>();
-                cost.add(data.getResourceList().getResource(Constants.PUS), 1);
-                final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
-                final Rule rule = new Rule(newRule, player);
-                rule.setQuantity(0);
-                rules.add(rule);
-              }
+              imageFactory
+                  .getImage(ut, player)
+                  .ifPresent(
+                      unitImage -> {
+                        unitsAllowed.add(ut);
+                        final IntegerMap<NamedAttachable> result = new IntegerMap<>();
+                        result.add(ut, 1);
+                        final IntegerMap<Resource> cost = new IntegerMap<>();
+                        cost.add(data.getResourceList().getResource(Constants.PUS), 1);
+                        final ProductionRule newRule =
+                            new ProductionRule(ut.getName(), data, result, cost);
+                        final Rule rule = new Rule(newRule, player);
+                        rule.setQuantity(0);
+                        rules.add(rule);
+                      });
             }
           } catch (final Exception e) { // ignore
           }

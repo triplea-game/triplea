@@ -143,7 +143,7 @@ public class UnitType extends NamedAttachable {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
               imageFactory
-                  .getImage(ut, player, false, false)
+                  .getImage(ut, player)
                   .ifPresent(
                       image -> {
                         if (!unitTypes.contains(ut)) {
