@@ -91,10 +91,12 @@ public class UnitImageFactory {
     return (int) (scaleFactor * unitCounterOffsetHeight);
   }
 
-  public Image getImage(final UnitCategory unit) {
+  public Optional<Image> getImage(final UnitCategory unit) {
     return getImage(
-            unit.getType(), unit.getOwner(), unit.hasDamageOrBombingUnitDamage(), unit.getDisabled())
-        .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
+            unit.getType(),
+            unit.getOwner(),
+            unit.hasDamageOrBombingUnitDamage(),
+            unit.getDisabled());
   }
 
   /** Return the appropriate unit image. */
@@ -185,9 +187,8 @@ public class UnitImageFactory {
    *
    * @return The highlight image or empty if no base image is available for the specified unit.
    */
-  public Optional<Image> getHighlightImage(
-      final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
-    return getImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
+  public Optional<Image> getHighlightImage(final UnitCategory unitCategory) {
+    return getImage(unitCategory).map(UnitImageFactory::highlightImage);
   }
 
   private static Image highlightImage(final Image image) {

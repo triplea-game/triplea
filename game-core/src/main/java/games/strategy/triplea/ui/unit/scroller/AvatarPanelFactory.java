@@ -134,7 +134,7 @@ class AvatarPanelFactory {
 
     unitsToDraw.sort(unitRenderingOrder(player));
     for (int i = 0; i < drawLocations.size(); i++) {
-      final var imageToDraw = unitImageFactory.getImage(unitsToDraw.get(i));
+      final var imageToDraw = unitImageFactory.getImage(unitsToDraw.get(i)).orElseThrow();
       final Point drawLocation = drawLocations.get(i);
 
       graphics.drawImage(
