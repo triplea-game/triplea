@@ -1,6 +1,7 @@
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
@@ -93,7 +94,7 @@ public class UnitImageFactory {
 
   public Image getImage(final UnitCategory unit) {
     return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
-        .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
+        .orElseThrow(() -> new RuntimeException("No unit image: " + getBaseImageName(unit)));
   }
 
   /** Return the appropriate unit image. */
@@ -219,6 +220,11 @@ public class UnitImageFactory {
     final ImageIcon icon = new ImageIcon(image.get());
     icons.put(fullName, icon);
     return Optional.of(icon);
+  }
+
+  public static String getBaseImageName(final UnitCategory unit) {
+    return getBaseImageName(
+        unit.getType(), unit.getOwner(), unit.getDamaged() > 0, unit.getDisabled());
   }
 
   public static String getBaseImageName(
