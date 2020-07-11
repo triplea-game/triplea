@@ -10,8 +10,6 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
-import games.strategy.triplea.ui.HeadlessUiContext;
-import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.io.File;
 import java.util.Set;
@@ -57,9 +55,6 @@ public class HeadlessLaunchAction implements LaunchAction {
       final IGame game,
       final Set<Player> players,
       final Chat chat) {
-    final UiContext uiContext = new HeadlessUiContext();
-    uiContext.setDefaultMapDir(game.getData());
-    uiContext.setLocalPlayers(localPlayers);
     return new HeadlessDisplay();
   }
 
