@@ -23,7 +23,6 @@ import javax.annotation.concurrent.Immutable;
 import lombok.extern.java.Log;
 import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
-import org.triplea.performance.PerfTimer;
 
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in
@@ -37,25 +36,21 @@ final class AvailableGames {
 
   AvailableGames() {
     availableGames = new HashMap<>();
-    PerfTimer.time(
-        "loading",
-        () ->
-            FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
-                .map(AvailableGames::getGames)
-                .map(Map::entrySet)
-                .flatMap(Collection::stream)
-                .forEach(
-                    gameEntry -> {
-                      if (!availableGames.containsKey(gameEntry.getKey())) {
-                        availableGames.put(gameEntry.getKey(), gameEntry.getValue());
-                      } else {
-                        log.warning(
-                            String.format(
-                                "DUPLICATE GAME ENTRY! Ignoring game entry: %s, "
-                                    + "existing value is: %s",
-                                gameEntry, availableGames.get(gameEntry.getKey())));
-                      }
-                    }));
+    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
+        .map(AvailableGames::getGames)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .forEach(
+            gameEntry -> {
+              if (!availableGames.containsKey(gameEntry.getKey())) {
+                availableGames.put(gameEntry.getKey(), gameEntry.getValue());
+              } else {
+                log.warning(
+                    String.format(
+                        "DUPLICATE GAME ENTRY! Ignoring game entry: %s, " + "existing value is: %s",
+                        gameEntry, availableGames.get(gameEntry.getKey())));
+              }
+            });
     log.info(
         String.format(
             "Done loading maps, " + "availableGames count: %s, contents: %s",
