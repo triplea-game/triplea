@@ -108,22 +108,25 @@ public class UnitImageFactory {
                 getTransformedImage(baseName, player, type)
                     .map(
                         baseImage -> {
-                          // We want to scale units according to the given scale factor.
-                          // We use smooth scaling since the images are cached to allow to take our
-                          // time in
-                          // doing the
-                          // scaling.
-                          // Image observer is null, since the image should have been guaranteed to
-                          // be loaded.
-                          final int width = (int) (baseImage.getWidth(null) * scaleFactor);
-                          final int height = (int) (baseImage.getHeight(null) * scaleFactor);
-                          final Image scaledImage =
-                              baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                          // Ensure the scaling is completed.
-                          Util.ensureImageLoaded(scaledImage);
+                          final Image scaledImage = scaleImage(baseImage);
                           images.put(fullName, scaledImage);
                           return scaledImage;
                         }));
+  }
+
+  private Image scaleImage(final Image baseImage) {
+    // We want to scale units according to the given scale factor.
+    // We use smooth scaling since the images are cached to allow to take our
+    // time in doing the scaling.
+    // Image observer is null, since the image should have been guaranteed to
+    // be loaded.
+    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+    final Image scaledImage =
+        baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    // Ensure the scaling is completed.
+    Util.ensureImageLoaded(scaledImage);
+    return scaledImage;
   }
 
   public Optional<URL> getBaseImageUrl(final String baseImageName, final GamePlayer gamePlayer) {
