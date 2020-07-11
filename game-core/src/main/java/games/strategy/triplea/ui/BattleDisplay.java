@@ -1073,16 +1073,16 @@ public class BattleDisplay extends JPanel {
         final Iterable<UnitCategory> categoryIter, final boolean damaged, final boolean disabled) {
       for (final UnitCategory category : categoryIter) {
         final JPanel panel = new JPanel();
-        // TODO Kev determine if we need to identify if the unit is hit/disabled
-        final Optional<ImageIcon> unitImage =
+        final JLabel unit =
             uiContext
                 .getUnitImageFactory()
                 .getIcon(
                     category.getType(),
                     category.getOwner(),
                     damaged && category.hasDamageOrBombingUnitDamage(),
-                    disabled && category.getDisabled());
-        final JLabel unit = unitImage.map(JLabel::new).orElseGet(JLabel::new);
+                    disabled && category.getDisabled())
+                .map(JLabel::new)
+                .orElseGet(JLabel::new);
         panel.add(unit);
         // Add a tooltip, with a count of 1 so that the tooltip doesn't have a number label (so it
         // won't get out of date
