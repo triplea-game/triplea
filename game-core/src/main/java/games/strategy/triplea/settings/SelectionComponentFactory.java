@@ -7,6 +7,9 @@ import com.google.common.base.Strings;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailProviderPreset;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
+import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator.TokenInfo;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -733,14 +736,28 @@ final class SelectionComponentFactory {
     };
   }
 
+  /**
+   * Creates UI Controls to fetch a login token and safely store it in the ClientSettings.
+   *
+   * @param uidSetting The uid setting used to potentially revoke old tokens
+   * @param usernameSetting The setting that stores the username being displayed to the user
+   * @param tokenSetting The setting that stores the actual token.
+   * @return A SelectionComponent that allows users to easily store their token.
+   */
   static SelectionComponent<JComponent> forumPosterSettings(
-      final ClientSetting<char[]> usernameSetting, final ClientSetting<char[]> passwordSetting) {
+      final String forumUrl,
+      final ClientSetting<Integer> uidSetting,
+      final ClientSetting<char[]> usernameSetting,
+      final ClientSetting<char[]> tokenSetting) {
     return new SelectionComponent<>() {
 
       private final JTextField usernameField =
-          new JTextField(credentialToString(usernameSetting::getValue), 20);
-      private final JPasswordField passwordField =
-          new JPasswordField(credentialToString(passwordSetting::getValue), 20);
+          new JTextFieldBuilder()
+              .columns(20)
+              .text(usernameSetting.getValue().map(String::new).orElse(""))
+              .build();
+      private final JPasswordField passwordField = new JPasswordField(20);
+      private final JTextField otpField = new JTextField(20);
 
       private final JPanel mainPanel =
           new JPanelBuilder()
@@ -749,6 +766,8 @@ final class SelectionComponentFactory {
               .addLeftJustified(usernameField)
               .addLeftJustified(new JLabel("Password:"))
               .addLeftJustified(passwordField)
+              .addLeftJustified(new JLabel("2FA OTP Code (required for 2FA)"))
+              .addLeftJustified(otpField)
               .build();
 
       @Override
@@ -758,27 +777,67 @@ final class SelectionComponentFactory {
 
       @Override
       public void save(final SaveContext context) {
-        final String username = usernameField.getText();
-        context.setValue(usernameSetting, username.isEmpty() ? null : username.toCharArray());
+        // Only save when value changed
+        if (usernameField
+            .getText()
+            .equals(usernameSetting.getValue().map(String::new).orElse(""))) {
+          return;
+        }
+        try {
+          BackgroundTaskRunner.runInBackground(
+              "Fetching Login Token...",
+              () -> {
+                final NodeBbTokenGenerator tokenGenerator = new NodeBbTokenGenerator(forumUrl);
+                final Optional<Integer> oldUserId = uidSetting.getValue();
+                final Optional<char[]> oldToken = tokenSetting.getValue();
+                if (!usernameField.getText().isBlank()) {
+                  final TokenInfo tokenInfo =
+                      tokenGenerator.generateToken(
+                          usernameField.getText(),
+                          new String(passwordField.getPassword()),
+                          Strings.emptyToNull(otpField.getText()));
+                  context.setValue(uidSetting, tokenInfo.getUserId());
+
+                  context.setValue(tokenSetting, tokenInfo.getToken().toCharArray());
+
+                  context.setValue(usernameSetting, usernameField.getText().toCharArray());
+                  // TODO error reporting
+                } else {
+                  context.setValue(usernameSetting, null);
+                  context.setValue(uidSetting, null);
+                  context.setValue(tokenSetting, null);
+                }
+
+                oldUserId.ifPresent(
+                    userId ->
+                        oldToken.ifPresent(
+                            token -> tokenGenerator.revokeToken(new String(token), userId)));
+              });
+        } catch (final InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+
+        /*final String username = usernameField.getText();
+        context.setValue(uidSetting, username.isEmpty() ? null : username.toCharArray());
         withSensitiveArray(
             passwordField::getPassword,
             password ->
                 context.setValue(
                     passwordSetting,
                     (password.length == 0) ? null : password,
-                    SaveContext.ValueSensitivity.SENSITIVE));
+                    SaveContext.ValueSensitivity.SENSITIVE));*/
       }
 
       @Override
       public void resetToDefault() {
-        usernameField.setText(credentialToString(usernameSetting::getDefaultValue));
-        passwordField.setText(credentialToString(passwordSetting::getDefaultValue));
+        usernameField.setText("");
+        passwordField.setText("");
       }
 
       @Override
       public void reset() {
-        usernameField.setText(credentialToString(usernameSetting::getValue));
-        passwordField.setText(credentialToString(passwordSetting::getValue));
+        usernameField.setText(usernameSetting.getValue().map(String::new).orElse(""));
+        passwordField.setText("");
       }
     };
   }

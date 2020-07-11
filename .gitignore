@@ -20,3 +20,5 @@ build/
 out/
 
 smoke-testing/src/test/resources/map-xmls/
+smoke-testing/src/test/resources/save-games/
+

@@ -1,3 +1,3 @@
 # Headed Game Client
 
-A headed game client (and server) for TripleA. A full-featured Swing client and an experimental JavaFX client are provided.
+A headed game client (and server) for TripleA. A full-featured Swing client is provided.
