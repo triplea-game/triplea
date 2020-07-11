@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.Postconditions;
 
 @UtilityClass
 class TestDataFileLister {
@@ -24,11 +25,11 @@ class TestDataFileLister {
   }
 
   private static File findFilesInFolder(final String folderName) {
-    final File mapXmls = Paths.get("src", "test", "resources", folderName).toFile();
-    if (mapXmls.exists()) {
-      return mapXmls;
+    File resourcesFolder = Paths.get("src", "test", "resources", folderName).toFile();
+    if (!resourcesFolder.exists()) {
+      resourcesFolder = Paths.get("smoke-testing", "src", "test", "resources", folderName).toFile();
     }
-
-    return Paths.get("smoke-testing", "src", "test", "resources", folderName).toFile();
+    Postconditions.assertState(resourcesFolder.exists(), "Could not find folder: " + folderName);
+    return resourcesFolder;
   }
 }
