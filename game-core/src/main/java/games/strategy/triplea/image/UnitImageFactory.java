@@ -102,16 +102,13 @@ public class UnitImageFactory {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
 
-    return Optional.ofNullable(images.get(fullName))
-        .or(
-            () ->
-                getTransformedImage(baseName, player, type)
-                    .map(
-                        baseImage -> {
-                          final Image scaledImage = scaleImage(baseImage);
-                          images.put(fullName, scaledImage);
-                          return scaledImage;
-                        }));
+    return Optional.ofNullable(
+        images.computeIfAbsent(
+            fullName,
+            pathName ->
+                getTransformedImage(baseName, player, type) //
+                    .map(this::scaleImage)
+                    .orElse(null)));
   }
 
   private Image scaleImage(final Image baseImage) {
@@ -122,8 +119,7 @@ public class UnitImageFactory {
     // be loaded.
     final int width = (int) (baseImage.getWidth(null) * scaleFactor);
     final int height = (int) (baseImage.getHeight(null) * scaleFactor);
-    final Image scaledImage =
-        baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     // Ensure the scaling is completed.
     Util.ensureImageLoaded(scaledImage);
     return scaledImage;
