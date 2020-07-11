@@ -41,13 +41,15 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   private final JTextField usernameField = new JTextField();
   private final JLabel passwordLabel = new JLabel("Forum Password");
   private final JPasswordField passwordField = new JPasswordField();
+  private final JLabel otpLabel = new JLabel("2FA OTP-Code (optional)");
+  private final JTextField otpField = new JTextField();
   private final JLabel topicIdLabel = new JLabel("Topic Id:");
   private final JLabel forumLabel = new JLabel("Forums:");
   private final JCheckBox attachSaveGameToSummary = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JComboBox<String> forums = new JComboBox<>();
   private final JCheckBox rememberPassword =
-      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberEmailPassword).build();
+      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberForumPassword).build();
   private final JButton rememberPasswordHelpButton =
       new JButtonBuilder("Help")
           .actionListener(
@@ -63,6 +65,10 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
     super(new GridBagLayout());
     this.viewModel = viewModel;
     viewModel.setView(this);
+    // If password is already stored we already remember
+    if (viewModel.isForumPasswordValid()) {
+      rememberPassword.setSelected(true);
+    }
     rememberPassword.addActionListener(
         e -> viewModel.setRememberPassword(rememberPassword.isSelected()));
 
@@ -262,6 +268,36 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0));
     row++;
     add(
+        otpLabel,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    add(
+        otpField,
+        new GridBagConstraints(
+            1,
+            row,
+            1,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
+    new DocumentListenerBuilder(() -> viewModel.setOtpCode(otpField.getText())).attachTo(otpField);
+    row++;
+    add(
         new JPanelBuilder()
             .boxLayoutHorizontal()
             .add(rememberPassword)
@@ -364,7 +400,15 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
     testForum.setEnabled(forumPosterEditorViewModel.isTestForumPostButtonEnabled());
   }
 
-  boolean isForgetPasswordOnShutdown() {
-    return viewModel.isForgetPasswordOnShutdown();
+  boolean shouldRevokeTokenOnShutdown() {
+    return viewModel.shouldRevokeTokenOnShutdown();
+  }
+
+  void revokeToken() {
+    viewModel.revokeToken();
+  }
+
+  void requestToken() {
+    viewModel.acquireTokenAndDeletePassword();
   }
 }

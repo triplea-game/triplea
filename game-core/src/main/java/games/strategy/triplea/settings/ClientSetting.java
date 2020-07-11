@@ -169,13 +169,17 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   public static final ClientSetting<char[]> tripleaForumUsername =
       new ProtectedStringClientSetting("TRIPLEA_FORUM_USERNAME");
-  public static final ClientSetting<char[]> tripleaForumPassword =
-      new ProtectedStringClientSetting("TRIPLEA_FORUM_PASSWORD");
+  public static final ClientSetting<Integer> tripleaForumUserId =
+      new IntegerClientSetting("TRIPLEA_FORUM_USER_ID");
+  public static final ClientSetting<char[]> tripleaForumToken =
+      new ProtectedStringClientSetting("TRIPLEA_FORUM_TOKEN");
 
   public static final ClientSetting<char[]> aaForumUsername =
       new ProtectedStringClientSetting("A&A_FORUM_USERNAME");
-  public static final ClientSetting<char[]> aaForumPassword =
-      new ProtectedStringClientSetting("A&A_FORUM_PASSWORD");
+  public static final ClientSetting<Integer> aaForumUserId =
+      new IntegerClientSetting("A&A_FORUM_USER_ID");
+  public static final ClientSetting<char[]> aaForumToken =
+      new ProtectedStringClientSetting("A&A_FORUM_TOKEN");
 
   public static final ClientSetting<Boolean> unitScrollerHighlightTerritory =
       new BooleanClientSetting("UNIT_SCROLLER_HIGHLIGHT_TERRITORY", true);

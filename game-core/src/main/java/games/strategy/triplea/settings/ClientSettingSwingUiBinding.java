@@ -10,6 +10,7 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.triplea.UrlConstants;
 import java.util.Collection;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
@@ -323,7 +324,10 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.tripleaForumUsername, ClientSetting.tripleaForumPassword);
+          UrlConstants.TRIPLEA_FORUM,
+          ClientSetting.tripleaForumUserId,
+          ClientSetting.tripleaForumUsername,
+          ClientSetting.tripleaForumToken);
     }
   },
 
@@ -334,7 +338,10 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.aaForumUsername, ClientSetting.aaForumPassword);
+          UrlConstants.AXIS_AND_ALLIES_FORUM,
+          ClientSetting.aaForumUserId,
+          ClientSetting.aaForumUsername,
+          ClientSetting.aaForumToken);
     }
   },
 

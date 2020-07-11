@@ -7,19 +7,29 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.TestPostAction;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
+import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import java.nio.CharBuffer;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
+import org.triplea.java.Interruptibles;
 import org.triplea.java.Postconditions;
 import org.triplea.java.StringUtils;
 import org.triplea.java.ViewModelListener;
 
 class ForumPosterEditorViewModel {
+  private static final int DUMMY_PASSWORD_LENGTH = 4;
+
   private final Runnable readyCallback;
 
   @Setter(onMethod_ = @VisibleForTesting)
@@ -37,8 +47,14 @@ class ForumPosterEditorViewModel {
   @Setter @Getter private boolean attachSaveGameToSummary = true;
   @Setter @Getter private boolean alsoPostAfterCombatMove;
   @Getter private String forumUsername;
-  private boolean forumPasswordIsSet;
+  private boolean forumTokenExists;
+  private char[] tempPassword = new char[0];
+  @Setter private String otpCode = "";
   @Setter private boolean rememberPassword;
+
+  @Setter(onMethod_ = {@VisibleForTesting})
+  private Supplier<NodeBbTokenGenerator> tokenGeneratorSupplier =
+      () -> new NodeBbTokenGenerator(getForumUrl());
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
@@ -60,26 +76,69 @@ class ForumPosterEditorViewModel {
     if (isDummyPassword(password)) {
       return;
     }
-
-    final ClientSetting<char[]> passwordSetting =
-        forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-            ? ClientSetting.tripleaForumPassword
-            : ClientSetting.aaForumPassword;
-
-    passwordSetting.setValueAndFlush(password);
-    forumPasswordIsSet = password.length > 0;
+    Arrays.fill(tempPassword, '\0');
+    tempPassword = password;
+    forumTokenExists =
+        password.length > 0
+            || getTokenSetting().getValue().map(token -> token.length > 0).orElse(false);
     readyCallback.run();
   }
 
-  private boolean isDummyPassword(final char[] password) {
-    boolean dummyPassword = true;
-    for (final Character passwordChar : password) {
-      if (passwordChar != '*') {
-        dummyPassword = false;
-        break;
-      }
+  private NodeBbTokenGenerator.TokenInfo renewToken() {
+    revokeToken();
+
+    final var nodeBbTokenGenerator = tokenGeneratorSupplier.get();
+
+    return nodeBbTokenGenerator.generateToken(
+        forumUsername, new String(tempPassword), Strings.emptyToNull(otpCode));
+  }
+
+  void acquireTokenAndDeletePassword() {
+    if (CharBuffer.wrap(tempPassword).chars().allMatch(c -> c == 0)) {
+      return;
     }
-    return password.length > 0 && dummyPassword;
+    final ClientSetting<char[]> tokenSetting = getTokenSetting();
+
+    final ClientSetting<Integer> uidSetting = getUidSetting();
+
+    // Testing doesn't support EDT on headless devices so we need the check
+    final Optional<NodeBbTokenGenerator.TokenInfo> result =
+        SwingUtilities.isEventDispatchThread()
+            ? Interruptibles.awaitResult(
+                    () ->
+                        BackgroundTaskRunner.runInBackgroundAndReturn(
+                            "Logging in...", this::renewToken))
+                .result
+            : Optional.of(renewToken());
+
+    result.ifPresent(
+        tokenInfo -> {
+          tokenSetting.setValueAndFlush(tokenInfo.getToken().toCharArray());
+          uidSetting.setValueAndFlush(tokenInfo.getUserId());
+        });
+    Arrays.fill(tempPassword, '\0');
+  }
+
+  private ClientSetting<char[]> getTokenSetting() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? ClientSetting.tripleaForumToken
+        : ClientSetting.aaForumToken;
+  }
+
+  private ClientSetting<Integer> getUidSetting() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? ClientSetting.tripleaForumUserId
+        : ClientSetting.aaForumUserId;
+  }
+
+  private String getForumUrl() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? UrlConstants.TRIPLEA_FORUM
+        : UrlConstants.AXIS_AND_ALLIES_FORUM;
+  }
+
+  private boolean isDummyPassword(final char[] password) {
+    return password.length > 0 && CharBuffer.wrap(password).chars().allMatch(c -> c == '*');
   }
 
   void setForumUsername(final String username) {
@@ -108,22 +167,16 @@ class ForumPosterEditorViewModel {
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
-    forumPasswordIsSet = getPasswordLength() > 0;
+    forumTokenExists = getTokenSetting().getValue().map(token -> token.length > 0).orElse(false);
     readyCallback.run();
   }
 
-  private int getPasswordLength() {
-    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-        ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0]).length
-        : ClientSetting.aaForumPassword.getValue().orElse(new char[0]).length;
-  }
-
   /**
-   * Returns a dummy password value that has the same length as the real password. This should only
-   * be used to set the UI text value and never used as the actual users password.
+   * Returns a dummy password value that has the value of {@link #DUMMY_PASSWORD_LENGTH}. This
+   * should only be used to set the UI text value and never used as the actual users password.
    */
   String getForumPassword() {
-    return forumPasswordIsSet ? Strings.repeat("*", getPasswordLength()) : "";
+    return forumTokenExists ? Strings.repeat("*", DUMMY_PASSWORD_LENGTH) : "";
   }
 
   public String getForumSelection() {
@@ -157,7 +210,7 @@ class ForumPosterEditorViewModel {
   }
 
   boolean isForumPasswordValid() {
-    return forumPasswordIsSet;
+    return forumTokenExists;
   }
 
   boolean isForumUsernameValid() {
@@ -192,11 +245,27 @@ class ForumPosterEditorViewModel {
 
   synchronized void testPostButtonClicked() {
     if (areFieldsValid()) {
+      acquireTokenAndDeletePassword();
       testPostAction.accept(forumSelection, Integer.parseInt(topicId));
     }
   }
 
-  boolean isForgetPasswordOnShutdown() {
+  boolean shouldRevokeTokenOnShutdown() {
     return !rememberPassword;
+  }
+
+  void revokeToken() {
+    final ClientSetting<char[]> tokenSetting = getTokenSetting();
+    final ClientSetting<Integer> uidSetting = getUidSetting();
+
+    final var nodeBbTokenGenerator = tokenGeneratorSupplier.get();
+
+    tokenSetting
+        .getValue()
+        .ifPresent(
+            token ->
+                uidSetting
+                    .getValue()
+                    .ifPresent(uid -> nodeBbTokenGenerator.revokeToken(new String(token), uid)));
   }
 }

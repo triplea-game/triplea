@@ -14,7 +14,6 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -246,13 +245,9 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             + "this error indicates a programming bug that allowed for the start game button to be "
             + "enabled without first valid game data being loaded. ");
 
-    if (forumPosterEditor.isForgetPasswordOnShutdown()) {
-      ExitStatus.addExitAction(
-          () -> {
-            ClientSetting.aaForumPassword.resetValue();
-            ClientSetting.tripleaForumPassword.resetValue();
-            ClientSetting.flush();
-          });
+    forumPosterEditor.requestToken();
+    if (forumPosterEditor.shouldRevokeTokenOnShutdown()) {
+      ExitStatus.addExitAction(forumPosterEditor::revokeToken);
     }
 
     final PbemDiceRoller randomSource = new PbemDiceRoller(diceServerEditor.newDiceServer());
