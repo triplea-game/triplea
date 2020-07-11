@@ -306,18 +306,17 @@ class ProductionRepairPanel extends JPanel {
                 + ".  Please make sure your maps are up to date!");
       }
       repairResults = rule.getResults().getInt(type);
-      final Optional<ImageIcon> icon =
+      final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
+
+      final JLabel label =
           uiContext
               .getUnitImageFactory()
               .getIcon(
                   type,
                   gamePlayer,
                   Matches.unitHasTakenSomeBombingUnitDamage().test(repairUnit),
-                  Matches.unitIsDisabled().test(repairUnit));
-      final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
-
-      final JLabel label =
-          icon.map(imageIcon -> new JLabel(text, imageIcon, SwingConstants.LEFT))
+                  Matches.unitIsDisabled().test(repairUnit))
+              .map(imageIcon -> new JLabel(text, imageIcon, SwingConstants.LEFT))
               .orElseGet(() -> new JLabel(text, SwingConstants.LEFT));
       final JLabel info = new JLabel(territoryUnitIsIn.getName());
       maxRepairAmount = repairUnit.getHowMuchCanThisUnitBeRepaired(territoryUnitIsIn);
