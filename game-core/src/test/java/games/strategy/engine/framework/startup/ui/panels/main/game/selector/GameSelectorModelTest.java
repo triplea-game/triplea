@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -142,7 +143,7 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     when(mockEntry.getUri()).thenReturn(new URI("abc"));
     testObj.load(mockEntry);
     assertThat(testObj.getFileName(), is("-"));
-    verify(mockEntry, times(0)).getLocation();
+    verify(mockEntry, never()).getUri();
 
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
     assertHasFakeTestData(testObj);

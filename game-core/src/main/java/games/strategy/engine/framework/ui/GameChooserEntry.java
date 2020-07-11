@@ -24,15 +24,6 @@ public interface GameChooserEntry extends Comparable<GameChooserEntry> {
 
   URI getUri();
 
-  /**
-   * Returns the location of the game file.
-   *
-   * <p>The "location" is actually a URI in string form.
-   *
-   * @return The location of the game file.
-   */
-  String getLocation();
-
   static GameChooserEntry newInstance(final URI uri)
       throws IOException, GameParseException, EngineVersionException {
     return new DefaultGameChooserEntry(uri);

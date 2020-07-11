@@ -111,11 +111,6 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
   }
 
   @Override
-  public String getLocation() {
-    return url.toString();
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hashCode(gameNameAndMapNameProperty);
   }
