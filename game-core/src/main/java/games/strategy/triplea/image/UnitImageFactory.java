@@ -92,7 +92,8 @@ public class UnitImageFactory {
   }
 
   public Image getImage(final UnitCategory unit) {
-    return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
+    return getImage(
+            unit.getType(), unit.getOwner(), unit.hasDamageOrBombingUnitDamage(), unit.getDisabled())
         .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
   }
 
@@ -201,6 +202,14 @@ public class UnitImageFactory {
     g.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
     g.dispose();
     return highlightedImage;
+  }
+
+  public Optional<ImageIcon> getIcon(final UnitCategory unitCategory) {
+    return getIcon(
+        unitCategory.getType(),
+        unitCategory.getOwner(),
+        unitCategory.hasDamageOrBombingUnitDamage(),
+        unitCategory.getDisabled());
   }
 
   /** Return a icon image for a unit. */

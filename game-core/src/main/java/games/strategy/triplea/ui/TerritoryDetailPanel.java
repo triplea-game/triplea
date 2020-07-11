@@ -145,11 +145,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       final var theCurrentPlayer = currentPlayer;
       uiContext
           .getUnitImageFactory()
-          .getIcon(
-              item.getType(),
-              item.getOwner(),
-              item.hasDamageOrBombingUnitDamage(),
-              item.getDisabled())
+          .getIcon(item)
           .ifPresent(
               unitIcon -> {
                 // overlay flag onto upper-right of icon
