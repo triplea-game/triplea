@@ -143,22 +143,21 @@ public class UnitImageFactory {
 
   private Optional<Image> getTransformedImage(
       final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
-    final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, gamePlayer);
+    return getBaseImageUrl(baseImageName, gamePlayer)
+        .map(
+            imageLocation -> {
+              if (unscaledImages.containsKey(imageLocation)) {
+                return unscaledImages.get(imageLocation);
+              }
 
-    if (imageLocation.isPresent() && unscaledImages.containsKey(imageLocation.get())) {
-      return Optional.of(unscaledImages.get(imageLocation.get()));
-    }
-
-    Image image = null;
-    if (imageLocation.isPresent()) {
-      image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());
-      Util.ensureImageLoaded(image);
-      if (needToTransformImage(gamePlayer, type, mapData)) {
-        image = transformImage(image, gamePlayer);
-      }
-      unscaledImages.put(imageLocation.get(), image);
-    }
-    return Optional.ofNullable(image);
+              Image image = Toolkit.getDefaultToolkit().getImage(imageLocation);
+              Util.ensureImageLoaded(image);
+              if (needToTransformImage(gamePlayer, type, mapData)) {
+                image = transformImage(image, gamePlayer);
+                unscaledImages.put(imageLocation, image);
+              }
+              return image;
+            });
   }
 
   private Image transformImage(final Image rawImage, final GamePlayer gamePlayer) {
@@ -171,6 +170,7 @@ public class UnitImageFactory {
     if (mapData.shouldFlipUnit(gamePlayer.getName())) {
       image = ImageTransformer.flipHorizontally((BufferedImage) image);
     }
+    return image;
   }
 
   private static boolean needToTransformImage(
