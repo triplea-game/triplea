@@ -111,18 +111,20 @@ public class UnitImageFactory {
                     .orElse(null)));
   }
 
-  private Image scaleImage(final Image baseImage) {
-    // We want to scale units according to the given scale factor.
-    // We use smooth scaling since the images are cached to allow to take our
-    // time in doing the scaling.
-    // Image observer is null, since the image should have been guaranteed to
-    // be loaded.
-    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
-    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
-    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-    // Ensure the scaling is completed.
-    Util.ensureImageLoaded(scaledImage);
-    return scaledImage;
+  private Optional<Image> getTransformedImage(
+      final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
+    return getBaseImageUrl(baseImageName, gamePlayer)
+        .map(
+            imageLocation ->
+                unscaledImages.computeIfAbsent(
+                    imageLocation,
+                    path -> {
+                      BufferedImage image = ImageLoader.getImage(path);
+                      if (needToTransformImage(gamePlayer, type, mapData)) {
+                        image = transformImage(image, gamePlayer);
+                      }
+                      return image;
+                    }));
   }
 
   public Optional<URL> getBaseImageUrl(final String baseImageName, final GamePlayer gamePlayer) {
@@ -140,20 +142,11 @@ public class UnitImageFactory {
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getTransformedImage(
-      final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
-    return getBaseImageUrl(baseImageName, gamePlayer)
-        .map(
-            imageLocation ->
-                unscaledImages.computeIfAbsent(
-                    imageLocation,
-                    path -> {
-                      BufferedImage image = ImageLoader.getImage(path);
-                      if (needToTransformImage(gamePlayer, type, mapData)) {
-                        image = transformImage(image, gamePlayer);
-                      }
-                      return image;
-                    }));
+  private static boolean needToTransformImage(
+      final GamePlayer gamePlayer, final UnitType type, final MapData mapData) {
+    return !mapData.ignoreTransformingUnit(type.getName())
+        && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
+        || mapData.shouldFlipUnit(gamePlayer.getName()));
   }
 
   private BufferedImage transformImage(final BufferedImage rawImage, final GamePlayer gamePlayer) {
@@ -169,11 +162,18 @@ public class UnitImageFactory {
     return image;
   }
 
-  private static boolean needToTransformImage(
-      final GamePlayer gamePlayer, final UnitType type, final MapData mapData) {
-    return !mapData.ignoreTransformingUnit(type.getName())
-        && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
-            || mapData.shouldFlipUnit(gamePlayer.getName()));
+  private Image scaleImage(final Image baseImage) {
+    // We want to scale units according to the given scale factor.
+    // We use smooth scaling since the images are cached to allow to take our
+    // time in doing the scaling.
+    // Image observer is null, since the image should have been guaranteed to
+    // be loaded.
+    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    // Ensure the scaling is completed.
+    Util.ensureImageLoaded(scaledImage);
+    return scaledImage;
   }
 
   /**
