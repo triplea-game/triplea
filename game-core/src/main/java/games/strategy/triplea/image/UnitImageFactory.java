@@ -149,8 +149,7 @@ public class UnitImageFactory {
                 unscaledImages.computeIfAbsent(
                     imageLocation,
                     path -> {
-                      Image image = Toolkit.getDefaultToolkit().getImage(path);
-                      Util.ensureImageLoaded(image);
+                      Image image = ImageLoader.getImage(path);
                       if (needToTransformImage(gamePlayer, type, mapData)) {
                         image = transformImage(image, gamePlayer);
                       }
