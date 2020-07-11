@@ -19,10 +19,8 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -200,8 +198,12 @@ final class HelpMenu extends JMenu {
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    final Optional<URL> imageUrl = unitImageFactory.getBaseImageUrl(unitType.getName(), player);
-    final String imageLocation = imageUrl.map(Object::toString).orElse("");
+
+    final String imageLocation =
+        unitImageFactory
+            .getBaseImageUrl(unitType.getName(), player)
+            .map(Object::toString)
+            .orElse("");
 
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
   }
