@@ -10,7 +10,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -143,36 +142,37 @@ class TerritoryDetailPanel extends AbstractStatPanel {
         currentPlayer = item.getOwner();
         panel.add(Box.createVerticalStrut(15));
       }
-      // TODO Kev determine if we need to identify if the unit is hit/disabled
-      final Optional<ImageIcon> unitIcon =
-          uiContext
-              .getUnitImageFactory()
-              .getIcon(
-                  item.getType(),
-                  item.getOwner(),
-                  item.hasDamageOrBombingUnitDamage(),
-                  item.getDisabled());
-      if (unitIcon.isPresent()) {
-        // overlay flag onto upper-right of icon
-        final ImageIcon flagIcon =
-            new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
-        final Icon flaggedUnitIcon =
-            new OverlayIcon(
-                unitIcon.get(),
-                flagIcon,
-                unitIcon.get().getIconWidth() - (flagIcon.getIconWidth() / 2),
-                0);
-        final JLabel label =
-            new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
-        final String toolTipText =
-            "<html>"
-                + item.getType().getName()
-                + ": "
-                + TooltipProperties.getInstance().getTooltip(item.getType(), currentPlayer)
-                + "</html>";
-        label.setToolTipText(toolTipText);
-        panel.add(label);
-      }
+      final var theCurrentPlayer = currentPlayer;
+      uiContext
+          .getUnitImageFactory()
+          .getIcon(
+              item.getType(),
+              item.getOwner(),
+              item.hasDamageOrBombingUnitDamage(),
+              item.getDisabled())
+          .ifPresent(
+              unitIcon -> {
+                // overlay flag onto upper-right of icon
+                final ImageIcon flagIcon =
+                    new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
+                final Icon flaggedUnitIcon =
+                    new OverlayIcon(
+                        unitIcon,
+                        flagIcon,
+                        unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2),
+                        0);
+                final JLabel label =
+                    new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
+                final String toolTipText =
+                    "<html>"
+                        + item.getType().getName()
+                        + ": "
+                        + TooltipProperties.getInstance()
+                            .getTooltip(item.getType(), theCurrentPlayer)
+                        + "</html>";
+                label.setToolTipText(toolTipText);
+                panel.add(label);
+              });
     }
     return panel;
   }
