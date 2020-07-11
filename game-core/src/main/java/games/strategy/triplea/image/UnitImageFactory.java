@@ -41,10 +41,10 @@ public class UnitImageFactory {
 
   private final int unitCounterOffsetWidth;
   private final int unitCounterOffsetHeight;
-  // maps Point -> image
-  private final Map<String, Image> images = new HashMap<>();
-  // maps Point -> Icon
-  private final Map<String, ImageIcon> icons = new HashMap<>();
+  // maps Path -> scaled image
+  private final Map<String, Image> scaledImages = new HashMap<>();
+  // maps Path -> unscaled Icon
+  private final Map<String, ImageIcon> unscaledIcons = new HashMap<>();
   // Scaling factor for unit images
   private final double scaleFactor;
   private final ResourceLoader resourceLoader;
@@ -91,19 +91,19 @@ public class UnitImageFactory {
     return (int) (scaleFactor * unitCounterOffsetHeight);
   }
 
-  public Image getImage(final UnitCategory unit) {
-    return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
+  public Image getScaledImage(final UnitCategory unit) {
+    return getScaledImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
         .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
   }
 
   /** Return the appropriate unit image. */
-  public Optional<Image> getImage(
+  public Optional<Image> getScaledImage(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
 
     return Optional.ofNullable(
-        images.computeIfAbsent(
+        scaledImages.computeIfAbsent(
             fullName,
             pathName ->
                 getTransformedImage(baseName, player, type) //
@@ -185,7 +185,7 @@ public class UnitImageFactory {
    */
   public Optional<Image> getHighlightImage(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
-    return getImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
+    return getScaledImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
   }
 
   private static Image highlightImage(final Image image) {
@@ -203,12 +203,12 @@ public class UnitImageFactory {
   }
 
   /** Return a icon image for a unit. */
-  public Optional<ImageIcon> getIcon(
+  public Optional<ImageIcon> getUnscaledIcon(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
-    if (icons.containsKey(fullName)) {
-      return Optional.of(icons.get(fullName));
+    if (unscaledIcons.containsKey(fullName)) {
+      return Optional.of(unscaledIcons.get(fullName));
     }
     final Optional<Image> image = getTransformedImage(baseName, player, type);
     if (image.isEmpty()) {
@@ -216,7 +216,7 @@ public class UnitImageFactory {
     }
 
     final ImageIcon icon = new ImageIcon(image.get());
-    icons.put(fullName, icon);
+    unscaledIcons.put(fullName, icon);
     return Optional.of(icon);
   }
 

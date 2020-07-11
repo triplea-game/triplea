@@ -144,7 +144,7 @@ public class UnitType extends NamedAttachable {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
+              final Optional<Image> unitImage = imageFactory.getScaledImage(ut, player, false, false);
               if (unitImage.isPresent() && !unitTypes.contains(ut)) {
                 unitTypes.add(ut);
               }

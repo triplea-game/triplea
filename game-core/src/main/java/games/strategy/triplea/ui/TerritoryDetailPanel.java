@@ -147,7 +147,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       final Optional<ImageIcon> unitIcon =
           uiContext
               .getUnitImageFactory()
-              .getIcon(
+              .getUnscaledIcon(
                   item.getType(),
                   item.getOwner(),
                   item.hasDamageOrBombingUnitDamage(),
