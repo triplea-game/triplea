@@ -109,7 +109,7 @@ final class AvailableGames {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        final GameData data = GameParser.parse(uri.toString(), input);
+        final GameData data = GameParser.parseShallow(uri.toString(), input);
         final String name = data.getGameName();
         availableGames.put(name, uri);
       } catch (final Exception e) {
