@@ -280,7 +280,7 @@ class OrderOfLossesInputPanel extends JPanel {
         final Optional<Image> img =
             uiContext
                 .getUnitImageFactory()
-                .getImage(
+                .getScaledImage(
                     category.getType(),
                     category.getOwner(),
                     category.hasDamageOrBombingUnitDamage(),

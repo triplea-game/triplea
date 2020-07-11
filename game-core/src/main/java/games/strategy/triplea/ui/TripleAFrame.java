@@ -1240,7 +1240,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Optional<ImageIcon> icon =
           uiContext
               .getUnitImageFactory()
-              .getIcon(
+              .getUnscaledIcon(
                   unit.getType(),
                   unit.getOwner(),
                   Matches.unitHasTakenSomeBombingUnitDamage().test(unit),

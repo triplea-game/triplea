@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
@@ -41,10 +40,10 @@ public class UnitImageFactory {
 
   private final int unitCounterOffsetWidth;
   private final int unitCounterOffsetHeight;
-  // maps Point -> image
-  private final Map<String, Image> images = new HashMap<>();
-  // maps Point -> Icon
-  private final Map<String, ImageIcon> icons = new HashMap<>();
+  // maps Path -> scaled image
+  private final Map<String, Image> scaledImages = new HashMap<>();
+  // maps URL -> unscaled Image
+  private final Map<URL, Image> unscaledImages = new HashMap<>();
   // Scaling factor for unit images
   private final double scaleFactor;
   private final ResourceLoader resourceLoader;
@@ -91,39 +90,41 @@ public class UnitImageFactory {
     return (int) (scaleFactor * unitCounterOffsetHeight);
   }
 
-  public Image getImage(final UnitCategory unit) {
-    return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
+  public Image getScaledImage(final UnitCategory unit) {
+    return getScaledImage(
+            unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
         .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
   }
 
   /** Return the appropriate unit image. */
-  public Optional<Image> getImage(
+  public Optional<Image> getScaledImage(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
 
-    return Optional.ofNullable(images.get(fullName))
-        .or(
-            () ->
-                getTransformedImage(baseName, player, type)
-                    .map(
-                        baseImage -> {
-                          // We want to scale units according to the given scale factor.
-                          // We use smooth scaling since the images are cached to allow to take our
-                          // time in
-                          // doing the
-                          // scaling.
-                          // Image observer is null, since the image should have been guaranteed to
-                          // be loaded.
-                          final int width = (int) (baseImage.getWidth(null) * scaleFactor);
-                          final int height = (int) (baseImage.getHeight(null) * scaleFactor);
-                          final Image scaledImage =
-                              baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                          // Ensure the scaling is completed.
-                          Util.ensureImageLoaded(scaledImage);
-                          images.put(fullName, scaledImage);
-                          return scaledImage;
-                        }));
+    return Optional.ofNullable(
+        scaledImages.computeIfAbsent(
+            fullName,
+            pathName ->
+                getTransformedImage(baseName, player, type) //
+                    .map(this::scaleImage)
+                    .orElse(null)));
+  }
+
+  private Optional<Image> getTransformedImage(
+      final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
+    return getBaseImageUrl(baseImageName, gamePlayer)
+        .map(
+            imageLocation ->
+                unscaledImages.computeIfAbsent(
+                    imageLocation,
+                    path -> {
+                      BufferedImage image = ImageLoader.getImage(path);
+                      if (needToTransformImage(gamePlayer, type, mapData)) {
+                        image = transformImage(image, gamePlayer);
+                      }
+                      return image;
+                    }));
   }
 
   public Optional<URL> getBaseImageUrl(final String baseImageName, final GamePlayer gamePlayer) {
@@ -141,28 +142,6 @@ public class UnitImageFactory {
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getTransformedImage(
-      final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
-    final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, gamePlayer);
-    Image image = null;
-    if (imageLocation.isPresent()) {
-      image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());
-      Util.ensureImageLoaded(image);
-      if (needToTransformImage(gamePlayer, type, mapData)) {
-        image = convertToBufferedImage(image);
-        final Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
-        if (unitColor.isPresent()) {
-          final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
-          ImageTransformer.colorize(unitColor.get(), brightness, (BufferedImage) image);
-        }
-        if (mapData.shouldFlipUnit(gamePlayer.getName())) {
-          image = ImageTransformer.flipHorizontally((BufferedImage) image);
-        }
-      }
-    }
-    return Optional.ofNullable(image);
-  }
-
   private static boolean needToTransformImage(
       final GamePlayer gamePlayer, final UnitType type, final MapData mapData) {
     return !mapData.ignoreTransformingUnit(type.getName())
@@ -170,13 +149,31 @@ public class UnitImageFactory {
             || mapData.shouldFlipUnit(gamePlayer.getName()));
   }
 
-  private static BufferedImage convertToBufferedImage(final Image image) {
-    final BufferedImage newImage =
-        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-    final Graphics2D g = newImage.createGraphics();
-    g.drawImage(image, 0, 0, null);
-    g.dispose();
-    return newImage;
+  private BufferedImage transformImage(final BufferedImage rawImage, final GamePlayer gamePlayer) {
+    BufferedImage image = rawImage;
+    final Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
+    if (unitColor.isPresent()) {
+      final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
+      ImageTransformer.colorize(unitColor.get(), brightness, image);
+    }
+    if (mapData.shouldFlipUnit(gamePlayer.getName())) {
+      image = ImageTransformer.flipHorizontally(image);
+    }
+    return image;
+  }
+
+  private Image scaleImage(final Image baseImage) {
+    // We want to scale units according to the given scale factor.
+    // We use smooth scaling since the images are cached to allow to take our
+    // time in doing the scaling.
+    // Image observer is null, since the image should have been guaranteed to
+    // be loaded.
+    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    // Ensure the scaling is completed.
+    Util.ensureImageLoaded(scaledImage);
+    return scaledImage;
   }
 
   /**
@@ -186,7 +183,7 @@ public class UnitImageFactory {
    */
   public Optional<Image> getHighlightImage(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
-    return getImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
+    return getScaledImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
   }
 
   private static Image highlightImage(final Image image) {
@@ -204,21 +201,11 @@ public class UnitImageFactory {
   }
 
   /** Return a icon image for a unit. */
-  public Optional<ImageIcon> getIcon(
+  public Optional<ImageIcon> getUnscaledIcon(
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
-    final String fullName = baseName + player.getName();
-    if (icons.containsKey(fullName)) {
-      return Optional.of(icons.get(fullName));
-    }
-    final Optional<Image> image = getTransformedImage(baseName, player, type);
-    if (image.isEmpty()) {
-      return Optional.empty();
-    }
 
-    final ImageIcon icon = new ImageIcon(image.get());
-    icons.put(fullName, icon);
-    return Optional.of(icon);
+    return getTransformedImage(baseName, player, type).map(ImageIcon::new);
   }
 
   public static String getBaseImageName(
