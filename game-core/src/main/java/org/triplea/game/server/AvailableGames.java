@@ -37,23 +37,25 @@ final class AvailableGames {
 
   AvailableGames() {
     availableGames = new HashMap<>();
-    PerfTimer.time("loading" , () ->
-    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
-        .stream()
-        .map(AvailableGames::getGames)
-        .map(Map::entrySet)
-        .flatMap(Collection::stream)
-        .forEach(
-            gameEntry -> {
-              if (!availableGames.containsKey(gameEntry.getKey())) {
-                availableGames.put(gameEntry.getKey(), gameEntry.getValue());
-              } else {
-                log.warning(
-                    String.format(
-                        "DUPLICATE GAME ENTRY! Ignoring game entry: %s, " + "existing value is: %s",
-                        gameEntry, availableGames.get(gameEntry.getKey())));
-              }
-            }));
+    PerfTimer.time(
+        "loading",
+        () ->
+            FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
+                .map(AvailableGames::getGames)
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .forEach(
+                    gameEntry -> {
+                      if (!availableGames.containsKey(gameEntry.getKey())) {
+                        availableGames.put(gameEntry.getKey(), gameEntry.getValue());
+                      } else {
+                        log.warning(
+                            String.format(
+                                "DUPLICATE GAME ENTRY! Ignoring game entry: %s, "
+                                    + "existing value is: %s",
+                                gameEntry, availableGames.get(gameEntry.getKey())));
+                      }
+                    }));
     log.info(
         String.format(
             "Done loading maps, " + "availableGames count: %s, contents: %s",
