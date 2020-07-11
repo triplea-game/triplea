@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
@@ -149,7 +148,7 @@ public class UnitImageFactory {
                 unscaledImages.computeIfAbsent(
                     imageLocation,
                     path -> {
-                      Image image = ImageLoader.getImage(path);
+                      BufferedImage image = ImageLoader.getImage(path);
                       if (needToTransformImage(gamePlayer, type, mapData)) {
                         image = transformImage(image, gamePlayer);
                       }
@@ -157,15 +156,15 @@ public class UnitImageFactory {
                     }));
   }
 
-  private Image transformImage(final Image rawImage, final GamePlayer gamePlayer) {
-    Image image = convertToBufferedImage(rawImage);
+  private BufferedImage transformImage(final BufferedImage rawImage, final GamePlayer gamePlayer) {
+    BufferedImage image = rawImage;
     final Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
     if (unitColor.isPresent()) {
       final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
-      ImageTransformer.colorize(unitColor.get(), brightness, (BufferedImage) image);
+      ImageTransformer.colorize(unitColor.get(), brightness, image);
     }
     if (mapData.shouldFlipUnit(gamePlayer.getName())) {
-      image = ImageTransformer.flipHorizontally((BufferedImage) image);
+      image = ImageTransformer.flipHorizontally(image);
     }
     return image;
   }
@@ -175,15 +174,6 @@ public class UnitImageFactory {
     return !mapData.ignoreTransformingUnit(type.getName())
         && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
             || mapData.shouldFlipUnit(gamePlayer.getName()));
-  }
-
-  private static BufferedImage convertToBufferedImage(final Image image) {
-    final BufferedImage newImage =
-        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-    final Graphics2D g = newImage.createGraphics();
-    g.drawImage(image, 0, 0, null);
-    g.dispose();
-    return newImage;
   }
 
   /**
