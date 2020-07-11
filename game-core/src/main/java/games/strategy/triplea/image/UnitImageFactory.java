@@ -145,19 +145,17 @@ public class UnitImageFactory {
       final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
     return getBaseImageUrl(baseImageName, gamePlayer)
         .map(
-            imageLocation -> {
-              if (unscaledImages.containsKey(imageLocation)) {
-                return unscaledImages.get(imageLocation);
-              }
-
-              Image image = Toolkit.getDefaultToolkit().getImage(imageLocation);
-              Util.ensureImageLoaded(image);
-              if (needToTransformImage(gamePlayer, type, mapData)) {
-                image = transformImage(image, gamePlayer);
-                unscaledImages.put(imageLocation, image);
-              }
-              return image;
-            });
+            imageLocation ->
+                unscaledImages.computeIfAbsent(
+                    imageLocation,
+                    path -> {
+                      Image image = Toolkit.getDefaultToolkit().getImage(path);
+                      Util.ensureImageLoaded(image);
+                      if (needToTransformImage(gamePlayer, type, mapData)) {
+                        image = transformImage(image, gamePlayer);
+                      }
+                      return image;
+                    }));
   }
 
   private Image transformImage(final Image rawImage, final GamePlayer gamePlayer) {
