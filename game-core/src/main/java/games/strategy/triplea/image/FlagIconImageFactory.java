@@ -10,13 +10,13 @@ public class FlagIconImageFactory extends ImageFactory {
   public Image getFlag(final GamePlayer gamePlayer) {
     final String key = PREFIX + gamePlayer.getName() + ".gif";
     final String key2 = PREFIX + gamePlayer.getName() + ".png";
-    return getImage(key, key2, true);
+    return getImage(key, key2);
   }
 
   public Image getSmallFlag(final GamePlayer gamePlayer) {
     final String key = PREFIX + gamePlayer.getName() + "_small.gif";
     final String key2 = PREFIX + gamePlayer.getName() + "_small.png";
-    return getImage(key, key2, true);
+    return getImage(key, key2);
   }
 
   public Image getLargeFlag(final GamePlayer gamePlayer) {
@@ -27,12 +27,12 @@ public class FlagIconImageFactory extends ImageFactory {
   public Image getFadedFlag(final GamePlayer gamePlayer) {
     final String key = PREFIX + gamePlayer.getName() + "_fade.gif";
     final String key2 = PREFIX + gamePlayer.getName() + "_fade.png";
-    return getImage(key, key2, true);
+    return getImage(key, key2);
   }
 
   public Image getConvoyFlag(final GamePlayer gamePlayer) {
     final String key = PREFIX + gamePlayer.getName() + "_convoy.gif";
     final String key2 = PREFIX + gamePlayer.getName() + "_convoy.png";
-    return getImage(key, key2, true);
+    return getImage(key, key2);
   }
 }
