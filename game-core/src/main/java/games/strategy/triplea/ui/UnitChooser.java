@@ -617,7 +617,7 @@ public final class UnitChooser extends JPanel {
         final Optional<Image> image =
             uiContext
                 .getUnitImageFactory()
-                .getScaledImage(
+                .getImage(
                     category.getType(),
                     category.getOwner(),
                     forceDamaged || category.hasDamageOrBombingUnitDamage(),
@@ -630,7 +630,7 @@ public final class UnitChooser extends JPanel {
           final Optional<Image> unitImg =
               uiContext
                   .getUnitImageFactory()
-                  .getScaledImage(holder.getType(), holder.getOwner(), false, false);
+                  .getImage(holder.getType(), holder.getOwner(), false, false);
           unitImg.ifPresent(image1 -> g.drawImage(image1, x, 0, this));
           index++;
         }

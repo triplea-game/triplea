@@ -1004,7 +1004,7 @@ public class BattleDisplay extends JPanel {
       this.player = player;
       this.count = count;
       this.unitType = type;
-      icon = uiContext.getUnitImageFactory().getUnscaledIcon(type, player, damaged, disabled);
+      icon = uiContext.getUnitImageFactory().getIcon(type, player, damaged, disabled);
     }
 
     void updateStamp(final JLabel stamp) {
@@ -1077,7 +1077,7 @@ public class BattleDisplay extends JPanel {
         final Optional<ImageIcon> unitImage =
             uiContext
                 .getUnitImageFactory()
-                .getUnscaledIcon(
+                .getIcon(
                     category.getType(),
                     category.getOwner(),
                     damaged && category.hasDamageOrBombingUnitDamage(),

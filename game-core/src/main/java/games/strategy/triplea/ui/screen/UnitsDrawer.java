@@ -113,7 +113,7 @@ public class UnitsDrawer extends AbstractDrawable {
     final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
     final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;
     final Optional<Image> img =
-        uiContext.getUnitImageFactory().getScaledImage(type, owner, damagedImage, disabled);
+        uiContext.getUnitImageFactory().getImage(type, owner, damagedImage, disabled);
 
     if (img.isEmpty() && !uiContext.isShutDown()) {
       final String imageName =
