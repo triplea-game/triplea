@@ -2,9 +2,7 @@ package games.strategy.triplea.image;
 
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.Util;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,14 +16,10 @@ public abstract class AbstractImageFactory {
 
   public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
-    clearImageCache();
+    icons.clear();
   }
 
   protected abstract String getFileNameBase();
-
-  private void clearImageCache() {
-    icons.clear();
-  }
 
   private Image getBaseImage(final String baseImageName) {
     final String fileName = getFileNameBase() + baseImageName + ".png";
