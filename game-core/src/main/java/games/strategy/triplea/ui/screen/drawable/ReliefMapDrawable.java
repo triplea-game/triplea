@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.UiContext;
-
 import java.awt.Image;
 
 /** Draws a relief map tile. */

@@ -5,7 +5,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UiContext;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;

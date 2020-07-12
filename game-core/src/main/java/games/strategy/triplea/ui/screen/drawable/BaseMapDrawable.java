@@ -1,8 +1,7 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import java.awt.Image;
-
 import games.strategy.triplea.ui.UiContext;
+import java.awt.Image;
 
 /** Draws a base map tile. */
 public class BaseMapDrawable extends MapTileDrawable {

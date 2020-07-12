@@ -76,22 +76,37 @@ public class UiContext {
   private boolean drawUnits = true;
   private boolean drawTerritoryEffects = false;
 
-  @Getter
-  private Cursor cursor = Cursor.getDefaultCursor();
+  @Getter private Cursor cursor = Cursor.getDefaultCursor();
 
-  @Getter
-  @Setter
-  protected LocalPlayers localPlayers;
+  @Getter @Setter protected LocalPlayers localPlayers;
 
-  @Getter
-  protected double scale = 1;
+  @Getter protected double scale = 1;
 
-  @Getter
-  private boolean isShutDown = false;
+  @Getter private boolean isShutDown = false;
 
   private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
+
+  /**
+   * Indicates the damaged or undamaged version of a unit image should be used.
+   *
+   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
+   */
+  enum UnitDamage {
+    DAMAGED,
+    NOT_DAMAGED
+  }
+
+  /**
+   * Indicates the enabled or disabled version of a unit image should be used.
+   *
+   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
+   */
+  enum UnitEnable {
+    DISABLED,
+    ENABLED
+  }
 
   UiContext() {}
 
@@ -166,6 +181,10 @@ public class UiContext {
     final JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
     MapUnitTooltipManager.setUnitTooltip(label, type, player, 1);
     return label;
+  }
+
+  JLabel newUnitImageLabel(final UnitType type, final GamePlayer player) {
+    return newUnitImageLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
   public ResourceImageFactory getResourceImageFactory() {
@@ -493,29 +512,5 @@ public class UiContext {
     } catch (final BackingStoreException ex) {
       log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
-  }
-
-  /**
-   * Indicates the damaged or undamaged version of a unit image should be used.
-   *
-   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
-   */
-  enum UnitDamage {
-    DAMAGED,
-    NOT_DAMAGED
-  }
-
-  /**
-   * Indicates the enabled or disabled version of a unit image should be used.
-   *
-   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
-   */
-  enum UnitEnable {
-    DISABLED,
-    ENABLED
-  }
-
-  JLabel newUnitImageLabel(final UnitType type, final GamePlayer player) {
-    return newUnitImageLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 }

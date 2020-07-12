@@ -7,7 +7,6 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.net.INode;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.ui.UiContext;
-
 import java.awt.Component;
 import java.util.Collection;
 import java.util.HashMap;
