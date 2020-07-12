@@ -13,7 +13,7 @@
     user: admin
     name: "send logs {{ item }}"
     minute: "1"
-    job: "/home/admin/send_logs \"{{ item }}\" /home/admin/.ssh/log_aggregation_ed25519 \"logs@{{ groups['support']|first }}\""
+    job: "/home/admin/send_logs \"{{ item }}\" \"{{ groups['support']|first }}\""
   with_items: "{{ journalctl_applications }}"
 
 - name: deploy private logs-user ssh key to admin user
@@ -21,7 +21,7 @@
   become: true
   copy:
    src: log_aggregation_ed25519
-   dest: /home/admin/.ssh/log_aggregation_ed25519
+   dest: "{{ log_sending_private_key_file }}"
    mode: 0600
    owner: admin
    group: admin
@@ -31,7 +31,7 @@
   become: true
   template:
     src: ssh_config.j2
-    dest: /home/admin/.ssh/ssh_config
+    dest: /home/admin/.ssh/config
     mode: 0600
     owner: admin
     group: admin

@@ -1,4 +1,5 @@
 Host {{ groups['support']|first }}
   User     logs
   StrictHostKeyChecking no
+  IdentityFile {{ log_sending_private_key_file }}
 

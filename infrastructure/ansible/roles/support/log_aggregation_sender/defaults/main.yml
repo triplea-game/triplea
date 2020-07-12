@@ -7,3 +7,4 @@
 
 journalctl_applications: [ ]
 
+log_sending_private_key_file: /home/admin/.ssh/log_aggregation_ed25519
