@@ -35,7 +35,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
 
     try (InputStream input = inputStream.get()) {
       gameData = GameParser.parseShallow(uri.toString(), input);
-      gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
+      gameNameAndMapNameProperty = gameData.getGameName() + ":" + getMapNameProperty();
     }
   }
 
@@ -78,11 +78,6 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     return gameDataFullyLoaded;
   }
 
-  @Override
-  public String getGameName() {
-    return gameData.getGameName();
-  }
-
   // the user may have selected a map skin instead of this map folder, so don't use this for
   // anything except our
   // equals/hashcode below
@@ -96,7 +91,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
 
   @Override
   public String toString() {
-    return getGameName();
+    return gameData.getGameName();
   }
 
   @Nonnull
@@ -108,11 +103,6 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
   @Override
   public URI getUri() {
     return url;
-  }
-
-  @Override
-  public String getLocation() {
-    return url.toString();
   }
 
   @Override
@@ -134,6 +124,6 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
 
   @Override
   public int compareTo(final GameChooserEntry o) {
-    return getGameName().compareToIgnoreCase(o.getGameName());
+    return gameData.getGameName().compareToIgnoreCase(o.getGameData().getGameName());
   }
 }

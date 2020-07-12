@@ -36,8 +36,7 @@ final class AvailableGames {
 
   AvailableGames() {
     availableGames = new HashMap<>();
-    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
-        .parallelStream()
+    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .map(AvailableGames::getGames)
         .map(Map::entrySet)
         .flatMap(Collection::stream)

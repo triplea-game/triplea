@@ -140,10 +140,10 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     when(mockEntry.getGameData()).thenReturn(mockGameData);
     prepareMockGameDataExpectations();
     when(mockEntry.getUri()).thenReturn(new URI("abc"));
-    testObj.load(mockEntry);
-    assertThat(testObj.getFileName(), is("-"));
-    verify(mockEntry, times(0)).getLocation();
 
+    testObj.load(mockEntry);
+
+    assertThat(testObj.getFileName(), is("-"));
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
     assertHasFakeTestData(testObj);
   }
