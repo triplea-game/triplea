@@ -13,11 +13,10 @@ bot_maps_folder: "{{ bot_folder }}/maps"
 # The URI of the lobby that the bot would connect to.
 bot_lobby_uri: "{{ lobby_uri }}"
 
-bot_max_memory: "168m"
+bot_max_memory: "176m"
 
 # Each bot number matches a bot instance that will be deployed and started.
-# 6 bots is standard for the 2GB RAM, $10/month linodes that we typically use.
-bot_numbers: ["01", "02", "03", "04", "05", "06"]
+bot_numbers: ["01", "02", "03", "04", "05"]
 
 # Bot prefix we expect to be overriden in inventory.
 # We deploy bots to multiple server, to keep the host numbers unique, there is a prefix.
