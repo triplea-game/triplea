@@ -23,12 +23,12 @@ public class ImageFactory {
     images.clear();
   }
 
-  protected Image getImage(final String key1, final String key2, final boolean throwIfNotFound) {
+  protected Image getImage(final String key1, final String key2) {
     final Image i1 = getImage(key1, false);
     if (i1 != null) {
       return i1;
     }
-    return getImage(key2, throwIfNotFound);
+    return getImage(key2, true);
   }
 
   protected Image getImage(final String key, final boolean throwIfNotFound) {
