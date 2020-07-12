@@ -17,7 +17,7 @@ function usage() {
 }
 
 if [ -z "$log_server" ]; then
-  echo "Error: Missing arguments, received: '$@'"
+  echo "Error: Missing arguments, received: '$*'"
   usage
   exit 1
 fi
@@ -27,13 +27,13 @@ fi
 log_file="$(date -d '-1 hour ago' -u "+%Y-%m-%d--%H").$(hostname).$app_name.log"
 
 # Touch the log file so that we have something to send always
-touch /tmp/$log_file
+touch "/tmp/$log_file"
 
 # Grab the last hours worth of logs from journalctl and dump to file
-sudo journalctl \
+journalctl \
   --since "$(date -d '1 hour ago' -u "+%Y-%m-%d %H:00:00 UTC")" \
   --until "$(date -d '1 hour ago' -u "+%Y-%m-%d %H:59:59 UTC")" \
-  -u "$app_name" > /tmp/$log_file
+  -u "$app_name" > "/tmp/$log_file"
 
 
 # Create the folder on the remote server where we will send the log file
@@ -44,5 +44,5 @@ ssh -i "$key_file" "$log_server" "mkdir -p $log_folder_path"
 scp -i "$key_file" "/tmp/$log_file" "$log_server:$log_folder_path/$log_file"
 
 # Clean up locally
-rm /tmp/$log_file
+rm "/tmp/$log_file"
 
