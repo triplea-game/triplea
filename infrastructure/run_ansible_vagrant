@@ -49,7 +49,10 @@ function buildMigrations() {
   local zipFile=migrations.zip
   if [ ! -e $targetFolder/$zipFile ]; then
     if [ ! -e ../lobby-db/build/distributions/$zipFile ]; then
-       ./gradlew :lobby-db:release
+      (
+        cd ..
+        ./gradlew :lobby-db:release
+      )
     fi
     mkdir -p $targetFolder
     cp ../lobby-db/build/distributions/$zipFile $targetFolder
