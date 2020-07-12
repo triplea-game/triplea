@@ -21,15 +21,6 @@ public abstract class AbstractImageFactory {
 
   protected abstract String getFileNameBase();
 
-  private Image getBaseImage(final String baseImageName) {
-    final String fileName = getFileNameBase() + baseImageName + ".png";
-    final URL url = resourceLoader.getResource(fileName);
-    if (url == null) {
-      throw new IllegalStateException("Can not load image: " + baseImageName + "  looking in: " + fileName);
-    }
-    return ImageLoader.getImage(url);
-  }
-
   /**
    * Return a icon image.
    *
@@ -38,5 +29,15 @@ public abstract class AbstractImageFactory {
   public ImageIcon getIcon(final NamedAttachable type, final boolean large) {
     final String fullName = type.getName() + (large ? "_large" : "");
     return new ImageIcon(images.computeIfAbsent(fullName, this::getBaseImage));
+  }
+
+  private Image getBaseImage(final String baseImageName) {
+    final String fileName = getFileNameBase() + baseImageName + ".png";
+    final URL url = resourceLoader.getResource(fileName);
+    if (url == null) {
+      throw new IllegalStateException(
+          "Can not load image: " + baseImageName + "  looking in: " + fileName);
+    }
+    return ImageLoader.getImage(url);
   }
 }
