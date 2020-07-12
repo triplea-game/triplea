@@ -1,13 +1,12 @@
-[postgresHosts]
-127.0.0.1 ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/vagrantHost/virtualbox/private_key
+[vagrant]
+vagrant ansible_host=127.0.0.1 ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/vagrantHost/virtualbox/private_key
 
-[dropwizardHosts]
-127.0.0.1 ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/vagrantHost/virtualbox/private_key
+[postgresHosts:children]
+vagrant
 
-[botHosts]
-127.0.0.1 ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/vagrantHost/virtualbox/private_key
+[dropwizardHosts:children]
+vagrant
 
-[vagrant:children]
-postgresHosts
-dropwizardHosts
-botHosts
+[botHosts:children]
+vagrant
+
