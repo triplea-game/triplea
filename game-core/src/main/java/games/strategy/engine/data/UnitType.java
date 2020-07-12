@@ -1,7 +1,7 @@
 package games.strategy.engine.data;
 
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.UiContext;
+
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import games.strategy.triplea.ui.UiContext;
 import lombok.extern.java.Log;
 
 /** A prototype for units. */

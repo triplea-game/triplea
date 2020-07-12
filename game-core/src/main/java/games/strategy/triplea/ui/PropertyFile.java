@@ -40,7 +40,7 @@ public abstract class PropertyFile {
   }
 
   protected PropertyFile(final String fileName) {
-    this(fileName, HeadedUiContext.getResourceLoader());
+    this(fileName, UiContext.getResourceLoader());
   }
 
   @VisibleForTesting

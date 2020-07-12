@@ -10,9 +10,8 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.FlagDrawMode;
-import games.strategy.triplea.ui.HeadedUiContext;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -243,13 +242,13 @@ final class ViewMenu extends JMenu {
     mapSubMenu.setMnemonic(KeyEvent.VK_K);
     add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
-    final Map<String, String> skins = HeadedUiContext.getSkins(frame.getGame().getData());
+    final Map<String, String> skins = UiContext.getSkins(frame.getGame().getData());
     mapSubMenu.setEnabled(skins.size() > 1);
     for (final String key : skins.keySet()) {
       final JMenuItem mapMenuItem = new JRadioButtonMenuItem(key);
       mapButtonGroup.add(mapMenuItem);
       mapSubMenu.add(mapMenuItem);
-      if (skins.get(key).equals(HeadedUiContext.getMapDir())) {
+      if (skins.get(key).equals(UiContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
       mapMenuItem.addActionListener(
