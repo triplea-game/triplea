@@ -45,7 +45,7 @@ class ProductionTabsProperties {
 
   protected ProductionTabsProperties(final GamePlayer gamePlayer, final List<Rule> rules) {
     this.rules = rules;
-    final ResourceLoader loader = AbstractUiContext.getResourceLoader();
+    final ResourceLoader loader = UiContext.getResourceLoader();
     URL url = loader.getResource(PROPERTY_FILE + "." + gamePlayer.getName() + ".properties");
     if (url == null) {
       // no production_tabs.france.properties check for production_tabs.properties

@@ -2,7 +2,7 @@ package org.triplea.util;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.AbstractUiContext;
+import games.strategy.triplea.ui.UiContext;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public final class LocalizeHtml {
    * either be null, or be the last game's resource loader.
    */
   public static String localizeImgLinksInHtml(final String htmlText) {
-    return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader());
+    return localizeImgLinksInHtml(htmlText, UiContext.getResourceLoader());
   }
 
   /**

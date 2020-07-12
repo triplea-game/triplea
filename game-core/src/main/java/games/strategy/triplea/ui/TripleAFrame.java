@@ -681,7 +681,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
-    final UiContext uiContext = new HeadedUiContext();
+    final UiContext uiContext = new UiContext();
     uiContext.setDefaultMapDir(game.getData());
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
