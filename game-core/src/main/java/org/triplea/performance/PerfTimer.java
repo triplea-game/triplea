@@ -76,7 +76,7 @@ public class PerfTimer implements Closeable {
     final long newCount = totalCount.get() + 1;
     totalCount.set(newCount);
 
-    if ((newCount % perfTimer.reportingFrequency) == 0) {
+    if ((newCount % perfTimer.reportingFrequency) != 0) {
       return;
     }
 
