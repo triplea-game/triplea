@@ -399,9 +399,9 @@ public class UiContext {
     // If you are calling this method while holding a lock on an object, while the EDT is separately
     // waiting for that lock, then you have a deadlock.
     // A real life example: player disconnects while you have the battle calc open.
-    // Non-EDT thread does shutdown on IGame and HeadedUiContext, causing btl calc to shutdown,
+    // Non-EDT thread does shutdown on IGame and UiContext, causing btl calc to shutdown,
     // which calls the
-    // window closed event on the EDT, and waits for the lock on HeadedUiContext to
+    // window closed event on the EDT, and waits for the lock on UiContext to
     // removeShutdownWindow, meanwhile
     // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait,
     // resulting in a

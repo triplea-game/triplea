@@ -167,7 +167,7 @@ public class GameChooser extends JDialog {
     notes.append("<p></p>");
     final String trimmedNotes = data.getProperties().get("notes", "").trim();
     if (!trimmedNotes.isEmpty()) {
-      // HeadedUiContext resource loader should be null (or potentially is still the last game
+      // UiContext resource loader should be null (or potentially is still the last game
       // we played's loader),
       // so we send the map dir name so that our localizing of image links can get a new resource
       // loader if needed
