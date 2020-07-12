@@ -93,7 +93,7 @@ public class UnitImageFactory {
   public Image getScaledImage(final UnitCategory unit) {
     return getScaledImage(
             unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
-        .orElseThrow(() -> new RuntimeException("No unit image: " + getBaseImageName(unit)));
+        .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
   }
 
   /** Return the appropriate unit image. */
@@ -206,11 +206,6 @@ public class UnitImageFactory {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
 
     return getTransformedImage(baseName, player, type).map(ImageIcon::new);
-  }
-
-  public static String getBaseImageName(final UnitCategory unit) {
-    return getBaseImageName(
-        unit.getType(), unit.getOwner(), unit.hasDamageOrBombingUnitDamage(), unit.getDisabled());
   }
 
   public static String getBaseImageName(
