@@ -309,7 +309,7 @@ class ProductionRepairPanel extends JPanel {
       final Optional<ImageIcon> icon =
           uiContext
               .getUnitImageFactory()
-              .getUnscaledIcon(
+              .getIcon(
                   type,
                   gamePlayer,
                   Matches.unitHasTakenSomeBombingUnitDamage().test(repairUnit),

@@ -48,7 +48,7 @@ public class UnitPanel extends JPanel {
     final Optional<Image> img =
         uiContext
             .getUnitImageFactory()
-            .getScaledImage(
+            .getImage(
                 category.getType(),
                 category.getOwner(),
                 category.hasDamageOrBombingUnitDamage(),

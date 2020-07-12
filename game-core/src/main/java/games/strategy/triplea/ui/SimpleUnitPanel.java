@@ -215,7 +215,7 @@ public class SimpleUnitPanel extends JPanel {
     if (unit instanceof UnitType) {
       final UnitType unitType = (UnitType) unit;
       final Optional<ImageIcon> icon =
-          uiContext.getUnitImageFactory().getUnscaledIcon(unitType, player, damaged, disabled);
+          uiContext.getUnitImageFactory().getIcon(unitType, player, damaged, disabled);
       icon.ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
