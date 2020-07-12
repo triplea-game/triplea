@@ -1,0 +1,21 @@
+- name: set hostname of system
+  become: true
+  hostname: 
+    name: "{{ inventory_hostname }}"
+  register: hostname_result
+
+- name: deploy /etc/hosts file with hostname in it
+  become: true
+  template:
+    src: etc_hosts.j2
+    dest: /etc/hosts
+    mode: 0755
+    owner: root
+    group: root
+
+- name: reboot machine for hostname to take effect
+  when: hostname_result.changed
+  become: true
+  reboot:
+
+

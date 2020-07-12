@@ -6,6 +6,7 @@
 - hosts: all
   tags: system
   roles:
+    - system/hostname
     - system/apt_update
     - system/admin_user
     - system/firewall
