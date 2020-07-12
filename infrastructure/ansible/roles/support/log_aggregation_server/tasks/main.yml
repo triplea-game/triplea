@@ -1,0 +1,74 @@
+- name: install cronjob to compress any log files older than 2 hours
+  become: true
+  cron:
+    user: admin
+    name: "log compression"
+    minute: "1"
+    job: "find /home/admin/logs/ -name \"*.log\" -type f -mmin +120 | xargs gzip"
+
+- name: install cronjob to delete any log files older than 3 months
+  become: true
+  cron:
+    user: admin
+    name: "old log deletion"
+    minute: "10"
+    job: "find /home/admin/logs/ -name \"*.log.gz\" -type f -mmin +129600 | xargs rm"
+
+- name: install cronjob to delete empty log folders
+  become: true
+  cron:
+    user: admin
+    name: "empty log folder cleanup"
+    minute: "15"
+    job: "find /home/admin/logs/ -mindepth 1 -type d -empty | xargs -r rmdir"
+
+- name: create logs group
+  become: true
+  group:
+    name: logs
+    state: present
+
+- name: create a logs server user, a user dedicated to receiving log files
+  become: true
+  user:
+    name: logs
+    shell: /bin/bash
+    create_home: yes
+    append: yes
+    groups: logs
+
+
+- name: add the admin user to the logs group
+  become: true
+  user:
+    name: admin
+    append: yes
+    groups: logs
+
+- name: create and share /home/admin/logs with the log server user
+  become: true
+  file:
+    state: directory
+    path: /home/admin/logs
+    mode: "0730"
+    owner: admin
+    group: logs
+
+- name: create ssh folder for logs user
+  become: true
+  file:
+    state: directory
+    path: /home/logs/.ssh
+    mode: "0700"
+    owner: logs
+    group: logs
+
+- name: deploy public key to logs user
+  become: true
+  copy:
+    src: logs_user_authorized_keys
+    dest: /home/logs/.ssh/authorized_keys
+    mode: "0600"
+    owner: logs
+    group: logs
+

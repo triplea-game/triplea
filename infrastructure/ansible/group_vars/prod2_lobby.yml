@@ -1,1 +1,3 @@
 version: "2.1.20365"
+journalctl_applications: ["http_server"]
+

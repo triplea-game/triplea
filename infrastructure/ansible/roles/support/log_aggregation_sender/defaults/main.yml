@@ -1,0 +1,9 @@
+
+# Override this variable to specify which journalctl applications
+# should send logs to the log aggegration server.
+# For example, "bot@01 bot@02" would have on an hourly basis the
+# last hours worth of logs for the systemctl app 'bot@01' and 'bot@02'
+# being sent to the log aggregation server.
+
+journalctl_applications: [ ]
+

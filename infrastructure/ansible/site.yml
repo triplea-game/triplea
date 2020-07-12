@@ -11,6 +11,11 @@
     - system/firewall
     - system/security
 
+- hosts: support
+  tags: support
+  roles:
+    - support/log_aggregation_server
+
 - hosts: postgresHosts
   tags: [database, postgres]
   roles:
@@ -24,6 +29,7 @@
     - http_server
     - nginx
     - postfix
+    - support/log_aggregation_sender
 
 - hosts: letsEncrypt
   tags: lobby
@@ -40,4 +46,5 @@
   roles:
     - java
     - bot
+    - support/log_aggregation_sender
 

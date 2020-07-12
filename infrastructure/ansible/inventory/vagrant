@@ -10,3 +10,6 @@ vagrant
 [botHosts:children]
 vagrant
 
+[support:children]
+vagrant
+

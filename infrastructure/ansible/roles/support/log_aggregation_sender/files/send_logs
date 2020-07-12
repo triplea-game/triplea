@@ -1,0 +1,48 @@
+#!/bin/bash
+###
+### Sends the last hours worth of logs to a log aggregation server.
+### 
+### Usage:
+###    send_logs [journalctl_name] [log_server]
+### Example:
+###    send_logs bot@01 .ssh/logs_key_ed25519 logs@support01.triplea-game.org
+###      
+
+app_name="$1"
+key_file="$2"
+log_server="$3"
+
+function usage() {
+  sed -rn 's/^### ?//;T;p' "$0"
+}
+
+if [ -z "$log_server" ]; then
+  echo "Error: Missing arguments, received: '$@'"
+  usage
+  exit 1
+fi
+
+
+# This is the file where we will dump the last hours worth of logs
+log_file="$(date -d '-1 hour ago' -u "+%Y-%m-%d--%H").$(hostname).$app_name.log"
+
+# Touch the log file so that we have something to send always
+touch /tmp/$log_file
+
+# Grab the last hours worth of logs from journalctl and dump to file
+sudo journalctl \
+  --since "$(date -d '1 hour ago' -u "+%Y-%m-%d %H:00:00 UTC")" \
+  --until "$(date -d '1 hour ago' -u "+%Y-%m-%d %H:59:59 UTC")" \
+  -u "$app_name" > /tmp/$log_file
+
+
+# Create the folder on the remote server where we will send the log file
+log_folder_path="/home/admin/logs/$(date +%Y)/$(date +%m)/$(date +%d)"
+ssh -i "$key_file" "$log_server" "mkdir -p $log_folder_path"
+
+# Copy the log file to the remote server
+scp -i "$key_file" "/tmp/$log_file" "$log_server:$log_folder_path/$log_file"
+
+# Clean up locally
+rm /tmp/$log_file
+
