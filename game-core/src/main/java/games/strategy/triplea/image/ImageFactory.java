@@ -2,11 +2,9 @@ package games.strategy.triplea.image;
 
 import games.strategy.triplea.ResourceLoader;
 import java.awt.Image;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 
 /**
  * Superclass for all image factories.
@@ -41,11 +39,7 @@ public class ImageFactory {
         images.put(key, null);
         return null;
       }
-      try {
-        images.put(key, ImageIO.read(url));
-      } catch (final IOException e) {
-        throw new IllegalStateException(e);
-      }
+      images.put(key, ImageLoader.getImage(url));
     }
     return images.get(key);
   }
