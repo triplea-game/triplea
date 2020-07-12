@@ -11,12 +11,12 @@ import javax.swing.ImageIcon;
 /** Contains common methods for image factories. */
 public abstract class AbstractImageFactory {
 
-  private final Map<String, ImageIcon> icons = new HashMap<>();
+  private final Map<String, Image> images = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
-    icons.clear();
+    images.clear();
   }
 
   protected abstract String getFileNameBase();
@@ -37,12 +37,6 @@ public abstract class AbstractImageFactory {
    */
   public ImageIcon getIcon(final NamedAttachable type, final boolean large) {
     final String fullName = type.getName() + (large ? "_large" : "");
-    if (icons.containsKey(fullName)) {
-      return icons.get(fullName);
-    }
-    final Image img = getBaseImage(fullName);
-    final ImageIcon icon = new ImageIcon(img);
-    icons.put(fullName, icon);
-    return icon;
+    return new ImageIcon(images.computeIfAbsent(fullName, this::getBaseImage));
   }
 }
