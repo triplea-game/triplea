@@ -162,7 +162,7 @@ public class GameChooser extends JDialog {
     final String mapNameDir = data.getProperties().get("mapName", "");
     appendListItem("Map Name", mapNameDir, notes);
     appendListItem("Number Of Players", data.getPlayerList().size() + "", notes);
-    appendListItem("Location", gameChooserEntry.getLocation() + "", notes);
+    appendListItem("Location", gameChooserEntry.getUri() + "", notes);
     appendListItem("Version", data.getGameVersion() + "", notes);
     notes.append("<p></p>");
     final String trimmedNotes = data.getProperties().get("notes", "").trim();
