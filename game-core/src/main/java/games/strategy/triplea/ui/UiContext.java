@@ -109,6 +109,10 @@ public class UiContext {
 
   UiContext() {}
 
+  public static void setResourceLoader(final GameData gameData) {
+    resourceLoader = ResourceLoader.getMapResourceLoader(getDefaultMapDir(gameData));
+  }
+
   protected void internalSetMapDir(final String dir, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
