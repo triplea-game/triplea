@@ -63,6 +63,9 @@ public class UiContext {
   private static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
 
   protected MapData mapData;
+  @Getter @Setter protected LocalPlayers localPlayers;
+
+  @Getter protected double scale = 1;
   private final TileImageFactory tileImageFactory = new TileImageFactory();
   private UnitImageFactory unitImageFactory;
   private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
@@ -77,10 +80,6 @@ public class UiContext {
   private boolean drawTerritoryEffects = false;
 
   @Getter private Cursor cursor = Cursor.getDefaultCursor();
-
-  @Getter @Setter protected LocalPlayers localPlayers;
-
-  @Getter protected double scale = 1;
 
   @Getter private boolean isShutDown = false;
 
