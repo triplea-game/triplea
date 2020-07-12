@@ -24,7 +24,7 @@ fi
 
 
 # This is the file where we will dump the last hours worth of logs
-log_file="$(date -d '-1 hour ago' -u "+%Y-%m-%d--%H").$(hostname).$app_name.log"
+log_file="$(date -d '-1 hour' -u "+%Y-%m-%d--%H").$(hostname).$app_name.log"
 
 # Touch the log file so that we have something to send always
 touch "/tmp/$log_file"
