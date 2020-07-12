@@ -13,10 +13,11 @@
     - system/security
 
 - hosts: postgresHosts
-  tags: [database, postgres]
   roles:
-    - database/postgres
-    - database/flyway
+    - name: database/postgres
+      tags: database
+    - name: database/flyway
+      tags: flyway
 
 - hosts: dropwizardHosts
   tags: lobby
