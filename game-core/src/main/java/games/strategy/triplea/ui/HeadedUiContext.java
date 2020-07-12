@@ -68,7 +68,7 @@ public class HeadedUiContext implements UiContext {
   private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
       new TerritoryEffectImageFactory();
-  private final MapImage mapImage;
+  private final MapImage mapImage = new MapImage();
   private final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
   private DiceImageFactory diceImageFactory;
@@ -93,9 +93,7 @@ public class HeadedUiContext implements UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  HeadedUiContext() {
-    mapImage = new MapImage();
-  }
+  HeadedUiContext() {}
 
   protected void internalSetMapDir(final String dir, final GameData data) {
     if (resourceLoader != null) {
