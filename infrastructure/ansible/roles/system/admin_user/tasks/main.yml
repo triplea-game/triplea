@@ -11,7 +11,7 @@
     shell: /bin/bash
     create_home: yes
     append: yes
-    groups: admin
+    groups: admin,adm
 
 - name: Allow the admin user to have passwordless sudo
   become: true

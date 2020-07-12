@@ -10,6 +10,9 @@ dropwizardHosts
 [postgresHosts:children]
 dropwizardHosts
 
+[support]
+support01.triplea-game.org
+
 [botHosts]
 prod2-bot05.triplea-game.org  bot_prefix=5 bot_name=Texas
 prod2-bot06.triplea-game.org  bot_prefix=6 bot_name=California
