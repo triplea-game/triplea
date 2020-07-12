@@ -572,6 +572,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitCanEvade();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
 
@@ -592,11 +594,13 @@ public class BattleStepsTest {
   void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitCanEvade();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
 
     final List<String> steps =
         newStepBuilder()
@@ -618,6 +622,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitCanEvade();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
 
     final List<String> steps =
@@ -674,6 +680,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenUnitTransport();
     final Unit unit2 = givenAnyUnit();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
     final List<String> steps =
@@ -696,6 +704,8 @@ public class BattleStepsTest {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     final Unit unit1 = unitAndAttachment.unit;
     final Unit unit2 = givenAnyUnit();
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
@@ -718,6 +728,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitTransport();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
     final List<String> steps =
@@ -740,6 +752,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenAnyUnit();
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     final Unit unit2 = unitAndAttachment.unit;
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
@@ -875,41 +889,6 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true and attacker destroyers")
-  void defendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitDestroyer();
-    final Unit unit2 = givenUnitFirstStrikeAndEvade();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + FIRE,
-                defender.getName() + SELECT_CASUALTIES,
-                defender.getName() + FIRST_STRIKE_UNITS_FIRE,
-                attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_CASUALTIES)));
-  }
-
-  @Test
   @DisplayName("Verify defender firstStrike with WW2v2 true")
   void defendingFirstStrikeWithWW2v2() {
     givenPlayers();
@@ -971,7 +950,6 @@ public class BattleStepsTest {
             List.of(
                 defender.getName() + FIRST_STRIKE_UNITS_FIRE,
                 attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker.getName() + FIRE,
                 defender.getName() + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES)));
@@ -1016,6 +994,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
@@ -1043,47 +1023,6 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking/defender firstStrikes with "
-          + "DEFENDING_SUBS_SNEAK_ATTACK true and attacker/defender destroyers")
-  void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitFirstStrike();
-    final Unit unit2 = givenUnitFirstStrikeAndEvade();
-    final Unit unit3 = givenUnitDestroyer();
-    final Unit unit4 = givenUnitDestroyer();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2, unit4))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
-                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                attacker.getName() + FIRE,
-                defender.getName() + SELECT_CASUALTIES,
-                defender.getName() + FIRST_STRIKE_UNITS_FIRE,
-                attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender.getName() + FIRE,
-                attacker.getName() + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES)));
-  }
-
-  @Test
   @DisplayName("Verify attacking/defender firstStrikes with WW2v2 true")
   void attackingDefendingFirstStrikeWithWW2v2() {
     givenPlayers();
@@ -1092,6 +1031,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1129,6 +1070,8 @@ public class BattleStepsTest {
     final Unit unit3 = givenUnitDestroyer();
     final Unit unit4 = givenUnitDestroyer();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1168,6 +1111,8 @@ public class BattleStepsTest {
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
@@ -1196,45 +1141,6 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking/defender firstStrikes with "
-          + "DEFENDING_SUBS_SNEAK_ATTACK true and attacking destroyers")
-  void attackingDefendingFirstStrikeWithSneakAttackAllowedAndAttackingDestroyers() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnitFirstStrikeAndEvade();
-    final Unit unit2 = givenUnitFirstStrikeAndEvade();
-    final Unit unit3 = givenUnitDestroyer();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
-                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker.getName() + FIRE,
-                defender.getName() + SELECT_CASUALTIES,
-                defender.getName() + FIRST_STRIKE_UNITS_FIRE,
-                attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_CASUALTIES)));
-  }
-
-  @Test
   @DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and defender destroyers")
   void attackingDefendingFirstStrikeWithWW2v2AndDefendingDestroyers() {
     givenPlayers();
@@ -1244,6 +1150,8 @@ public class BattleStepsTest {
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1280,6 +1188,8 @@ public class BattleStepsTest {
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1314,6 +1224,8 @@ public class BattleStepsTest {
     final Unit unit2 = givenUnitIsAir();
     final Unit unit1 = givenUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(unit2.getType());
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1349,6 +1261,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1367,7 +1281,6 @@ public class BattleStepsTest {
             List.of(
                 attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
                 defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
                 defender.getName() + FIRE,
                 attacker.getName() + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES)));
@@ -1382,6 +1295,8 @@ public class BattleStepsTest {
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1419,6 +1334,8 @@ public class BattleStepsTest {
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -1437,7 +1354,6 @@ public class BattleStepsTest {
             List.of(
                 defender.getName() + FIRST_STRIKE_UNITS_FIRE,
                 attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker.getName() + FIRE,
                 defender.getName() + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,
@@ -1530,7 +1446,6 @@ public class BattleStepsTest {
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
@@ -1651,6 +1566,10 @@ public class BattleStepsTest {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     final Unit unit2 = unitAndAttachment.unit;
 
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     final List<String> steps =
@@ -1790,8 +1709,6 @@ public class BattleStepsTest {
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1820,7 +1737,7 @@ public class BattleStepsTest {
     final Unit unit3 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1872,7 +1789,6 @@ public class BattleStepsTest {
     final Unit unit3 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1897,7 +1813,11 @@ public class BattleStepsTest {
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenAnyUnit();
 
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
     final List<String> steps =
         newStepBuilder()
@@ -1925,7 +1845,7 @@ public class BattleStepsTest {
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1951,7 +1871,6 @@ public class BattleStepsTest {
     final Unit unit2 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1978,7 +1897,10 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenAnyUnit();
+    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+        .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
@@ -2006,7 +1928,6 @@ public class BattleStepsTest {
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -2035,7 +1956,6 @@ public class BattleStepsTest {
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);

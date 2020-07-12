@@ -1,8 +1,10 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
+import static games.strategy.triplea.Constants.WW2V2;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
@@ -35,7 +37,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class OffensiveSubsRetreatTest {
+public class OffensiveSubsRetreatTest {
 
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;
@@ -323,7 +325,7 @@ class OffensiveSubsRetreatTest {
     verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), any());
   }
 
-  static class MockGameData {
+  public static class MockGameData {
     private final GameData gameData = mock(GameData.class);
     private final GameProperties gameProperties = mock(GameProperties.class);
 
@@ -331,26 +333,36 @@ class OffensiveSubsRetreatTest {
       lenient().when(gameData.getProperties()).thenReturn(gameProperties);
     }
 
-    static MockGameData givenGameData() {
+    public static MockGameData givenGameData() {
       return new MockGameData();
     }
 
-    GameData build() {
+    public GameData build() {
       return gameData;
     }
 
-    MockGameData withTransportCasualtiesRestricted(final boolean value) {
+    public MockGameData withTransportCasualtiesRestricted(final boolean value) {
       when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(value);
       return this;
     }
 
-    MockGameData withSubmersibleSubs(final boolean value) {
+    public MockGameData withSubmersibleSubs(final boolean value) {
       when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(value);
       return this;
     }
 
-    MockGameData withSubRetreatBeforeBattle(final boolean value) {
+    public MockGameData withSubRetreatBeforeBattle(final boolean value) {
       when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(value);
+      return this;
+    }
+
+    public MockGameData withWW2V2(final boolean value) {
+      when(gameProperties.get(WW2V2, false)).thenReturn(value);
+      return this;
+    }
+
+    public MockGameData withDefendingSubsSneakAttack(final boolean value) {
+      when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(value);
       return this;
     }
   }
