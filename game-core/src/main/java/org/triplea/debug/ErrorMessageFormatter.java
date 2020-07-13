@@ -26,7 +26,7 @@ class ErrorMessageFormatter implements Function<LogRecord, String> {
                 + JEditorPaneWithClickableLinks.toLink(
                     "please report it to TripleA ", UrlConstants.GITHUB_ISSUES)
             : "";
-    return TextUtils.textToHtml(baseMessage + additionalMessageForWarnings);
+    return "<html>" + TextUtils.textToHtml(baseMessage) + additionalMessageForWarnings + "</html>";
   }
 
   /**
