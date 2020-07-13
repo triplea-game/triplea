@@ -76,6 +76,26 @@ class UnitSeparatorTest {
     assertEquals(expected, categories);
   }
 
+  @Test
+  void ignoreKilledUnitsInSorting() {
+    final GameData data = TestMapGameData.TWW.getGameData();
+    final Territory northernGermany = territory("Northern Germany", data);
+    northernGermany.getUnitCollection().clear();
+    final GamePlayer italians = GameDataTestUtil.italy(data);
+    final List<Unit> units =
+        new ArrayList<>(GameDataTestUtil.italianInfantry(data).create(1, italians));
+    units.get(0).setHits(1);
+    final GamePlayer british = GameDataTestUtil.britain(data);
+    units.addAll(new ArrayList<>(GameDataTestUtil.britishInfantry(data).create(1, british)));
+    GameDataTestUtil.addTo(northernGermany, units);
+    when(mockMapData.shouldDrawUnit(ArgumentMatchers.anyString())).thenReturn(true);
+    final List<UnitCategory> categories =
+        UnitSeparator.getSortedUnitCategories(northernGermany, mockMapData);
+    final List<UnitCategory> expected = new ArrayList<>();
+    expected.add(newUnitCategory("britishInfantry", british, data));
+    assertEquals(expected, categories);
+  }
+
   private static UnitCategory newUnitCategory(
       final String unitName, final GamePlayer player, final GameData data) {
     return new UnitCategory(new UnitType(unitName, data), player);

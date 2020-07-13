@@ -101,6 +101,10 @@ public class UnitSeparator {
       categories = new LinkedHashMap<>();
     }
     for (final Unit current : units) {
+      if (current.getUnitAttachment().getHitPoints() - current.getHits() == 0) {
+        continue;
+      }
+
       BigDecimal unitMovement = new BigDecimal(-1);
       if (categorizeMovement
           || (categorizeTrnMovement && Matches.unitIsTransport().test(current))) {
