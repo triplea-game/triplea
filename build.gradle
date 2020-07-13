@@ -36,7 +36,7 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
 }
 
 allprojects {
-    apply plugin: 'com.diffplug.gradle.spotless'
+    apply plugin: 'com.diffplug.spotless'
     spotless {
         groovyGradle {
             target '*.gradle', 'gradle/**/*.gradle'
