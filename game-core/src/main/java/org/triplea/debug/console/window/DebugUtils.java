@@ -13,7 +13,7 @@ import java.util.Properties;
  * A collection of methods that provide information about the JVM state that may be useful for
  * debugging.
  */
-final class DebugUtils {
+public final class DebugUtils {
   private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
 
   private DebugUtils() {}

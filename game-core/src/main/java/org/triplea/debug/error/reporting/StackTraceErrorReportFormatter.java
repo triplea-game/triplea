@@ -39,6 +39,7 @@ class StackTraceErrorReportFormatter
             buildBody(
                 errorReportRequestParams.getUserDescription(),
                 errorReportRequestParams.getMapName(),
+                errorReportRequestParams.getMemoryStatistics(),
                 errorReportRequestParams.getLogRecord()))
         .gameVersion(versionSupplier.get())
         .build();
@@ -141,6 +142,7 @@ class StackTraceErrorReportFormatter
   private String buildBody(
       @Nullable final String userDescription,
       @Nullable final String mapName,
+      final String memoryStatistics,
       final LogRecord logRecord) {
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
             .map(description -> "## User Description\n" + description + "\n\n")
@@ -159,6 +161,9 @@ class StackTraceErrorReportFormatter
         + "\n\n"
         + "## Operating System\n"
         + SystemProperties.getOperatingSystem()
+        + "\n\n"
+        + "## Memory\n"
+        + memoryStatistics
         + "\n\n"
         + Optional.ofNullable(logRecord.getThrown())
             .map(StackTraceErrorReportFormatter::throwableToString)
