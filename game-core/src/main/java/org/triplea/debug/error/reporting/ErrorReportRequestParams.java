@@ -10,6 +10,6 @@ import lombok.Value;
 @Builder
 class ErrorReportRequestParams {
   @Nonnull private final String userDescription;
-  @Nonnull private final String mapName;
+  private final String mapName;
   @Nonnull private final LogRecord logRecord;
 }
