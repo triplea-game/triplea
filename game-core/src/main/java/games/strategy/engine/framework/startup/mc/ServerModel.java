@@ -42,6 +42,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.BindException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -479,8 +480,16 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
       serverSetupModel.onServerMessengerCreated(this, gameHostingResponse);
-    } catch (final IOException ioe) {
-      log.log(Level.SEVERE, "Unable to create server socket", ioe);
+    } catch (final BindException e) {
+      log.log(
+          Level.WARNING,
+          "Could not open network port, please close any other TripleA games you are\n"
+              + "hosting or choose a different network port. If that is not the problem\n"
+              + "then check your firewall rules.",
+          e);
+      cancel();
+    } catch (final IOException e) {
+      log.log(Level.SEVERE, "Unable to create server socket.", e);
       cancel();
     }
   }
