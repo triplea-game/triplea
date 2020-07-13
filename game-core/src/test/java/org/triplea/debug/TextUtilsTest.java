@@ -12,19 +12,19 @@ final class TextUtilsTest {
   final class TextToHtmlTest {
     @Test
     void shouldEmbedTextInHtmlElement() {
-      assertThat(textToHtml("test"), is("<html>test</html>"));
+      assertThat(textToHtml("test"), is("test"));
     }
 
     @Test
     void shouldEscapeHtmlMetacharacters() {
-      assertThat(textToHtml("abc<>&\"'123"), is("<html>abc&lt;&gt;&amp;&quot;&#39;123</html>"));
+      assertThat(textToHtml("abc<>&\"'123"), is("abc&lt;&gt;&amp;&quot;&#39;123"));
     }
 
     @Test
     void shouldReplaceLineSeparatorsWithBreakElement() {
       assertThat(
           textToHtml("a" + System.lineSeparator() + "b" + System.lineSeparator() + "c"),
-          is("<html>a<br/>b<br/>c</html>"));
+          is("a<br/>b<br/>c"));
     }
   }
 }
