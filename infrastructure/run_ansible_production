@@ -23,7 +23,6 @@ ansible-vault view \
 
 # Run deployment
 ansible-playbook \
-    --skip-tags database \
     --vault-password-file vault_password \
     "$@" \
     -i ansible/inventory/prod2 \

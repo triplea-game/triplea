@@ -27,6 +27,7 @@
 - name: Set postgres user password
   become: true
   become_user: postgres
+  no_log: true
   postgresql_user:
     name: postgres
     login_password: "{{ postgres_user_db_password }}"
@@ -42,7 +43,9 @@
     login_password: "{{ item.password }}"
     encrypted: yes
     state: "present"
-  with_items: "{{ databases }}"
+  loop: "{{ databases }}"
+  loop_control:
+    label: "{{ item.user }}"
 
 - name: Create application databases
   become: true
@@ -50,7 +53,9 @@
   postgresql_db:
     name: "{{ item.name }}"
     owner: "{{ item.user }}"
-  with_items: "{{ databases }}"
+  loop: "{{ databases }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Ensure user has access to the database
   become: true
@@ -64,7 +69,9 @@
     priv: "ALL"
     role_attr_flags: NOSUPERUSER,NOCREATEDB
     state: "present"
-  with_items: "{{ databases }}"
+  loop: "{{ databases }}"
+  loop_control:
+    label: "{{ item.name }} {{ item.user }}"
 
 # This is a hack because the previous tasks were supposed to set
 # the DB level password for our DB user, but it typically does not.
@@ -77,4 +84,7 @@
   environment:
     PGPASSWORD: "{{ item.password }}"
   changed_when: false
-  with_items: "{{ databases }}"
+  loop: "{{ databases }}"
+  loop_control:
+    label: "{{ item.user }}"
+
