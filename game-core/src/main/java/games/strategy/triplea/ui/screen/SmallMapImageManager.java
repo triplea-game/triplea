@@ -61,6 +61,8 @@ public class SmallMapImageManager {
     final Image largeImage = Util.newImage(bounds.width, bounds.height, true);
     // make it transparent
     // http://www-106.ibm.com/developerworks/library/j-begjava/
+    // Once the image is transparent, we will be drawing the territory shape and filling
+    // the territory polygon. Any remaining edges will be transparent.
     {
       final Graphics2D g = (Graphics2D) largeImage.getGraphics();
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
@@ -71,15 +73,16 @@ public class SmallMapImageManager {
     // draw the territory
     {
       final Graphics2D g = (Graphics2D) largeImage.getGraphics();
-      g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+      g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
       g.setRenderingHint(
-          RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+          RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
       g.setRenderingHint(
-          RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+          RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
       final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
       drawable.draw(bounds, data, g, mapData, mapData.getSmallMapTerritorySaturation());
       g.dispose();
     }
+
     // scale it down
     int thumbWidth = (int) (bounds.width * view.getRatioX());
     int thumbHeight = (int) (bounds.height * view.getRatioY());
