@@ -1,5 +1,8 @@
 package org.triplea.debug.error.reporting;
 
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.ui.UiContext;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -27,7 +30,10 @@ class StackTraceReportModel {
     return formatter.apply(
         ErrorReportRequestParams.builder()
             .userDescription(view.readUserDescription())
-            .mapName(view.readMapName())
+            .mapName(
+                Optional.ofNullable(UiContext.getResourceLoader())
+                    .map(ResourceLoader::getMapName)
+                    .orElse(null))
             .logRecord(stackTraceRecord)
             .build());
   }

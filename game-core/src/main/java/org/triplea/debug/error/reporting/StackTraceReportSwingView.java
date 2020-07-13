@@ -5,17 +5,14 @@ import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.JTextAreaBuilder;
-import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 class StackTraceReportSwingView implements StackTraceReportView {
@@ -36,11 +33,6 @@ class StackTraceReportSwingView implements StackTraceReportView {
 
   private final JTextArea userDescriptionField =
       JTextAreaBuilder.builder().toolTip(HELP_TEXT).build();
-
-  private final JTextField mapNameField =
-      new JTextFieldBuilder()
-          .toolTip("If you are in-game, enter the name of the map you are playing")
-          .build();
 
   private final JButton submitButton =
       new JButtonBuilder()
@@ -86,14 +78,7 @@ class StackTraceReportSwingView implements StackTraceReportView {
                                 .build())
                         .build())
                 .addCenter(userDescriptionField)
-                .addSouth(
-                    new JPanelBuilder()
-                        .border(5)
-                        .borderLayout()
-                        .addNorth(new JLabel("If in-game, which map are you playing?"))
-                        .addCenter(mapNameField)
-                        .addSouth(buttonPanel())
-                        .build())
+                .addSouth(buttonPanel())
                 .build());
   }
 
@@ -140,10 +125,5 @@ class StackTraceReportSwingView implements StackTraceReportView {
   @Override
   public String readUserDescription() {
     return userDescriptionField.getText();
-  }
-
-  @Override
-  public String readMapName() {
-    return mapNameField.getText();
   }
 }

@@ -61,7 +61,6 @@ class StackTraceReportModelTest {
 
     private void givenUploadSuccessResult(final boolean result) {
       when(stackTraceReportView.readUserDescription()).thenReturn(STRING_VALUE);
-      when(stackTraceReportView.readMapName()).thenReturn("mapName");
       when(formatter.apply(any())).thenReturn(errorReport);
       when(uploader.test(errorReport)).thenReturn(result);
     }
@@ -79,7 +78,6 @@ class StackTraceReportModelTest {
   @Test
   void preview() {
     when(stackTraceReportView.readUserDescription()).thenReturn(STRING_VALUE);
-    when(stackTraceReportView.readMapName()).thenReturn("mapName");
     when(formatter.apply(any())).thenReturn(errorReport);
 
     viewModel.previewAction();
