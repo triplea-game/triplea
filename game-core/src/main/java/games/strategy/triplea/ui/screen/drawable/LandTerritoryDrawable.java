@@ -37,19 +37,19 @@ public class LandTerritoryDrawable extends TerritoryDrawable {
       final MapData mapData,
       final float saturation) {
     final Territory territory = data.getMap().getTerritory(territoryName);
-    Color territoryColor;
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta != null && ta.getIsImpassable()) {
-      territoryColor = mapData.impassableColor();
-    } else {
-      territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
-    }
+
+    final Color territoryColor = (ta != null && ta.getIsImpassable())
+        ? mapData.impassableColor()
+        : mapData.getPlayerColor(territory.getOwner().getName());
+
     final float[] values =
         Color.RGBtoHSB(
             territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), null);
     values[1] = values[1] * saturation;
-    territoryColor = Color.getHSBColor(values[0], values[1], values[2]);
-    draw(bounds, graphics, mapData, territory, territoryColor);
+
+    final Color territoryHsbColor = Color.getHSBColor(values[0], values[1], values[2]);
+    draw(bounds, graphics, mapData, territory, territoryHsbColor);
   }
 
   @Override
