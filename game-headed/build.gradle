@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'com.install4j.gradle' version '8.0.7'
-    id 'de.undercouch.download' version '4.1.0'
+    id 'de.undercouch.download' version '4.1.1'
 }
 
 archivesBaseName = "$group-$name"
