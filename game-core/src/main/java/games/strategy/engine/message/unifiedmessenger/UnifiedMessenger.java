@@ -72,8 +72,8 @@ public class UnifiedMessenger {
 
   private void messengerInvalid(final Throwable cause) {
     synchronized (pendingLock) {
-      final Set<UUID> pendingInvocationsUUIDs = Set.copyOf(pendingInvocations.keySet());
-      for (final UUID id : pendingInvocationsUUIDs) {
+      final Set<UUID> pendingInvocationsKeySet = Set.copyOf(pendingInvocations.keySet());
+      for (final UUID id : pendingInvocationsKeySet) {
         final CountDownLatch latch = pendingInvocations.remove(id);
         latch.countDown();
         results.put(id, new RemoteMethodCallResults(cause));
