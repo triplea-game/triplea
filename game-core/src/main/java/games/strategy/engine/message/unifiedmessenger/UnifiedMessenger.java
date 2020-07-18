@@ -72,7 +72,7 @@ public class UnifiedMessenger {
 
   private void messengerInvalid(final Throwable cause) {
     synchronized (pendingLock) {
-      Set<UUID> pendingInvocationsUUIDs = Set.copyOf(pendingInvocations.keySet());
+      final Set<UUID> pendingInvocationsUUIDs = Set.copyOf(pendingInvocations.keySet());
       for (final UUID id : pendingInvocationsUUIDs) {
         final CountDownLatch latch = pendingInvocations.remove(id);
         latch.countDown();
