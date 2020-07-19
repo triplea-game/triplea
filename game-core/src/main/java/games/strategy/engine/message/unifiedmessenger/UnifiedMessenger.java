@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -71,7 +72,8 @@ public class UnifiedMessenger {
 
   private void messengerInvalid(final Throwable cause) {
     synchronized (pendingLock) {
-      for (final UUID id : pendingInvocations.keySet()) {
+      final Set<UUID> pendingInvocationsKeySet = Set.copyOf(pendingInvocations.keySet());
+      for (final UUID id : pendingInvocationsKeySet) {
         final CountDownLatch latch = pendingInvocations.remove(id);
         latch.countDown();
         results.put(id, new RemoteMethodCallResults(cause));
