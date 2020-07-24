@@ -536,15 +536,7 @@ public class MapData {
   private static void verifyKeys(
       final GameData data, final Set<String> keys, final String dataTypeForErrorMessage) {
     final StringBuilder errors = new StringBuilder();
-    final Iterator<String> iter = keys.iterator();
-    while (iter.hasNext()) {
-      final String name = iter.next();
-      final Territory terr = data.getMap().getTerritory(name);
-      // allow loading saved games with missing territories; just ignore them
-      if (terr == null) {
-        iter.remove();
-      }
-    }
+
     for (final Territory terr : data.getMap().getTerritories()) {
       if (!keys.contains(terr.getName())) {
         errors
