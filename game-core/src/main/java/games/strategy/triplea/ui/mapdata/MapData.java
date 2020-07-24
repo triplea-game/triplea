@@ -528,15 +528,15 @@ public class MapData {
   }
 
   public void verify(final GameData data) {
-    verifyKeys(data, centers, "centers");
-    verifyKeys(data, polys, "polygons");
-    verifyKeys(data, place, "place");
+    verifyKeys(data, centers.keySet(), "centers");
+    verifyKeys(data, polys.keySet(), "polygons");
+    verifyKeys(data, place.keySet(), "place");
   }
 
   private static void verifyKeys(
-      final GameData data, final Map<String, ?> map, final String dataTypeForErrorMessage) {
+      final GameData data, final Set<String> keys, final String dataTypeForErrorMessage) {
     final StringBuilder errors = new StringBuilder();
-    final Iterator<String> iter = map.keySet().iterator();
+    final Iterator<String> iter = keys.iterator();
     while (iter.hasNext()) {
       final String name = iter.next();
       final Territory terr = data.getMap().getTerritory(name);
@@ -545,9 +545,8 @@ public class MapData {
         iter.remove();
       }
     }
-    final Set<String> keySet = map.keySet();
     for (final Territory terr : data.getMap().getTerritories()) {
-      if (!keySet.contains(terr.getName())) {
+      if (!keys.contains(terr.getName())) {
         errors
             .append("No data of type ")
             .append(dataTypeForErrorMessage)
