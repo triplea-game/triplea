@@ -22,6 +22,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.triplea.ui.menubar.help.UnitStatsTable;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -379,7 +380,7 @@ final class ExportMenu extends JMenu {
     try (Writer writer =
         Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(
-          HelpMenu.getUnitStatsTable(gameData, uiContext)
+          UnitStatsTable.getUnitStatsTable(gameData, uiContext)
               .replaceAll("</?p>|</tr>", "$0\r\n")
               .replaceAll("(?i)<img[^>]+/>", ""));
     } catch (final IOException e1) {
