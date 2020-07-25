@@ -30,9 +30,6 @@ public final class HelpMenu extends JMenu {
 
     menu.addSeparator();
 
-    menu.add(AboutMenu.buildMenu(gameData.getGameName(), gameData.getGameVersion()))
-        .setMnemonic(KeyEvent.VK_A);
-
     menu.add(BugReportMenu.buildMenu()).setMnemonic(KeyEvent.VK_B);
 
     return menu;

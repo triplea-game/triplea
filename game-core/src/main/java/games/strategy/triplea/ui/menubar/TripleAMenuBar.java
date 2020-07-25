@@ -32,7 +32,7 @@ public final class TripleAMenuBar extends JMenuBar {
 
     add(new WebHelpMenu());
     add(new DebugMenu(frame));
-    add(new HelpMenu(frame.getUiContext(), frame.getGame().getData()));
+    add(HelpMenu.buildMenu(frame.getUiContext(), frame.getGame().getData()));
   }
 
   private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {
