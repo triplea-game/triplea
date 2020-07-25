@@ -103,15 +103,13 @@ public class UnitStatsTable {
     }
     final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
     all.removeAll(unitsSoFar);
+    unitTypes.put(
+        GamePlayer.NULL_PLAYERID,
+        getPlayerUnitsWithImages(GamePlayer.NULL_PLAYERID, data, uiContext));
+    unitsSoFar.addAll(unitTypes.get(GamePlayer.NULL_PLAYERID));
+    all.removeAll(unitsSoFar);
     if (!all.isEmpty()) {
-      unitTypes.put(
-          GamePlayer.NULL_PLAYERID,
-          getPlayerUnitsWithImages(GamePlayer.NULL_PLAYERID, data, uiContext));
-      unitsSoFar.addAll(unitTypes.get(GamePlayer.NULL_PLAYERID));
-      all.removeAll(unitsSoFar);
-      if (!all.isEmpty()) {
-        unitTypes.put(null, new ArrayList<>(all));
-      }
+      unitTypes.put(null, new ArrayList<>(all));
     }
     return unitTypes;
   }
