@@ -202,6 +202,10 @@ public class UnitImageFactory {
     return (int) (scaleFactor * unitCounterOffsetHeight);
   }
 
+  public boolean hasImage(final ImageKey imageKey) {
+    return images.containsKey(imageKey) || getBaseImageUrl(imageKey).isPresent();
+  }
+
   /** Return the appropriate unit image. */
   public Optional<Image> getImage(final ImageKey imageKey) {
     return Optional.ofNullable(images.get(imageKey))

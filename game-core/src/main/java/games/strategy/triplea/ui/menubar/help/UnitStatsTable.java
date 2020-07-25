@@ -147,10 +147,9 @@ public class UnitStatsTable {
       if (!unitTypes.contains(ut)) {
         try {
           final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
-          if (imageFactory != null) {
-            imageFactory
-                .getImage(ImageKey.builder().player(player).type(ut).build())
-                .ifPresent(image -> unitTypes.add(ut));
+          if (imageFactory != null
+              && imageFactory.hasImage(ImageKey.builder().player(player).type(ut).build())) {
+            unitTypes.add(ut);
           }
         } catch (final Exception e) {
           log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);
