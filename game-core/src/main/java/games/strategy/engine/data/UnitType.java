@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import lombok.extern.java.Log;
 
 /** A prototype for units. */
-@Log
 public class UnitType extends NamedAttachable {
   private static final long serialVersionUID = 4885339076798905247L;
 
