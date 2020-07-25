@@ -13,4 +13,3 @@
 ./drop_db
 ./run_flyway
 ./load_sample_data
-

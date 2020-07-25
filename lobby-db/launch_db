@@ -15,7 +15,7 @@ function main() {
   echo "Running flyway migrations..."
   "$path/run_flyway"
   echo ""
-  
+
   echo "Loading Sample data..."
   "$path/load_sample_data"
 }

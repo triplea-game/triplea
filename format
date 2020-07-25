@@ -8,4 +8,3 @@ find . -name "*.md" -type f  | while read -r file; do
   # Combine multiple blanks lines together into a single
   sed -i '/^$/N;/^\n$/D' "$file"
 done
-

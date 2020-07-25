@@ -191,4 +191,3 @@ not cascade to the front-end clients.
   - add a dummy select query so that JDBI sees the interface as valid
   - pass the needed DAO objects as parameters to the default method
   - use mockito mocks to test the method
-
