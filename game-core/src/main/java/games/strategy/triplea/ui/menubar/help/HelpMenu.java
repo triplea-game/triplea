@@ -13,7 +13,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
 @UtilityClass
-public final class HelpMenu extends JMenu {
+public final class HelpMenu {
   private static final Action bugReportMenu =
       SwingAction.of(
           "Send Bug Report",
