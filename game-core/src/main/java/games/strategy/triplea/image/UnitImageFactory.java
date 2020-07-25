@@ -228,14 +228,9 @@ public class UnitImageFactory {
                         }));
   }
 
-  public Optional<URL> getBaseImageUrl(final String baseImageName, final GamePlayer gamePlayer) {
-    return getBaseImageUrl(baseImageName, gamePlayer, resourceLoader);
-  }
-
-  private static Optional<URL> getBaseImageUrl(
-      final String baseImageName,
-      final GamePlayer gamePlayer,
-      final ResourceLoader resourceLoader) {
+  public Optional<URL> getBaseImageUrl(final ImageKey imageKey) {
+    final String baseImageName = imageKey.getBaseImageName();
+    final GamePlayer gamePlayer = imageKey.getPlayer();
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + gamePlayer.getName() + "/" + baseImageName + ".png";
     final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
@@ -244,11 +239,10 @@ public class UnitImageFactory {
   }
 
   private Optional<Image> getTransformedImage(final ImageKey imageKey) {
-    final String baseImageName = imageKey.getBaseImageName();
     final GamePlayer gamePlayer = imageKey.getPlayer();
     final UnitType type = imageKey.getType();
 
-    final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, gamePlayer);
+    final Optional<URL> imageLocation = getBaseImageUrl(imageKey);
     Image image = null;
     if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());

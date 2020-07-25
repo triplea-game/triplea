@@ -168,9 +168,11 @@ public class UnitStatsTable {
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    final Optional<URL> imageUrl = unitImageFactory.getBaseImageUrl(unitType.getName(), player);
-    final String imageLocation = imageUrl.map(Object::toString).orElse("");
-
+    final String imageLocation =
+        unitImageFactory
+            .getBaseImageUrl(ImageKey.builder().type(unitType).player(player).build())
+            .map(Object::toString)
+            .orElse("");
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
   }
 }
