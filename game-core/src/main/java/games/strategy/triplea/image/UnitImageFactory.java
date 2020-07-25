@@ -323,14 +323,7 @@ public class UnitImageFactory {
 
   public Dimension getImageDimensions(final ImageKey imageKey) {
     final Image baseImage =
-        getTransformedImage(imageKey)
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "No image for unit type: "
-                            + imageKey.getType()
-                            + ", player: "
-                            + imageKey.getPlayer()));
+        getTransformedImage(imageKey).orElseThrow(() -> new MissingImageException(imageKey));
     final int width = (int) (baseImage.getWidth(null) * scaleFactor);
     final int height = (int) (baseImage.getHeight(null) * scaleFactor);
     return new Dimension(width, height);
