@@ -46,7 +46,7 @@ public class UnitImageFactory {
   private final int unitCounterOffsetWidth;
   private final int unitCounterOffsetHeight;
   // maps Point -> image
-  private final Map<String, Image> images = new HashMap<>();
+  private final Map<ImageKey, Image> images = new HashMap<>();
   // maps Point -> Icon
   private final Map<String, ImageIcon> icons = new HashMap<>();
   // Scaling factor for unit images
@@ -204,10 +204,7 @@ public class UnitImageFactory {
 
   /** Return the appropriate unit image. */
   public Optional<Image> getImage(final ImageKey imageKey) {
-    final String baseName = imageKey.getBaseImageName();
-    final String fullName = baseName + imageKey.getPlayer().getName();
-
-    return Optional.ofNullable(images.get(fullName))
+    return Optional.ofNullable(images.get(imageKey))
         .or(
             () ->
                 getTransformedImage(imageKey)
@@ -226,7 +223,7 @@ public class UnitImageFactory {
                               baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
                           // Ensure the scaling is completed.
                           Util.ensureImageLoaded(scaledImage);
-                          images.put(fullName, scaledImage);
+                          images.put(imageKey, scaledImage);
                           return scaledImage;
                         }));
   }
