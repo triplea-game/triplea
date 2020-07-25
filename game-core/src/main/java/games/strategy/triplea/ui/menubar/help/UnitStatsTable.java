@@ -148,7 +148,7 @@ public class UnitStatsTable {
         try {
           final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
           if (imageFactory != null) {
-            final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
+            final Optional<Image> unitImage = imageFactory.getImage(ut, player);
             if (unitImage.isPresent()) {
               unitTypes.add(ut);
             }
