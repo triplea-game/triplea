@@ -2,19 +2,31 @@ package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
+import java.awt.Image;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Level;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 @UtilityClass
+@Log
 public class UnitStatsTable {
 
   public static String getUnitStatsTable(final GameData gameData, final UiContext uiContext) {
@@ -27,7 +39,7 @@ public class UnitStatsTable {
       final Map<GamePlayer, Map<UnitType, ResourceCollection>> costs =
           TuvUtils.getResourceCostsForTuv(gameData, true);
       final Map<GamePlayer, List<UnitType>> playerUnitTypes =
-          UnitType.getAllPlayerUnitsWithImages(gameData, uiContext, true);
+          getAllPlayerUnitsWithImages(gameData, uiContext, true);
       final String color3 = "FEECE2";
       final String color2 = "BDBDBD";
       final String color1 = "ABABAB";
@@ -79,6 +91,93 @@ public class UnitStatsTable {
     }
     hints.append("</html>");
     return hints.toString();
+  }
+
+  /** Will return a key of NULL for any units which we do not have art for. */
+  private static Map<GamePlayer, List<UnitType>> getAllPlayerUnitsWithImages(
+      final GameData data, final UiContext uiContext, final boolean forceIncludeNeutralPlayer) {
+    final LinkedHashMap<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
+    data.acquireReadLock();
+    try {
+      for (final GamePlayer p : data.getPlayerList().getPlayers()) {
+        unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
+      }
+      final Set<UnitType> unitsSoFar = new HashSet<>();
+      for (final List<UnitType> l : unitTypes.values()) {
+        unitsSoFar.addAll(l);
+      }
+      final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
+      all.removeAll(unitsSoFar);
+      if (forceIncludeNeutralPlayer || !all.isEmpty()) {
+        unitTypes.put(
+            GamePlayer.NULL_PLAYERID,
+            getPlayerUnitsWithImages(GamePlayer.NULL_PLAYERID, data, uiContext));
+        unitsSoFar.addAll(unitTypes.get(GamePlayer.NULL_PLAYERID));
+        all.removeAll(unitsSoFar);
+        if (!all.isEmpty()) {
+          unitTypes.put(null, new ArrayList<>(all));
+        }
+      }
+    } finally {
+      data.releaseReadLock();
+    }
+    return unitTypes;
+  }
+
+  private static List<UnitType> getPlayerUnitsWithImages(
+      final GamePlayer player, final GameData data, final UiContext uiContext) {
+    final List<UnitType> unitTypes = new ArrayList<>();
+    data.acquireReadLock();
+    try {
+      // add first based on current production ability
+      if (player.getProductionFrontier() != null) {
+        for (final ProductionRule productionRule : player.getProductionFrontier()) {
+          for (final Map.Entry<NamedAttachable, Integer> entry :
+              productionRule.getResults().entrySet()) {
+            if (UnitType.class.isAssignableFrom(entry.getKey().getClass())) {
+              final UnitType ut = (UnitType) entry.getKey();
+              if (!unitTypes.contains(ut)) {
+                unitTypes.add(ut);
+              }
+            }
+          }
+        }
+      }
+      // this next part is purely to allow people to "add" neutral (null player) units to
+      // territories.
+      // This is because the null player does not have a production frontier, and we also do not
+      // know what units we have
+      // art for, so only use the units on a map.
+      for (final Territory t : data.getMap()) {
+        for (final Unit u : t.getUnitCollection()) {
+          if (u.getOwner().equals(player)) {
+            final UnitType ut = u.getType();
+            if (!unitTypes.contains(ut)) {
+              unitTypes.add(ut);
+            }
+          }
+        }
+      }
+      // now check if we have the art for anything that is left
+      for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
+        if (!unitTypes.contains(ut)) {
+          try {
+            final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
+            if (imageFactory != null) {
+              final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
+              if (unitImage.isPresent() && !unitTypes.contains(ut)) {
+                unitTypes.add(ut);
+              }
+            }
+          } catch (final Exception e) {
+            log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);
+          }
+        }
+      }
+    } finally {
+      data.releaseReadLock();
+    }
+    return unitTypes;
   }
 
   private static String getUnitImageUrl(
