@@ -34,60 +34,55 @@ public class UnitStatsTable {
     final StringBuilder hints = new StringBuilder();
     hints.append("<html>");
     hints.append("<head><style>th, tr{color:black}</style></head>");
-    try {
-      gameData.acquireReadLock();
-      final Map<GamePlayer, Map<UnitType, ResourceCollection>> costs =
-          TuvUtils.getResourceCostsForTuv(gameData, true);
-      final Map<GamePlayer, List<UnitType>> playerUnitTypes =
-          getAllPlayerUnitsWithImages(gameData, uiContext);
-      final String color3 = "FEECE2";
-      final String color2 = "BDBDBD";
-      final String color1 = "ABABAB";
-      int i = 0;
-      for (final Map.Entry<GamePlayer, List<UnitType>> entry : playerUnitTypes.entrySet()) {
-        final GamePlayer player = entry.getKey();
-        hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
-        hints
-            .append(
-                "<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">")
-            .append(player == null ? "NULL" : player.getName())
-            .append(" Units</th></tr>");
-        hints
-            .append("<tr")
-            .append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-            .append("><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
-        for (final UnitType ut : entry.getValue()) {
-          if (uiContext.getMapData().shouldDrawUnit(ut.getName())) {
-            i++;
-            hints
-                .append("<tr")
-                .append(
-                    ((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-                .append(">")
-                .append("<td>")
-                .append(getUnitImageUrl(ut, player, uiContext))
-                .append("</td>")
-                .append("<td>")
-                .append(ut.getName())
-                .append("</td>")
-                .append("<td>")
-                .append(costs.get(player).get(ut).toStringForHtml())
-                .append("</td>")
-                .append("<td>")
-                .append(TooltipProperties.getInstance().getTooltip(ut, player))
-                .append("</td></tr>");
-          }
+    final Map<GamePlayer, Map<UnitType, ResourceCollection>> costs =
+        TuvUtils.getResourceCostsForTuv(gameData, true);
+    final Map<GamePlayer, List<UnitType>> playerUnitTypes =
+        getAllPlayerUnitsWithImages(gameData, uiContext);
+    final String color3 = "FEECE2";
+    final String color2 = "BDBDBD";
+    final String color1 = "ABABAB";
+    int i = 0;
+    for (final Map.Entry<GamePlayer, List<UnitType>> entry : playerUnitTypes.entrySet()) {
+      final GamePlayer player = entry.getKey();
+      hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
+      hints
+          .append(
+              "<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">")
+          .append(player == null ? "NULL" : player.getName())
+          .append(" Units</th></tr>");
+      hints
+          .append("<tr")
+          .append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+          .append("><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
+      for (final UnitType ut : entry.getValue()) {
+        if (uiContext.getMapData().shouldDrawUnit(ut.getName())) {
+          i++;
+          hints
+              .append("<tr")
+              .append(
+                  ((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+              .append(">")
+              .append("<td>")
+              .append(getUnitImageUrl(ut, player, uiContext))
+              .append("</td>")
+              .append("<td>")
+              .append(ut.getName())
+              .append("</td>")
+              .append("<td>")
+              .append(costs.get(player).get(ut).toStringForHtml())
+              .append("</td>")
+              .append("<td>")
+              .append(TooltipProperties.getInstance().getTooltip(ut, player))
+              .append("</td></tr>");
         }
-        i++;
-        hints
-            .append("<tr")
-            .append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-            .append(">")
-            .append(
-                "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
       }
-    } finally {
-      gameData.releaseReadLock();
+      i++;
+      hints
+          .append("<tr")
+          .append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+          .append(">")
+          .append(
+              "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
     }
     hints.append("</html>");
     return hints.toString();
@@ -97,29 +92,24 @@ public class UnitStatsTable {
   private static Map<GamePlayer, List<UnitType>> getAllPlayerUnitsWithImages(
       final GameData data, final UiContext uiContext) {
     final LinkedHashMap<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
-    data.acquireReadLock();
-    try {
-      for (final GamePlayer p : data.getPlayerList().getPlayers()) {
-        unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
-      }
-      final Set<UnitType> unitsSoFar = new HashSet<>();
-      for (final List<UnitType> l : unitTypes.values()) {
-        unitsSoFar.addAll(l);
-      }
-      final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
+    for (final GamePlayer p : data.getPlayerList().getPlayers()) {
+      unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
+    }
+    final Set<UnitType> unitsSoFar = new HashSet<>();
+    for (final List<UnitType> l : unitTypes.values()) {
+      unitsSoFar.addAll(l);
+    }
+    final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
+    all.removeAll(unitsSoFar);
+    if (!all.isEmpty()) {
+      unitTypes.put(
+          GamePlayer.NULL_PLAYERID,
+          getPlayerUnitsWithImages(GamePlayer.NULL_PLAYERID, data, uiContext));
+      unitsSoFar.addAll(unitTypes.get(GamePlayer.NULL_PLAYERID));
       all.removeAll(unitsSoFar);
       if (!all.isEmpty()) {
-        unitTypes.put(
-            GamePlayer.NULL_PLAYERID,
-            getPlayerUnitsWithImages(GamePlayer.NULL_PLAYERID, data, uiContext));
-        unitsSoFar.addAll(unitTypes.get(GamePlayer.NULL_PLAYERID));
-        all.removeAll(unitsSoFar);
-        if (!all.isEmpty()) {
-          unitTypes.put(null, new ArrayList<>(all));
-        }
+        unitTypes.put(null, new ArrayList<>(all));
       }
-    } finally {
-      data.releaseReadLock();
     }
     return unitTypes;
   }
@@ -127,55 +117,50 @@ public class UnitStatsTable {
   private static List<UnitType> getPlayerUnitsWithImages(
       final GamePlayer player, final GameData data, final UiContext uiContext) {
     final List<UnitType> unitTypes = new ArrayList<>();
-    data.acquireReadLock();
-    try {
-      // add first based on current production ability
-      if (player.getProductionFrontier() != null) {
-        for (final ProductionRule productionRule : player.getProductionFrontier()) {
-          for (final Map.Entry<NamedAttachable, Integer> entry :
-              productionRule.getResults().entrySet()) {
-            if (UnitType.class.isAssignableFrom(entry.getKey().getClass())) {
-              final UnitType ut = (UnitType) entry.getKey();
-              if (!unitTypes.contains(ut)) {
-                unitTypes.add(ut);
-              }
-            }
-          }
-        }
-      }
-      // this next part is purely to allow people to "add" neutral (null player) units to
-      // territories.
-      // This is because the null player does not have a production frontier, and we also do not
-      // know what units we have
-      // art for, so only use the units on a map.
-      for (final Territory t : data.getMap()) {
-        for (final Unit u : t.getUnitCollection()) {
-          if (u.getOwner().equals(player)) {
-            final UnitType ut = u.getType();
+    // add first based on current production ability
+    if (player.getProductionFrontier() != null) {
+      for (final ProductionRule productionRule : player.getProductionFrontier()) {
+        for (final Map.Entry<NamedAttachable, Integer> entry :
+            productionRule.getResults().entrySet()) {
+          if (UnitType.class.isAssignableFrom(entry.getKey().getClass())) {
+            final UnitType ut = (UnitType) entry.getKey();
             if (!unitTypes.contains(ut)) {
               unitTypes.add(ut);
             }
           }
         }
       }
-      // now check if we have the art for anything that is left
-      for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
-        if (!unitTypes.contains(ut)) {
-          try {
-            final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
-            if (imageFactory != null) {
-              final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
-              if (unitImage.isPresent() && !unitTypes.contains(ut)) {
-                unitTypes.add(ut);
-              }
-            }
-          } catch (final Exception e) {
-            log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);
+    }
+    // this next part is purely to allow people to "add" neutral (null player) units to
+    // territories.
+    // This is because the null player does not have a production frontier, and we also do not
+    // know what units we have
+    // art for, so only use the units on a map.
+    for (final Territory t : data.getMap()) {
+      for (final Unit u : t.getUnitCollection()) {
+        if (u.getOwner().equals(player)) {
+          final UnitType ut = u.getType();
+          if (!unitTypes.contains(ut)) {
+            unitTypes.add(ut);
           }
         }
       }
-    } finally {
-      data.releaseReadLock();
+    }
+    // now check if we have the art for anything that is left
+    for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
+      if (!unitTypes.contains(ut)) {
+        try {
+          final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
+          if (imageFactory != null) {
+            final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
+            if (unitImage.isPresent() && !unitTypes.contains(ut)) {
+              unitTypes.add(ut);
+            }
+          }
+        } catch (final Exception e) {
+          log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);
+        }
+      }
     }
     return unitTypes;
   }
