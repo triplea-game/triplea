@@ -78,6 +78,7 @@ public class UnitStatsTable {
     hints.append("</html>");
     return hints.toString();
   }
+
   private static String getUnitImageUrl(
       final UnitType unitType, final GamePlayer player, final UiContext uiContext) {
     final UnitImageFactory unitImageFactory = uiContext.getUnitImageFactory();
@@ -89,5 +90,4 @@ public class UnitStatsTable {
 
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
   }
-
 }
