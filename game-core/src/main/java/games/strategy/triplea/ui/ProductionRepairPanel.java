@@ -145,7 +145,7 @@ class ProductionRepairPanel extends JPanel {
             if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
               continue;
             }
-            final Rule rule = new Rule(repairRule, player, unit, terr);
+            final Rule rule = new Rule(repairRule, unit, terr);
             int initialQuantity = 0;
             if (initialPurchase.get(unit) != null) {
               initialQuantity = initialPurchase.get(unit).getInt(repairRule);
@@ -286,11 +286,7 @@ class ProductionRepairPanel extends JPanel {
     private final int maxRepairAmount;
     private final int repairResults;
 
-    Rule(
-        final RepairRule rule,
-        final GamePlayer gamePlayer,
-        final Unit repairUnit,
-        final Territory territoryUnitIsIn) {
+    Rule(final RepairRule rule, final Unit repairUnit, final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
       this.unit = repairUnit;
       this.rule = rule;
