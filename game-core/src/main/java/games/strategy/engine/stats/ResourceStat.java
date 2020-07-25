@@ -7,7 +7,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ResourceStat extends AbstractStat {
+public class ResourceStat implements IStat {
   public final Resource resource;
 
   @Override

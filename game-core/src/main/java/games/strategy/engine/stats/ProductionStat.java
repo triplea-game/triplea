@@ -7,7 +7,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-public class ProductionStat extends AbstractStat {
+public class ProductionStat implements IStat {
   @Override
   public String getName() {
     return "Production";

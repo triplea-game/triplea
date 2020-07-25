@@ -3,8 +3,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ProductionStat;
 import games.strategy.engine.stats.ResourceStat;
@@ -417,7 +417,18 @@ class StatPanel extends AbstractStatPanel {
     }
   }
 
-  static class VpStat extends AbstractStat {
+  private static Resource getResourcePUs(final GameData data) {
+    final Resource pus;
+    try {
+      data.acquireReadLock();
+      pus = data.getResourceList().getResource(Constants.PUS);
+    } finally {
+      data.releaseReadLock();
+    }
+    return pus;
+  }
+
+  static class VpStat implements IStat {
     @Override
     public String getName() {
       return "VPs";

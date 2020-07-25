@@ -7,7 +7,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
-import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
@@ -100,7 +99,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class TechCountStat extends AbstractStat {
+  static class TechCountStat implements IStat {
     @Override
     public String getName() {
       return "Techs";
@@ -161,7 +160,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class GenericResourceStat extends AbstractStat {
+  static class GenericResourceStat implements IStat {
     private String name = null;
 
     public void init(final String name) {
@@ -179,7 +178,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class GenericTechNameStat extends AbstractStat {
+  static class GenericTechNameStat implements IStat {
     private TechAdvance ta = null;
 
     public void init(final TechAdvance ta) {
@@ -200,7 +199,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class GenericUnitNameStat extends AbstractStat {
+  static class GenericUnitNameStat implements IStat {
     private UnitType ut = null;
 
     public void init(final UnitType ut) {

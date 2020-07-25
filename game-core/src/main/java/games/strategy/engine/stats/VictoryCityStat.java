@@ -6,7 +6,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.util.Objects;
 
-public class VictoryCityStat extends AbstractStat {
+public class VictoryCityStat implements IStat {
   @Override
   public String getName() {
     return "VC";

@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import org.triplea.java.collections.IntegerMap;
 
-public class TuvStat extends AbstractStat {
+public class TuvStat implements IStat {
   @Override
   public String getName() {
     return "TUV";

@@ -9,7 +9,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-public class UnitsStat extends AbstractStat {
+public class UnitsStat implements IStat {
   @Override
   public String getName() {
     return "Units";
