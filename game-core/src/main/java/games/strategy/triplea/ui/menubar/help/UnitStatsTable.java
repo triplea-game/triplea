@@ -12,7 +12,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class UnitStatsTable {
 
   public static String getUnitStatsTable(final GameData gameData, final UiContext uiContext) {
