@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui.menubar;
+package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;

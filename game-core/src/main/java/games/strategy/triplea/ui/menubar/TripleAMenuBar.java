@@ -4,6 +4,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.menubar.help.HelpMenu;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import javax.swing.JMenu;

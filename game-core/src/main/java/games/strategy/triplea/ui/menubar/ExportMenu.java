@@ -22,6 +22,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.triplea.ui.menubar.help.HelpMenu;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.event.KeyEvent;
 import java.io.File;
