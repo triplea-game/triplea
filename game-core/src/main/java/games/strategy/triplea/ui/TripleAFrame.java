@@ -821,11 +821,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       // an ugly hack, we need a better way to get the main frame
       new Thread(GameRunner::clientLeftGame).start();
     }
-    if (SystemProperties.isMac()) {
-      // When leaving a game, reset the about handler to the default one, rather
-      // than the map-specific one set by HelpMenu.
-      MacOsIntegration.clearAboutHandler();
-    }
   }
 
   void clearStatusMessage() {
