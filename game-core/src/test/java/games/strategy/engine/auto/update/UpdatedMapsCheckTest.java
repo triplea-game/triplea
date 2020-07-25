@@ -1,116 +1,69 @@
 package games.strategy.engine.auto.update;
 
-import static games.strategy.engine.auto.update.UpdatedMapsCheck.formatUpdateCheckDate;
-import static games.strategy.engine.auto.update.UpdatedMapsCheck.parseUpdateCheckDate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import games.strategy.triplea.settings.GameSetting;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Optional;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@SuppressWarnings("unused")
+@ExtendWith(MockitoExtension.class)
 final class UpdatedMapsCheckTest {
-  @ExtendWith(MockitoExtension.class)
-  @Nested
-  final class IsMapUpdateCheckRequiredTest {
-    private final LocalDate now = LocalDate.of(2008, 6, 1);
-    @Mock private GameSetting<String> updateCheckDateSetting;
-    @Mock private Runnable flushSetting;
+  private static final Instant NOW = Instant.now();
 
-    private void givenMapUpdateCheckNeverRun() {
-      when(updateCheckDateSetting.getValue()).thenReturn(Optional.empty());
-    }
+  @Mock private Runnable lastCheckSetter;
 
-    private void givenMapUpdateCheckLastRunRelativeToNow(
-        final long amountToAdd, final TemporalUnit unit) {
-      when(updateCheckDateSetting.getValue())
-          .thenReturn(Optional.of(formatUpdateCheckDate(now.plus(amountToAdd, unit))));
-    }
+  @ParameterizedTest
+  @MethodSource
+  @DisplayName(
+      "If last update check is epoch start or beyond last check threshold, then "
+          + "we expect a map update check to be needed.")
+  void mapUpdateCheckNeeded(final long lastCheckEpochMilli) {
+    final boolean result =
+        UpdatedMapsCheck.isMapUpdateCheckRequired(lastCheckEpochMilli, lastCheckSetter);
 
-    private boolean whenIsMapUpdateCheckRequired() {
-      return UpdatedMapsCheck.isMapUpdateCheckRequired(now, updateCheckDateSetting, flushSetting);
-    }
+    assertThat(result, is(true));
 
-    @Test
-    void shouldReturnTrueWhenMapUpdateCheckLastRunOneYearAgo() {
-      givenMapUpdateCheckLastRunRelativeToNow(-1, ChronoUnit.YEARS);
-
-      assertThat(whenIsMapUpdateCheckRequired(), is(true));
-    }
-
-    @Test
-    void shouldReturnTrueWhenMapUpdateCheckLastRunOneMonthAgo() {
-      givenMapUpdateCheckLastRunRelativeToNow(-1, ChronoUnit.MONTHS);
-
-      assertThat(whenIsMapUpdateCheckRequired(), is(true));
-    }
-
-    @Test
-    void shouldReturnTrueWhenMapUpdateCheckNeverRun() {
-      givenMapUpdateCheckNeverRun();
-
-      assertThat(whenIsMapUpdateCheckRequired(), is(true));
-    }
-
-    @Test
-    void shouldSaveAndFlushLastUpdateCheckDateSettingWhenReturnsTrue() {
-      givenMapUpdateCheckLastRunRelativeToNow(-1, ChronoUnit.YEARS);
-
-      assertThat(whenIsMapUpdateCheckRequired(), is(true));
-      verify(updateCheckDateSetting).setValue(formatUpdateCheckDate(now));
-      verify(flushSetting).run();
-    }
-
-    @Test
-    void shouldReturnFalseWhenMapUpdateCheckLastRunThisMonth() {
-      givenMapUpdateCheckLastRunRelativeToNow(0, ChronoUnit.MONTHS);
-
-      assertThat(whenIsMapUpdateCheckRequired(), is(false));
-    }
-
-    @Test
-    void shouldReturnFalseWhenMapUpdateCheckLastRunOneMonthHence() {
-      givenMapUpdateCheckLastRunRelativeToNow(1, ChronoUnit.MONTHS);
-
-      assertThat(whenIsMapUpdateCheckRequired(), is(false));
-    }
-
-    @Test
-    void shouldNotSaveAndFlushLastUpdateCheckDateSettingWhenReturnsFalse() {
-      givenMapUpdateCheckLastRunRelativeToNow(0, ChronoUnit.MONTHS);
-
-      assertThat(whenIsMapUpdateCheckRequired(), is(false));
-      verify(updateCheckDateSetting, never()).setValue(anyString());
-      verify(flushSetting, never()).run();
-    }
+    verify(lastCheckSetter).run();
   }
 
-  @Nested
-  final class ParseUpdateCheckDateTest {
-    @Test
-    void shouldParseStringAsDate() {
-      assertThat(parseUpdateCheckDate("2018:1"), is(LocalDate.of(2018, 1, 1)));
-      assertThat(parseUpdateCheckDate("1941:12"), is(LocalDate.of(1941, 12, 1)));
-    }
+  static List<Long> mapUpdateCheckNeeded() {
+    return List.of(
+        0L, NOW.minus(UpdatedMapsCheck.THRESHOLD_DAYS + 1, ChronoUnit.DAYS).toEpochMilli());
   }
 
-  @Nested
-  final class FormatUpdateCheckDateTest {
-    @Test
-    void shouldFormatDateAsString() {
-      assertThat(formatUpdateCheckDate(LocalDate.of(2018, 1, 1)), is("2018:1"));
-      assertThat(formatUpdateCheckDate(LocalDate.of(1941, 12, 1)), is("1941:12"));
-    }
+  @ParameterizedTest
+  @MethodSource
+  @DisplayName(
+      "If last update check is in future or is before the last update check threshold,"
+          + "then we do not need a map update check")
+  void updateCheckNotNeeded(final long lastCheckTime) {
+    final boolean result =
+        UpdatedMapsCheck.isMapUpdateCheckRequired(lastCheckTime, lastCheckSetter);
+
+    assertThat(result, is(false));
+
+    verify(lastCheckSetter).run();
+  }
+
+  static List<Long> updateCheckNotNeeded() {
+    // no need to check when:
+    return List.of(
+        // last check time is now
+        NOW.toEpochMilli(),
+        // last check is in future
+        NOW.plus(1, ChronoUnit.DAYS).toEpochMilli(),
+        // last check is one day short of the threshold
+        NOW.minus(UpdatedMapsCheck.THRESHOLD_DAYS - 1, ChronoUnit.DAYS).toEpochMilli(),
+        // last check is within a minute of the threshold but not beyond
+        NOW.minus(UpdatedMapsCheck.THRESHOLD_DAYS, ChronoUnit.DAYS).plusSeconds(60).toEpochMilli());
   }
 }
