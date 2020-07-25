@@ -1,15 +1,29 @@
 package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.KeyStroke;
 import lombok.experimental.UtilityClass;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 @UtilityClass
 public final class HelpMenu extends JMenu {
+  private static final Action bugReportMenu =
+      SwingAction.of(
+          "Send Bug Report",
+          e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES));
+
+  private static final Action gameLicenseMenu =
+      SwingAction.of(
+          "License",
+          e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.LICENSE_NOTICE));
+
   public static JMenu buildMenu(final UiContext uiContext, final GameData gameData) {
     final JMenu menu = new JMenu();
     menu.setText("Help");
@@ -30,7 +44,9 @@ public final class HelpMenu extends JMenu {
 
     menu.addSeparator();
 
-    menu.add(BugReportMenu.buildMenu()).setMnemonic(KeyEvent.VK_B);
+    menu.add(gameLicenseMenu).setMnemonic(KeyEvent.VK_I);
+
+    menu.add(bugReportMenu).setMnemonic(KeyEvent.VK_B);
 
     return menu;
   }
