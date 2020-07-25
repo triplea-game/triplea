@@ -24,4 +24,3 @@ in all other projects.
         .build();
    }
 ```
-

@@ -18,7 +18,7 @@ function stop_container() {
 
 function remove_dead_containers() {
   docker ps --filter "status=exited" | grep triplea-lobby-db | cut -d ' ' -f 1 | \
-	  xargs --no-run-if-empty docker rm
+      xargs --no-run-if-empty docker rm
 }
 
 function start_container() {

@@ -7,4 +7,3 @@ normal="\e[0m"
 && .travis/stages/verify/code-convention-checks/run \
 && .travis/stages/verify/find-unused-or-unmatched-tests/run \
 && echo -e "${boldGreen}SUCCESS${normal}"
-
