@@ -15,6 +15,7 @@ import games.strategy.triplea.util.TuvUtils;
 import java.awt.Image;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 
@@ -91,7 +93,7 @@ public class UnitStatsTable {
   /** Will return a key of NULL for any units which we do not have art for. */
   private static Map<GamePlayer, List<UnitType>> getAllPlayerUnitsWithImages(
       final GameData data, final UiContext uiContext) {
-    final LinkedHashMap<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
+    final Map<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
     for (final GamePlayer p : data.getPlayerList().getPlayers()) {
       unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
     }
@@ -116,7 +118,7 @@ public class UnitStatsTable {
 
   private static List<UnitType> getPlayerUnitsWithImages(
       final GamePlayer player, final GameData data, final UiContext uiContext) {
-    final List<UnitType> unitTypes = new ArrayList<>();
+    final Set<UnitType> unitTypes = new HashSet<>();
     // add first based on current production ability
     if (player.getProductionFrontier() != null) {
       for (final ProductionRule productionRule : player.getProductionFrontier()) {
@@ -124,9 +126,7 @@ public class UnitStatsTable {
             productionRule.getResults().entrySet()) {
           if (UnitType.class.isAssignableFrom(entry.getKey().getClass())) {
             final UnitType ut = (UnitType) entry.getKey();
-            if (!unitTypes.contains(ut)) {
-              unitTypes.add(ut);
-            }
+            unitTypes.add(ut);
           }
         }
       }
@@ -140,9 +140,7 @@ public class UnitStatsTable {
       for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {
           final UnitType ut = u.getType();
-          if (!unitTypes.contains(ut)) {
-            unitTypes.add(ut);
-          }
+          unitTypes.add(ut);
         }
       }
     }
@@ -153,7 +151,7 @@ public class UnitStatsTable {
           final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
           if (imageFactory != null) {
             final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
-            if (unitImage.isPresent() && !unitTypes.contains(ut)) {
+            if (unitImage.isPresent()) {
               unitTypes.add(ut);
             }
           }
@@ -162,7 +160,9 @@ public class UnitStatsTable {
         }
       }
     }
-    return unitTypes;
+    return unitTypes.stream()
+        .sorted(Comparator.comparing(UnitType::getName))
+        .collect(Collectors.toList());
   }
 
   private static String getUnitImageUrl(
