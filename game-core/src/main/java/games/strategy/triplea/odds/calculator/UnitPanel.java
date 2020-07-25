@@ -15,7 +15,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.triplea.java.collections.IntegerMap;
@@ -48,8 +47,7 @@ public class UnitPanel extends JPanel {
     final JLabel label =
         uiContext
             .getUnitImageFactory()
-            .getImage(ImageKey.of(category))
-            .map(ImageIcon::new)
+            .getIcon(ImageKey.of(category))
             .map(JLabel::new)
             .orElseGet(JLabel::new);
     label.setToolTipText(toolTipText);
