@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui.screen;
 
-import static games.strategy.triplea.image.UnitImageFactory.*;
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;

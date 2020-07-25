@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import static games.strategy.triplea.image.UnitImageFactory.*;
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
