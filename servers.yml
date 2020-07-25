@@ -11,8 +11,6 @@ servers:
 
       Report any problems here:
       https://github.com/triplea-game/triplea/issues
-
-      FIXED: Global 1940 no longer crashes when doing politics
   - version: "2.0.19800"
     inactive: true
   - version: "2.0.0"
