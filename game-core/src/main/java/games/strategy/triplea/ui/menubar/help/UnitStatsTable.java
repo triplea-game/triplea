@@ -9,10 +9,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import java.awt.Image;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -148,10 +148,9 @@ public class UnitStatsTable {
         try {
           final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
           if (imageFactory != null) {
-            final Optional<Image> unitImage = imageFactory.getImage(ut, player);
-            if (unitImage.isPresent()) {
-              unitTypes.add(ut);
-            }
+            imageFactory
+                .getImage(ImageKey.builder().player(player).type(ut).build())
+                .ifPresent(image -> unitTypes.add(ut));
           }
         } catch (final Exception e) {
           log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);

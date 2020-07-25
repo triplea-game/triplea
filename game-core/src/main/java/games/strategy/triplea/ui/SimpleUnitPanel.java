@@ -217,19 +217,18 @@ public class SimpleUnitPanel extends JPanel {
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
       final UnitType unitType = (UnitType) unit;
-      final Optional<ImageIcon> icon =
-          uiContext.getUnitImageFactory().getIcon(unitType, player, damaged, disabled);
+
+      final UnitImageFactory.ImageKey imageKey =
+          UnitImageFactory.ImageKey.builder()
+              .player(player)
+              .type(unitType)
+              .damaged(damaged)
+              .disabled(disabled)
+              .build();
+      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(imageKey);
       if (icon.isEmpty() && !uiContext.isShutDown()) {
-        final String imageName =
-            UnitImageFactory.getBaseImageName(unitType, player, damaged, disabled);
-        log.severe(
-            "missing unit icon (won't be displayed): "
-                + unitType.getName()
-                + " ("
-                + imageName
-                + ")"
-                + " owned by "
-                + player.getName());
+        final String imageName = imageKey.getFullName();
+        log.severe("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
       }
       icon.ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);

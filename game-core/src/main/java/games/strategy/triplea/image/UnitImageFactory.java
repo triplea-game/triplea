@@ -1,6 +1,7 @@
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
@@ -9,6 +10,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitOwner;
 import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -22,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.swing.ImageIcon;
+import lombok.Builder;
+import lombok.Value;
 
 /** A factory with an image cache for creating unit images. */
 public class UnitImageFactory {
@@ -61,6 +65,113 @@ public class UnitImageFactory {
     this.mapData = mapData;
   }
 
+  @Value
+  @Builder
+  public static class ImageKey {
+    private final GamePlayer player;
+    private final UnitType type;
+    private final boolean damaged;
+    private final boolean disabled;
+
+    public static ImageKey of(final UnitCategory unit) {
+      return ImageKey.builder()
+          .player(unit.getOwner())
+          .type(unit.getType())
+          .damaged(unit.hasDamageOrBombingUnitDamage())
+          .disabled(unit.getDisabled())
+          .build();
+    }
+
+    public static ImageKey of(final UnitOwner holder) {
+      return ImageKey.builder().player(holder.getOwner()).type(holder.getType()).build();
+    }
+
+    public static ImageKey of(final Unit unit) {
+      return ImageKey.builder()
+          .player(unit.getOwner())
+          .type(unit.getType())
+          .damaged(Matches.unitHasTakenSomeBombingUnitDamage().test(unit))
+          .disabled(Matches.unitIsDisabled().test(unit))
+          .build();
+    }
+
+    public String getFullName() {
+      return getBaseImageName() + player.getName();
+    }
+
+    public String getBaseImageName() {
+      final GamePlayer gamePlayer = player;
+
+      StringBuilder name = new StringBuilder(32);
+      name.append(type.getName());
+      if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
+        if (type.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
+          if (TechTracker.hasRocket(gamePlayer) && UnitAttachment.get(type).getIsRocket()) {
+            name = new StringBuilder("rockets");
+          }
+          if (TechTracker.hasAaRadar(gamePlayer) && Matches.unitTypeIsAaForAnything().test(type)) {
+            name.append("_r");
+          }
+        } else if (UnitAttachment.get(type).getIsRocket()
+            && Matches.unitTypeIsAaForAnything().test(type)) {
+          if (TechTracker.hasRocket(gamePlayer)) {
+            name.append("_rockets");
+          }
+          if (TechTracker.hasAaRadar(gamePlayer)) {
+            name.append("_r");
+          }
+        } else if (UnitAttachment.get(type).getIsRocket()) {
+          if (TechTracker.hasRocket(gamePlayer)) {
+            name.append("_rockets");
+          }
+        } else if (Matches.unitTypeIsAaForAnything().test(type)) {
+          if (TechTracker.hasAaRadar(gamePlayer)) {
+            name.append("_r");
+          }
+        }
+        if (UnitAttachment.get(type).getIsAir()
+            && !UnitAttachment.get(type).getIsStrategicBomber()) {
+          if (TechTracker.hasLongRangeAir(gamePlayer)) {
+            name.append("_lr");
+          }
+          if (TechTracker.hasJetFighter(gamePlayer)
+              && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
+                  || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
+            name.append("_jp");
+          }
+        }
+        if (UnitAttachment.get(type).getIsAir()
+            && UnitAttachment.get(type).getIsStrategicBomber()) {
+          if (TechTracker.hasLongRangeAir(gamePlayer)) {
+            name.append("_lr");
+          }
+          if (TechTracker.hasHeavyBomber(gamePlayer)) {
+            name.append("_hb");
+          }
+        }
+        if (UnitAttachment.get(type).getIsFirstStrike()
+            && UnitAttachment.get(type).getCanEvade()
+            && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
+                || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
+            && TechTracker.hasSuperSubs(gamePlayer)) {
+          name.append("_ss");
+        }
+        if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY)
+                || UnitAttachment.get(type).getCanProduceUnits())
+            && (TechTracker.hasIndustrialTechnology(gamePlayer)
+                || TechTracker.hasIncreasedFactoryProduction(gamePlayer))) {
+          name.append("_it");
+        }
+      }
+      if (disabled) {
+        name.append("_disabled");
+      } else if (damaged) {
+        name.append("_hit");
+      }
+      return name.toString();
+    }
+  }
+
   /** Set the unitScaling factor. */
   public UnitImageFactory withScaleFactor(final double scaleFactor) {
     return this.scaleFactor == scaleFactor
@@ -91,25 +202,15 @@ public class UnitImageFactory {
     return (int) (scaleFactor * unitCounterOffsetHeight);
   }
 
-  public Image getImage(final UnitCategory unit) {
-    return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
-        .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
-  }
-
-  public Optional<Image> getImage(final UnitType type, final GamePlayer player) {
-    return getImage(type, player, false, false);
-  }
-
   /** Return the appropriate unit image. */
-  public Optional<Image> getImage(
-      final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
-    final String baseName = getBaseImageName(type, player, damaged, disabled);
-    final String fullName = baseName + player.getName();
+  public Optional<Image> getImage(final ImageKey imageKey) {
+    final String baseName = imageKey.getBaseImageName();
+    final String fullName = baseName + imageKey.getPlayer().getName();
 
     return Optional.ofNullable(images.get(fullName))
         .or(
             () ->
-                getTransformedImage(baseName, player, type)
+                getTransformedImage(imageKey)
                     .map(
                         baseImage -> {
                           // We want to scale units according to the given scale factor.
@@ -145,8 +246,11 @@ public class UnitImageFactory {
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getTransformedImage(
-      final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
+  private Optional<Image> getTransformedImage(final ImageKey imageKey) {
+    final String baseImageName = imageKey.getBaseImageName();
+    final GamePlayer gamePlayer = imageKey.getPlayer();
+    final UnitType type = imageKey.getType();
+
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, gamePlayer);
     Image image = null;
     if (imageLocation.isPresent()) {
@@ -188,9 +292,8 @@ public class UnitImageFactory {
    *
    * @return The highlight image or empty if no base image is available for the specified unit.
    */
-  public Optional<Image> getHighlightImage(
-      final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
-    return getImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
+  public Optional<Image> getHighlightImage(final ImageKey imageKey) {
+    return getImage(imageKey).map(UnitImageFactory::highlightImage);
   }
 
   private static Image highlightImage(final Image image) {
@@ -208,14 +311,12 @@ public class UnitImageFactory {
   }
 
   /** Return a icon image for a unit. */
-  public Optional<ImageIcon> getIcon(
-      final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
-    final String baseName = getBaseImageName(type, player, damaged, disabled);
-    final String fullName = baseName + player.getName();
+  public Optional<ImageIcon> getIcon(final ImageKey imageKey) {
+    final String fullName = imageKey.getFullName();
     if (icons.containsKey(fullName)) {
       return Optional.of(icons.get(fullName));
     }
-    final Optional<Image> image = getTransformedImage(baseName, player, type);
+    final Optional<Image> image = getTransformedImage(imageKey);
     if (image.isEmpty()) {
       return Optional.empty();
     }
@@ -225,86 +326,16 @@ public class UnitImageFactory {
     return Optional.of(icon);
   }
 
-  public static String getBaseImageName(
-      final UnitType type,
-      final GamePlayer gamePlayer,
-      final boolean damaged,
-      final boolean disabled) {
-    StringBuilder name = new StringBuilder(32);
-    name.append(type.getName());
-    if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
-      if (type.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-        if (TechTracker.hasRocket(gamePlayer) && UnitAttachment.get(type).getIsRocket()) {
-          name = new StringBuilder("rockets");
-        }
-        if (TechTracker.hasAaRadar(gamePlayer) && Matches.unitTypeIsAaForAnything().test(type)) {
-          name.append("_r");
-        }
-      } else if (UnitAttachment.get(type).getIsRocket()
-          && Matches.unitTypeIsAaForAnything().test(type)) {
-        if (TechTracker.hasRocket(gamePlayer)) {
-          name.append("_rockets");
-        }
-        if (TechTracker.hasAaRadar(gamePlayer)) {
-          name.append("_r");
-        }
-      } else if (UnitAttachment.get(type).getIsRocket()) {
-        if (TechTracker.hasRocket(gamePlayer)) {
-          name.append("_rockets");
-        }
-      } else if (Matches.unitTypeIsAaForAnything().test(type)) {
-        if (TechTracker.hasAaRadar(gamePlayer)) {
-          name.append("_r");
-        }
-      }
-      if (UnitAttachment.get(type).getIsAir() && !UnitAttachment.get(type).getIsStrategicBomber()) {
-        if (TechTracker.hasLongRangeAir(gamePlayer)) {
-          name.append("_lr");
-        }
-        if (TechTracker.hasJetFighter(gamePlayer)
-            && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
-                || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
-          name.append("_jp");
-        }
-      }
-      if (UnitAttachment.get(type).getIsAir() && UnitAttachment.get(type).getIsStrategicBomber()) {
-        if (TechTracker.hasLongRangeAir(gamePlayer)) {
-          name.append("_lr");
-        }
-        if (TechTracker.hasHeavyBomber(gamePlayer)) {
-          name.append("_hb");
-        }
-      }
-      if (UnitAttachment.get(type).getIsFirstStrike()
-          && UnitAttachment.get(type).getCanEvade()
-          && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
-              || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
-          && TechTracker.hasSuperSubs(gamePlayer)) {
-        name.append("_ss");
-      }
-      if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY)
-              || UnitAttachment.get(type).getCanProduceUnits())
-          && (TechTracker.hasIndustrialTechnology(gamePlayer)
-              || TechTracker.hasIncreasedFactoryProduction(gamePlayer))) {
-        name.append("_it");
-      }
-    }
-    if (disabled) {
-      name.append("_disabled");
-    } else if (damaged) {
-      name.append("_hit");
-    }
-    return name.toString();
-  }
-
-  public Dimension getImageDimensions(final UnitType type, final GamePlayer player) {
-    final String baseName = getBaseImageName(type, player, false, false);
+  public Dimension getImageDimensions(final ImageKey imageKey) {
     final Image baseImage =
-        getTransformedImage(baseName, player, type)
+        getTransformedImage(imageKey)
             .orElseThrow(
                 () ->
                     new RuntimeException(
-                        "No image for unit type: " + type + ", player: " + player));
+                        "No image for unit type: "
+                            + imageKey.getType()
+                            + ", player: "
+                            + imageKey.getPlayer()));
     final int width = (int) (baseImage.getWidth(null) * scaleFactor);
     final int height = (int) (baseImage.getHeight(null) * scaleFactor);
     return new Dimension(width, height);

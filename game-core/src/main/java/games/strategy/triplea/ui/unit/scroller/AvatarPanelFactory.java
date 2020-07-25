@@ -6,7 +6,9 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.MissingImageException;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.UnitCategory;
@@ -106,7 +108,9 @@ class AvatarPanelFactory {
 
     final var unitsToDraw = UnitScrollerModel.getUniqueUnitCategories(player, units);
 
-    final var dimension = unitImageFactory.getImageDimensions(unitsToDraw.get(0).getType(), player);
+    final var dimension =
+        unitImageFactory.getImageDimensions(
+            ImageKey.builder().type(unitsToDraw.get(0).getType()).player(player).build());
 
     final var combinedImage =
         new BufferedImage(
@@ -134,9 +138,13 @@ class AvatarPanelFactory {
 
     unitsToDraw.sort(unitRenderingOrder(player));
     for (int i = 0; i < drawLocations.size(); i++) {
-      final var imageToDraw = unitImageFactory.getImage(unitsToDraw.get(i));
-      final Point drawLocation = drawLocations.get(i);
+      final var unitToDraw = unitsToDraw.get(i);
+      final var imageToDraw =
+          unitImageFactory
+              .getImage(ImageKey.of(unitToDraw))
+              .orElseThrow(() -> new MissingImageException(unitToDraw));
 
+      final Point drawLocation = drawLocations.get(i);
       graphics.drawImage(
           imageToDraw, drawLocation.x, drawLocation.y + UNIT_DRAW_ADDED_VERTICAL_TRANSLATION, null);
 

@@ -10,6 +10,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import java.awt.Color;
@@ -348,7 +349,10 @@ class ProductionPanel extends JPanel {
         final NamedAttachable resourceOrUnit = iter.next();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
-          icon = uiContext.getUnitImageFactory().getIcon(type, player, false, false);
+          icon =
+              uiContext
+                  .getUnitImageFactory()
+                  .getIcon(ImageKey.builder().type(type).player(player).build());
           final UnitAttachment attach = UnitAttachment.get(type);
           final int attack = attach.getAttack(player);
           final int movement = attach.getMovement(player);

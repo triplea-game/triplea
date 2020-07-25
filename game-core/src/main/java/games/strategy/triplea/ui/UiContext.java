@@ -16,6 +16,7 @@ import games.strategy.triplea.image.TerritoryEffectImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Cursor;
 import java.awt.Image;
@@ -37,7 +38,6 @@ import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
@@ -86,26 +86,6 @@ public class UiContext {
   private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
-
-  /**
-   * Indicates the damaged or undamaged version of a unit image should be used.
-   *
-   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
-   */
-  enum UnitDamage {
-    DAMAGED,
-    NOT_DAMAGED
-  }
-
-  /**
-   * Indicates the enabled or disabled version of a unit image should be used.
-   *
-   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
-   */
-  enum UnitEnable {
-    DISABLED,
-    ENABLED
-  }
 
   UiContext() {}
 
@@ -172,21 +152,16 @@ public class UiContext {
     return unitImageFactory;
   }
 
-  public JLabel newUnitImageLabel(
-      final UnitType type,
-      final GamePlayer player,
-      final UnitDamage damaged,
-      final UnitEnable disabled) {
-    final Optional<ImageIcon> image =
-        getUnitImageFactory()
-            .getIcon(type, player, damaged == UnitDamage.DAMAGED, disabled == UnitEnable.DISABLED);
-    final JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
-    MapUnitTooltipManager.setUnitTooltip(label, type, player, 1);
+  public JLabel newUnitImageLabel(final ImageKey imageKey) {
+    final JLabel label =
+        getUnitImageFactory().getIcon(imageKey).map(JLabel::new).orElseGet(JLabel::new);
+
+    MapUnitTooltipManager.setUnitTooltip(label, imageKey.getType(), imageKey.getPlayer(), 1);
     return label;
   }
 
   JLabel newUnitImageLabel(final UnitType type, final GamePlayer player) {
-    return newUnitImageLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
+    return newUnitImageLabel(ImageKey.builder().type(type).player(player).build());
   }
 
   public ResourceImageFactory getResourceImageFactory() {
