@@ -39,7 +39,7 @@ public class UnitStatsTable {
       final Map<GamePlayer, Map<UnitType, ResourceCollection>> costs =
           TuvUtils.getResourceCostsForTuv(gameData, true);
       final Map<GamePlayer, List<UnitType>> playerUnitTypes =
-          getAllPlayerUnitsWithImages(gameData, uiContext, true);
+          getAllPlayerUnitsWithImages(gameData, uiContext);
       final String color3 = "FEECE2";
       final String color2 = "BDBDBD";
       final String color1 = "ABABAB";
@@ -95,7 +95,7 @@ public class UnitStatsTable {
 
   /** Will return a key of NULL for any units which we do not have art for. */
   private static Map<GamePlayer, List<UnitType>> getAllPlayerUnitsWithImages(
-      final GameData data, final UiContext uiContext, final boolean forceIncludeNeutralPlayer) {
+      final GameData data, final UiContext uiContext) {
     final LinkedHashMap<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
@@ -108,7 +108,7 @@ public class UnitStatsTable {
       }
       final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
       all.removeAll(unitsSoFar);
-      if (forceIncludeNeutralPlayer || !all.isEmpty()) {
+      if (!all.isEmpty()) {
         unitTypes.put(
             GamePlayer.NULL_PLAYERID,
             getPlayerUnitsWithImages(GamePlayer.NULL_PLAYERID, data, uiContext));
