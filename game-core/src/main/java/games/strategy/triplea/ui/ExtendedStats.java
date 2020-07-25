@@ -15,6 +15,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -106,7 +107,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       int count = 0;
       final TechAttachment ta = TechAttachment.get(player);
       if (ta.getHeavyBomber()) {
@@ -173,7 +174,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       return player.getResources().getQuantity(name);
     }
   }
@@ -191,7 +192,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       if (ta.hasTech(TechAttachment.get(player))) {
         return 1;
       }
@@ -212,7 +213,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       int matchCount = 0;
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(ut));
       for (final Territory place : data.getMap().getTerritories()) {

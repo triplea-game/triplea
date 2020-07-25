@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
@@ -65,9 +66,10 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
                 if (!resource.isDisplayedFor(player)) {
                   continue;
                 }
-                final double quantity = resourceStat.getValue(player, gameData);
+                final double quantity =
+                    resourceStat.getValue(player, gameData, uiContext.getMapData());
                 final StringBuilder text =
-                    new StringBuilder(resourceStat.getFormatter().format(quantity) + " (");
+                    new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity) + " (");
                 if (resourceIncomes.getInt(resource) >= 0) {
                   text.append("+");
                 }
