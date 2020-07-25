@@ -345,10 +345,18 @@ final class ExportMenu extends JMenu {
         writer.append(',').append(playerName).append(',').append(stepName).append(',');
         for (final IStat stat : stats) {
           for (final GamePlayer player : players) {
-            writer.append(stat.getFormatter().format(stat.getValue(player, clone))).append(',');
+            writer
+                .append(
+                    IStat.DECIMAL_FORMAT.format(
+                        stat.getValue(player, clone, uiContext.getMapData())))
+                .append(',');
           }
           for (final String alliance : alliances) {
-            writer.append(stat.getFormatter().format(stat.getValue(alliance, clone))).append(',');
+            writer
+                .append(
+                    IStat.DECIMAL_FORMAT.format(
+                        stat.getValue(alliance, clone, uiContext.getMapData())))
+                .append(',');
           }
         }
         writer.println();

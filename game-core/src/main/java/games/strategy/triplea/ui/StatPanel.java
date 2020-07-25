@@ -3,8 +3,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ProductionStat;
 import games.strategy.engine.stats.ResourceStat;
@@ -16,6 +16,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -174,7 +175,8 @@ class StatPanel extends AbstractStatPanel {
           collectedData[row][0] = player.getName();
           for (int i = 0; i < stats.length; i++) {
             collectedData[row][i + 1] =
-                stats[i].getFormatter().format(stats[i].getValue(player, gameData));
+                IStat.DECIMAL_FORMAT.format(
+                    stats[i].getValue(player, gameData, uiContext.getMapData()));
           }
           row++;
         }
@@ -182,7 +184,8 @@ class StatPanel extends AbstractStatPanel {
           collectedData[row][0] = alliance;
           for (int i = 0; i < stats.length; i++) {
             collectedData[row][i + 1] =
-                stats[i].getFormatter().format(stats[i].getValue(alliance, gameData));
+                IStat.DECIMAL_FORMAT.format(
+                    stats[i].getValue(alliance, gameData, uiContext.getMapData()));
           }
           row++;
         }
@@ -414,14 +417,25 @@ class StatPanel extends AbstractStatPanel {
     }
   }
 
-  static class VpStat extends AbstractStat {
+  private static Resource getResourcePUs(final GameData data) {
+    final Resource pus;
+    try {
+      data.acquireReadLock();
+      pus = data.getResourceList().getResource(Constants.PUS);
+    } finally {
+      data.releaseReadLock();
+    }
+    return pus;
+  }
+
+  static class VpStat implements IStat {
     @Override
     public String getName() {
       return "VPs";
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       final PlayerAttachment pa = PlayerAttachment.get(player);
       if (pa != null) {
         return pa.getVps();
