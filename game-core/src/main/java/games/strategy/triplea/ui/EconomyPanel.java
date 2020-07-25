@@ -104,7 +104,7 @@ class EconomyPanel extends AbstractStatPanel {
             final ResourceStat resourceStat = resourceStats.get(i);
             final double amount = resourceStat.getValue(player, gameData, uiContext.getMapData());
             final int income = resourceIncomes.getInt(resourceStat.resource);
-            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
+            collectedData[row][i + 1] = getResourceAmountAndIncome(amount, income);
           }
           row++;
         }
@@ -118,7 +118,7 @@ class EconomyPanel extends AbstractStatPanel {
                 alliance.getValue().stream()
                     .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource))
                     .sum();
-            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
+            collectedData[row][i + 1] = getResourceAmountAndIncome(amount, income);
           }
           row++;
         }
@@ -127,8 +127,7 @@ class EconomyPanel extends AbstractStatPanel {
       }
     }
 
-    private String getResourceAmountAndIncome(
-        final ResourceStat resourceStat, final double amount, final int income) {
+    private String getResourceAmountAndIncome(final double amount, final int income) {
       final StringBuilder resourceAmountAndIncome =
           new StringBuilder("<html><b>" + IStat.DECIMAL_FORMAT.format(amount) + "</b>&nbsp;(");
       if (income >= 0) {
