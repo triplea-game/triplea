@@ -56,7 +56,8 @@ final class DownloadLengthReader {
     try (CloseableHttpClient client = httpClientFactory.get()) {
       return getDownloadLengthFromHost(uri, client);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, String.format("failed to get download length for '%s'", uri), e);
+      log.log(
+          Level.INFO, String.format("(Ignoring) Failed to get download length for '%s'", uri), e);
       return Optional.empty();
     }
   }
