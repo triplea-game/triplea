@@ -93,7 +93,12 @@ public class ServerLauncher implements ILauncher {
 
   @Override
   public void launch() {
-    loadGame();
+    try {
+      loadGame();
+    } catch (final Exception e) {
+      log.log(Level.SEVERE, "Error when loading game", e);
+      abortLaunch = true;
+    }
     new Thread(this::launchInternal).start();
   }
 
