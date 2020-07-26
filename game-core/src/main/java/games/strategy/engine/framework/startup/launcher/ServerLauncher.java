@@ -23,19 +23,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 
 /** Implementation of {@link ILauncher} for a headed or headless network server game. */
 @Log
-public class ServerLauncher extends AbstractLauncher<Void> {
+public class ServerLauncher implements ILauncher {
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
   private final LaunchAction launchAction;
@@ -94,7 +92,12 @@ public class ServerLauncher extends AbstractLauncher<Void> {
   }
 
   @Override
-  Optional<Void> loadGame() {
+  public void launch() {
+    loadGame();
+    new Thread(this::launchInternal).start();
+  }
+
+  private void loadGame() {
     try {
       // the order of this stuff does matter
       serverModel.setServerLauncher(this);
@@ -153,11 +156,9 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       }
       log.info("Game Status: In Progress");
     }
-    return Optional.empty();
   }
 
-  @Override
-  void launchInternal(@Nullable final Void none) {
+  private void launchInternal() {
     try {
       isLaunching = false;
       abortLaunch = testShouldWeAbort();
