@@ -163,9 +163,7 @@ public class ServerLauncher implements ILauncher {
       isLaunching = false;
       abortLaunch = testShouldWeAbort();
       if (!abortLaunch) {
-        if (!remotePlayers.isEmpty()) {
-          warmUpCryptoRandomSource();
-        }
+        warmUpCryptoRandomSource();
         log.info("Launching game - starting game delegates.");
         serverGame.startGame();
       } else {
