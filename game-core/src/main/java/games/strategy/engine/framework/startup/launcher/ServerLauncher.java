@@ -166,12 +166,15 @@ public class ServerLauncher implements ILauncher {
         if (!remotePlayers.isEmpty()) {
           warmUpCryptoRandomSource();
         }
-        log.info("Starting Game Delegates.");
+        log.info("Launching game - starting game delegates.");
         serverGame.startGame();
       } else {
+        log.info("Aborting game launch");
         stopGame();
       }
     } catch (final RuntimeException e) {
+      log.log(Level.INFO, "Exception while launching", e);
+
       // no-op, this is a simple player disconnect, no need to scare the user with some giant stack
       // trace
       final var cause = e.getCause();
@@ -209,9 +212,9 @@ public class ServerLauncher implements ILauncher {
     serverModel.newGame();
     launchAction.onGameInterrupt();
     if (inGameLobbyWatcher != null) {
+      log.info("Game Status: Waiting For Players");
       inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
     }
-    log.info("Game Status: Waiting For Players");
   }
 
   private void warmUpCryptoRandomSource() {
