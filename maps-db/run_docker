@@ -7,7 +7,9 @@
 
 function stop_container() {
   echo "Stopping docker..."
-  local runningContainerId=$(docker container ls | grep triplea-lobby-db | cut -f 1 -d ' ')
+  local -u runningContainerId;
+  runningContainerId=$(docker container ls | grep triplea-lobby-db | cut -f 1 -d ' ')
+
   if [ ! -z "$runningContainerId" ]; then
      docker container stop maps  > /dev/null
   fi
