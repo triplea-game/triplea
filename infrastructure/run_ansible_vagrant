@@ -46,16 +46,15 @@ function buildJars() {
 
 function buildMigrations() {
   local targetFolder=./ansible/roles/database/flyway/files/
-  local zipFile=migrations.zip
-  if [ ! -e $targetFolder/$zipFile ]; then
-    if [ ! -e ../lobby-db/build/distributions/$zipFile ]; then
-      (
-        cd ..
-        ./gradlew :lobby-db:release
-      )
-    fi
+  if [ ! -e $targetFolder/migrations.zip ] || [ ! -e "$targetFolder/map-migrations.zip" ]; then
+    (
+      cd ..
+      ./gradlew :lobby-db:release
+      ./gradlew :maps-db:release
+    )
     mkdir -p $targetFolder
-    cp ../lobby-db/build/distributions/$zipFile $targetFolder
+    cp ../lobby-db/build/distributions/migrations.zip $targetFolder
+    cp ../maps-db/build/distributions/map_migrations.zip $targetFolder
   fi
 }
 
