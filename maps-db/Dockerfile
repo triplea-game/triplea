@@ -8,4 +8,3 @@ ENV POSTGRES_USER=maps_user
 ENV POSTGRES_DB=maps_db
 
 EXPOSE 5432
-
