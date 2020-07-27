@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Simple helper script to connect to open a PSQL prompt
+# connected to the DB running locally on docker.
+psql -h localhost -U maps_user -p 5433 -w -d maps_db
