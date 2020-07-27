@@ -1,3 +1,4 @@
+
 buildscript {
     dependencies {
         classpath "org.postgresql:postgresql:$postgresqlVersion"
@@ -8,9 +9,11 @@ plugins {
     id 'org.flywaydb.flyway' version '6.5.2'
 }
 
+ext.mapDbPort = project.getProperties().getOrDefault('maps_db_port', '5433')
+
 flyway {
     driver = 'org.postgresql.Driver'
-    url= 'jdbc:postgresql://localhost:5433/maps_db'
+    url= "jdbc:postgresql://localhost:$mapDbPort/maps_db"
     user = 'maps_user'
     password = 'postgres'
 }
