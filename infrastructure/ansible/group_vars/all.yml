@@ -7,6 +7,9 @@ ansible_user: root
 lobby_db_name: lobby_db
 lobby_db_user: lobby_user
 
+maps_db_name: maps_db
+maps_db_user: maps_user
+
 admin_user: "admin"
 admin_home: "/home/{{ admin_user }}"
 

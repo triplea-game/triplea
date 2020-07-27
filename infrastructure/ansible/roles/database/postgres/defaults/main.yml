@@ -16,3 +16,7 @@ databases:
   - name: "lobby_db"
     user: "{{ lobby_db_user }}"
     password: "{{ lobby_db_password }}"
+  - name: "maps_db"
+    user: "{{ maps_db_user }}"
+    password: "{{ maps_db_password }}"
+
