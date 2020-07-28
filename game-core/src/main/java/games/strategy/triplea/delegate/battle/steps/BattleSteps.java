@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps;
 
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_DEFENSIVE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_DEFENSIVE_REGULAR;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_OFFENSIVE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_OFFENSIVE_REGULAR;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
@@ -20,6 +24,9 @@ import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsStep;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
@@ -96,6 +103,16 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   }
 
   @Override
+  public void clearAttackingWaitingToDie() {
+    attackingWaitingToDie.clear();
+  }
+
+  @Override
+  public void clearDefendingWaitingToDie() {
+    defendingWaitingToDie.clear();
+  }
+
+  @Override
   public boolean isOver() {
     return isOver;
   }
@@ -117,9 +134,9 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep landParatroopers = new LandParatroopers(this, battleActions);
     final BattleStep offensiveSubsSubmerge = new OffensiveSubsRetreat(this, battleActions);
     final BattleStep defensiveSubsSubmerge = new DefensiveSubsRetreat(this, battleActions);
-
-    final FirstStrikeStepOrder.FirstStrikeResult firstStrikeOrder =
-        FirstStrikeStepOrder.calculate(this);
+    final BattleStep offensiveFirstStrike = new OffensiveFirstStrike(this, battleActions);
+    final BattleStep defensiveFirstStrike = new DefensiveFirstStrike(this, battleActions);
+    final BattleStep firstStrikeCasualties = new ClearFirstStrikeCasualties(this, battleActions);
 
     final List<String> steps = new ArrayList<>();
     steps.addAll(offensiveAaStep.getNames());
@@ -143,42 +160,25 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     }
     steps.addAll(submergeSubsVsOnlyAir.getNames());
 
-    if (firstStrikeOrder.getDefender() == FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK) {
-      steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
-      steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
-      steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+    if (offensiveFirstStrike.getOrder() == FIRST_STRIKE_OFFENSIVE) {
+      steps.addAll(offensiveFirstStrike.getNames());
     }
-    if (firstStrikeOrder.getAttacker() != FirstStrikeStepOrder.NOT_APPLICABLE) {
-      steps.add(attacker.getName() + FIRST_STRIKE_UNITS_FIRE);
-      steps.add(defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
-      if (firstStrikeOrder.getAttacker() == FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK) {
-        steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
-      }
+    if (defensiveFirstStrike.getOrder() == FIRST_STRIKE_DEFENSIVE) {
+      steps.addAll(defensiveFirstStrike.getNames());
     }
+    steps.addAll(firstStrikeCasualties.getNames());
 
-    if (firstStrikeOrder.getDefender()
-            == FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK
-        || firstStrikeOrder.getDefender()
-            == FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE) {
-      steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
-      steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
+    if (offensiveFirstStrike.getOrder() == FIRST_STRIKE_OFFENSIVE_REGULAR) {
+      steps.addAll(offensiveFirstStrike.getNames());
     }
-    if (firstStrikeOrder.getAttacker()
-            == FirstStrikeStepOrder.OFFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE
-        || firstStrikeOrder.getDefender()
-            == FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE) {
-      steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
-    }
-
     steps.addAll(airAttackVsNonSubs.getNames());
 
     if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(attacker.getName() + FIRE);
       steps.add(defender.getName() + SELECT_CASUALTIES);
     }
-    if (firstStrikeOrder.getDefender() == FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK) {
-      steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
-      steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
+    if (defensiveFirstStrike.getOrder() == FIRST_STRIKE_DEFENSIVE_REGULAR) {
+      steps.addAll(defensiveFirstStrike.getNames());
     }
 
     steps.addAll(airDefendVsNonSubs.getNames());

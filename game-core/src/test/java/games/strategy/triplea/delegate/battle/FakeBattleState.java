@@ -80,6 +80,16 @@ public class FakeBattleState implements BattleState {
     return dependentUnits;
   }
 
+  @Override
+  public void clearAttackingWaitingToDie() {
+    attackingWaitingToDie.clear();
+  }
+
+  @Override
+  public void clearDefendingWaitingToDie() {
+    defendingWaitingToDie.clear();
+  }
+
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
     return FakeBattleState.builder()
         .battleRound(2)

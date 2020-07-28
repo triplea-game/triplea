@@ -17,9 +17,13 @@ public interface BattleState {
 
   Collection<Unit> getAttackingWaitingToDie();
 
+  void clearAttackingWaitingToDie();
+
   Collection<Unit> getDefendingUnits();
 
   Collection<Unit> getDefendingWaitingToDie();
+
+  void clearDefendingWaitingToDie();
 
   Collection<Unit> getOffensiveAa();
 

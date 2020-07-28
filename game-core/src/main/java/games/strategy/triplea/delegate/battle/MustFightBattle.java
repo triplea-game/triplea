@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate.battle;
 
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_DEFENSIVE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_DEFENSIVE_REGULAR;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_OFFENSIVE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.FIRST_STRIKE_OFFENSIVE_REGULAR;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
@@ -32,7 +36,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
-import games.strategy.triplea.delegate.battle.steps.FirstStrikeStepOrder;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
@@ -41,6 +44,9 @@ import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
@@ -109,26 +115,6 @@ public class MustFightBattle extends DependentBattle
    */
   public abstract static class StandardAttackersFire implements IExecutable {
     private static final long serialVersionUID = -6026031760663113621L;
-  }
-
-  /**
-   * An action representing attacking subs firing during a battle.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class FirstStrikeAttackersFire implements IExecutable {
-    private static final long serialVersionUID = 4872551667582174716L;
-  }
-
-  /**
-   * An action representing defending subs firing during a battle.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class FirstStrikeDefendersFire implements IExecutable {
-    private static final long serialVersionUID = 3768066729336520095L;
   }
 
   private static final long serialVersionUID = 5879502298361231540L;
@@ -356,6 +342,16 @@ public class MustFightBattle extends DependentBattle
     return defendingAa;
   }
 
+  @Override
+  public void clearAttackingWaitingToDie() {
+    attackingWaitingToDie.clear();
+  }
+
+  @Override
+  public void clearDefendingWaitingToDie() {
+    defendingWaitingToDie.clear();
+  }
+
   /**
    * Used for setting stuff when we make a scrambling battle when there was no previous battle
    * there, and we need retreat spaces.
@@ -455,10 +451,11 @@ public class MustFightBattle extends DependentBattle
     killedDuringCurrentRound.clear();
   }
 
-  private void damagedChangeInto(
+  @Override
+  public void damagedChangeInto(
       final GamePlayer player,
-      final List<Unit> units,
-      final List<Unit> killedUnits,
+      final Collection<Unit> units,
+      final Collection<Unit> killedUnits,
       final IDelegateBridge bridge) {
     final List<Unit> damagedUnits =
         CollectionUtils.getMatches(
@@ -557,8 +554,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  @VisibleForTesting
-  protected void remove(
+  @Override
+  public void remove(
       final Collection<Unit> killedUnits,
       final IDelegateBridge bridge,
       final Territory battleSite,
@@ -1411,10 +1408,19 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addFightSteps(final List<IExecutable> steps) {
-    final FirstStrikeStepOrder.FirstStrikeResult firstStrikeOrder =
-        FirstStrikeStepOrder.calculate(this);
+    // these two variables are needed for save compatibility
+    // the value of the variables aren't important now, but they must
+    // be defined in the scope of this method so that when the save is loaded,
+    // it will correctly populate the saved value of these variables.
+    final ReturnFire returnFireAgainstAttackingSubs = ReturnFire.ALL;
+    final ReturnFire returnFireAgainstDefendingSubs = ReturnFire.ALL;
+
     final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
     final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
+    final BattleStep offensiveFirstStrike = new OffensiveFirstStrike(this, this);
+    final BattleStep defensiveFirstStrike = new DefensiveFirstStrike(this, this);
+    final BattleStep firstStrikeCasualties = new ClearFirstStrikeCasualties(this, this);
+
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.add(offensiveSubsRetreat);
     }
@@ -1478,42 +1484,49 @@ public class MustFightBattle extends DependentBattle
       }
     };
 
-    if (firstStrikeOrder.getDefender() == FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK) {
-      steps.add(
-          new FirstStrikeDefendersFire() {
-            private static final long serialVersionUID = 99992L;
+    new IExecutable() {
+      private static final long serialVersionUID = 99992L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              firstStrikeDefendersFire(firstStrikeOrder.getDefender().getReturnFire());
-            }
-          });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new DefensiveFirstStrike(MustFightBattle.this, MustFightBattle.this, ReturnFire.NONE)
+            .execute(stack, bridge);
+      }
+    };
+    if (offensiveFirstStrike.getOrder() == FIRST_STRIKE_OFFENSIVE) {
+      steps.add(offensiveFirstStrike);
     }
-    if (firstStrikeOrder.getAttacker() != FirstStrikeStepOrder.NOT_APPLICABLE) {
-      steps.add(
-          new FirstStrikeAttackersFire() {
-            private static final long serialVersionUID = 99991L;
+    new IExecutable() {
+      private static final long serialVersionUID = 99991L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              firstStrikeAttackersFire(firstStrikeOrder.getAttacker().getReturnFire());
-            }
-          });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new OffensiveFirstStrike(
+                MustFightBattle.this,
+                MustFightBattle.this,
+                // can either be NONE, SUBS, or ALL
+                returnFireAgainstAttackingSubs)
+            .execute(stack, bridge);
+      }
+    };
+    if (defensiveFirstStrike.getOrder() == FIRST_STRIKE_DEFENSIVE) {
+      steps.add(defensiveFirstStrike);
     }
-    if (firstStrikeOrder.getDefender()
-            == FirstStrikeStepOrder.DEFENDER_SNEAK_ATTACK_WITH_OPPOSING_FIRST_STRIKE
-        || firstStrikeOrder.getDefender()
-            == FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK_BUT_BEFORE_STANDARD_ATTACK) {
-      steps.add(
-          new FirstStrikeDefendersFire() {
-            private static final long serialVersionUID = 99992L;
+    new IExecutable() {
+      private static final long serialVersionUID = 99992L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              firstStrikeDefendersFire(firstStrikeOrder.getDefender().getReturnFire());
-            }
-          });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new DefensiveFirstStrike(
+                MustFightBattle.this,
+                MustFightBattle.this,
+                // can either be SUBS or (if WW2V2) ALL
+                returnFireAgainstDefendingSubs)
+            .execute(stack, bridge);
+      }
+    };
+    steps.add(firstStrikeCasualties);
+
     steps.add(
         new IExecutable() {
           private static final long serialVersionUID = -7634700553071456768L;
@@ -1523,6 +1536,9 @@ public class MustFightBattle extends DependentBattle
             removeFirstStrikeSuicideUnits(bridge);
           }
         });
+    if (offensiveFirstStrike.getOrder() == FIRST_STRIKE_OFFENSIVE_REGULAR) {
+      steps.add(offensiveFirstStrike);
+    }
     // Attacker fire remaining units
     steps.add(
         new StandardAttackersFire() {
@@ -1533,17 +1549,20 @@ public class MustFightBattle extends DependentBattle
             standardAttackersFire();
           }
         });
-    if (firstStrikeOrder.getDefender() == FirstStrikeStepOrder.DEFENDER_NO_SNEAK_ATTACK) {
-      steps.add(
-          new FirstStrikeDefendersFire() {
-            private static final long serialVersionUID = 999921L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              firstStrikeDefendersFire(firstStrikeOrder.getDefender().getReturnFire());
-            }
-          });
+    if (defensiveFirstStrike.getOrder() == FIRST_STRIKE_DEFENSIVE_REGULAR) {
+      steps.add(defensiveFirstStrike);
     }
+    new IExecutable() {
+      private static final long serialVersionUID = 999921L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new DefensiveFirstStrike(MustFightBattle.this, MustFightBattle.this, ReturnFire.ALL)
+            .execute(stack, bridge);
+      }
+    };
+
     steps.add(
         new IExecutable() {
           private static final long serialVersionUID = 1560702114917865290L;
@@ -1655,34 +1674,6 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  @VisibleForTesting
-  protected void firstStrikeDefendersFire(final ReturnFire returnFire) {
-    findTargetGroupsAndFire(
-        returnFire,
-        attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-        true,
-        defender,
-        Matches.unitIsFirstStrikeOnDefense(gameData),
-        defendingUnits,
-        defendingWaitingToDie,
-        attackingUnits,
-        attackingWaitingToDie);
-  }
-
-  @VisibleForTesting
-  protected void firstStrikeAttackersFire(final ReturnFire returnFire) {
-    findTargetGroupsAndFire(
-        returnFire,
-        defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-        false,
-        attacker,
-        Matches.unitIsFirstStrike(),
-        attackingUnits,
-        attackingWaitingToDie,
-        defendingUnits,
-        defendingWaitingToDie);
-  }
-
   private void standardAttackersFire() {
     findTargetGroupsAndFire(
         ReturnFire.ALL,
@@ -1709,7 +1700,8 @@ public class MustFightBattle extends DependentBattle
         attackingWaitingToDie);
   }
 
-  private void findTargetGroupsAndFire(
+  @Override
+  public void findTargetGroupsAndFire(
       final ReturnFire returnFire,
       final String stepName,
       final boolean defending,
