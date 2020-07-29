@@ -96,7 +96,13 @@ class UnitImageFactoryTest {
       final GamePlayer player = givenPlayerWithTech(techAttachmentProperties);
 
       final String imageName =
-          UnitImageFactory.getBaseImageName(unitType, player, damaged, disabled);
+          UnitImageFactory.ImageKey.builder()
+              .type(unitType)
+              .player(player)
+              .damaged(damaged)
+              .disabled(disabled)
+              .build()
+              .getBaseImageName();
       assertThat(imageName, is(expectedImageName));
     }
 

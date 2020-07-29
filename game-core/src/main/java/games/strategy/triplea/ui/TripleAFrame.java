@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import com.google.common.base.Preconditions;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
@@ -1231,15 +1233,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         final boolean cellHasFocus) {
 
       setText(unit.toString() + ", damage=" + unit.getUnitDamage());
-      final Optional<ImageIcon> icon =
-          uiContext
-              .getUnitImageFactory()
-              .getIcon(
-                  unit.getType(),
-                  unit.getOwner(),
-                  Matches.unitHasTakenSomeBombingUnitDamage().test(unit),
-                  Matches.unitIsDisabled().test(unit));
-      icon.ifPresent(this::setIcon);
+      uiContext.getUnitImageFactory().getIcon(ImageKey.of(unit)).ifPresent(this::setIcon);
       setBorder(new EmptyBorder(0, 0, 0, 10));
 
       // Set selected option to highlighted color

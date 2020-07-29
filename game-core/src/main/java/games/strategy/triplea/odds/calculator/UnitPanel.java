@@ -1,5 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -10,12 +12,9 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.ui.ScrollableTextField;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.triplea.java.collections.IntegerMap;
@@ -45,16 +44,12 @@ public class UnitPanel extends JPanel {
     setCount(category.getUnits().size());
     setLayout(new GridBagLayout());
 
-    final Optional<Image> img =
+    final JLabel label =
         uiContext
             .getUnitImageFactory()
-            .getImage(
-                category.getType(),
-                category.getOwner(),
-                category.hasDamageOrBombingUnitDamage(),
-                category.getDisabled());
-
-    final JLabel label = img.map(image -> new JLabel(new ImageIcon(image))).orElseGet(JLabel::new);
+            .getIcon(ImageKey.of(category))
+            .map(JLabel::new)
+            .orElseGet(JLabel::new);
     label.setToolTipText(toolTipText);
     add(
         label,

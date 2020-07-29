@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -9,7 +11,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -112,21 +113,24 @@ public class UnitsDrawer extends AbstractDrawable {
     }
     final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
     final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;
-    final Optional<Image> img =
-        uiContext.getUnitImageFactory().getImage(type, owner, damagedImage, disabled);
 
+    final var imageKey =
+        ImageKey.builder()
+            .type(type)
+            .player(owner)
+            .damaged(damagedImage)
+            .disabled(disabled)
+            .build();
+
+    final Optional<Image> img = uiContext.getUnitImageFactory().getImage(imageKey);
     if (img.isEmpty() && !uiContext.isShutDown()) {
-      final String imageName =
-          UnitImageFactory.getBaseImageName(type, owner, damagedImage, disabled);
+      final String imageName = imageKey.getBaseImageName();
       log.severe(
           "MISSING UNIT IMAGE (won't be displayed): "
-              + type.getName()
-              + " ("
               + imageName
-              + ")"
-              + " owned by "
-              + owner.getName()
-              + " in "
+              + ", "
+              + imageKey
+              + ", in "
               + territoryName);
     }
 

@@ -13,6 +13,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import java.awt.GridBagConstraints;
@@ -23,10 +24,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -146,7 +145,7 @@ class ProductionRepairPanel extends JPanel {
             if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
               continue;
             }
-            final Rule rule = new Rule(repairRule, player, unit, terr);
+            final Rule rule = new Rule(repairRule, unit, terr);
             int initialQuantity = 0;
             if (initialPurchase.get(unit) != null) {
               initialQuantity = initialPurchase.get(unit).getInt(repairRule);
@@ -287,11 +286,7 @@ class ProductionRepairPanel extends JPanel {
     private final int maxRepairAmount;
     private final int repairResults;
 
-    Rule(
-        final RepairRule rule,
-        final GamePlayer gamePlayer,
-        final Unit repairUnit,
-        final Territory territoryUnitIsIn) {
+    Rule(final RepairRule rule, final Unit repairUnit, final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
       this.unit = repairUnit;
       this.rule = rule;
@@ -306,18 +301,13 @@ class ProductionRepairPanel extends JPanel {
                 + ".  Please make sure your maps are up to date!");
       }
       repairResults = rule.getResults().getInt(type);
-      final Optional<ImageIcon> icon =
-          uiContext
-              .getUnitImageFactory()
-              .getIcon(
-                  type,
-                  gamePlayer,
-                  Matches.unitHasTakenSomeBombingUnitDamage().test(repairUnit),
-                  Matches.unitIsDisabled().test(repairUnit));
       final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
 
       final JLabel label =
-          icon.map(imageIcon -> new JLabel(text, imageIcon, SwingConstants.LEFT))
+          uiContext
+              .getUnitImageFactory()
+              .getIcon(ImageKey.of(repairUnit))
+              .map(imageIcon -> new JLabel(text, imageIcon, SwingConstants.LEFT))
               .orElseGet(() -> new JLabel(text, SwingConstants.LEFT));
       final JLabel info = new JLabel(territoryUnitIsIn.getName());
       maxRepairAmount = repairUnit.getHowMuchCanThisUnitBeRepaired(territoryUnitIsIn);

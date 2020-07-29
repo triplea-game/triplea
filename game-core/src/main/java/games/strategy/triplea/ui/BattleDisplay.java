@@ -1,5 +1,8 @@
 package games.strategy.triplea.ui;
 
+import static games.strategy.triplea.image.UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -18,7 +21,6 @@ import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
@@ -791,7 +793,7 @@ public class BattleDisplay extends JPanel {
     BattleTable(final BattleModel model) {
       super(model);
       setDefaultRenderer(Object.class, new Renderer());
-      setRowHeight(UnitImageFactory.DEFAULT_UNIT_ICON_SIZE + 5);
+      setRowHeight(DEFAULT_UNIT_ICON_SIZE + 5);
       setBackground(new JButton().getBackground());
       setShowHorizontalLines(false);
       getTableHeader().setReorderingAllowed(false);
@@ -930,16 +932,7 @@ public class BattleDisplay extends JPanel {
         }
         for (int i = 0; i <= gameData.getDiceSides(); i++) {
           if (shift[i] > 0) {
-            columns
-                .get(i)
-                .add(
-                    new TableData(
-                        category.getOwner(),
-                        shift[i],
-                        category.getType(),
-                        category.hasDamageOrBombingUnitDamage(),
-                        category.getDisabled(),
-                        uiContext));
+            columns.get(i).add(new TableData(ImageKey.of(category), shift[i], uiContext));
           }
         }
         // TODO Kev determine if we need to identify if the unit is hit/disabled
@@ -994,17 +987,11 @@ public class BattleDisplay extends JPanel {
 
     private TableData() {}
 
-    TableData(
-        final GamePlayer player,
-        final int count,
-        final UnitType type,
-        final boolean damaged,
-        final boolean disabled,
-        final UiContext uiContext) {
-      this.player = player;
+    TableData(final ImageKey imageKey, final int count, final UiContext uiContext) {
+      this.player = imageKey.getPlayer();
       this.count = count;
-      this.unitType = type;
-      icon = uiContext.getUnitImageFactory().getIcon(type, player, damaged, disabled);
+      this.unitType = imageKey.getType();
+      icon = uiContext.getUnitImageFactory().getIcon(imageKey);
     }
 
     void updateStamp(final JLabel stamp) {
@@ -1073,15 +1060,16 @@ public class BattleDisplay extends JPanel {
         final Iterable<UnitCategory> categoryIter, final boolean damaged, final boolean disabled) {
       for (final UnitCategory category : categoryIter) {
         final JPanel panel = new JPanel();
-        // TODO Kev determine if we need to identify if the unit is hit/disabled
         final Optional<ImageIcon> unitImage =
             uiContext
                 .getUnitImageFactory()
                 .getIcon(
-                    category.getType(),
-                    category.getOwner(),
-                    damaged && category.hasDamageOrBombingUnitDamage(),
-                    disabled && category.getDisabled());
+                    ImageKey.builder()
+                        .player(category.getOwner())
+                        .type(category.getType())
+                        .damaged(damaged && category.hasDamageOrBombingUnitDamage())
+                        .disabled(disabled && category.getDisabled())
+                        .build());
         final JLabel unit = unitImage.map(JLabel::new).orElseGet(JLabel::new);
         panel.add(unit);
         // Add a tooltip, with a count of 1 so that the tooltip doesn't have a number label (so it

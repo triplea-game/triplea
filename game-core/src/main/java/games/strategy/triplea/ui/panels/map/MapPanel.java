@@ -16,6 +16,7 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.UiContext;
@@ -714,11 +715,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final Optional<Image> image =
             uiContext
                 .getUnitImageFactory()
-                .getHighlightImage(
-                    category.getType(),
-                    category.getOwner(),
-                    category.hasDamageOrBombingUnitDamage(),
-                    category.getDisabled());
+                .getHighlightImage(UnitImageFactory.ImageKey.of(category));
         if (image.isPresent()) {
           final AffineTransform transform =
               AffineTransform.getTranslateInstance(
