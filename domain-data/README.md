@@ -14,4 +14,3 @@ not all domain or sub-domain entities belong here.
 This is a very low level sub-project that can be shared between DB
 and client components for common objects that are shared between multiple
 other sub-projects.
-

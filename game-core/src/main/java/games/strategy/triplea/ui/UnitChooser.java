@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeparator;
@@ -11,7 +12,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -614,24 +613,24 @@ public final class UnitChooser extends JPanel {
       @Override
       public void paint(final Graphics g) {
         super.paint(g);
-        final Optional<Image> image =
-            uiContext
-                .getUnitImageFactory()
-                .getImage(
-                    category.getType(),
-                    category.getOwner(),
-                    forceDamaged || category.hasDamageOrBombingUnitDamage(),
-                    category.getDisabled());
-        image.ifPresent(image1 -> g.drawImage(image1, 0, 0, this));
+        uiContext
+            .getUnitImageFactory()
+            .getImage(
+                ImageKey.builder()
+                    .type(category.getType())
+                    .player(category.getOwner())
+                    .damaged(forceDamaged || category.hasDamageOrBombingUnitDamage())
+                    .disabled(category.getDisabled())
+                    .build())
+            .ifPresent(image -> g.drawImage(image, 0, 0, this));
 
         int index = 1;
         for (final UnitOwner holder : category.getDependents()) {
           final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
-          final Optional<Image> unitImg =
-              uiContext
-                  .getUnitImageFactory()
-                  .getImage(holder.getType(), holder.getOwner(), false, false);
-          unitImg.ifPresent(image1 -> g.drawImage(image1, x, 0, this));
+          uiContext
+              .getUnitImageFactory()
+              .getImage(ImageKey.of(holder))
+              .ifPresent(image1 -> g.drawImage(image1, x, 0, this));
           index++;
         }
       }

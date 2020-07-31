@@ -568,6 +568,15 @@ public class MustFightBattle extends DependentBattle
     }
     final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
 
+    // Remove units
+    final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
+    this.killed.addAll(killed);
+    killedDuringCurrentRound.addAll(killed);
+    final String transcriptText =
+        MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
+    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
+    bridge.addChange(killedChange);
+
     // Set max damage for any units that will change into another unit
     final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();
     for (final Unit unit :
@@ -578,16 +587,7 @@ public class MustFightBattle extends DependentBattle
         ChangeFactory.unitsHit(lethallyDamagedMap, List.of(battleSite));
     bridge.addChange(lethallyDamagedChange);
 
-    // Remove units
-    final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
-    this.killed.addAll(killed);
-    killedDuringCurrentRound.addAll(killed);
-    final String transcriptText =
-        MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
-    bridge.addChange(killedChange);
     final Collection<IBattle> dependentBattles = battleTracker.getBlocked(this);
-
     // If there are NO dependent battles, check for unloads in allied territories
     if (dependentBattles.isEmpty()) {
       removeFromNonCombatLandings(killed, bridge);

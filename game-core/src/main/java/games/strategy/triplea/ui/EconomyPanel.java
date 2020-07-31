@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
@@ -101,9 +102,9 @@ class EconomyPanel extends AbstractStatPanel {
           resourceIncomeMap.put(player, resourceIncomes);
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
-            final double amount = resourceStat.getValue(player, gameData);
+            final double amount = resourceStat.getValue(player, gameData, uiContext.getMapData());
             final int income = resourceIncomes.getInt(resourceStat.resource);
-            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
+            collectedData[row][i + 1] = getResourceAmountAndIncome(amount, income);
           }
           row++;
         }
@@ -111,12 +112,13 @@ class EconomyPanel extends AbstractStatPanel {
           collectedData[row][0] = alliance.getKey();
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
-            final double amount = resourceStat.getValue(alliance.getKey(), gameData);
+            final double amount =
+                resourceStat.getValue(alliance.getKey(), gameData, uiContext.getMapData());
             final int income =
                 alliance.getValue().stream()
                     .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource))
                     .sum();
-            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
+            collectedData[row][i + 1] = getResourceAmountAndIncome(amount, income);
           }
           row++;
         }
@@ -125,11 +127,9 @@ class EconomyPanel extends AbstractStatPanel {
       }
     }
 
-    private String getResourceAmountAndIncome(
-        final ResourceStat resourceStat, final double amount, final int income) {
+    private String getResourceAmountAndIncome(final double amount, final int income) {
       final StringBuilder resourceAmountAndIncome =
-          new StringBuilder(
-              "<html><b>" + resourceStat.getFormatter().format(amount) + "</b>&nbsp;(");
+          new StringBuilder("<html><b>" + IStat.DECIMAL_FORMAT.format(amount) + "</b>&nbsp;(");
       if (income >= 0) {
         resourceAmountAndIncome.append("+");
       }

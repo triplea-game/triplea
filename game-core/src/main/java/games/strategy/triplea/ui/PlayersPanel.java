@@ -6,11 +6,12 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import lombok.experimental.UtilityClass;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** Panel to show who is playing which players. */
-public final class PlayersPanel {
-  private PlayersPanel() {}
+@UtilityClass
+public class PlayersPanel {
 
   /**
    * Displays a dialog that shows which node (user) is controlling each player (nation, power,

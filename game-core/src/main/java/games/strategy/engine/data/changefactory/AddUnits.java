@@ -42,7 +42,16 @@ public class AddUnits extends Change {
   }
 
   private Map<UUID, String> buildUnitOwnerMap(final Collection<Unit> units) {
-    return units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit.getOwner().getName()));
+    return units.stream()
+        .collect(
+            Collectors.toMap(
+                Unit::getId,
+                unit -> {
+                  if (unit.getOwner() == null || unit.getOwner().getName() == null) {
+                    return null;
+                  }
+                  return unit.getOwner().getName();
+                }));
   }
 
   @Override
@@ -67,8 +76,10 @@ public class AddUnits extends Change {
               if (unit == null) {
                 unit = uuidToUnits.get(entry.getKey());
               }
-              final GamePlayer player = data.getPlayerList().getPlayerId(entry.getValue());
-              unit.setOwner(player);
+              if (entry.getValue() != null) {
+                final GamePlayer player = data.getPlayerList().getPlayerId(entry.getValue());
+                unit.setOwner(player);
+              }
               return unit;
             })
         .collect(Collectors.toList());

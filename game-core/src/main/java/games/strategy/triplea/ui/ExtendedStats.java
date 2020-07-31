@@ -7,7 +7,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
-import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
@@ -15,6 +14,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -99,14 +99,14 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class TechCountStat extends AbstractStat {
+  static class TechCountStat implements IStat {
     @Override
     public String getName() {
       return "Techs";
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       int count = 0;
       final TechAttachment ta = TechAttachment.get(player);
       if (ta.getHeavyBomber()) {
@@ -160,7 +160,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class GenericResourceStat extends AbstractStat {
+  static class GenericResourceStat implements IStat {
     private String name = null;
 
     public void init(final String name) {
@@ -173,12 +173,12 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       return player.getResources().getQuantity(name);
     }
   }
 
-  static class GenericTechNameStat extends AbstractStat {
+  static class GenericTechNameStat implements IStat {
     private TechAdvance ta = null;
 
     public void init(final TechAdvance ta) {
@@ -191,7 +191,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       if (ta.hasTech(TechAttachment.get(player))) {
         return 1;
       }
@@ -199,7 +199,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class GenericUnitNameStat extends AbstractStat {
+  static class GenericUnitNameStat implements IStat {
     private UnitType ut = null;
 
     public void init(final UnitType ut) {
@@ -212,7 +212,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final GamePlayer player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       int matchCount = 0;
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(ut));
       for (final Territory place : data.getMap().getTerritories()) {

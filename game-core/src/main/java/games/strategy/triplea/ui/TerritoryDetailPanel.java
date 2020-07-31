@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -143,15 +145,8 @@ class TerritoryDetailPanel extends AbstractStatPanel {
         currentPlayer = item.getOwner();
         panel.add(Box.createVerticalStrut(15));
       }
-      // TODO Kev determine if we need to identify if the unit is hit/disabled
       final Optional<ImageIcon> unitIcon =
-          uiContext
-              .getUnitImageFactory()
-              .getIcon(
-                  item.getType(),
-                  item.getOwner(),
-                  item.hasDamageOrBombingUnitDamage(),
-                  item.getDisabled());
+          uiContext.getUnitImageFactory().getIcon(ImageKey.of(item));
       if (unitIcon.isPresent()) {
         // overlay flag onto upper-right of icon
         final ImageIcon flagIcon =

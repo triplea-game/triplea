@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import java.awt.Dimension;
@@ -297,12 +298,7 @@ public class IndividualUnitPanel extends JPanel {
       setCount(currentValue);
       setLayout(new GridBagLayout());
 
-      final JLabel label =
-          uiContext.newUnitImageLabel(
-              this.unit.getType(),
-              this.unit.getOwner(),
-              unit.isDamaged() ? UiContext.UnitDamage.DAMAGED : UiContext.UnitDamage.NOT_DAMAGED,
-              unit.getDisabled() ? UiContext.UnitEnable.DISABLED : UiContext.UnitEnable.ENABLED);
+      final JLabel label = uiContext.newUnitImageLabel(ImageKey.of(this.unit));
 
       add(
           label,

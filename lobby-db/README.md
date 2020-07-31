@@ -48,4 +48,3 @@ Port | `5432` |
 ## Docker DB configuration
 
 Docker container and Configuration flag documentation can be found at: https://hub.docker.com/_/postgres
-

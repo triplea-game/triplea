@@ -1,53 +1,30 @@
 package games.strategy.engine.auto.update;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.List;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import lombok.experimental.UtilityClass;
 
-final class UpdatedMapsCheck {
-  private UpdatedMapsCheck() {}
+@UtilityClass
+class UpdatedMapsCheck {
+
+  static final int THRESHOLD_DAYS = 7;
 
   static boolean isMapUpdateCheckRequired() {
     return isMapUpdateCheckRequired(
-        LocalDate.now(ZoneId.systemDefault()),
-        ClientSetting.lastCheckForMapUpdates,
-        ClientSetting::flush);
+        ClientSetting.lastCheckForMapUpdates.getValue().orElse(0L),
+        () -> ClientSetting.lastCheckForMapUpdates.setValueAndFlush(Instant.now().toEpochMilli()));
   }
 
   @VisibleForTesting
   static boolean isMapUpdateCheckRequired(
-      final LocalDate now,
-      final GameSetting<String> updateCheckDateSetting,
-      final Runnable flushSetting) {
-    // check at most once per month
-    final boolean updateCheckRequired =
-        updateCheckDateSetting
-            .getValue()
-            .map(
-                encodedUpdateCheckDate ->
-                    !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusMonths(1)))
-            .orElse(true);
-    if (!updateCheckRequired) {
-      return false;
-    }
+      final long lastCheckEpochMilli, final Runnable lastCheckSetter) {
+    final Instant cutOff = Instant.now().minus(THRESHOLD_DAYS, ChronoUnit.DAYS);
+    final Instant lastCheck = Instant.ofEpochMilli(lastCheckEpochMilli);
 
-    updateCheckDateSetting.setValue(formatUpdateCheckDate(now));
-    flushSetting.run();
-    return true;
-  }
+    lastCheckSetter.run();
 
-  @VisibleForTesting
-  static LocalDate parseUpdateCheckDate(final String encodedUpdateCheckDate) {
-    final List<String> tokens = Splitter.on(':').splitToList(encodedUpdateCheckDate);
-    return LocalDate.of(Integer.parseInt(tokens.get(0)), Integer.parseInt(tokens.get(1)), 1);
-  }
-
-  @VisibleForTesting
-  static String formatUpdateCheckDate(final LocalDate updateCheckDate) {
-    return updateCheckDate.getYear() + ":" + updateCheckDate.getMonthValue();
+    return lastCheck.isBefore(cutOff);
   }
 }

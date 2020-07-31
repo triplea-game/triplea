@@ -4,7 +4,7 @@ version: "2"
 # https://docs.codeclimate.com/docs/maintainability#section-checks
 # https://docs.codeclimate.com/docs/advanced-configuration
 checks:
-  method-complexity: 
+  method-complexity:
     config:
       threshold: 7
   method-lines:
@@ -40,4 +40,3 @@ exclude_patterns:
   - "gradlew"
   - ".github/ISSUE_TEMPLATES/*"
   - "**/*Test.java"
-

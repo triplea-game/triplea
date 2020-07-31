@@ -427,7 +427,7 @@
   version: 4
   img: https://raw.githubusercontent.com/triplea-maps/ww2_path_to_victory/master/map/smallMap.png
   description: |
-    <br>A new World War II map, inspired by Global 1940, from the creators of G40 Balanced Mod. 
+    <br>A new World War II map, inspired by Global 1940, from the creators of G40 Balanced Mod.
     <br>
     <br>Features a newly redrawn Russia, China, and Pacific theater, designed to encourage more dynamic and historical gameplay.
     <br>
@@ -929,7 +929,7 @@
     <br>* 1956 Suez Crisis
     <br>* 1967 Six-Day War
     <br>* 1973 Yom Kippur War
-    <br>     
+    <br>
 - mapName: Big World Variations
   url: https://github.com/triplea-maps/big_world_variations/archive/master.zip
   version: 2
@@ -1065,12 +1065,12 @@
   img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_sieg_2/master/description/TripleA_new_world_order_siegSkin2_mini.png
   description: |
     <div style="text-align: left;">
-    	<br>
-    	<h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
-    	<br>Alternative Relief Tiles for NWO
-    	<br>by sieg
-    	<br>
-    	<br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+        <br>
+        <h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
+        <br>Alternative Relief Tiles for NWO
+        <br>by sieg
+        <br>
+        <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
     </div>
 - mapName: New World Order-skin pulicat 1
   mapType: MAP_SKIN
@@ -1079,12 +1079,12 @@
   img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_pulicat_1/master/description/TripleA_new_world_order_pulicatSkin_mini.png
   description: |
     <div style="text-align: left;">
-    	<br>
-    	<h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
-    	<br>Alternative Relief Tiles for NWO
-    	<br>by pulicat
-    	<br>
-    	<br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+        <br>
+        <h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
+        <br>Alternative Relief Tiles for NWO
+        <br>by pulicat
+        <br>
+        <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
     </div>
 - mapName: New World Order-skin gudkarma 1
   mapType: MAP_SKIN
@@ -1093,12 +1093,12 @@
   img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_gudkarma_1/master/description/TripleA_new_world_order_gudkarmaSkin_mini.png
   description: |
     <div style="text-align: left;">
-    	<br>
-    	<h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
-    	<br>Alternative Relief Tiles for NWO
-    	<br>by gudkarma
-    	<br>
-    	<br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+        <br>
+        <h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
+        <br>Alternative Relief Tiles for NWO
+        <br>by gudkarma
+        <br>
+        <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
     </div>
 - mapName: Diplomacy-Map Skin1
   mapType: MAP_SKIN
@@ -1179,7 +1179,7 @@
     <br>
     <br>The vXXX mod uses additional:
     <br>- Recruits
-    <br>- Slightly modified setup for this variant 
+    <br>- Slightly modified setup for this variant
     <br>- Ships SBR
     <br>- Land units SBR
     <br>
@@ -1226,7 +1226,7 @@
     <br>- AntiAir (AA) separated to combat- (hit 1 of 6) and bombing raid- (hit 1 of 12) AA
     <br>- Airbase enables full range for planes
     <br>- Recruits
-    <br>- Slightly modified setup for this variant 
+    <br>- Slightly modified setup for this variant
     <br>- Ships SBR
     <br>- Land units SBR
     <br>
@@ -1236,7 +1236,7 @@
     <br>The combination of all possible features enables almost a real handling of warfare.
     <br>The fuel mod opens a totally new strategy setup. Big unit groups can't move forever, so use your fuel wisely.
     <br>Historical: http://histclo.com/essay/war/ww2/stra/w2j-oil.html
-    <br>    
+    <br>
 - mapName: World War2010
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
@@ -1474,9 +1474,9 @@
     <br>Created by: Dave Ball (Conarymor)
     <br>Updated by: Redrum
     <br>
-    <br>The Cold War... a period of great uncertainty. The 1960s saw the Berlin Wall go up, the Cuban Missile Crisis, 
-    <br>the Sino-Soviet split, the Vietnam War, the Six Days War, the continued stand-off between the Koreas, tension between India and Pakistan, 
-    <br>the end of European Colonialism (and the collapse of many successor states), and of course, the proliferation of nuclear arms. 
+    <br>The Cold War... a period of great uncertainty. The 1960s saw the Berlin Wall go up, the Cuban Missile Crisis,
+    <br>the Sino-Soviet split, the Vietnam War, the Six Days War, the continued stand-off between the Koreas, tension between India and Pakistan,
+    <br>the end of European Colonialism (and the collapse of many successor states), and of course, the proliferation of nuclear arms.
     <br>This was a tense period in our history, in which any number of small conflicts could have escalated quickly into WWIII.
     <br>
 - mapName: The Great Northern War
@@ -1746,8 +1746,8 @@
     <div style="text-align: center;">Will you deploy that first laser...</div>
     <b>Objectives</b>
     <ul>
-    	<li>Americans player objective: control at least 13 cities until turn 12</li>
-    	<li>Invading player(s) objective: conquer and hold at least 18 cities at the end of the Americans turn</li>
+        <li>Americans player objective: control at least 13 cities until turn 12</li>
+        <li>Invading player(s) objective: conquer and hold at least 18 cities at the end of the Americans turn</li>
     </ul>
     <br><b>Invasion USA Team:</b>
     <br>Author: Hobbes__
@@ -1756,12 +1756,12 @@
     <br>Additional xml: wc_sumpton
     <br>Combats Units:
     <ul>
-    	<li>	Militia			(3)5/(3)5/1/-(-)  Americans only.</li>
-    	<li>	Infantry		 3/3/1/3 (24)</li>
-    	<li>	Mechanized		 3/3/2/4  (9)</li>
-    	<li>	Armor			 5/5/2/5 (12)</li>
-    	<li>	Helicopter       5/5/3(6)/8  (9)</li>
-    	<li>	Bomber			 7/7/4(8)/12 (6)</li>
+        <li>	Militia			(3)5/(3)5/1/-(-)  Americans only.</li>
+        <li>	Infantry		 3/3/1/3 (24)</li>
+        <li>	Mechanized		 3/3/2/4  (9)</li>
+        <li>	Armor			 5/5/2/5 (12)</li>
+        <li>	Helicopter       5/5/3(6)/8  (9)</li>
+        <li>	Bomber			 7/7/4(8)/12 (6)</li>
     </ul>
     <br>The Americans can also use a Suicide Strike Token which attack at 7 and move anywheres on the map.
 - mapName: Feudal Japan Warlords
@@ -2077,7 +2077,7 @@
 - mapName: Oztea 1939 Global
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/oztea_1939_global/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/oztea_1939_global/master/description/TripleA_oztea_1939_global_mini.png
   description:
     <br>
@@ -2133,7 +2133,7 @@
 - mapName: Warcraft War Heroes
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/warcraft_war_heroes/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>

@@ -23,19 +23,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 
 /** Implementation of {@link ILauncher} for a headed or headless network server game. */
 @Log
-public class ServerLauncher extends AbstractLauncher<Void> {
+public class ServerLauncher implements ILauncher {
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
   private final LaunchAction launchAction;
@@ -94,7 +92,17 @@ public class ServerLauncher extends AbstractLauncher<Void> {
   }
 
   @Override
-  Optional<Void> loadGame() {
+  public void launch() {
+    try {
+      loadGame();
+    } catch (final Exception e) {
+      log.log(Level.SEVERE, "Error when loading game", e);
+      abortLaunch = true;
+    }
+    new Thread(this::launchInternal).start();
+  }
+
+  private void loadGame() {
     try {
       // the order of this stuff does matter
       serverModel.setServerLauncher(this);
@@ -153,24 +161,23 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       }
       log.info("Game Status: In Progress");
     }
-    return Optional.empty();
   }
 
-  @Override
-  void launchInternal(@Nullable final Void none) {
+  private void launchInternal() {
     try {
       isLaunching = false;
       abortLaunch = testShouldWeAbort();
       if (!abortLaunch) {
-        if (!remotePlayers.isEmpty()) {
-          warmUpCryptoRandomSource();
-        }
-        log.info("Starting Game Delegates.");
+        warmUpCryptoRandomSource();
+        log.info("Launching game - starting game delegates.");
         serverGame.startGame();
       } else {
+        log.info("Aborting game launch");
         stopGame();
       }
     } catch (final RuntimeException e) {
+      log.log(Level.INFO, "Exception while launching", e);
+
       // no-op, this is a simple player disconnect, no need to scare the user with some giant stack
       // trace
       final var cause = e.getCause();
@@ -208,9 +215,9 @@ public class ServerLauncher extends AbstractLauncher<Void> {
     serverModel.newGame();
     launchAction.onGameInterrupt();
     if (inGameLobbyWatcher != null) {
+      log.info("Game Status: Waiting For Players");
       inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
     }
-    log.info("Game Status: Waiting For Players");
   }
 
   private void warmUpCryptoRandomSource() {

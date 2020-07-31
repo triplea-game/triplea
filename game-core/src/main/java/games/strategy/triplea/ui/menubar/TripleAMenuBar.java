@@ -4,6 +4,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.menubar.help.HelpMenu;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import javax.swing.JMenu;
@@ -31,7 +32,7 @@ public final class TripleAMenuBar extends JMenuBar {
 
     add(new WebHelpMenu());
     add(new DebugMenu(frame));
-    add(new HelpMenu(frame.getUiContext(), frame.getGame().getData()));
+    add(HelpMenu.buildMenu(frame.getUiContext(), frame.getGame().getData()));
   }
 
   private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {

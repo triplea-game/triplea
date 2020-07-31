@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.util.UnitCategory;
@@ -126,15 +128,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final Dimension buttonSize = new Dimension(80, 22);
     for (final UnitCategory category : unitCategories) {
       final Optional<ImageIcon> icon =
-          movePanel
-              .getMap()
-              .getUiContext()
-              .getUnitImageFactory()
-              .getIcon(
-                  category.getType(),
-                  category.getOwner(),
-                  category.hasDamageOrBombingUnitDamage(),
-                  category.getDisabled());
+          movePanel.getMap().getUiContext().getUnitImageFactory().getIcon(ImageKey.of(category));
       if (icon.isPresent()) {
         final JLabel label =
             new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);

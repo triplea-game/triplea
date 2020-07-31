@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# This is a one-time script that needs to be run to set up a docker container.
+# If there are changes to the docker containers configuration, the container should
+# be destroyed and then re-run this script.
+
+docker build --tag triplea/maps-db:latest .

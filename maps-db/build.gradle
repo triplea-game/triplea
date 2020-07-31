@@ -1,0 +1,31 @@
+
+buildscript {
+    dependencies {
+        classpath "org.postgresql:postgresql:$postgresqlVersion"
+    }
+}
+
+plugins {
+    id 'org.flywaydb.flyway' version '6.5.3'
+}
+
+ext.mapDbPort = project.getProperties().getOrDefault('maps_db_port', '5433')
+
+flyway {
+    driver = 'org.postgresql.Driver'
+    url= "jdbc:postgresql://localhost:$mapDbPort/maps_db"
+    user = 'maps_user'
+    password = 'postgres'
+}
+
+task portableInstaller(type: Zip, group: 'release') {
+    from 'src/main/resources/db/migration'
+    include '*.sql'
+    archiveName 'map_migrations.zip'
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}

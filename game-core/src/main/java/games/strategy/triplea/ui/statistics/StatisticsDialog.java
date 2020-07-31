@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.stats.Statistics;
 import games.strategy.engine.stats.StatisticsAggregator;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -29,8 +30,8 @@ public class StatisticsDialog extends JPanel {
     private final Table<String, Round, Double> data;
   }
 
-  public StatisticsDialog(final GameData game) {
-    final Statistics statistics = new StatisticsAggregator(game).aggregate();
+  public StatisticsDialog(final GameData game, final MapData mapData) {
+    final Statistics statistics = new StatisticsAggregator(game, mapData).aggregate();
 
     final List<OverTimeChart> overTimeCharts = new ArrayList<>();
     statistics

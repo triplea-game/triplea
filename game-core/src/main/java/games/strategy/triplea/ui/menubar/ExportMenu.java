@@ -22,6 +22,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.triplea.ui.menubar.help.UnitStatsTable;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -344,10 +345,18 @@ final class ExportMenu extends JMenu {
         writer.append(',').append(playerName).append(',').append(stepName).append(',');
         for (final IStat stat : stats) {
           for (final GamePlayer player : players) {
-            writer.append(stat.getFormatter().format(stat.getValue(player, clone))).append(',');
+            writer
+                .append(
+                    IStat.DECIMAL_FORMAT.format(
+                        stat.getValue(player, clone, uiContext.getMapData())))
+                .append(',');
           }
           for (final String alliance : alliances) {
-            writer.append(stat.getFormatter().format(stat.getValue(alliance, clone))).append(',');
+            writer
+                .append(
+                    IStat.DECIMAL_FORMAT.format(
+                        stat.getValue(alliance, clone, uiContext.getMapData())))
+                .append(',');
           }
         }
         writer.println();
@@ -379,7 +388,7 @@ final class ExportMenu extends JMenu {
     try (Writer writer =
         Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(
-          HelpMenu.getUnitStatsTable(gameData, uiContext)
+          UnitStatsTable.getUnitStatsTable(gameData, uiContext)
               .replaceAll("</?p>|</tr>", "$0\r\n")
               .replaceAll("(?i)<img[^>]+/>", ""));
     } catch (final IOException e1) {

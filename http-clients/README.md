@@ -40,4 +40,3 @@ issue.
 API that the lobby provides to accept data about exceptions. This lets users
 uploads description data of an error with stack trace data automatically attached.
 The lobby server in turn uploads this to github to create an issue ticket.
-

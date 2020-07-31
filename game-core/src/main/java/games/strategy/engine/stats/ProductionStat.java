@@ -5,15 +5,16 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.ui.mapdata.MapData;
 
-public class ProductionStat extends AbstractStat {
+public class ProductionStat implements IStat {
   @Override
   public String getName() {
     return "Production";
   }
 
   @Override
-  public double getValue(final GamePlayer player, final GameData data) {
+  public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
     final int production =
         data.getMap().getTerritories().stream()
             .filter(place -> place.getOwner().equals(player))

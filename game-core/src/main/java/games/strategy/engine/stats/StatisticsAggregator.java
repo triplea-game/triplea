@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class StatisticsAggregator {
           OverTimeStatisticType.PredefinedStatistics.VC, new VictoryCityStat());
   private final Statistics underConstruction = new Statistics();
   private final GameData game;
+  private final MapData mapData;
 
   private static Map<OverTimeStatisticType, IStat> createOverTimeStatisticsMapping(
       final List<Resource> resources) {
@@ -76,7 +78,7 @@ public class StatisticsAggregator {
               underConstruction
                   .getOverTimeStatistics()
                   .get(type)
-                  .put(player.getName(), round, source.getValue(player, game)));
+                  .put(player.getName(), round, source.getValue(player, game, mapData)));
     }
     for (final String alliance : alliances) {
       overTimeStatisticSources.forEach(
@@ -84,7 +86,7 @@ public class StatisticsAggregator {
               underConstruction
                   .getOverTimeStatistics()
                   .get(type)
-                  .put(alliance, round, source.getValue(alliance, game)));
+                  .put(alliance, round, source.getValue(alliance, game, mapData)));
     }
   }
 

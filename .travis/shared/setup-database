@@ -2,9 +2,19 @@
 
 set -eux
 
-echo "create database lobby_db" | psql -h localhost -U postgres -d postgres
-echo "create user lobby_user with password 'postgres'" | psql -h localhost -U postgres -d postgres
-echo "alter database lobby_db owner to lobby_user" | psql -h localhost -U postgres -d postgres
 
-./gradlew flywayMigrate
+function createDatabase() {
+  local dbName="$1"
+  local dbUser="$2"
+  
+  echo "create database ${dbName}" | psql -h localhost -U postgres -d postgres
+  echo "create user ${dbUser} with password 'postgres'" | psql -h localhost -U postgres -d postgres
+  echo "alter database ${dbName} owner to ${dbUser}" | psql -h localhost -U postgres -d postgres
+}
+
+
+createDatabase "lobby_db" "lobby_user"
+createDatabase "maps_db" "maps_user"
+
+./gradlew flywayMigrate -Pmaps_db_port=5432
 

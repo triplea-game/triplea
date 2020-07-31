@@ -32,7 +32,7 @@ import org.triplea.java.Interruptibles;
 
 /** Implementation of {@link ILauncher} for a headed local or network client game. */
 @Log
-public class LocalLauncher extends AbstractLauncher<ServerGame> {
+public class LocalLauncher implements ILauncher {
   private final GameData gameData;
   private final GameSelector gameSelector;
   private final IRandomSource randomSource;
@@ -55,24 +55,12 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
   }
 
   @Override
-  protected void launchInternal(@Nullable final ServerGame game) {
-    try {
-      if (game != null) {
-        game.startGame();
-      }
-    } finally {
-      // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
-      // having an oddball issue with the zip stream being closed while parsing to load default
-      // game. might be caused
-      // by closing of stream while unloading map resources.
-      Interruptibles.sleep(100);
-      gameSelector.onGameEnded();
-      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
-    }
+  public void launch() {
+    final Optional<ServerGame> result = loadGame();
+    new Thread(() -> launchInternal(result.orElse(null))).start();
   }
 
-  @Override
-  Optional<ServerGame> loadGame() {
+  private Optional<ServerGame> loadGame() {
     try {
       gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new LocalNoOpMessenger());
@@ -89,6 +77,22 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
     } catch (final Exception ex) {
       log.log(Level.SEVERE, "Failed to start game", ex);
       return Optional.empty();
+    }
+  }
+
+  private void launchInternal(@Nullable final ServerGame game) {
+    try {
+      if (game != null) {
+        game.startGame();
+      }
+    } finally {
+      // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
+      // having an oddball issue with the zip stream being closed while parsing to load default
+      // game. might be caused
+      // by closing of stream while unloading map resources.
+      Interruptibles.sleep(100);
+      gameSelector.onGameEnded();
+      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }
   }
 
