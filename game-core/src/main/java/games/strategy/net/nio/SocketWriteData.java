@@ -21,14 +21,14 @@ class SocketWriteData {
   private final ByteBuffer content;
   private final int number = counter.incrementAndGet();
 
-  SocketWriteData(final byte[] data, final int count) {
-    content = ByteBuffer.allocate(count);
-    content.put(data, 0, count);
+  SocketWriteData(final byte[] data) {
+    content = ByteBuffer.allocate(data.length);
+    content.put(data);
     size = ByteBuffer.allocate(4);
-    if (count < 0 || count > SocketReadData.MAX_MESSAGE_SIZE) {
-      throw new IllegalStateException("Invalid message size:" + count);
+    if (data.length > SocketReadData.MAX_MESSAGE_SIZE) {
+      throw new IllegalStateException("Invalid message size:" + data.length);
     }
-    size.putInt(count ^ SocketReadData.MAGIC);
+    size.putInt(data.length ^ SocketReadData.MAGIC);
     size.flip();
     content.flip();
   }

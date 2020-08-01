@@ -27,7 +27,7 @@ class Encoder {
     try {
       final byte[] bytes =
           IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os)));
-      final SocketWriteData data = new SocketWriteData(bytes, bytes.length);
+      final SocketWriteData data = new SocketWriteData(bytes);
       writer.enque(data, to);
     } catch (final IOException e) {
       // we aren't doing any I/O, just writing in memory so something is very wrong
