@@ -113,9 +113,11 @@ final class MapRouteDrawerTest {
   void verifySequenceIsTrulyMonotonic() {
     final MapRouteDrawer routeDrawer = new MapRouteDrawer(mock(MapPanel.class), dummyMapData);
     final double[] index =
-        routeDrawer.newParameterizedIndex(new Point2D[] {new Double(0, 0), new Double(0, 0)});
+        routeDrawer.newParameterizedIndex(
+            new Point2D[] {new Double(0, 0), new Double(0, 0), new Double(0, 0)});
 
-    assertThat(Arrays.stream(index).boxed().toArray(), is(arrayWithSize(2)));
+    assertThat(Arrays.stream(index).boxed().toArray(), is(arrayWithSize(3)));
     assertThat(index[0], is(lessThan(index[1])));
+    assertThat(index[1], is(lessThan(index[2])));
   }
 }
