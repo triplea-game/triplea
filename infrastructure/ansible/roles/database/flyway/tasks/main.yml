@@ -46,6 +46,7 @@
   loop: "{{ flyway_args }}"
   loop_control:
     label: "{{ item.migration.zip }}"
+  no_log: true
 
 - name: download flyway migrations if deploying a specific version
   become: true
@@ -58,6 +59,7 @@
   loop: "{{ flyway_args }}"
   loop_control:
     label: "{{ item.migration.url }}"
+  no_log: true
 
 - name: create migration folders
   become: true
@@ -70,6 +72,7 @@
   loop: "{{ flyway_args }}"
   loop_control:
     label: "{{ item.migration.dir }}"
+  no_log: true
 
 - name: extract migrations
   become: true
@@ -83,6 +86,7 @@
   loop: "{{ flyway_args }}"
   loop_control:
     label: "{{ item.migration.zip }}"
+  no_log: true
 
 - name: run flyway
   become: true
@@ -93,4 +97,5 @@
   loop: "{{ flyway_args }}"
   loop_control:
     label: "{{ item.migration.dir }}"
+  no_log: true
 
