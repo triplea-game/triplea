@@ -20,8 +20,6 @@ class SocketWriteData {
   private final ByteBuffer size;
   private final ByteBuffer content;
   private final int number = counter.incrementAndGet();
-  // how many times we called write before we finished writing ourselves
-  private int writeCalls = 0;
 
   SocketWriteData(final byte[] data, final int count) {
     content = ByteBuffer.allocate(count);
@@ -35,21 +33,12 @@ class SocketWriteData {
     content.flip();
   }
 
-  int size() {
-    return size.capacity() + content.capacity();
-  }
-
-  int getWriteCalls() {
-    return writeCalls;
-  }
-
   /**
    * Writes any pending data to the specified channel.
    *
    * @return true if the write has written the entire message.
    */
   boolean write(final SocketChannel channel) throws IOException {
-    writeCalls++;
     if (size.hasRemaining()) {
       final int count = channel.write(size);
       if (count == -1) {
