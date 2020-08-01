@@ -26,7 +26,7 @@ class SocketWriteData {
     content.put(data);
     size = ByteBuffer.allocate(4);
     if (data.length > SocketReadData.MAX_MESSAGE_SIZE) {
-      throw new IllegalStateException("Invalid message size:" + data.length);
+      throw new IllegalStateException("Invalid message size: " + data.length);
     }
     size.putInt(data.length ^ SocketReadData.MAGIC);
     size.flip();
