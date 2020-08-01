@@ -108,7 +108,11 @@ final class MapRouteDrawerTest {
     verify(dummyRouteDescription.getRoute(), atLeastOnce()).getAllTerritories();
   }
 
-  /** Regression test for https://github.com/triplea-game/triplea/issues/7112 */
+  /**
+   * Regression test for https://github.com/triplea-game/triplea/issues/7112 Previously it could
+   * happen that {@link MapRouteDrawer#newParameterizedIndex(Point2D[])} returned an array with
+   * duplicate values, violating the monotonic sequence requirement for the spline interpolation.
+   */
   @Test
   void verifySequenceIsTrulyMonotonic() {
     final MapRouteDrawer routeDrawer = new MapRouteDrawer(mock(MapPanel.class), dummyMapData);
