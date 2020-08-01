@@ -21,7 +21,7 @@ flyway {
 task portableInstaller(type: Zip, group: 'release') {
     from 'src/main/resources/db/migration'
     include '*.sql'
-    archiveName 'map_migrations.zip'
+    archiveName 'maps_database_migrations.zip'
 }
 
 task release(group: 'release', dependsOn: portableInstaller) {

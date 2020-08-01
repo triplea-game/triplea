@@ -54,7 +54,7 @@ function buildMigrations() {
     )
     mkdir -p $targetFolder
     cp ../lobby-db/build/distributions/migrations.zip $targetFolder
-    cp ../maps-db/build/distributions/map_migrations.zip $targetFolder
+    cp ../maps-db/build/distributions/maps_database_migrations.zip $targetFolder
   fi
 }
 

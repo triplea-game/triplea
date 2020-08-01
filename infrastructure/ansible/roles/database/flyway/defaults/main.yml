@@ -16,7 +16,7 @@ flyway_args:
     password: "{{ maps_db_password }}"
     url: "{{ flyway_db_url }}/{{ maps_db_name }}"
     migration:
-      zip: map_migrations.zip
+      zip: maps_database__migrations.zip
       url: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/map_migrations.zip"
       dir: "maps_sql"
 
