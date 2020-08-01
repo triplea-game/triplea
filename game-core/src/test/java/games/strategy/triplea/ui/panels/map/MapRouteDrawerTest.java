@@ -1,5 +1,9 @@
 package games.strategy.triplea.ui.panels.map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,6 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
+import java.util.Arrays;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,5 +106,16 @@ final class MapRouteDrawerTest {
 
     verify(dummyRouteDescription, times(2)).getRoute();
     verify(dummyRouteDescription.getRoute(), atLeastOnce()).getAllTerritories();
+  }
+
+  /** Regression test for https://github.com/triplea-game/triplea/issues/7112 */
+  @Test
+  void verifySequenceIsTrulyMonotonic() {
+    final MapRouteDrawer routeDrawer = new MapRouteDrawer(mock(MapPanel.class), dummyMapData);
+    final double[] index =
+        routeDrawer.newParameterizedIndex(new Point2D[] {new Double(0, 0), new Double(0, 0)});
+
+    assertThat(Arrays.stream(index).boxed().toArray(), is(arrayWithSize(2)));
+    assertThat(index[0], is(lessThan(index[1])));
   }
 }
