@@ -20,27 +20,17 @@ class SocketWriteData {
   private final ByteBuffer size;
   private final ByteBuffer content;
   private final int number = counter.incrementAndGet();
-  // how many times we called write before we finished writing ourselves
-  private int writeCalls = 0;
 
-  SocketWriteData(final byte[] data, final int count) {
-    content = ByteBuffer.allocate(count);
-    content.put(data, 0, count);
+  SocketWriteData(final byte[] data) {
+    content = ByteBuffer.allocate(data.length);
+    content.put(data);
     size = ByteBuffer.allocate(4);
-    if (count < 0 || count > SocketReadData.MAX_MESSAGE_SIZE) {
-      throw new IllegalStateException("Invalid message size:" + count);
+    if (data.length > SocketReadData.MAX_MESSAGE_SIZE) {
+      throw new IllegalStateException("Invalid message size: " + data.length);
     }
-    size.putInt(count ^ SocketReadData.MAGIC);
+    size.putInt(data.length ^ SocketReadData.MAGIC);
     size.flip();
     content.flip();
-  }
-
-  int size() {
-    return size.capacity() + content.capacity();
-  }
-
-  int getWriteCalls() {
-    return writeCalls;
   }
 
   /**
@@ -49,7 +39,6 @@ class SocketWriteData {
    * @return true if the write has written the entire message.
    */
   boolean write(final SocketChannel channel) throws IOException {
-    writeCalls++;
     if (size.hasRemaining()) {
       final int count = channel.write(size);
       if (count == -1) {
