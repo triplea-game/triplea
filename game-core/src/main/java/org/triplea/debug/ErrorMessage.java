@@ -19,6 +19,7 @@ import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
+import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -68,7 +69,7 @@ public enum ErrorMessage {
                 new JPanelBuilder()
                     .boxLayoutHorizontal()
                     .addHorizontalGlue()
-                    .add(errorMessage)
+                    .add(SwingComponents.newJScrollPane(errorMessage))
                     .addHorizontalGlue()
                     .build())
             .addSouth(
