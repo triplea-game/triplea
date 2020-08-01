@@ -23,11 +23,15 @@ create table map_version (
   id serial primary key,
   map_id integer not null references map(id),
   version integer not null check (version > 0),
-  url varchar(256) not null check (url like 'http%'),
-  thumbnail varchar(256) not null check (thumbnail like 'http%'),
+  url varchar(256) not null unique check (url like 'http%'),
+  thumbnail varchar(256) check (thumbnail is null or thumbnail like 'http%'),
   category_id integer not null references category(id),
   description varchar(4096),
   date_created timestamptz not null default now(),
   date_updated timestamptz not null default now()
 );
+
+create unique index map_version_uniq_version
+on map_version (map_id, version);
+
 
