@@ -226,6 +226,10 @@ public class UnitAttachment extends DefaultAttachment {
   // Manually set TUV
   private int tuv = -1;
 
+  // combo properties
+  private boolean isSub = false;
+  private boolean isSuicide = false;
+
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -629,13 +633,10 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setIsSub(final Boolean s) {
-    setCanEvade(s);
-    setIsFirstStrike(s);
-    setCanMoveThroughEnemies(s && Properties.getSubmersibleSubs(getData()));
-    setCanBeMovedThroughByEnemies(s && Properties.getIgnoreSubInMovement(getData()));
+    isSub = true;
     if (s) {
       canNotTarget = null;
-      canNotBeTargetedBy = Properties.getAirAttackSubRestricted(getData()) ? null : new HashSet<>();
+      canNotBeTargetedBy = null;
     } else {
       resetCanNotTarget();
       resetCanNotBeTargetedBy();
@@ -647,7 +648,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanEvade() {
-    return canEvade;
+    return canEvade || isSub;
   }
 
   private void setIsFirstStrike(final Boolean s) {
@@ -655,7 +656,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getIsFirstStrike() {
-    return isFirstStrike;
+    return isFirstStrike || isSub || isSuicide;
   }
 
   private void setCanMoveThroughEnemies(final Boolean s) {
@@ -663,7 +664,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanMoveThroughEnemies() {
-    return canMoveThroughEnemies;
+    return canMoveThroughEnemies || (isSub && Properties.getSubmersibleSubs(getData()));
   }
 
   private void setCanBeMovedThroughByEnemies(final Boolean s) {
@@ -671,7 +672,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBeMovedThroughByEnemies() {
-    return canBeMovedThroughByEnemies;
+    return canBeMovedThroughByEnemies || (isSub && Properties.getIgnoreSubInMovement(getData()));
   }
 
   private void setCanNotTarget(final String value) throws GameParseException {
@@ -698,7 +699,7 @@ public class UnitAttachment extends DefaultAttachment {
   public Set<UnitType> getCanNotTarget() {
     if (canNotTarget == null) {
       final Predicate<UnitType> unitTypeMatch =
-          (isSuicideOnAttack && isFirstStrike)
+          (getIsSuicideOnAttack() && getIsFirstStrike())
               ? Matches.unitTypeIsSuicideOnAttack().or(Matches.unitTypeIsSuicideOnDefense())
               : Matches.unitTypeIsAir();
       canNotTarget =
@@ -732,9 +733,11 @@ public class UnitAttachment extends DefaultAttachment {
   public Set<UnitType> getCanNotBeTargetedBy() {
     if (canNotBeTargetedBy == null) {
       canNotBeTargetedBy =
-          new HashSet<>(
-              CollectionUtils.getMatches(
-                  getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
+          Properties.getAirAttackSubRestricted(getData())
+              ? new HashSet<>(
+                  CollectionUtils.getMatches(
+                      getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()))
+              : new HashSet<>();
     }
     return canNotBeTargetedBy;
   }
@@ -1552,7 +1555,7 @@ public class UnitAttachment extends DefaultAttachment {
         defense
             + TechAbilityAttachment.getDefenseBonus(
                 (UnitType) this.getAttachedTo(), player, getData());
-    if (defenseValue > 0 && isFirstStrike && TechTracker.hasSuperSubs(player)) {
+    if (defenseValue > 0 && getIsFirstStrike() && TechTracker.hasSuperSubs(player)) {
       final int bonus = Properties.getSuperSubDefenseBonus(getData());
       defenseValue += bonus;
     }
@@ -1764,16 +1767,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @Deprecated
-  private void setIsSuicide(final String s) {
-    setIsSuicide(getBool(s));
-  }
-
-  @Deprecated
   private void setIsSuicide(final Boolean s) {
-    setIsSuicideOnAttack(s);
-    // Global property controlled whether isSuicide units would suicide on defense
-    setIsSuicideOnDefense(s && !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(getData()));
-    setIsFirstStrike(s);
+    isSuicide = true;
     if (s) {
       canNotTarget = null;
     } else {
@@ -1783,7 +1778,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   @Deprecated
   public boolean getIsSuicide() {
-    return isSuicideOnAttack || isSuicideOnDefense;
+    return isSuicide || isSuicideOnAttack || isSuicideOnDefense;
   }
 
   private void setIsSuicideOnAttack(final Boolean s) {
@@ -1791,7 +1786,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getIsSuicideOnAttack() {
-    return isSuicideOnAttack;
+    return isSuicideOnAttack || isSuicide;
   }
 
   private void setIsSuicideOnDefense(final Boolean s) {
@@ -1799,7 +1794,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getIsSuicideOnDefense() {
-    return isSuicideOnDefense;
+    return isSuicideOnDefense
+        // Global property controlled whether isSuicide units would suicide on defense
+        || (isSuicide && !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(getData()));
   }
 
   private void setIsSuicideOnHit(final String s) {
