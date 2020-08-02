@@ -1,23 +1,10 @@
 
 <!--
   Commit comment above summarizing the update.  If multiple commits please
-  summarize the change above. Commit comments should include an overview of
-  the updates and the goal and reasoning behind the update.
+  summarize the change above. 
   Code standards and PR guidelines can be found at:
-  - https://github.com/triplea-game/triplea/wiki/Contribution-Guidelines
-  - https://github.com/triplea-game/triplea/wiki/Code-Reviews
+  <https://github.com/triplea-game/triplea/wiki/Contribution-Guidelines>
 -->
-
-## Functional Changes
-<!-- Put an X next any that apply -->
-[] New map or map update
-[] New Feature
-[] Feature update or enhancement
-[] Feature Removal
-[] Code Cleanup or refactor
-[] Configuration Change
-[] Problem fix
-[] Other:   <!-- Please specify -->
 
 ## Testing
 <!-- Describe any manual testing performed below. -->
