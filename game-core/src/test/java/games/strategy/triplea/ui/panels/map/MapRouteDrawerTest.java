@@ -26,10 +26,14 @@ import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.java.collections.IntegerMap;
 
 final class MapRouteDrawerTest {
@@ -113,15 +117,33 @@ final class MapRouteDrawerTest {
    * happen that {@link MapRouteDrawer#newParameterizedIndex(Point2D[])} returned an array with
    * duplicate values, violating the monotonic sequence requirement for the spline interpolation.
    */
-  @Test
-  void verifySequenceIsTrulyMonotonic() {
+  @ParameterizedTest
+  @MethodSource("pointSets")
+  void verifySequenceIsTrulyMonotonic(final Point2D[] points) {
     final MapRouteDrawer routeDrawer = new MapRouteDrawer(mock(MapPanel.class), dummyMapData);
-    final double[] index =
-        routeDrawer.newParameterizedIndex(
-            new Point2D[] {new Double(0, 0), new Double(0, 0), new Double(0, 0)});
+    final double[] index = routeDrawer.newParameterizedIndex(points);
 
-    assertThat(Arrays.stream(index).boxed().toArray(), is(arrayWithSize(3)));
-    assertThat(index[0], is(lessThan(index[1])));
-    assertThat(index[1], is(lessThan(index[2])));
+    assertThat(Arrays.stream(index).boxed().toArray(), is(arrayWithSize(points.length)));
+    for (int i = 1; i < points.length; i++) {
+      assertThat(index[i - 1], is(lessThan(index[i])));
+    }
+  }
+
+  static Stream<Arguments> pointSets() {
+    return Stream.of(
+            Arguments.of(new Double(0, 0), new Double(0, 0), new Double(0, 0)),
+            Arguments.of(),
+            Arguments.of(new Double(0, 0)),
+            Arguments.of(new Double(1, 1)),
+            Arguments.of(new Double(-1, -1)),
+            Arguments.of(new Double(1, -1), new Double(1, -1), new Double(1, -1)),
+            Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)))
+        // Turn varargs into single array instance
+        .map(Arguments::get)
+        .map(Arrays::stream)
+        .map(stream -> stream.map(Point2D.class::cast))
+        .map(stream -> stream.toArray(Point2D[]::new))
+        .map(Object.class::cast)
+        .map(Arguments::of);
   }
 }
