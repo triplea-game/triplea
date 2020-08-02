@@ -96,18 +96,10 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private boolean chargedFlatFuelCost = false;
 
   /** Creates new Unit. Owner can be null. */
-  public Unit(final UnitType type, final GamePlayer owner, final GameData data) {
-    this(type, owner, data, UUID.randomUUID());
-  }
-
-  public Unit(final UnitType type, final GamePlayer owner, final GameData data, final UUID id) {
+  public Unit(final UnitType type, @Nullable final GamePlayer owner, final GameData data) {
     super(data);
-
-    checkNotNull(type);
-    checkNotNull(id);
-
-    this.type = type;
-    this.id = id;
+    this.type = checkNotNull(type);
+    this.id = UUID.randomUUID();
 
     setOwner(owner);
   }
