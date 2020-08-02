@@ -1,5 +1,9 @@
 package games.strategy.triplea.ui.panels.map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,10 +24,16 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.java.collections.IntegerMap;
 
 final class MapRouteDrawerTest {
@@ -100,5 +110,40 @@ final class MapRouteDrawerTest {
 
     verify(dummyRouteDescription, times(2)).getRoute();
     verify(dummyRouteDescription.getRoute(), atLeastOnce()).getAllTerritories();
+  }
+
+  /**
+   * Regression test for https://github.com/triplea-game/triplea/issues/7112 Previously it could
+   * happen that {@link MapRouteDrawer#newParameterizedIndex(Point2D[])} returned an array with
+   * duplicate values, violating the monotonic sequence requirement for the spline interpolation.
+   */
+  @ParameterizedTest
+  @MethodSource("pointSets")
+  void verifySequenceIsTrulyMonotonic(final Point2D[] points) {
+    final MapRouteDrawer routeDrawer = new MapRouteDrawer(mock(MapPanel.class), dummyMapData);
+    final double[] index = routeDrawer.newParameterizedIndex(points);
+
+    assertThat(Arrays.stream(index).boxed().toArray(), is(arrayWithSize(points.length)));
+    for (int i = 1; i < points.length; i++) {
+      assertThat(index[i - 1], is(lessThan(index[i])));
+    }
+  }
+
+  static Stream<Arguments> pointSets() {
+    return Stream.of(
+            Arguments.of(new Double(0, 0), new Double(0, 0), new Double(0, 0)),
+            Arguments.of(),
+            Arguments.of(new Double(0, 0)),
+            Arguments.of(new Double(1, 1)),
+            Arguments.of(new Double(-1, -1)),
+            Arguments.of(new Double(1, -1), new Double(1, -1), new Double(1, -1)),
+            Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)))
+        // Turn varargs into single array instance
+        .map(Arguments::get)
+        .map(Arrays::stream)
+        .map(stream -> stream.map(Point2D.class::cast))
+        .map(stream -> stream.toArray(Point2D[]::new))
+        .map(Object.class::cast)
+        .map(Arguments::of);
   }
 }
