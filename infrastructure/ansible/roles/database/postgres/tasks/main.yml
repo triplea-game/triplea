@@ -82,7 +82,7 @@
       echo "select 1" |  psql -h localhost -U {{ lobby_db_user }} {{ lobby_db_name }}
       || echo "alter role {{ item.user }} with password '{{ item.password }}';"  | sudo -u postgres psql
   environment:
-    PGPASSWORD: "{{ item.password }}"
+    PGPASSWORD: "{{ postgres_user_db_password }}"
   changed_when: false
   loop: "{{ databases }}"
   loop_control:
