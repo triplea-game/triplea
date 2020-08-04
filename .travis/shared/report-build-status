@@ -88,13 +88,15 @@ function commentOnIssue() {
   local -r issueNumber="$1"
   local -r comment="$2"
 
+  echo "Build reporting: adding comment to issue $issueNumber that build is still broken"
   curl -s -d "{\"body\": \"$comment\"}" -X POST -H "$API_AUTH" \
      "$API_URL/issues/$issueNumber/comments"
 }
 
 function closeIssue() {
   local -r issueNumber="$1"
-
+  
+  echo "Build reporting: build fixed! Closing failed build issue $issueNumber"
   curl -H "$API_AUTH" -X PATCH -d "{\"state\": \"closed\"}" \
     "$API_URL/issues/$issueNumber"
 }
@@ -112,6 +114,7 @@ function reportBuildFailure() {
 }
 
 function openNewFailedBuildIssue() {
+  echo "Build reporting: Creating new issue to report failed build"
   curl -X POST -d "{\"title\": \"$BROKEN_BUILD_ISSUE_TITLE\", \"body\": \
 \"$BROKEN_BUILD_ISSUE_BODY\", \"labels\": [\"Problem\"]}" \
         -H "$API_AUTH" "$API_URL/issues"
