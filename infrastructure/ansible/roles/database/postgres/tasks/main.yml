@@ -46,6 +46,7 @@
   loop: "{{ databases }}"
   loop_control:
     label: "{{ item.user }}"
+  no_log: true
 
 - name: Create application databases
   become: true
@@ -72,19 +73,5 @@
   loop: "{{ databases }}"
   loop_control:
     label: "{{ item.name }} {{ item.user }}"
-
-# This is a hack because the previous tasks were supposed to set
-# the DB level password for our DB user, but it typically does not.
-# To achieve this, we'll run the native SQL commands to set the
-# user DB password.
-- name: check if password is valid
-  shell: >
-      echo "select 1" |  psql -h localhost -U {{ lobby_db_user }} {{ lobby_db_name }}
-      || echo "alter role {{ item.user }} with password '{{ item.password }}';"  | sudo -u postgres psql
-  environment:
-    PGPASSWORD: "{{ postgres_user_db_password }}"
-  changed_when: false
-  loop: "{{ databases }}"
-  loop_control:
-    label: "{{ item.user }}"
+  no_log: true
 
