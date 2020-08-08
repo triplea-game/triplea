@@ -1,0 +1,31 @@
+user_role:
+  - id: 1
+    name: PLAYER
+  - id: 2
+    name: MODERATOR
+  - id: 3
+    name: ADMIN
+
+lobby_user:
+  - id: 100000
+    username: not moderator
+    bcrypt_password: $2a$01234_123456789_123456789_123456789_123456789_123456700_
+    email: email@
+    user_role_id: 1
+  - id: 900000
+    username: moderator
+    bcrypt_password: $2a$01234_123456789_123456789_123456789_123456789_123456700_
+    email: email@
+    user_role_id: 2
+  - id: 900001
+    username: Super! moderator
+    bcrypt_password: $2a$01234_123456789_123456789_123456789_123456789_123456700_
+    email: email@
+    user_role_id: 3
+
+access_log:
+  - username: registered
+    ip: 127.0.0.20
+    system_id: registered-system-id
+    lobby_user_id: 900000
+    access_time: 2001-01-01 23:59:20.0

@@ -1,0 +1,34 @@
+[dropwizardHosts]
+prod2-lobby.triplea-game.org
+
+[prod2_lobby:children]
+dropwizardHosts
+
+[letsEncrypt:children]
+dropwizardHosts
+
+[postgresHosts:children]
+dropwizardHosts
+
+[support]
+support01.triplea-game.org
+
+[botHosts]
+prod2-bot05.triplea-game.org  bot_prefix=5 bot_name=Texas
+prod2-bot06.triplea-game.org  bot_prefix=6 bot_name=California
+prod2-bot07.triplea-game.org  bot_prefix=7 bot_name=Jersey
+prod2-bot08.triplea-game.org  bot_prefix=8 bot_name=London
+prod2-bot09.triplea-game.org  bot_prefix=9 bot_name=Frankfurt
+
+
+[prod2_bot:children]
+botHosts
+
+[prod2:children]
+postgresHosts
+dropwizardHosts
+botHosts
+
+[linode:children]
+prod2
+

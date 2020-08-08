@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# This script is used to execute prereleae and production deployments.
+# It should be run from the infrastructure machine.
+# The script is saved in git repository so that we can track changes to it.
+# If the script is updated, upload a new copy to the infrastructure machine
+# to /home/ansible.
+
+function usage() {
+  echo "Usage: $0 [Version] (ansible_args)"
+  echo "  version: The version of tripleA we will deploy eg: 1.10.5252"
+  echo "  (options) ansible_args: Additional args passed to ansible-playbook"
+  echo "Example: $0 1.10.5252"
+  echo "Example: $0 1.10.5252 --diff -v"
+  exit 1
+}
+
+if [ "$#" -eq 0 ]; then
+  usage
+fi
+
+export VERSION=${1-}
+shift
+
+VAULT_PASSWORD_FILE="vault_password"
+if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
+  echo "Error: $VAULT_PASSWORD_FILE must exist"
+  exit 1
+fi
+
+
+function main() {
+  buildArtifacts
+  addPrivateSshKeyToAgent
+  runDeployment "$@"
+}
+
+function buildArtifacts() {
+  (
+    cd ..
+    ./gradlew :http-server:shadowJar :game-headless:shadowJar :lobby-db:release :maps-db:release
+  )
+  copyBuildArtifact "../lobby-db/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
+  copyBuildArtifact "../maps-db/build/artifacts/maps_database_migrations.zip" "ansible/roles/database/flyway/files/"
+  copyBuildArtifact "../http-server/build/libs/triplea-http-server-$VERSION.jar" "ansible/roles/http_server/files/"
+  copyBuildArtifact "../game-headless/build/libs/triplea-game-headless-$VERSION.jar" "ansible/roles/bot/files/"
+}
+
+function copyBuildArtifact() {
+  local -r artifactSource="$1"
+  local -r artifactDestinationPath="$2"
+
+  if [ ! -f "$artifactSource" ]; then
+    echo "Error: File does not exist: $artifactSource"
+    exit 1
+  fi
+
+  mkdir -p "$artifactDestinationPath"
+  cp "$artifactSource" "$artifactDestinationPath"
+}
+
+
+function addPrivateSshKeyToAgent() {
+  ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
+}
+
+function runDeployment() {
+  ansible-playbook \
+    --vault-password-file "$VAULT_PASSWORD_FILE" \
+    -i ansible/inventory/prerelease \
+   "$@" \
+   ansible/site.yml
+}
+
+main "$@"
+

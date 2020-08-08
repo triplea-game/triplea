@@ -1,0 +1,24 @@
+lobby_api_key:
+
+user_role:
+  - id: 9111
+    name: PLAYER
+
+lobby_user:
+  - id: 6424
+    user_role_id: 9111
+    username: registered_user
+    bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
+    email: email@
+
+access_log:
+  - access_time: 2016-01-01 23:59:20.0
+    username: first
+    ip: 127.0.0.1
+    system_id: system-id1
+    lobby_user_id: 6424
+  - access_time: 2016-01-03 23:59:20.0
+    username: second
+    ip: 127.0.0.2
+    system_id: system-id2
+    lobby_user_id: null

@@ -1,0 +1,15 @@
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    cache_valid_time: 86400 # One day, only updates if caches are older than this.
+
+- name: apt install standard utilities and packages
+  become: true
+  apt:
+    state: present
+    update_cache: true
+    name:
+      - htop
+      - iftop
+      - unzip

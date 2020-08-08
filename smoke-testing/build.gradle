@@ -1,0 +1,57 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'de.undercouch.download' version '4.1.1'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Smoke Testing Application'
+mainClassName = 'org.triplea.test.smoke.ClientConnect'
+
+dependencies {
+    implementation project(':game-core')
+    implementation project(':http-clients')
+    testImplementation project(':java-extras')
+    testImplementation project(':test-common')
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}
+
+tasks.test.dependsOn("downloadXmls", "downloadSaveGames")
+
+task downloadXmls {
+    doLast {
+        mkdir "$projectDir/src/test/resources/map-xmls/"
+        file('map-list.txt').eachLine { path ->
+            if (!path.startsWith('#')) {
+                download {
+                    src "$path"
+                    dest "$projectDir/src/test/resources/map-xmls/"
+                    overwrite false
+                }
+            }
+        }
+    }
+}
+
+task downloadSaveGames {
+    doLast {
+        mkdir "$projectDir/src/test/resources/save-games/"
+        file('save-game-list.txt').eachLine { path ->
+            if (!path.startsWith('#')) {
+                download {
+                    src "$path"
+                    dest "$projectDir/src/test/resources/save-games/"
+                    overwrite false
+                }
+            }
+        }
+    }
+}
+
+clean.doFirst {
+    delete "$projectDir/src/test/resources/map-xmls/"
+    delete "$projectDir/src/test/resources/save-games/"
+}

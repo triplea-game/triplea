@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -eEux
+
+
+## Live update maps list on website, read the maps in 'triplea_maps.yaml' and 
+## commit updated data files to website json data directory.
+git config --global user.name "tripleabuilderbot"
+
+git clone --quiet "https://${PUSH_TO_WEBSITE_TOKEN}@github.com/triplea-game/triplea-game.github.io.git" website
+
+#Clear directory
+rm ./website/_maps/*
+#Split the yaml file into multiple files
+script_dir=$(dirname "$0")
+"$script_dir/yaml-splitter" ./triplea_maps.yaml ./website/_maps/
+
+## do git stuff, check if there is a diff, if so, commit and push it
+(
+  set -x
+  cd website
+
+  # Add any new map files now so that 'diff-index' will detect these new files
+  git add --all _maps/
+  # Run 'update-index --refresh' so that we are sure to be comparing against
+  # a latest remote HEAD. A non-zero-exit in either 'git update-index' or
+  # in 'git diff-index' indicates there are changes to commit and push.
+  if ! git update-index --refresh || ! git diff-index --quiet HEAD --; then
+    git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
+    git push -fq origin master
+  fi
+)
+

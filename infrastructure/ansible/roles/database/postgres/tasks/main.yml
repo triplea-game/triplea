@@ -1,0 +1,77 @@
+- name: Ensure latest bash and ssl
+  become: true
+  apt:
+    state: latest
+    name:
+      - bash
+      - openssl
+      - libssl-dev
+      - libssl-doc
+
+- name: Install PostgreSQL
+  become: true
+  apt:
+    state: present
+    name:
+      - postgresql
+      - postgresql-contrib
+      - libpq-dev
+      - python3-psycopg2
+
+- name: Ensure the PostgreSQL service is running
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Set postgres user password
+  become: true
+  become_user: postgres
+  no_log: true
+  postgresql_user:
+    name: postgres
+    login_password: "{{ postgres_user_db_password }}"
+    password: "{{ postgres_user_db_password }}"
+    encrypted: yes
+
+- name: Create application database users
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    login_password: "{{ item.password }}"
+    encrypted: yes
+    state: "present"
+  loop: "{{ databases }}"
+  loop_control:
+    label: "{{ item.user }}"
+  no_log: true
+
+- name: Create application databases
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.user }}"
+  loop: "{{ databases }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Ensure user has access to the database
+  become: true
+  become_user: postgres
+  postgresql_user:
+    db: "{{ item.name }}"
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    login_password: "{{ item.password }}"
+    encrypted: yes
+    priv: "ALL"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
+    state: "present"
+  loop: "{{ databases }}"
+  loop_control:
+    label: "{{ item.name }} {{ item.user }}"
+  no_log: true
+

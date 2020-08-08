@@ -1,0 +1,52 @@
+#
+# This is the main ansible playbook to deploy TripleA server software.
+# See the README.md files for details on running and testing.
+#
+
+- hosts: all
+  tags: system
+  roles:
+    - system/hostname
+    - system/apt_update
+    - system/admin_user
+    - system/firewall
+    - system/security
+
+- hosts: support
+  tags: support
+  roles:
+    - support/log_aggregation_server
+
+- hosts: postgresHosts
+  roles:
+    - name: database/postgres
+      tags: database
+    - name: database/flyway
+      tags: flyway
+
+- hosts: dropwizardHosts
+  tags: lobby
+  roles:
+    - java
+    - http_server
+    - nginx
+    - postfix
+    - support/log_aggregation_sender
+
+- hosts: letsEncrypt
+  tags: lobby
+  roles:
+    - certbot
+    # Re-run nginx role to fix configuration and do final restart.
+    # Modifications to /etc/nginx/sites-enabled/default triggers a NGINX restart.
+    # Certbot role adds a new line to /etc/nginx/sites-enabled/default
+    # every time it runs and makes changes.
+    - nginx
+
+- hosts: botHosts
+  tags: [bot, bots]
+  roles:
+    - java
+    - bot
+    - support/log_aggregation_sender
+

@@ -1,0 +1,11 @@
+ext.getProductVersion = {
+    def props = new Properties()
+    def productPropertiesFile = project(':game-core').file('src/main/resources/META-INF/triplea/product.properties')
+    productPropertiesFile.withInputStream { props.load(it) }
+    def productVersion = props.getProperty('version')
+    if (!productVersion) {
+        throw new GradleException('"version" property missing from the "product.properties" resource')
+    }
+
+    return productVersion;
+}

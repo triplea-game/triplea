@@ -1,0 +1,4 @@
+lobby_uri: "https://prerelease.triplea-game.org"
+bot_numbers: ["01", "02"]
+journalctl_applications: ["http_server", "bot@01", "bot@02"]
+

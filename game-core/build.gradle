@@ -1,0 +1,26 @@
+description = 'TripleA core library containing code shared between headed and headless versions'
+
+ext {
+    apacheHttpComponentsVersion = '4.5.12'
+}
+
+dependencies {
+    implementation "com.googlecode.soundlibs:jlayer:$jlayerVersion"
+    implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
+    implementation "commons-cli:commons-cli:$commonsCliVersion"
+    implementation "commons-codec:commons-codec:$commonsCodecVersion"
+    implementation "commons-io:commons-io:$commonsIoVersion"
+    implementation "io.github.openfeign:feign-gson:$openFeignVersion"
+    implementation "org.apache.commons:commons-math3:$commonsMathVersion"
+    implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
+    implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
+    implementation "org.knowm.xchart:xchart:$xchartVersion"
+    implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
+    implementation project(":domain-data")
+    implementation project(":http-clients")
+    implementation project(":java-extras")
+    implementation project(":swing-lib")
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation project(":test-common")
+}

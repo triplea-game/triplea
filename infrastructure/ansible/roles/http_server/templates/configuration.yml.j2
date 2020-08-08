@@ -1,0 +1,35 @@
+githubRepo: triplea
+githubApiToken: {{ create_issues_github_api_token }}
+# if we are using any stubbing, we'll assert that this value is false.
+# this is to help guarantee that we do not accidently use test configuration in prod.
+prod: true
+logRequestAndResponses: false
+logSqlStatements: false
+
+database:
+  driverClass: org.postgresql.Driver
+  user: {{ http_server_db_user }}
+  password: {{ lobby_db_password }}
+  url: jdbc:postgresql://{{ http_server_db_host }}:{{ http_server_db_port }}/{{ http_server_db_name }}
+  properties:
+    charSet: UTF-8
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: select 1
+
+  # the minimum number of connections to keep open
+  minSize: 8
+
+  # the maximum number of connections to keep open
+  maxSize: 32
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: false
+
+  # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
+  evictionInterval: 10s
+
+  # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
+  minIdleTime: 1 minute

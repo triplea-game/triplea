@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="HeadedGameRunner" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="org.triplea.game.client.HeadedGameRunner" />
+    <module name="triplea.game-headed.main" />
+    <option name="VM_PARAMETERS" value="-Xss1250K" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/game-headed" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.triplea.game.client.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="downloadAssets" externalProjectPath="$PROJECT_DIR$/game-headed" vmOptions="" scriptParameters="" />
+    </method>
+  </configuration>
+</component>

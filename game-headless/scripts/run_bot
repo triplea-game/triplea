@@ -1,0 +1,102 @@
+#!/bin/bash
+#
+# This is a sample script for running a TripleA bot on a Unix-like system.
+#
+# THIS SCRIPT MAY NOT RUN CORRECTLY UNLESS YOU CUSTOMIZE SOME OF THE VARIABLES
+# BELOW!  Please read each variable description carefully and modify them, if
+# appropriate.
+#
+# To run this script, change to the directory in which you unpacked the
+# headless game server archive, and type "./run_bot".
+#
+
+###############################################################################
+# VARIABLES THAT YOU MAY CUSTOMIZE BEGIN HERE
+###############################################################################
+
+#
+# The folder from which the bot will load game maps.
+#
+# The default value is the folder in which the TripleA game client stores
+# maps that it downloads.  Under normal circumstances, you will not have to
+# change this variable.  However, if you customized the settings in your
+# TripleA client to use a different maps folder, you should change this
+# variable to refer to the same location.
+#
+readonly MAPS_FOLDER="$HOME/triplea/downloadedMaps"
+
+#
+# The port on which the bot will listen for connections.  This port must be
+# reachable from the Internet, so you may have to configure your firewall
+# appropriately.
+#
+# Under normal circumstances, you will not have to change this variable.
+# However, if you choose to run multiple bots on your system, you need to
+# select a different available port for each bot.
+#
+readonly BOT_PORT=3300
+
+#
+# The name of the bot as displayed in the lobby.  Each bot must have a unique
+# name.
+#
+# The default value uses a combination of your username and the local port
+# you selected above on which the bot will run.  Under normal circumstances,
+# you will not have to change this variable.
+#
+readonly BOT_NAME="Bot_${USER}_${BOT_PORT}"
+
+#
+# The password used to secure access to games running on your bot.  Users
+# attempting to start a new game or connect to an existing game on your bot
+# will be prompted for this password.  If the password is an empty string,
+# the user will not be prompted, and any lobby user will be able to use your
+# bot.
+#
+# The default value is an empty password. You should change this to a
+# non-empty string if you do not want arbitrary users to use your bot.  For
+# example, you may wish to run a private game for you and some friends.  In
+# that case, set the password to a non-empty string and communicate it to
+# your friends in some manner (e.g. via email).
+#
+readonly BOT_PASSWORD=
+
+#
+# The hostname of the lobby to which the bot will connect.
+#
+# The default value is the hostname for the TripleA community's public lobby.
+# Under normal circumstances, you will not have to change this variable.
+#
+readonly LOBBY_URI="https://lobby.triplea-game.org"
+
+#
+# The password used to secure remote maintenance of your bot.  A lobby
+# moderator who wishes to perform remote maintenance on your bot will be
+# required to enter this password in order to complete any maintenance
+# action.  If the password is an empty string, a lobby moderator will be able
+# to perform remote maintenance on your bot without your permission.
+#
+# The default value is an empty password. You should change this to a
+# non-empty string if you do not want lobby moderators to interfere with the
+# operation of your bot.  Note that a lobby moderator that cannot perform
+# remote maintenance of your bot may choose to boot your bot from the lobby.
+#
+readonly LOBBY_SUPPORT_PASSWORD=
+
+###############################################################################
+# VARIABLES THAT YOU MAY CUSTOMIZE END HERE
+#
+# DO NOT MODIFY ANYTHING BELOW THIS LINE!
+###############################################################################
+
+java \
+    -server \
+    -Xmx256M \
+    -Djava.awt.headless=true \
+    -jar bin/triplea-game-headless-*-all.jar \
+    -Ptriplea.lobby.game.supportPassword="$LOBBY_SUPPORT_PASSWORD" \
+    -Ptriplea.lobby.uri="$LOBBY_URI" \
+    -Ptriplea.map.folder="$MAPS_FOLDER" \
+    -Ptriplea.name="$BOT_NAME" \
+    -Ptriplea.port="$BOT_PORT" \
+    -Ptriplea.server.password="$BOT_PASSWORD"

@@ -1,0 +1,12 @@
+latest: 1.0.300
+servers:
+  - version: 2.0
+    lobby_uri: "https://prerelease.triplea-game.org"
+    message: |
+      Welcome to prerelease
+  - version: "1.0.154"
+    lobby_uri: https://lobby.triplea-game.org
+    message: |
+      Welcome to production
+  - version: "0.0"
+    inactive: true

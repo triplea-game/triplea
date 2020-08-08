@@ -1,0 +1,53 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Headless Game Server'
+mainClassName = 'org.triplea.game.server.HeadlessGameRunner'
+
+dependencies {
+    implementation project(':game-core')
+    implementation project(':java-extras')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('.triplea-root')
+    from file('scripts/run_bot')
+    from(file('scripts/run_bot.bat')) {
+        filter ReplaceTokens, tokens: [version: version]
+        filter FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance('crlf') // workaround for https://github.com/gradle/gradle/issues/1151
+    }
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
+
+task copyShadow(dependsOn: shadowJar) {
+    doLast {
+        copy {
+            from shadowJar
+            into "../infrastructure/ansible/roles/bot/files/"
+        }
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}

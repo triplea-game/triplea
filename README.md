@@ -1,116 +1,41 @@
-[![Travis](https://img.shields.io/travis/ajoberstar/gradle-git.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea) [![tripleA license](https://img.shields.io/github/license/triplea-game/tripleA.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)<br>
-TripleA is a free game engine that runs on open source and is community supported. 
+[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
+[![Build Status](https://travis-ci.com/triplea-game/triplea.svg?branch=master)](https://travis-ci.com/triplea-game/triplea)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
+[![Maintainability](https://api.codeclimate.com/v1/badges/fa814ed45202485a92bf/maintainability)](https://codeclimate.com/github/triplea-game/triplea/maintainability)
 
-Installing TripleA and Playing
-==============================
-- Download and install TripleA: http://triplea-game.github.io/download/
-- Online PDF rule book: http://github.com/triplea-game/assets/blob/master/rulebooks/TripleA_RuleBook.pdf
+## [Download and install TripleA](http://triplea-game.org/download/)
+TripleA is a free to play, volunteer run, 100% open source gaming community.
 
-TripleA Websites
-================
-- HomePage: http://triplea-game.github.io/
-- Community Website: http://www.tripleawarclub.org/
-- Community Maps Repository: http://github.com/triplea-maps
-- Source Forge (legacy): https://sourceforge.net/projects/triplea/
-- Bug reports, feature requests: http://github.com/triplea-game/triplea/issues/new
+![screenshot from 2018-02-08 22-58-33](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
-TripleA Game Features
-=====================
-- Free to play, 100% open source and community supported
-- Online lobby, find, join and observe live games
-- Play by correspondence (email)
-- Play single player against the AI
-- Many community created maps available for in-game download
-- Generic game engine allows you to [build your own maps and mods](https://github.com/triplea-maps/Project)
+  - ***Contact-us***:
+    - [Forums: Questions & Help](https://forums.triplea-game.org/category/10/help-questions)
+    - [Bug Tracker](https://github.com/triplea-game/triplea/issues/new)
+  - ***Technical Documentation***:
+    - Map Making, Admin, and Developer Docs are on the [wiki](https://github.com/triplea-game/triplea/wiki)
 
-Reporting Bugs / Feature Requests
-=================================
-- http://www.triplea-game.org/bug_report/
+## License
 
+This project is licensed under the terms of the
+[GNU General Public License v3.0 with additional permissions](/LICENSE).
 
-Map Maker Setup
-================
-See: https://github.com/triplea-maps/Project
+Copyright (C) 2001-2019 TripleA contributors.
 
-Development 
-===========
-- [Initiatives and Projects](https://github.com/triplea-game/triplea/issues/1073)
-- [Bug backlog](https://github.com/triplea-game/triplea/issues?q=is%3Aissue+is%3Aopen+label%3A%22Bug+Backlog%22)
-- [Developer and Project Documentation](https://github.com/triplea-game/triplea/tree/master/docs)
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
 
-Developer Setup
-=================
-*Eclipse*
-  - Import the project as a gradle project
-  - Plugins to Install:
-    - [Buildship plugin](https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md)
-    - [Gradle integration plugin](https://marketplace.eclipse.org/content/buildship-gradle-integration)
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License below for more details.
 
-*Netbeans*
-  - Use the [Gradle plugin](http://plugins.netbeans.org/plugin/44510/gradle-support)
+#### Additional permission under GNU GPL version 3 section 7
 
-*Intellij IDEA*
-  - Import the project as a gradle project, specify the settings.gradle file
-  - Plugins to Install:
-    - [eclipse code formatter plugin](https://plugins.jetbrains.com/plugin/6546)
-    - [eclipse launcher plugin (eclipser)](https://plugins.jetbrains.com/plugin/7153?pr=idea)
-      - Once installed, right click the eclipse launchers found in 'triplea/eclipse/launchers'
-      - Select 'convert with eclipser', then the launchers will be available to run as intelliJ run configurations
+If you modify this Program, or any covered work, by linking or combining it with any
+of the following libraries (or a modified version of those libraries), containing
+parts covered by the terms of the library's associated license, the licensors of
+this Program grant you additional permission to convey the resulting work.
 
-Note that eclipse and NetBeans are currently not supporting JUnit 5. Therefore we use the JUnit 4 based Runner `JUnitPlatform.class` until there is official support. Apply it by annotating the JUnit 5 based class with `@RunWith(JUnitPlatform.class)`
-
-  - *Troubleshooting*
-    - If you are getting "JAVA HOME not yet set", see: http://stackoverflow.com/questions/31215452/intellij-idea-importing-gradle-project-getting-java-home-not-defined-yet
-
-Development - Building
-======================
-
-[Gradle](http://gradle.org) is used. The gradlew (on Windows gradlew.bat) file is a proxy to execute build commands. 
-On first call these files will install the correct version of Gradle on your system. Most commonly used commands:
-
-* creates a jar file from the project, dependencies are not added:
-```
-./gradlew jar
-# creates into build/libs/triplea-<version>.jar
-./gradlew test
-# compiles the project and runs the unit tests
-./gradlew check
-# runs the tests and runs the checkstyle application to be able to review the code quality
-a report html page can be found under {projectDir}/build/reports/checkstyle/
-```
-
-* creates a self contained jar file from the project, all JAR dependencies are included
-```
-./gradlew shadowJar
-# creates into build/libs/triplea-<version>-all.jar
-```
-* run the application right from the source (no jar is created); this may be used from inside an IDE to debug
-```
-./gradlew run
-# creates into build/libs/triplea-<version>-all.jar
-```
-
-Building Game Installers and Travis Deployment
-==============================================
-
-On each and every merge to master, travis picks up, runs gradle, which then invokes builds, tests, and invokes install4j to create game installers. Travis then is configured to push the installer files to [github releases ](https://github.com/triplea-game/triplea/releases)
-
-More documentation on how build system is configured can be found in  the [/docs]
-(https://github.com/triplea-game/triplea/blob/master/docs/build_process.md)
-
-
-
-Task and Issue Tracking
-========================
-
-* Discussion - technical discussions, anything non-technical should be pushed to forum
-* Feature Backlog - prioritized list of potential features
-* Bug Backlog - prioritized list of bugs to fix
-* Infra/Code Backlog - prioritized list of build, infra, code improvement, process, misc issues
-* Next Release - what we are currently targeting for the next release (anything in progress should have an assignee)
-
-Every issue should get a tag identifying whether it is a discussion, feature, bug, infra/code (couple of tags here). We then have tags to categorize the portion of TripleA experience it affects such as UI, performance, AI, game play/rules, map support, etc.
-
-For the most part each issue should end up with 2 tags with 1 from each list (sometimes it might not get a second tag or have multiple tags from the second list).
-
-For background and discussion, please see: See: https://github.com/triplea-game/triplea/issues/1059
+Library | Group ID | Artifact ID | SPDX License ID
+:-- | :-- | :-- | :--
+Jakarta Mail | com.sun.mail | jakarta.mail | GPL-2.0-only

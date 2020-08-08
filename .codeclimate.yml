@@ -1,0 +1,42 @@
+version: "2"
+
+# https://docs.codeclimate.com/docs/cognitive-complexity
+# https://docs.codeclimate.com/docs/maintainability#section-checks
+# https://docs.codeclimate.com/docs/advanced-configuration
+checks:
+  method-complexity:
+    config:
+      threshold: 7
+  method-lines:
+    config:
+      threshold: 30
+  similar-code:
+    config:
+      threshold: 80
+plugins:
+  # https://docs.codeclimate.com/docs/git-legal
+  git-legal:
+    enabled: true
+    allow_strong_copyleft: true
+  # https://docs.codeclimate.com/docs/fixme
+  fixme:
+    enabled: true
+  # https://docs.codeclimate.com/docs/codenarc
+  codenarc:
+    enabled: true
+  # https://docs.codeclimate.com/docs/markdownlint
+  markdownlint:
+    enabled: true
+    checks:
+      MD006:
+        # Disable "Consider starting bulleted lists at the beginning of the line"
+        enabled: false
+
+  # https://docs.codeclimate.com/docs/shellcheck
+  shellcheck:
+    enabled: true
+
+exclude_patterns:
+  - "gradlew"
+  - ".github/ISSUE_TEMPLATES/*"
+  - "**/*Test.java"

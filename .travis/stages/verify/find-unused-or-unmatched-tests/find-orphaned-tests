@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -u
+
+red="\e[91m"
+yellow="\e[93m"
+blue="\e[34m"
+normal="\e[0m"
+
+testFiles=$(mktemp)
+testFilesTemp=$(mktemp)
+
+trap 'rm $testFiles $testFilesTemp' EXIT
+
+## Find all test files, excluding:
+##  - files in the integration-testing sub-project
+##  - files that are suffixed 'IntegrationTest.java'
+
+find . -type f -path "*/src/test/java/*" -name "*Test.java" \
+   | grep -v "IntegrationTest.java" > "$testFiles"
+
+## Exclude files with specific annotations or abstract test classes
+## These tests may not have a 1:1 mapping to source code.
+while read -r testFile; do \
+  grep -LE "abstract class|@Integration|@ExtendedUnitTest|@SuppressWarning.*UnmatchedTest" \
+      "$testFile" >> "$testFilesTemp"; \
+done < "$testFiles"
+
+cat "$testFilesTemp" > "$testFiles"
+
+
+status=0
+
+## Loop through every test file now, check if we find the expected corresponding source file.
+while read -r testFile; do
+
+  ## Convert the path of the test file and name of the test file to an expected source file.
+  ## Eg: src/test/java/org/package/FileTest.java -> src/main/java/org/package/File.java
+  srcFile=$(echo "$testFile" | sed 's|src/test/java|src/main/java|' | sed 's|Test.java$|.java|');
+
+  ## check if the source file does *not* exist, if not, report it.
+  if [ ! -f "$srcFile" ]; then
+
+    ## Report a header if this is the first time we are reporting errors.
+    if [ "$status" -eq 0 ]; then
+       echo -e "${red}Unmatched test files! Expected the following source files to exist:${normal}"
+    fi
+
+    echo -e "${blue}$testFile${normal} -> ${yellow}$srcFile${normal}"
+    status=1
+  fi
+done < "$testFiles"
+
+if [ "$status" -eq 1 ]; then
+  echo "You can fix these errors by:"
+  echo " - renaming the test file to match the source file being tested"
+  echo " - renaming the test file to end with 'IntegrationTest'"
+  echo " - adding an @Integration annotation to the test"
+  echo " - adding an @ExtendedUnitTest annotation to the test"
+  echo " - adding an @SuppressWarnings(\"UnmatchedTest\") to the test"
+fi
+
+exit "$status"

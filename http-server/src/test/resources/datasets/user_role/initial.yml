@@ -1,0 +1,9 @@
+user_role:
+  - id: 1
+    name: ANONYMOUS
+  - id: 2
+    name: HOST
+
+lobby_chat_history:
+lobby_api_key:
+lobby_user:

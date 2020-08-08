@@ -1,0 +1,38 @@
+- name: deploy send logs script
+  become: true
+  copy:
+    src: send_logs
+    dest: /home/admin/send_logs
+    mode: "0755"
+    owner: admin
+    group: admin
+
+- name: install cronjob to send logs
+  become: true
+  cron:
+    user: admin
+    name: "send logs {{ item }}"
+    minute: "1"
+    job: "/home/admin/send_logs \"{{ item }}\" \"{{ groups['support']|first }}\""
+  with_items: "{{ journalctl_applications }}"
+
+- name: deploy private logs-user ssh key to admin user
+  # This is the SSH key that will be needed when sending log files to the aggregation server
+  become: true
+  copy:
+   src: log_aggregation_ed25519
+   dest: "{{ log_sending_private_key_file }}"
+   mode: 0600
+   owner: admin
+   group: admin
+
+
+- name: deploy ssh config to admin user to disable strict host key checking
+  become: true
+  template:
+    src: ssh_config.j2
+    dest: /home/admin/.ssh/config
+    mode: 0600
+    owner: admin
+    group: admin
+

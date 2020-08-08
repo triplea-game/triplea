@@ -1,0 +1,70 @@
+#!/bin/bash
+
+set -u
+
+red="\e[91m"
+bold="\e[1m"
+normal="\e[0m"
+
+status=0
+
+## Put all source and test files into a temporary file to serve as a cache
+testFiles=$(mktemp)
+srcFiles=$(mktemp)
+trap 'rm -rf $testFiles $srcFiles' EXIT
+
+find . -path "*src/test/java/*" -type f -name "*Test.java" > "$testFiles"
+find . -path "*src/main/java/*" -type f -name "*.java" > "$srcFiles"
+
+
+## Loop over all source files
+while read -r file; do
+     ## Skip source files that have a '@SuppressWarnings("UnmatchedTest")'
+     ## This is needed when we have multiple source files with the same
+     ## class file name.
+     if grep -Ei "@SuppressWarning.*UnmatchedTest"; then continue; fi
+
+     ## Find the expected test file for a given source file and count how
+     ## many times we find that test file name in the set of test files
+     testFileName=$(basename "${file/.java/Test.java}")
+     testFileMatchCount=$(grep -c "/$testFileName" "$testFiles")
+
+     ## If we find the expected test file name, check if test file package
+     ## matches the source file
+     if [ "$testFileMatchCount" == 1 ]; then
+
+       ## Grab the name of the matching test file with full path
+       testFileMatch=$(grep "/$testFileName" "$testFiles")
+
+       ## chop off the filename and the '/src/test/java/' prefix
+       ## EG: ./project/src/test/java/org/triplea/package/File.java -> org/triplea/package
+       testPackage=$(echo "$testFileMatch" | \
+            sed 's|\(.*\)/.*\.java$|\1|' | sed 's|.*/java/||')
+
+       ## chop off the filename and the '/src/main/java/' prefix
+       ## EG: ./project/src/main/java/org/triplea/package/File.java -> org/triplea/package
+       srcPackage=$(echo "$file" | \
+            sed 's|\(.*\)/.*\.java$|\1|' | sed 's|.*/java/||')
+
+       ## compare package path strings, if they do not match then we found a problem
+       if [ "$srcPackage" != "$testPackage" ]; then
+         echo ""
+         echo -e "${red}$testFileName${normal}"
+         echo "$file"
+         echo "$testFileMatch"
+         status=1
+       fi
+     fi
+done <<<"$(cat "$srcFiles")"
+
+
+if [ "$status" -eq 1 ]; then
+  echo ""
+  echo -e "${bold}Found test files in packages that did not match the corresponding source file.${normal}"
+  echo -e "${bold}To fix, either: ${normal}"
+  echo -e "${bold}   1.  Move either the test file or source file so that the packages match.${normal}"
+  echo -e "${bold}   2.  If we do not expect there to be a matching source file, add a @SuppressWarnings(\"UnmatchedTest\")${normal}"
+  echo -e "${bold}       to the test class${normal}"
+fi
+
+exit "$status"

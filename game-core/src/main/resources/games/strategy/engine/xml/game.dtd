@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!ELEMENT game (info, loader?, triplea?, diceSides?, variableList?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attachmentList?, initialize?, propertyList?)>
+
+<!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
+<!ELEMENT info EMPTY>
+<!ATTLIST info
+	name CDATA #REQUIRED
+	version CDATA #REQUIRED
+>
+
+<!-- javaClass must implement the IGameLoader interface -->
+<!ELEMENT loader EMPTY>
+<!ATTLIST loader 
+	javaClass CDATA #REQUIRED
+>
+
+<!-- minimum version of triplea required to play this map xml -->
+<!ELEMENT triplea EMPTY>
+<!ATTLIST triplea
+	minimumVersion CDATA #REQUIRED
+>
+
+<!-- Number of sides on dice -->
+<!ELEMENT diceSides EMPTY>
+<!ATTLIST diceSides
+	value CDATA #REQUIRED
+>
+
+<!ELEMENT variableList (variable+) >
+	<!ELEMENT variable (element+) >
+	<!ATTLIST variable 
+		name CDATA #REQUIRED
+	>
+		<!ELEMENT element EMPTY > 
+		<!ATTLIST element
+			name CDATA #REQUIRED
+		>
+
+<!ELEMENT map ((grid | territory)+ , connection*, remove-connection*)>
+	<!ELEMENT grid EMPTY>
+	<!ATTLIST grid
+		name CDATA #REQUIRED
+		type (square | points-and-lines) #REQUIRED
+		x CDATA #REQUIRED
+		y CDATA #REQUIRED
+		horizontal-connections (explicit | implicit) 'explicit'
+		vertical-connections (explicit | implicit) 'explicit'
+		diagonal-connections (explicit | implicit) 'explicit'
+	>
+
+	<!ELEMENT territory EMPTY>
+	<!ATTLIST territory
+		name CDATA #REQUIRED
+		water (true | false)  "false"
+	>
+	<!-- connections are two way -->
+	<!ELEMENT connection EMPTY>
+	<!ATTLIST connection
+		t1 CDATA #REQUIRED 
+		t2 CDATA #REQUIRED
+	>
+
+	<!ELEMENT remove-connection EMPTY>
+	<!ATTLIST remove-connection
+		t1 CDATA #REQUIRED 
+		t2 CDATA #REQUIRED
+	>
+
+<!ELEMENT resourceList (resource+) >
+	<!ELEMENT resource EMPTY>
+	<!ATTLIST resource 
+		name ID #REQUIRED
+		isDisplayedFor CDATA #IMPLIED
+	>
+
+<!ELEMENT unitList (unit+) >
+	<!ELEMENT unit EMPTY>
+	<!ATTLIST unit 
+		name ID #REQUIRED
+	>
+
+<!ELEMENT relationshipTypes (relationshipType+) >
+	<!ELEMENT relationshipType EMPTY>
+	<!ATTLIST relationshipType 
+		name ID #REQUIRED
+	>
+
+<!ELEMENT playerList (player+, alliance*) >
+	<!ELEMENT player EMPTY>
+	<!ATTLIST player
+		name ID #REQUIRED
+		optional (true | false) 'false'
+		canBeDisabled (true | false) 'false'
+		defaultType (Human | AI | DoesNothing) 'Human'
+		isHidden (true | false) 'false' 
+	>
+	<!ELEMENT alliance EMPTY>
+
+	<!ATTLIST alliance
+		player IDREF #REQUIRED 
+		alliance CDATA #REQUIRED
+	>
+	
+<!ELEMENT territoryEffectList (territoryEffect+) >
+	<!ELEMENT territoryEffect EMPTY>
+	<!ATTLIST territoryEffect 
+		name ID #REQUIRED
+	>
+
+		
+<!ELEMENT gamePlay (delegate+, sequence, offset?)>
+	<!ELEMENT delegate EMPTY>
+	<!-- javaClass must implement Delegate
+		 1 instance created per delegate declaration, ie 1 instance per name -->
+	<!ATTLIST delegate
+		name ID #REQUIRED
+		javaClass CDATA #REQUIRED
+		display CDATA #IMPLIED
+	>
+	<!-- if no player given, then delegate is initialized with a null player -->
+	<!-- max run count is the maximum number of times that a delegate can run, if specified must be > 0, if not specified its infinity-->
+	<!ELEMENT sequence (step+)>
+		<!ELEMENT step (stepProperty*)>
+		<!ATTLIST step
+			name ID #REQUIRED
+			delegate IDREF #REQUIRED
+			player IDREF #IMPLIED
+			maxRunCount CDATA #IMPLIED
+			display CDATA #IMPLIED
+		>
+			<!ELEMENT stepProperty EMPTY>
+			<!ATTLIST stepProperty
+				name CDATA #REQUIRED
+				value CDATA #REQUIRED
+			>
+	<!ELEMENT offset EMPTY>
+	<!ATTLIST offset
+		round CDATA #REQUIRED
+	>
+		
+
+<!ELEMENT production (productionRule+, repairRule*, repairFrontier*, productionFrontier+, playerProduction+, playerRepair*)>
+	<!ELEMENT productionRule (cost+ , result+)>
+	<!ATTLIST productionRule 
+		name ID #REQUIRED
+	>
+		<!ELEMENT cost EMPTY>
+		<!ATTLIST cost
+			resource IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+		<!ELEMENT result EMPTY>
+		<!ATTLIST result
+			resourceOrUnit IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+		
+	<!ELEMENT repairRule (cost+ , result+)>
+	<!ATTLIST repairRule 
+		name ID #REQUIRED
+	>
+	
+	<!ELEMENT repairFrontier (repairRules+)>
+	<!ATTLIST repairFrontier
+		name ID #REQUIRED
+	>
+		<!ELEMENT repairRules EMPTY>
+		<!ATTLIST repairRules 
+			name IDREF #REQUIRED
+		>
+	
+	<!ELEMENT productionFrontier (frontierRules+)>
+	<!ATTLIST productionFrontier
+		name ID #REQUIRED
+	>
+		<!ELEMENT frontierRules EMPTY>
+		<!ATTLIST frontierRules 
+			name IDREF #REQUIRED
+		>
+	<!ELEMENT playerProduction EMPTY>
+	<!ATTLIST playerProduction
+	    player IDREF #REQUIRED
+	    frontier IDREF #REQUIRED
+	>
+	
+	<!ELEMENT playerRepair EMPTY>
+	<!ATTLIST playerRepair
+	    player IDREF #REQUIRED
+	    frontier IDREF #REQUIRED
+	>
+	
+<!ELEMENT technology (technologies?,playerTech*)>
+	
+	<!ELEMENT technologies (techname+)>
+		<!ELEMENT techname EMPTY>
+		<!ATTLIST techname 
+			name ID #REQUIRED
+			tech CDATA ""
+		>
+	<!ELEMENT playerTech (category*)>
+	<!ATTLIST playerTech
+		player IDREF #REQUIRED
+	>
+		<!ELEMENT category (tech*)>
+		<!ATTLIST category 
+			name CDATA #REQUIRED
+		>
+			<!ELEMENT tech EMPTY>
+			<!ATTLIST tech 
+				name IDREF #REQUIRED
+			>
+	
+<!-- attachments must implement Attachment -->
+<!ELEMENT attachmentList (attachment+) >
+	<!ELEMENT attachment (option+) >
+	<!ATTLIST attachment 
+		foreach CDATA #IMPLIED
+		name CDATA #REQUIRED
+		attachTo CDATA #REQUIRED
+		javaClass CDATA #REQUIRED
+		type (unitType | territory | resource | player | relationship | territoryEffect | technology)  "unitType"
+	>
+		<!ELEMENT option EMPTY > 
+		<!ATTLIST option
+			name CDATA #REQUIRED
+			value CDATA #REQUIRED
+			count CDATA ""
+		>
+		
+
+<!ELEMENT initialize (ownerInitialize?, unitInitialize?, resourceInitialize?, relationshipInitialize?) >
+	<!ELEMENT ownerInitialize (territoryOwner+) >
+		<!ELEMENT territoryOwner EMPTY>
+		<!ATTLIST territoryOwner 
+			territory CDATA #REQUIRED
+			owner IDREF #REQUIRED
+		>
+	<!ELEMENT unitInitialize (unitPlacement*, heldUnits*) >
+		<!-- units are owned by no one if owner isnt set -->
+		<!ELEMENT unitPlacement EMPTY>
+		<!ATTLIST unitPlacement
+			unitType IDREF #REQUIRED
+			territory CDATA #REQUIRED
+			quantity CDATA #REQUIRED
+			owner IDREF #IMPLIED
+			hitsTaken CDATA #IMPLIED
+			unitDamage CDATA #IMPLIED
+		>
+		<!-- units that have not been placed yet -->
+		<!ELEMENT heldUnits EMPTY>
+		<!ATTLIST heldUnits 
+			unitType IDREF #REQUIRED
+			player IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+	<!ELEMENT resourceInitialize (resourceGiven+) >
+		<!ELEMENT resourceGiven EMPTY>
+		<!ATTLIST resourceGiven
+			player IDREF #REQUIRED
+			resource IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+
+	<!ELEMENT relationshipInitialize (relationship+) >		
+		<!ELEMENT relationship EMPTY>
+	
+		<!ATTLIST relationship
+			player1 IDREF #REQUIRED
+			player2 IDREF #REQUIRED
+			type IDREF #REQUIRED
+			roundValue CDATA #REQUIRED
+		>
+
+	
+<!ELEMENT propertyList (property*)>
+	<!ELEMENT property (boolean?, string?, number?, color?, value?) >
+	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
+	<!ATTLIST property
+		value CDATA ""
+		name CDATA #REQUIRED
+		editable (true | false) "false"
+		player CDATA ""
+	>
+		<!ELEMENT value (#PCDATA)>
+	
+		<!ELEMENT boolean EMPTY>
+		<!ATTLIST boolean
+		>
+		<!ELEMENT string EMPTY>
+		<!ATTLIST string
+		>
+		<!ELEMENT number EMPTY>
+		<!-- currently only integers are supported -->
+		<!ATTLIST number
+			max CDATA #REQUIRED
+			min CDATA #REQUIRED
+		>
+		
+		<!ELEMENT color EMPTY>
+		<!ATTLIST color
+		>
+		

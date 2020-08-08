@@ -1,0 +1,105 @@
+- name: create service user
+  become: true
+  user:
+    name: "{{ http_server_user }}"
+    create_home: yes
+    system: yes
+
+- name: create bin folder for jar file
+  when: using_latest
+  become: true
+  file:
+    state: directory
+    path: "{{ http_server_home_folder }}/bin/"
+    mode: "0755"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+- name: deploy jar file
+  when: using_latest
+  become: true
+  register: deploy_jar_file
+  copy:
+    src: "{{ http_server_jar }}"
+    dest: "{{ http_server_home_folder }}/bin/{{ http_server_jar }}"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+
+- name: download zip file if not using latest
+  when: not using_latest
+  become: true
+  register: deploy_jar_file
+  get_url:
+    url: "{{ http_server_zip_download }}"
+    dest: "{{ http_server_home_folder }}/triplea-http-server-{{ version }}.zip"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+- name: extract zip file if not using latest
+  when: not using_latest
+  become: true
+  unarchive:
+    remote_src: yes
+    src: "{{ http_server_home_folder }}/triplea-http-server-{{ version }}.zip"
+    dest: "{{ http_server_home_folder }}/"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+- name: deploy run_server script
+  become: true
+  template:
+    src: run_server.j2
+    dest: "{{ http_server_run_file }}"
+    mode: "755"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+- name: deploy server config file
+  become: true
+  register: deploy_config_file
+  template:
+    src: configuration.yml.j2
+    dest: "{{ http_server_home_folder}}/configuration.yml"
+    mode: "644"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+- name: install systemd service script
+  become: true
+  template:
+    src: http_server.service.j2
+    dest: /lib/systemd/system/http_server.service
+    mode: "644"
+
+- name: reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: enable and start service
+  when: (deploy_jar_file.changed == false) and (deploy_config_file.changed == false)
+  become: true
+  service:
+    name: http_server
+    state: started
+    enabled: yes
+
+- name: restart service if new jar file deployed
+  when: (deploy_jar_file.changed) or (deploy_config_file.changed)
+  become: true
+  service:
+    name: http_server
+    state: restarted
+    enabled: yes
+
+- name: deploy admin scripts to facilite server operations, EG. check logs, start, stop
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: /home/admin/
+    owner: admin
+    group: admin
+    mode: "0700"
+  with_fileglob:
+    - "admin_scripts/*"

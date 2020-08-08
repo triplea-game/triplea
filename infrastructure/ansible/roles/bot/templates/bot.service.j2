@@ -1,0 +1,13 @@
+[Unit]
+Description=TripleA Bot %i
+Documentation=
+
+[Service]
+WorkingDirectory={{ bot_folder }}
+User={{ bot_user }}
+Group={{ bot_user }}
+ExecStart={{ bot_folder }}/run_server --bot-number %i --bot-port 40%i
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,60 +1,111 @@
+if: tag is blank
+dist: xenial
+sudo: false
 language: java
-addons:
-  apt:
-     packages:
-         - sshpass
-jdk:
-- oraclejdk8
-install: true
-script:
-- ./gradlew check --info
-before_deploy:
-## Run the travis setup, will download install4j and configure it
-- chmod +x ./.travis/setup && ./.travis/setup
-## Add the travis build number to the game engine version
-- GAME_CONFIG=game_engine.properties
-- ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
-- export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
-- sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
-## Download tutorial map
-- mkdir -p maps
-- (cd maps; wget https://github.com/triplea-maps/tutorial/releases/download/0.125/tutorial.zip)
-## Run the gradle release build process - creates the installers
-- ./gradlew release
-### Debug, show the artifacts that have been built
-- ls build/releases/
-### Rename the windows installers to have 32bit and 64bit extensions instead of 'x86'
-- mv build/releases/TripleA_${TAGGED_VERSION}_windows-x64.exe build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
-- mv build/releases/TripleA_${TAGGED_VERSION}_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
-## Push a tag to github, will trigger the releases process
-- chmod +x ./.travis/push_tag && ./.travis/push_tag
-## rest is commented out, work in progress.. does not work and needs some debugging.
-#- echo "showing build artifacts" && ls build/distributions/
-#- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
-#- LOBBY_ARTIFACT="triplea-${TAGGED_VERSION}-server.zip"
-#- export SSHPASS=$DEPLOY_PASS
-#- sshpass -e scp build/distributions/$LOBBY_ARTIFACT $DEPLOY_DEST
-#- sshpass -e scp .travis/prerelease_lobby_install.sh $DEPLOY_DEST
-#- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/prerelease_lobby_install.sh $LOBBY_ARTIFACT
-#- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST 'bash -s' < ./.travis/update_maps
-deploy:
-  provider: releases
-  api_key:
-    secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
-  ## This is the list of files to be deployed to github releases
-  file:
-    - build/libs/triplea-${TAGGED_VERSION}-all.jar
-    - build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
-    - build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
-    - build/releases/TripleA_${TAGGED_VERSION}_macos.dmg
-    - build/releases/TripleA_${TAGGED_VERSION}_unix.sh
-    - build/distributions/triplea-${TAGGED_VERSION}-all_platforms.zip
-    - build/distributions/triplea-${TAGGED_VERSION}-bots.zip
-    - build/distributions/triplea-${TAGGED_VERSION}-server.zip
-  skip_cleanup: true
-  prerelease: true
-  on:
-    tags: false
-    branches:
-      only:
-        - master
+jdk: openjdk11
+cache: { directories: [ ".gradle", "~/.gradle/caches" ] }
+install: skip
+
+env:
+  global:
+   - REPORT_FAIL=".travis/shared/report-build-status FAILURE"
+   - VERIFY_STAGE=".travis/stages/verify"
+   - DEPLOY_PRERELEASE_STAGE=".travis/stages/deploy/prerelease"
+   - DEPLOY_PROD_STAGE=".travis/stages/deploy/prod"
+jobs:
+  include:
+
+    ########################################################################
+    # Jobs are ordered tests first and then slower jobs before faster ones.
+
+    - stage: Verify
+      name: "Tests: Integration Test"
+      addons: { postgresql: "10" }
+      script: [ $VERIFY_STAGE/integration-testing/run || $REPORT_FAIL "integ tests" ]
+
+    - stage: Verify
+      name: "Tests: Unit Test"
+      script: [ $VERIFY_STAGE/unit-testing/run || $REPORT_FAIL "unit tests" ]
+
+    - stage: Verify
+      name: "Tests: Smoke Test"
+      addons: {postgresql: "10"}
+      script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
+
+    - stage: Verify
+      name: "Tests: Compatibility Checks"
+      script: [ (travis_retry $VERIFY_STAGE/compatibility-testing/run) || $REPORT_FAIL "compatibility tests" ]
+
+    - stage: Verify
+      name: "Analysis: PMD Verification"
+      script: [ $VERIFY_STAGE/pmd-verification/run || $REPORT_FAIL "pmd verification" ]
+
+    - stage: Verify
+      name: "Analysis: Checkstyle"
+      script: [ $VERIFY_STAGE/checkstyle/run || $REPORT_FAIL "checkstyle" ]
+
+    - stage: Verify
+      name: "Analysis: Java Formatting"
+      script: [ $VERIFY_STAGE/java-formatting/run || $REPORT_FAIL "formatting" ]
+
+    - stage: Verify
+      name: "Analysis: Check Links and YAML Syntax"
+      script: [ (travis_retry $VERIFY_STAGE/check-links-and-yaml-syntax/run) || $REPORT_FAIL "valid links and yaml" ]
+
+    - stage: Verify
+      name: "Analysis: Code Convention Checks"
+      script: [ $VERIFY_STAGE/code-convention-checks/run || $REPORT_FAIL "code conventions" ]
+
+    - stage: Verify
+      name: "Analysis: Find Unused or Unmatched Tests"
+      script: [ $VERIFY_STAGE/find-unused-or-unmatched-tests/run || $REPORT_FAIL "unused or unmatched tests" ]
+
+    ########################################################################
+
+    - stage: DeployPrerelease
+      name: "Ansible Deploy to Prerelease"
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      language: python
+      python: "3.8"
+      addons: { apt: { packages: [ sshpass ] } }
+      install: [ pip install ansible ]
+      script: [ $DEPLOY_PRERELEASE_STAGE/deploy-to-prerelease-servers/run || $REPORT_FAIL "prerelease deployment" ]
+
+
+    - stage: DeployPrerelease
+      name: "Build Installer Downloads & Upload to Github Releases"
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      script: [ $DEPLOY_PRERELEASE_STAGE/push-to-github-releases/run || $REPORT_FAIL "build installers" ]
+      deploy:
+        on: { tags: false, repo: triplea-game/triplea, branch: master }
+        provider: releases
+        file_glob: true
+        file: build/artifacts/*
+        skip_cleanup: true
+        prerelease: true
+        api_key:
+          secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
+
+    ########################################################################
+
+    - stage: DeployProd
+      name: "Push Map Descriptions to Website"
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      addons: { apt: { packages: [ python3, python3-yaml ] } }
+      script: [ $DEPLOY_PROD_STAGE/update-maps-on-website/run || $REPORT_FAIL "push maps to website" ]
+
+    - stage: DeployProd
+      name: "Ansible Deploy to Prod2"
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      language: python
+      python: "3.8"
+      addons: { apt: { packages: [ sshpass ] } }
+      install: [ pip install ansible ]
+      script: [ $DEPLOY_PROD_STAGE/deploy-prod2-servers/run || $REPORT_FAIL "prod2 deployment" ]
+
+    ########################################################################
+
+    - stage: Finish
+      name: "Report Successful Build"
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      script: [ ".travis/shared/report-build-status SUCCESS" ]

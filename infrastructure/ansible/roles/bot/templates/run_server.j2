@@ -1,0 +1,37 @@
+#!/bin/bash
+
+while [ "$1" != "" ]; do
+  PARAM=$1
+  VALUE=$2
+  case ${PARAM} in
+    --bot-number)
+      BOT_NUMBER=${VALUE}
+      ;;
+    --bot-port)
+      BOT_PORT=${VALUE}
+      ;;
+     *)
+      echo "ERROR: unknown parameter \"${PARAM}\""
+      exit 1
+      ;;
+  esac
+  shift
+  shift
+done
+
+
+if [[ -z "${BOT_PORT}" || -z "${BOT_NUMBER}" ]]; then
+ echo "Missing parameter in: $@"
+ exit 1
+fi
+
+cd $(dirname $0)
+
+java -server \
+    -Xmx{{ bot_max_memory }} \
+    -Djava.awt.headless=true \
+    -jar {{ bot_jar }} \
+{% for key,value in bot_run_args.items()|sort(attribute='1') %}
+  -P{{ key }}={{ value }} \
+{% endfor %}
+

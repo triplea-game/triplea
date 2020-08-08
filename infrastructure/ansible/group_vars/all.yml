@@ -1,0 +1,22 @@
+# These variables are used across multiple roles.
+# Other than these variables, roles should be fully self-contained.
+
+ansible_connection: ssh
+ansible_user: root
+
+lobby_db_name: lobby_db
+lobby_db_user: lobby_user
+
+maps_db_name: maps_db
+maps_db_user: maps_user
+
+admin_user: "admin"
+admin_home: "/home/{{ admin_user }}"
+
+# If using latest we will build jar files from source,
+# otherwise they will be downloaded.
+# When set to 'false', the version' variable will
+# typically be specified.
+using_latest: true
+version: "{{ lookup('env', 'VERSION') }}"
+

@@ -1,0 +1,8 @@
+description = 'TripleA library for low-level helper APIs, ie: syntactic sugar'
+
+dependencies {
+    errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+    implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+
+    testImplementation project(':test-common')
+}

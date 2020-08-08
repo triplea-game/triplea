@@ -1,0 +1,3 @@
+game_hosting_api_key:
+  - key: game-hosting-api-key
+    ip: 127.0.0.2

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Inserts a sample data set to the local docker database.
+# Of note, a moderator user named "test" with password "test" will be created.
+
+cat sample_data.sql | psql -h localhost -U lobby_user lobby_db

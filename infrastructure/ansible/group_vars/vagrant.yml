@@ -1,0 +1,15 @@
+ansible_ssh_user: vagrant
+ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+ansible_host: 127.0.0.1
+ansible_python_interpreter: /usr/bin/python3
+lobby_uri: "http://localhost:8080"
+lobby_db_password: "lobby-db-password"
+maps_db_password: "maps-db-password"
+nginx_ssl_certificate: "/vagrant/.vagrant/{{ lookup('env','CRT_FILE') }}"
+
+bot_numbers: ["01", "02"]
+
+# Comment out both using_latest and version to test prerelease deployment which
+# deploys the latest binaries built from source.
+using_latest: false
+version: "2.0.19463"

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -eEu
+
+if [ ! -f "vault_password" ]; then
+  echo "Error: vault_password file must exist at $(pwd)"
+  exit 1
+fi
+
+# Start up ssh-agent
+eval "$(ssh-agent -s)"
+
+# Decrypt SSH key and add it to ssh agent
+# Once available to SSH agent, when making SSH connections
+# this key will be offered by SSH for authentication.
+# This allows ansible to SSH to target servers and run
+# deployment commands. We assume servers have been created
+# with the corresponding public key already installed.
+ansible-vault view \
+    --vault-password-file=vault_password \
+    ansible_ssh_key.ed25519 \
+  | ssh-add -
+
+# Run deployment
+ansible-playbook \
+    --vault-password-file vault_password \
+    "$@" \
+    -i ansible/inventory/prod2 \
+ ansible/site.yml
+

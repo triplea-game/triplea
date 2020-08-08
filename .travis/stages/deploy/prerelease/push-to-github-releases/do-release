@@ -1,0 +1,151 @@
+#!/bin/bash
+
+set -eEu
+
+readonly INSTALL4J_HOME=~/install4j
+readonly ARTIFACTS_DIR=./build/artifacts
+
+function main() {
+  installInstall4j
+  buildReleaseArtifacts
+  collectArtifacts
+  generateArtifactChecksums
+  triggerGithubReleaseWithTagPush
+}
+
+function reportStatus() {
+  local -r exitStatus="$1"
+  local -r reportScript=$(find ~ -type f -path "**/.travis/**" -name "report_build_status")
+  "$reportScript" "$exitStatus"
+}
+
+function installInstall4j() {
+  echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
+  wget --no-verbose -O install4j_unix.sh \
+          https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_8_0_7.sh
+  chmod +x install4j_unix.sh
+  ./install4j_unix.sh -q -dir "$INSTALL4J_HOME"
+  "$INSTALL4J_HOME/bin/install4jc" -L "$INSTALL4J_8_LICENSE"
+}
+
+function buildReleaseArtifacts() {
+  JAVA_OPTS=-Xmx4G ./gradlew \
+      --no-daemon \
+      --parallel \
+      -Pinstall4jHomeDir="$INSTALL4J_HOME" \
+      release
+}
+
+#
+# This function collects artifacts from all subprojects to a single folder in
+# preparation for release.
+#
+function collectArtifacts() {
+  mkdir -p ${ARTIFACTS_DIR}
+  cp -v ./**/build/artifacts/* ${ARTIFACTS_DIR}
+}
+
+#
+# This function generates checksums for all release artifacts.
+#
+function generateArtifactChecksums() {
+  readonly -a ENGINES=(md5sum sha1sum sha256sum)
+  (
+    # Change to artifacts directory so file names in checksum files are bare
+    cd $ARTIFACTS_DIR
+    
+    # Write checksum files outside the artifacts directory so they are not
+    # considered by subsequent engines 
+    declare -A checksum_files=()
+    for engine in "${ENGINES[@]}"; do
+      echo "Generating artifact checksums using '$engine'..."
+      checksum_files[$engine]=$(mktemp)
+      eval "$engine * > ${checksum_files[$engine]}"
+    done
+    
+    for engine in "${ENGINES[@]}"; do
+      mv "${checksum_files[$engine]}" "./${engine}.txt"
+    done
+   
+    ## Enable pinentry loopback mode: https://www.fluidkeys.com/tweak-gpg-2.1.11/
+    echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+    gpgconf --reload gpg-agent
+    
+    # Sign checksum files
+    #
+    # We use detached signatures so that
+    #
+    # a) users can verify the checksum files using *sum without any warnings about
+    #    incorrectly-formatted lines, and
+    # b) signing the checksum file itself is susceptible to spoofing because the
+    #    *sum commands will process checksums outside the signature block (see
+    #    https://github.com/nodejs/node/issues/6821#issuecomment-220033176)
+    for engine in "${ENGINES[@]}"; do
+      echo "Signing artifact checksums for '$engine'..."
+      gpg2 --batch --no-tty --yes --armor --detach-sign \
+          --pinentry-mode loopback \
+          --passphrase-file <(echo "$GPG_PRIVATE_KEY_PASSPHRASE") \
+          "./${engine}.txt"
+    done
+  )
+}
+
+#
+# This function pushes a tag to github, that creates a github release and triggers a travis release build
+# which then builds the release artifacts and deploys them to the github release.
+#
+# Note, the tag itself is also considered a branch and trigger an extraneous branch build in travis.
+#
+function triggerGithubReleaseWithTagPush() {
+  local -r TAG_VALUE=$(./gradlew --console=plain :game-core:properties | grep -Po '(?<=^version: )\S+$')
+  
+  git config --global user.email "tripleabuilderbot@gmail.com"
+  git config --global user.name "tripleabuilderbot"
+
+  local -r gitRepo="https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea"
+
+  # Sometimes a tag will be created from a previous build and assets will fail to upload.
+  # Check if the current tag exists, if so, delete it.
+  git ls-remote --tags origin | grep -q "$TAG_VALUE" && \
+    (
+    echo "Deleting tag $TAG_VALUE to recreate the release." && \
+    git push -q "$gitRepo" --delete "refs/tags/$TAG_VALUE"
+    )
+
+  ## create tag locally
+  git tag "$TAG_VALUE" -a -f -m "$TAG_VALUE"
+
+  echo "Triggering github release by pushing tag: $TAG_VALUE"
+  git push -q "$gitRepo" --tags
+}
+
+## Live update maps list on website, read the maps in 'triplea_maps.yaml' and 
+## commit updated data files to website json data directory.
+function pushMaps() { 
+  git config --global user.name "tripleabuilderbot"
+
+  git clone --quiet "https://${PUSH_TO_WEBSITE_TOKEN}@github.com/triplea-game/triplea-game.github.io.git" website
+
+  #Clear directory
+  rm ./website/_maps/*
+  #Split the yaml file into multiple files
+  ./.travis/yaml_splitter ./triplea_maps.yaml ./website/_maps/
+
+  ## do git stuff, check if there is a diff, if so, commit and push it
+  (
+    set -x
+    cd website
+
+    # Add any new map files now so that 'diff-index' will detect these new files
+    git add --all _maps/
+    # Run 'update-index --refresh' so that we are sure to be comparing against
+    # a latest remote HEAD. A non-zero-exit in either 'git update-index' or
+    # in 'git diff-index' indicates there are changes to commit and push.
+    if ! git update-index --refresh || ! git diff-index --quiet HEAD --; then
+      git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
+      git push -fq origin master
+    fi
+  )
+}
+
+main

@@ -1,0 +1,185 @@
+#!/bin/bash
+
+set -u
+
+script_dir=$(dirname "$0")
+
+green="\e[92m"
+blue="\e[34m"
+normal="\e[0m"
+bold="\e[1m"
+blinkingRed="${bold}\e[5m\e[91m"
+
+javaFiles=$(mktemp)
+testFiles=$(mktemp)
+sqlFiles=$(mktemp)
+trap 'rm $javaFiles $sqlFiles' EXIT
+
+
+## Create a cache of java and SQL files for faster iteration over all files.
+
+find . -type f -name "*.java" > "$javaFiles"
+find . -type f -name "*Test.java" > "$testFiles"
+find lobby-db/src/main/resources -type f -name "*.sql" > "$sqlFiles"
+
+status=0
+
+
+function main() {
+  favorJava9CollectionsApi
+  #referToCollectionsByInterfaceType
+  avoidLegacyApi
+  removeUnusedLogAnnotations
+  databaseNamesAreLowerSnakeCase
+  databaseTablesAreSingular
+  noTabsInSql
+  useEmptyOverSizeEqualsZero
+  useStaticImportsInTest
+}
+
+function title() {
+  echo -e "${bold}${blue}$1${normal}"
+}
+
+function example() {
+  echo -e "${blue}Ex: $1${normal}"
+}
+
+function displayResult() {
+  local found="$1"
+  if [ "$found" -eq 0 ]; then
+    echo -e "${green}[OK]${normal}"
+  else
+    echo -e "${blinkingRed}[FIX]${normal}"
+  fi
+  echo ""
+  
+}
+
+function favorJava9CollectionsApi() {
+  title "Verifying preference to use List.of(), Map.of() and Set.of() compared to java.util.Collections.*"
+  example "instead of 'Collections.singleton(value)', use 'Set.of(value)'"
+  local found=0
+
+  while read -r file; do
+    grep --color=auto -Hn -f "$script_dir/style.include/disallowed-collection-calls" "$file" && status=1 && found=1
+    grep --color=auto -Hn -f "$script_dir/style.include/disallowed-collection-imports" "$file" && status=1 && found=1
+  done <<< "$(cat "$javaFiles")"
+
+  displayResult "$found"
+}
+
+function referToCollectionsByInterfaceType() {
+  title "Assign to collection types using their interface"
+  example "instead of 'ArrayList<String> list =', use 'List<String> list = '"
+  local found=0
+
+  while read -r file; do
+    grep --color=auto -EHn -f "$script_dir/style.include/concrete-collection-types" "$file" && status=1 && found=1
+  done <<< "$(cat "$javaFiles")"
+  
+  displayResult "$found"
+}
+
+function avoidLegacyApi() {
+  title "Do not use legacy API tools like Vector"
+  local found=0
+
+  while read -r file; do
+    grep --color=auto -Hn -f "$script_dir/style.include/legacy-api" "$file" && status=1 && found=1
+  done <<< "$(cat "$javaFiles")"
+  
+  displayResult "$found"
+}
+
+function removeUnusedLogAnnotations() {
+  title "Remove unused lombok @Log and @Slf4j annotations"
+  local found=0
+
+  while read -r file; do
+    if grep -Eq "@Log|@Slf4j" "$file"; then
+      if ! grep -Eq "log::|log\." "$file"; then
+        echo -e "${bold}$file${normal}"
+        found=1
+        status=1
+      fi
+    fi
+  done <<< "$(cat "$javaFiles")"
+
+  displayResult "$found"
+}
+
+function databaseNamesAreLowerSnakeCase() {
+  title "Database entities should not be camelCased, lower_snake_case instead."
+  example "Ex: instead of 'tableName' use 'table_name'"
+  local found=0
+  
+  while read -r file; do
+    grep --color=auto -HEn "[a-z][A-Z]" "$file" && status=1 && found=1
+  done <<< "$(cat "$sqlFiles")"
+  
+  displayResult "$found"
+}
+  
+
+function databaseTablesAreSingular() {
+  title "Database tables should be singular"
+  example "instead of 'create table words' use 'create table word'"
+  local found=0
+  
+  while read -r file; do
+    grep --color=auto -H -E -i "create table.*s$" "$file" && status=1 && found=1
+  done <<< "$(cat "$sqlFiles")"
+
+
+  displayResult "$found"
+}
+
+function noTabsInSql() {
+  title "Use spaces in SQL and not tabs"
+  local found=0
+  while read -r file; do
+    grep --color=auto -Pn "\t" "$file" && status=1 && found=1
+  done <<< "$(cat "$sqlFiles")"
+  
+  displayResult "$found"
+}
+
+function useEmptyOverSizeEqualsZero() {
+  title "Avoid using size() to check for empty or not empty"
+  example "size() == 0 -> isEmpty(), size() > 0 -> !isEmpty()"
+  local found=0
+  while read -r file; do
+    grep --color=auto -EHn \
+        "size\(\) == 0|size\(\) < 1|size\(\) <= 0|size\(\) > 0|size\(\) != 0|size\(\) >= 1" "$file" \
+      && status=1 && found=1
+  done <<< "$(cat "$javaFiles")"
+
+  displayResult "$found"
+}
+
+
+# Checks for static imports by looking for fully qualified constructs used in test, eg:
+#   Mockito.when
+# We distinguish from imports and standard usages by looking for a trailing semicolon, eg:
+#   import static ..MatcherAssert.assertThat;
+# If we do not see that trailing semi-colon, then we have found something that is not statically
+# imported.
+function useStaticImportsInTest() {
+  title "Use static imports in test"
+  example "Mockito.when(..) -> when(..)"
+  local found=0
+  while read -r file; do
+    grep --color=auto -EHn \
+      "Mockito.when[^;]|Mockito.verify[^;]|MatcherAssert.assertThat[^;]|Is\.is[^;]|IsInstanceOf\.instanceOf[^;]" \
+      "$file" \
+     && status=1 && found=1
+  done <<< "$(cat "$testFiles")"
+
+  displayResult "$found"
+}
+
+main
+
+exit "$status"
+

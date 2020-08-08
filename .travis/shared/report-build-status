@@ -1,0 +1,125 @@
+#!/bin/bash
+
+# This script is used to automatically create a "build broken" tracking issue.
+# On success, this script will check for an open "build broken" issue and will close it.
+# On failure, this script will check for an open "build broken" issue and will create one
+# if there is not one already open.
+
+
+## Make sure we are building master branch.
+## PRs will have their pull request number set in 'TRAVIS_PULL_REQUEST', otherwise
+## they are false.
+## TRAVIS_BRANCH will be set to 'master' for PR builds, but for branch builds it
+## it will be set to the name of the branch being built.
+if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "master" ]; then
+  # If this is a PR, or a branch build, then just exit and maintain the error code
+  # exit flag - do not create a build fail issue.
+  exit 1
+fi
+
+set -eu
+
+# Should be one of {SUCCESS|FAILURE}
+RESULT=${1-}
+BUILD_STAGE=${2-"unreported build stage"}
+
+readonly BROKEN_BUILD_ISSUE_TITLE="Travis Master Branch Build Failed";
+readonly LATEST_BUILD_LINK="[#$TRAVIS_BUILD_NUMBER]($TRAVIS_BUILD_WEB_URL)"
+readonly BROKEN_BUILD_ISSUE_BODY="Travis master branch build $LATEST_BUILD_LINK failed.\
+     Build stage: $BUILD_STAGE"
+readonly BROKEN_BUILD_COMMENT="Build $LATEST_BUILD_LINK failed on stage: $BUILD_STAGE"
+
+readonly API_URL="https://api.github.com/repos/triplea-game/triplea"
+readonly API_AUTH="Authorization: token $GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS"
+
+if [ -z "$RESULT" ]; then
+  echo "Error, expected one parameter, but got no parameters."
+  exit 1
+fi
+
+exit_code=0
+
+function main() {
+case "$RESULT" in
+  SUCCESS)
+    reportBuildSuccess
+    ;;
+  FAILURE)
+    exit_code=1
+    reportBuildFailure
+    ;;
+  *)
+     echo "Error, unknown parameter value, expected {SUCCESS|FAILURE}, got: $RESULT"
+     exit 1
+esac
+}
+
+
+# Finds any open issues with failure title and returns that issue number
+function findOpenFailedBuildIssue() {
+         # list all issues
+         # parse values 'state, number and title'
+         # find target title
+         # filter for open status
+         # grab just the issue number line
+         # filter issue number line for just the issue number
+         # If in case we have duplicates somehow, just grab only one
+   curl -s -H "$API_AUTH" "$API_URL/issues" \
+         | grep -E "^\s+\"state\": |^\s+\"number\": |^\s+\"title\": " \
+         | grep -EC1 "^\s+\"title\": \"$BROKEN_BUILD_ISSUE_TITLE" \
+         | grep -EB2 "^\s+\"state\": \"open\",$" \
+         | grep -E "^\s+\"number\":" \
+         | sed 's/.*number": \(.*\),/\1/' \
+         | head -1
+}
+
+# On success, if there is an open failed build issue:
+# - comment that the latest succeeded
+# - close the issue
+function reportBuildSuccess() {
+  local -r failedBuildIssue=$(findOpenFailedBuildIssue)
+  if [ -n "$failedBuildIssue" ]; then
+    commentOnIssue "$failedBuildIssue" "Build $LATEST_BUILD_LINK succeeded."
+    closeIssue "$failedBuildIssue"
+  fi
+}
+
+function commentOnIssue() {
+  local -r issueNumber="$1"
+  local -r comment="$2"
+
+  echo "Build reporting: adding comment to issue $issueNumber that build is still broken"
+  curl -s -d "{\"body\": \"$comment\"}" -X POST -H "$API_AUTH" \
+     "$API_URL/issues/$issueNumber/comments"
+}
+
+function closeIssue() {
+  local -r issueNumber="$1"
+  
+  echo "Build reporting: build fixed! Closing failed build issue $issueNumber"
+  curl -H "$API_AUTH" -X PATCH -d "{\"state\": \"closed\"}" \
+    "$API_URL/issues/$issueNumber"
+}
+
+
+# Open a new failed build issue if one is not open. Otherwise add
+# a comment to the existing issue.
+function reportBuildFailure() {
+  local -r failedBuildIssue=$(findOpenFailedBuildIssue)
+  if [ -z "$failedBuildIssue" ]; then
+     openNewFailedBuildIssue
+  else
+     commentOnIssue "$failedBuildIssue" "$BROKEN_BUILD_COMMENT"
+  fi
+}
+
+function openNewFailedBuildIssue() {
+  echo "Build reporting: Creating new issue to report failed build"
+  curl -X POST -d "{\"title\": \"$BROKEN_BUILD_ISSUE_TITLE\", \"body\": \
+\"$BROKEN_BUILD_ISSUE_BODY\", \"labels\": [\"Problem\"]}" \
+        -H "$API_AUTH" "$API_URL/issues"
+}
+
+main
+exit "$exit_code"
+

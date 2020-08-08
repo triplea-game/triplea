@@ -1,0 +1,5 @@
+access_log:
+  - username: anonymous
+    ip: 127.0.0.50
+    system_id: anonymous-system-id
+    lobby_user_id: null

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eEu
+
+cd infrastructure
+echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+./run_ansible_production
+

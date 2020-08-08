@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="TripleA"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>TripleA custom rules.</description>
+
+    <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
+    <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
+        <properties>
+            <property name="ignoredAnnotations" value="java.lang.Deprecated|javafx.fxml.FXML"/>
+        </properties>
+    </rule>
+</ruleset>

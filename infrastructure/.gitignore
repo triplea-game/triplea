@@ -1,0 +1,10 @@
+.vagrant
+.ansible
+*-console.log
+ansible/*.retry
+**/*.jar
+ansible/roles/database/flyway/files/
+
+vault_password
+secret
+
