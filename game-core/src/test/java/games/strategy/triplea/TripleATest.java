@@ -3,57 +3,78 @@ package games.strategy.triplea;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.player.Player;
+import games.strategy.triplea.delegate.EditDelegate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.sound.ISound;
 
 @ExtendWith(MockitoExtension.class)
 public class TripleATest {
 
-  private static final String DELEGATE_NAME_EDIT = "edit";
+  private static TripleA tripleA;
 
   @Mock private LaunchAction launchAction;
   @Mock private Chat chat;
   @Mock private ServerGame serverGame;
   @Mock private GameData gameData;
+  @Mock private Set<Player> playerSet;
+  @Mock private IDisplay iDisplay;
+  @Mock private ISound iSound;
+
+  @BeforeAll
+  public static void init() {
+    tripleA = new TripleA();
+  }
 
   @Test
-  void testStartGameWhenServerGameStartedWithNewPlayersWithoutEditDelegate() {
-
-    final TripleA tripleA = new TripleA();
+  void testNewPlayersAreRetrievedFromGivenPlayerNames() {
     final Map<String, PlayerType> playerNames = new HashMap<>();
     playerNames.put("first", PlayerType.HUMAN_PLAYER);
     playerNames.put("second", PlayerType.WEAK_AI);
     playerNames.put("third", PlayerType.PRO_AI);
+    final Set<Player> players = tripleA.newPlayers(playerNames);
+    assertThat(players, hasSize(playerNames.size()));
+  }
+
+  @Test
+  void testStartGameAndShutDownWhenServerGameStartedWithoutEditDelegate() {
 
     when(serverGame.getData()).thenReturn(gameData);
-    when(gameData.getDelegate(DELEGATE_NAME_EDIT)).thenReturn(null);
+    when(gameData.getDelegate(anyString())).thenReturn(null);
+    when(launchAction.startGame(
+            any(LocalPlayers.class), any(ServerGame.class), anySet(), any(Chat.class)))
+        .thenReturn(iDisplay);
+    when(launchAction.getSoundChannel(any(LocalPlayers.class))).thenReturn(iSound);
 
-    final Set<Player> players = tripleA.newPlayers(playerNames);
-    assertThat(players, hasSize(3));
-
-    tripleA.startGame(serverGame, players, launchAction, chat);
-    verify(gameData).addDelegate(any());
-    verify(serverGame).addDelegateMessenger(any());
-    verify(serverGame).setDisplay(any());
-    verify(serverGame).setSoundChannel(any());
+    tripleA.startGame(serverGame, playerSet, launchAction, chat);
+    verify(gameData).addDelegate(isA(EditDelegate.class));
+    verify(serverGame).addDelegateMessenger(isA(EditDelegate.class));
+    verify(serverGame).setDisplay(iDisplay);
+    verify(serverGame).setSoundChannel(iSound);
 
     tripleA.shutDown();
-    verify(serverGame, times(2)).setDisplay(any());
-    verify(serverGame, times(2)).setSoundChannel(any());
+    verify(serverGame).setDisplay(isNull());
+    verify(serverGame).setSoundChannel(isNull());
   }
 }
