@@ -39,8 +39,8 @@ public class TripleATest {
   @Mock private ServerGame serverGame;
   @Mock private GameData gameData;
   @Mock private Set<Player> playerSet;
-  @Mock private IDisplay iDisplay;
-  @Mock private ISound iSound;
+  @Mock private IDisplay display;
+  @Mock private ISound sound;
 
   @BeforeAll
   public static void init() {
@@ -64,14 +64,14 @@ public class TripleATest {
     when(gameData.getDelegate(anyString())).thenReturn(null);
     when(launchAction.startGame(
             any(LocalPlayers.class), any(ServerGame.class), anySet(), any(Chat.class)))
-        .thenReturn(iDisplay);
-    when(launchAction.getSoundChannel(any(LocalPlayers.class))).thenReturn(iSound);
+        .thenReturn(display);
+    when(launchAction.getSoundChannel(any(LocalPlayers.class))).thenReturn(sound);
 
     tripleA.startGame(serverGame, playerSet, launchAction, chat);
     verify(gameData).addDelegate(isA(EditDelegate.class));
     verify(serverGame).addDelegateMessenger(isA(EditDelegate.class));
-    verify(serverGame).setDisplay(iDisplay);
-    verify(serverGame).setSoundChannel(iSound);
+    verify(serverGame).setDisplay(display);
+    verify(serverGame).setSoundChannel(sound);
 
     tripleA.shutDown();
     verify(serverGame).setDisplay(isNull());
