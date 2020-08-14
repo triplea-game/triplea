@@ -25,7 +25,7 @@ public class AddUnits extends Change {
    * performed. To ensure that the newly created units have the correct ownership, their original
    * owners are stored in this separate map.
    */
-  private Map<UUID, String> unitOwnerMap;
+  private final Map<UUID, String> unitOwnerMap;
 
   AddUnits(final UnitCollection collection, final Collection<Unit> units) {
     this.units = units;
@@ -62,7 +62,11 @@ public class AddUnits extends Change {
   @Override
   protected void perform(final GameData data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
-    final Collection<Unit> unitsWithCorrectOwner = buildUnitsWithOwner(data);
+    final Collection<Unit> unitsWithCorrectOwner =
+        // old saved games will have a null unitOwnerMap
+        unitOwnerMap == null
+        ? units
+        : buildUnitsWithOwner(data);
     holder.getUnitCollection().addAll(unitsWithCorrectOwner);
   }
 
@@ -88,12 +92,5 @@ public class AddUnits extends Change {
   @Override
   public String toString() {
     return "Add unit change.  Add to:" + name + " units:" + units;
-  }
-
-  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-    in.defaultReadObject();
-    if (unitOwnerMap == null) {
-      unitOwnerMap = buildUnitOwnerMap(units);
-    }
   }
 }
