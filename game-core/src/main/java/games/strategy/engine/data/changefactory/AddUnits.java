@@ -6,8 +6,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -64,9 +62,7 @@ public class AddUnits extends Change {
     final UnitHolder holder = data.getUnitHolder(name, type);
     final Collection<Unit> unitsWithCorrectOwner =
         // old saved games will have a null unitOwnerMap
-        unitOwnerMap == null
-        ? units
-        : buildUnitsWithOwner(data);
+        unitOwnerMap == null ? units : buildUnitsWithOwner(data);
     holder.getUnitCollection().addAll(unitsWithCorrectOwner);
   }
 
