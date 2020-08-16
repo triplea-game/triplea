@@ -143,13 +143,16 @@ public class ProTerritory {
     return defenders;
   }
 
-  public Collection<Unit> getAllDefendersForCarrierCalcs(final GameData data, final GamePlayer player) {
+  public Collection<Unit> getAllDefendersForCarrierCalcs(
+      final GameData data, final GamePlayer player) {
     if (Properties.getProduceNewFightersOnOldCarriers(data)) {
       return getAllDefenders();
     }
 
     final Set<Unit> defenders =
-        new HashSet<>(CollectionUtils.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate()));
+        new HashSet<>(
+            CollectionUtils.getMatches(
+                cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate()));
     defenders.addAll(units);
     // tempUnits can already be in the units/cantMoveUnits collection
     defenders.addAll(tempUnits);
