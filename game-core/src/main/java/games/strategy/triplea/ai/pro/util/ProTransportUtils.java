@@ -314,7 +314,7 @@ public final class ProTransportUtils {
   public static boolean validateCarrierCapacity(
       final GamePlayer player,
       final Territory t,
-      final List<Unit> existingUnits,
+      final Collection<Unit> existingUnits,
       final Unit newUnit) {
     final GameData data = player.getData();
 
