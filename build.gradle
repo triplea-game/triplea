@@ -106,7 +106,7 @@ subprojects {
         substanceVersion = '2.5.1'
         wireMockJunit5Version = '1.3.1'
         wireMockVersion = '2.21.0'
-        xchartVersion = '3.6.4'
+        xchartVersion = '3.6.5'
     }
 
     repositories {
