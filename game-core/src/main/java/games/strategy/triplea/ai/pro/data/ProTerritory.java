@@ -11,6 +11,7 @@ import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -134,21 +135,26 @@ public class ProTerritory {
     maxScrambleUnits = new ArrayList<>(patd.getMaxScrambleUnits());
   }
 
-  public List<Unit> getAllDefenders() {
-    final List<Unit> defenders = new ArrayList<>(units);
+  public Collection<Unit> getAllDefenders() {
+    final Set<Unit> defenders = new HashSet<>(units);
     defenders.addAll(cantMoveUnits);
+    // tempUnits can already be in the units/cantMoveUnits collection
     defenders.addAll(tempUnits);
     return defenders;
   }
 
-  public List<Unit> getAllDefendersForCarrierCalcs(final GameData data, final GamePlayer player) {
+  public Collection<Unit> getAllDefendersForCarrierCalcs(
+      final GameData data, final GamePlayer player) {
     if (Properties.getProduceNewFightersOnOldCarriers(data)) {
       return getAllDefenders();
     }
 
-    final List<Unit> defenders =
-        CollectionUtils.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate());
+    final Set<Unit> defenders =
+        new HashSet<>(
+            CollectionUtils.getMatches(
+                cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate()));
     defenders.addAll(units);
+    // tempUnits can already be in the units/cantMoveUnits collection
     defenders.addAll(tempUnits);
     return defenders;
   }
