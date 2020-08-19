@@ -151,9 +151,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       // change ownership of friendly factories
       final Collection<Unit> units =
           territory.getUnitCollection().getMatches(Matches.unitIsInfrastructure());
-      for (final Unit unit : units) {
-        bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
-      }
+      bridge.addChange(ChangeFactory.changeOwner(units, player, territory));
     } else {
       final Predicate<Unit> enemyNonCom =
           Matches.unitIsInfrastructure().and(Matches.enemyUnit(player, data));
@@ -161,9 +159,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       // mark no movement for enemy units
       bridge.addChange(ChangeFactory.markNoMovementChange(units));
       // change ownership of enemy AA and factories
-      for (final Unit unit : units) {
-        bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
-      }
+      bridge.addChange(ChangeFactory.changeOwner(units, player, territory));
     }
     // change ownership of territory
     bridge.addChange(ChangeFactory.changeOwner(territory, player));
