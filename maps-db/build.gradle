@@ -6,7 +6,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.flywaydb.flyway' version '6.5.4'
+    id 'org.flywaydb.flyway' version '6.5.5'
 }
 
 ext.mapDbPort = project.getProperties().getOrDefault('maps_db_port', '5433')
