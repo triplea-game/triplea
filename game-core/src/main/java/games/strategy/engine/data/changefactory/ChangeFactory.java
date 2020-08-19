@@ -22,7 +22,6 @@ import games.strategy.triplea.delegate.data.BattleRecords;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -70,11 +69,6 @@ public class ChangeFactory {
   public static Change changeOwner(
       final Collection<Unit> units, final GamePlayer owner, final Territory location) {
     return new PlayerOwnerChange(units, owner, location);
-  }
-
-  public static Change changeOwner(
-      final Unit unit, final GamePlayer owner, final Territory location) {
-    return new PlayerOwnerChange(Set.of(unit), owner, location);
   }
 
   public static Change addUnits(final Territory territory, final Collection<Unit> units) {
