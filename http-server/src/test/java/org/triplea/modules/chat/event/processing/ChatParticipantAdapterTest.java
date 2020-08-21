@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,9 +36,10 @@ class ChatParticipantAdapterTest {
     when(session.getUserProperties()).thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "1.1.1.1"));
     final var userWithRoleRecord =
         PlayerApiKeyLookupRecord.builder()
+            .userId(20)
             .apiKeyId(123)
             .username(USERNAME)
-            .role(UserRole.PLAYER)
+            .userRole(UserRole.PLAYER)
             .playerChatId(PlayerChatId.newId().getValue())
             .build();
 
@@ -53,7 +55,7 @@ class ChatParticipantAdapterTest {
   @ValueSource(strings = {UserRole.ADMIN, UserRole.MODERATOR})
   @DisplayName("Verify moderator flag is set for moderator user roles")
   void moderatorUsers(final String moderatorUserRole) {
-    final var userWithRoleRecord = givenUserRecordWithRole(moderatorUserRole);
+    final var userWithRoleRecord = givenUserRecordWithRole(moderatorUserRole, 1);
     when(session.getUserProperties()).thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "1.1.1.1"));
 
     final ChatterSession result = chatParticipantAdapter.apply(session, userWithRoleRecord);
@@ -62,20 +64,23 @@ class ChatParticipantAdapterTest {
     assertThat(result.getChatParticipant().getUserName().getValue(), is(USERNAME));
   }
 
-  private PlayerApiKeyLookupRecord givenUserRecordWithRole(final String userRole) {
+  private PlayerApiKeyLookupRecord givenUserRecordWithRole(
+      final String userRole, final int userId) {
     return PlayerApiKeyLookupRecord.builder()
         .username(USERNAME)
-        .role(userRole)
+        .userRole(userRole)
         .playerChatId(PlayerChatId.newId().getValue())
         .apiKeyId(123)
+        .userId(userId)
         .build();
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {UserRole.ANONYMOUS, UserRole.PLAYER})
+  @CsvSource(value = {UserRole.ANONYMOUS + ",0", UserRole.PLAYER + ",1"})
   @DisplayName("Verify moderator flag is false for non-moderator roles")
-  void nonModeratorUsers(final String notModeratorUserRole) {
-    final var userWithRoleRecord = givenUserRecordWithRole(notModeratorUserRole);
+  void nonModeratorUsers(final String notModeratorUserRole, final String userId) {
+    final var userWithRoleRecord =
+        givenUserRecordWithRole(notModeratorUserRole, Integer.parseInt(userId));
     when(session.getUserProperties()).thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "1.1.1.1"));
 
     final ChatterSession result = chatParticipantAdapter.apply(session, userWithRoleRecord);

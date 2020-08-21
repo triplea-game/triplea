@@ -66,7 +66,7 @@ class PlayerConnectedListenerTest {
   void setupTestData() {
     apiKeyLookupRecord =
         PlayerApiKeyLookupRecord.builder()
-            .role("role")
+            .userRole("role")
             .username(CHAT_PARTICIPANT.getUserName().getValue())
             .playerChatId("player-chat-id")
             .apiKeyId(123)

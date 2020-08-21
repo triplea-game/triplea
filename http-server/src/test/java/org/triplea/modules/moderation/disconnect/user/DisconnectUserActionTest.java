@@ -22,8 +22,6 @@ import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.SystemId;
-import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessagingBus;
@@ -37,8 +35,8 @@ class DisconnectUserActionTest {
   private static final PlayerIdentifiersByApiKeyLookup PLAYER_ID_LOOKUP =
       PlayerIdentifiersByApiKeyLookup.builder()
           .ip("99.99.99.99")
-          .userName(UserName.of("player-name"))
-          .systemId(SystemId.of("system-id"))
+          .userName("player-name")
+          .systemId("system-id")
           .build();
 
   @Mock private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;

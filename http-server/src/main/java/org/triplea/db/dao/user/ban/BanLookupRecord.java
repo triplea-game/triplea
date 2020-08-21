@@ -1,34 +1,27 @@
 package org.triplea.db.dao.user.ban;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.db.TimestampMapper;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 /**
  * Lookup record to determine if a player is banned. If so, gives enough information to inform the
  * player of the ban duration and the 'public id' of the ban.
  */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @EqualsAndHashCode
 public class BanLookupRecord {
 
-  private String publicBanId;
-  private Instant banExpiry;
+  private final String publicBanId;
+  private final Instant banExpiry;
 
-  /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
-  public static RowMapper<BanLookupRecord> buildResultMapper() {
-    return (rs, ctx) ->
-        BanLookupRecord.builder()
-            .publicBanId(rs.getString("public_id"))
-            .banExpiry(TimestampMapper.map(rs, "ban_expiry"))
-            .build();
+  @Builder
+  public BanLookupRecord(
+      @ColumnName("public_id") final String publicBanId,
+      @ColumnName("ban_expiry") final Instant banExpiry) {
+    this.publicBanId = publicBanId;
+    this.banExpiry = banExpiry;
   }
 }

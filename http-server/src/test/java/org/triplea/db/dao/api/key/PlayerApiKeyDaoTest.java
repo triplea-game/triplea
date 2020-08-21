@@ -11,8 +11,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.DaoTest;
 import org.triplea.db.dao.user.role.UserRole;
-import org.triplea.domain.data.SystemId;
-import org.triplea.domain.data.UserName;
 
 @DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
 class PlayerApiKeyDaoTest extends DaoTest {
@@ -23,14 +21,14 @@ class PlayerApiKeyDaoTest extends DaoTest {
       PlayerApiKeyLookupRecord.builder()
           .userId(USER_ID)
           .username("registered-user")
-          .role(UserRole.MODERATOR)
+          .userRole(UserRole.MODERATOR)
           .playerChatId("chat-id0")
           .apiKeyId(1000)
           .build();
   private static final PlayerApiKeyLookupRecord EXPECTED_ANONYMOUS_DATA =
       PlayerApiKeyLookupRecord.builder()
           .username("some-other-name")
-          .role(UserRole.ANONYMOUS)
+          .userRole(UserRole.ANONYMOUS)
           .playerChatId("chat-id1")
           .apiKeyId(1001)
           .build();
@@ -94,8 +92,8 @@ class PlayerApiKeyDaoTest extends DaoTest {
         playerIdLookup,
         isPresentAndIs(
             PlayerIdentifiersByApiKeyLookup.builder()
-                .userName(UserName.of("registered-user"))
-                .systemId(SystemId.of("system-id0"))
+                .userName("registered-user")
+                .systemId("system-id0")
                 .ip("127.0.0.1")
                 .build()));
   }

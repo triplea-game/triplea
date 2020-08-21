@@ -1,12 +1,9 @@
 package org.triplea.db.dao.moderator.player.info;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.db.TimestampMapper;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 
 /**
@@ -14,26 +11,23 @@ import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
  * matching IP or system ID. This should tell us each name, or aliases, that was presumably used by
  * a given player.
  */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class PlayerAliasRecord {
+  private final String username;
+  private final String ip;
+  private final String systemId;
+  private final Instant date;
 
-  private String username;
-  private String ip;
-  private String systemId;
-  private Instant date;
-
-  /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
-  public static RowMapper<PlayerAliasRecord> buildResultMapper() {
-    return (rs, ctx) ->
-        PlayerAliasRecord.builder()
-            .username(rs.getString("name"))
-            .ip(rs.getString("ip"))
-            .systemId(rs.getString("systemId"))
-            .date(TimestampMapper.map(rs, "accessTime"))
-            .build();
+  @Builder
+  public PlayerAliasRecord(
+      @ColumnName("name") final String username,
+      @ColumnName("ip") final String ip,
+      @ColumnName("systemId") final String systemId,
+      @ColumnName("accessTime") final Instant accessTime) {
+    this.username = username;
+    this.ip = ip;
+    this.systemId = systemId;
+    this.date = accessTime;
   }
 
   public Alias toAlias() {

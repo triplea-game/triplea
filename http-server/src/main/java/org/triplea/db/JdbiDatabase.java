@@ -1,11 +1,14 @@
 package org.triplea.db;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.RowMapperFactory;
+import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -53,22 +56,24 @@ public final class JdbiDatabase {
    * return objects.
    */
   public static void registerRowMappers(final Jdbi jdbi) {
-    jdbi.registerRowMapper(AccessLogRecord.class, AccessLogRecord.buildResultMapper());
-    jdbi.registerRowMapper(BanLookupRecord.class, BanLookupRecord.buildResultMapper());
-    jdbi.registerRowMapper(ChatHistoryRecord.class, ChatHistoryRecord.buildResultMapper());
-    jdbi.registerRowMapper(
-        PlayerIdentifiersByApiKeyLookup.class, PlayerIdentifiersByApiKeyLookup.buildResultMapper());
-    jdbi.registerRowMapper(
-        PlayerApiKeyLookupRecord.class, PlayerApiKeyLookupRecord.buildResultMapper());
-    jdbi.registerRowMapper(PlayerAliasRecord.class, PlayerAliasRecord.buildResultMapper());
-    jdbi.registerRowMapper(PlayerHistoryRecord.class, PlayerHistoryRecord.buildResultMapper());
-    jdbi.registerRowMapper(PlayerBanRecord.class, PlayerBanRecord.buildResultMapper());
-    jdbi.registerRowMapper(UserBanRecord.class, UserBanRecord.buildResultMapper());
-    jdbi.registerRowMapper(UsernameBanRecord.class, UsernameBanRecord.buildResultMapper());
-    jdbi.registerRowMapper(UserRoleLookup.class, UserRoleLookup.buildResultMapper());
-    jdbi.registerRowMapper(
-        ModeratorAuditHistoryRecord.class, ModeratorAuditHistoryRecord.buildResultMapper());
-    jdbi.registerRowMapper(ModeratorUserDaoData.class, ModeratorUserDaoData.buildResultMapper());
+    rowMappers().forEach(jdbi::registerRowMapper);
+  }
+
+  private static List<RowMapperFactory> rowMappers() {
+    return List.of(
+        ConstructorMapper.factory(AccessLogRecord.class),
+        ConstructorMapper.factory(BanLookupRecord.class),
+        ConstructorMapper.factory(ChatHistoryRecord.class),
+        ConstructorMapper.factory(ModeratorAuditHistoryRecord.class),
+        ConstructorMapper.factory(ModeratorUserDaoData.class),
+        ConstructorMapper.factory(PlayerAliasRecord.class),
+        ConstructorMapper.factory(PlayerApiKeyLookupRecord.class),
+        ConstructorMapper.factory(PlayerBanRecord.class),
+        ConstructorMapper.factory(PlayerHistoryRecord.class),
+        ConstructorMapper.factory(PlayerIdentifiersByApiKeyLookup.class),
+        ConstructorMapper.factory(UserBanRecord.class),
+        ConstructorMapper.factory(UsernameBanRecord.class),
+        ConstructorMapper.factory(UserRoleLookup.class));
   }
 
   /** Adds a logger to JDBI that will log SQL statements before they are executed. */
