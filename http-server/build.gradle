@@ -38,6 +38,7 @@ dependencies {
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "at.favre.lib:bcrypt:$bcryptVersion"
     implementation project(':domain-data')
+    implementation project(':dropwizard-common')
     implementation project(':http-clients')
     implementation project(':java-extras')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
