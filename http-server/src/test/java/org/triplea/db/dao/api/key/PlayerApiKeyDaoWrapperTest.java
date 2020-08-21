@@ -39,8 +39,8 @@ class PlayerApiKeyDaoWrapperTest {
   private static final int ANONYMOUS_ROLE_ID = 123;
   private static final PlayerIdentifiersByApiKeyLookup PLAYER_ID_LOOKUP =
       PlayerIdentifiersByApiKeyLookup.builder()
-          .userName(PLAYER_NAME)
-          .systemId(SYSTEM_ID)
+          .userName(PLAYER_NAME.getValue())
+          .systemId(SYSTEM_ID.getValue())
           .ip("ip")
           .build();
 

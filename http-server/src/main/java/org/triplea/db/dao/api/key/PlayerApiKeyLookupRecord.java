@@ -1,64 +1,57 @@
 package org.triplea.db.dao.api.key;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.java.Postconditions;
 
 /** Maps ResultSet data when querying for a users API key. */
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
 public class PlayerApiKeyLookupRecord {
-  @Nonnull private Integer apiKeyId;
-  @Nullable private Integer userId;
-  @Nonnull private String username;
-  @Nonnull private String playerChatId;
-  @Nonnull private String role;
+  private final int apiKeyId;
+  @Nullable private final Integer userId;
+  @Nonnull private final String username;
+  @Nonnull private final String playerChatId;
+  @Nonnull private final String userRole;
 
-  /** Returns a JDBI row mapper used to convert a ResultSet into an instance of this bean object. */
-  public static RowMapper<PlayerApiKeyLookupRecord> buildResultMapper() {
-    return (rs, ctx) -> {
-      final var apiKeyLookupRecord =
-          PlayerApiKeyLookupRecord.builder()
-              .apiKeyId(rs.getInt("api_key_id"))
-              .userId(rs.getInt("user_id"))
-              .playerChatId(Preconditions.checkNotNull(rs.getString("player_chat_id")))
-              .role(Preconditions.checkNotNull(rs.getString("user_role")))
-              .username(rs.getString("username"))
-              .build();
+  @Builder(toBuilder = true)
+  public PlayerApiKeyLookupRecord(
+      @ColumnName("api_key_id") final int apiKeyId,
+      @Nullable @ColumnName("user_id") final Integer userId,
+      @ColumnName("player_chat_id") final String playerChatId,
+      @ColumnName("user_role") final String userRole,
+      @ColumnName("username") final String username) {
+    this.apiKeyId = apiKeyId;
+    this.userId = userId;
+    this.playerChatId = playerChatId;
+    this.userRole = userRole;
+    this.username = username;
 
-      verifyState(apiKeyLookupRecord);
-      return apiKeyLookupRecord;
-    };
+    verifyState();
   }
 
   public Integer getUserId() {
     return (userId == null || userId == 0) ? null : userId;
   }
 
-  @VisibleForTesting
-  static void verifyState(final PlayerApiKeyLookupRecord apiKeyLookupRecord) {
-    Postconditions.assertState(!apiKeyLookupRecord.role.equals(UserRole.HOST));
+  private void verifyState() {
+    Postconditions.assertState(!userRole.equals(UserRole.HOST));
 
-    if (apiKeyLookupRecord.role.equals(UserRole.ANONYMOUS)) {
-      Postconditions.assertState(
-          apiKeyLookupRecord.userId == null || apiKeyLookupRecord.userId == 0);
+    if (userRole.equals(UserRole.ANONYMOUS)) {
+      Postconditions.assertState(userId == null || userId == 0);
     } else {
       Postconditions.assertState(
-          apiKeyLookupRecord.userId != null && apiKeyLookupRecord.userId > 0);
+          userId != null && userId > 0,
+          String.format(
+              "Non anonymouse users must have a user id, user id: %s, user role: %s",
+              userId, userRole));
     }
   }
 }

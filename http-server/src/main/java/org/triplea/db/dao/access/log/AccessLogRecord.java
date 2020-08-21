@@ -1,34 +1,30 @@
 package org.triplea.db.dao.access.log;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.db.TimestampMapper;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 /** Return data when selecting lobby access history. */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class AccessLogRecord {
-  private Instant accessTime;
-  private String username;
-  private String ip;
-  private String systemId;
-  private boolean registered;
+  private final Instant accessTime;
+  private final String username;
+  private final String ip;
+  private final String systemId;
+  private final boolean registered;
 
-  /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
-  public static RowMapper<AccessLogRecord> buildResultMapper() {
-    return (rs, ctx) ->
-        AccessLogRecord.builder()
-            .accessTime(TimestampMapper.map(rs, "access_time"))
-            .username(rs.getString("username"))
-            .ip(rs.getString("ip"))
-            .systemId(rs.getString("system_id"))
-            .registered(rs.getBoolean("registered"))
-            .build();
+  @Builder
+  public AccessLogRecord(
+      @ColumnName("access_time") final Instant accessTime,
+      @ColumnName("username") final String username,
+      @ColumnName("ip") final String ip,
+      @ColumnName("system_id") final String systemId,
+      @ColumnName("registered") final boolean registered) {
+    this.accessTime = accessTime;
+    this.username = username;
+    this.ip = ip;
+    this.systemId = systemId;
+    this.registered = registered;
   }
 }

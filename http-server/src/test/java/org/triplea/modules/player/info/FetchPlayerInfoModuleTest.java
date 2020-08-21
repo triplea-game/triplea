@@ -12,6 +12,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -36,8 +37,6 @@ import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.SystemId;
-import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
@@ -52,8 +51,8 @@ class FetchPlayerInfoModuleTest {
   private static final PlayerIdentifiersByApiKeyLookup GAME_PLAYER_LOOKUP =
       PlayerIdentifiersByApiKeyLookup.builder()
           .ip("1.1.1.1")
-          .systemId(SystemId.of("system-id"))
-          .userName(UserName.of("user-name"))
+          .systemId("system-id")
+          .userName("user-name")
           .build();
 
   private static final PlayerAliasRecord PLAYER_ALIAS_RECORD =
@@ -61,7 +60,7 @@ class FetchPlayerInfoModuleTest {
           .username("alias-user-name")
           .systemId("system-id2")
           .ip("2.3.2.3")
-          .date(LocalDateTime.of(2000, 1, 1, 1, 1, 1).toInstant(ZoneOffset.UTC))
+          .accessTime(LocalDateTime.of(2000, 1, 1, 1, 1, 1).toInstant(ZoneOffset.UTC))
           .build();
 
   private static final AuthenticatedUser authenticatedPlayer =
@@ -157,7 +156,7 @@ class FetchPlayerInfoModuleTest {
   void lookupRegistrationDate() {
     givenChatIdToUserIdLookup(PlayerChatId.of("chat-id"), 123);
     when(playerHistoryDao.lookupPlayerHistoryByUserId(123))
-        .thenReturn(Optional.of(PlayerHistoryRecord.builder().registrationDate(5000).build()));
+        .thenReturn(Optional.of(new PlayerHistoryRecord(Instant.ofEpochMilli(5000))));
 
     final var playerSummaryForPlayer =
         fetchPlayerInfoModule.apply(authenticatedPlayer, PlayerChatId.of("chat-id"));

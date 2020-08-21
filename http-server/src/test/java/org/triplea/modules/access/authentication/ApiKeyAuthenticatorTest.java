@@ -25,7 +25,7 @@ class ApiKeyAuthenticatorTest {
   private static final PlayerApiKeyLookupRecord PLAYER_DATA =
       PlayerApiKeyLookupRecord.builder()
           .username("player-name")
-          .role(UserRole.PLAYER)
+          .userRole(UserRole.PLAYER)
           .userId(100)
           .apiKeyId(123)
           .playerChatId("chat-id")
@@ -59,7 +59,7 @@ class ApiKeyAuthenticatorTest {
                 .apiKey(API_KEY)
                 .userId(PLAYER_DATA.getUserId())
                 .name(PLAYER_DATA.getUsername())
-                .userRole(PLAYER_DATA.getRole())
+                .userRole(PLAYER_DATA.getUserRole())
                 .build()));
   }
 

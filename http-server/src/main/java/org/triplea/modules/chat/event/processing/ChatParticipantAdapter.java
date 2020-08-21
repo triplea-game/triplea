@@ -26,8 +26,8 @@ class ChatParticipantAdapter
     return ChatParticipant.builder()
         .userName(apiKeyLookupRecord.getUsername())
         .isModerator(
-            apiKeyLookupRecord.getRole().equals(UserRole.ADMIN)
-                || apiKeyLookupRecord.getRole().equals(UserRole.MODERATOR))
+            apiKeyLookupRecord.getUserRole().equals(UserRole.ADMIN)
+                || apiKeyLookupRecord.getUserRole().equals(UserRole.MODERATOR))
         .playerChatId(apiKeyLookupRecord.getPlayerChatId())
         .build();
   }

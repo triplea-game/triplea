@@ -1,32 +1,27 @@
 package org.triplea.db.dao.moderator;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.db.TimestampMapper;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 /** Return data when selecting moderator audit history. */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class ModeratorAuditHistoryRecord {
-  private Instant dateCreated;
-  private String username;
-  private String actionName;
-  private String actionTarget;
+  private final Instant dateCreated;
+  private final String username;
+  private final String actionName;
+  private final String actionTarget;
 
-  /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
-  public static RowMapper<ModeratorAuditHistoryRecord> buildResultMapper() {
-    return (rs, ctx) ->
-        ModeratorAuditHistoryRecord.builder()
-            .dateCreated(TimestampMapper.map(rs, "date_created"))
-            .username(rs.getString("username"))
-            .actionName(rs.getString("action_name"))
-            .actionTarget(rs.getString("action_target"))
-            .build();
+  @Builder
+  public ModeratorAuditHistoryRecord(
+      @ColumnName("date_created") final Instant dateCreated,
+      @ColumnName("username") final String username,
+      @ColumnName("action_name") final String actionName,
+      @ColumnName("action_target") final String actionTarget) {
+    this.dateCreated = dateCreated;
+    this.username = username;
+    this.actionName = actionName;
+    this.actionTarget = actionTarget;
   }
 }

@@ -37,7 +37,7 @@ public class ApiKeyAuthenticator implements Authenticator<String, AuthenticatedU
                 AuthenticatedUser.builder()
                     .userId(userData.getUserId())
                     .name(userData.getUsername())
-                    .userRole(userData.getRole())
+                    .userRole(userData.getUserRole())
                     .apiKey(key)
                     .build())
         .or(

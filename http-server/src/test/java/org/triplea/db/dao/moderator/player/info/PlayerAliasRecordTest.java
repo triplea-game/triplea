@@ -18,7 +18,7 @@ class PlayerAliasRecordTest {
   void toAlias() {
     final Alias alias =
         PlayerAliasRecord.builder()
-            .date(DATE)
+            .accessTime(DATE)
             .ip("1.1.1.1")
             .systemId("system-id")
             .username("name")
