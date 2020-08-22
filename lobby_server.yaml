@@ -5,6 +5,7 @@
   port: 3304
   https_port: 5432
   message: |
-    Triplea 2.0 is released  @  https://triplea-game.org/download/
-    Finish your save games here, start new games in 2.0!
+    Triplea 2.2 is released  @  https://triplea-game.org/download/
+    Finish your 1.9 save games here, start new games in 2.2!
+    This lobby is scheduled for sunset in early September.
   error_message:
