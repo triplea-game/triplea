@@ -1,5 +1,6 @@
 rootProject.name='triplea'
 include 'domain-data'
+include 'dropwizard-common'
 include 'game-core'
 include 'game-headed'
 include 'game-headless'
