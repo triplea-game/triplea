@@ -24,7 +24,8 @@ class MapDownloadListSortTest {
         mapName,
         version,
         DownloadFileDescription.DownloadType.MAP,
-        DownloadFileDescription.MapCategory.EXPERIMENTAL);
+        DownloadFileDescription.MapCategory.EXPERIMENTAL,
+        "");
   }
 
   @Test

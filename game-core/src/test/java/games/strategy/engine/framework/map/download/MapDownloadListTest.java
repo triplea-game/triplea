@@ -29,7 +29,8 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
           MAP_NAME,
           MAP_VERSION,
           DownloadFileDescription.DownloadType.MAP,
-          DownloadFileDescription.MapCategory.EXPERIMENTAL);
+          DownloadFileDescription.MapCategory.EXPERIMENTAL,
+          "");
 
   @Mock private FileSystemAccessStrategy strategy;
 
@@ -77,7 +78,8 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
         "mapName",
         MAP_VERSION,
         DownloadFileDescription.DownloadType.MAP,
-        DownloadFileDescription.MapCategory.BEST);
+        DownloadFileDescription.MapCategory.BEST,
+        "");
   }
 
   @Test

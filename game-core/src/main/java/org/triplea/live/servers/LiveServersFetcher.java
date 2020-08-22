@@ -67,13 +67,20 @@ public class LiveServersFetcher {
   }
 
   public Optional<URI> lobbyUriForCurrentVersion() {
+    return fetchServerProperties().map(ServerProperties::getUri);
+  }
+
+  private Optional<ServerProperties> fetchServerProperties() {
     try {
       final var liveServers = liveServersFetcher.get();
-      final var serverProperties = currentVersionSelector.apply(liveServers);
-      return Optional.ofNullable(serverProperties.getUri());
+      return Optional.of(currentVersionSelector.apply(liveServers));
     } catch (final IOException e) {
-      log.log(Level.INFO, "(No network connection?) Failed to get server properties", e);
+      log.log(Level.WARNING, "(No network connection?) Failed to get server locations", e);
       return Optional.empty();
     }
+  }
+
+  public Optional<URI> getMapsServerUri() {
+    return fetchServerProperties().map(ServerProperties::getMapsServerUri);
   }
 }

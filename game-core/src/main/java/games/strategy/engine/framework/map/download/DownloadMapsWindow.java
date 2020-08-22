@@ -3,11 +3,11 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static java.util.function.Predicate.not;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
+import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -217,7 +217,6 @@ public class DownloadMapsWindow extends JFrame {
 
       Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground)
           .result
-          .filter(not(Collection::isEmpty))
           .ifPresent(
               downloads -> {
                 state = State.INITIALIZING;
@@ -228,7 +227,7 @@ public class DownloadMapsWindow extends JFrame {
     private static List<DownloadFileDescription> getMapDownloadListInBackground()
         throws InterruptedException {
       return BackgroundTaskRunner.runInBackgroundAndReturn(
-          "Downloading list of available maps...", ClientContext::getMapDownloadList);
+          "Downloading list of available maps...", MapListingFetcher::getMapDownloadList);
     }
 
     private void createAndShow(

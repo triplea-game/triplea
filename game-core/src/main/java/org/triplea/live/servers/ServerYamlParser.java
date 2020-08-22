@@ -51,6 +51,7 @@ public class ServerYamlParser implements Function<InputStream, LiveServers> {
             new Version(Preconditions.checkNotNull(String.valueOf(props.get("version")))))
         .message(Strings.nullToEmpty((String) props.get("message")))
         .uri(Optional.ofNullable((String) props.get("lobby_uri")).map(URI::create).orElse(null))
+        .mapsServerUri(Optional.ofNullable((String) props.get("maps_uri")).map(URI::create).orElse(null))
         .inactive(Optional.ofNullable((Boolean) props.get("inactive")).orElse(false))
         .build();
   }

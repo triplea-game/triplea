@@ -1,8 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
@@ -26,7 +26,7 @@ public final class MapDownloadController {
   public static void checkDownloadedMapsAreLatest() {
     try {
       final Collection<String> outOfDateMapNames =
-          getOutOfDateMapNames(ClientContext.getMapDownloadList());
+          getOutOfDateMapNames(MapListingFetcher.getMapDownloadList());
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
         text.append(

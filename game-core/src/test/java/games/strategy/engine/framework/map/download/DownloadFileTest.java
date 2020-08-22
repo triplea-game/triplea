@@ -18,7 +18,8 @@ class DownloadFileTest {
             "mapName",
             new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP,
-            DownloadFileDescription.MapCategory.BEST);
+            DownloadFileDescription.MapCategory.BEST,
+            "");
     final DownloadFile testObj =
         new DownloadFile(downloadFileDescription, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
