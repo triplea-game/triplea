@@ -1,5 +1,6 @@
 package org.triplea.db;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,6 +36,7 @@ public final class JdbiDatabase {
    * Creates a new connection to database. This connection should only be used by the TripleA Java
    * Lobby. DropWizard will create a connection from configuration automatically.
    */
+  @VisibleForTesting
   public static Jdbi newConnection() {
     final Jdbi jdbi =
         Jdbi.create(
