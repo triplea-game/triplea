@@ -41,11 +41,11 @@ public class ServerConfiguration<T extends Configuration> {
       final Bootstrap<T> bootstrap, final WebsocketConfig... websocketConfigs) {
     this.bootstrap = bootstrap;
 
-    final ServerEndpointConfig[] websockets = buildWebsockets(websocketConfigs);
+    final ServerEndpointConfig[] websockets = addWebsockets(websocketConfigs);
     bootstrap.addBundle(new WebsocketBundle(websockets));
   }
 
-  private ServerEndpointConfig[] buildWebsockets(final WebsocketConfig... websocketConfigs) {
+  private ServerEndpointConfig[] addWebsockets(final WebsocketConfig... websocketConfigs) {
     return Arrays.stream(websocketConfigs)
         .map(
             websocketConfig -> {
