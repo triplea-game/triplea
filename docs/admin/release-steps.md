@@ -30,3 +30,21 @@ to prep for the next release.
   - https://forums.triplea-game.org/category/1/announcements
   - http://www.axisandallies.org/forums/index.php?board=53.0
 
+## Releasing a Patch
+
+The process is very similar to a standard release.
+
+```
+git checkout release/<release_number>
+git checkout -b <patch-branch-name>
+# do work
+git commit
+git push <patch-branch-name>
+# create a PR to merge <patch-branch-name> into release/<release_number>
+```
+
+Once the above is done, Travis will build and push artifacts to github releases.
+Double check the version number and follow the steps in the above sections to update
+version numbers and issue notifications.
+
+
