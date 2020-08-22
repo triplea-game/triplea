@@ -77,7 +77,6 @@ jobs:
       if: ((branch = master) or (branch =~ /^release\//)) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       script: [ $DEPLOY_PRERELEASE_STAGE/push-to-github-releases/run || $REPORT_FAIL "build installers" ]
       deploy:
-        on: { tags: false, repo: triplea-game/triplea }
         provider: releases
         file_glob: true
         file: build/artifacts/*
