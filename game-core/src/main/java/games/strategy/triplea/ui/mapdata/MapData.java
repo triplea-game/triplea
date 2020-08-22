@@ -537,6 +537,20 @@ public class MapData {
       final GameData data, final Set<String> keys, final String dataTypeForErrorMessage) {
     final StringBuilder errors = new StringBuilder();
 
+    // This block ignores mismatched territory data and the result of removing
+    // from the iterator is we will wind up using the correct territory name.
+    // Without this the engine becomes extremely strict about territory naming.
+    // See: https://github.com/triplea-game/triplea/issues/7386
+    final Iterator<String> iter = keys.iterator();
+    while (iter.hasNext()) {
+      final String name = iter.next();
+      final Territory terr = data.getMap().getTerritory(name);
+      // allow loading saved games with missing territories; just ignore them
+      if (terr == null) {
+        iter.remove();
+      }
+    }
+
     for (final Territory terr : data.getMap().getTerritories()) {
       if (!keys.contains(terr.getName())) {
         errors
