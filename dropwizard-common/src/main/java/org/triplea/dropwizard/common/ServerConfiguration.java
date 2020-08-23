@@ -19,7 +19,6 @@ import javax.websocket.server.ServerEndpointConfig;
 import javax.ws.rs.container.ContainerRequestFilter;
 import lombok.AllArgsConstructor;
 import org.glassfish.jersey.logging.LoggingFeature;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 /**
  * Facilitates configuration for a dropwizard server Application class.
@@ -102,11 +101,6 @@ public class ServerConfiguration<T extends Configuration> {
   public void registerRequestFilter(
       final Environment environment, final ContainerRequestFilter containerRequestFilter) {
     environment.jersey().register(containerRequestFilter);
-  }
-
-  /** Enables the <code>RolesAllowed</code> annotation. */
-  public void enableSecurityRoleAnnotations(final Environment environment) {
-    environment.jersey().register(new RolesAllowedDynamicFeature());
   }
 
   /**
