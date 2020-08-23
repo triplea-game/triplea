@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ServerApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="org.triplea.http.ServerApplication" />
-    <module name="triplea.http-server.main" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/http-server" />
+    <module name="triplea.lobby-server" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/lobby-server" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.triplea.lobby.server.db.dao.*" />

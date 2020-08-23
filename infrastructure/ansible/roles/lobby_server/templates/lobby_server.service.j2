@@ -1,0 +1,13 @@
+[Unit]
+Description=TripleA Http Server
+Documentation=
+
+[Service]
+WorkingDirectory={{ lobby_server_home_folder }}
+User={{ lobby_server_user }}
+Group={{ lobby_server_user }}
+ExecStart={{ lobby_server_run_file }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

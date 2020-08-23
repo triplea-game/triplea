@@ -1,4 +1,4 @@
-description = 'Http client library for http-server, provides an API for client-server interactions'
+description = 'Http clients, can be used to interact with HTTP services (lobby, maps, github)'
 
 dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"

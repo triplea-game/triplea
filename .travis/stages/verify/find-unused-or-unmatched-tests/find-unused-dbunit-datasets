@@ -13,7 +13,7 @@ bold="\e[1m"
 
 status=0
 
-dbunit_project="http-server"
+dbunit_project="lobby-server"
 
 ## Loop over all .yml dataset files
 while read -r dataSetFilePath; do

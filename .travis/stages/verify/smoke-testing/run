@@ -17,11 +17,11 @@ set -eux
 
 readonly VERSION=$(sed 's/version\s*=\s*//' game-core/src/main/resources/META-INF/triplea/product.properties)
 
-readonly HTTP_SERVER_JAR_PATH="http-server/build/libs/triplea-http-server-${VERSION}.jar"
+readonly LOBBY_SERVER_JAR_PATH="lobby-server/build/libs/triplea-lobby-server-${VERSION}.jar"
 readonly BOT_JAR_PATH="game-headless/build/libs/triplea-game-headless-${VERSION}.jar"
 readonly SMOKE_TEST_JAR_PATH="smoke-testing/build/libs/triplea-smoke-testing-${VERSION}.jar"
 
-readonly HTTP_SERVER_OUTPUT="server-output"
+readonly LOBBY_SERVER_OUTPUT="server-output"
 readonly BOT_OUTPUT="bot-output"
 
 
@@ -50,7 +50,7 @@ function printLogs() {
   echo "PRINTING LOGS"
   echo "-----------"
   echo "Http Server log:"
-  cat "$HTTP_SERVER_OUTPUT"
+  cat "$LOBBY_SERVER_OUTPUT"
   echo "-----------"
   echo "Bot log:"
   cat "$BOT_OUTPUT"
@@ -59,13 +59,13 @@ function printLogs() {
 
 function buildJars() {
   ./gradlew --parallel \
-     :http-server:shadowJar \
+     :lobby-server:shadowJar \
      :game-headless:shadowJar \
      :smoke-testing:shadowJar 
 }
 
 function startLobby() {
-  java -jar "$HTTP_SERVER_JAR_PATH" server ./http-server/configuration.yml > "$HTTP_SERVER_OUTPUT" 2>&1 &
+  java -jar "$LOBBY_SERVER_JAR_PATH" server ./lobby-server/configuration.yml > "$LOBBY_SERVER_OUTPUT" 2>&1 &
   echo $!
 }
 
@@ -99,7 +99,7 @@ function checkLogsForErrors() {
   # If we find any, echo an error message and exit 1
   # Otherwise, print a confirmation message
   echo "Checking lobby logs for errors..."
-  (grep "SEVERE" "$HTTP_SERVER_OUTPUT" \
+  (grep "SEVERE" "$LOBBY_SERVER_OUTPUT" \
        && echo "Error!! Found errors in lobby log") \
      && exit 1 \
      || echo "No errors found in lobby logs"

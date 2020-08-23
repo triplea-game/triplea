@@ -28,7 +28,7 @@
   tags: lobby
   roles:
     - java
-    - http_server
+    - lobby_server
     - nginx
     - postfix
     - support/log_aggregation_sender

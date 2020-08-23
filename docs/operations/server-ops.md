@@ -7,7 +7,7 @@ Page through all logs
 journalctl -r
 ```
 
-### http_server logs
+### lobby_server logs
 
 ```bash
 journalctl -u http_server
@@ -15,7 +15,7 @@ journalctl -u http_server
 
 last 100 lines
 ```bash
-journalctl -u http_server -n 100
+journalctl -u lobby_server -n 100
 ```
 
 ## Service Ops
@@ -27,11 +27,7 @@ systemctl stop bot@01.service
 systemctl start bot@01.service
 ```
 
-### http_server
+### lobby_server
 
-```bash
-systemctl status http_server.service
-systemctl stop http_server.service
-systemctl start http_server.service
-```
-
+SSH to the lobby server, note that there are start/stop scripts deployed
+to /home/admin.

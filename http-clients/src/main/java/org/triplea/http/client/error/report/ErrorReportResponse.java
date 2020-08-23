@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/** Data object that corresponds to the JSON response from http-server for error report. */
+/** Data object that corresponds to the JSON response from lobby-server for error report. */
 @ToString
 @Builder
 @Getter
