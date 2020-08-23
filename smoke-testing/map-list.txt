@@ -224,6 +224,9 @@ https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/ga
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40_balanced_move1st.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global42_2nd_edition.xml
+https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/games/ww2pac40_2nd_edition.xml
+https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/games/ww2pac40_balanced_veqryn.xml
+https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/games/ww2pac40.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/lhtr.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/ww2v2.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/barbarossa.xml
