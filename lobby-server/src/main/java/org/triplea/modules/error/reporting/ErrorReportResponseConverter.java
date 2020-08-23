@@ -6,8 +6,8 @@ import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.issues.CreateIssueResponse;
 
 /**
- * Converts a response from Github.com by our lobby-server into a response object we can send back to
- * the TripleA game-client.
+ * Converts a response from Github.com by our lobby-server into a response object we can send back
+ * to the TripleA game-client.
  */
 public class ErrorReportResponseConverter
     implements Function<CreateIssueResponse, ErrorReportResponse> {
