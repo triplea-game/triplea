@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Value;
@@ -74,16 +76,14 @@ public class DiceRoll implements Externalizable {
       final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
     this.hits = hits;
     expectedHits = 0;
-    rolls = new ArrayList<>(dice.length);
-    for (final int element : dice) {
-      final boolean hit;
-      if (hitOnlyIfEquals) {
-        hit = (rollAt == element);
-      } else {
-        hit = element <= rollAt;
-      }
-      rolls.add(new Die(element, rollAt, hit ? DieType.HIT : DieType.MISS));
-    }
+    rolls =
+        Arrays.stream(dice)
+            .mapToObj(
+                element -> {
+                  final boolean hit = hitOnlyIfEquals ? (rollAt == element) : element <= rollAt;
+                  return new Die(element, rollAt, hit ? DieType.HIT : DieType.MISS);
+                })
+            .collect(Collectors.toList());
   }
 
   // only for externalizable
@@ -1320,13 +1320,9 @@ public class DiceRoll implements Externalizable {
    * @param rollAt the strength of the roll, eg infantry roll at 2, expecting a number in [1,6]
    */
   public List<Die> getRolls(final int rollAt) {
-    final List<Die> dice = new ArrayList<>();
-    for (final Die die : rolls) {
-      if (die.getRolledAt() == rollAt) {
-        dice.add(die);
-      }
-    }
-    return dice;
+    return rolls.stream() //
+        .filter(die -> die.getRolledAt() == rollAt)
+        .collect(Collectors.toList());
   }
 
   public int size() {

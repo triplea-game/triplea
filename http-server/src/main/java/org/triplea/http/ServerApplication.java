@@ -1,24 +1,18 @@
 package org.triplea.http;
 
 import com.codahale.metrics.MetricRegistry;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import io.dropwizard.Application;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.CachingAuthenticator;
-import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.JdbiDatabase;
+import org.triplea.dropwizard.common.AuthenticationConfiguration;
 import org.triplea.dropwizard.common.ServerConfiguration;
 import org.triplea.dropwizard.common.ServerConfiguration.WebsocketConfig;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.modules.access.authentication.ApiKeyAuthenticator;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
@@ -93,13 +87,24 @@ public class ServerApplication extends Application<AppConfig> {
       serverConfiguration.enableRequestResponseLogging(environment);
     }
 
-    final MetricRegistry metrics = new MetricRegistry();
-    final Jdbi jdbi = createJdbi(configuration, environment);
+    final Jdbi jdbi =
+        new JdbiFactory()
+            .build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    JdbiDatabase.registerRowMappers(jdbi);
+    if (configuration.isLogSqlStatements()) {
+      JdbiDatabase.registerSqlLogger(jdbi);
+    }
 
     serverConfiguration.registerRequestFilter(
         environment, BannedPlayerFilter.newBannedPlayerFilter(jdbi));
-    serverConfiguration.enableSecurityRoleAnnotations(environment);
-    enableAuthentication(environment, metrics, jdbi);
+
+    final MetricRegistry metrics = new MetricRegistry();
+    AuthenticationConfiguration.enableAuthentication(
+        environment,
+        metrics,
+        ApiKeyAuthenticator.build(jdbi),
+        new RoleAuthorizer(),
+        AuthenticatedUser.class);
 
     serverConfiguration.registerExceptionMappers(environment, List.of(new IllegalArgumentMapper()));
 
@@ -127,40 +132,6 @@ public class ServerApplication extends Application<AppConfig> {
     endPointControllers(
             configuration, jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus)
         .forEach(controller -> environment.jersey().register(controller));
-  }
-
-  private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
-    final JdbiFactory factory = new JdbiFactory();
-    final Jdbi jdbi =
-        factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
-    JdbiDatabase.registerRowMappers(jdbi);
-
-    if (configuration.isLogSqlStatements()) {
-      JdbiDatabase.registerSqlLogger(jdbi);
-    }
-    return jdbi;
-  }
-
-  private void enableAuthentication(
-      final Environment environment, final MetricRegistry metrics, final Jdbi jdbi) {
-    environment
-        .jersey()
-        .register(
-            new AuthDynamicFeature(
-                new OAuthCredentialAuthFilter.Builder<AuthenticatedUser>()
-                    .setAuthenticator(buildAuthenticator(metrics, jdbi))
-                    .setAuthorizer(new RoleAuthorizer())
-                    .setPrefix(AuthenticationHeaders.KEY_BEARER_PREFIX)
-                    .buildAuthFilter()));
-    environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUser.class));
-  }
-
-  private static CachingAuthenticator<String, AuthenticatedUser> buildAuthenticator(
-      final MetricRegistry metrics, final Jdbi jdbi) {
-    return new CachingAuthenticator<>(
-        metrics,
-        ApiKeyAuthenticator.build(jdbi),
-        CacheBuilder.newBuilder().expireAfterAccess(Duration.ofMinutes(10)).maximumSize(10000));
   }
 
   private List<Object> endPointControllers(

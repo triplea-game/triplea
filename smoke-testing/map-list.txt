@@ -34,7 +34,6 @@ https://raw.githubusercontent.com/triplea-maps/camp_david/master/map/games/1956_
 https://raw.githubusercontent.com/triplea-maps/camp_david/master/map/games/1967_Six-Day_War.xml
 https://raw.githubusercontent.com/triplea-maps/camp_david/master/map/games/1973_Yom_Kippur_War.xml
 https://raw.githubusercontent.com/triplea-maps/capture_the_flag/master/map/games/capture_the_flag.xml
-https://raw.githubusercontent.com/triplea-maps/caravan/master/map/games/Caravan.xml
 https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/map/games/Caribbean_Trade_War.xml
 https://raw.githubusercontent.com/triplea-maps/charles_de_gaulle_1939/master/map/games/charles_de_gaulle_1939.xml
 https://raw.githubusercontent.com/triplea-maps/civil_war/master/map/games/Civil_War_Eastern_Campaigns.xml
@@ -122,14 +121,12 @@ https://raw.githubusercontent.com/triplea-maps/neuschwabenland/master/map/games/
 https://raw.githubusercontent.com/triplea-maps/new_world_order1915lebowski/master/map/games/NWO1915Lebowski.xml
 https://raw.githubusercontent.com/triplea-maps/new_world_order_lebowski_edition/master/map/games/NWO_Lebowski_ED.xml
 https://raw.githubusercontent.com/triplea-maps/new_world_order/master/map/games/new_world_order.xml
-https://raw.githubusercontent.com/triplea-maps/new_world_order_variants/master/map/games/NWO_Variant_-_Neutrals.xml
 https://raw.githubusercontent.com/triplea-maps/nwo_variants/master/map/games/new_world_order_smalls.xml
 https://raw.githubusercontent.com/triplea-maps/nwo_variants/master/map/games/NWO_5_Nation.xml
 https://raw.githubusercontent.com/triplea-maps/nwo_variants/master/map/games/NWO_Eastern_Front.xml
 https://raw.githubusercontent.com/triplea-maps/operation_market_garden/master/map/games/Operation_Market_Garden.xml
 https://raw.githubusercontent.com/triplea-maps/oztea_1939_global/master/map/games/Oztea_1939_Global.xml
 https://raw.githubusercontent.com/triplea-maps/oztea_1942/master/map/games/oztea_1942.xml
-https://raw.githubusercontent.com/triplea-maps/pacific_1942/master/map/games/pacific_1942.xml
 https://raw.githubusercontent.com/triplea-maps/pacific_challenge/master/map/games/Pacific_Theater_Solo_Challenge.xml
 https://raw.githubusercontent.com/triplea-maps/pacific/master/map/games/pacific.xml
 https://raw.githubusercontent.com/triplea-maps/pact_of_steel_variations/master/map/games/PactOfSteelChina.xml
@@ -227,9 +224,6 @@ https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/ga
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40_balanced_move1st.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global40.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/map/games/ww2global42_2nd_edition.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/games/ww2pac40_2nd_edition.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/games/ww2pac40_balanced_veqryn.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/games/ww2pac40.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/lhtr.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/ww2v2.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/barbarossa.xml

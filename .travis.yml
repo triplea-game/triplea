@@ -74,10 +74,10 @@ jobs:
 
     - stage: DeployPrerelease
       name: "Build Installer Downloads & Upload to Github Releases"
-      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      if: ((branch = master) or (branch =~ /^release\//)) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       script: [ $DEPLOY_PRERELEASE_STAGE/push-to-github-releases/run || $REPORT_FAIL "build installers" ]
       deploy:
-        on: { tags: false, repo: triplea-game/triplea, branch: master }
+        on: { tags: false, repo: triplea-game/triplea, all_branches: true }
         provider: releases
         file_glob: true
         file: build/artifacts/*
