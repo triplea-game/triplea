@@ -33,7 +33,7 @@ public final class DownloadFileDescription {
     MAP_SKIN,
     MAP_TOOL;
 
-    static DownloadType fromString(final String type) {
+    private static DownloadType fromString(final String type) {
       if (type.equalsIgnoreCase(MAP_SKIN.name())) {
         return MAP_SKIN;
       } else if (type.equalsIgnoreCase(MAP_TOOL.name())) {
@@ -64,7 +64,7 @@ public final class DownloadFileDescription {
       return outputLabel;
     }
 
-    static MapCategory fromString(final String category) {
+    private static MapCategory fromString(final String category) {
       return Arrays.stream(values())
           .filter(mapCategory -> mapCategory.outputLabel.equalsIgnoreCase(category))
           .findAny()
