@@ -1,9 +1,9 @@
 package games.strategy.engine.framework.system;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Properties;
@@ -33,12 +33,12 @@ public class DevOverrides {
     findOverrideFile()
         .ifPresent(
             overrideFile -> {
-              try {
-                properties.load(new FileInputStream(overrideFile));
+              try (InputStream fileInput = Files.newInputStream(overrideFile)) {
+                properties.load(fileInput);
               } catch (final IOException e) {
                 log.log(
                     Level.SEVERE,
-                    "Failed to read override file: " + overrideFile.getAbsolutePath(),
+                    "Failed to read override file: " + overrideFile.toFile().getAbsolutePath(),
                     e);
               }
             });
@@ -49,15 +49,14 @@ public class DevOverrides {
    * Tries to find the override file at different paths. Depending on how we launch TripleA the
    * context path can be at different locations.
    */
-  private Optional<File> findOverrideFile() {
+  private Optional<Path> findOverrideFile() {
     return findAtPath(Path.of(OVERRIDE_FILE_NAME))
         .or(() -> findAtPath(Path.of("game-headed", OVERRIDE_FILE_NAME)));
   }
 
-  private static Optional<File> findAtPath(final Path path) {
-    final File file = path.toFile();
-    if (file.exists()) {
-      return Optional.of(file);
+  private static Optional<Path> findAtPath(final Path path) {
+    if (Files.exists(path)) {
+      return Optional.of(path);
     } else {
       return Optional.empty();
     }
