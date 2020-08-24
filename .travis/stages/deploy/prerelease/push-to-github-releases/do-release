@@ -9,7 +9,6 @@ function main() {
   installInstall4j
   buildReleaseArtifacts
   collectArtifacts
-  generateArtifactChecksums
   triggerGithubReleaseWithTagPush
 }
 
@@ -43,51 +42,6 @@ function buildReleaseArtifacts() {
 function collectArtifacts() {
   mkdir -p ${ARTIFACTS_DIR}
   cp -v ./**/build/artifacts/* ${ARTIFACTS_DIR}
-}
-
-#
-# This function generates checksums for all release artifacts.
-#
-function generateArtifactChecksums() {
-  readonly -a ENGINES=(md5sum sha1sum sha256sum)
-  (
-    # Change to artifacts directory so file names in checksum files are bare
-    cd $ARTIFACTS_DIR
-    
-    # Write checksum files outside the artifacts directory so they are not
-    # considered by subsequent engines 
-    declare -A checksum_files=()
-    for engine in "${ENGINES[@]}"; do
-      echo "Generating artifact checksums using '$engine'..."
-      checksum_files[$engine]=$(mktemp)
-      eval "$engine * > ${checksum_files[$engine]}"
-    done
-    
-    for engine in "${ENGINES[@]}"; do
-      mv "${checksum_files[$engine]}" "./${engine}.txt"
-    done
-   
-    ## Enable pinentry loopback mode: https://www.fluidkeys.com/tweak-gpg-2.1.11/
-    echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-    gpgconf --reload gpg-agent
-    
-    # Sign checksum files
-    #
-    # We use detached signatures so that
-    #
-    # a) users can verify the checksum files using *sum without any warnings about
-    #    incorrectly-formatted lines, and
-    # b) signing the checksum file itself is susceptible to spoofing because the
-    #    *sum commands will process checksums outside the signature block (see
-    #    https://github.com/nodejs/node/issues/6821#issuecomment-220033176)
-    for engine in "${ENGINES[@]}"; do
-      echo "Signing artifact checksums for '$engine'..."
-      gpg2 --batch --no-tty --yes --armor --detach-sign \
-          --pinentry-mode loopback \
-          --passphrase-file <(echo "$GPG_PRIVATE_KEY_PASSPHRASE") \
-          "./${engine}.txt"
-    done
-  )
 }
 
 #
