@@ -1,0 +1,70 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Maps Server'
+mainClassName = 'org.triplea.maps.server.http.Server'
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+
+configurations {
+    testImplementation {
+        // database-rider brings in slf4j-simple as a transitive dependency
+        // DropWizard has logback baked in and cannot have multiple slf4j bindings.
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+}
+
+dependencies {
+    implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
+    implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
+    implementation "es.moki.ratelimitj:ratelimitj-dropwizard:$rateLimitjVersion"
+    implementation "es.moki.ratelimitj:ratelimitj-inmemory:$rateLimitjVersion"
+    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
+    implementation "javax.activation:activation:$javaxActivationVersion"
+    implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
+    implementation project(':domain-data')
+    implementation project(':dropwizard-common')
+    implementation project(':http-clients')
+    implementation project(':java-extras')
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
+    testImplementation project(":test-common")
+    testImplementation project(':domain-data')
+    testImplementation project(':http-clients')
+    testImplementation project(':java-extras')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('configuration.yml')
+
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}
