@@ -1,5 +1,7 @@
 package org.triplea.http.client.maps.listing;
 
+import java.util.Set;
+import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,11 +10,12 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MapDownloadListing {
-  private final String url;
-  private final String description;
-  private final String mapName;
-  private final String version;
-  private final String downloadType;
-  private final String mapCategory;
-  private final String img;
+  @Nonnull private final String url;
+  @Nonnull private final String mapName;
+  @Nonnull private final String description;
+  @Nonnull private final String version;
+  @Nonnull private final String mapCategory;
+  private final String previewImage;
+
+  private final Set<MapSkinListing> mapsSkins;
 }
