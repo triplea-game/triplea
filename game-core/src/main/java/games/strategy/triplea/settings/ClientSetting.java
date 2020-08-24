@@ -126,6 +126,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
   public static final ClientSetting<Boolean> showBetaFeatures =
       new BooleanClientSetting("SHOW_BETA_FEATURES");
+  public static final ClientSetting<Boolean> useMapsServerBetaFeature =
+      new BooleanClientSetting("USE_MAPS_SERVER_BETA_FEATURES");
   public static final BooleanClientSetting showChatTimeSettings =
       new BooleanClientSetting("SHOW_CHAT_TIME");
   public static final BooleanClientSetting showCommentLog =

@@ -1,11 +1,6 @@
 package games.strategy.engine;
 
 import games.strategy.engine.framework.map.download.DownloadCoordinator;
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.DownloadRunnable;
-import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.settings.ClientSetting;
-import java.util.List;
 import org.triplea.config.product.ProductConfiguration;
 import org.triplea.util.Version;
 
@@ -54,12 +49,5 @@ public final class ClientContext {
 
   public static Version engineVersion() {
     return instance.productConfiguration.getVersion();
-  }
-
-  public static List<DownloadFileDescription> getMapDownloadList() {
-    return ClientSetting.mapListOverride
-        .getValue()
-        .map(DownloadRunnable::readLocalFile)
-        .orElseGet(() -> DownloadRunnable.download(UrlConstants.MAP_DOWNLOAD_LIST));
   }
 }

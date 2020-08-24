@@ -64,7 +64,8 @@ final class MapDownloadControllerTest {
           mapName,
           version,
           DownloadFileDescription.DownloadType.MAP,
-          DownloadFileDescription.MapCategory.BEST);
+          DownloadFileDescription.MapCategory.BEST,
+          "");
     }
 
     private void givenDownloadedMapVersionIs(final Version version) {

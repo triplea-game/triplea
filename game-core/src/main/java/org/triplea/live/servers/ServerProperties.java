@@ -11,6 +11,8 @@ import org.triplea.util.Version;
 public class ServerProperties {
   /** URI of the remote server */
   private final URI uri;
+
+  private final URI mapsServerUri;
   /** Lobby welcome text shown to the user */
   private final String message;
   /** Minimum engine version compatible with this server */
