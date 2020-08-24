@@ -55,10 +55,6 @@ public class DevOverrides {
   }
 
   private static Optional<Path> findAtPath(final Path path) {
-    if (Files.exists(path)) {
-      return Optional.of(path);
-    } else {
-      return Optional.empty();
-    }
+    return Optional.of(path).filter(Files::exists);
   }
 }
