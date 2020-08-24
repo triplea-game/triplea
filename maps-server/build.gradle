@@ -20,29 +20,15 @@ configurations {
 }
 
 dependencies {
-    implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
-    implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
-    implementation "es.moki.ratelimitj:ratelimitj-dropwizard:$rateLimitjVersion"
-    implementation "es.moki.ratelimitj:ratelimitj-inmemory:$rateLimitjVersion"
-    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
-    implementation "javax.activation:activation:$javaxActivationVersion"
-    implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
-    implementation project(':domain-data')
     implementation project(':dropwizard-common')
-    implementation project(':http-clients')
-    implementation project(':java-extras')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
-    testImplementation project(":test-common")
-    testImplementation project(':domain-data')
-    testImplementation project(':http-clients')
-    testImplementation project(':java-extras')
 }
 
 jar {
