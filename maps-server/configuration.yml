@@ -1,0 +1,15 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 9090
+  adminConnectors:
+    - type: http
+      port: 9091
+database:
+  driverClass: org.postgresql.Driver
+  user: maps_user
+  password: postgres
+  url: jdbc:postgresql://localhost:5433/maps_db
+  properties:
+    charSet: UTF-8
+  validationQuery: select 1

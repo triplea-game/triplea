@@ -1,0 +1,56 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Maps Server'
+mainClassName = 'org.triplea.maps.server.http.Server'
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+
+configurations {
+    testImplementation {
+        // database-rider brings in slf4j-simple as a transitive dependency
+        // DropWizard has logback baked in and cannot have multiple slf4j bindings.
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+}
+
+dependencies {
+    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
+    implementation project(':dropwizard-common')
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('configuration.yml')
+
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}
