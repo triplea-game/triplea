@@ -38,7 +38,7 @@ public class DevOverrides {
               } catch (final IOException e) {
                 log.log(
                     Level.SEVERE,
-                    "Failed to read override file: " + overrideFile.toFile().getAbsolutePath(),
+                    "Failed to read override file: " + overrideFile.toAbsolutePath(),
                     e);
               }
             });
