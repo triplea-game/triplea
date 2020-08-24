@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapSkinListing;
 import org.triplea.util.Version;
 
 /**
@@ -32,16 +33,6 @@ public final class DownloadFileDescription {
     MAP,
     MAP_SKIN,
     MAP_TOOL;
-
-    private static DownloadType fromString(final String type) {
-      if (type.equalsIgnoreCase(MAP_SKIN.name())) {
-        return MAP_SKIN;
-      } else if (type.equalsIgnoreCase(MAP_TOOL.name())) {
-        return MAP_TOOL;
-      } else {
-        return MAP;
-      }
-    }
   }
 
   enum MapCategory {
@@ -79,9 +70,22 @@ public final class DownloadFileDescription {
         .description(mapDownloadListing.getDescription())
         .mapName(mapDownloadListing.getMapName())
         .version(new Version(mapDownloadListing.getVersion()))
-        .downloadType(DownloadType.fromString(mapDownloadListing.getDownloadType()))
+        .downloadType(DownloadType.MAP)
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
-        .img(mapDownloadListing.getImg())
+        .img(mapDownloadListing.getPreviewImage())
+        .build();
+  }
+
+  public static DownloadFileDescription ofMapSkinListing(
+      final MapSkinListing skin, final String mapCategory) {
+    return DownloadFileDescription.builder()
+        .url(skin.getUrl())
+        .description(skin.getDescription())
+        .mapName(skin.getSkinName())
+        .version(new Version(skin.getVersion()))
+        .downloadType(DownloadType.MAP_SKIN)
+        .mapCategory(MapCategory.fromString(mapCategory))
+        .img(skin.getPreviewImageUrl())
         .build();
   }
 
