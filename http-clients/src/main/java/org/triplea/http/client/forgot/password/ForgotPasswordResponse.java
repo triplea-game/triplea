@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Data object that corresponds to the JSON response from http-server for forgot password request.
+ * Data object that corresponds to the JSON response from lobby-server for forgot password request.
  */
 @ToString
 @Builder

@@ -8,9 +8,9 @@ logSqlStatements: false
 
 database:
   driverClass: org.postgresql.Driver
-  user: {{ http_server_db_user }}
+  user: {{ lobby_server_db_user }}
   password: {{ lobby_db_password }}
-  url: jdbc:postgresql://{{ http_server_db_host }}:{{ http_server_db_port }}/{{ http_server_db_name }}
+  url: jdbc:postgresql://{{ lobby_server_db_host }}:{{ lobby_server_db_port }}/{{ lobby_server_db_name }}
   properties:
     charSet: UTF-8
   # the maximum amount of time to wait on an empty pool before throwing an exception

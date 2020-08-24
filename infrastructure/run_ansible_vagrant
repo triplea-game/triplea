@@ -35,12 +35,12 @@ function symlinkNginxCert() {
 function buildJars() {
   (
     cd ../
-    ./gradlew :http-server:shadowJar :game-headless:shadowJar
+    ./gradlew :lobby-server:shadowJar :game-headless:shadowJar
     
     local targetFolder="./infrastructure/ansible/roles"
-    mkdir -p "${targetFolder}/bot/files/" "${targetFolder}/http_server/files/"
+    mkdir -p "${targetFolder}/bot/files/" "${targetFolder}/lobby_server/files/"
     cp "game-headless/build/libs/triplea-game-headless-${VERSION}.jar" "${targetFolder}/bot/files/"
-    cp "http-server/build/libs/triplea-http-server-${VERSION}.jar" "${targetFolder}/http_server/files/"
+    cp "lobby-server/build/libs/triplea-lobby-server-${VERSION}.jar" "${targetFolder}/lobby_server/files/"
   ) 
 }
 

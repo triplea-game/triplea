@@ -1,0 +1,19 @@
+lobby_server_user: lobby_server
+lobby_server_home_folder: "/home/{{ lobby_server_user }}"
+lobby_server_run_file: "{{ lobby_server_home_folder }}/run_server"
+
+lobby_server_jar: "triplea-lobby-server-{{ version }}.jar"
+
+lobby_server_error_report_github_org: "triplea-game"
+lobby_server_error_report_github_repo: "test"
+lobby_server_error_report_github_token: "test"
+
+lobby_server_db_host: "127.0.0.1"
+lobby_server_db_port: "5432"
+
+lobby_server_db_name: "{{ lobby_db_name }}"
+lobby_server_db_user: "{{ lobby_db_user }}"
+
+create_issues_github_api_token: test
+
+lobby_server_zip_download: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/triplea-lobby-server-{{ version }}.zip"
