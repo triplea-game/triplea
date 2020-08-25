@@ -27,14 +27,6 @@ plugins:
   # https://docs.codeclimate.com/docs/codenarc
   codenarc:
     enabled: true
-  # https://docs.codeclimate.com/docs/markdownlint
-  markdownlint:
-    enabled: true
-    checks:
-      MD006:
-        # Disable "Consider starting bulleted lists at the beginning of the line"
-        enabled: false
-
   # https://docs.codeclimate.com/docs/shellcheck
   shellcheck:
     enabled: true
