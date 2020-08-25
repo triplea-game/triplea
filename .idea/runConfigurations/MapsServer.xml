@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MapsServer" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="org.triplea.maps.server.http.MapsServer" />
+    <module name="triplea.maps-server.main" />
+    <option name="WORKING_DIRECTORY" value="maps-server" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.triplea.maps.server.http.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
