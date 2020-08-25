@@ -9,17 +9,18 @@ import static org.triplea.test.common.IsInstant.isInstant;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class ModeratorAuditHistoryDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
 
   private static final int MODERATOR_ID = 900000;
   private static final int MODERATOR_ID_DOES_NOT_EXIST = 1111;
 
-  private final ModeratorAuditHistoryDao moderatorAuditHistoryDao =
-      DaoTest.newDao(ModeratorAuditHistoryDao.class);
+  private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   @Test
   @DataSet(cleanBefore = true, value = "moderator_audit/pre_insert.yml")

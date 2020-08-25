@@ -7,6 +7,7 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.HttpInteractionException;
 
@@ -23,24 +25,17 @@ import org.triplea.http.client.HttpInteractionException;
  * other roles.
  */
 // TODO: rename to AuthenticatedEndpointTest
-public abstract class ProtectedEndpointTest<T> extends DropwizardTest {
-  private final BiFunction<URI, ApiKey, T> clientBuilder;
+@DataSet(cleanBefore = true, value = "integration.yml")
+@AllArgsConstructor
+public abstract class ProtectedEndpointTest<T> extends LobbyServerTest {
+  private final URI localhost;
   @Nullable private final AllowedUserRole defaultAllowedUserRole;
+  private final BiFunction<URI, ApiKey, T> clientBuilder;
 
   /** Constructor where allowed user role needs to specified for each endpoint test. */
-  protected ProtectedEndpointTest(final BiFunction<URI, ApiKey, T> clientBuilder) {
-    this(null, clientBuilder);
-  }
-
-  /**
-   * Constructor where a default user role is provided for each endpoint test. A role specified
-   * specific in an endpoint test will override the default.
-   */
   protected ProtectedEndpointTest(
-      @Nullable final AllowedUserRole allowedUserRole,
-      final BiFunction<URI, ApiKey, T> clientBuilder) {
-    this.defaultAllowedUserRole = allowedUserRole;
-    this.clientBuilder = clientBuilder;
+      final URI localhost, final BiFunction<URI, ApiKey, T> clientBuilder) {
+    this(localhost, null, clientBuilder);
   }
 
   /** Use this to verify an endpoint that returns void. */

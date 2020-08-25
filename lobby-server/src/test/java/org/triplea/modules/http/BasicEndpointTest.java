@@ -3,19 +3,18 @@ package org.triplea.modules.http;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
-import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import org.hamcrest.collection.IsEmptyCollection;
+import lombok.AllArgsConstructor;
 
 /** Test to verify endpoints that are publicly accessible and do not require an API key. */
-public abstract class BasicEndpointTest<T> extends DropwizardTest {
+@DataSet(cleanBefore = true, value = "integration.yml")
+@AllArgsConstructor
+public abstract class BasicEndpointTest<T> extends LobbyServerTest {
+  private final URI localhost;
   private final Function<URI, T> clientBuilder;
-
-  protected BasicEndpointTest(final Function<URI, T> clientBuilder) {
-    this.clientBuilder = clientBuilder;
-  }
 
   /** Use this to verify an endpoint that returns void. */
   protected void verifyEndpoint(final Consumer<T> methodRunner) {
@@ -27,14 +26,5 @@ public abstract class BasicEndpointTest<T> extends DropwizardTest {
     final X result = methodRunner.apply(clientBuilder.apply(localhost));
     assertThat(result, notNullValue());
     return result;
-  }
-
-  /**
-   * Use this method to verify an endpoint that returns a collection of data. For better test
-   * coverage, it is assumed that the DB will be set up so that some data will be returned, we
-   * expect a non-empty collection to be returned.
-   */
-  protected void verifyEndpointReturningCollection(final Function<T, Collection<?>> methodRunner) {
-    assertThat(methodRunner.apply(clientBuilder.apply(localhost)), IsEmptyCollection.empty());
   }
 }

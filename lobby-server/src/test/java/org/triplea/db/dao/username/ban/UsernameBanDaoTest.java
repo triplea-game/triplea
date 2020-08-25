@@ -8,13 +8,15 @@ import static org.triplea.test.common.IsInstant.isInstant;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class UsernameBanDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class UsernameBanDaoTest extends LobbyServerTest {
 
-  private final UsernameBanDao usernameBanDao = DaoTest.newDao(UsernameBanDao.class);
+  private final UsernameBanDao usernameBanDao;
 
   @Test
   @DisplayName("Verify retrieving username bans")

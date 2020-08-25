@@ -7,17 +7,19 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
 @DataSet(cleanBefore = true, value = "bad_words/select.yml")
-class BadWordsDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class BadWordsDaoTest extends LobbyServerTest {
   private static final List<String> expectedBadWords = List.of("aaa", "one", "two", "zzz");
 
-  private final BadWordsDao badWordsDao = DaoTest.newDao(BadWordsDao.class);
+  private final BadWordsDao badWordsDao;
 
   @Test
   void getBadWords() {

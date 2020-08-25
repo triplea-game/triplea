@@ -2,12 +2,14 @@ package org.triplea.db.dao.chat.history;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class LobbyChatHistoryDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class LobbyChatHistoryDaoTest extends LobbyServerTest {
 
-  private final LobbyChatHistoryDao lobbyChatHistoryDao = DaoTest.newDao(LobbyChatHistoryDao.class);
+  private final LobbyChatHistoryDao lobbyChatHistoryDao;
 
   @Test
   @DataSet(cleanBefore = true, value = "chat_history/insert_into_lobby_chat_history_before.yml")

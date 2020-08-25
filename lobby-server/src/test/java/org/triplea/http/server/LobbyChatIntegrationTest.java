@@ -6,10 +6,13 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +25,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMe
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
-import org.triplea.modules.http.DropwizardTest;
+import org.triplea.modules.http.LobbyServerTest;
 
 /**
  * End-to-end test where we go through a chat sequence exercising all chat features. Runs through
@@ -50,7 +53,9 @@ import org.triplea.modules.http.DropwizardTest;
  * chatter joins we expect both moderator and chatter to be in the connected event list.
  */
 @SuppressWarnings("SameParameterValue")
-class LobbyChatIntegrationTest extends DropwizardTest {
+@DataSet(cleanBefore = true, value = "integration.yml")
+@RequiredArgsConstructor
+class LobbyChatIntegrationTest extends LobbyServerTest {
   private static final int MESSAGE_TIMEOUT = 3000;
 
   private static final String STATUS = "status";
@@ -73,6 +78,8 @@ class LobbyChatIntegrationTest extends DropwizardTest {
           .status("")
           .playerChatId("player-chat-id")
           .build();
+
+  private final URI localhost;
 
   private List<PlayerStatusUpdateReceivedMessage> modPlayerStatusEvents = new ArrayList<>();
   private List<PlayerLeftMessage> modPlayerLeftEvents = new ArrayList<>();

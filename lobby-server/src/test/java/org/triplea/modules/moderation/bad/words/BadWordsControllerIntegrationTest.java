@@ -1,5 +1,6 @@
 package org.triplea.modules.moderation.bad.words;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
 import org.triplea.modules.http.AllowedUserRole;
@@ -7,8 +8,8 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 
 class BadWordsControllerIntegrationTest extends ProtectedEndpointTest<ToolboxBadWordsClient> {
 
-  BadWordsControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, ToolboxBadWordsClient::newClient);
+  BadWordsControllerIntegrationTest(final URI localhost) {
+    super(localhost, AllowedUserRole.MODERATOR, ToolboxBadWordsClient::newClient);
   }
 
   @Test

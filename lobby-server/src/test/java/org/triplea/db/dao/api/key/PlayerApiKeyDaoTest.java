@@ -8,12 +8,14 @@ import static org.hamcrest.core.Is.is;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
 import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.modules.http.LobbyServerTest;
 
 @DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
-class PlayerApiKeyDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class PlayerApiKeyDaoTest extends LobbyServerTest {
 
   private static final int USER_ID = 50;
 
@@ -33,7 +35,7 @@ class PlayerApiKeyDaoTest extends DaoTest {
           .apiKeyId(1001)
           .build();
 
-  private final PlayerApiKeyDao playerApiKeyDao = DaoTest.newDao(PlayerApiKeyDao.class);
+  private final PlayerApiKeyDao playerApiKeyDao;
 
   @Test
   void keyNotFound() {

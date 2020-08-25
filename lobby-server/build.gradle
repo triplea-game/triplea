@@ -48,6 +48,7 @@ dependencies {
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
+    testImplementation project(":dropwizard-common-test")
     testImplementation project(":test-common")
     testImplementation project(':domain-data')
     testImplementation project(':http-clients')
