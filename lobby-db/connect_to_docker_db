@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Simple helper script to connect to a DB running locally on docker.
+psql -h localhost -U lobby_user -w -d lobby_db

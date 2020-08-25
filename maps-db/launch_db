@@ -1,4 +1,0 @@
-#!/bin/bash
-
-./run_docker
-./run_flyway
