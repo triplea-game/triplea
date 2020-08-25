@@ -1,12 +1,11 @@
 # Maps-DB
 
 Supports the lobby-server and stores:
-
-- users
-- lobby chat history
-- user ban information
-- moderator audit logs
-- bug report history and rate limits
+  - users
+  - lobby chat history
+  - user ban information
+  - moderator audit logs
+  - bug report history and rate limits
 
 For more information see: [database documentation](/docs/development/database/)
 

@@ -20,6 +20,7 @@ We will use `lobby-db` as an example.
 ### Build Docker
 
 First (one-time) build your docker container with:
+
 ```
 ./lobby-db/build_docker_db
 ```
@@ -27,18 +28,22 @@ First (one-time) build your docker container with:
 ### Start Docker
 
 Next, start the docker database with:
+
 ```
 ./lobby-db/start_docker_db
 ```
+
 The start script will run flyway to apply migrations files
 and will insert example data.
 
 ### Connect to Database on Docker
 
 You can then connect to your local docker database with:
+
 ```
 ./lobby-db/connect_to_docker_db
 ```
+
 Note: You can view the connect script to obtain  connection parameters
 such as port number and credentials.
 
@@ -47,6 +52,7 @@ such as port number and credentials.
 If you are in development and wish to have a clean database (for example
 you are modifying flyway migration files), to recreate a running
 database, run:
+
 ```
 ./lobby-db/reset_docker_db
 ```
