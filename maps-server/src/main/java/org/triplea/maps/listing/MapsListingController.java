@@ -9,7 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.http.client.maps.listing.MapsListingClient;
@@ -18,7 +17,6 @@ import org.triplea.http.client.maps.listing.MapsListingClient;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
 public class MapsListingController {
   private final Supplier<List<MapDownloadListing>> downloadListingSupplier;
 
