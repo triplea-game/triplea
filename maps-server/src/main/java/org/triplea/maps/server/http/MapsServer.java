@@ -1,9 +1,15 @@
 package org.triplea.maps.server.http;
 
 import io.dropwizard.Application;
+import io.dropwizard.jdbi3.JdbiFactory;
+import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.util.List;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.dropwizard.common.ServerConfiguration;
+import org.triplea.maps.listing.MapsListingController;
+import org.triplea.maps.server.db.RowMappers;
 
 public class MapsServer extends Application<MapsConfig> {
 
@@ -28,5 +34,13 @@ public class MapsServer extends Application<MapsConfig> {
   }
 
   @Override
-  public void run(final MapsConfig configuration, final Environment environment) throws Exception {}
+  public void run(final MapsConfig configuration, final Environment environment) throws Exception {
+    final Jdbi jdbi =
+        new JdbiFactory()
+            .build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    RowMappers.rowMappers().forEach(jdbi::registerRowMapper);
+
+    final JerseyEnvironment jerseyEnvironment = environment.jersey();
+    List.of(MapsListingController.build(jdbi)).forEach(jerseyEnvironment::register);
+  }
 }
