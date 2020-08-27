@@ -26,5 +26,4 @@ echo "Deploying schema"
 "$(dirname "$0")/../gradlew" flywayMigrate
 
 echo "Loading sample data"
-psql -h localhost -U lobby_user lobby_db < cat "$(dirname "$0")/sample_data.sql" 
-
+psql -h localhost -U lobby_user lobby_db < cat "$(dirname "$0")/sample_data.sql"
