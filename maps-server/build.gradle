@@ -30,6 +30,8 @@ dependencies {
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
+    testImplementation project(':test-common')
+    testImplementation project(':dropwizard-common-test')
 }
 
 jar {

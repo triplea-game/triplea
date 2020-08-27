@@ -3,4 +3,5 @@
 set -eEux
 
 .travis/shared/setup-database
+mv maps-server/src/test/resources/dbunit-travis.yml maps-server/src/test/resources/dbunit.yml
 ./gradlew integTest -x :smoke-testing:integTest
