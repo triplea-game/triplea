@@ -1,0 +1,7 @@
+dependencies {
+    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    implementation project(':dropwizard-common')
+}

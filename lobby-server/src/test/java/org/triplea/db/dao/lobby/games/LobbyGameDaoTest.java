@@ -2,15 +2,17 @@ package org.triplea.db.dao.lobby.games;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.modules.TestData;
+import org.triplea.modules.http.LobbyServerTest;
 
-class LobbyGameDaoTest extends DaoTest {
-  private final LobbyGameDao lobbyGameDao = DaoTest.newDao(LobbyGameDao.class);
+@RequiredArgsConstructor
+class LobbyGameDaoTest extends LobbyServerTest {
+  private final LobbyGameDao lobbyGameDao;
 
   @Test
   @DataSet(cleanBefore = true, value = "lobby_games/lobby_game_insert_before.yml")

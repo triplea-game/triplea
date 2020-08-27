@@ -90,7 +90,9 @@ public class ServerApplication extends Application<AppConfig> {
     final Jdbi jdbi =
         new JdbiFactory()
             .build(environment, configuration.getDatabase(), "postgresql-connection-pool");
-    JdbiDatabase.registerRowMappers(jdbi);
+
+    JdbiDatabase.rowMappers().forEach(jdbi::registerRowMapper);
+
     if (configuration.isLogSqlStatements()) {
       JdbiDatabase.registerSqlLogger(jdbi);
     }

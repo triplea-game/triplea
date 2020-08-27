@@ -9,18 +9,20 @@ import static org.triplea.test.common.IsInstant.isInstant;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
 import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.modules.http.LobbyServerTest;
 
 @DataSet(cleanBefore = true, value = "moderators/select.yml")
-class ModeratorsDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class ModeratorsDaoTest extends LobbyServerTest {
 
   private static final int NOT_MODERATOR_ID = 100000;
   private static final int MODERATOR_ID = 900000;
   private static final int SUPER_MODERATOR_ID = 900001;
 
-  private final ModeratorsDao moderatorsDao = newDao(ModeratorsDao.class);
+  private final ModeratorsDao moderatorsDao;
 
   @Test
   void getModerators() {

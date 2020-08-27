@@ -4,14 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.JdbiDatabase;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
 @DataSet(cleanBefore = true, value = "user_role/initial.yml")
-class UserRoleDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class UserRoleDaoTest extends LobbyServerTest {
 
-  private final UserRoleDao userRoleDao = JdbiDatabase.newConnection().onDemand(UserRoleDao.class);
+  private final UserRoleDao userRoleDao;
 
   @Test
   void lookupAnonymousRoleId() {

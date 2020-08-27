@@ -8,11 +8,13 @@ import static org.triplea.test.common.IsInstant.isInstant;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class AccessLogDaoTest extends DaoTest {
-  private final AccessLogDao accessLogDao = DaoTest.newDao(AccessLogDao.class);
+@RequiredArgsConstructor
+class AccessLogDaoTest extends LobbyServerTest {
+  private final AccessLogDao accessLogDao;
 
   @Test
   @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")

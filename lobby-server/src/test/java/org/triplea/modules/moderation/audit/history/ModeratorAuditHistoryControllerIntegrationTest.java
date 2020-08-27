@@ -1,5 +1,6 @@
 package org.triplea.modules.moderation.audit.history;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
@@ -12,8 +13,8 @@ class ModeratorAuditHistoryControllerIntegrationTest
   private static final PagingParams PAGING_PARAMS =
       PagingParams.builder().pageSize(1).rowNumber(0).build();
 
-  ModeratorAuditHistoryControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, ToolboxEventLogClient::newClient);
+  ModeratorAuditHistoryControllerIntegrationTest(final URI localhost) {
+    super(localhost, AllowedUserRole.MODERATOR, ToolboxEventLogClient::newClient);
   }
 
   @Test

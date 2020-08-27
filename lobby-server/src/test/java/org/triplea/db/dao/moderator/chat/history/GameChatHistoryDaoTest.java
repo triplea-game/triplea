@@ -7,18 +7,20 @@ import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
 @DataSet(cleanBefore = true, value = "chat_history/select_game_chat_history.yml")
-class GameChatHistoryDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class GameChatHistoryDaoTest extends LobbyServerTest {
   private static final String SIR_HOSTS_A_LOT = "sir_hosts_a_lot";
   private static final String SIR_HOSTS_A_LITTLE = "sir_hosts_a_little";
   private static final String PLAYER1 = "player1";
 
-  private final GameChatHistoryDao gameChatHistoryDao = DaoTest.newDao(GameChatHistoryDao.class);
+  private final GameChatHistoryDao gameChatHistoryDao;
 
   @Test
   void gameDoesNotExist() {

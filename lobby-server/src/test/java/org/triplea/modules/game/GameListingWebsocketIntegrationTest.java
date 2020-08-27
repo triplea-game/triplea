@@ -3,12 +3,15 @@ package org.triplea.modules.game;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,12 +32,16 @@ import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyG
 import org.triplea.modules.TestData;
 import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.modules.http.DropwizardTest;
+import org.triplea.modules.http.LobbyServerTest;
 
 @ExtendWith(MockitoExtension.class)
-class GameListingWebsocketIntegrationTest extends DropwizardTest {
+@DataSet(cleanBefore = true, value = "integration.yml")
+@RequiredArgsConstructor
+class GameListingWebsocketIntegrationTest extends LobbyServerTest {
   private static final GamePostingRequest GAME_POSTING_REQUEST =
       GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
+
+  private final URI localhost;
 
   @Mock private Consumer<LobbyGameListing> gameUpdatedListener;
   @Mock private Consumer<String> gameRemovedListener;
@@ -66,7 +73,7 @@ class GameListingWebsocketIntegrationTest extends DropwizardTest {
     final var playerToLobbyConnection =
         new PlayerToLobbyConnection(
             localhost,
-            DropwizardTest.CHATTER_API_KEY,
+            LobbyServerTest.CHATTER_API_KEY,
             error -> {
               throw new AssertionError(error);
             });

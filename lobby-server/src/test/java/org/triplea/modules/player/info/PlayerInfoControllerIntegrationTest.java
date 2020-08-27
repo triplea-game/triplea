@@ -3,6 +3,7 @@ package org.triplea.modules.player.info;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import java.net.URI;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
@@ -13,8 +14,8 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 
 class PlayerInfoControllerIntegrationTest extends ProtectedEndpointTest<PlayerLobbyActionsClient> {
 
-  PlayerInfoControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, PlayerLobbyActionsClient::new);
+  PlayerInfoControllerIntegrationTest(final URI localhost) {
+    super(localhost, AllowedUserRole.MODERATOR, PlayerLobbyActionsClient::new);
   }
 
   @Test

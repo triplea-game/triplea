@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.net.URI;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
@@ -16,8 +17,8 @@ class DisconnectUserControllerIntegrationTest extends ProtectedEndpointTest<Mode
 
   private static final PlayerChatId CHAT_ID = PlayerChatId.of("chat-id");
 
-  DisconnectUserControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, ModeratorChatClient::newClient);
+  DisconnectUserControllerIntegrationTest(final URI localhost) {
+    super(localhost, AllowedUserRole.MODERATOR, ModeratorChatClient::newClient);
   }
 
   @Test

@@ -8,14 +8,15 @@ import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class PlayerInfoForModeratorDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class PlayerInfoForModeratorDaoTest extends LobbyServerTest {
 
-  private final PlayerInfoForModeratorDao playerInfoForModeratorDao =
-      DaoTest.newDao(PlayerInfoForModeratorDao.class);
+  private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
 
   @Nested
   @DataSet(

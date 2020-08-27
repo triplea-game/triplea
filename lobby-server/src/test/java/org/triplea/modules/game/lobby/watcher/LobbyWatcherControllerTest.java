@@ -3,6 +3,7 @@ package org.triplea.modules.game.lobby.watcher;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.UserName;
@@ -17,8 +18,8 @@ class LobbyWatcherControllerTest extends ProtectedEndpointTest<LobbyWatcherClien
   private static final GamePostingRequest GAME_POSTING_REQUEST =
       GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
 
-  LobbyWatcherControllerTest() {
-    super(AllowedUserRole.HOST, LobbyWatcherClient::newClient);
+  LobbyWatcherControllerTest(final URI localhost) {
+    super(localhost, AllowedUserRole.HOST, LobbyWatcherClient::newClient);
   }
 
   @Test

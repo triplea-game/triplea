@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
@@ -19,8 +20,8 @@ class LoginControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient>
   private static final String TEMP_PASSWORD = Sha512Hasher.hashPasswordWithSalt("temp-password");
   private static final String INVALID_PASSWORD = "invalid";
 
-  LoginControllerIntegrationTest() {
-    super(LobbyLoginClient::newClient);
+  LoginControllerIntegrationTest(final URI localhost) {
+    super(localhost, LobbyLoginClient::newClient);
   }
 
   @Test

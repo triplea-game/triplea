@@ -1,5 +1,6 @@
 package org.triplea.modules.error.reporting;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
@@ -8,8 +9,8 @@ import org.triplea.modules.http.BasicEndpointTest;
 
 class ErrorReportControllerIntegrationTest extends BasicEndpointTest<ErrorReportClient> {
 
-  ErrorReportControllerIntegrationTest() {
-    super(ErrorReportClient::newClient);
+  ErrorReportControllerIntegrationTest(final URI uri) {
+    super(uri, ErrorReportClient::newClient);
   }
 
   @Test

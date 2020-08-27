@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import java.net.URI;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.IpAddressParser;
@@ -13,8 +14,8 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 
 class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<RemoteActionsClient> {
 
-  RemoteActionsControllerIntegrationTest() {
-    super(RemoteActionsClient::new);
+  RemoteActionsControllerIntegrationTest(final URI localhost) {
+    super(localhost, RemoteActionsClient::new);
   }
 
   @Test

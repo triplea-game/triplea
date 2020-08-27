@@ -9,14 +9,16 @@ import com.github.npathai.hamcrestopt.OptionalMatchers;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-final class ErrorReportingDaoTest extends DaoTest {
-  private final ErrorReportingDao errorReportingDao = DaoTest.newDao(ErrorReportingDao.class);
+@RequiredArgsConstructor
+final class ErrorReportingDaoTest extends LobbyServerTest {
+  private final ErrorReportingDao errorReportingDao;
 
   /** Simple check that if we insert a record we'll get a new record in the expected dataset. */
   @DataSet(cleanBefore = true, value = "error_reporting/pre-insert.yml")

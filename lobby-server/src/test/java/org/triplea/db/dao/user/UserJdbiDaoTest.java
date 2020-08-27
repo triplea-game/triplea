@@ -7,13 +7,15 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.db.dao.user.role.UserRoleLookup;
+import org.triplea.modules.http.LobbyServerTest;
 
 @DataSet(cleanBefore = true, value = "user/initial.yml")
-class UserJdbiDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class UserJdbiDaoTest extends LobbyServerTest {
 
   private static final int USER_ID = 900000;
   private static final String USERNAME = "user";
@@ -25,7 +27,7 @@ class UserJdbiDaoTest extends DaoTest {
   private static final String NEW_PASSWORD =
       "$2a$abcde_123456789_123456789_123456789_123456789_123456789_";
 
-  private final UserJdbiDao userDao = DaoTest.newDao(UserJdbiDao.class);
+  private final UserJdbiDao userDao;
 
   @Test
   void lookupUserIdByName() {

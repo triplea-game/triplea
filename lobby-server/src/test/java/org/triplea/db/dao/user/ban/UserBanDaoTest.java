@@ -12,13 +12,15 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class UserBanDaoTest extends DaoTest {
-  private final UserBanDao userBanDao = DaoTest.newDao(UserBanDao.class);
+@RequiredArgsConstructor
+class UserBanDaoTest extends LobbyServerTest {
+  private final UserBanDao userBanDao;
 
   @Nested
   @DataSet(cleanBefore = true, value = "user_ban/banned_by_ip.yml")

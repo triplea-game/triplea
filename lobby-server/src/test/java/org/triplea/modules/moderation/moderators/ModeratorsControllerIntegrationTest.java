@@ -1,5 +1,6 @@
 package org.triplea.modules.moderation.moderators;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 import org.triplea.modules.http.AllowedUserRole;
@@ -7,8 +8,9 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 
 class ModeratorsControllerIntegrationTest
     extends ProtectedEndpointTest<ToolboxModeratorManagementClient> {
-  ModeratorsControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, ToolboxModeratorManagementClient::newClient);
+
+  ModeratorsControllerIntegrationTest(final URI localhost) {
+    super(localhost, AllowedUserRole.MODERATOR, ToolboxModeratorManagementClient::newClient);
   }
 
   @Test

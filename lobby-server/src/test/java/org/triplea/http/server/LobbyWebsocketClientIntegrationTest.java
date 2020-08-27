@@ -4,6 +4,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import java.time.Duration;
 import org.java_websocket.client.WebSocketClient;
@@ -11,14 +12,15 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.web.socket.WebsocketPaths;
-import org.triplea.modules.http.DropwizardTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class LobbyWebsocketClientIntegrationTest extends DropwizardTest {
+@DataSet(cleanBefore = true, value = "integration.yml")
+class LobbyWebsocketClientIntegrationTest extends LobbyServerTest {
 
   @Test
   @DisplayName("Verify basic websocket operations: open, send, close")
-  void verifyConnectivity() throws Exception {
-    final URI websocketUri = URI.create(localhost + WebsocketPaths.PLAYER_CONNECTIONS);
+  void verifyConnectivity(final URI host) throws Exception {
+    final URI websocketUri = URI.create(host + WebsocketPaths.PLAYER_CONNECTIONS);
 
     final WebSocketClient client =
         new WebSocketClient(websocketUri) {

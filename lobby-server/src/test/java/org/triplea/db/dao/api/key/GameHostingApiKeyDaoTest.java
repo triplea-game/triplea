@@ -5,12 +5,14 @@ import static org.hamcrest.Matchers.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.dao.DaoTest;
+import org.triplea.modules.http.LobbyServerTest;
 
-class GameHostingApiKeyDaoTest extends DaoTest {
+@RequiredArgsConstructor
+class GameHostingApiKeyDaoTest extends LobbyServerTest {
 
-  private final GameHostingApiKeyDao gameHostApiKeyDao = DaoTest.newDao(GameHostingApiKeyDao.class);
+  private final GameHostingApiKeyDao gameHostApiKeyDao;
 
   @Test
   @DataSet(cleanBefore = true, value = "game_hosting_api_key/key_exists.yml")

@@ -1,5 +1,6 @@
 package org.triplea.modules.moderation.access.log;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
@@ -11,8 +12,8 @@ class AccessLogControllerIntegrationTest extends ProtectedEndpointTest<ToolboxAc
   private static final PagingParams PAGING_PARAMS =
       PagingParams.builder().pageSize(1).rowNumber(0).build();
 
-  AccessLogControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, ToolboxAccessLogClient::newClient);
+  AccessLogControllerIntegrationTest(final URI localhost) {
+    super(localhost, AllowedUserRole.MODERATOR, ToolboxAccessLogClient::newClient);
   }
 
   @Test

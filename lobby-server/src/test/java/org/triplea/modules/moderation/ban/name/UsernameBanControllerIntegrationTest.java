@@ -1,5 +1,6 @@
 package org.triplea.modules.moderation.ban.name;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.modules.http.AllowedUserRole;
@@ -7,8 +8,8 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 
 class UsernameBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUsernameBanClient> {
 
-  UsernameBanControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, ToolboxUsernameBanClient::newClient);
+  UsernameBanControllerIntegrationTest(final URI localhost) {
+    super(localhost, AllowedUserRole.MODERATOR, ToolboxUsernameBanClient::newClient);
   }
 
   @Test
