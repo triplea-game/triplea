@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "temp_password/sample.yml")
+@DataSet("temp_password/sample.yml")
 @RequiredArgsConstructor
 class TempPasswordDaoTest extends LobbyServerTest {
 
@@ -55,7 +55,7 @@ class TempPasswordDaoTest extends LobbyServerTest {
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(NEW_PASSWORD));
   }
 
-  @DataSet(cleanBefore = true, value = "temp_password/invalidate_password.yml")
+  @DataSet("temp_password/invalidate_password.yml")
   @Test
   void invalidateTempPasswordsForMissingNameDoesNothing() {
     // verify that before we do any invalidation that indeed our known user has a temp password
@@ -68,7 +68,7 @@ class TempPasswordDaoTest extends LobbyServerTest {
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
   }
 
-  @DataSet(cleanBefore = true, value = "temp_password/invalidate_password.yml")
+  @DataSet("temp_password/invalidate_password.yml")
   @Test
   void invalidatePassword() {
     tempPasswordDao.invalidateTempPasswords(USERNAME);

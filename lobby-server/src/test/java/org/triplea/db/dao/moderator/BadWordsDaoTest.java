@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "bad_words/select.yml")
+@DataSet("bad_words/select.yml")
 @RequiredArgsConstructor
 class BadWordsDaoTest extends LobbyServerTest {
   private static final List<String> expectedBadWords = List.of("aaa", "one", "two", "zzz");

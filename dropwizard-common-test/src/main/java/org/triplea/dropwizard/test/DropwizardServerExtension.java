@@ -5,11 +5,15 @@ import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.testing.DropwizardTestSupport;
 import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -26,7 +30,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 @Slf4j
 public abstract class DropwizardServerExtension<C extends Configuration>
-    implements BeforeAllCallback, ExtensionContext.Store.CloseableResource, ParameterResolver {
+    implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
   private static Jdbi jdbi;
   private static URI serverUri;
@@ -74,8 +78,15 @@ public abstract class DropwizardServerExtension<C extends Configuration>
   }
 
   @Override
-  public void close() {
-    // no-op, server will stop when unit tests terminate
+  public void afterAll(final ExtensionContext context) throws Exception {
+    final URL cleanupFileUrl = getClass().getClassLoader().getResource("db-cleanup.sql");
+    if (cleanupFileUrl != null) {
+      log.info("Running database cleanup..");
+      final String cleanupSql = Files.readString(Path.of(cleanupFileUrl.toURI()));
+      jdbi.withHandle(handle -> handle.execute(cleanupSql));
+    } else {
+      log.debug("No cleanup file 'db-cleanup' found");
+    }
   }
 
   @Override

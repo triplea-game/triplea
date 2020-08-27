@@ -15,7 +15,7 @@ class LobbyGameDaoTest extends LobbyServerTest {
   private final LobbyGameDao lobbyGameDao;
 
   @Test
-  @DataSet(cleanBefore = true, value = "lobby_games/lobby_game_insert_before.yml")
+  @DataSet("lobby_games/lobby_game_insert_before.yml")
   @ExpectedDataSet("lobby_games/lobby_game_insert_after.yml")
   void insertLobbyGame() {
     lobbyGameDao.insertLobbyGame(
@@ -27,7 +27,7 @@ class LobbyGameDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "lobby_games/game_chat_history_insert_before.yml")
+  @DataSet("lobby_games/game_chat_history_insert_before.yml")
   @ExpectedDataSet("lobby_games/game_chat_history_insert_after.yml")
   void insertChatMessage() {
     lobbyGameDao.recordChat(

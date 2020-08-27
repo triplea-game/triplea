@@ -12,7 +12,7 @@ class LobbyChatHistoryDaoTest extends LobbyServerTest {
   private final LobbyChatHistoryDao lobbyChatHistoryDao;
 
   @Test
-  @DataSet(cleanBefore = true, value = "chat_history/insert_into_lobby_chat_history_before.yml")
+  @DataSet("chat_history/insert_into_lobby_chat_history_before.yml")
   @ExpectedDataSet("chat_history/insert_into_lobby_chat_history_after.yml")
   void insertChatMessage() {
     lobbyChatHistoryDao.insertMessage("username", 3000, "message");

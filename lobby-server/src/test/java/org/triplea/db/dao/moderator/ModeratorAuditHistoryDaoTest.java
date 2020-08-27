@@ -23,7 +23,7 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   @Test
-  @DataSet(cleanBefore = true, value = "moderator_audit/pre_insert.yml")
+  @DataSet("moderator_audit/pre_insert.yml")
   void addAuditRecordThrowsIfModeratorNameNotFound() {
     assertThrows(
         UnableToExecuteStatementException.class,
@@ -37,7 +37,7 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "moderator_audit/pre_insert.yml")
+  @DataSet("moderator_audit/pre_insert.yml")
   @ExpectedDataSet("moderator_audit/post_insert.yml")
   void addAuditRecord() {
     moderatorAuditHistoryDao.addAuditRecord(
@@ -49,7 +49,7 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "moderator_audit/history_select.yml")
+  @DataSet("moderator_audit/history_select.yml")
   void selectHistory() {
     List<ModeratorAuditHistoryRecord> results = moderatorAuditHistoryDao.lookupHistoryItems(0, 3);
 

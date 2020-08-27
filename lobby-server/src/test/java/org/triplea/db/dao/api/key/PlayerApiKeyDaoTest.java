@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
+@DataSet("lobby_api_key/initial.yml")
 @RequiredArgsConstructor
 class PlayerApiKeyDaoTest extends LobbyServerTest {
 
@@ -79,7 +79,7 @@ class PlayerApiKeyDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "lobby_api_key/delete_old_keys_before.yml")
+  @DataSet("lobby_api_key/delete_old_keys_before.yml")
   @ExpectedDataSet(value = "lobby_api_key/delete_old_keys_after.yml", orderBy = "key")
   void deleteOldKeys() {
     playerApiKeyDao.deleteOldKeys();
@@ -101,7 +101,7 @@ class PlayerApiKeyDaoTest extends LobbyServerTest {
   }
 
   @Test
-  //    @DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
+  //    @DataSet("lobby_api_key/initial.yml")
   void foundCase() {
     final Optional<Integer> result = playerApiKeyDao.lookupPlayerIdByPlayerChatId("chat-id0");
 

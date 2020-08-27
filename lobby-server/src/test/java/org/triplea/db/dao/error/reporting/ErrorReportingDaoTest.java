@@ -21,7 +21,7 @@ final class ErrorReportingDaoTest extends LobbyServerTest {
   private final ErrorReportingDao errorReportingDao;
 
   /** Simple check that if we insert a record we'll get a new record in the expected dataset. */
-  @DataSet(cleanBefore = true, value = "error_reporting/pre-insert.yml")
+  @DataSet("error_reporting/pre-insert.yml")
   @ExpectedDataSet(value = "error_reporting/post-insert.yml")
   @Test
   void insertRow() {
@@ -35,14 +35,14 @@ final class ErrorReportingDaoTest extends LobbyServerTest {
             .build());
   }
 
-  @DataSet(cleanBefore = true, value = "error_reporting/pre-purge.yml")
+  @DataSet("error_reporting/pre-purge.yml")
   @ExpectedDataSet(value = "error_reporting/post-purge.yml")
   @Test
   void purgeOld() {
     errorReportingDao.purgeOld(LocalDateTime.of(2016, 1, 3, 23, 0, 0).toInstant(ZoneOffset.UTC));
   }
 
-  @DataSet(cleanBefore = true, value = "error_reporting/post-purge.yml")
+  @DataSet("error_reporting/post-purge.yml")
   @Test
   void getErrorReportLinkFoundCase() {
     assertThat(
@@ -50,7 +50,7 @@ final class ErrorReportingDaoTest extends LobbyServerTest {
         isPresentAndIs("the_createdIssueLink2"));
   }
 
-  @DataSet(cleanBefore = true, value = "error_reporting/post-purge.yml")
+  @DataSet("error_reporting/post-purge.yml")
   @ParameterizedTest
   @MethodSource
   void getErrorReportLinkNotFoundCases(final String title, final String version) {
