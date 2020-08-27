@@ -4,4 +4,7 @@
 # If there are changes to the docker containers configuration, the container should
 # be destroyed and then re-run this script.
 
-docker build --tag triplea/lobby-db:latest .
+(
+  cd "$(dirname "$0")" || exit
+  docker build --tag triplea/maps-db:latest .
+)
