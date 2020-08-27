@@ -23,7 +23,7 @@ class UserBanDaoTest extends LobbyServerTest {
   private final UserBanDao userBanDao;
 
   @Nested
-  @DataSet(cleanBefore = true, value = "user_ban/banned_by_ip.yml")
+  @DataSet("user_ban/banned_by_ip.yml")
   class IsBannedByIp {
     @Test
     void isBannedByIpPositiveCase() {
@@ -42,7 +42,7 @@ class UserBanDaoTest extends LobbyServerTest {
   }
 
   @Nested
-  @DataSet(cleanBefore = true, value = "user_ban/lookup_bans.yml")
+  @DataSet("user_ban/lookup_bans.yml")
   class BanLookups {
     @Test
     @DisplayName("Verify retrieval of all current bans")
@@ -101,7 +101,7 @@ class UserBanDaoTest extends LobbyServerTest {
   }
 
   @Nested
-  @DataSet(cleanBefore = true, value = "user_ban/lookup_username_by_ban_id.yml")
+  @DataSet("user_ban/lookup_username_by_ban_id.yml")
   class LookupUsernameByBanId {
     @Test
     void banIdFound() {
@@ -117,14 +117,14 @@ class UserBanDaoTest extends LobbyServerTest {
   @Nested
   class AddAndRemoveBan {
     @Test
-    @DataSet(cleanBefore = true, value = "user_ban/remove_ban_before.yml")
+    @DataSet("user_ban/remove_ban_before.yml")
     @ExpectedDataSet("user_ban/remove_ban_after.yml")
     void removeBan() {
       userBanDao.removeBan("public-id");
     }
 
     @Test
-    @DataSet(cleanBefore = true, value = "user_ban/add_ban_before.yml")
+    @DataSet("user_ban/add_ban_before.yml")
     @ExpectedDataSet("user_ban/add_ban_after.yml")
     void addBan() {
       userBanDao.addBan("public-id", "username", "system-id", "127.0.0.3", 5);

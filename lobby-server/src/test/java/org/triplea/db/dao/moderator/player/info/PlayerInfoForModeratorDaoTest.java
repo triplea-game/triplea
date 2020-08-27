@@ -19,9 +19,7 @@ class PlayerInfoForModeratorDaoTest extends LobbyServerTest {
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
 
   @Nested
-  @DataSet(
-      cleanBefore = true,
-      value = "moderator_player_lookup/lookup_player_aliases_select_data.yml")
+  @DataSet("moderator_player_lookup/lookup_player_aliases_select_data.yml")
   class LookupPlayerAliases {
     @Test
     void lookupEmptyCase() {
@@ -88,7 +86,7 @@ class PlayerInfoForModeratorDaoTest extends LobbyServerTest {
   }
 
   @Nested
-  @DataSet(cleanBefore = true, value = "moderator_player_lookup/lookup_player_bans_select_data.yml")
+  @DataSet("moderator_player_lookup/lookup_player_bans_select_data.yml")
   class LookupPlayerBans {
     @Test
     void emptyLookupCase() {

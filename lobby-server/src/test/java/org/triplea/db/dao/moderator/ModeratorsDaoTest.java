@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "moderators/select.yml")
+@DataSet("moderators/select.yml")
 @RequiredArgsConstructor
 class ModeratorsDaoTest extends LobbyServerTest {
 

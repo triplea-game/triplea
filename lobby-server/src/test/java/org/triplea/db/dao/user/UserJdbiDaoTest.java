@@ -13,7 +13,7 @@ import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.db.dao.user.role.UserRoleLookup;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "user/initial.yml")
+@DataSet("user/initial.yml")
 @RequiredArgsConstructor
 class UserJdbiDaoTest extends LobbyServerTest {
 
@@ -41,7 +41,7 @@ class UserJdbiDaoTest extends LobbyServerTest {
     assertThat(userDao.getPassword("DNE"), isEmpty());
   }
 
-  @DataSet(cleanBefore = true, value = "user/change_password_before.yml")
+  @DataSet("user/change_password_before.yml")
   @ExpectedDataSet("user/change_password_after.yml")
   @Test
   void updatePassword() {
