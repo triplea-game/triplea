@@ -13,11 +13,11 @@ import org.triplea.domain.data.ApiKey;
 @SuppressWarnings("ImmutableEnumChecker")
 public enum AllowedUserRole {
   // caution: api-key values must match database (integration.yml)
-  ADMIN(KeyValues.ADMIN, KeyValues.MODERATOR, KeyValues.HOST),
-  MODERATOR(KeyValues.MODERATOR, KeyValues.PLAYER, KeyValues.HOST),
-  PLAYER(KeyValues.PLAYER, KeyValues.ANONYMOUS, KeyValues.HOST),
-  ANONYMOUS(KeyValues.ANONYMOUS, KeyValues.HOST),
-  HOST(KeyValues.HOST, KeyValues.ADMIN, KeyValues.ANONYMOUS);
+  ADMIN(KeyValues.ADMIN, KeyValues.MODERATOR),
+  MODERATOR(KeyValues.MODERATOR, KeyValues.PLAYER),
+  PLAYER(KeyValues.PLAYER, KeyValues.ANONYMOUS),
+  ANONYMOUS(KeyValues.ANONYMOUS),
+  HOST(KeyValues.HOST, KeyValues.ADMIN);
 
   /** Returns a set of keys that should be allowed access given a target role. */
   @Getter private ApiKey allowedKey;
