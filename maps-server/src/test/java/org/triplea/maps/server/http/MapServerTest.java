@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.test.common.Integration;
 
 @Integration
-@Slf4j
 @ExtendWith(value = {MapServerExtension.class, DBUnitExtension.class})
 @SuppressWarnings("PrivateConstructorForUtilityClass")
 public class MapServerTest {}
