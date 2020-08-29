@@ -1,0 +1,43 @@
+category:
+  - id: 1
+    name: category_name
+
+map:
+  - id: 10
+    name: map-name
+    url: http://map-download-url
+    preview_image_url: http://map-thumbnail-url
+    description: description of the map
+    category_id: 1
+    version: 100
+  - id: 20
+    name: map-name-2
+    url: http://map-download-url-2
+    preview_image_url: http://map-thumbnail-url-2
+    description: description of the map-2
+    category_id: 1
+    version: 100
+
+map_skin:
+  - id: 1
+    map_id: 10
+    version: 1
+    skin_name: map-skin-name-1
+    url: http://map-skin-1
+    preview_image_url: http://map-thumb-1
+    description: map-skin-description-1
+  - id: 2
+    map_id: 10
+    version: 2
+    skin_name: map-skin-name-2
+    url: http://map-skin-2
+    preview_image_url: http://map-thumb-2
+    description: map-skin-description-2
+  - id: 3
+    map_id: 20
+    version: 3
+    skin_name: map-skin-name-3
+    url: http://map-skin-3
+    preview_image_url: http://map-thumb-3
+    description: map-skin-description-3
+

@@ -1,0 +1,6 @@
+caseInsensitiveStrategy: !!com.github.database.rider.core.api.configuration.Orthography 'LOWERCASE'
+connectionConfig:
+  driver: "org.postgresql.Driver"
+  url: "jdbc:postgresql://localhost:5433/maps_db"
+  user: "maps_user"
+  password: "postgres"
