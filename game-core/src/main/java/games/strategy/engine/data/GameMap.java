@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -38,11 +39,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * Legacy option to support grid-based maps.
    *
-   * @deprecated Do not use this property, to be removed when we are okay breaking save-game
-   *     compatibility.
+   * @deprecated Do not use this property.
    */
   @SuppressWarnings("unused")
   @Deprecated
+  @RemoveOnNextMajorRelease
   private int[] gridDimensions = null;
 
   GameMap(final GameData data) {
