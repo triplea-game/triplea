@@ -15,7 +15,9 @@ import org.triplea.modules.http.LobbyServerTest;
 
 @DataSet(
     value =
-        "lobby_api_key/user_role.yml, lobby_api_key/lobby_user.yml, lobby_api_key/lobby_api_key.yml",
+        "lobby_api_key/user_role.yml,"
+            + "lobby_api_key/lobby_user.yml,"
+            + "lobby_api_key/lobby_api_key.yml",
     useSequenceFiltering = false)
 @RequiredArgsConstructor
 class PlayerApiKeyDaoTest extends LobbyServerTest {

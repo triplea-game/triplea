@@ -14,12 +14,12 @@ import org.triplea.modules.http.LobbyServerTest;
 
 @RequiredArgsConstructor
 class AccessLogDaoTest extends LobbyServerTest {
-  private final AccessLogDao accessLogDao;
-
   private static final String EMPTY_ACCESS_LOG =
       "access_log/user_role.yml,access_log/lobby_user.yml";
   private static final String ACCESS_LOG_TABLES =
       "access_log/user_role.yml,access_log/lobby_user.yml,access_log/access_log.yml";
+
+  private final AccessLogDao accessLogDao;
 
   @Test
   @DataSet(cleanBefore = true, value = EMPTY_ACCESS_LOG, useSequenceFiltering = false)
