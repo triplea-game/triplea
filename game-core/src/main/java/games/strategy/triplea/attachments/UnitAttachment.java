@@ -1480,9 +1480,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getMovement(final GamePlayer player) {
-    final int nonCombatMoveBonus = GameStepPropertiesHelper.isNonCombatMove(getData(),true) ?
-          TechAbilityAttachment.getNonCombatMovementBonus(
-              (UnitType) this.getAttachedTo(), player, getData()) : 0;
+    final int nonCombatMoveBonus =
+        GameStepPropertiesHelper.isNonCombatMove(getData(), true)
+            ? TechAbilityAttachment.getNonCombatMovementBonus(
+                (UnitType) this.getAttachedTo(), player, getData())
+            : 0;
     return Math.max(
         0,
         movement

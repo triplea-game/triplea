@@ -235,7 +235,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return nonCombatMovementBonus;
   }
 
-  static int getNonCombatMovementBonus(final UnitType ut, final GamePlayer player, final GameData data) {
+  static int getNonCombatMovementBonus(
+      final UnitType ut, final GamePlayer player, final GameData data) {
     return sumIntegerMap(TechAbilityAttachment::getNonCombatMovementBonus, ut, player, data);
   }
 
