@@ -41,7 +41,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @deprecated Do not use this property, to be removed when we are okay breaking save-game
    *     compatibility.
    */
-  @Deprecated private int[] gridDimensions = null;
+  @SuppressWarnings("unused")
+  @Deprecated
+  private int[] gridDimensions = null;
 
   GameMap(final GameData data) {
     super(data);
