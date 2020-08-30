@@ -48,6 +48,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> attackBonus = new IntegerMap<>();
   private IntegerMap<UnitType> defenseBonus = new IntegerMap<>();
   private IntegerMap<UnitType> movementBonus = new IntegerMap<>();
+  private IntegerMap<UnitType> nonCombatMovementBonus = new IntegerMap<>();
   private IntegerMap<UnitType> radarBonus = new IntegerMap<>();
   private IntegerMap<UnitType> airAttackBonus = new IntegerMap<>();
   private IntegerMap<UnitType> airDefenseBonus = new IntegerMap<>();
@@ -220,6 +221,26 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   private void resetMovementBonus() {
     movementBonus = new IntegerMap<>();
+  }
+
+  private void setNonCombatMovementBonus(final String value) throws GameParseException {
+    applyCheckedValue("nonCombatMovementBonus", value, nonCombatMovementBonus::put);
+  }
+
+  private void setNonCombatMovementBonus(final IntegerMap<UnitType> value) {
+    nonCombatMovementBonus = value;
+  }
+
+  private IntegerMap<UnitType> getNonCombatMovementBonus() {
+    return nonCombatMovementBonus;
+  }
+
+  static int getNonCombatMovementBonus(final UnitType ut, final GamePlayer player, final GameData data) {
+    return sumIntegerMap(TechAbilityAttachment::getNonCombatMovementBonus, ut, player, data);
+  }
+
+  private void resetNonCombatMovementBonus() {
+    nonCombatMovementBonus = new IntegerMap<>();
   }
 
   private void setRadarBonus(final String value) throws GameParseException {
@@ -999,6 +1020,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 this::setMovementBonus,
                 this::getMovementBonus,
                 this::resetMovementBonus))
+        .put(
+            "nonCombatMovementBonus",
+            MutableProperty.of(
+                this::setNonCombatMovementBonus,
+                this::setNonCombatMovementBonus,
+                this::getNonCombatMovementBonus,
+                this::resetNonCombatMovementBonus))
         .put(
             "radarBonus",
             MutableProperty.of(

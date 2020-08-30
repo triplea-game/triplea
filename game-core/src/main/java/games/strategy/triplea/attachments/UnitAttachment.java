@@ -16,6 +16,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -1479,9 +1480,13 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getMovement(final GamePlayer player) {
+    final int nonCombatMoveBonus = GameStepPropertiesHelper.isNonCombatMove(getData(),true) ?
+          TechAbilityAttachment.getNonCombatMovementBonus(
+              (UnitType) this.getAttachedTo(), player, getData()) : 0;
     return Math.max(
         0,
         movement
+            + nonCombatMoveBonus
             + TechAbilityAttachment.getMovementBonus(
                 (UnitType) this.getAttachedTo(), player, getData()));
   }
