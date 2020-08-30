@@ -21,8 +21,8 @@ final class ErrorReportingDaoTest extends LobbyServerTest {
   private final ErrorReportingDao errorReportingDao;
 
   /** Simple check that if we insert a record we'll get a new record in the expected dataset. */
-  @DataSet("error_reporting/pre-insert.yml")
-  @ExpectedDataSet(value = "error_reporting/post-insert.yml")
+  @DataSet(value = "error_reporting/empty_error_report_history.yml", useSequenceFiltering = false)
+  @ExpectedDataSet(value = "error_reporting/error_report_history_post_insert.yml")
   @Test
   void insertRow() {
     errorReportingDao.insertHistoryRecord(
@@ -35,14 +35,16 @@ final class ErrorReportingDaoTest extends LobbyServerTest {
             .build());
   }
 
-  @DataSet("error_reporting/pre-purge.yml")
-  @ExpectedDataSet(value = "error_reporting/post-purge.yml")
+  @DataSet(value = "error_reporting/error_report_history.yml", useSequenceFiltering = false)
+  @ExpectedDataSet(value = "error_reporting/error_report_history_post_purge.yml")
   @Test
   void purgeOld() {
     errorReportingDao.purgeOld(LocalDateTime.of(2016, 1, 3, 23, 0, 0).toInstant(ZoneOffset.UTC));
   }
 
-  @DataSet("error_reporting/post-purge.yml")
+  @DataSet(
+      value = "error_reporting/error_report_history_post_purge.yml",
+      useSequenceFiltering = false)
   @Test
   void getErrorReportLinkFoundCase() {
     assertThat(
@@ -50,7 +52,9 @@ final class ErrorReportingDaoTest extends LobbyServerTest {
         isPresentAndIs("the_createdIssueLink2"));
   }
 
-  @DataSet("error_reporting/post-purge.yml")
+  @DataSet(
+      value = "error_reporting/error_report_history_post_purge.yml",
+      useSequenceFiltering = false)
   @ParameterizedTest
   @MethodSource
   void getErrorReportLinkNotFoundCases(final String title, final String version) {

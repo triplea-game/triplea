@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet("user_role/initial.yml")
+@DataSet(value = "user_role/initial.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor
 class UserRoleDaoTest extends LobbyServerTest {
 

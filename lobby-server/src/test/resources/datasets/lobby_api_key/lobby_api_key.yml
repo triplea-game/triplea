@@ -1,18 +1,3 @@
-user_role:
-  - id: 1
-    name: MODERATOR
-  - id: 2
-    name: PLAYER
-  - id: 3
-    name: ANONYMOUS
-  - id: 4
-    name: HOST
-lobby_user:
-  - id: 50
-    user_role_id: 1
-    username: existing-name
-    bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
-    email: email@
 lobby_api_key:
   - id: 1000
     username: registered-user

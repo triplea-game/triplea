@@ -1,0 +1,15 @@
+map:
+  - id: 10
+    name: map-name
+    url: http://map-download-url
+    preview_image_url: http://map-thumbnail-url
+    description: description of the map
+    category_id: 1
+    version: 100
+  - id: 20
+    name: map-name-2
+    url: http://map-download-url-2
+    preview_image_url: http://map-thumbnail-url-2
+    description: description of the map-2
+    category_id: 1
+    version: 100

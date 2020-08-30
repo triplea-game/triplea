@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet("bad_words/select.yml")
+@DataSet(value = "bad_words/bad_word.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor
 class BadWordsDaoTest extends LobbyServerTest {
   private static final List<String> expectedBadWords = List.of("aaa", "one", "two", "zzz");
@@ -28,14 +28,14 @@ class BadWordsDaoTest extends LobbyServerTest {
 
   @Test
   @ExpectedDataSet(
-      value = "bad_words/select_post_insert.yml",
+      value = "bad_words/bad_word_post_insert.yml",
       orderBy = {"word"})
   void addBadWord() {
     assertThat(badWordsDao.addBadWord("new-bad-word"), is(1));
   }
 
   @Test
-  @ExpectedDataSet("bad_words/select_post_remove.yml")
+  @ExpectedDataSet("bad_words/bad_word_post_remove.yml")
   void removeBadWord() {
     assertThat(badWordsDao.removeBadWord("not-present"), is(0));
 

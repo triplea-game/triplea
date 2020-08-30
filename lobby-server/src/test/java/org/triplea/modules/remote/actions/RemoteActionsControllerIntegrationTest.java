@@ -10,8 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.remote.actions.RemoteActionsClient;
 import org.triplea.modules.http.AllowedUserRole;
+import org.triplea.modules.http.LobbyServerTest;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
+@DataSet(
+    value =
+        LobbyServerTest.LOBBY_USER_DATASET
+            + ", integration/banned_user.yml, integration/game_hosting_api_key.yml",
+    useSequenceFiltering = false)
 class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<RemoteActionsClient> {
 
   RemoteActionsControllerIntegrationTest(final URI localhost) {
@@ -19,7 +25,6 @@ class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<Remot
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "integration.yml")
   void sendShutdownSignal() {
     verifyEndpoint(AllowedUserRole.MODERATOR, client -> client.sendShutdownRequest("game-id"));
   }

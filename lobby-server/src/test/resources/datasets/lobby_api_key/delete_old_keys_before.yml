@@ -1,7 +1,3 @@
-user_role:
-  - id: 1
-    name: ANONYMOUS
-
 lobby_api_key:
   - id: 1
     username: user-name

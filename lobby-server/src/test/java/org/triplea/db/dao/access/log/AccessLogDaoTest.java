@@ -14,10 +14,15 @@ import org.triplea.modules.http.LobbyServerTest;
 
 @RequiredArgsConstructor
 class AccessLogDaoTest extends LobbyServerTest {
+  private static final String EMPTY_ACCESS_LOG =
+      "access_log/user_role.yml,access_log/lobby_user.yml";
+  private static final String ACCESS_LOG_TABLES =
+      "access_log/user_role.yml,access_log/lobby_user.yml,access_log/access_log.yml";
+
   private final AccessLogDao accessLogDao;
 
   @Test
-  @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
+  @DataSet(cleanBefore = true, value = EMPTY_ACCESS_LOG, useSequenceFiltering = false)
   void emptyDataCase() {
     assertThat(accessLogDao.fetchAccessLogRows(0, 1, "%", "%", "%"), hasSize(0));
   }
@@ -27,7 +32,7 @@ class AccessLogDaoTest extends LobbyServerTest {
    * are as expected
    */
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(value = ACCESS_LOG_TABLES, useSequenceFiltering = false)
   void fetchTwoRows() {
     List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 1, "%", "%", "%");
     assertThat(data, hasSize(1));
@@ -57,7 +62,7 @@ class AccessLogDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(value = ACCESS_LOG_TABLES, useSequenceFiltering = false)
   void searchForAllIdentifiesWithExactMatch() {
     final List<AccessLogRecord> data =
         accessLogDao.fetchAccessLogRows(0, 2, "first", "127.0.0.1", "system-id1");
@@ -67,7 +72,7 @@ class AccessLogDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(value = ACCESS_LOG_TABLES, useSequenceFiltering = false)
   void searchForSystemId() {
     final List<AccessLogRecord> data =
         accessLogDao.fetchAccessLogRows(0, 2, "%", "%", "system-id1");
@@ -77,7 +82,7 @@ class AccessLogDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(value = ACCESS_LOG_TABLES, useSequenceFiltering = false)
   void searchForUserName() {
     final List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 2, "first", "%", "%");
 
@@ -86,7 +91,7 @@ class AccessLogDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(value = ACCESS_LOG_TABLES, useSequenceFiltering = false)
   void searchForIp() {
     final List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 2, "%", "127.0.0.1", "%");
 
@@ -96,22 +101,16 @@ class AccessLogDaoTest extends LobbyServerTest {
 
   /** There are only 2 rows, requesting a row offset of '2' should yield no data. */
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(value = ACCESS_LOG_TABLES, useSequenceFiltering = false)
   void requestingRowsOffDataSetReturnsNothing() {
     assertThat(accessLogDao.fetchAccessLogRows(2, 1, "%", "%", "%"), hasSize(0));
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
-  @ExpectedDataSet("access_log/insert_registered_after.yml")
-  void insertRegisteredUserAccessLog() {
-    accessLogDao.insertUserAccessRecord("registered", "127.0.0.20", "registered-system-id");
-  }
-
-  @Test
-  @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
-  @ExpectedDataSet("access_log/insert_anonymous_after.yml")
-  void insertAnonymousAccessLog() {
+  @DataSet(cleanBefore = true, value = EMPTY_ACCESS_LOG, useSequenceFiltering = false)
+  @ExpectedDataSet(value = "access_log/access_log_post_insert.yml", orderBy = "username")
+  void insertAccessLogRecords() {
     accessLogDao.insertUserAccessRecord("anonymous", "127.0.0.50", "anonymous-system-id");
+    accessLogDao.insertUserAccessRecord("registered_user", "127.0.0.20", "registered-system-id");
   }
 }

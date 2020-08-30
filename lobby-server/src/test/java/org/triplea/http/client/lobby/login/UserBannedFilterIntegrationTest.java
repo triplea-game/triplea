@@ -18,7 +18,9 @@ import org.triplea.modules.http.LobbyServerTest;
  * login endpoint as that will be a common first endpoint for banned users to attempt to access
  * after being booted and banned.
  */
-@DataSet(cleanBefore = true, value = "integration.yml")
+@DataSet(
+    value = LobbyServerTest.LOBBY_USER_DATASET + ", integration/banned_user.yml",
+    useSequenceFiltering = false)
 class UserBannedFilterIntegrationTest extends LobbyServerTest {
 
   private static final LoginRequest LOGIN_REQUEST =

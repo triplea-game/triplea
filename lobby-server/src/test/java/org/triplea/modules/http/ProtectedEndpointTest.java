@@ -7,7 +7,6 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Collection;
@@ -25,7 +24,6 @@ import org.triplea.http.client.HttpInteractionException;
  * other roles.
  */
 // TODO: rename to AuthenticatedEndpointTest
-@DataSet(cleanBefore = true, value = "integration.yml")
 @AllArgsConstructor
 public abstract class ProtectedEndpointTest<T> extends LobbyServerTest {
   private final URI localhost;

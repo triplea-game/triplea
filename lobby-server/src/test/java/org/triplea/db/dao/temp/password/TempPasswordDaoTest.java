@@ -10,7 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet("temp_password/sample.yml")
+@DataSet(
+    value =
+        "temp_password/user_role.yml,"
+            + "temp_password/lobby_user.yml,"
+            + "temp_password/temp_password_request.yml",
+    useSequenceFiltering = false)
 @RequiredArgsConstructor
 class TempPasswordDaoTest extends LobbyServerTest {
 
@@ -55,26 +60,26 @@ class TempPasswordDaoTest extends LobbyServerTest {
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(NEW_PASSWORD));
   }
 
-  @DataSet("temp_password/invalidate_password.yml")
   @Test
   void invalidateTempPasswordsForMissingNameDoesNothing() {
     // verify that before we do any invalidation that indeed our known user has a temp password
-    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
+    assertThat(
+        tempPasswordDao.fetchTempPassword("user-with-temp-password"), isPresentAndIs(PASSWORD));
 
     // invalidate password for some other user
     tempPasswordDao.invalidateTempPasswords("DNE");
 
     // expect the temp password for the known user to still exist
-    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
+    assertThat(
+        tempPasswordDao.fetchTempPassword("user-with-temp-password"), isPresentAndIs(PASSWORD));
   }
 
-  @DataSet("temp_password/invalidate_password.yml")
   @Test
   void invalidatePassword() {
-    tempPasswordDao.invalidateTempPasswords(USERNAME);
+    tempPasswordDao.invalidateTempPasswords("user-with-temp-password");
     assertThat(
         "With password invalidated, fetching temp password should return empty",
-        tempPasswordDao.fetchTempPassword(USERNAME),
+        tempPasswordDao.fetchTempPassword("user-with-temp-password"),
         isEmpty());
   }
 }

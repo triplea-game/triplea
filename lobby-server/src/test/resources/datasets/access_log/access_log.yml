@@ -1,14 +1,3 @@
-user_role:
-  - id: 9111
-    name: PLAYER
-
-lobby_user:
-  - id: 6424
-    user_role_id: 9111
-    username: registered_user
-    bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
-    email: email@
-
 access_log:
   - access_time: 2016-01-01 23:59:20.0
     username: first

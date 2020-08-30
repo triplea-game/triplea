@@ -19,7 +19,7 @@ class PlayerInfoForModeratorDaoTest extends LobbyServerTest {
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
 
   @Nested
-  @DataSet("moderator_player_lookup/lookup_player_aliases_select_data.yml")
+  @DataSet(value = "moderator_player_lookup/access_log.yml", useSequenceFiltering = false)
   class LookupPlayerAliases {
     @Test
     void lookupEmptyCase() {
@@ -86,7 +86,7 @@ class PlayerInfoForModeratorDaoTest extends LobbyServerTest {
   }
 
   @Nested
-  @DataSet("moderator_player_lookup/lookup_player_bans_select_data.yml")
+  @DataSet(value = "moderator_player_lookup/banned_user.yml", useSequenceFiltering = false)
   class LookupPlayerBans {
     @Test
     void emptyLookupCase() {

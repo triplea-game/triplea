@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "integration.yml")
+@DataSet(value = LobbyServerTest.LOBBY_USER_DATASET, useSequenceFiltering = false)
 class LobbyWebsocketClientIntegrationTest extends LobbyServerTest {
 
   @Test

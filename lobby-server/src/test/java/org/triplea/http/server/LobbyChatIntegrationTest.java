@@ -53,7 +53,7 @@ import org.triplea.modules.http.LobbyServerTest;
  * chatter joins we expect both moderator and chatter to be in the connected event list.
  */
 @SuppressWarnings("SameParameterValue")
-@DataSet(cleanBefore = true, value = "integration.yml")
+@DataSet(value = LobbyServerTest.LOBBY_USER_DATASET, useSequenceFiltering = false)
 @RequiredArgsConstructor
 class LobbyChatIntegrationTest extends LobbyServerTest {
   private static final int MESSAGE_TIMEOUT = 3000;
