@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.IntegerMap;
 
@@ -35,36 +34,17 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private final Map<Territory, Set<Territory>> connections = new HashMap<>();
   // for fast lookup based on the string name of the territory
   private final Map<String, Territory> territoryLookup = new HashMap<>();
-  // null if the map is not grid-based
-  // otherwise, gridDimensions.length is the number of dimensions, and each element is the size of a
-  // dimension
-  private int[] gridDimensions = null;
+
+  /**
+   * Legacy option to support grid-based maps.
+   *
+   * @deprecated Do not use this property, to be removed when we are okay breaking save-game
+   *     compatibility.
+   */
+  @Deprecated private int[] gridDimensions = null;
 
   GameMap(final GameData data) {
     super(data);
-  }
-
-  public void setGridDimensions(final int... gridDimensions) {
-    this.gridDimensions = gridDimensions;
-  }
-
-  Territory getTerritoryFromCoordinates(final int... coordinate) {
-    if (gridDimensions == null || !isCoordinateValid(coordinate)) {
-      return null;
-    }
-    int listIndex = coordinate[0];
-    int multiplier = 1;
-    for (int i = 1; i < gridDimensions.length; i++) {
-      multiplier *= gridDimensions[i - 1];
-      listIndex += coordinate[i] * multiplier;
-    }
-    return territories.get(listIndex);
-  }
-
-  private boolean isCoordinateValid(final int... coordinate) {
-    return coordinate.length == gridDimensions.length
-        && IntStream.range(0, coordinate.length)
-            .noneMatch(i -> coordinate[i] >= gridDimensions[i] || coordinate[i] < 0);
   }
 
   @VisibleForTesting
