@@ -35,7 +35,7 @@ import org.triplea.modules.http.AllowedUserRole;
 import org.triplea.modules.http.LobbyServerTest;
 
 @ExtendWith(MockitoExtension.class)
-@DataSet(cleanBefore = true, value = "integration.yml")
+@DataSet(value = "integration/game_hosting_api_key.yml,", useSequenceFiltering = false)
 @RequiredArgsConstructor
 class GameListingWebsocketIntegrationTest extends LobbyServerTest {
   private static final GamePostingRequest GAME_POSTING_REQUEST =

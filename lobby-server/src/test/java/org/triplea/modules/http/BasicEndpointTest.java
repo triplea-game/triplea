@@ -3,14 +3,12 @@ package org.triplea.modules.http;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 
 /** Test to verify endpoints that are publicly accessible and do not require an API key. */
-@DataSet(cleanBefore = true, value = "integration.yml")
 @AllArgsConstructor
 public abstract class BasicEndpointTest<T> extends LobbyServerTest {
   private final URI localhost;

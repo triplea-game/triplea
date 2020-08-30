@@ -10,6 +10,10 @@ import org.triplea.test.common.Integration;
 @ExtendWith(value = {LobbyServerExtension.class, DBUnitExtension.class})
 @SuppressWarnings("PrivateConstructorForUtilityClass")
 public abstract class LobbyServerTest {
+  public static final String LOBBY_USER_DATASET =
+      "integration/user_role.yml,"
+          + "integration/lobby_user.yml,"
+          + "integration/lobby_api_key.yml";
   protected static final ApiKey MODERATOR_API_KEY = AllowedUserRole.MODERATOR.getAllowedKey();
   protected static final ApiKey CHATTER_API_KEY = AllowedUserRole.PLAYER.getAllowedKey();
 }

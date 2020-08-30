@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet("moderators/select.yml")
+@DataSet(
+    value = "moderators/user_role.yml, moderators/lobby_user.yml, moderators/access_log.yml",
+    useSequenceFiltering = false)
 @RequiredArgsConstructor
 class ModeratorsDaoTest extends LobbyServerTest {
 
@@ -42,7 +44,7 @@ class ModeratorsDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @ExpectedDataSet("moderators/select_post_update_roles.yml")
+  @ExpectedDataSet("moderators/lobby_user_post_update_roles.yml")
   void updateRoles() {
     assertThat(moderatorsDao.setRole(NOT_MODERATOR_ID, UserRole.MODERATOR), is(1));
     assertThat(moderatorsDao.setRole(MODERATOR_ID, UserRole.ADMIN), is(1));

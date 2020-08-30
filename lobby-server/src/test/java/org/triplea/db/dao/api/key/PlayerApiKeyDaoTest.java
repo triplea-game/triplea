@@ -13,7 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet("lobby_api_key/initial.yml")
+@DataSet(
+    value =
+        "lobby_api_key/user_role.yml, lobby_api_key/lobby_user.yml, lobby_api_key/lobby_api_key.yml",
+    useSequenceFiltering = false)
 @RequiredArgsConstructor
 class PlayerApiKeyDaoTest extends LobbyServerTest {
 
@@ -57,9 +60,14 @@ class PlayerApiKeyDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "lobby_api_key/store_key_before.yml")
+  @DataSet(
+      value =
+          "lobby_api_key/user_role.yml,"
+              + "lobby_api_key/lobby_user.yml,"
+              + "lobby_api_key/empty_lobby_api_key.yml",
+      useSequenceFiltering = false)
   @ExpectedDataSet(
-      value = "lobby_api_key/store_key_after.yml",
+      value = "lobby_api_key/lobby_api_key_post_insert.yml",
       orderBy = "key",
       ignoreCols = {"id", "date_created"})
   void storeKey() {
@@ -79,7 +87,9 @@ class PlayerApiKeyDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("lobby_api_key/delete_old_keys_before.yml")
+  @DataSet(
+      value = "lobby_api_key/user_role.yml, lobby_api_key/delete_old_keys_before.yml",
+      useSequenceFiltering = false)
   @ExpectedDataSet(value = "lobby_api_key/delete_old_keys_after.yml", orderBy = "key")
   void deleteOldKeys() {
     playerApiKeyDao.deleteOldKeys();
@@ -101,7 +111,6 @@ class PlayerApiKeyDaoTest extends LobbyServerTest {
   }
 
   @Test
-  //    @DataSet("lobby_api_key/initial.yml")
   void foundCase() {
     final Optional<Integer> result = playerApiKeyDao.lookupPlayerIdByPlayerChatId("chat-id0");
 

@@ -15,8 +15,8 @@ class LobbyGameDaoTest extends LobbyServerTest {
   private final LobbyGameDao lobbyGameDao;
 
   @Test
-  @DataSet("lobby_games/lobby_game_insert_before.yml")
-  @ExpectedDataSet("lobby_games/lobby_game_insert_after.yml")
+  @DataSet(value = "lobby_games/game_hosting_api_key.yml", useSequenceFiltering = false)
+  @ExpectedDataSet("lobby_games/lobby_game_post_insert.yml")
   void insertLobbyGame() {
     lobbyGameDao.insertLobbyGame(
         ApiKey.of("HOST"),
@@ -27,8 +27,10 @@ class LobbyGameDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("lobby_games/game_chat_history_insert_before.yml")
-  @ExpectedDataSet("lobby_games/game_chat_history_insert_after.yml")
+  @DataSet(
+      value = "lobby_games/game_hosting_api_key.yml, lobby_games/lobby_game.yml",
+      useSequenceFiltering = false)
+  @ExpectedDataSet("lobby_games/game_chat_history_post_insert.yml")
   void insertChatMessage() {
     lobbyGameDao.recordChat(
         ChatMessageUpload.builder()

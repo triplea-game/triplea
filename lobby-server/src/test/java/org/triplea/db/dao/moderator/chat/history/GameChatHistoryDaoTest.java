@@ -13,7 +13,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "chat_history/select_game_chat_history.yml")
+@DataSet(
+    value =
+        "game_chat_history/game_hosting_api_key.yml,"
+            + "game_chat_history/lobby_game.yml,"
+            + "game_chat_history/game_chat_history.yml",
+    useSequenceFiltering = false)
 @RequiredArgsConstructor
 class GameChatHistoryDaoTest extends LobbyServerTest {
   private static final String SIR_HOSTS_A_LOT = "sir_hosts_a_lot";

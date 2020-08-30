@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet(cleanBefore = true, value = "temp_password_history/sample.yml")
+@DataSet(
+    cleanBefore = true,
+    value = "temp_password_history/sample.yml",
+    useSequenceFiltering = false)
 @RequiredArgsConstructor
 class TempPasswordHistoryDaoTest extends LobbyServerTest {
 

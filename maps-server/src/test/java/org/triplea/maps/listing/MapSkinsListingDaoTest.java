@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.maps.listing.MapSkinListing;
 import org.triplea.maps.server.http.MapServerTest;
 
-@DataSet("map_listing/select_map_skins.yml")
 @AllArgsConstructor
+@DataSet(
+    value = "map_listing/category.yml, map_listing/map.yml, map_listing/map_skin.yml",
+    useSequenceFiltering = false)
 class MapSkinsListingDaoTest extends MapServerTest {
 
   private final MapSkinsListingDao mapListingDao;

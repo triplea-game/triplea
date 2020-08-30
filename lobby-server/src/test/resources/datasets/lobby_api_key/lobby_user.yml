@@ -1,10 +1,6 @@
-user_role:
-  - id: 9898
-    name: PLAYER
-
 lobby_user:
-  - id: 5230
-    user_role_id: 9898
-    username: registered
+  - id: 50
+    user_role_id: 1
+    username: existing-name
     bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
     email: email@

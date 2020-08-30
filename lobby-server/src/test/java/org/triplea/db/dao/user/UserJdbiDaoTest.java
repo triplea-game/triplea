@@ -13,7 +13,7 @@ import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.db.dao.user.role.UserRoleLookup;
 import org.triplea.modules.http.LobbyServerTest;
 
-@DataSet("user/initial.yml")
+@DataSet(value = "user/user_role.yml,user/lobby_user.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor
 class UserJdbiDaoTest extends LobbyServerTest {
 
@@ -41,7 +41,6 @@ class UserJdbiDaoTest extends LobbyServerTest {
     assertThat(userDao.getPassword("DNE"), isEmpty());
   }
 
-  @DataSet("user/change_password_before.yml")
   @ExpectedDataSet("user/change_password_after.yml")
   @Test
   void updatePassword() {
@@ -59,7 +58,7 @@ class UserJdbiDaoTest extends LobbyServerTest {
     userDao.updateEmail(USER_ID, "new-email@");
   }
 
-  @DataSet(cleanBefore = true, value = "user/create_user_before.yml")
+  @DataSet(value = "user/user_role.yml,user/empty_lobby_user.yml", useSequenceFiltering = false)
   @ExpectedDataSet(value = "user/create_user_after.yml", orderBy = "id", ignoreCols = "id")
   @Test
   void createUser() {
