@@ -30,7 +30,6 @@ jobs:
     - stage: Verify
       name: "Tests: Smoke Test"
       addons: {postgresql: "10"}
-      cache: { directories: [ "smoke-testing/src/test/resources/map-xmls" ] }
       script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
 
     - stage: Verify
