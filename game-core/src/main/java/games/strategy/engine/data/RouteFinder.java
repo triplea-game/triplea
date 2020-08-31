@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -16,16 +17,21 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
 class RouteFinder {
 
+  private final MoveValidator moveValidator;
   private final GameMap map;
   private final Predicate<Territory> condition;
   private final Collection<Unit> units;
-  private final GamePlayer player;
+  @Nullable private final GamePlayer player;
 
   RouteFinder(final GameMap map, final Predicate<Territory> condition) {
-    this(map, condition, Set.of(), null);
+    this(new MoveValidator(map.getData()), map, condition, Set.of(), null);
   }
 
   RouteFinder(
@@ -33,10 +39,7 @@ class RouteFinder {
       final Predicate<Territory> condition,
       final Collection<Unit> units,
       final GamePlayer player) {
-    this.map = map;
-    this.condition = condition;
-    this.units = units;
-    this.player = player;
+    this(new MoveValidator(map.getData()), map, condition, units, player);
   }
 
   Optional<Route> findRouteByDistance(final Territory start, final Territory end) {
@@ -72,7 +75,7 @@ class RouteFinder {
         continue;
       }
       for (final Territory neighbor :
-          map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
+          getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
         final BigDecimal routeCost =
             routeCosts.get(currentTerritory).add(territoryCostFunction.apply(neighbor));
         if (!previous.containsKey(neighbor) || routeCost.compareTo(routeCosts.get(neighbor)) < 0) {
@@ -89,6 +92,19 @@ class RouteFinder {
     return (minCost.compareTo(new BigDecimal(Integer.MAX_VALUE)) == 0)
         ? Optional.empty()
         : Optional.of(getRoute(start, end, previous));
+  }
+
+  private Set<Territory> getNeighborsValidatingCanals(
+      final Territory territory,
+      final Predicate<Territory> neighborFilter,
+      final Collection<Unit> units,
+      final GamePlayer player) {
+    return map.getNeighbors(
+        territory,
+        player == null
+            ? neighborFilter
+            : neighborFilter.and(
+                t -> moveValidator.canAnyUnitsPassCanal(territory, t, units, player)));
   }
 
   @VisibleForTesting

@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicates;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -235,21 +234,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
             .collect(Collectors.toSet());
     searched.addAll(newFrontier);
     return getNeighborsIgnoreEnd(newFrontier, searched, distance - 1, cond);
-  }
-
-  Set<Territory> getNeighborsValidatingCanals(
-      final Territory territory,
-      final Predicate<Territory> neighborFilter,
-      final Collection<Unit> units,
-      final GamePlayer player) {
-    return getNeighbors(
-        territory,
-        player == null
-            ? neighborFilter
-            : neighborFilter.and(
-                t ->
-                    new MoveValidator(getData())
-                        .canAnyUnitsPassCanal(territory, t, units, player)));
   }
 
   /**
