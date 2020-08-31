@@ -37,18 +37,7 @@
 			name CDATA #REQUIRED
 		>
 
-<!ELEMENT map ((grid | territory)+ , connection*, remove-connection*)>
-	<!ELEMENT grid EMPTY>
-	<!ATTLIST grid
-		name CDATA #REQUIRED
-		type (square | points-and-lines) #REQUIRED
-		x CDATA #REQUIRED
-		y CDATA #REQUIRED
-		horizontal-connections (explicit | implicit) 'explicit'
-		vertical-connections (explicit | implicit) 'explicit'
-		diagonal-connections (explicit | implicit) 'explicit'
-	>
-
+<!ELEMENT map (territory+, connection*, remove-connection*)>
 	<!ELEMENT territory EMPTY>
 	<!ATTLIST territory
 		name CDATA #REQUIRED
