@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.Singular;
-import org.triplea.map.data.ParsedMap;
+import org.triplea.map.data.elements.GameTag;
 
 /**
  * Value object representing the result of reading a map. Either we will have read all of the map or
@@ -13,11 +13,11 @@ import org.triplea.map.data.ParsedMap;
  */
 @Builder
 public class MapReadResult {
-  @Nullable private final ParsedMap parsedMap;
+  @Nullable private final GameTag gameTag;
   @Singular @Nullable private final List<String> errorMessages;
 
-  public Optional<ParsedMap> getParsedMap() {
-    return Optional.ofNullable(parsedMap);
+  public Optional<GameTag> getGameTag() {
+    return Optional.ofNullable(gameTag);
   }
 
   public List<String> getErrorMessages() {

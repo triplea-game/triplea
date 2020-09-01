@@ -5,12 +5,12 @@ import static org.hamcrest.core.Is.is;
 import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.map.data.ParsedMap;
+import org.triplea.map.data.elements.GameTag;
 
 class InfoTagReadingTest {
   @Test
   void readInfoTag() {
-    final ParsedMap parsedMap = parseMapXml("resources/info-tag.xml");
+    final GameTag parsedMap = parseMapXml("resources/info-tag.xml");
 
     assertThat(parsedMap.getInfoTag().getName(), is("info-tag-test"));
     assertThat(parsedMap.getInfoTag().getVersion(), is("123.xyz"));

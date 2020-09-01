@@ -5,17 +5,15 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.experimental.UtilityClass;
-import org.triplea.map.data.ParsedMap;
-import org.triplea.map.data.elements.AttachmentListTag;
-import org.triplea.map.data.elements.InfoTag;
-import org.triplea.map.data.elements.TripleaTag;
+import org.triplea.map.data.elements.GameTag;
 
 @UtilityClass
 public class MapElementReader {
 
   public static MapReadResult readXml(final String xmlFile, final InputStream inputStream) {
     try {
-      return readXmlThrowing(inputStream);
+      final GameTag gameTag = readXmlThrowing(inputStream);
+      return MapReadResult.builder().gameTag(gameTag).build();
     } catch (final XMLStreamException e) {
       return MapReadResult.builder()
           .errorMessage(
@@ -27,47 +25,32 @@ public class MapElementReader {
     }
   }
 
-  private static MapReadResult readXmlThrowing(final InputStream inputStream)
-      throws XMLStreamException {
+  private static GameTag readXmlThrowing(final InputStream inputStream) throws XMLStreamException {
 
     final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     final XMLStreamReader streamReader = inputFactory.createXMLStreamReader(inputStream);
 
-    final ParsedMap.Builder mapBuilder = ParsedMap.builder();
-
     try {
-      while (streamReader.hasNext()) {
-        final int eventType = streamReader.next();
-        doRead(eventType, streamReader, mapBuilder);
-      }
+      return doRead(streamReader);
     } finally {
       streamReader.close();
     }
-
-    return MapReadResult.builder().parsedMap(mapBuilder.build()).build();
   }
 
-  private static void doRead(
-      final int eventType, final XMLStreamReader streamReader, final ParsedMap.Builder mapBuilder)
-      throws XMLStreamException {
+  private static GameTag doRead(final XMLStreamReader streamReader) throws XMLStreamException {
+
+    final int eventType = streamReader.next();
 
     switch (eventType) {
       case XMLStreamReader.START_ELEMENT:
         final String elementName = streamReader.getLocalName();
 
         switch (elementName) {
-          case InfoTag.TAG_NAME:
-            mapBuilder.infoTag(new InfoTag(streamReader));
-            break;
-          case TripleaTag.TAG_NAME:
-            mapBuilder.tripleaTag(new TripleaTag(streamReader));
-            break;
-          case AttachmentListTag.TAG_NAME:
-            mapBuilder.attachmentListTag(new AttachmentListTag(streamReader));
-            break;
+          case GameTag.TAG_NAME:
+            return new GameTag(streamReader);
         }
-        break;
     }
+    throw new XMLStreamException("Did not find a 'game' tag as a top level and first tag");
   }
 
   /** Recursive method to concatenate to a string buffer all nested exception messages. */
