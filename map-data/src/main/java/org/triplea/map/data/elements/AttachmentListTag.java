@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import lombok.Builder;
 import lombok.Getter;
+import org.triplea.map.reader.XmlParser;
 
 @Getter
 public class AttachmentListTag {
@@ -15,24 +15,13 @@ public class AttachmentListTag {
 
   public AttachmentListTag(final XMLStreamReader streamReader) throws XMLStreamException {
     attachments = new ArrayList<>();
-    boolean endTagReached = false;
-    while (streamReader.hasNext() && !endTagReached) {
-      final int event = streamReader.next();
-      switch (event) {
-        case XMLStreamReader.START_ELEMENT:
-          switch (streamReader.getLocalName()) {
-            case Attachment.TAG_NAME:
+
+    new XmlParser(TAG_NAME)
+        .addChildTagHandler(
+            Attachment.TAG_NAME, () -> {
               attachments.add(new Attachment(streamReader));
-              break;
-          }
-          break;
-        case XMLStreamReader.END_ELEMENT:
-          if (streamReader.getLocalName().equals(TAG_NAME)) {
-            endTagReached = true;
-          }
-          break;
-      }
-    }
+            })
+        .parse(streamReader);
   }
 
   @Getter
@@ -43,21 +32,36 @@ public class AttachmentListTag {
     private String name;
     private String attachTo;
     private String javaClass;
-    @Builder.Default private final String type = "unitType";
+    private String type = "unitType";
 
-    private List<Option> options;
+    private List<Option> options = new ArrayList<>();
 
-    public Attachment(final XMLStreamReader streamReader) {
-
-
+    public Attachment(final XMLStreamReader streamReader) throws XMLStreamException {
+      new XmlParser(TAG_NAME)
+          .addAttributeHandler("foreach", value -> foreach = value)
+          .addAttributeHandler("name", value -> name = value)
+          .addAttributeHandler("attachTo", value -> attachTo = value)
+          .addAttributeHandler("javaClass", value -> javaClass = value)
+          .addAttributeHandler("type", value -> type = value)
+          .addChildTagHandler(Option.TAG_NAME, () -> options.add(new Option(streamReader)))
+          .parse(streamReader);
     }
 
-    @Builder
     @Getter
     public static class Option {
-      private final String name;
-      private final String value;
-      @Builder.Default private final String count = "";
+      private static final String TAG_NAME = "option";
+
+      private String name;
+      private String value;
+      private String count = "";
+
+      public Option(final XMLStreamReader streamReader) throws XMLStreamException {
+        new XmlParser(TAG_NAME)
+            .addAttributeHandler("name", attributeValue -> name = attributeValue)
+            .addAttributeHandler("value", attributeValue -> value = attributeValue)
+            .addAttributeHandler("count", attributeValue -> count = attributeValue)
+            .parse(streamReader);
+      }
     }
   }
 }

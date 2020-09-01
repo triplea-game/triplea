@@ -3,6 +3,7 @@ package org.triplea.map.data.elements;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.Getter;
+import org.triplea.map.reader.XmlParser;
 
 /**
  * Represents all of the org.triplea.map.data read from a map. The org.triplea.map.data is in a
@@ -18,23 +19,12 @@ public class GameTag {
   private AttachmentListTag attachmentListTag;
 
   public GameTag(final XMLStreamReader streamReader) throws XMLStreamException {
-    while(streamReader.hasNext()) {
-      final int event = streamReader.next();
-      switch (event) {
-        case XMLStreamReader.START_ELEMENT:
-          final String tagName = streamReader.getLocalName();
-          switch (tagName) {
-            case InfoTag.TAG_NAME:
-              infoTag = new InfoTag(streamReader);
-              break;
-            case TripleaTag.TAG_NAME:
-              tripleaTag = new TripleaTag(streamReader);
-              break;
-            case AttachmentListTag.TAG_NAME:
-              attachmentListTag = new AttachmentListTag(streamReader);
-              break;
-          }
-      }
-    }
+    new XmlParser(TAG_NAME)
+        .addChildTagHandler(InfoTag.TAG_NAME, () -> infoTag = new InfoTag(streamReader))
+        .addChildTagHandler(TripleaTag.TAG_NAME, () -> tripleaTag = new TripleaTag(streamReader))
+        .addChildTagHandler(
+            AttachmentListTag.TAG_NAME,
+            () -> attachmentListTag = new AttachmentListTag(streamReader))
+        .parse(streamReader);
   }
 }

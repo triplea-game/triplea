@@ -10,7 +10,7 @@ import org.triplea.map.data.elements.GameTag;
 public class TripleaTagTest {
   @Test
   void readInfoTag() {
-    final GameTag parsedMap = parseMapXml("resources/triplea-tag.xml");
+    final GameTag parsedMap = parseMapXml("triplea-tag.xml");
 
     assertThat(parsedMap.getTripleaTag().getMinimumVersion(), is("min-version"));
   }
