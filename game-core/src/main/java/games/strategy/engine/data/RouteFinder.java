@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class RouteFinder {
 
   private final MoveValidator moveValidator;
