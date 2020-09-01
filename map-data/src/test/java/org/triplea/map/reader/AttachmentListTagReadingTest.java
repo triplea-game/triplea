@@ -7,9 +7,9 @@ import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.map.data.elements.GameTag;
 import org.triplea.map.data.elements.AttachmentListTag.Attachment;
 import org.triplea.map.data.elements.AttachmentListTag.Attachment.Option;
+import org.triplea.map.data.elements.GameTag;
 
 public class AttachmentListTagReadingTest {
 
@@ -17,9 +17,8 @@ public class AttachmentListTagReadingTest {
   void readAttachmentListTag() {
     final GameTag parsedMap = parseMapXml("attachment-list-tag.xml");
 
-    final List<Attachment> attachments = parsedMap.getAttachmentListTag()
-        .getAttachments();
-//    assertThat(attachments, hasSize(2));
+    final List<Attachment> attachments = parsedMap.getAttachmentListTag().getAttachments();
+    assertThat(attachments, hasSize(2));
 
     assertThat(attachments.get(0).getForeach(), is("foreach-value"));
     assertThat(attachments.get(0).getName(), is("name-value"));

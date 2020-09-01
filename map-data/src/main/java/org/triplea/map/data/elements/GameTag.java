@@ -17,6 +17,7 @@ public class GameTag {
   private InfoTag infoTag;
   private TripleaTag tripleaTag;
   private AttachmentListTag attachmentListTag;
+  private DiceSidesTag diceSidesTag;
 
   public GameTag(final XMLStreamReader streamReader) throws XMLStreamException {
     new XmlParser(TAG_NAME)
@@ -25,6 +26,8 @@ public class GameTag {
         .addChildTagHandler(
             AttachmentListTag.TAG_NAME,
             () -> attachmentListTag = new AttachmentListTag(streamReader))
+        .addChildTagHandler(
+            DiceSidesTag.TAG_NAME, () -> diceSidesTag = new DiceSidesTag(streamReader))
         .parse(streamReader);
   }
 }
