@@ -32,6 +32,7 @@ import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -103,13 +104,25 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   }
 
   @Override
-  public void clearAttackingWaitingToDie() {
-    attackingWaitingToDie.clear();
+  public Collection<Unit> getWaitingToDie(final EnumSet<Side> sides) {
+    final Collection<Unit> waitingToDie = new ArrayList<>();
+    if (sides.contains(Side.OFFENSE)) {
+      waitingToDie.addAll(attackingWaitingToDie);
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      waitingToDie.addAll(defendingWaitingToDie);
+    }
+    return waitingToDie;
   }
 
   @Override
-  public void clearDefendingWaitingToDie() {
-    defendingWaitingToDie.clear();
+  public void clearWaitingToDie(final EnumSet<Side> sides) {
+    if (sides.contains(Side.OFFENSE)) {
+      attackingWaitingToDie.clear();
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      defendingWaitingToDie.clear();
+    }
   }
 
   @Override

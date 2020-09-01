@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -343,13 +344,25 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void clearAttackingWaitingToDie() {
-    attackingWaitingToDie.clear();
+  public Collection<Unit> getWaitingToDie(final EnumSet<Side> sides) {
+    final Collection<Unit> waitingToDie = new ArrayList<>();
+    if (sides.contains(Side.OFFENSE)) {
+      waitingToDie.addAll(attackingWaitingToDie);
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      waitingToDie.addAll(defendingWaitingToDie);
+    }
+    return waitingToDie;
   }
 
   @Override
-  public void clearDefendingWaitingToDie() {
-    defendingWaitingToDie.clear();
+  public void clearWaitingToDie(final EnumSet<Side> sides) {
+    if (sides.contains(Side.OFFENSE)) {
+      attackingWaitingToDie.clear();
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      defendingWaitingToDie.clear();
+    }
   }
 
   /**

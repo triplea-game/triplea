@@ -13,6 +13,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 public class ClearFirstStrikeCasualties implements BattleStep {
@@ -86,34 +87,26 @@ public class ClearFirstStrikeCasualties implements BattleStep {
       return;
     }
 
-    boolean clearAttackingDead = true;
-    boolean clearDefendingDead = true;
+    final EnumSet<BattleState.Side> sidesToClear = getSidesToClear();
+    final Collection<Unit> unitsToRemove =
+        new ArrayList<>(battleState.getWaitingToDie(sidesToClear));
+    battleActions.remove(unitsToRemove, bridge, battleState.getBattleSite(), null);
+    battleState.clearWaitingToDie(sidesToClear);
+  }
+
+  private EnumSet<BattleState.Side> getSidesToClear() {
     if (Properties.getWW2V2(battleState.getGameData())) {
       // WWW2V2 subs always fire in a surprise attack phase even if their casualties will
       // be able to fire back.
-      // So only clear the casualties if the subs have a true surprise attack.
+      // So only clear the casualties if that side doesn't have sneak attack
       if (this.offenseState == State.SNEAK_ATTACK && this.defenseState != State.SNEAK_ATTACK) {
-        clearAttackingDead = false;
-      } else if (this.offenseState != State.SNEAK_ATTACK
-          && this.defenseState == State.SNEAK_ATTACK) {
-        clearDefendingDead = false;
+        return EnumSet.of(BattleState.Side.DEFENSE);
+      } else if (this.defenseState == State.SNEAK_ATTACK
+          && this.offenseState != State.SNEAK_ATTACK) {
+        return EnumSet.of(BattleState.Side.OFFENSE);
       }
     }
-
-    final Collection<Unit> unitsToRemove = new ArrayList<>();
-    if (clearAttackingDead) {
-      unitsToRemove.addAll(battleState.getAttackingWaitingToDie());
-    }
-    if (clearDefendingDead) {
-      unitsToRemove.addAll(battleState.getDefendingWaitingToDie());
-    }
-    battleActions.remove(unitsToRemove, bridge, battleState.getBattleSite(), null);
-    if (clearAttackingDead) {
-      battleState.clearAttackingWaitingToDie();
-    }
-    if (clearDefendingDead) {
-      battleState.clearDefendingWaitingToDie();
-    }
+    return EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE);
   }
 
   private boolean offenseHasSneakAttack() {
