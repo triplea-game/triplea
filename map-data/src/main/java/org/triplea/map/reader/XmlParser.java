@@ -25,7 +25,7 @@ public class XmlParser {
         .addAttributeHandler(attributeName, attributeHandler);
   }
 
-  public TagParser addChildTagHandler(final String tagName, final ThrowingConsumer<List<String>> handler) {
+  public TagParser addChildTagHandler(final String tagName, final ThrowingRunnable handler) {
     return new TagParser(tagName, new HashMap<>(), new HashMap<>()).addChildTagHandler(tagName, handler);
   }
 
@@ -90,7 +90,7 @@ public class XmlParser {
   public static class GenericParser {
     private final String currentTag;
     private final Map<String, Consumer<String>> attributeHandlers;
-    private final Map<String, ThrowingConsumer<List<String>>> childTagHandlers;
+    private final Map<String, ThrowingRunnable> childTagHandlers;
     private Consumer<String> bodyHandler;
 
     public void parse(final XMLStreamReader streamReader) throws XMLStreamException {
