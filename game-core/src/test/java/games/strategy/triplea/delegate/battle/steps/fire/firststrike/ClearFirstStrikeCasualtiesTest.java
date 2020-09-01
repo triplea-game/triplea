@@ -51,8 +51,8 @@ class ClearFirstStrikeCasualtiesTest {
 
     verify(battleActions, times(willExecute ? 1 : 0))
         .remove(anyCollection(), eq(delegateBridge), any(), eq(null));
-    verify(battleState, times(sides.size() > 0 ? 1 : 0)).clearWaitingToDie(eq(sides));
-    verify(battleState, times(sides.size() > 0 ? 1 : 0)).getWaitingToDie(eq(sides));
+    verify(battleState, times(sides.isEmpty() ? 0 : 1)).clearWaitingToDie(eq(sides));
+    verify(battleState, times(sides.isEmpty() ? 0 : 1)).getWaitingToDie(eq(sides));
   }
 
   static List<Arguments> getStep() {
