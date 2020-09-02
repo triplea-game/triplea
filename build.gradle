@@ -99,7 +99,7 @@ subprojects {
         junitPlatformLauncherVersion = '1.5.2' // do not upgrade this to beyond 1.5.2 without testing IDEA test runner.
         mockitoVersion = '3.5.7'
         openFeignVersion = '10.5.1'
-        postgresqlVersion = '42.2.15'
+        postgresqlVersion = '42.2.16'
         rateLimitjVersion = '0.6.0'
         snakeYamlVersion = '2.1'
         sonatypeGoodiesPrefsVersion = '2.3.1'
