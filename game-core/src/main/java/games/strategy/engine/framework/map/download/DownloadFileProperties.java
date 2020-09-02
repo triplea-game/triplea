@@ -9,14 +9,20 @@ import java.io.OutputStream;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
+import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.util.Version;
 
 /** Properties file used to know which map versions have been installed. */
 @Log
+@NoArgsConstructor
 class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
+
+  DownloadFileProperties(final Version mapVersion) {
+    props.put(VERSION_PROPERTY, mapVersion.toString());
+  }
 
   static DownloadFileProperties loadForZip(final File zipFile) {
     if (!fromZip(zipFile).exists()) {
@@ -49,11 +55,5 @@ class DownloadFileProperties {
 
   Optional<Version> getVersion() {
     return Optional.ofNullable(props.getProperty(VERSION_PROPERTY)).map(Version::new);
-  }
-
-  void setFrom(final DownloadFileDescription selected) {
-    if (selected.getVersion() != null) {
-      props.put(VERSION_PROPERTY, selected.getVersion().toString());
-    }
   }
 }
