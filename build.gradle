@@ -71,7 +71,7 @@ subprojects {
         caffeineVersion = '2.8.1'
         checkstyleVersion = '8.23'
         commonsCliVersion = '1.4'
-        commonsCodecVersion = '1.14'
+        commonsCodecVersion = '1.15'
         commonsIoVersion = '2.7'
         commonsMathVersion = '3.6.1'
         databaseRiderVersion = '1.7.3'
