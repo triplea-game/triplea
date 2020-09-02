@@ -5,15 +5,15 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.experimental.UtilityClass;
-import org.triplea.map.data.elements.GameTag;
+import org.triplea.map.data.elements.Game;
 
 @UtilityClass
 public class MapElementReader {
 
   public static MapReadResult readXml(final String xmlFile, final InputStream inputStream) {
     try {
-      final GameTag gameTag = readXmlThrowing(inputStream);
-      return MapReadResult.builder().gameTag(gameTag).build();
+      final Game game = readXmlThrowing(inputStream);
+      return MapReadResult.builder().game(game).build();
     } catch (final XMLStreamException e) {
       return MapReadResult.builder()
           .errorMessage(
@@ -25,7 +25,7 @@ public class MapElementReader {
     }
   }
 
-  private static GameTag readXmlThrowing(final InputStream inputStream) throws XMLStreamException {
+  private static Game readXmlThrowing(final InputStream inputStream) throws XMLStreamException {
 
     final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     final XMLStreamReader streamReader = inputFactory.createXMLStreamReader(inputStream);
@@ -37,7 +37,7 @@ public class MapElementReader {
     }
   }
 
-  private static GameTag doRead(final XMLStreamReader streamReader) throws XMLStreamException {
+  private static Game doRead(final XMLStreamReader streamReader) throws XMLStreamException {
 
     final int eventType = streamReader.next();
 
@@ -46,8 +46,8 @@ public class MapElementReader {
         final String elementName = streamReader.getLocalName();
 
         switch (elementName) {
-          case GameTag.TAG_NAME:
-            return new GameTag(streamReader);
+          case Game.TAG_NAME:
+            return new Game(streamReader);
         }
     }
     throw new XMLStreamException("Did not find a 'game' tag as a top level and first tag");

@@ -7,11 +7,12 @@ import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
 import org.junit.jupiter.api.Test;
 import org.triplea.map.data.elements.Game;
 
-class DiceSidesReadingTest {
+class InfoReadingTest {
   @Test
   void readInfoTag() {
-    final Game game = parseMapXml("dice-sides.xml");
+    final Game parsedMap = parseMapXml("info-tag.xml");
 
-    assertThat(game.getDiceSides().getValue(), is("20"));
+    assertThat(parsedMap.getInfo().getName(), is("info-tag-test"));
+    assertThat(parsedMap.getInfo().getVersion(), is("123.xyz"));
   }
 }

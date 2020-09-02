@@ -1,4 +1,4 @@
 package org.triplea.map.data.elements;
 
-public class InitializeTag {
+public class RelationshipTypes {
 }

@@ -7,17 +7,17 @@ import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.map.data.elements.AttachmentListTag.Attachment;
-import org.triplea.map.data.elements.AttachmentListTag.Attachment.Option;
-import org.triplea.map.data.elements.GameTag;
+import org.triplea.map.data.elements.AttachmentList.Attachment;
+import org.triplea.map.data.elements.AttachmentList.Attachment.Option;
+import org.triplea.map.data.elements.Game;
 
-public class AttachmentListTagReadingTest {
+public class AttachmentListReadingTest {
 
   @Test
   void readAttachmentListTag() {
-    final GameTag parsedMap = parseMapXml("attachment-list-tag.xml");
+    final Game parsedMap = parseMapXml("attachment-list-tag.xml");
 
-    final List<Attachment> attachments = parsedMap.getAttachmentListTag().getAttachments();
+    final List<Attachment> attachments = parsedMap.getAttachmentList().getAttachments();
     assertThat(attachments, hasSize(2));
 
     assertThat(attachments.get(0).getForeach(), is("foreach-value"));

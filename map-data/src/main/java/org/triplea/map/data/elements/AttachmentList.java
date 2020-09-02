@@ -8,19 +8,17 @@ import lombok.Getter;
 import org.triplea.map.reader.XmlParser;
 
 @Getter
-public class AttachmentListTag {
+public class AttachmentList {
   public static final String TAG_NAME = "attachmentList";
 
   private List<Attachment> attachments;
 
-  public AttachmentListTag(final XMLStreamReader streamReader) throws XMLStreamException {
+  AttachmentList(final XMLStreamReader streamReader) throws XMLStreamException {
     attachments = new ArrayList<>();
 
     new XmlParser(TAG_NAME)
         .addChildTagHandler(
-            Attachment.TAG_NAME, () -> {
-              attachments.add(new Attachment(streamReader));
-            })
+            Attachment.TAG_NAME, () -> attachments.add(new Attachment(streamReader)))
         .parse(streamReader);
   }
 

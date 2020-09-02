@@ -6,11 +6,11 @@ import lombok.Getter;
 import org.triplea.map.reader.XmlParser;
 
 @Getter
-public class DiceSidesTag {
+public class DiceSides {
   public static final String TAG_NAME = "diceSides";
   private String value;
 
-  public DiceSidesTag(final XMLStreamReader streamReader) throws XMLStreamException {
+  DiceSides(final XMLStreamReader streamReader) throws XMLStreamException {
     new XmlParser(TAG_NAME)
         .addAttributeHandler("value", attributeValue -> value = attributeValue)
         .parse(streamReader);

@@ -5,13 +5,13 @@ import static org.hamcrest.core.Is.is;
 import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.map.data.elements.GameTag;
+import org.triplea.map.data.elements.Game;
 
-public class TripleaTagTest {
+public class TripleaTest {
   @Test
   void readInfoTag() {
-    final GameTag parsedMap = parseMapXml("triplea-tag.xml");
+    final Game parsedMap = parseMapXml("triplea-tag.xml");
 
-    assertThat(parsedMap.getTripleaTag().getMinimumVersion(), is("min-version"));
+    assertThat(parsedMap.getTriplea().getMinimumVersion(), is("min-version"));
   }
 }
