@@ -37,7 +37,7 @@
 			name CDATA #REQUIRED
 		>
 
-<!ELEMENT map (territory+, connection*, remove-connection*)>
+<!ELEMENT map (territory+, connection*)>
 	<!ELEMENT territory EMPTY>
 	<!ATTLIST territory
 		name CDATA #REQUIRED
@@ -46,12 +46,6 @@
 	<!-- connections are two way -->
 	<!ELEMENT connection EMPTY>
 	<!ATTLIST connection
-		t1 CDATA #REQUIRED 
-		t2 CDATA #REQUIRED
-	>
-
-	<!ELEMENT remove-connection EMPTY>
-	<!ATTLIST remove-connection
 		t1 CDATA #REQUIRED 
 		t2 CDATA #REQUIRED
 	>
