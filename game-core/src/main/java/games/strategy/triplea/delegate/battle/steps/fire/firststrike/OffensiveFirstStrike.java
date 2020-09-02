@@ -30,13 +30,12 @@ public class OffensiveFirstStrike implements BattleStep {
 
   protected final State state;
 
-  protected final transient ReturnFire returnFire;
+  protected transient ReturnFire returnFire = ReturnFire.ALL;
 
   public OffensiveFirstStrike(final BattleState battleState, final BattleActions battleActions) {
     this.battleState = battleState;
     this.battleActions = battleActions;
     this.state = calculateState();
-    this.returnFire = ReturnFire.ALL;
   }
 
   /** Constructor for save compatibility */
