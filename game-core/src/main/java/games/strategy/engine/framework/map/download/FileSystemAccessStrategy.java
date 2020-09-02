@@ -24,8 +24,7 @@ class FileSystemAccessStrategy {
       return Optional.empty();
     }
 
-    final DownloadFileProperties props = DownloadFileProperties.loadForZip(potentialFile);
-    return (props.getVersion() == null) ? Optional.empty() : Optional.of(props.getVersion());
+    return DownloadFileProperties.loadForZip(potentialFile).getVersion();
   }
 
   static void remove(

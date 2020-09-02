@@ -89,7 +89,7 @@ final class DownloadFile {
 
           final DownloadFileProperties props = new DownloadFileProperties();
           props.setFrom(download);
-          DownloadFileProperties.saveForZip(download.getInstallLocation(), props);
+          props.saveForZip(download.getInstallLocation());
 
           downloadListener.downloadStopped(download);
         });

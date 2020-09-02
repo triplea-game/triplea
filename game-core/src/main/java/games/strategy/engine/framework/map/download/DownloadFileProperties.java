@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
@@ -35,9 +36,9 @@ class DownloadFileProperties {
     return downloadFileProperties;
   }
 
-  static void saveForZip(final File zipFile, final DownloadFileProperties props) {
+  void saveForZip(final File zipFile) {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
-      props.props.store(fos, null);
+      props.store(fos, null);
     } catch (final IOException e) {
       log.log(
           Level.SEVERE,
@@ -50,21 +51,15 @@ class DownloadFileProperties {
     return new File(zipFile.getAbsolutePath() + ".properties");
   }
 
-  Version getVersion() {
-    if (!props.containsKey(VERSION_PROPERTY)) {
-      return null;
-    }
-    return new Version(props.getProperty(VERSION_PROPERTY));
-  }
-
-  private void setVersion(final Version v) {
-    if (v != null) {
-      props.put(VERSION_PROPERTY, v.toString());
-    }
+  Optional<Version> getVersion() {
+    return Optional.ofNullable(props.getProperty(VERSION_PROPERTY))
+        .map(Version::new);
   }
 
   void setFrom(final DownloadFileDescription selected) {
-    setVersion(selected.getVersion());
+    if (selected.getVersion() != null) {
+      props.put(VERSION_PROPERTY, selected.getVersion().toString());
+    }
     props.setProperty("map.url", selected.getUrl());
     props.setProperty(
         "download.time",
