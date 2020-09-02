@@ -9,9 +9,11 @@ import javax.xml.stream.XMLStreamReader;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.triplea.java.function.ThrowingRunnable;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Log
 public class XmlParser {
   @Nonnull private final String tagName;
 
@@ -25,9 +27,9 @@ public class XmlParser {
         .addAttributeHandler(attributeName, attributeHandler);
   }
 
-  public TagParser addChildTagHandler(final String tagName, final ThrowingRunnable handler) {
+  public TagParser addChildTagHandler(final String childTagName, final ThrowingRunnable handler) {
     return new TagParser(tagName, new HashMap<>(), new HashMap<>())
-        .addChildTagHandler(tagName, handler);
+        .addChildTagHandler(childTagName, handler);
   }
 
   public BodyParser addBodyHandler(final Consumer<String> bodyHandler) {
@@ -45,9 +47,9 @@ public class XmlParser {
       return this;
     }
 
-    public TagParser addChildTagHandler(final String tagName, final ThrowingRunnable tagHandler) {
+    public TagParser addChildTagHandler(final String childTagName, final ThrowingRunnable tagHandler) {
       return new TagParser(currentTag, attributeHandlers, new HashMap<>())
-          .addChildTagHandler(tagName, tagHandler);
+          .addChildTagHandler(childTagName, tagHandler);
     }
 
     public BodyParser addBodyHandler(final Consumer<String> bodyHandler) {
@@ -65,8 +67,8 @@ public class XmlParser {
     private final Map<String, Consumer<String>> attributeHandlers;
     private final Map<String, ThrowingRunnable> childTagHandlers;
 
-    public TagParser addChildTagHandler(final String tagName, final ThrowingRunnable tagHandler) {
-      childTagHandlers.put(tagName, tagHandler);
+    public TagParser addChildTagHandler(final String childTagNaem, final ThrowingRunnable tagHandler) {
+      childTagHandlers.put(childTagNaem, tagHandler);
       return this;
     }
 
@@ -87,6 +89,7 @@ public class XmlParser {
     }
   }
 
+  @Log
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   public static class GenericParser {
     private final String currentTag;
@@ -96,6 +99,8 @@ public class XmlParser {
 
     public void parse(final XMLStreamReader streamReader) throws XMLStreamException {
       boolean endTagReached = false;
+
+      log.info("Processing current tag: " + currentTag);
 
       if (streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
         for (int i = 0, n = streamReader.getAttributeCount(); i < n; i++) {
@@ -111,10 +116,12 @@ public class XmlParser {
       }
 
       while (streamReader.hasNext() && !endTagReached) {
+        log.info("event type: " + streamReader.getEventType());
         final int event = streamReader.next();
         switch (event) {
           case XMLStreamReader.START_ELEMENT:
             final String childTag = streamReader.getLocalName();
+            log.info("start tag reached: " + childTag);
             final ThrowingRunnable childTagHandler = childTagHandlers.get(childTag);
             if (childTagHandler != null) {
               try {
@@ -126,11 +133,15 @@ public class XmlParser {
             break;
           case XMLStreamReader.CHARACTERS:
             if (streamReader.hasText()) {
-              bodyHandler.accept(streamReader.getText());
+              final String text = streamReader.getText();
+              log.info("Characters Event reached: " + text);
+              bodyHandler.accept(text);
             }
             break;
           case XMLStreamReader.END_ELEMENT:
-            if (streamReader.getLocalName().equals(currentTag)) {
+            String endTagName = streamReader.getLocalName();
+            log.info("end tag reached: " + endTagName);
+            if (endTagName.equals(currentTag)) {
               endTagReached = true;
             }
             break;
