@@ -28,7 +28,7 @@ public class Game {
   private Initialize initialize;
 
   public Game(final XMLStreamReader streamReader) throws XMLStreamException {
-    new XmlParser(TAG_NAME)
+    XmlParser.tag(TAG_NAME)
         .addChildTagHandler(Info.TAG_NAME, () -> info = new Info(streamReader))
         .addChildTagHandler(Triplea.TAG_NAME, () -> triplea = new Triplea(streamReader))
         .addChildTagHandler(

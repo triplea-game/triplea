@@ -11,7 +11,7 @@ public class DiceSides {
   private String value;
 
   DiceSides(final XMLStreamReader streamReader) throws XMLStreamException {
-    new XmlParser(TAG_NAME)
+    XmlParser.tag(TAG_NAME)
         .addAttributeHandler("value", attributeValue -> value = attributeValue)
         .parse(streamReader);
   }

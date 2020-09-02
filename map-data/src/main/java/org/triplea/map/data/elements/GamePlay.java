@@ -16,7 +16,7 @@ public class GamePlay {
   private Offset offset;
 
   GamePlay(final XMLStreamReader streamReader) throws XMLStreamException {
-    new XmlParser(TAG_NAME)
+    XmlParser.tag(TAG_NAME)
         .addChildTagHandler(
             Delegate.TAG_NAME, () -> delegates.add(new Delegate(streamReader)))
         .addChildTagHandler(Sequence.TAG_NAME, () -> sequence = new Sequence(streamReader))
@@ -33,7 +33,7 @@ public class GamePlay {
     private String display;
 
     Delegate(final XMLStreamReader streamReader) throws XMLStreamException {
-      new XmlParser(TAG_NAME)
+      XmlParser.tag(TAG_NAME)
           .addAttributeHandler("name", value -> name = value)
           .addAttributeHandler("javaClass", value -> javaClass = value)
           .addAttributeHandler("display", value -> display = value)
@@ -48,7 +48,7 @@ public class GamePlay {
     private List<Step> steps = new ArrayList<>();
 
     Sequence(final XMLStreamReader streamReader) throws XMLStreamException {
-      new XmlParser(TAG_NAME)
+      XmlParser.tag(TAG_NAME)
           .addChildTagHandler("step", () -> steps.add(new Step(streamReader)))
           .parse(streamReader);
     }
@@ -66,7 +66,7 @@ public class GamePlay {
       private List<StepProperty> stepProperties = new ArrayList<>();
 
       Step(final XMLStreamReader streamReader) throws XMLStreamException {
-        new XmlParser(TAG_NAME)
+        XmlParser.tag(TAG_NAME)
             .addAttributeHandler("name", value -> name = value)
             .addAttributeHandler("delegate", value -> delegate = value)
             .addAttributeHandler("player", value -> player = value)
@@ -84,7 +84,7 @@ public class GamePlay {
         private String value;
 
         StepProperty(final XMLStreamReader streamReader) throws XMLStreamException {
-          new XmlParser(TAG_NAME)
+          XmlParser.tag(TAG_NAME)
               .addAttributeHandler("name", value -> name = value)
               .addAttributeHandler("value", attributeValue -> value = attributeValue)
               .parse(streamReader);
@@ -99,7 +99,7 @@ public class GamePlay {
     private String round;
 
     Offset(final XMLStreamReader streamReader) throws XMLStreamException {
-      new XmlParser(TAG_NAME)
+      XmlParser.tag(TAG_NAME)
           .addAttributeHandler("round", value -> round = value)
           .parse(streamReader);
     }

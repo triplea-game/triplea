@@ -16,7 +16,7 @@ public class AttachmentList {
   AttachmentList(final XMLStreamReader streamReader) throws XMLStreamException {
     attachments = new ArrayList<>();
 
-    new XmlParser(TAG_NAME)
+    XmlParser.tag(TAG_NAME)
         .addChildTagHandler(
             Attachment.TAG_NAME, () -> attachments.add(new Attachment(streamReader)))
         .parse(streamReader);
@@ -35,7 +35,7 @@ public class AttachmentList {
     private List<Option> options = new ArrayList<>();
 
     public Attachment(final XMLStreamReader streamReader) throws XMLStreamException {
-      new XmlParser(TAG_NAME)
+      XmlParser.tag(TAG_NAME)
           .addAttributeHandler("foreach", value -> foreach = value)
           .addAttributeHandler("name", value -> name = value)
           .addAttributeHandler("attachTo", value -> attachTo = value)
@@ -54,7 +54,7 @@ public class AttachmentList {
       private String count = "";
 
       public Option(final XMLStreamReader streamReader) throws XMLStreamException {
-        new XmlParser(TAG_NAME)
+        XmlParser.tag(TAG_NAME)
             .addAttributeHandler("name", attributeValue -> name = attributeValue)
             .addAttributeHandler("value", attributeValue -> value = attributeValue)
             .addAttributeHandler("count", attributeValue -> count = attributeValue)

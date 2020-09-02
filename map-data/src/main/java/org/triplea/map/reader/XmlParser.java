@@ -11,9 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.triplea.java.function.ThrowingRunnable;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class XmlParser {
   @Nonnull private final String tagName;
+
+  public static XmlParser tag(final String tagName) {
+    return new XmlParser(tagName);
+  }
 
   public AttributeParser addAttributeHandler(
       final String attributeName, final Consumer<String> attributeHandler) {
