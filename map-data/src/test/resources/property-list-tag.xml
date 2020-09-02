@@ -1,0 +1,11 @@
+<game>
+    <propertyList>
+        <property value="propValue" name="propName" editable = "true" player = "player1" />
+        <property name="propName"  />
+
+
+        <property name="notes">
+            <value>Notes here</value>
+        </property>
+    </propertyList>
+</game>

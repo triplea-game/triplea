@@ -1,0 +1,6 @@
+<game>
+    <relationshipTypes>
+        <relationshipType name="war" />
+        <relationshipType name="peace" />
+    </relationshipTypes>
+</game>

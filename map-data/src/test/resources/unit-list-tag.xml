@@ -1,0 +1,6 @@
+<game>
+    <unitList>
+        <unit name="Infantry" />
+        <unit name="Tank" />
+    </unitList>
+</game>

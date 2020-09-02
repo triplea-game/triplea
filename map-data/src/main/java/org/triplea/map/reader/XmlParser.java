@@ -139,7 +139,7 @@ public class XmlParser {
             }
             break;
           case XMLStreamReader.END_ELEMENT:
-            String endTagName = streamReader.getLocalName();
+            final String endTagName = streamReader.getLocalName();
             log.info("end tag reached: " + endTagName);
             if (endTagName.equals(currentTag)) {
               endTagReached = true;
