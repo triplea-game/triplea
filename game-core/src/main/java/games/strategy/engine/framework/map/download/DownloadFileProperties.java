@@ -1,19 +1,15 @@
 package games.strategy.engine.framework.map.download;
 
-import games.strategy.engine.ClientContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
-import org.triplea.java.DateTimeFormatterUtil;
 import org.triplea.util.Version;
 
 /** Properties file used to know which map versions have been installed. */
@@ -52,18 +48,12 @@ class DownloadFileProperties {
   }
 
   Optional<Version> getVersion() {
-    return Optional.ofNullable(props.getProperty(VERSION_PROPERTY))
-        .map(Version::new);
+    return Optional.ofNullable(props.getProperty(VERSION_PROPERTY)).map(Version::new);
   }
 
   void setFrom(final DownloadFileDescription selected) {
     if (selected.getVersion() != null) {
       props.put(VERSION_PROPERTY, selected.getVersion().toString());
     }
-    props.setProperty("map.url", selected.getUrl());
-    props.setProperty(
-        "download.time",
-        DateTimeFormatterUtil.toDateString(LocalDateTime.now(ZoneId.systemDefault())));
-    props.setProperty("engine.version", ClientContext.engineVersion().toString());
   }
 }
