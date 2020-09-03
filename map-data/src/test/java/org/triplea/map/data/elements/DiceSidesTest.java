@@ -1,13 +1,12 @@
-package org.triplea.map.reader;
+package org.triplea.map.data.elements;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
+import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.map.data.elements.Game;
 
-class DiceSidesReadingTest {
+class DiceSidesTest {
   @Test
   void readInfoTag() {
     final Game game = parseMapXml("dice-sides.xml");

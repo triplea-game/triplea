@@ -1,4 +1,4 @@
-package org.triplea.map.reader;
+package org.triplea.map.data.elements;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -7,23 +7,21 @@ import static org.triplea.map.data.elements.Initialize.RelationshipInitialize;
 import static org.triplea.map.data.elements.Initialize.ResourceInitialize.ResourceGiven;
 import static org.triplea.map.data.elements.Initialize.UnitInitialize.HeldUnits;
 import static org.triplea.map.data.elements.Initialize.UnitInitialize.UnitPlacement;
-import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
+import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.map.data.elements.Game;
-import org.triplea.map.data.elements.Initialize;
 import org.triplea.map.data.elements.Initialize.OwnerInitialize;
 import org.triplea.map.data.elements.Initialize.OwnerInitialize.TerritoryOwner;
 import org.triplea.map.data.elements.Initialize.RelationshipInitialize.Relationship;
 import org.triplea.map.data.elements.Initialize.ResourceInitialize;
 import org.triplea.map.data.elements.Initialize.UnitInitialize;
 
-class InitializeReadingTest {
+class InitializeTest {
 
   @Test
   void readInitilizeTag() {
-    final Game game = parseMapXml("initialize-tag.xml");
+    final Game game = parseMapXml("initialize.xml");
     final Initialize initialize = game.getInitialize();
     final OwnerInitialize ownerInitialize = initialize.getOwnerInitialize();
     final List<TerritoryOwner> territoryOwners = ownerInitialize.getTerritoryOwners();

@@ -1,21 +1,20 @@
-package org.triplea.map.reader;
+package org.triplea.map.data.elements;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
+import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.map.data.elements.AttachmentList.Attachment;
 import org.triplea.map.data.elements.AttachmentList.Attachment.Option;
-import org.triplea.map.data.elements.Game;
 
-public class AttachmentListReadingTest {
+public class AttachmentListTest {
 
   @Test
   void readAttachmentListTag() {
-    final Game parsedMap = parseMapXml("attachment-list-tag.xml");
+    final Game parsedMap = parseMapXml("attachment-list.xml");
 
     final List<Attachment> attachments = parsedMap.getAttachmentList().getAttachments();
     assertThat(attachments, hasSize(2));

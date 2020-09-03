@@ -1,24 +1,22 @@
-package org.triplea.map.reader;
+package org.triplea.map.data.elements;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.map.data.elements.GamePlay.Offset;
 import static org.triplea.map.data.elements.GamePlay.Sequence;
-import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
+import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.map.data.elements.Game;
-import org.triplea.map.data.elements.GamePlay;
 import org.triplea.map.data.elements.GamePlay.Delegate;
 import org.triplea.map.data.elements.GamePlay.Sequence.Step;
 
-class GamePlayReadingTest {
+class GamePlayTest {
 
   @Test
   void readGamePlayTag() {
-    final Game game = parseMapXml("game-play-tag.xml");
+    final Game game = parseMapXml("game-play.xml");
     final GamePlay gamePlay = game.getGamePlay();
     final List<Delegate> delegates = gamePlay.getDelegates();
     assertThat(delegates, hasSize(2));
