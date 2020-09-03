@@ -16,7 +16,9 @@ public class AttachmentList {
     @Attribute private String name;
     @Attribute private String attachTo;
     @Attribute private String javaClass;
-    @Attribute(defaultValue = "unitType") private String type;
+
+    @Attribute(defaultValue = "unitType")
+    private String type;
 
     @TagList(Option.class)
     private List<Option> options;
@@ -25,7 +27,9 @@ public class AttachmentList {
     public static class Option {
       @Attribute private String name;
       @Attribute private String value;
-      @Attribute(defaultValue = "") private String count;
+
+      @Attribute(defaultValue = "")
+      private String count;
     }
   }
 }

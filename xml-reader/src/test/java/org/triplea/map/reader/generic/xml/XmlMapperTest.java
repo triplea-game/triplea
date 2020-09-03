@@ -1,4 +1,4 @@
-package org.triplea.map.reader;
+package org.triplea.map.reader.generic.xml;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -11,10 +11,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
-import org.triplea.map.reader.generic.xml.Attribute;
-import org.triplea.map.reader.generic.xml.Tag;
-import org.triplea.map.reader.generic.xml.TagList;
-import org.triplea.map.reader.generic.xml.XmlMapper;
 
 public class XmlMapperTest {
 
@@ -80,7 +76,8 @@ public class XmlMapperTest {
   @Test
   void readAttachmentListTag() throws Exception {
     final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-    final InputStream inputStream = XmlReaderTestUtils.openFile("xml-parser-example.xml");
+    final InputStream inputStream =
+        XmlMapperTest.class.getClassLoader().getResourceAsStream("xml-parser-example.xml");
     final XMLStreamReader streamReader = inputFactory.createXMLStreamReader(inputStream);
 
     try {
