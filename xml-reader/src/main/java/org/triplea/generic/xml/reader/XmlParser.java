@@ -15,7 +15,7 @@ import org.triplea.java.function.ThrowingRunnable;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Log
-public class XmlParser {
+class XmlParser {
   @Nonnull private final String tagName;
 
   public static XmlParser tag(final String tagName) {

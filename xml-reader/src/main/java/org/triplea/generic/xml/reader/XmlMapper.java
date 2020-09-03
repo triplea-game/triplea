@@ -19,11 +19,11 @@ public class XmlMapper {
     // for example, a '@Tag' should not be on a list.
 
     try {
-      Constructor<T> constructor = pojo.getDeclaredConstructor();
+      final Constructor<T> constructor = pojo.getDeclaredConstructor();
       constructor.setAccessible(true);
       final T instance = constructor.newInstance();
 
-      XmlParser.TagParser tagParser = new XmlParser.TagParser(pojo.getSimpleName());
+      final XmlParser.TagParser tagParser = new XmlParser.TagParser(pojo.getSimpleName());
       boolean hasNestedTags = false;
 
       for (final Field field : pojo.getDeclaredFields()) {
