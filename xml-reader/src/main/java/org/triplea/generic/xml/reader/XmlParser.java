@@ -68,13 +68,11 @@ public class XmlParser {
     private Consumer<String> bodyHandler;
 
     public void parse(final XMLStreamReader streamReader) throws XMLStreamException {
-      boolean endTagReached = false;
-
       if (log.isLoggable(Level.FINE)) {
         log.fine("Processing tag: " + currentTag);
       }
 
-      while (streamReader.hasNext() && !endTagReached) {
+      while (streamReader.hasNext()) {
         log.info("event type: " + streamReader.getEventType());
         final int event = streamReader.next();
         switch (event) {
@@ -101,7 +99,7 @@ public class XmlParser {
             final String endTagName = streamReader.getLocalName();
             log.info("end tag reached: " + endTagName);
             if (endTagName.equalsIgnoreCase(currentTag)) {
-              endTagReached = true;
+              return;
             }
             break;
         }
