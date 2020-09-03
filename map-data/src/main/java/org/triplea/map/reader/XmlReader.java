@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public class XmlReader {
-  @Getter(AccessLevel.PACKAGE)
+  @Getter
   private final XMLStreamReader xmlStreamReader;
 
   public String getAttributeValue(@Nonnull final String attributeName) {

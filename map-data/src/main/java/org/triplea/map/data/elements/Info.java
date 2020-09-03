@@ -1,16 +1,13 @@
 package org.triplea.map.data.elements;
 
 import lombok.Getter;
-import org.triplea.map.reader.XmlReader;
+import org.triplea.map.reader.Attribute;
+import org.triplea.map.reader.TagName;
 
 @Getter
+@TagName("info")
 public class Info {
   public static final String TAG_NAME = "info";
-  private final String name;
-  private final String version;
-
-  public Info(final XmlReader xmlReader) {
-    name = xmlReader.getAttributeValue("name");
-    version = xmlReader.getAttributeValue("version");
-  }
+  @Attribute private String name;
+  @Attribute private String version;
 }

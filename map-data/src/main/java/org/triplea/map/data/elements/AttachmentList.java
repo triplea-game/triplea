@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.Getter;
+import org.triplea.map.reader.TagName;
 import org.triplea.map.reader.XmlParser;
 import org.triplea.map.reader.XmlReader;
 

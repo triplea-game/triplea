@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.triplea.map.reader.XmlMapper;
 import org.triplea.map.reader.XmlParser;
 import org.triplea.map.reader.XmlReader;
 
@@ -28,8 +29,10 @@ public class Game {
   private Initialize initialize;
 
   public Game(final XmlReader xmlReader) throws XMLStreamException {
+    final XmlMapper mapper = new XmlMapper(xmlReader.getXmlStreamReader());
+
     XmlParser.tag(TAG_NAME)
-        .childTagHandler(Info.TAG_NAME, () -> info = new Info(xmlReader))
+        .childTagHandler(Info.TAG_NAME, () -> info = mapper.mapXmlToClass(Info.class))
         .childTagHandler(Triplea.TAG_NAME, () -> triplea = new Triplea(xmlReader))
         .childTagHandler(
             AttachmentList.TAG_NAME, () -> attachmentList = new AttachmentList(xmlReader))
