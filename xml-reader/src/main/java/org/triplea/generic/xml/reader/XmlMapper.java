@@ -1,4 +1,4 @@
-package org.triplea.map.reader.generic.xml;
+package org.triplea.generic.xml.reader;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.AllArgsConstructor;
-import org.triplea.map.reader.generic.xml.XmlParser.TagParser;
 
 @AllArgsConstructor
 public class XmlMapper {
@@ -24,7 +23,7 @@ public class XmlMapper {
       constructor.setAccessible(true);
       final T instance = constructor.newInstance();
 
-      TagParser tagParser = new TagParser(pojo.getSimpleName());
+      XmlParser.TagParser tagParser = new XmlParser.TagParser(pojo.getSimpleName());
       boolean hasNestedTags = false;
 
       for (final Field field : pojo.getDeclaredFields()) {

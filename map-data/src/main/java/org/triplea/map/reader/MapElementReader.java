@@ -5,8 +5,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.experimental.UtilityClass;
+import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.map.data.elements.Game;
-import org.triplea.map.reader.generic.xml.XmlMapper;
 
 @UtilityClass
 public class MapElementReader {

@@ -1,4 +1,4 @@
-package org.triplea.map.reader.generic.xml;
+package org.triplea.generic.xml.reader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;

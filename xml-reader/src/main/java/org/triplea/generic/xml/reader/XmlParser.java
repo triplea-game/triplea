@@ -1,4 +1,4 @@
-package org.triplea.map.reader.generic.xml;
+package org.triplea.generic.xml.reader;
 
 import java.util.HashMap;
 import java.util.Map;

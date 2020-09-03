@@ -1,7 +1,7 @@
 package org.triplea.map.data.elements;
 
 import lombok.Getter;
-import org.triplea.map.reader.generic.xml.Tag;
+import org.triplea.generic.xml.reader.Tag;
 
 /**
  * Represents all of the org.triplea.map.data read from a map. The org.triplea.map.data is in a

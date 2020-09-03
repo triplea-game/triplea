@@ -2,9 +2,9 @@ package org.triplea.map.data.elements;
 
 import java.util.List;
 import lombok.Getter;
-import org.triplea.map.reader.generic.xml.Attribute;
-import org.triplea.map.reader.generic.xml.Tag;
-import org.triplea.map.reader.generic.xml.TagList;
+import org.triplea.generic.xml.reader.Attribute;
+import org.triplea.generic.xml.reader.Tag;
+import org.triplea.generic.xml.reader.TagList;
 
 @Getter
 public class Initialize {
