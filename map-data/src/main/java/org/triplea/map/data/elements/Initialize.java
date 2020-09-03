@@ -3,9 +3,9 @@ package org.triplea.map.data.elements;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import lombok.Getter;
 import org.triplea.map.reader.XmlParser;
+import org.triplea.map.reader.XmlReader;
 
 @Getter
 public class Initialize {
@@ -16,16 +16,16 @@ public class Initialize {
   private ResourceInitialize resourceInitialize;
   private RelationshipInitialize relationshipInitialize;
 
-  public Initialize(final XMLStreamReader streamReader) throws XMLStreamException {
+  public Initialize(final XmlReader streamReader) throws XMLStreamException {
     XmlParser.tag(TAG_NAME)
-        .addChildTagHandler(
+        .childTagHandler(
             OwnerInitialize.TAG_NAME, () -> ownerInitialize = new OwnerInitialize(streamReader))
-        .addChildTagHandler(
+        .childTagHandler(
             UnitInitialize.TAG_NAME, () -> unitInitialize = new UnitInitialize(streamReader))
-        .addChildTagHandler(
+        .childTagHandler(
             ResourceInitialize.TAG_NAME,
             () -> resourceInitialize = new ResourceInitialize(streamReader))
-        .addChildTagHandler(
+        .childTagHandler(
             RelationshipInitialize.TAG_NAME,
             () -> relationshipInitialize = new RelationshipInitialize(streamReader))
         .parse(streamReader);
@@ -35,11 +35,11 @@ public class Initialize {
   public static class OwnerInitialize {
     static final String TAG_NAME = "ownerInitialize";
 
-    private List<TerritoryOwner> territoryOwners = new ArrayList<>();
+    private final List<TerritoryOwner> territoryOwners = new ArrayList<>();
 
-    public OwnerInitialize(final XMLStreamReader streamReader) throws XMLStreamException {
+    public OwnerInitialize(final XmlReader streamReader) throws XMLStreamException {
       XmlParser.tag(TAG_NAME)
-          .addChildTagHandler(
+          .childTagHandler(
               TerritoryOwner.TAG_NAME, () -> territoryOwners.add(new TerritoryOwner(streamReader)))
           .parse(streamReader);
     }
@@ -48,14 +48,12 @@ public class Initialize {
     public static class TerritoryOwner {
       static final String TAG_NAME = "territoryOwner";
 
-      private String territory;
-      private String owner;
+      private final String territory;
+      private final String owner;
 
-      public TerritoryOwner(final XMLStreamReader streamReader) throws XMLStreamException {
-        XmlParser.tag(TAG_NAME)
-            .addAttributeHandler("territory", value -> territory = value)
-            .addAttributeHandler("owner", value -> owner = value)
-            .parse(streamReader);
+      public TerritoryOwner(final XmlReader streamReader) throws XMLStreamException {
+        territory = streamReader.getAttributeValue("territory");
+        owner = streamReader.getAttributeValue("owner");
       }
     }
   }
@@ -64,14 +62,14 @@ public class Initialize {
   public static class UnitInitialize {
     static final String TAG_NAME = "unitInitialize";
 
-    private List<UnitPlacement> unitPlacements = new ArrayList<>();
-    private List<HeldUnits> heldUnits = new ArrayList<>();
+    private final List<UnitPlacement> unitPlacements = new ArrayList<>();
+    private final List<HeldUnits> heldUnits = new ArrayList<>();
 
-    public UnitInitialize(final XMLStreamReader streamReader) throws XMLStreamException {
+    public UnitInitialize(final XmlReader streamReader) throws XMLStreamException {
       XmlParser.tag(TAG_NAME)
-          .addChildTagHandler(
+          .childTagHandler(
               UnitPlacement.TAG_NAME, () -> unitPlacements.add(new UnitPlacement(streamReader)))
-          .addChildTagHandler(HeldUnits.TAG_NAME, () -> heldUnits.add(new HeldUnits(streamReader)))
+          .childTagHandler(HeldUnits.TAG_NAME, () -> heldUnits.add(new HeldUnits(streamReader)))
           .parse(streamReader);
     }
 
@@ -79,22 +77,20 @@ public class Initialize {
     public static class UnitPlacement {
       static final String TAG_NAME = "unitPlacement";
 
-      private String unitType;
-      private String territory;
-      private String quantity;
-      private String owner;
-      private String hitsTaken;
-      private String unitDamage;
+      private final String unitType;
+      private final String territory;
+      private final String quantity;
+      private final String owner;
+      private final String hitsTaken;
+      private final String unitDamage;
 
-      public UnitPlacement(final XMLStreamReader streamReader) throws XMLStreamException {
-        XmlParser.tag(TAG_NAME)
-            .addAttributeHandler("unitType", value -> unitType = value)
-            .addAttributeHandler("territory", value -> territory = value)
-            .addAttributeHandler("quantity", value -> quantity = value)
-            .addAttributeHandler("owner", value -> owner = value)
-            .addAttributeHandler("hitsTaken", value -> hitsTaken = value)
-            .addAttributeHandler("unitDamage", value -> unitDamage = value)
-            .parse(streamReader);
+      public UnitPlacement(final XmlReader streamReader) {
+        unitType = streamReader.getAttributeValue("unitType");
+        territory = streamReader.getAttributeValue("territory");
+        quantity = streamReader.getAttributeValue("quantity");
+        owner = streamReader.getAttributeValue("owner");
+        hitsTaken = streamReader.getAttributeValue("hitsTaken");
+        unitDamage = streamReader.getAttributeValue("unitDamage");
       }
     }
 
@@ -106,12 +102,10 @@ public class Initialize {
       private String player;
       private String quantity;
 
-      public HeldUnits(final XMLStreamReader streamReader) throws XMLStreamException {
-        XmlParser.tag(TAG_NAME)
-            .addAttributeHandler("unitType", value -> unitType = value)
-            .addAttributeHandler("player", value -> player = value)
-            .addAttributeHandler("quantity", value -> quantity = value)
-            .parse(streamReader);
+      public HeldUnits(final XmlReader streamReader) {
+        unitType = streamReader.getAttributeValue("unitType");
+        player = streamReader.getAttributeValue("player");
+        quantity = streamReader.getAttributeValue("quantity");
       }
     }
   }
@@ -120,11 +114,11 @@ public class Initialize {
   public static class ResourceInitialize {
     static final String TAG_NAME = "resourceInitialize";
 
-    private List<ResourceGiven> resourcesGiven = new ArrayList<>();
+    private final List<ResourceGiven> resourcesGiven = new ArrayList<>();
 
-    public ResourceInitialize(final XMLStreamReader streamReader) throws XMLStreamException {
+    public ResourceInitialize(final XmlReader streamReader) throws XMLStreamException {
       XmlParser.tag(TAG_NAME)
-          .addChildTagHandler(
+          .childTagHandler(
               ResourceGiven.TAG_NAME, () -> resourcesGiven.add(new ResourceGiven(streamReader)))
           .parse(streamReader);
     }
@@ -137,12 +131,10 @@ public class Initialize {
       private String resource;
       private String quantity;
 
-      public ResourceGiven(final XMLStreamReader streamReader) throws XMLStreamException {
-        XmlParser.tag(TAG_NAME)
-            .addAttributeHandler("player", value -> player = value)
-            .addAttributeHandler("resource", value -> resource = value)
-            .addAttributeHandler("quantity", value -> quantity = value)
-            .parse(streamReader);
+      public ResourceGiven(final XmlReader streamReader) throws XMLStreamException {
+        player = streamReader.getAttributeValue("player");
+        resource = streamReader.getAttributeValue("resource");
+        quantity = streamReader.getAttributeValue("quantity");
       }
     }
   }
@@ -151,11 +143,11 @@ public class Initialize {
   public static class RelationshipInitialize {
     static final String TAG_NAME = "relationshipInitialize";
 
-    private List<Relationship> relationships = new ArrayList<>();
+    private final List<Relationship> relationships = new ArrayList<>();
 
-    public RelationshipInitialize(final XMLStreamReader streamReader) throws XMLStreamException {
+    public RelationshipInitialize(final XmlReader streamReader) throws XMLStreamException {
       XmlParser.tag(TAG_NAME)
-          .addChildTagHandler(
+          .childTagHandler(
               Relationship.TAG_NAME, () -> relationships.add(new Relationship(streamReader)))
           .parse(streamReader);
     }
@@ -169,13 +161,11 @@ public class Initialize {
       private String player1;
       private String player2;
 
-      public Relationship(final XMLStreamReader streamReader) throws XMLStreamException {
-        XmlParser.tag(TAG_NAME)
-            .addAttributeHandler("type", value -> type = value)
-            .addAttributeHandler("roundValue", value -> roundValue = value)
-            .addAttributeHandler("player1", value -> player1 = value)
-            .addAttributeHandler("player2", value -> player2 = value)
-            .parse(streamReader);
+      public Relationship(final XmlReader xmlReader) {
+        type = xmlReader.getAttributeValue("type");
+        roundValue = xmlReader.getAttributeValue("roundValue");
+        player1 = xmlReader.getAttributeValue("player1");
+        player2 = xmlReader.getAttributeValue("player2");
       }
     }
   }

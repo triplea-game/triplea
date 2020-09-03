@@ -1,7 +1,7 @@
 package org.triplea.map.data.elements;
 
-import javax.xml.stream.XMLStreamReader;
 import lombok.Getter;
+import org.triplea.map.reader.XmlReader;
 
 @Getter
 public class Info {
@@ -9,8 +9,8 @@ public class Info {
   private final String name;
   private final String version;
 
-  public Info(final XMLStreamReader streamReader) {
-    this.name = streamReader.getAttributeValue(null, "name");
-    this.version = streamReader.getAttributeValue(null, "version");
+  public Info(final XmlReader xmlReader) {
+    name = xmlReader.getAttributeValue("name");
+    version = xmlReader.getAttributeValue("version");
   }
 }

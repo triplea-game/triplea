@@ -9,10 +9,10 @@ import static org.triplea.map.reader.XmlReaderTestUtils.parseMapXml;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.triplea.map.data.elements.Game;
 import org.triplea.map.data.elements.GamePlay;
 import org.triplea.map.data.elements.GamePlay.Delegate;
 import org.triplea.map.data.elements.GamePlay.Sequence.Step;
-import org.triplea.map.data.elements.Game;
 
 class GamePlayReadingTest {
 

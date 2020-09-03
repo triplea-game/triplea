@@ -1,12 +1,12 @@
 package org.triplea.map.data.elements;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.triplea.map.reader.XmlParser;
+import org.triplea.map.reader.XmlReader;
 
 /**
  * Represents all of the org.triplea.map.data read from a map. The org.triplea.map.data is in a
@@ -27,17 +27,15 @@ public class Game {
   private GamePlay gamePlay;
   private Initialize initialize;
 
-  public Game(final XMLStreamReader streamReader) throws XMLStreamException {
+  public Game(final XmlReader xmlReader) throws XMLStreamException {
     XmlParser.tag(TAG_NAME)
-        .addChildTagHandler(Info.TAG_NAME, () -> info = new Info(streamReader))
-        .addChildTagHandler(Triplea.TAG_NAME, () -> triplea = new Triplea(streamReader))
-        .addChildTagHandler(
-            AttachmentList.TAG_NAME,
-            () -> attachmentList = new AttachmentList(streamReader))
-        .addChildTagHandler(
-            DiceSides.TAG_NAME, () -> diceSides = new DiceSides(streamReader))
-        .addChildTagHandler(GamePlay.TAG_NAME, () -> gamePlay = new GamePlay(streamReader))
-        .addChildTagHandler(Initialize.TAG_NAME, () -> initialize = new Initialize(streamReader))
-        .parse(streamReader);
+        .childTagHandler(Info.TAG_NAME, () -> info = new Info(xmlReader))
+        .childTagHandler(Triplea.TAG_NAME, () -> triplea = new Triplea(xmlReader))
+        .childTagHandler(
+            AttachmentList.TAG_NAME, () -> attachmentList = new AttachmentList(xmlReader))
+        .childTagHandler(DiceSides.TAG_NAME, () -> diceSides = new DiceSides(xmlReader))
+        .childTagHandler(GamePlay.TAG_NAME, () -> gamePlay = new GamePlay(xmlReader))
+        .childTagHandler(Initialize.TAG_NAME, () -> initialize = new Initialize(xmlReader))
+        .parse(xmlReader);
   }
 }

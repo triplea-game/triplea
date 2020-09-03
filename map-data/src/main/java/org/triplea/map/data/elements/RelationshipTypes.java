@@ -1,4 +1,3 @@
 package org.triplea.map.data.elements;
 
-public class RelationshipTypes {
-}
+public class RelationshipTypes {}

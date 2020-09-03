@@ -1,4 +1,3 @@
 package org.triplea.map.data.elements;
 
-public class PropertyList {
-}
+public class PropertyList {}

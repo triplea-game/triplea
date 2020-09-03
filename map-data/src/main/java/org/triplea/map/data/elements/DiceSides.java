@@ -1,18 +1,14 @@
 package org.triplea.map.data.elements;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import lombok.Getter;
-import org.triplea.map.reader.XmlParser;
+import org.triplea.map.reader.XmlReader;
 
 @Getter
 public class DiceSides {
   public static final String TAG_NAME = "diceSides";
   private String value;
 
-  DiceSides(final XMLStreamReader streamReader) throws XMLStreamException {
-    XmlParser.tag(TAG_NAME)
-        .addAttributeHandler("value", attributeValue -> value = attributeValue)
-        .parse(streamReader);
+  DiceSides(final XmlReader xmlReader) {
+    value = xmlReader.getAttributeValue("value");
   }
 }

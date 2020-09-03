@@ -3,22 +3,21 @@ package org.triplea.map.data.elements;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import lombok.Getter;
 import org.triplea.map.reader.XmlParser;
+import org.triplea.map.reader.XmlReader;
 
 @Getter
 public class AttachmentList {
   public static final String TAG_NAME = "attachmentList";
 
-  private List<Attachment> attachments;
+  private final List<Attachment> attachments;
 
-  AttachmentList(final XMLStreamReader streamReader) throws XMLStreamException {
+  AttachmentList(final XmlReader streamReader) throws XMLStreamException {
     attachments = new ArrayList<>();
 
     XmlParser.tag(TAG_NAME)
-        .addChildTagHandler(
-            Attachment.TAG_NAME, () -> attachments.add(new Attachment(streamReader)))
+        .childTagHandler(Attachment.TAG_NAME, () -> attachments.add(new Attachment(streamReader)))
         .parse(streamReader);
   }
 
@@ -26,39 +25,38 @@ public class AttachmentList {
   public static class Attachment {
     static final String TAG_NAME = "attachment";
 
-    private String foreach;
-    private String name;
-    private String attachTo;
-    private String javaClass;
-    private String type = "unitType";
+    private final String foreach;
+    private final String name;
+    private final String attachTo;
+    private final String javaClass;
+    private final String type;
 
-    private List<Option> options = new ArrayList<>();
+    private final List<Option> options = new ArrayList<>();
 
-    public Attachment(final XMLStreamReader streamReader) throws XMLStreamException {
+    public Attachment(final XmlReader xmlReader) throws XMLStreamException {
+      foreach = xmlReader.getAttributeValue("foreach");
+      name = xmlReader.getAttributeValue("name");
+      attachTo = xmlReader.getAttributeValue("attachTo");
+      javaClass = xmlReader.getAttributeValue("javaClass");
+      type = xmlReader.getAttributeValue("type", "unitType");
+
       XmlParser.tag(TAG_NAME)
-          .addAttributeHandler("foreach", value -> foreach = value)
-          .addAttributeHandler("name", value -> name = value)
-          .addAttributeHandler("attachTo", value -> attachTo = value)
-          .addAttributeHandler("javaClass", value -> javaClass = value)
-          .addAttributeHandler("type", value -> type = value)
-          .addChildTagHandler(Option.TAG_NAME, () -> options.add(new Option(streamReader)))
-          .parse(streamReader);
+          .childTagHandler(Option.TAG_NAME, () -> options.add(new Option(xmlReader)))
+          .parse(xmlReader);
     }
 
     @Getter
     public static class Option {
       private static final String TAG_NAME = "option";
 
-      private String name;
-      private String value;
-      private String count = "";
+      private final String name;
+      private final String value;
+      private final String count;
 
-      public Option(final XMLStreamReader streamReader) throws XMLStreamException {
-        XmlParser.tag(TAG_NAME)
-            .addAttributeHandler("name", attributeValue -> name = attributeValue)
-            .addAttributeHandler("value", attributeValue -> value = attributeValue)
-            .addAttributeHandler("count", attributeValue -> count = attributeValue)
-            .parse(streamReader);
+      public Option(final XmlReader streamReader) {
+        name = streamReader.getAttributeValue("name");
+        value = streamReader.getAttributeValue("value");
+        count = streamReader.getAttributeValue("count", "");
       }
     }
   }

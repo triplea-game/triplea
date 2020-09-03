@@ -1,4 +1,3 @@
 package org.triplea.map.data.elements;
 
-public class UnitList {
-}
+public class UnitList {}

@@ -47,7 +47,7 @@ public class MapElementReader {
 
         switch (elementName) {
           case Game.TAG_NAME:
-            return new Game(streamReader);
+            return new Game(new XmlReader(streamReader));
         }
     }
     throw new XMLStreamException("Did not find a 'game' tag as a top level and first tag");

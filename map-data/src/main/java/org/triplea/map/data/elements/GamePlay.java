@@ -3,24 +3,23 @@ package org.triplea.map.data.elements;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import lombok.Getter;
 import org.triplea.map.reader.XmlParser;
+import org.triplea.map.reader.XmlReader;
 
 @Getter
 public class GamePlay {
   static final String TAG_NAME = "gamePlay";
 
-  private List<Delegate> delegates = new ArrayList<>();
+  private final List<Delegate> delegates = new ArrayList<>();
   private Sequence sequence;
   private Offset offset;
 
-  GamePlay(final XMLStreamReader streamReader) throws XMLStreamException {
+  GamePlay(final XmlReader streamReader) throws XMLStreamException {
     XmlParser.tag(TAG_NAME)
-        .addChildTagHandler(
-            Delegate.TAG_NAME, () -> delegates.add(new Delegate(streamReader)))
-        .addChildTagHandler(Sequence.TAG_NAME, () -> sequence = new Sequence(streamReader))
-        .addChildTagHandler(Offset.TAG_NAME, () -> offset = new Offset(streamReader))
+        .childTagHandler(Delegate.TAG_NAME, () -> delegates.add(new Delegate(streamReader)))
+        .childTagHandler(Sequence.TAG_NAME, () -> sequence = new Sequence(streamReader))
+        .childTagHandler(Offset.TAG_NAME, () -> offset = new Offset(streamReader))
         .parse(streamReader);
   }
 
@@ -28,16 +27,14 @@ public class GamePlay {
   public static class Delegate {
     public static final String TAG_NAME = "delegate";
 
-    private String name;
-    private String javaClass;
-    private String display;
+    private final String name;
+    private final String javaClass;
+    private final String display;
 
-    Delegate(final XMLStreamReader streamReader) throws XMLStreamException {
-      XmlParser.tag(TAG_NAME)
-          .addAttributeHandler("name", value -> name = value)
-          .addAttributeHandler("javaClass", value -> javaClass = value)
-          .addAttributeHandler("display", value -> display = value)
-          .parse(streamReader);
+    Delegate(final XmlReader streamReader) {
+      name = streamReader.getAttributeValue("name");
+      javaClass = streamReader.getAttributeValue("javaClass");
+      display = streamReader.getAttributeValue("display");
     }
   }
 
@@ -45,11 +42,11 @@ public class GamePlay {
   public static class Sequence {
     public static final String TAG_NAME = "sequence";
 
-    private List<Step> steps = new ArrayList<>();
+    private final List<Step> steps = new ArrayList<>();
 
-    Sequence(final XMLStreamReader streamReader) throws XMLStreamException {
+    Sequence(final XmlReader streamReader) throws XMLStreamException {
       XmlParser.tag(TAG_NAME)
-          .addChildTagHandler("step", () -> steps.add(new Step(streamReader)))
+          .childTagHandler("step", () -> steps.add(new Step(streamReader)))
           .parse(streamReader);
     }
 
@@ -63,16 +60,17 @@ public class GamePlay {
       private String maxRunCount;
       private String display;
 
-      private List<StepProperty> stepProperties = new ArrayList<>();
+      private final List<StepProperty> stepProperties = new ArrayList<>();
 
-      Step(final XMLStreamReader streamReader) throws XMLStreamException {
+      Step(final XmlReader streamReader) throws XMLStreamException {
+        name = streamReader.getAttributeValue("name");
+        delegate = streamReader.getAttributeValue("delegate");
+        player = streamReader.getAttributeValue("player");
+        maxRunCount = streamReader.getAttributeValue("maxRunCount");
+        display = streamReader.getAttributeValue("display");
+
         XmlParser.tag(TAG_NAME)
-            .addAttributeHandler("name", value -> name = value)
-            .addAttributeHandler("delegate", value -> delegate = value)
-            .addAttributeHandler("player", value -> player = value)
-            .addAttributeHandler("maxRunCount", value -> maxRunCount = value)
-            .addAttributeHandler("display", value -> display = value)
-            .addChildTagHandler(
+            .childTagHandler(
                 "stepProperty", () -> stepProperties.add(new StepProperty(streamReader)))
             .parse(streamReader);
       }
@@ -83,11 +81,9 @@ public class GamePlay {
         private String name;
         private String value;
 
-        StepProperty(final XMLStreamReader streamReader) throws XMLStreamException {
-          XmlParser.tag(TAG_NAME)
-              .addAttributeHandler("name", value -> name = value)
-              .addAttributeHandler("value", attributeValue -> value = attributeValue)
-              .parse(streamReader);
+        StepProperty(final XmlReader xmlReader) {
+          name = xmlReader.getAttributeValue("name");
+          value = xmlReader.getAttributeValue("value");
         }
       }
     }
@@ -98,10 +94,8 @@ public class GamePlay {
     public static final String TAG_NAME = "offset";
     private String round;
 
-    Offset(final XMLStreamReader streamReader) throws XMLStreamException {
-      XmlParser.tag(TAG_NAME)
-          .addAttributeHandler("round", value -> round = value)
-          .parse(streamReader);
+    Offset(final XmlReader xmlReader) {
+      round = xmlReader.getAttributeValue("round");
     }
   }
 }

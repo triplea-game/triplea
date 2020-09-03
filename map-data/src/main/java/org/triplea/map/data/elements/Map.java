@@ -1,4 +1,3 @@
 package org.triplea.map.data.elements;
 
-public class Map {
-}
+public class Map {}
