@@ -76,44 +76,45 @@ public class XmlMapperTest {
   @Test
   void readAttachmentListTag() throws Exception {
     final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-    final InputStream inputStream =
-        XmlMapperTest.class.getClassLoader().getResourceAsStream("xml-parser-example.xml");
-    final XMLStreamReader streamReader = inputFactory.createXMLStreamReader(inputStream);
+    try (InputStream inputStream =
+        XmlMapperTest.class.getClassLoader().getResourceAsStream("xml-parser-example.xml")) {
+      final XMLStreamReader streamReader = inputFactory.createXMLStreamReader(inputStream);
 
-    try {
-      final Library library = new XmlMapper(streamReader).mapXmlToClass(Library.class);
-      assertThat(library, is(notNullValue()));
+      try {
+        final Library library = new XmlMapper(streamReader).mapXmlToClass(Library.class);
+        assertThat(library, is(notNullValue()));
 
-      assertThat(library.name, is(notNullValue()));
-      assertThat(library.name.libraryName, is("Central Library"));
+        assertThat(library.name, is(notNullValue()));
+        assertThat(library.name.libraryName, is("Central Library"));
 
-      assertThat(library.mostRead, is(notNullValue()));
-      assertThat(library.mostRead.magazine, is(notNullValue()));
-      assertThat(library.mostRead.magazine.title, is("War Gaming"));
-      assertThat(library.mostRead.magazine.isbn, is("123"));
-      assertThat(library.mostRead.book, is(notNullValue()));
-      assertThat(library.mostRead.book.title, is("Strategy"));
-      assertThat(library.mostRead.book.isbn, is("789"));
+        assertThat(library.mostRead, is(notNullValue()));
+        assertThat(library.mostRead.magazine, is(notNullValue()));
+        assertThat(library.mostRead.magazine.title, is("War Gaming"));
+        assertThat(library.mostRead.magazine.isbn, is("123"));
+        assertThat(library.mostRead.book, is(notNullValue()));
+        assertThat(library.mostRead.book.title, is("Strategy"));
+        assertThat(library.mostRead.book.isbn, is("789"));
 
-      assertThat(library.inventory, is(notNullValue()));
-      assertThat(library.inventory.books, hasSize(2));
-      assertThat(library.inventory.books.get(0).name, is("Crossing the Atlantic"));
-      assertThat(library.inventory.books.get(1).name, is("The Battle of the Bulge"));
+        assertThat(library.inventory, is(notNullValue()));
+        assertThat(library.inventory.books, hasSize(2));
+        assertThat(library.inventory.books.get(0).name, is("Crossing the Atlantic"));
+        assertThat(library.inventory.books.get(1).name, is("The Battle of the Bulge"));
 
-      assertThat(library.inventory.cdrom, is(notNullValue()));
-      assertThat(library.inventory.cdrom.name, is("Pacific Conflict"));
+        assertThat(library.inventory.cdrom, is(notNullValue()));
+        assertThat(library.inventory.cdrom.name, is("Pacific Conflict"));
 
-      assertThat(library.inventory.gaming, is(notNullValue()));
-      assertThat(library.inventory.gaming.dvds, is(notNullValue()));
-      assertThat(library.inventory.gaming.dvds, hasSize(2));
-      assertThat(library.inventory.gaming.dvds.get(0).name, is("How to Win Revised"));
-      assertThat(library.inventory.gaming.dvds.get(1).name, is("Game of TripleA"));
+        assertThat(library.inventory.gaming, is(notNullValue()));
+        assertThat(library.inventory.gaming.dvds, is(notNullValue()));
+        assertThat(library.inventory.gaming.dvds, hasSize(2));
+        assertThat(library.inventory.gaming.dvds.get(0).name, is("How to Win Revised"));
+        assertThat(library.inventory.gaming.dvds.get(1).name, is("Game of TripleA"));
 
-      assertThat(library.inventory.gaming.bluRays, is(notNullValue()));
-      assertThat(library.inventory.gaming.bluRays, hasSize(1));
-      assertThat(library.inventory.gaming.bluRays.get(0).name, is("NWO Lebowski"));
-    } finally {
-      streamReader.close();
+        assertThat(library.inventory.gaming.bluRays, is(notNullValue()));
+        assertThat(library.inventory.gaming.bluRays, hasSize(1));
+        assertThat(library.inventory.gaming.bluRays.get(0).name, is("NWO Lebowski"));
+      } finally {
+        streamReader.close();
+      }
     }
   }
 }

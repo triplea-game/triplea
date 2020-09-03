@@ -1,0 +1,11 @@
+<game>
+    <description>
+        Single line description
+    </description>
+
+    <notes>
+        <![CDATA[
+            <html>Html Test</html>
+        ]]>
+    </notes>
+</game>
