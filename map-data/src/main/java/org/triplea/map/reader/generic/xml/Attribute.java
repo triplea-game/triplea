@@ -1,4 +1,4 @@
-package org.triplea.map.reader;
+package org.triplea.map.reader.generic.xml;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

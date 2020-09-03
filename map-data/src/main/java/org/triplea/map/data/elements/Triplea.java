@@ -1,14 +1,9 @@
 package org.triplea.map.data.elements;
 
 import lombok.Getter;
-import org.triplea.map.reader.XmlReader;
+import org.triplea.map.reader.generic.xml.Attribute;
 
 @Getter
 public class Triplea {
-  public static final String TAG_NAME = "triplea";
-  private final String minimumVersion;
-
-  public Triplea(final XmlReader xmlReader) {
-    this.minimumVersion = xmlReader.getAttributeValue("minimumVersion");
-  }
+  @Attribute private String minimumVersion;
 }

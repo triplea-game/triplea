@@ -6,6 +6,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.experimental.UtilityClass;
 import org.triplea.map.data.elements.Game;
+import org.triplea.map.reader.generic.xml.XmlMapper;
 
 @UtilityClass
 public class MapElementReader {
@@ -38,19 +39,20 @@ public class MapElementReader {
   }
 
   private static Game doRead(final XMLStreamReader streamReader) throws XMLStreamException {
-
-    final int eventType = streamReader.next();
-
-    switch (eventType) {
-      case XMLStreamReader.START_ELEMENT:
-        final String elementName = streamReader.getLocalName();
-
-        switch (elementName) {
-          case Game.TAG_NAME:
-            return new Game(new XmlReader(streamReader));
-        }
-    }
-    throw new XMLStreamException("Did not find a 'game' tag as a top level and first tag");
+    return new XmlMapper(streamReader).mapXmlToClass(Game.class);
+//
+//    final int eventType = streamReader.next();
+//
+//    switch (eventType) {
+//      case XMLStreamReader.START_ELEMENT:
+//        final String elementName = streamReader.getLocalName();
+//
+//        switch (elementName) {
+//          case Game.TAG_NAME:
+//            return new Game(new XmlReader(streamReader));
+//        }
+//    }
+//    throw new XMLStreamException("Did not find a 'game' tag as a top level and first tag");
   }
 
   /** Recursive method to concatenate to a string buffer all nested exception messages. */

@@ -1,14 +1,9 @@
 package org.triplea.map.data.elements;
 
 import lombok.Getter;
-import org.triplea.map.reader.XmlReader;
+import org.triplea.map.reader.generic.xml.Attribute;
 
 @Getter
 public class DiceSides {
-  public static final String TAG_NAME = "diceSides";
-  private String value;
-
-  DiceSides(final XmlReader xmlReader) {
-    value = xmlReader.getAttributeValue("value");
-  }
+  @Attribute private String value;
 }

@@ -1,4 +1,4 @@
-package org.triplea.map.reader;
+package org.triplea.map.reader.generic.xml;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class XmlParser {
   @Nonnull private final String tagName;
 
   public static XmlParser tag(final String tagName) {
-    return new XmlParser(tagName);
+    return new XmlParser(tagName.toUpperCase());
   }
 
   public TagParser childTagHandler(final String childTagName, final ThrowingRunnable handler) {
@@ -35,12 +35,17 @@ public class XmlParser {
     private final String currentTag;
     private final Map<String, ThrowingRunnable> childTagHandlers;
 
-    public TagParser childTagHandler(final String childTagNaem, final ThrowingRunnable tagHandler) {
-      childTagHandlers.put(childTagNaem, tagHandler);
+    public TagParser(String currentTag) {
+      this.currentTag = currentTag.toUpperCase();
+      this.childTagHandlers = new HashMap<>();
+    }
+
+    public TagParser childTagHandler(final String childTagName, final ThrowingRunnable tagHandler) {
+      childTagHandlers.put(childTagName.toUpperCase(), tagHandler);
       return this;
     }
 
-    public void parse(final XmlReader xmlReader) throws XMLStreamException {
+    public void parse(final XMLStreamReader xmlReader) throws XMLStreamException {
       new GenericParser(currentTag, childTagHandlers, body -> {}).parse(xmlReader);
     }
   }
@@ -50,7 +55,7 @@ public class XmlParser {
     private final String currentTag;
     private Consumer<String> bodyHandler;
 
-    public void parse(final XmlReader xmlReader) throws XMLStreamException {
+    public void parse(final XMLStreamReader xmlReader) throws XMLStreamException {
       new GenericParser(currentTag, Map.of(), bodyHandler).parse(xmlReader);
     }
   }
@@ -62,9 +67,7 @@ public class XmlParser {
     private final Map<String, ThrowingRunnable> childTagHandlers;
     private Consumer<String> bodyHandler;
 
-    public void parse(final XmlReader xmlReader) throws XMLStreamException {
-      final XMLStreamReader streamReader = xmlReader.getXmlStreamReader();
-
+    public void parse(final XMLStreamReader streamReader) throws XMLStreamException {
       boolean endTagReached = false;
 
       if (log.isLoggable(Level.FINE)) {
@@ -78,7 +81,7 @@ public class XmlParser {
           case XMLStreamReader.START_ELEMENT:
             final String childTag = streamReader.getLocalName();
             log.info("start tag reached: " + childTag);
-            final ThrowingRunnable childTagHandler = childTagHandlers.get(childTag);
+            final ThrowingRunnable childTagHandler = childTagHandlers.get(childTag.toUpperCase());
             if (childTagHandler != null) {
               try {
                 childTagHandler.run();
@@ -97,7 +100,7 @@ public class XmlParser {
           case XMLStreamReader.END_ELEMENT:
             final String endTagName = streamReader.getLocalName();
             log.info("end tag reached: " + endTagName);
-            if (endTagName.equals(currentTag)) {
+            if (endTagName.equalsIgnoreCase(currentTag)) {
               endTagReached = true;
             }
             break;
