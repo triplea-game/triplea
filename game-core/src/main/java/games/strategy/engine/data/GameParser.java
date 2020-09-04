@@ -7,7 +7,6 @@ import com.google.common.base.Splitter;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.data.properties.BooleanProperty;
-import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -20,7 +19,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.formatter.MyFormatter;
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -679,9 +676,6 @@ public final class GameParser {
             case "boolean":
               properties.set(property, Boolean.valueOf(value));
               break;
-            case "file":
-              properties.set(property, Optional.ofNullable(value).map(File::new).orElse(null));
-              break;
             case "number":
               int intValue = 0;
               if (value != null) {
@@ -740,11 +734,6 @@ public final class GameParser {
         final int min = Integer.parseInt(child.getAttribute("min"));
         final int def = Integer.parseInt(defaultValue);
         editableProperty = new NumberProperty(name, null, max, min, def);
-        break;
-      case "color":
-        // Parse the value as a hexadecimal number
-        final int defaultColor = Integer.valueOf(defaultValue, 16);
-        editableProperty = new ColorProperty(name, null, defaultColor);
         break;
       case "string":
         editableProperty = new StringProperty(name, null, defaultValue);
