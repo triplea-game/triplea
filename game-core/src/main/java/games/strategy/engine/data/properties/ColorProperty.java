@@ -18,26 +18,12 @@ import javax.swing.SwingUtilities;
  */
 public class ColorProperty extends AbstractEditableProperty<Color> {
   private static final long serialVersionUID = 6826763550643504789L;
-  private static final int MAX_COLOR = 0xFFFFFF;
-  private static final int MIN_COLOR = 0x000000;
 
   private Color color;
 
-  public ColorProperty(final String name, final String description, final int def) {
-    super(name, description);
-    if (def > MAX_COLOR || def < MIN_COLOR) {
-      throw new IllegalArgumentException("Default value out of range");
-    }
-    color = new Color(def);
-  }
-
   public ColorProperty(final String name, final String description, final Color def) {
     super(name, description);
-    if (def == null) {
-      color = Color.black;
-    } else {
-      color = def;
-    }
+    color = def == null ? Color.black : def;
   }
 
   @Override
@@ -47,11 +33,7 @@ public class ColorProperty extends AbstractEditableProperty<Color> {
 
   @Override
   public void setValue(final Color value) {
-    if (value == null) {
-      color = Color.black;
-    } else {
-      color = value;
-    }
+    color = value == null ? Color.black : value;
   }
 
   @Override

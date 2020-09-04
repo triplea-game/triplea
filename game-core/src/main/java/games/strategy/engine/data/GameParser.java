@@ -679,9 +679,6 @@ public final class GameParser {
             case "boolean":
               properties.set(property, Boolean.valueOf(value));
               break;
-            case "file":
-              properties.set(property, Optional.ofNullable(value).map(File::new).orElse(null));
-              break;
             case "number":
               int intValue = 0;
               if (value != null) {
@@ -740,11 +737,6 @@ public final class GameParser {
         final int min = Integer.parseInt(child.getAttribute("min"));
         final int def = Integer.parseInt(defaultValue);
         editableProperty = new NumberProperty(name, null, max, min, def);
-        break;
-      case "color":
-        // Parse the value as a hexadecimal number
-        final int defaultColor = Integer.valueOf(defaultValue, 16);
-        editableProperty = new ColorProperty(name, null, defaultColor);
         break;
       case "string":
         editableProperty = new StringProperty(name, null, defaultValue);

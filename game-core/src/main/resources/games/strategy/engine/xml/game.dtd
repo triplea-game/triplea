@@ -257,7 +257,7 @@
 
 	
 <!ELEMENT propertyList (property*)>
-	<!ELEMENT property (boolean?, string?, number?, color?, value?) >
+	<!ELEMENT property (boolean?, string?, number?, value?) >
 	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
 	<!ATTLIST property
 		value CDATA ""
@@ -279,8 +279,4 @@
 			max CDATA #REQUIRED
 			min CDATA #REQUIRED
 		>
-		
-		<!ELEMENT color EMPTY>
-		<!ATTLIST color
-		>
-		
+
