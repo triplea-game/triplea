@@ -30,7 +30,7 @@ public class XmlMapperBodyParsingTest {
   void readAttachmentListTag() throws Exception {
     final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     try (InputStream inputStream =
-        XmlMapperTest.class.getClassLoader().getResourceAsStream("xml-parser-example.xml")) {
+        XmlMapperTest.class.getClassLoader().getResourceAsStream("xml-body-parsing-example.xml")) {
       final XMLStreamReader streamReader = inputFactory.createXMLStreamReader(inputStream);
 
       try {
@@ -42,7 +42,13 @@ public class XmlMapperBodyParsingTest {
 
         assertThat(game.notes, is(notNullValue()));
         assertThat(game.notes.value, is(notNullValue()));
-        assertThat(game.description.value, is("<html>Html Test</html>"));
+        assertThat(
+            game.notes.value,
+            is(
+                "<html>\n"
+                    + "                <title>Html Test</title>\n"
+                    + "                <body>Body content</body>\n"
+                    + "            </html>"));
       } finally {
         streamReader.close();
       }

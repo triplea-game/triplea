@@ -23,8 +23,8 @@ public class XmlMapper {
       constructor.setAccessible(true);
       final T instance = constructor.newInstance();
 
-      final XmlParser.TagParser tagParser = new XmlParser.TagParser(pojo.getSimpleName());
-      boolean hasNestedTags = false;
+      final XmlParser tagParser = new XmlParser(pojo.getSimpleName());
+      boolean doNestedParsing = false;
 
       for (final Field field : pojo.getDeclaredFields()) {
         if (field.getAnnotation(Attribute.class) != null) {
@@ -39,23 +39,33 @@ public class XmlMapper {
           field.setAccessible(true);
           tagParser.childTagHandler(
               field.getName(), () -> field.set(instance, mapXmlToClass(field.getType())));
-          hasNestedTags = true;
+          doNestedParsing = true;
         } else if (field.getAnnotation(TagList.class) != null) {
           field.setAccessible(true);
           if (field.getType() == List.class) {
             final List tagList = new ArrayList();
-            field.setAccessible(true);
             field.set(instance, tagList);
 
             final Class<?> listType = field.getAnnotation(TagList.class).value();
             tagParser.childTagHandler(
                 listType.getSimpleName(), () -> tagList.add(mapXmlToClass(listType)));
 
-            hasNestedTags = true;
+            doNestedParsing = true;
           }
+        } else if (field.getAnnotation(TextElement.class) != null) {
+          field.setAccessible(true);
+          tagParser.bodyHandler(
+              textContent -> {
+                try {
+                  field.set(instance, textContent);
+                } catch (final IllegalAccessException e) {
+                  throw new ParsingException(e);
+                }
+              });
+          doNestedParsing = true;
         }
       }
-      if (hasNestedTags) {
+      if (doNestedParsing) {
         tagParser.parse(xmlStreamReader);
       }
 
@@ -63,8 +73,17 @@ public class XmlMapper {
     } catch (final IllegalAccessException
         | NoSuchMethodException
         | InstantiationException
-        | InvocationTargetException e) {
+        | InvocationTargetException
+        | ParsingException e) {
       throw new RuntimeException("Class: " + pojo.getCanonicalName(), e);
+    }
+  }
+
+  private static class ParsingException extends RuntimeException {
+    private static final long serialVersionUID = 397192041805147328L;
+
+    ParsingException(final IllegalAccessException e) {
+      super(e);
     }
   }
 }

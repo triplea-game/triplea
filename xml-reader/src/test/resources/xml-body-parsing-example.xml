@@ -5,7 +5,10 @@
 
     <notes>
         <![CDATA[
-            <html>Html Test</html>
+            <html>
+                <title>Html Test</title>
+                <body>Body content</body>
+            </html>
         ]]>
     </notes>
 </game>
