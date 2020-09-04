@@ -48,7 +48,8 @@ public class XmlMapper {
         if (field.getAnnotation(Tag.class) != null) {
           field.setAccessible(true);
           tagParser.childTagHandler(
-              field.getType().getSimpleName(), () -> field.set(instance, mapXmlToClass(field.getType())));
+              field.getType().getSimpleName(),
+              () -> field.set(instance, mapXmlToClass(field.getType())));
           doNestedParsing = true;
         } else if (field.getAnnotation(TagList.class) != null) {
           field.setAccessible(true);

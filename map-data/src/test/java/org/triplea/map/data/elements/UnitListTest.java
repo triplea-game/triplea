@@ -5,10 +5,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
-
 import org.junit.jupiter.api.Test;
 
 class UnitListTest {

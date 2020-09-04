@@ -32,7 +32,7 @@ class XmlParser {
       log.fine("Processing tag: " + tagName);
     }
 
-    StringBuilder textElementBuilder  = new StringBuilder();
+    StringBuilder textElementBuilder = new StringBuilder();
     while (streamReader.hasNext()) {
       final int event = streamReader.next();
       switch (event) {
@@ -56,7 +56,7 @@ class XmlParser {
           }
           break;
         case XMLStreamReader.END_ELEMENT:
-          if(bodyHandler != null) {
+          if (bodyHandler != null) {
             bodyHandler.accept(textElementBuilder.toString().trim());
           }
           textElementBuilder = new StringBuilder();

@@ -20,11 +20,9 @@ public class PropertyList {
     @Attribute(defaultValue = "false")
     private java.lang.String editable;
 
-    @Attribute
-    private java.lang.String player;
+    @Attribute private java.lang.String player;
 
-    @Attribute
-    private java.lang.String value;
+    @Attribute private java.lang.String value;
 
     @Tag private Property.Value valueProperty;
     @Tag private Property.Boolean booleanProperty;

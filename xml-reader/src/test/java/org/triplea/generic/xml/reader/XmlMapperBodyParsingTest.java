@@ -18,13 +18,11 @@ public class XmlMapperBodyParsingTest {
     @Tag private Notes notes;
 
     private static class Description {
-      @BodyText
-      private String value;
+      @BodyText private String value;
     }
 
     private static class Notes {
-      @BodyText
-      private String value;
+      @BodyText private String value;
     }
   }
 
