@@ -3,7 +3,9 @@
     <production>
         <productionRule name="buyInfantry">
             <cost resource="PUs" quantity="2"/>
+            <cost resource="Oil" quantity="3"/>
             <result resourceOrUnit="Infantry" quantity="1"/>
+            <result resourceOrUnit="Elite" quantity="5"/>
         </productionRule>
         <productionRule name="buyTank">
             <cost resource="PUs" quantity="5"/>

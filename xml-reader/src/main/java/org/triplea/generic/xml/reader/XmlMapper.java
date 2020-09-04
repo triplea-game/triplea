@@ -52,7 +52,7 @@ public class XmlMapper {
 
             doNestedParsing = true;
           }
-        } else if (field.getAnnotation(TextElement.class) != null) {
+        } else if (field.getAnnotation(BodyText.class) != null) {
           field.setAccessible(true);
           tagParser.bodyHandler(
               textContent -> {

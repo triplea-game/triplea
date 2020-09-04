@@ -14,7 +14,7 @@ class PropertyListTest {
   void productionParsingTest() {
     final PropertyList propertyList = parseMapXml("player-list.xml").getPropertyList();
     assertThat(propertyList, is(notNullValue()));
-    assertThat(propertyList.getProperties(), hasSize(7));
+    assertThat(propertyList.getProperties(), hasSize(6));
 
     assertThat(propertyList.getProperties().get(0).getValue(), is("propValue"));
     assertThat(propertyList.getProperties().get(0).getName(), is("propName"));
@@ -36,20 +36,20 @@ class PropertyListTest {
     assertThat(propertyList.getProperties().get(3).getName(), is("booleanProperty"));
     assertThat(propertyList.getProperties().get(3).getEditable(), is("false"));
     assertThat(propertyList.getProperties().get(3).getPlayer(), is(""));
-    assertThat(propertyList.getProperties().get(3).getBoolean(), is(notNullValue()));
+    assertThat(propertyList.getProperties().get(3).getBooleanProperty(), is(notNullValue()));
 
     assertThat(propertyList.getProperties().get(4).getValue(), is(""));
     assertThat(propertyList.getProperties().get(4).getName(), is("stringProperty"));
     assertThat(propertyList.getProperties().get(4).getEditable(), is("false"));
     assertThat(propertyList.getProperties().get(4).getPlayer(), is(""));
-    assertThat(propertyList.getProperties().get(4).getString(), is(notNullValue()));
+    assertThat(propertyList.getProperties().get(4).getStringProperty(), is(notNullValue()));
 
     assertThat(propertyList.getProperties().get(5).getValue(), is(""));
     assertThat(propertyList.getProperties().get(5).getName(), is("numberProperty"));
     assertThat(propertyList.getProperties().get(5).getEditable(), is("false"));
     assertThat(propertyList.getProperties().get(5).getPlayer(), is(""));
-    assertThat(propertyList.getProperties().get(5).getNumber(), is(notNullValue()));
-    assertThat(propertyList.getProperties().get(5).getNumber().getMin(), is("125"));
-    assertThat(propertyList.getProperties().get(5).getNumber().getMax(), is("999"));
+    assertThat(propertyList.getProperties().get(5).getNumberProperty(), is(notNullValue()));
+    assertThat(propertyList.getProperties().get(5).getNumberProperty().getMin(), is("125"));
+    assertThat(propertyList.getProperties().get(5).getNumberProperty().getMax(), is("999"));
   }
 }

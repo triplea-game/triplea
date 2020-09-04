@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,8 @@ import org.junit.jupiter.api.Test;
 class RelationshipTypesTest {
   @Test
   void relationshipTypesParsingTest() {
-    final RelationshipTypes relationshipTypes = parseMapXml("relationship-types.xml").getRelationshipTypes();
+    final RelationshipTypes relationshipTypes =
+        parseMapXml("relationship-types.xml").getRelationshipTypes();
     assertThat(relationshipTypes, is(notNullValue()));
     assertThat(relationshipTypes.getRelationshipTypes(), hasSize(2));
 
