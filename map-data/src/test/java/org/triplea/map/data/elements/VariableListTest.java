@@ -1,21 +1,11 @@
 package org.triplea.map.data.elements;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
-
-import org.junit.jupiter.api.Test;
-
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
-
+import org.junit.jupiter.api.Test;
 
 class VariableListTest {
   @Test

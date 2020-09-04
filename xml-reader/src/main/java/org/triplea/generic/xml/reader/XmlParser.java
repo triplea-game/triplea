@@ -34,7 +34,6 @@ class XmlParser {
 
     StringBuilder textElementBuilder  = new StringBuilder();
     while (streamReader.hasNext()) {
-      log.info("event type: " + streamReader.getEventType());
       final int event = streamReader.next();
       switch (event) {
         case XMLStreamReader.START_ELEMENT:

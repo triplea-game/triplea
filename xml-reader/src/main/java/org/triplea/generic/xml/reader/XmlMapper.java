@@ -9,12 +9,14 @@ import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @AllArgsConstructor
 public class XmlMapper {
   private XMLStreamReader xmlStreamReader;
 
-  public <T> T mapXmlToClass(final Class<T> pojo) throws XMLStreamException {
+  public <T> T mapXmlToClass(final Class<T> pojo) {
     // Todo: do validation on which kinds of tags and types we have.
     // for example, a '@Tag' should not be on a list.
 
@@ -33,12 +35,20 @@ public class XmlMapper {
           final String value =
               Optional.ofNullable(xmlStreamReader.getAttributeValue(null, field.getName()))
                   .orElseGet(() -> field.getAnnotation(Attribute.class).defaultValue());
+
+          log.info(
+              "Class: "
+                  + pojo.getSimpleName()
+                  + ", setting attribute: "
+                  + field.getName()
+                  + ", to value: "
+                  + value);
           field.set(instance, value);
         }
         if (field.getAnnotation(Tag.class) != null) {
           field.setAccessible(true);
           tagParser.childTagHandler(
-              field.getName(), () -> field.set(instance, mapXmlToClass(field.getType())));
+              field.getType().getSimpleName(), () -> field.set(instance, mapXmlToClass(field.getType())));
           doNestedParsing = true;
         } else if (field.getAnnotation(TagList.class) != null) {
           field.setAccessible(true);
@@ -57,6 +67,8 @@ public class XmlMapper {
           tagParser.bodyHandler(
               textContent -> {
                 try {
+                  log.info(
+                      "Class: " + pojo.getSimpleName() + ", Setting text content: " + textContent);
                   field.set(instance, textContent);
                 } catch (final IllegalAccessException e) {
                   throw new ParsingException(e);
@@ -74,8 +86,16 @@ public class XmlMapper {
         | NoSuchMethodException
         | InstantiationException
         | InvocationTargetException
-        | ParsingException e) {
-      throw new RuntimeException("Class: " + pojo.getCanonicalName(), e);
+        | ParsingException
+        | XMLStreamException e) {
+
+      throw new RuntimeException(
+          String.format(
+              "Line: %s, Column: %s, Class: %s",
+              xmlStreamReader.getLocation().getLineNumber(),
+              xmlStreamReader.getLocation().getColumnNumber(),
+              pojo.getCanonicalName()),
+          e);
     }
   }
 

@@ -32,27 +32,10 @@ public class MapElementReader {
     final XMLStreamReader streamReader = inputFactory.createXMLStreamReader(inputStream);
 
     try {
-      return doRead(streamReader);
+      return new XmlMapper(streamReader).mapXmlToClass(Game.class);
     } finally {
       streamReader.close();
     }
-  }
-
-  private static Game doRead(final XMLStreamReader streamReader) throws XMLStreamException {
-    return new XmlMapper(streamReader).mapXmlToClass(Game.class);
-    //
-    //    final int eventType = streamReader.next();
-    //
-    //    switch (eventType) {
-    //      case XMLStreamReader.START_ELEMENT:
-    //        final String elementName = streamReader.getLocalName();
-    //
-    //        switch (elementName) {
-    //          case Game.TAG_NAME:
-    //            return new Game(new XmlReader(streamReader));
-    //        }
-    //    }
-    //    throw new XMLStreamException("Did not find a 'game' tag as a top level and first tag");
   }
 
   /** Recursive method to concatenate to a string buffer all nested exception messages. */

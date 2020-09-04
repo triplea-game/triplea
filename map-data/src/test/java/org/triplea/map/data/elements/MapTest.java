@@ -29,10 +29,10 @@ public class MapTest {
 
     assertThat(map.getConnections().get(0), is(notNullValue()));
     assertThat(map.getConnections().get(0).getT1(), is("start1"));
-    assertThat(map.getConnections().get(0).getT1(), is("end1"));
+    assertThat(map.getConnections().get(0).getT2(), is("end1"));
 
     assertThat(map.getConnections().get(1), is(notNullValue()));
     assertThat(map.getConnections().get(1).getT1(), is("start2"));
-    assertThat(map.getConnections().get(1).getT1(), is("end2"));
+    assertThat(map.getConnections().get(1).getT2(), is("end2"));
   }
 }

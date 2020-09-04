@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 class PropertyListTest {
 
   @Test
-  void productionParsingTest() {
-    final PropertyList propertyList = parseMapXml("player-list.xml").getPropertyList();
+  void propertyParsing() {
+    final PropertyList propertyList = parseMapXml("property-list.xml").getPropertyList();
     assertThat(propertyList, is(notNullValue()));
     assertThat(propertyList.getProperties(), hasSize(6));
 
@@ -30,7 +30,8 @@ class PropertyListTest {
     assertThat(propertyList.getProperties().get(2).getName(), is("notes"));
     assertThat(propertyList.getProperties().get(2).getEditable(), is("false"));
     assertThat(propertyList.getProperties().get(2).getPlayer(), is(""));
-    assertThat(propertyList.getProperties().get(2).getValue(), is("Notes here"));
+    assertThat(propertyList.getProperties().get(2).getValueProperty(), is(notNullValue()));
+    assertThat(propertyList.getProperties().get(2).getValueProperty().getData(), is("Notes here"));
 
     assertThat(propertyList.getProperties().get(3).getValue(), is(""));
     assertThat(propertyList.getProperties().get(3).getName(), is("booleanProperty"));
@@ -49,7 +50,7 @@ class PropertyListTest {
     assertThat(propertyList.getProperties().get(5).getEditable(), is("false"));
     assertThat(propertyList.getProperties().get(5).getPlayer(), is(""));
     assertThat(propertyList.getProperties().get(5).getNumberProperty(), is(notNullValue()));
-    assertThat(propertyList.getProperties().get(5).getNumberProperty().getMin(), is("125"));
+    assertThat(propertyList.getProperties().get(5).getNumberProperty().getMin(), is("123"));
     assertThat(propertyList.getProperties().get(5).getNumberProperty().getMax(), is("999"));
   }
 }

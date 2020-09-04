@@ -15,24 +15,25 @@ public class PropertyList {
 
   @Getter
   public static class Property {
-    @Attribute(defaultValue = "")
-    private String value;
-
-    @Attribute private String name;
+    @Attribute private java.lang.String name;
 
     @Attribute(defaultValue = "false")
-    private String editable;
+    private java.lang.String editable;
 
-    @Attribute(defaultValue = "")
-    private String player;
+    @Attribute
+    private java.lang.String player;
+
+    @Attribute
+    private java.lang.String value;
 
     @Tag private Property.Value valueProperty;
     @Tag private Property.Boolean booleanProperty;
     @Tag private Property.String stringProperty;
     @Tag private Property.Number numberProperty;
 
+    @Getter
     public static class Value {
-      @BodyText private String data;
+      @BodyText private java.lang.String data;
     }
 
     public static class Boolean {}
@@ -41,8 +42,8 @@ public class PropertyList {
 
     @Getter
     public static class Number {
-      @Attribute private String min;
-      @Attribute private String max;
+      @Attribute private java.lang.String min;
+      @Attribute private java.lang.String max;
     }
   }
 }

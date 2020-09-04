@@ -12,7 +12,7 @@ public class ProductionTest {
 
   @Test
   void productionParsingTest() {
-    final Production production = parseMapXml("player-list.xml").getProduction();
+    final Production production = parseMapXml("production.xml").getProduction();
     assertThat(production, is(notNullValue()));
     assertThat(production.getProductionRules(), hasSize(2));
 
@@ -75,9 +75,9 @@ public class ProductionTest {
     assertThat(production.getPlayerProductions().get(1).getFrontier(), is("ItaliansFrontier"));
 
     assertThat(production.getPlayerRepairs(), hasSize(2));
-    assertThat(production.getPlayerRepairs().get(0), is("France"));
-    assertThat(production.getPlayerRepairs().get(0), is("repair"));
-    assertThat(production.getPlayerRepairs().get(1), is("Russia"));
-    assertThat(production.getPlayerRepairs().get(1), is("repair"));
+    assertThat(production.getPlayerRepairs().get(0).getPlayer(), is("France"));
+    assertThat(production.getPlayerRepairs().get(0).getFrontier(), is("repair"));
+    assertThat(production.getPlayerRepairs().get(1).getPlayer(), is("Russia"));
+    assertThat(production.getPlayerRepairs().get(1).getFrontier(), is("repair"));
   }
 }

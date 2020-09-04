@@ -7,6 +7,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.map.data.elements.Technology.PlayerTech;
 
 class TechnologyTest {
   @Test
@@ -15,16 +16,16 @@ class TechnologyTest {
     assertThat(technology, is(notNullValue()));
     assertThat(technology.getTechnologies().getTechNames(), hasSize(3));
     assertThat(technology.getTechnologies().getTechNames().get(0).getName(), is("armour"));
-    assertThat(technology.getTechnologies().getTechNames().get(1).getName(), is("tracer_round"));
+    assertThat(technology.getTechnologies().getTechNames().get(1).getName(), is("tracer_rounds"));
     assertThat(
         technology.getTechnologies().getTechNames().get(2).getName(), is("creeping_barrage"));
     assertThat(
         technology.getTechnologies().getTechNames().get(2).getTech(),
         is("improvedArtillerySupport"));
 
-    assertThat(technology.getTechnologies().getPlayerTechs(), hasSize(2));
+    assertThat(technology.getPlayerTechs(), hasSize(2));
 
-    PlayerTech usTech = technology.getTechnologies().getPlayerTechs().get(0);
+    PlayerTech usTech = technology.getPlayerTechs().get(0);
 
     assertThat(usTech.getPlayer(), is("USA"));
     assertThat(usTech.getCategories(), hasSize(3));
@@ -46,7 +47,7 @@ class TechnologyTest {
     assertThat(usTech.getCategories().get(2).getTechs(), hasSize(1));
     assertThat(usTech.getCategories().get(2).getTechs().get(0).getName(), is("radio"));
 
-    PlayerTech ukTech = technology.getTechnologies().getPlayerTechs().get(1);
+    PlayerTech ukTech = technology.getPlayerTechs().get(1);
     assertThat(ukTech.getPlayer(), is("UK"));
     assertThat(ukTech.getCategories(), hasSize(3));
 
@@ -65,7 +66,7 @@ class TechnologyTest {
     assertThat(ukTech.getCategories().get(2).getName(), is("Air"));
     assertThat(ukTech.getCategories().get(2).getTechs(), hasSize(3));
     assertThat(ukTech.getCategories().get(2).getTechs().get(0).getName(), is("airTraffic_control"));
-    assertThat(ukTech.getCategories().get(2).getTechs().get(1).getName(), is("strategic_bombin"));
+    assertThat(ukTech.getCategories().get(2).getTechs().get(1).getName(), is("strategic_bombing"));
     assertThat(ukTech.getCategories().get(2).getTechs().get(2).getName(), is("radio"));
   }
 }
