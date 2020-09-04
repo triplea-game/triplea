@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 class DiceSidesTest {
   @Test
   void readInfoTag() {
-    final Game game = parseMapXml("dice-sides.xml");
+    final DiceSides diceSides = parseMapXml("dice-sides.xml").getDiceSides();
 
-    assertThat(game.getDiceSides().getValue(), is("20"));
+    assertThat(diceSides.getValue(), is("20"));
   }
 }

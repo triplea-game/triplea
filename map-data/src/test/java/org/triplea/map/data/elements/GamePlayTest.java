@@ -16,8 +16,7 @@ class GamePlayTest {
 
   @Test
   void readGamePlayTag() {
-    final Game game = parseMapXml("game-play.xml");
-    final GamePlay gamePlay = game.getGamePlay();
+    final GamePlay gamePlay = parseMapXml("game-play.xml").getGamePlay();
     final List<Delegate> delegates = gamePlay.getDelegates();
     assertThat(delegates, hasSize(2));
     assertThat(delegates.get(0).getName(), is("delegate1"));

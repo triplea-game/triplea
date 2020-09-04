@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 class InfoTest {
   @Test
   void readInfoTag() {
-    final Game parsedMap = parseMapXml("info.xml");
+    final Info info = parseMapXml("info.xml").getInfo();
 
-    assertThat(parsedMap.getInfo().getName(), is("info-tag-test"));
-    assertThat(parsedMap.getInfo().getVersion(), is("123.xyz"));
+    assertThat(info.getName(), is("info-tag-test"));
+    assertThat(info.getVersion(), is("123.xyz"));
   }
 }

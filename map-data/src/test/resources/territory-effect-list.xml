@@ -1,0 +1,8 @@
+<game>
+    <territoryEffectList>
+        <territoryEffect name="city"/>
+        <territoryEffect name="mountain"/>
+        <territoryEffect name="sea"/>
+    </territoryEffectList>
+</game>
+

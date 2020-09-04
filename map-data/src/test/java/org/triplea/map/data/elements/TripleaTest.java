@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 public class TripleaTest {
   @Test
   void readInfoTag() {
-    final Game parsedMap = parseMapXml("triplea.xml");
+    final Triplea triplea = parseMapXml("triplea.xml").getTriplea();
 
-    assertThat(parsedMap.getTriplea().getMinimumVersion(), is("min-version"));
+    assertThat(triplea.getMinimumVersion(), is("min-version"));
   }
 }

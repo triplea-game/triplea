@@ -14,9 +14,9 @@ public class AttachmentListTest {
 
   @Test
   void readAttachmentListTag() {
-    final Game parsedMap = parseMapXml("attachment-list.xml");
+    final AttachmentList attachmentList = parseMapXml("attachment-list.xml").getAttachmentList();
 
-    final List<Attachment> attachments = parsedMap.getAttachmentList().getAttachments();
+    final List<Attachment> attachments = attachmentList.getAttachments();
     assertThat(attachments, hasSize(2));
 
     assertThat(attachments.get(0).getForeach(), is("foreach-value"));

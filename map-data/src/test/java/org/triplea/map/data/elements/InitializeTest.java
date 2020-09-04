@@ -21,8 +21,7 @@ class InitializeTest {
 
   @Test
   void readInitilizeTag() {
-    final Game game = parseMapXml("initialize.xml");
-    final Initialize initialize = game.getInitialize();
+    final Initialize initialize =  parseMapXml("initialize.xml").getInitialize();
     final OwnerInitialize ownerInitialize = initialize.getOwnerInitialize();
     final List<TerritoryOwner> territoryOwners = ownerInitialize.getTerritoryOwners();
     assertThat(territoryOwners, hasSize(2));
