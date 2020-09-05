@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,12 +33,12 @@ import org.triplea.util.LocalizeHtml;
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
-  private GameChooserEntry chosen;
+  private DefaultGameChooserEntry chosen;
 
   private GameChooser(
       final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
     super(owner, "Select a Game", true);
-    final JList<GameChooserEntry> gameList = new JList<>(gameChooserModel);
+    final JList<DefaultGameChooserEntry> gameList = new JList<>(gameChooserModel);
     if (gameName == null || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
     } else {
@@ -88,7 +89,11 @@ public class GameChooser extends JDialog {
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
-    notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
+    try {
+      notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
+    } catch (final GameParseException e) {
+      notesPanel.setText("Error reading file: " + e.getMessage());
+    }
 
     final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -119,7 +124,12 @@ public class GameChooser extends JDialog {
     gameList.addListSelectionListener(
         e -> {
           if (!e.getValueIsAdjusting()) {
-            notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
+
+            try {
+              notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
+            } catch (final GameParseException gameParseException) {
+              notesPanel.setText("Error reading game file: " + gameParseException.getMessage());
+            }
             // scroll to the top of the notes screen
             SwingUtilities.invokeLater(
                 () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
@@ -142,7 +152,7 @@ public class GameChooser extends JDialog {
    * Displays the Game Chooser dialog and returns the game selected by the user or {@code null} if
    * no game was selected.
    */
-  public static GameChooserEntry chooseGame(
+  public static DefaultGameChooserEntry chooseGame(
       final Frame parent, final GameChooserModel gameChooserModel, final String defaultGameName) {
     final GameChooser chooser = new GameChooser(parent, gameChooserModel, defaultGameName);
     chooser.setSize(800, 600);
@@ -152,11 +162,12 @@ public class GameChooser extends JDialog {
     return chooser.chosen;
   }
 
-  private static String buildGameNotesText(final GameChooserEntry gameChooserEntry) {
+  private static String buildGameNotesText(final DefaultGameChooserEntry gameChooserEntry)
+      throws GameParseException {
     if (gameChooserEntry == null) {
       return "";
     }
-    final GameData data = gameChooserEntry.getGameData();
+    final GameData data = gameChooserEntry.fullyParseGameData();
     final StringBuilder notes = new StringBuilder();
     notes.append("<h1>").append(data.getGameName()).append("</h1>");
     final String mapNameDir = data.getProperties().get("mapName", "");

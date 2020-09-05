@@ -16,9 +16,9 @@ class GameChooserModelTest {
   void testOrdering() throws Exception {
     SwingUtilities.invokeAndWait(
         () -> {
-          final GameChooserEntry entry1 = mock(GameChooserEntry.class);
-          final GameChooserEntry entry2 = mock(GameChooserEntry.class);
-          final GameChooserEntry entry3 = mock(GameChooserEntry.class);
+          final DefaultGameChooserEntry entry1 = mock(DefaultGameChooserEntry.class);
+          final DefaultGameChooserEntry entry2 = mock(DefaultGameChooserEntry.class);
+          final DefaultGameChooserEntry entry3 = mock(DefaultGameChooserEntry.class);
           when(entry1.compareTo(entry2)).thenReturn(-1);
           when(entry2.compareTo(entry3)).thenReturn(-1);
           when(entry3.compareTo(entry2)).thenReturn(1);

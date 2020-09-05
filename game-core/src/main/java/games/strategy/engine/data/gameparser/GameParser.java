@@ -81,7 +81,6 @@ public final class GameParser {
   private final GameDataVariableParser variableParser = new GameDataVariableParser();
   private final NodeFinder nodeFinder = new NodeFinder();
 
-  @VisibleForTesting
   GameParser(final GameData gameData, final String mapName) {
     this(gameData, mapName, new XmlGameElementMapper());
   }
@@ -156,7 +155,7 @@ public final class GameParser {
   }
 
   @Nonnull
-  private GameData parseShallow(final InputStream stream)
+  GameData parseShallow(final InputStream stream)
       throws GameParseException, EngineVersionException {
     final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
     parseMapProperties(root);

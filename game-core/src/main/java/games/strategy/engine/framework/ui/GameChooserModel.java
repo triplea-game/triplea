@@ -25,11 +25,11 @@ import org.triplea.swing.SwingAction;
 
 /** The model for a {@link GameChooser} dialog. */
 @Log
-public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
+public final class GameChooserModel extends DefaultListModel<DefaultGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
   private static class CorruptXmlFileException extends RuntimeException {
-    private static long serialVersionUID = -3711929808603654576L;
+    private static final long serialVersionUID = -3711929808603654576L;
 
     CorruptXmlFileException(final String fileName) {
       super("File '" + fileName + "' was declared in zip but can't be opened.");
@@ -45,16 +45,16 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     this(parseMapFiles());
   }
 
-  public GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
+  public GameChooserModel(final Set<DefaultGameChooserEntry> gameChooserEntries) {
     gameChooserEntries.stream().sorted().forEach(this::addElement);
   }
 
   @Override
-  public GameChooserEntry get(final int i) {
+  public DefaultGameChooserEntry get(final int i) {
     return super.get(i);
   }
 
-  public static Set<GameChooserEntry> parseMapFiles() {
+  public static Set<DefaultGameChooserEntry> parseMapFiles() {
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
         .parallelStream()
         .flatMap(
@@ -111,7 +111,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
                       "Could not parse map file correctly, would you like to remove it?\n"
                           + map.getAbsolutePath()
                           + "\n(You may see this error message again if you keep the file)";
-                  String title = "Corrup Map File Found";
+                  String title = "Corrupt Map File Found";
                   final int optionType = JOptionPane.YES_NO_OPTION;
                   int messageType = JOptionPane.WARNING_MESSAGE;
                   final int result =
@@ -140,9 +140,9 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    *
    * @param uri URI of the new entry
    */
-  private static Optional<GameChooserEntry> newGameChooserEntry(final URI uri) {
+  private static Optional<DefaultGameChooserEntry> newGameChooserEntry(final URI uri) {
     try {
-      return Optional.of(GameChooserEntry.newInstance(uri));
+      return Optional.of(new DefaultGameChooserEntry(uri));
     } catch (final EngineVersionException e) {
       // suppress any maps that have version problems (map requires a min version
       // not compatible with current version). Returning empty here should
@@ -155,10 +155,10 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   }
 
   /** Searches for a GameChooserEntry whose gameName matches the input parameter. */
-  public Optional<GameChooserEntry> findByName(final String name) {
+  public Optional<DefaultGameChooserEntry> findByName(final String name) {
     return IntStream.range(0, size())
         .mapToObj(this::get)
-        .filter(e -> e.getGameData().getGameName().equals(name))
+        .filter(e -> e.getGameName().equals(name))
         .findAny();
   }
 
@@ -174,14 +174,5 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
         .filter(File::isFile)
         .filter(game -> game.getName().toLowerCase().endsWith("xml"))
         .map(File::toURI);
-  }
-
-  /**
-   * Removes the given entry from this model.
-   *
-   * @param entryToBeRemoved The element to be removed.
-   */
-  public void removeEntry(final GameChooserEntry entryToBeRemoved) {
-    this.removeElement(entryToBeRemoved);
   }
 }
