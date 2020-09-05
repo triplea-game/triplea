@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;

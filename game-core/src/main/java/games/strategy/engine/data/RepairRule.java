@@ -29,12 +29,12 @@ public class RepairRule extends DefaultNamed {
     this.results = new IntegerMap<>(results);
   }
 
-  protected void addCost(final Resource resource, final int quantity) {
+  public void addCost(final Resource resource, final int quantity) {
     costs.put(resource, quantity);
   }
 
   /** Benefits must be a resource or a unit. */
-  protected void addResult(final NamedAttachable obj, final int quantity) {
+  public void addResult(final NamedAttachable obj, final int quantity) {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
       throw new IllegalArgumentException(
           "results must be units or resources, not:" + obj.getClass().getName());

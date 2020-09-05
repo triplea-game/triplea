@@ -1,5 +1,6 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.gameparser;
 
+import games.strategy.engine.data.GameParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package games.strategy.triplea.xml;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.TestAttachment;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.triplea.delegate.TestDelegate;
 import java.io.FileInputStream;

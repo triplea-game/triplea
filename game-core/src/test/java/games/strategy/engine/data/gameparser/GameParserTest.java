@@ -1,4 +1,4 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.gameparser;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -6,6 +6,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

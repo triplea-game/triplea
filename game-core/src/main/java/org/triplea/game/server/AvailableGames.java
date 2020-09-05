@@ -2,7 +2,7 @@ package org.triplea.game.server;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
