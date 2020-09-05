@@ -2,9 +2,9 @@
 
 set -u
 
-database_port=5433
-database_name=maps_db
-database_user=maps_user
+database_port=5432
+database_name=lobby_db
+database_user=lobby_user
 
 # Check if we can connect to database
 if ! echo 'select 1' \
