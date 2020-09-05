@@ -1,11 +1,36 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.gameparser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.data.gameparser.XmlGameElementMapper;
+import games.strategy.engine.data.AllianceTracker;
+import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.EngineVersionException;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.IAttachment;
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerList;
+import games.strategy.engine.data.ProductionFrontier;
+import games.strategy.engine.data.ProductionFrontierList;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.RelationshipTypeList;
+import games.strategy.engine.data.RepairFrontier;
+import games.strategy.engine.data.RepairFrontierList;
+import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.TechnologyFrontierList;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;

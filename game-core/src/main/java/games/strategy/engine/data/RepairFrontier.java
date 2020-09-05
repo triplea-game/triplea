@@ -26,7 +26,7 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
     this.rules = new ArrayList<>(rules);
   }
 
-  void addRule(final RepairRule rule) {
+  public void addRule(final RepairRule rule) {
     if (rules.contains(rule)) {
       throw new IllegalStateException("Rule already added:" + rule);
     }

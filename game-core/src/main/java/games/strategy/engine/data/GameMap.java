@@ -60,7 +60,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /** Bi-directional. T1 connects to T2, and T2 connects to T1. */
-  protected void addConnection(final Territory t1, final Territory t2) {
+  public void addConnection(final Territory t1, final Territory t2) {
     if (t1.equals(t2)) {
       throw new IllegalArgumentException("Cannot connect a territory to itself: " + t1);
     }

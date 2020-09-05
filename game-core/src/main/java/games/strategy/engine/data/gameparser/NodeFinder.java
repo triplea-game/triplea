@@ -1,5 +1,6 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.gameparser;
 
+import games.strategy.engine.data.GameParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

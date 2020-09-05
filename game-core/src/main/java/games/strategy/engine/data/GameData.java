@@ -279,7 +279,7 @@ public class GameData implements Serializable {
     return loader;
   }
 
-  void setGameVersion(final Version gameVersion) {
+  public void setGameVersion(final Version gameVersion) {
     this.gameVersion = gameVersion;
   }
 
@@ -296,7 +296,7 @@ public class GameData implements Serializable {
     return gameName;
   }
 
-  void setDiceSides(final int diceSides) {
+  public void setDiceSides(final int diceSides) {
     if (diceSides > 0 && diceSides <= 200) {
       this.diceSides = diceSides;
     } else {

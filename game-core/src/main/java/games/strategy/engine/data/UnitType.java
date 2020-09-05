@@ -21,7 +21,7 @@ public class UnitType extends NamedAttachable {
     return create(quantity, owner, isTemp, 0, 0);
   }
 
-  List<Unit> create(
+  public List<Unit> create(
       final int quantity,
       final GamePlayer owner,
       final boolean isTemp,

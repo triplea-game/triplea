@@ -20,7 +20,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.XmlReader;
+import games.strategy.engine.data.gameparser.XmlReader;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.GameProperties;

@@ -1,4 +1,4 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.gameparser;
 
 import static com.google.common.base.Preconditions.checkState;
 import static org.hamcrest.MatcherAssert.assertThat;
