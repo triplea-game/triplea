@@ -3,6 +3,7 @@ package org.triplea.game.server;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.gameparser.GameParser;
+import games.strategy.engine.data.gameparser.ShallowGameParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -109,8 +110,7 @@ final class AvailableGames {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        final GameData data = GameParser.parseShallow(uri.toString(), input);
-        final String name = data.getGameName();
+        final String name = ShallowGameParser.readGameName(uri.toString(), input);
         availableGames.put(name, uri);
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Exception while parsing: " + uri.toString(), e);

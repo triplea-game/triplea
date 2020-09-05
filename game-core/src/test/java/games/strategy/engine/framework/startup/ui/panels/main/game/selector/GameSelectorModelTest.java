@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.framework.startup.mc.ClientModel;
-import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.net.URI;
 import java.util.Observer;
@@ -35,8 +34,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   private static final String fakeFileName = "/hack/and/slash";
 
   private GameSelectorModel testObj;
-
-  @Mock private GameChooserEntry mockEntry;
 
   @Mock private GameData mockGameData;
 
@@ -137,11 +134,9 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   @Test
   void testLoadFromNewGameChooserEntry() throws Exception {
-    when(mockEntry.getGameData()).thenReturn(mockGameData);
     prepareMockGameDataExpectations();
-    when(mockEntry.getUri()).thenReturn(new URI("abc"));
 
-    testObj.load(mockEntry);
+    testObj.load(new URI("abc"), mockGameData);
 
     assertThat(testObj.getFileName(), is("-"));
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
@@ -157,9 +152,7 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     testObj.load(mockGameData, testFileName);
     assertThat(testObj.getFileName(), is(testFileName));
 
-    when(mockEntry.getUri()).thenReturn(new URI("abc"));
-    when(mockEntry.getGameData()).thenReturn(mockGameData);
-    testObj.load(mockEntry);
+    testObj.load(new URI("abc"), mockGameData);
     assertThat(testObj.getFileName(), is(not(testFileName)));
   }
 
