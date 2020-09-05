@@ -12,7 +12,8 @@ normal="\e[0m"
 
 function main() {
   echo -e "[${bold_green}STARTING${normal}] ${bold}$database_name on port $database_port${normal}"
-  docker run --rm -d --name="$docker_container_name" -p "$database_port:5432" "triplea/$docker_container_name"
+  docker run --rm -d --name="$docker_container_name" -p "$database_port:5432" "triplea/$docker_container_name" \
+     || docker start "$docker_container_name"
   waitForDatabaseToStart
 
   PSQL="psql -h localhost -U $database_user -p $database_port -w -d postgres"
