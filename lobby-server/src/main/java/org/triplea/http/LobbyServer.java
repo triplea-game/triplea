@@ -51,24 +51,24 @@ import org.triplea.web.socket.WebSocketMessagingBus;
  * any Jersey plugins, registering resources (controllers) and injecting those resources with
  * configuration properties from 'AppConfig'.
  */
-public class ServerApplication extends Application<AppConfig> {
+public class LobbyServer extends Application<LobbyServerConfig> {
 
   private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};
 
-  private ServerConfiguration<AppConfig> serverConfiguration;
+  private ServerConfiguration<LobbyServerConfig> serverConfiguration;
 
   /**
    * Main entry-point method, launches the drop-wizard http server. If no args are passed then will
    * use default values suitable for local development.
    */
   public static void main(final String[] args) throws Exception {
-    final ServerApplication application = new ServerApplication();
+    final LobbyServer application = new LobbyServer();
     // if no args are provided then we will use default values.
     application.run(args.length == 0 ? DEFAULT_ARGS : args);
   }
 
   @Override
-  public void initialize(final Bootstrap<AppConfig> bootstrap) {
+  public void initialize(final Bootstrap<LobbyServerConfig> bootstrap) {
     serverConfiguration =
         new ServerConfiguration<>(
             bootstrap,
@@ -82,7 +82,7 @@ public class ServerApplication extends Application<AppConfig> {
   }
 
   @Override
-  public void run(final AppConfig configuration, final Environment environment) {
+  public void run(final LobbyServerConfig configuration, final Environment environment) {
     if (configuration.isLogRequestAndResponses()) {
       serverConfiguration.enableRequestResponseLogging(environment);
     }
@@ -137,7 +137,7 @@ public class ServerApplication extends Application<AppConfig> {
   }
 
   private List<Object> endPointControllers(
-      final AppConfig appConfig,
+      final LobbyServerConfig appConfig,
       final Jdbi jdbi,
       final Chatters chatters,
       final WebSocketMessagingBus playerMessagingBus,

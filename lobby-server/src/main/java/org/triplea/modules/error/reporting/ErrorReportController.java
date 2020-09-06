@@ -13,8 +13,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.AppConfig;
 import org.triplea.http.HttpController;
+import org.triplea.http.LobbyServerConfig;
 import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.error.report.CanUploadErrorReportResponse;
 import org.triplea.http.client.error.report.CanUploadRequest;
@@ -29,14 +29,15 @@ public class ErrorReportController extends HttpController {
   @Nonnull private final Function<CreateIssueParams, ErrorReportResponse> errorReportIngestion;
   @Nonnull private final Function<CanUploadRequest, CanUploadErrorReportResponse> canReportModule;
 
-  public static ErrorReportController build(final AppConfig configuration, final Jdbi jdbi) {
+  public static ErrorReportController build(
+      final LobbyServerConfig configuration, final Jdbi jdbi) {
     final boolean isTest = configuration.getGithubApiToken().equals("test");
 
     final GithubIssueClient githubIssueClient =
         GithubIssueClient.builder()
-            .uri(AppConfig.GITHUB_WEB_SERVICE_API_URL)
+            .uri(LobbyServerConfig.GITHUB_WEB_SERVICE_API_URL)
             .authToken(configuration.getGithubApiToken())
-            .githubOrg(AppConfig.GITHUB_ORG)
+            .githubOrg(LobbyServerConfig.GITHUB_ORG)
             .githubRepo(configuration.getGithubRepo())
             .isTest(isTest)
             .build();
