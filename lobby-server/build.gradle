@@ -4,8 +4,8 @@ plugins {
 }
 
 archivesBaseName = "$group-$name"
-description = 'TripleA DropWizard Http Server'
-mainClassName = 'org.triplea.http.ServerApplication'
+description = 'Lobby Http Server'
+mainClassName = 'org.triplea.http.LobbyServer'
 ext {
     releasesDir = file("$buildDir/releases")
 }

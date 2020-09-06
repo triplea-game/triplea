@@ -23,8 +23,8 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.AppConfig;
 import org.triplea.http.HttpController;
+import org.triplea.http.LobbyServerConfig;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
@@ -46,13 +46,13 @@ public class LobbyWatcherController extends HttpController {
   @VisibleForTesting
   public static final String TEST_ONLY_GAME_POSTING_PATH = "/test-only/lobby/post-game";
 
-  @Nonnull private final AppConfig appConfig;
+  @Nonnull private final LobbyServerConfig appConfig;
   @Nonnull private final GameListing gameListing;
   @Nonnull private final ChatUploadModule chatUploadModule;
   @Nonnull private final GamePostingModule gamePostingModule;
 
   public static LobbyWatcherController build(
-      final AppConfig appConfig, final Jdbi jdbi, final GameListing gameListing) {
+      final LobbyServerConfig appConfig, final Jdbi jdbi, final GameListing gameListing) {
     return LobbyWatcherController.builder()
         .appConfig(appConfig)
         .gameListing(gameListing)

@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.db.dao.temp.password.TempPasswordDao;
-import org.triplea.http.AppConfig;
+import org.triplea.http.LobbyServerConfig;
 
 /** Sends a temporary password to a target user. */
 @AllArgsConstructor
@@ -20,7 +20,7 @@ import org.triplea.http.AppConfig;
 class PasswordEmailSender implements BiConsumer<String, String> {
   private static final String FROM = "no-reply@triplea-game.org";
 
-  private final AppConfig appConfig;
+  private final LobbyServerConfig appConfig;
 
   @Override
   public void accept(final String email, final String generatedPassword) {

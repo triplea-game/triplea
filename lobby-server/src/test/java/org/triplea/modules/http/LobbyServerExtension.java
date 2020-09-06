@@ -6,15 +6,15 @@ import java.util.Collection;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.triplea.db.JdbiDatabase;
 import org.triplea.dropwizard.test.DropwizardServerExtension;
-import org.triplea.http.AppConfig;
-import org.triplea.http.ServerApplication;
+import org.triplea.http.LobbyServer;
+import org.triplea.http.LobbyServerConfig;
 
-class LobbyServerExtension extends DropwizardServerExtension<AppConfig> {
-  private static DropwizardTestSupport<AppConfig> testSupport =
-      new DropwizardTestSupport<>(ServerApplication.class, "configuration.yml");
+class LobbyServerExtension extends DropwizardServerExtension<LobbyServerConfig> {
+  private static DropwizardTestSupport<LobbyServerConfig> testSupport =
+      new DropwizardTestSupport<>(LobbyServer.class, "configuration.yml");
 
   @Override
-  protected DropwizardTestSupport<AppConfig> getSupport() {
+  protected DropwizardTestSupport<LobbyServerConfig> getSupport() {
     return testSupport;
   }
 

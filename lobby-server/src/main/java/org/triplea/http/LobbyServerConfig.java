@@ -18,7 +18,7 @@ import lombok.Setter;
  * by specifying the appropriate file. In the YML files secret or sensitive values are defined by
  * environment variables.
  */
-public class AppConfig extends Configuration {
+public class LobbyServerConfig extends Configuration {
   public static final String GITHUB_ORG = "triplea-game";
   public static final URI GITHUB_WEB_SERVICE_API_URL = URI.create("https://api.github.com");
 

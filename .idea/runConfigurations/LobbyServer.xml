@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ServerApplication" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="org.triplea.http.ServerApplication" />
-    <module name="triplea.lobby-server" />
+  <configuration default="false" name="LobbyServer" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="org.triplea.http.LobbyServer" />
+    <module name="triplea.lobby-server.main" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/lobby-server" />
     <extension name="coverage">
       <pattern>
