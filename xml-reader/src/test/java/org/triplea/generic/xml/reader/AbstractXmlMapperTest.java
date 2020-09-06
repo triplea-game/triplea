@@ -4,6 +4,7 @@ import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.triplea.generic.xml.TestUtils;
 
 @RequiredArgsConstructor
 public abstract class AbstractXmlMapperTest {
@@ -14,7 +15,7 @@ public abstract class AbstractXmlMapperTest {
 
   @BeforeEach
   void setup() throws Exception {
-    inputStream = XmlMapperTestUtils.openFile(file);
+    inputStream = TestUtils.openFile(file);
     xmlMapper = new XmlMapper(inputStream);
   }
 
