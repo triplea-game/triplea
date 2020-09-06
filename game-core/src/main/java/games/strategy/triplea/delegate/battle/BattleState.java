@@ -5,9 +5,15 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
+import java.util.EnumSet;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
+
+  enum Side {
+    OFFENSE,
+    DEFENSE,
+  }
 
   int getBattleRound();
 
@@ -20,6 +26,10 @@ public interface BattleState {
   Collection<Unit> getDefendingUnits();
 
   Collection<Unit> getDefendingWaitingToDie();
+
+  Collection<Unit> getWaitingToDie(EnumSet<Side> sides);
+
+  void clearWaitingToDie(EnumSet<Side> sides);
 
   Collection<Unit> getOffensiveAa();
 

@@ -71,6 +71,8 @@ import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
@@ -1067,8 +1069,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
-    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
+    final int attackSubs = getIndex(execs, OffensiveFirstStrike.class);
+    final int defendSubs = getIndex(execs, DefensiveFirstStrike.class);
     assertTrue(attackSubs < defendSubs);
     // fight, each sub should fire and hit
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0));
@@ -1127,8 +1129,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
-    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
+    final int attackSubs = getIndex(execs, OffensiveFirstStrike.class);
+    final int defendSubs = getIndex(execs, DefensiveFirstStrike.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
@@ -1200,8 +1202,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
-    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
+    final int attackSubs = getIndex(execs, OffensiveFirstStrike.class);
+    final int defendSubs = getIndex(execs, DefensiveFirstStrike.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
@@ -1255,8 +1257,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
-    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
+    final int attackSubs = getIndex(execs, OffensiveFirstStrike.class);
+    final int defendSubs = getIndex(execs, DefensiveFirstStrike.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking sub hits with sneak attack, but defending sub gets to return fire because it is a
@@ -1325,8 +1327,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
-    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
+    final int attackSubs = getIndex(execs, OffensiveFirstStrike.class);
+    final int defendSubs = getIndex(execs, DefensiveFirstStrike.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
@@ -1382,8 +1384,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
-    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
+    final int attackSubs = getIndex(execs, OffensiveFirstStrike.class);
+    final int defendSubs = getIndex(execs, DefensiveFirstStrike.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectCasualtiesPer(
         bridge,

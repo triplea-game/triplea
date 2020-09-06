@@ -32,6 +32,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleSteps.FIRE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -122,8 +123,8 @@ public class BattleStepsTest {
     final Unit unit = mock(Unit.class);
     final UnitType unitType = mock(UnitType.class);
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
-    when(unit.getType()).thenReturn(unitType);
-    when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
+    lenient().when(unit.getType()).thenReturn(unitType);
+    lenient().when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
     return new UnitAndAttachment(unit, unitAttachment);
   }
 
@@ -139,7 +140,7 @@ public class BattleStepsTest {
 
   public static Unit givenUnitFirstStrike() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    lenient().when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
@@ -174,7 +175,7 @@ public class BattleStepsTest {
 
   public static Unit givenUnitDestroyer() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsDestroyer()).thenReturn(true);
+    lenient().when(unitAndAttachment.unitAttachment.getIsDestroyer()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
@@ -1373,7 +1374,6 @@ public class BattleStepsTest {
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     final List<String> steps =
         newStepBuilder()
@@ -1567,7 +1567,6 @@ public class BattleStepsTest {
     final Unit unit2 = unitAndAttachment.unit;
 
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);

@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
+import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
@@ -357,12 +358,19 @@ public class OffensiveSubsRetreatTest {
     }
 
     public MockGameData withWW2V2(final boolean value) {
-      when(gameProperties.get(WW2V2, false)).thenReturn(value);
+      lenient().when(gameProperties.get(WW2V2, false)).thenReturn(value);
       return this;
     }
 
     public MockGameData withDefendingSubsSneakAttack(final boolean value) {
-      when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(value);
+      lenient().when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(value);
+      return this;
+    }
+
+    public MockGameData withDefendingSuicideAndMunitionUnitsDoNotFire(final boolean value) {
+      lenient()
+          .when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
+          .thenReturn(value);
       return this;
     }
   }

@@ -6,7 +6,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,6 +80,28 @@ public class FakeBattleState implements BattleState {
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
     return dependentUnits;
+  }
+
+  @Override
+  public Collection<Unit> getWaitingToDie(final EnumSet<Side> sides) {
+    final Collection<Unit> waitingToDie = new ArrayList<>();
+    if (sides.contains(Side.OFFENSE)) {
+      waitingToDie.addAll(attackingWaitingToDie);
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      waitingToDie.addAll(defendingWaitingToDie);
+    }
+    return waitingToDie;
+  }
+
+  @Override
+  public void clearWaitingToDie(final EnumSet<Side> sides) {
+    if (sides.contains(Side.OFFENSE)) {
+      attackingWaitingToDie.clear();
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      defendingWaitingToDie.clear();
+    }
   }
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
