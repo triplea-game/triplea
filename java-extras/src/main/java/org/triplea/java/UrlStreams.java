@@ -60,19 +60,38 @@ public final class UrlStreams {
     }
   }
 
+  /**
+   * Opens a stream, runs the provided function giving it as input the stream that was opened and
+   * then closes the stream returning any value from the function. If the stream cannot be opened or
+   * the function returns a null, then a 'Optional.empty' is returned.
+   */
+  public static <T> Optional<T> openStream(
+      final URI uri, final Function<InputStream, T> streamOperation) {
+    final Optional<InputStream> stream = openStream(uri);
+    if (stream.isPresent()) {
+      try (InputStream inputStream = stream.get()) {
+        return Optional.ofNullable(streamOperation.apply(inputStream));
+      } catch (final IOException e) {
+        log.log(Level.SEVERE, "Unable to open: " + uri + ", " + e.getMessage(), e);
+        return Optional.empty();
+      }
+    } else {
+      return Optional.empty();
+    }
+  }
+
   protected Optional<InputStream> newStream(final URL url) {
     try {
       final URLConnection connection = urlConnectionFactory.apply(url);
 
       // Turn off URL connection caching to avoid open file leaks. When caching is on, the
-      // InputStream
-      // returned is left open, even after you call 'InputStream.close()'
+      // InputStream returned is left open, even after you call 'InputStream.close()'
       connection.setDefaultUseCaches(
           false); // TODO: verify - setDefaultUseCaches(false) may not be necessary
       connection.setUseCaches(false);
       return Optional.of(connection.getInputStream());
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Unable to open: " + url, e);
+      log.log(Level.SEVERE, "Unable to open: " + url + ", " + e.getMessage(), e);
       return Optional.empty();
     }
   }
