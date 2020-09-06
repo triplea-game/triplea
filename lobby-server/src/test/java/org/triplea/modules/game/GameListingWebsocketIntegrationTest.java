@@ -35,7 +35,6 @@ import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
 import org.triplea.modules.http.AllowedUserRole;
 import org.triplea.modules.http.LobbyServerTest;
 
-
 /*
 GameListingWebsocketIntegrationTest > Post a game, verify listener is notified FAILED
     Wanted but not invoked:
