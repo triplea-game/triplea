@@ -104,24 +104,19 @@ public final class GameParser {
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
   public static Optional<GameData> parse(final URI mapUri) {
-
-    final Optional<InputStream> inputStream = UrlStreams.openStream(mapUri);
-    if (inputStream.isEmpty()) {
-      return Optional.empty();
-    }
-
-    try (InputStream input = inputStream.get()) {
-      return Optional.of(parse(mapUri.toString(), input, new XmlGameElementMapper()));
-    } catch (final EngineVersionException e) {
-      log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
-      return Optional.empty();
-    } catch (final GameParseException e) {
-      log.log(Level.WARNING, "Could not parse:" + mapUri, e);
-      return Optional.empty();
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error opening file: " + mapUri + ", " + e.getMessage(), e);
-      return Optional.empty();
-    }
+    return UrlStreams.openStream(
+        mapUri,
+        inputStream -> {
+          try {
+            return parse(mapUri.toString(), inputStream, new XmlGameElementMapper());
+          } catch (final EngineVersionException e) {
+            log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
+            return null;
+          } catch (final GameParseException e) {
+            log.log(Level.WARNING, "Could not parse:" + mapUri, e);
+            return null;
+          }
+        });
   }
 
   @Nonnull
