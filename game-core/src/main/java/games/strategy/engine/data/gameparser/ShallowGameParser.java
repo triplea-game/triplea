@@ -38,7 +38,7 @@ public class ShallowGameParser {
           e);
       return Optional.empty();
 
-    } catch (XMLStreamException e) {
+    } catch (final XMLStreamException e) {
       log.log(
           Level.WARNING,
           "Unexpected error reading Game XML file in map: " + mapName + ", " + e.getMessage(),
