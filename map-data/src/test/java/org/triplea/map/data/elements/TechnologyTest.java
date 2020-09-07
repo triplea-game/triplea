@@ -25,7 +25,7 @@ class TechnologyTest {
 
     assertThat(technology.getPlayerTechs(), hasSize(2));
 
-    PlayerTech usTech = technology.getPlayerTechs().get(0);
+    final PlayerTech usTech = technology.getPlayerTechs().get(0);
 
     assertThat(usTech.getPlayer(), is("USA"));
     assertThat(usTech.getCategories(), hasSize(3));
@@ -47,7 +47,7 @@ class TechnologyTest {
     assertThat(usTech.getCategories().get(2).getTechs(), hasSize(1));
     assertThat(usTech.getCategories().get(2).getTechs().get(0).getName(), is("radio"));
 
-    PlayerTech ukTech = technology.getPlayerTechs().get(1);
+    final PlayerTech ukTech = technology.getPlayerTechs().get(1);
     assertThat(ukTech.getPlayer(), is("UK"));
     assertThat(ukTech.getCategories(), hasSize(3));
 
