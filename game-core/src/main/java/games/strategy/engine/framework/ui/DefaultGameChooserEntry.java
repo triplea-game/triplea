@@ -8,10 +8,8 @@ import java.net.URI;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
 
-@Log
 @EqualsAndHashCode(of = "uri")
 @Getter
 public class DefaultGameChooserEntry implements Comparable<DefaultGameChooserEntry> {
