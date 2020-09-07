@@ -18,9 +18,13 @@ import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 public class XmlMapper implements Closeable {
   private final XMLStreamReader xmlStreamReader;
 
-  public XmlMapper(final InputStream inputStream) throws XMLStreamException {
+  public XmlMapper(final InputStream inputStream) throws XmlParsingException {
     final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-    xmlStreamReader = inputFactory.createXMLStreamReader(inputStream);
+    try {
+      xmlStreamReader = inputFactory.createXMLStreamReader(inputStream);
+    } catch (final XMLStreamException e) {
+      throw new XmlParsingException("Exception reading XML file, " + e.getMessage(), e);
+    }
   }
 
   public <T> T mapXmlToObject(final Class<T> pojo) throws XmlParsingException {

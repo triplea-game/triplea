@@ -1,0 +1,6 @@
+<game>
+    <resourceList>
+        <resource name="PUs" />
+        <resource name="Gold" isDisplayedFor="player1"/>
+    </resourceList>
+</game>

@@ -1,0 +1,35 @@
+<game>
+
+    <production>
+        <productionRule name="buyInfantry">
+            <cost resource="PUs" quantity="2"/>
+            <cost resource="Oil" quantity="3"/>
+            <result resourceOrUnit="Infantry" quantity="1"/>
+            <result resourceOrUnit="Elite" quantity="5"/>
+        </productionRule>
+        <productionRule name="buyTank">
+            <cost resource="PUs" quantity="5"/>
+            <result resourceOrUnit="Tank" quantity="1"/>
+        </productionRule>
+
+        <repairRule name="repairFactoryIndustrialTechnology">
+            <cost resource="PUs" quantity="1"/>
+            <result resourceOrUnit="factory" quantity="2"/>
+        </repairRule>
+
+        <repairFrontier name="repair">
+            <repairRules name="repairFactory"/>
+        </repairFrontier>
+
+        <productionFrontier name="NeutralFrontier">
+            <frontierRules name="buyInfantry"/>
+            <frontierRules name="buyArtillery"/>
+        </productionFrontier>
+
+        <playerProduction player="Russians" frontier="RussiansFrontier"/>
+        <playerProduction player="Italians" frontier="ItaliansFrontier"/>
+
+        <playerRepair player="France" frontier="repair"/>
+        <playerRepair player="Russia" frontier="repair"/>
+    </production>
+</game>

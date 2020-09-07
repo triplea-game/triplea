@@ -1,0 +1,8 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    implementation project(":java-extras")
+    api project(":xml-reader")
+}
