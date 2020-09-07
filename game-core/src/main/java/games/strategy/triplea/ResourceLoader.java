@@ -1,7 +1,5 @@
 package games.strategy.triplea;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -122,7 +120,7 @@ public class ResourceLoader implements Closeable {
    */
   @VisibleForTesting
   static List<File> getMapDirectoryCandidates(final String mapName, final File userMapsFolder) {
-    checkNotNull(mapName);
+    Preconditions.checkNotNull(mapName);
 
     final String dirName = File.separator + mapName;
     final String normalizedMapName = File.separator + normalizeMapName(mapName) + "-master";
@@ -145,7 +143,7 @@ public class ResourceLoader implements Closeable {
    */
   public static List<File> getMapZipFileCandidates(
       final String mapName, final File userMapsFolder) {
-    checkNotNull(mapName);
+    Preconditions.checkNotNull(mapName);
 
     final String normalizedMapName = normalizeMapName(mapName);
     return List.of(
