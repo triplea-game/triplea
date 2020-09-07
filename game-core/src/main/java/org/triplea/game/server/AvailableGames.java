@@ -1,10 +1,7 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.EngineVersionException;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.ShallowGameParser;
 import java.io.File;
 import java.net.URI;
@@ -73,7 +70,7 @@ final class AvailableGames {
         inputStream -> {
           try {
             return ShallowGameParser.readGameName(uri.toString(), inputStream);
-          } catch (final GameParseException | EngineVersionException e) {
+          } catch (final GameParseException e) {
             log.log(Level.SEVERE, "Exception while parsing: " + uri, e);
             return null;
           }
