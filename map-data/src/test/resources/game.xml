@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+    <info/>
+    <triplea/>
+    <diceSides/>
+    <variableList/>
+    <map/>
+    <resourceList/>
+    <playerList/>
+    <unitList/>
+    <relationshipTypes/>
+    <territoryEffectList/>
+    <gamePlay/>
+    <production/>
+    <technology/>
+    <attachmentList/>
+    <initialize/>
+    <propertyList/>
+</game>

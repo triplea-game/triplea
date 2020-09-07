@@ -1,0 +1,13 @@
+<game>
+    <playerList>
+        <player name="player1"/>
+        <player
+                name="player2"
+                optional="true"
+                canBeDisabled="true"
+                defaultType="AI"
+                isHidden="true"/>
+
+        <alliance player="player1" alliance="alliance1"/>
+    </playerList>
+</game>

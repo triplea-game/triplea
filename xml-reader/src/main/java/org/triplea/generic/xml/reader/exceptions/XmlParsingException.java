@@ -5,6 +5,10 @@ import javax.xml.stream.XMLStreamReader;
 public class XmlParsingException extends Exception {
   private static final long serialVersionUID = -4759291721256502536L;
 
+  public <T> XmlParsingException(final String message, final Throwable e) {
+    super(message, e);
+  }
+
   public <T> XmlParsingException(
       final XMLStreamReader xmlStreamReader, final Class<T> pojo, final Throwable e) {
     super(

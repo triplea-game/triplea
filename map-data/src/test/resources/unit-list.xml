@@ -1,0 +1,7 @@
+<game>
+    <unitList>
+        <unit name="Infantry" />
+        <unit name="Militia"/>
+        <unit name="Helicopter"/>
+    </unitList>
+</game>
