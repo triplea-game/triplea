@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.EngineVersionException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -143,13 +142,8 @@ public final class GameChooserModel extends DefaultListModel<DefaultGameChooserE
   private static Optional<DefaultGameChooserEntry> newGameChooserEntry(final URI uri) {
     try {
       return Optional.of(new DefaultGameChooserEntry(uri));
-    } catch (final EngineVersionException e) {
-      // suppress any maps that have version problems (map requires a min version
-      // not compatible with current version). Returning empty here should
-      // remove such maps from the map selection list.
-      return Optional.empty();
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Could not parse: " + uri, e);
+      log.log(Level.INFO, "Invalid map: " + uri + ", " + e.getMessage(), e);
     }
     return Optional.empty();
   }

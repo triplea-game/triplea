@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.gameparser.GameParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -158,11 +158,9 @@ public class GameChooser extends JDialog {
       return "";
     }
 
-    final GameData data;
-    try {
-      data = gameChooserEntry.fullyParseGameData();
-    } catch (final GameParseException e) {
-      return "Error reading file: " + e.getMessage();
+    final GameData data = GameParser.parse(gameChooserEntry.getUri()).orElse(null);
+    if (data == null) {
+      return "Error reading file.. ";
     }
 
     final StringBuilder notes = new StringBuilder();

@@ -34,8 +34,7 @@ public class HeadlessLaunchAction implements LaunchAction {
         gameSelectorModel.load(autoSaveFile);
       }
     } catch (final Exception e1) {
-      log.log(Level.SEVERE, "Failed to load game", e1);
-      gameSelectorModel.resetGameDataToNull();
+      log.log(Level.SEVERE, "Failed to load game: " + e1.getMessage(), e1);
     }
   }
 

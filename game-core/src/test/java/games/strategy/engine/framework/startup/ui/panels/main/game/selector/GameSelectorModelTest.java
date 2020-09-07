@@ -17,6 +17,7 @@ import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.net.URI;
 import java.util.Observer;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -99,15 +100,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void testResetGameDataToNull() {
-    assertHasEmptyData(testObj);
-    this.testObjectSetMockGameData();
-
-    testObj.resetGameDataToNull();
-    assertHasEmptyData(testObj);
-  }
-
-  @Test
   void testCanSelect() {
     assertThat(testObj.isCanSelect(), is(true));
     testObj.setCanSelect(false);
@@ -135,8 +127,9 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   @Test
   void testLoadFromNewGameChooserEntry() throws Exception {
     prepareMockGameDataExpectations();
+    testObj = new GameSelectorModel(uri -> Optional.of(mockGameData));
 
-    testObj.load(new URI("abc"), mockGameData);
+    testObj.load(new URI("abc"));
 
     assertThat(testObj.getFileName(), is("-"));
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
@@ -146,13 +139,14 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   @Test
   void saveGameNameGetsResetWhenLoadingOtherMap() throws Exception {
     final String testFileName = "someFileName";
+    testObj = new GameSelectorModel(uri -> Optional.of(mockGameData));
     when(mockGameData.getSequence()).thenReturn(mock(GameSequence.class));
     when(mockGameData.getGameVersion()).thenReturn(new Version(0, 0, 0));
     when(mockGameData.getGameName()).thenReturn("Dummy name");
     testObj.load(mockGameData, testFileName);
     assertThat(testObj.getFileName(), is(testFileName));
 
-    testObj.load(new URI("abc"), mockGameData);
+    testObj.load(new URI("abc"));
     assertThat(testObj.getFileName(), is(not(testFileName)));
   }
 
@@ -198,8 +192,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     prepareMockGameDataExpectations();
     testObj.load(mockGameData, fakeFileName);
     assertThat(testObj.getFileName(), is(fakeFileName));
-    testObj.resetGameDataToNull();
-    assertThat(testObj.getFileName(), is("-"));
   }
 
   @Test

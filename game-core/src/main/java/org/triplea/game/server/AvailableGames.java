@@ -1,8 +1,6 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.ShallowGameParser;
 import java.io.File;
 import java.io.FileInputStream;
@@ -136,26 +134,7 @@ final class AvailableGames {
    * @param gameName The name of the game whose file path is to be retrieved; may be {@code null}.
    * @return The path to the game file; or {@code null} if the game is not available.
    */
-  String getGameFilePath(final String gameName) {
-    return Optional.ofNullable(availableGames.get(gameName)).map(Object::toString).orElse(null);
-  }
-
-  /** Can return null. */
-  GameData getGameData(final String gameName) {
-    return Optional.ofNullable(availableGames.get(gameName))
-        .flatMap(AvailableGames::parse)
-        .orElse(null);
-  }
-
-  private static Optional<GameData> parse(final URI uri) {
-    final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
-    if (inputStream.isPresent()) {
-      try (InputStream input = inputStream.get()) {
-        return Optional.of(GameParser.parse(uri.toString(), input));
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Exception while parsing: " + uri.toString(), e);
-      }
-    }
-    return Optional.empty();
+  URI getGameFilePath(final String gameName) {
+    return availableGames.get(gameName);
   }
 }

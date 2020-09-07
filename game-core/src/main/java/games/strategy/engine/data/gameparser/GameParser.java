@@ -44,7 +44,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,6 +54,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -61,6 +64,7 @@ import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
+import org.triplea.java.UrlStreams;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 import org.w3c.dom.Element;
@@ -99,10 +103,25 @@ public final class GameParser {
    *
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  @Nonnull
-  public static GameData parse(final String mapName, final InputStream stream)
-      throws GameParseException, EngineVersionException {
-    return parse(mapName, stream, new XmlGameElementMapper());
+  public static Optional<GameData> parse(final URI mapUri) {
+
+    final Optional<InputStream> inputStream = UrlStreams.openStream(mapUri);
+    if (inputStream.isEmpty()) {
+      return Optional.empty();
+    }
+
+    try (InputStream input = inputStream.get()) {
+      return Optional.of(parse(mapUri.toString(), input, new XmlGameElementMapper()));
+    } catch (final EngineVersionException e) {
+      log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
+      return Optional.empty();
+    } catch (final GameParseException e) {
+      log.log(Level.WARNING, "Could not parse:" + mapUri, e);
+      return Optional.empty();
+    } catch (final IOException e) {
+      log.log(Level.SEVERE, "Error opening file: " + mapUri + ", " + e.getMessage(), e);
+      return Optional.empty();
+    }
   }
 
   @Nonnull

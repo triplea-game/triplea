@@ -93,8 +93,7 @@ public class HeadlessGameServer {
     log.info("Requested to change map to: " + gameName);
     // don't change mid-game and only if we have the game
     if (setupPanelModel.getPanel() != null && game == null && availableGames.hasGame(gameName)) {
-      gameSelectorModel.load(
-          availableGames.getGameData(gameName), availableGames.getGameFilePath(gameName));
+      gameSelectorModel.load(availableGames.getGameFilePath(gameName));
       log.info("Changed to game map: " + gameName);
     } else {
       log.info(
