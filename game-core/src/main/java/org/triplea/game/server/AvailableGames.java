@@ -1,10 +1,7 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.EngineVersionException;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.ShallowGameParser;
 import java.io.File;
 import java.net.URI;
@@ -73,7 +70,7 @@ final class AvailableGames {
         inputStream -> {
           try {
             return ShallowGameParser.readGameName(uri.toString(), inputStream);
-          } catch (final GameParseException | EngineVersionException e) {
+          } catch (final GameParseException e) {
             log.log(Level.SEVERE, "Exception while parsing: " + uri, e);
             return null;
           }
@@ -97,24 +94,7 @@ final class AvailableGames {
    * @param gameName The name of the game whose file path is to be retrieved; may be {@code null}.
    * @return The path to the game file; or {@code null} if the game is not available.
    */
-  String getGameFilePath(final String gameName) {
-    return Optional.ofNullable(availableGames.get(gameName)).map(Object::toString).orElse(null);
-  }
-
-  Optional<GameData> parseGameData(final String gameName) {
-    return Optional.ofNullable(availableGames.get(gameName)).flatMap(AvailableGames::parse);
-  }
-
-  private static Optional<GameData> parse(final URI uri) {
-    return UrlStreams.openStream(
-        uri,
-        input -> {
-          try {
-            return GameParser.parse(uri.toString(), input);
-          } catch (final Exception e) {
-            log.log(Level.SEVERE, "Exception while parsing: " + uri, e);
-            return null;
-          }
-        });
+  URI getGameFilePath(final String gameName) {
+    return availableGames.get(gameName);
   }
 }

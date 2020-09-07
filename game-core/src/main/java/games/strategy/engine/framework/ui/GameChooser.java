@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.gameparser.GameParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -89,11 +89,7 @@ public class GameChooser extends JDialog {
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
-    try {
-      notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
-    } catch (final GameParseException e) {
-      notesPanel.setText("Error reading file: " + e.getMessage());
-    }
+    notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
 
     final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -124,12 +120,7 @@ public class GameChooser extends JDialog {
     gameList.addListSelectionListener(
         e -> {
           if (!e.getValueIsAdjusting()) {
-
-            try {
-              notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
-            } catch (final GameParseException gameParseException) {
-              notesPanel.setText("Error reading game file: " + gameParseException.getMessage());
-            }
+            notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
             // scroll to the top of the notes screen
             SwingUtilities.invokeLater(
                 () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
@@ -162,12 +153,16 @@ public class GameChooser extends JDialog {
     return chooser.chosen;
   }
 
-  private static String buildGameNotesText(final DefaultGameChooserEntry gameChooserEntry)
-      throws GameParseException {
+  private static String buildGameNotesText(final DefaultGameChooserEntry gameChooserEntry) {
     if (gameChooserEntry == null) {
       return "";
     }
-    final GameData data = gameChooserEntry.fullyParseGameData();
+
+    final GameData data = GameParser.parse(gameChooserEntry.getUri()).orElse(null);
+    if (data == null) {
+      return "Error reading file.. ";
+    }
+
     final StringBuilder notes = new StringBuilder();
     notes.append("<h1>").append(data.getGameName()).append("</h1>");
     final String mapNameDir = data.getProperties().get("mapName", "");
@@ -178,10 +173,6 @@ public class GameChooser extends JDialog {
     notes.append("<p></p>");
     final String trimmedNotes = data.getProperties().get("notes", "").trim();
     if (!trimmedNotes.isEmpty()) {
-      // UiContext resource loader should be null (or potentially is still the last game
-      // we played's loader),
-      // so we send the map dir name so that our localizing of image links can get a new resource
-      // loader if needed
       notes.append(LocalizeHtml.localizeImgLinksInHtml(trimmedNotes, mapNameDir));
     }
     return notes.toString();

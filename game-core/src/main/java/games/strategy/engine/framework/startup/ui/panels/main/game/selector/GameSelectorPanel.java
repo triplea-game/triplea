@@ -5,7 +5,6 @@ import static org.triplea.swing.SwingComponents.DialogWithLinksTypes;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
@@ -365,16 +364,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           GameChooser.chooseGame(
               JOptionPane.getFrameForComponent(this), gameChooserModel, model.getGameName());
       if (entry != null) {
-
-        BackgroundTaskRunner.runInBackground(
-            "Loading map...",
-            () -> {
-              try {
-                model.load(entry.getUri(), entry.fullyParseGameData());
-              } catch (final GameParseException e) {
-                model.load(entry.getUri(), null);
-              }
-            });
+        BackgroundTaskRunner.runInBackground("Loading map...", () -> model.load(entry.getUri()));
         // warning: NPE check is not to protect against concurrency, another thread could still null
         // out game data.
         // The NPE check is to protect against the case where there are errors loading game, in
