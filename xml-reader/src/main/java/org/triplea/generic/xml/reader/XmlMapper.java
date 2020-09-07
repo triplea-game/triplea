@@ -16,7 +16,7 @@ import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 
 @Log
 public class XmlMapper implements Closeable {
-  private XMLStreamReader xmlStreamReader;
+  private final XMLStreamReader xmlStreamReader;
 
   public XmlMapper(final InputStream inputStream) throws XMLStreamException {
     final XMLInputFactory inputFactory = XMLInputFactory.newInstance();

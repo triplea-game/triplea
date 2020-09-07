@@ -139,29 +139,6 @@ public final class GameParser {
         String.format("map name: '%s', game name: '%s', %s", mapName, gameName, message), cause);
   }
 
-  /**
-   * Performs a shallow parse of the game definition contained in the specified stream.
-   *
-   * @return A partial {@link GameData} instance that can be used to display metadata about the game
-   *     (e.g. when displaying all available maps); it cannot be used to play the game.
-   */
-  @Nonnull
-  public static GameData parseShallow(final String mapName, final InputStream stream)
-      throws GameParseException, EngineVersionException {
-    checkNotNull(mapName);
-    checkNotNull(stream);
-
-    return new GameParser(new GameData(), mapName).parseShallow(stream);
-  }
-
-  @Nonnull
-  GameData parseShallow(final InputStream stream)
-      throws GameParseException, EngineVersionException {
-    final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
-    parseMapProperties(root);
-    return data;
-  }
-
   private void parseMapProperties(final Element root)
       throws GameParseException, EngineVersionException {
     // mandatory fields

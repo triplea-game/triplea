@@ -1,0 +1,17 @@
+<game>
+    <info anotherAttribute="attribute" version="red herring"/>
+    <info name="World At War" version="2.1.1"/>
+    <info somethingElse="attribute" version="red herring"/>
+    <property name="not-the-notes">
+        <value>
+            This is red herring data.
+        </value>
+    </property>
+    <property name="notes">
+        <value>
+            <![CDATA[
+              These are the game notes!
+            ]]>
+        </value>
+    </property>
+</game>
