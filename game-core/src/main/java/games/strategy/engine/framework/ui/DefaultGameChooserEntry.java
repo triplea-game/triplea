@@ -1,34 +1,28 @@
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.gameparser.ShallowGameParser;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.triplea.java.UrlStreams;
 
 @EqualsAndHashCode(of = "uri")
 @Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefaultGameChooserEntry implements Comparable<DefaultGameChooserEntry> {
 
   private final URI uri;
-  private String gameName;
+  private final String gameName;
 
-  public DefaultGameChooserEntry(final URI uri) throws IOException, GameParseException {
-    this.uri = uri;
+  public static Optional<DefaultGameChooserEntry> newDefaultGameChooserEntry(final URI uri) {
 
-    final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
-    if (inputStream.isEmpty()) {
-      // this means the map was deleted out from under us.
-      return;
-    }
-
-    try (InputStream input = inputStream.get()) {
-      gameName = ShallowGameParser.readGameName(uri.toString(), input);
-    }
+    return UrlStreams.openStream(
+            uri,
+            inputStream -> ShallowGameParser.readGameName(uri.toString(), inputStream).orElse(null))
+        .map(gameName -> new DefaultGameChooserEntry(uri, gameName));
   }
 
   @Override
