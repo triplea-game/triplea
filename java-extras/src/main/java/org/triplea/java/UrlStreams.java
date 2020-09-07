@@ -1,5 +1,6 @@
 package org.triplea.java;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -80,7 +81,8 @@ public final class UrlStreams {
     }
   }
 
-  protected Optional<InputStream> newStream(final URL url) {
+  @VisibleForTesting
+  Optional<InputStream> newStream(final URL url) {
     try {
       final URLConnection connection = urlConnectionFactory.apply(url);
 
