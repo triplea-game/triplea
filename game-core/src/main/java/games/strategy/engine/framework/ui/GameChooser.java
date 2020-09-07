@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.gameparser.GameParser;
+import games.strategy.engine.data.gameparser.ShallowGameParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import org.triplea.java.UrlStreams;
+import org.triplea.map.data.elements.PropertyList;
+import org.triplea.map.data.elements.ShallowParsedGame;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingComponents;
@@ -158,22 +160,34 @@ public class GameChooser extends JDialog {
       return "";
     }
 
-    final GameData data = GameParser.parse(gameChooserEntry.getUri()).orElse(null);
-    if (data == null) {
+    final ShallowParsedGame shallowParsedGame =
+        UrlStreams.openStream(
+                gameChooserEntry.getUri(),
+                inputStream -> ShallowGameParser.parseShallow(inputStream).orElse(null))
+            .orElse(null);
+
+    if (shallowParsedGame == null) {
       return "Error reading file.. ";
     }
 
     final StringBuilder notes = new StringBuilder();
-    notes.append("<h1>").append(data.getGameName()).append("</h1>");
-    final String mapNameDir = data.getProperties().get("mapName", "");
-    appendListItem("Map Name", mapNameDir, notes);
-    appendListItem("Number Of Players", data.getPlayerList().size() + "", notes);
-    appendListItem("Location", gameChooserEntry.getUri() + "", notes);
-    appendListItem("Version", data.getGameVersion() + "", notes);
+    notes.append("<h1>").append(shallowParsedGame.getInfo().getName()).append("</h1>");
+    appendListItem(
+        "Number Of Players", shallowParsedGame.getPlayerList().getPlayers().size() + "", notes);
+    appendListItem("Version", shallowParsedGame.getInfo().getVersion() + "", notes);
     notes.append("<p></p>");
-    final String trimmedNotes = data.getProperties().get("notes", "").trim();
-    if (!trimmedNotes.isEmpty()) {
-      notes.append(LocalizeHtml.localizeImgLinksInHtml(trimmedNotes, mapNameDir));
+    final String gameNotes =
+        shallowParsedGame
+            .getProperty("notes")
+            .map(PropertyList.Property::getValueProperty)
+            .map(PropertyList.Property.Value::getData)
+            .orElse("");
+    if (!gameNotes.isEmpty()) {
+      shallowParsedGame
+          .getProperty("mapName")
+          .map(PropertyList.Property::getValue)
+          .ifPresent(
+              mapName -> notes.append(LocalizeHtml.localizeImgLinksInHtml(gameNotes, mapName)));
     }
     return notes.toString();
   }

@@ -47,33 +47,4 @@ public class XmlScanner {
       }
     }
   }
-
-  /**
-   * Does a scan of an XML file that searches for a specific tag with specifiec attribute key value
-   * pair and returns the body content of a specific child tag underneath such a tag. The scan stops
-   * once such content is found, this is designed to run quickly.
-   *
-   * <p>For example, one could search for something that looks like the following:
-   *
-   * <pre>{@code
-   * <parentTag attribute="attributeToFind">
-   *     <bodyContent>This is the content that is returned</bodyContent>
-   * </parentTag>
-   *
-   * }</pre>
-   *
-   * To find the above content one would supply parameters with:
-   *
-   * <ul>
-   *   <li>parentTagName = parentTag
-   *   <li>parentTagAttribute = attribute
-   *   <li>parentTagAttributeValue = attributeToFind
-   *   <li>childTagName = bodyContent
-   * </ul>
-   *
-   * @return Child tag body content if found (trimmed), or an if not found an empty optional.
-   */
-  public Optional<String> scanForBodyText(final BodyTextScannerParameters parameters) {
-    return executeScan(() -> BodyTextScanner.scanForBodyText(xmlStreamReader, parameters));
-  }
 }

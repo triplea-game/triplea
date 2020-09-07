@@ -1,7 +1,6 @@
 package org.triplea.generic.xml.scanner;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -55,56 +54,5 @@ class XmlScannerTest {
     return List.of(
         AttributeScannerParameters.builder().tag("DNE").attributeName("name").build(),
         AttributeScannerParameters.builder().tag("info").attributeName("DNE").build());
-  }
-
-  @Test
-  void scanningForTagBodyText() {
-    final Optional<String> result =
-        xmlScanner.scanForBodyText(
-            BodyTextScannerParameters.builder()
-                .parentTag("property")
-                .parentTagAttributeName("name")
-                .parentTagAttributeValue("notes")
-                .childTag("value")
-                .build());
-
-    assertThat(result, isPresentAndIs("These are the game notes!"));
-  }
-
-  @ParameterizedTest
-  @MethodSource
-  void scanningForTagBodyTextNegativeCases(final BodyTextScannerParameters parameters) {
-    final Optional<String> result = xmlScanner.scanForBodyText(parameters);
-
-    assertThat(result, is(isEmpty()));
-  }
-
-  @SuppressWarnings("unused")
-  static List<BodyTextScannerParameters> scanningForTagBodyTextNegativeCases() {
-    return List.of(
-        BodyTextScannerParameters.builder()
-            .parentTag("DNE")
-            .parentTagAttributeName("name")
-            .parentTagAttributeValue("notes")
-            .childTag("value")
-            .build(),
-        BodyTextScannerParameters.builder()
-            .parentTag("property")
-            .parentTagAttributeName("DNE")
-            .parentTagAttributeValue("notes")
-            .childTag("value")
-            .build(),
-        BodyTextScannerParameters.builder()
-            .parentTag("property")
-            .parentTagAttributeName("name")
-            .parentTagAttributeValue("DNE")
-            .childTag("value")
-            .build(),
-        BodyTextScannerParameters.builder()
-            .parentTag("property")
-            .parentTagAttributeName("name")
-            .parentTagAttributeValue("notes")
-            .childTag("DNE")
-            .build());
   }
 }
