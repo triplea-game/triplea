@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Loading sample data"
+psql -h localhost -U lobby_user lobby_db < "$(dirname "$0")/sql/sample_data/lobby_db_sample_data.sql"
+

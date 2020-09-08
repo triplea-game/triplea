@@ -6,5 +6,5 @@
 
 (
   cd "$(dirname "$0")" || exit
-  docker build --tag triplea/lobby-db:latest .
+  docker build --tag triplea/database:latest .
 )

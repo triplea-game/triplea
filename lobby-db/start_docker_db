@@ -1,41 +1,42 @@
 #!/bin/bash
 
-set -u
+set -eu
 
-database_name=lobby_db
-database_user=lobby_user
-database_port=5432
-docker_container_name=lobby-db
 bold="\e[1m"
 bold_green="${bold}\e[32m"
 normal="\e[0m"
 
-
 function main() {
-  echo -e "[${bold_green}STARTING${normal}] ${bold}$database_name on port $database_port${normal}"
+  echo -e "[${bold_green}STARTING DATABASE${normal}]"
 
-  docker run --rm -d --name="$docker_container_name" -p "$database_port:5432" "triplea/$docker_container_name" \
-    || docker start  "$docker_container_name"
+  runDocker
   waitForDatabaseToStart
 
-  PSQL="psql -h localhost -U $database_user -p $database_port -w -d postgres"
-  echo "create database $database_name" | $PSQL
-
-  echo "Deploying schema to $database_name"
+  echo "Deploying schema to lobby_db"
   pwd
-  "$(dirname "$0")/../gradlew" flywayMigrate
+  "$(dirname "$0")/../gradlew" flywayMigrateAll
 
-  echo "Loading sample data"
-  psql -h localhost -U lobby_user lobby_db < "$(dirname "$0")/sample_data.sql"
-  echo -e "[${bold_green}DONE${normal}] ${bold}$database_name${normal}"
+  "$(dirname "$0")"/load_sample_data
+  echo -e "[${bold_green}DONE${normal}]"
+}
+
+function runDocker() {
+  echo "Stopping database.."
+  docker stop database || echo "[OK] Database not running.."
+  docker run \
+    --rm  -d \
+    --name="database" \
+    -p "5432:5432" \
+    -v "$(pwd)/$(dirname $0)/sql/init/:/docker-entrypoint-initdb.d/" \
+    "triplea/database"
 }
 
 function waitForDatabaseToStart() {
-  echo -n "Waiting for Database $database_name start.."
+  echo -n "Waiting for Database start.."
   tryAttempt=0
   while ! (
     echo 'select 1' \
-       | psql -h localhost -p "$database_port" -U "$database_user" "$database_name" 2> /dev/null \
+       | psql -h localhost -U postgres 2> /dev/null \
        | grep -q '1 row'); do
 
     sleep 0.2
