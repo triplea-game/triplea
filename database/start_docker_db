@@ -27,7 +27,7 @@ function runDocker() {
     --rm  -d \
     --name="database" \
     -p "5432:5432" \
-    -v "$(pwd)/$(dirname $0)/sql/init/:/docker-entrypoint-initdb.d/" \
+    -v "$(pwd)/$(dirname "$0")/sql/init/:/docker-entrypoint-initdb.d/" \
     "triplea/database"
 }
 

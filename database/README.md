@@ -4,8 +4,6 @@ Hosts database migrations and docker to run a database locally.
 
 Databases are expected to be on a single server with different schemas
 
-
-
 ## Schemas
 
 ### Lobby DB
@@ -27,4 +25,4 @@ named "test" with password "test".
 ### Maps DB
 
 Supports the maps-server and stores:
-  - upload map information
+- upload map information
