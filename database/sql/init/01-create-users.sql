@@ -1,3 +1,3 @@
-create user lobby_user;
-create user maps_user;
+create user lobby_user password 'postgres';
+create user maps_user password 'postgres';
 

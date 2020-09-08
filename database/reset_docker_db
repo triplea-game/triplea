@@ -4,6 +4,8 @@ set -eu
 
 PSQL="psql -h localhost -U postgres"
 
+export PGPASSWORD=postgres
+
 # Check if we can connect to database
 if ! echo 'select 1' \
        | $PSQL 2> /dev/null \

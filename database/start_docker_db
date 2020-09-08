@@ -24,16 +24,18 @@ function runDocker() {
   echo "Stopping database.."
   docker stop database || echo "[OK] Database not running.."
   docker run \
-    --rm  -d \
+    --rm -d \
     --name="database" \
+    -e "POSTGRES_PASSWORD=postgres" \
     -p "5432:5432" \
     -v "$(pwd)/$(dirname "$0")/sql/init/:/docker-entrypoint-initdb.d/" \
-    "postgres:9.5"
+    "postgres:10"
 }
 
 function waitForDatabaseToStart() {
   echo -n "Waiting for Database start.."
   tryAttempt=0
+  export PGPASSWORD=postgres
   while ! (
     echo 'select 1' \
        | psql -h localhost -U postgres 2> /dev/null \
