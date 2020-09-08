@@ -16,14 +16,12 @@ flyway {
 
 }
 task flywayMigrateLobbyDb(type: FlywayMigrateTask) {
-    driver = 'org.postgresql.Driver'
     url= 'jdbc:postgresql://localhost:5432/lobby_db'
     user = 'lobby_user'
     locations = ['filesystem:src/main/resources/db/migration/lobby_db']
 }
 
 task flywayMigrateMapsDb(type: FlywayMigrateTask) {
-    driver = 'org.postgresql.Driver'
     url= 'jdbc:postgresql://localhost:5432/maps_db'
     user = 'maps_user'
     locations = ['filesystem:src/main/resources/db/migration/maps_db']
@@ -32,8 +30,7 @@ task flywayMigrateMapsDb(type: FlywayMigrateTask) {
 task flywayMigrateAll(dependsOn: [flywayMigrateLobbyDb, flywayMigrateMapsDb])
 
 task portableInstaller(type: Zip, group: 'release') {
-    from 'src/main/resources/db/migration'
-    include '*.sql'
+    from 'src/main/resources/db/migration/'
     archiveName 'migrations.zip'
 }
 
@@ -42,3 +39,4 @@ task release(group: 'release', dependsOn: portableInstaller) {
         publishArtifacts(portableInstaller.outputs.files)
     }
 }
+
