@@ -49,12 +49,10 @@ function buildMigrations() {
   if [ ! -e $targetFolder/migrations.zip ] || [ ! -e "$targetFolder/map-migrations.zip" ]; then
     (
       cd ..
-      ./gradlew :lobby-db:release
-      ./gradlew :maps-db:release
+      ./gradlew :database:release
     )
     mkdir -p $targetFolder
-    cp ../lobby-db/build/distributions/migrations.zip $targetFolder
-    cp ../maps-db/build/distributions/maps_database_migrations.zip $targetFolder
+    cp ../database/build/distributions/migrations.zip $targetFolder
   fi
 }
 

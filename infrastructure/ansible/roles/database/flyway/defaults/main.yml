@@ -1,22 +1,20 @@
 flyway_version: "5.2.4"
+
 flyway_download_location: "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/{{ flyway_version }}/flyway-commandline-{{ flyway_version }}-linux-x64.tar.gz"
+
 flyway_extracted_location: "/home/flyway/flyway-{{ flyway_version }}"
 
 flyway_db_url: "jdbc:postgresql://localhost:5432"
+
+migrations_url: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/migrations.zip"
 
 flyway_args:
   - user: "{{ lobby_db_user }}"
     password: "{{ lobby_db_password }}"
     url: "{{ flyway_db_url }}/{{ lobby_db_name }}"
-    migration:
-      zip: migrations.zip
-      url: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/migrations.zip"
-      dir: "lobby_sql"
+    migration_dir: "lobby_db"
   - user: "{{ maps_db_user }}"
     password: "{{ maps_db_password }}"
     url: "{{ flyway_db_url }}/{{ maps_db_name }}"
-    migration:
-      zip: maps_database_migrations.zip
-      url: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/maps_database_migrations.zip"
-      dir: "maps_sql"
+    migration_dir: "maps_db"
 
