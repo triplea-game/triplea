@@ -26,4 +26,3 @@ echo "Deploying schema"
 "$scriptDir/../gradlew" flywayMigrateAll
 
 "$scriptDir/load_sample_data"
-

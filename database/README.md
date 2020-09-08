@@ -6,7 +6,7 @@ Databases are expected to be on a single server with different schemas
 
 
 
-## Schemas 
+## Schemas
 
 ### Lobby DB
 
@@ -28,5 +28,3 @@ named "test" with password "test".
 
 Supports the maps-server and stores:
   - upload map information
-
-
