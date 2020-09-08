@@ -1,44 +1,27 @@
 # Local Database Development
 
+- Local database is run on docker containers
 - You need a local database to run the integration tests
 - You need a local database to run the application servers
-- Local database is run on docker containers
 
-Databases are kept in subprojects suffixed with `db` and have
-standard scripts to make things easier.
+We run multiple schemas on one database. All schema info
+and database config is in the 'database' subproject.
 
 ## Quick-Start
 
 - Install docker on your system
-- Run the `build_docker_db` script in each of the `*-db` projects
-- Run `./start-docker-databases`
+- Run the `./database/build_docker_db` (one-time)
+- Run `./start_docker_db`
 
-## Working with Local Databases
 
-We will use `lobby-db` as an example.
-
-### Build Docker
-
-First (one-time) build your docker container with:
-
-```
-./lobby-db/build_docker_db
-```
-
-### Start Docker
-
-Next, start the docker database with:
-
-```
-./lobby-db/start_docker_db
-```
+## Working with Database
 
 The start script will run flyway to apply migrations files
 and will insert example data.
 
 ### Connect to Database on Docker
 
-You can then connect to your local docker database with:
+You can connect to your local docker database with:
 
 ```
 ./lobby-db/connect_to_docker_db
