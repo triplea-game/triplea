@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.github.npathai.hamcrestopt.OptionalMatchers;
 import games.strategy.engine.data.gameparser.GameParser;
+import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
@@ -17,7 +18,7 @@ class ParseGameXmlsTest {
   @ParameterizedTest
   @MethodSource
   void parseGameFiles(final File xmlFile) {
-    final Optional<GameData> result = GameParser.parse(xmlFile.toURI());
+    final Optional<GameData> result = GameParser.parse(xmlFile.toURI(), new XmlGameElementMapper());
     assertThat(result, OptionalMatchers.isPresent());
   }
 

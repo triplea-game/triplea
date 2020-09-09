@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.gameparser.GameParser;
+import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
@@ -43,7 +44,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
-    this(GameParser::parse);
+    this(uri -> GameParser.parse(uri, new XmlGameElementMapper());
   }
 
   GameSelectorModel(final Function<URI, Optional<GameData>> gameParser) {

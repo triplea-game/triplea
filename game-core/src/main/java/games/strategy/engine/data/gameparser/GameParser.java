@@ -91,11 +91,6 @@ public final class GameParser {
    *
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  public static Optional<GameData> parse(final URI mapURI) {
-    return parse(mapURI, new XmlGameElementMapper());
-  }
-
-  @VisibleForTesting
   public static Optional<GameData> parse(
       final URI mapUri, final XmlGameElementMapper xmlGameElementMapper) {
     return UrlStreams.openStream(
