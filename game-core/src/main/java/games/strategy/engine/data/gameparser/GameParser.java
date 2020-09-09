@@ -117,12 +117,6 @@ public final class GameParser {
       throw new GameParseException(errorsSax);
     }
 
-    parseMapPropertiesAndDetails(root);
-    return data;
-  }
-
-  private void parseMapPropertiesAndDetails(final Element root)
-      throws GameParseException, EngineVersionException {
     // mandatory fields
     // get the name of the map
     parseInfo(getSingleChild("info", root));
@@ -201,6 +195,7 @@ public final class GameParser {
       throw new GameParseException(
           String.format("map name: '%s', validation failed: %s", mapName, e.getMessage()), e);
     }
+    return data;
   }
 
   private void parseDiceSides(final Node diceSides) {
