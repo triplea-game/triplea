@@ -44,7 +44,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
-import games.strategy.triplea.delegate.battle.steps.fire.standard.OffensiveStandard;
+import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -488,7 +488,7 @@ class MustFightBattleExecutablesTest {
 
     indices.put(FirstStrikeBattleStep.ATTACKER, getIndex(execs, OffensiveFirstStrike.class));
     indices.put(FirstStrikeBattleStep.DEFENDER, getIndex(execs, DefensiveFirstStrike.class));
-    indices.put(FirstStrikeBattleStep.STANDARD, getIndex(execs, OffensiveStandard.class));
+    indices.put(FirstStrikeBattleStep.STANDARD, getIndex(execs, OffensiveGeneral.class));
 
     assertThat(indices.get(stepOrder.get(0)), lessThan(indices.get(stepOrder.get(1))));
     assertThat(indices.get(stepOrder.get(1)), lessThan(indices.get(stepOrder.get(2))));

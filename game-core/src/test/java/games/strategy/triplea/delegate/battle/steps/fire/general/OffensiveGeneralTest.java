@@ -1,15 +1,13 @@
-package games.strategy.triplea.delegate.battle.steps.fire.standard;
+package games.strategy.triplea.delegate.battle.steps.fire.general;
 
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrike;
-import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -22,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class DefensiveStandardTest {
+class OffensiveGeneralTest {
 
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;
@@ -32,28 +30,18 @@ class DefensiveStandardTest {
   class GetNames {
     @Test
     void hasNamesIfStandardUnitAvailable() {
-      final GameData gameData =
-          givenGameData().withDefendingSuicideAndMunitionUnitsDoNotFire(false).build();
       final BattleState battleState =
-          givenBattleStateBuilder()
-              .defendingUnits(List.of(givenAnyUnit()))
-              .gameData(gameData)
-              .build();
-      final DefensiveStandard defensiveStandard = new DefensiveStandard(battleState, battleActions);
-      assertThat(defensiveStandard.getNames(), hasSize(2));
+          givenBattleStateBuilder().attackingUnits(List.of(givenAnyUnit())).build();
+      final OffensiveGeneral offensiveGeneral = new OffensiveGeneral(battleState, battleActions);
+      assertThat(offensiveGeneral.getNames(), hasSize(2));
     }
 
     @Test
     void hasNoNamesIfStandardUnitIsNotAvailable() {
-      final GameData gameData =
-          givenGameData().withDefendingSuicideAndMunitionUnitsDoNotFire(false).build();
       final BattleState battleState =
-          givenBattleStateBuilder()
-              .defendingUnits(List.of(givenUnitFirstStrike()))
-              .gameData(gameData)
-              .build();
-      final DefensiveStandard defensiveStandard = new DefensiveStandard(battleState, battleActions);
-      assertThat(defensiveStandard.getNames(), is(empty()));
+          givenBattleStateBuilder().attackingUnits(List.of(givenUnitFirstStrike())).build();
+      final OffensiveGeneral offensiveGeneral = new OffensiveGeneral(battleState, battleActions);
+      assertThat(offensiveGeneral.getNames(), is(empty()));
     }
   }
 }

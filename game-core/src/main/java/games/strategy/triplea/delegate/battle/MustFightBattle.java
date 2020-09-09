@@ -47,8 +47,8 @@ import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
-import games.strategy.triplea.delegate.battle.steps.fire.standard.DefensiveStandard;
-import games.strategy.triplea.delegate.battle.steps.fire.standard.OffensiveStandard;
+import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
@@ -1425,8 +1425,8 @@ public class MustFightBattle extends DependentBattle
     final BattleStep offensiveFirstStrike = new OffensiveFirstStrike(this, this);
     final BattleStep defensiveFirstStrike = new DefensiveFirstStrike(this, this);
     final BattleStep firstStrikeCasualties = new ClearFirstStrikeCasualties(this, this);
-    final BattleStep offensiveStandard = new OffensiveStandard(this, this);
-    final BattleStep defensiveStandard = new DefensiveStandard(this, this);
+    final BattleStep offensiveStandard = new OffensiveGeneral(this, this);
+    final BattleStep defensiveStandard = new DefensiveGeneral(this, this);
 
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.add(offensiveSubsRetreat);
@@ -1553,7 +1553,7 @@ public class MustFightBattle extends DependentBattle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        new OffensiveStandard(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
+        new OffensiveGeneral(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
       }
     };
 
@@ -1576,7 +1576,7 @@ public class MustFightBattle extends DependentBattle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        new DefensiveStandard(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
+        new DefensiveGeneral(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
       }
     };
   }

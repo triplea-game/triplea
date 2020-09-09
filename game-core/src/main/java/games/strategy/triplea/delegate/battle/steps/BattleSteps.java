@@ -27,8 +27,8 @@ import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsS
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
-import games.strategy.triplea.delegate.battle.steps.fire.standard.DefensiveStandard;
-import games.strategy.triplea.delegate.battle.steps.fire.standard.OffensiveStandard;
+import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
@@ -152,8 +152,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep offensiveFirstStrike = new OffensiveFirstStrike(this, battleActions);
     final BattleStep defensiveFirstStrike = new DefensiveFirstStrike(this, battleActions);
     final BattleStep firstStrikeCasualties = new ClearFirstStrikeCasualties(this, battleActions);
-    final BattleStep offensiveStandard = new OffensiveStandard(this, battleActions);
-    final BattleStep defensiveStandard = new DefensiveStandard(this, battleActions);
+    final BattleStep offensiveStandard = new OffensiveGeneral(this, battleActions);
+    final BattleStep defensiveStandard = new DefensiveGeneral(this, battleActions);
 
     final List<String> steps = new ArrayList<>();
     steps.addAll(offensiveAaStep.getNames());

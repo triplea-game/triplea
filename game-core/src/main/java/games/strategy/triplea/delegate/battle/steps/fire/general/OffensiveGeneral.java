@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle.steps.fire.standard;
+package games.strategy.triplea.delegate.battle.steps.fire.general;
 
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
@@ -15,7 +15,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class OffensiveStandard implements BattleStep {
+public class OffensiveGeneral implements BattleStep {
 
   private static final long serialVersionUID = 5770484176987786287L;
 
