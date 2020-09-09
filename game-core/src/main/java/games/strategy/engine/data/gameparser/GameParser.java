@@ -306,17 +306,6 @@ public final class GameParser {
   }
 
   private <T> T getValidatedObject(
-      final Element element,
-      final String attribute,
-      final boolean mustFind,
-      final Function<String, T> function,
-      final String errorName)
-      throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    return getValidatedObject(name, mustFind, function, errorName);
-  }
-
-  private <T> T getValidatedObject(
       final String name,
       final boolean mustFind,
       final Function<String, T> function,
@@ -338,7 +327,7 @@ public final class GameParser {
       final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
     return getValidatedObject(
-        element, attribute, mustFind, data.getPlayerList()::getPlayerId, "player");
+        element.getAttribute(attribute), mustFind, data.getPlayerList()::getPlayerId, "player");
   }
 
   private RelationshipType getRelationshipType(final String name) throws GameParseException {
@@ -355,7 +344,10 @@ public final class GameParser {
   private RelationshipType getRelationshipType(final Element element, final String attribute)
       throws GameParseException {
     return getValidatedObject(
-        element, attribute, true, data.getRelationshipTypeList()::getRelationshipType, "relation");
+        element.getAttribute(attribute),
+        true,
+        data.getRelationshipTypeList()::getRelationshipType,
+        "relation");
   }
 
   private TerritoryEffect getTerritoryEffect(final String name) throws GameParseException {
@@ -365,13 +357,16 @@ public final class GameParser {
   /** If cannot find the productionRule an exception will be thrown. */
   private ProductionRule getProductionRule(final Element element) throws GameParseException {
     return getValidatedObject(
-        element, "name", true, data.getProductionRuleList()::getProductionRule, "production rule");
+        element.getAttribute("name"),
+        true,
+        data.getProductionRuleList()::getProductionRule,
+        "production rule");
   }
 
   /** If cannot find the repairRule an exception will be thrown. */
   private RepairRule getRepairRule(final Element element) throws GameParseException {
     return getValidatedObject(
-        element, "name", true, data.getRepairRules()::getRepairRule, "repair rule");
+        element.getAttribute("name"), true, data.getRepairRules()::getRepairRule, "repair rule");
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
@@ -381,7 +376,8 @@ public final class GameParser {
   /** If cannot find the territory an exception will be thrown. */
   private Territory getTerritory(final Element element, final String attribute)
       throws GameParseException {
-    return getValidatedObject(element, attribute, true, data.getMap()::getTerritory, "territory");
+    return getValidatedObject(
+        element.getAttribute(attribute), true, data.getMap()::getTerritory, "territory");
   }
 
   private UnitType getUnitType(final String name) throws GameParseException {
@@ -393,7 +389,7 @@ public final class GameParser {
       final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
     return getValidatedObject(
-        element, attribute, mustFind, data.getUnitTypeList()::getUnitType, "unitType");
+        element.getAttribute(attribute), mustFind, data.getUnitTypeList()::getUnitType, "unitType");
   }
 
   private TechAdvance getTechnology(final String name) throws GameParseException {
@@ -411,7 +407,8 @@ public final class GameParser {
 
   /** If cannot find the Delegate an exception will be thrown. */
   private IDelegate getDelegate(final Element element) throws GameParseException {
-    return getValidatedObject(element, "delegate", true, data::getDelegate, "delegate");
+    return getValidatedObject(
+        element.getAttribute("delegate"), true, data::getDelegate, "delegate");
   }
 
   private Resource getResource(final String name) throws GameParseException {
@@ -423,15 +420,14 @@ public final class GameParser {
       final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
     return getValidatedObject(
-        element, attribute, mustFind, data.getResourceList()::getResource, "resource");
+        element.getAttribute(attribute), mustFind, data.getResourceList()::getResource, "resource");
   }
 
   /** If cannot find the productionRule an exception will be thrown. */
   private ProductionFrontier getProductionFrontier(final Element element)
       throws GameParseException {
     return getValidatedObject(
-        element,
-        "frontier",
+        element.getAttribute("frontier"),
         true,
         data.getProductionFrontierList()::getProductionFrontier,
         "production frontier");
@@ -440,8 +436,7 @@ public final class GameParser {
   /** If cannot find the repairFrontier an exception will be thrown. */
   private RepairFrontier getRepairFrontier(final Element element) throws GameParseException {
     return getValidatedObject(
-        element,
-        "frontier",
+        element.getAttribute("frontier"),
         true,
         data.getRepairFrontierList()::getRepairFrontier,
         "repair frontier");
