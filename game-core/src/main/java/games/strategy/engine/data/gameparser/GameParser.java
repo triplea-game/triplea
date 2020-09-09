@@ -55,7 +55,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -146,7 +145,7 @@ public final class GameParser {
     parseInfo(getSingleChild("info", root));
 
     // test minimum engine version FIRST
-    parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
+    parseMinimumEngineVersionNumber(getSingleChildOptional("triplea", root).orElse(null));
     // if we manage to get this far, past the minimum engine version number test, AND we are still
     // good, then check and
     // see if we have any SAX errors we need to show
@@ -163,51 +162,53 @@ public final class GameParser {
                 + error.getMessage());
       }
     }
-    parseDiceSides(getSingleChild("diceSides", root, true));
+    parseDiceSides(getSingleChildOptional("diceSides", root).orElse(null));
     final Element playerListNode = getSingleChild("playerList", root);
     parsePlayerList(playerListNode);
     parseAlliances(playerListNode);
-    final Node properties = getSingleChild("propertyList", root, true);
+    final Node properties = getSingleChildOptional("propertyList", root).orElse(null);
     if (properties != null) {
       parseProperties(properties);
     }
 
     final Map<String, List<String>> variables = variableParser.parseVariables(root);
     parseMap(getSingleChild("map", root));
-    final Element resourceList = getSingleChild("resourceList", root, true);
+    final Element resourceList = getSingleChildOptional("resourceList", root).orElse(null);
     if (resourceList != null) {
       parseResources(resourceList);
     }
-    final Element unitList = getSingleChild("unitList", root, true);
+    final Element unitList = getSingleChildOptional("unitList", root).orElse(null);
     if (unitList != null) {
       parseUnits(unitList);
     }
     // Parse all different relationshipTypes that are defined in the xml, for example: War, Allied,
     // Neutral, NAP
-    final Element relationshipTypes = getSingleChild("relationshipTypes", root, true);
+    final Element relationshipTypes =
+        getSingleChildOptional("relationshipTypes", root).orElse(null);
     if (relationshipTypes != null) {
       parseRelationshipTypes(relationshipTypes);
     }
-    final Element territoryEffectList = getSingleChild("territoryEffectList", root, true);
+    final Element territoryEffectList =
+        getSingleChildOptional("territoryEffectList", root).orElse(null);
     if (territoryEffectList != null) {
       parseTerritoryEffects(territoryEffectList);
     }
     parseGamePlay(getSingleChild("gamePlay", root));
-    final Element production = getSingleChild("production", root, true);
+    final Element production = getSingleChildOptional("production", root).orElse(null);
     if (production != null) {
       parseProduction(production);
     }
-    final Element technology = getSingleChild("technology", root, true);
+    final Element technology = getSingleChildOptional("technology", root).orElse(null);
     if (technology != null) {
       parseTechnology(technology);
     } else {
       TechAdvance.createDefaultTechAdvances(data);
     }
-    final Element attachmentList = getSingleChild("attachmentList", root, true);
+    final Element attachmentList = getSingleChildOptional("attachmentList", root).orElse(null);
     if (attachmentList != null) {
       parseAttachments(attachmentList, variables);
     }
-    final Node initialization = getSingleChild("initialize", root, true);
+    final Node initialization = getSingleChildOptional("initialize", root).orElse(null);
     if (initialization != null) {
       parseInitialization(initialization);
     }
@@ -391,13 +392,9 @@ public final class GameParser {
     return nodeFinder.getSingleChild(name, node);
   }
 
-  /** If optional is true, will not throw an exception if there are 0 children. */
-  private Element getSingleChild(final String name, final Node node, final boolean optional)
+  private Optional<Element> getSingleChildOptional(final String name, final Node node)
       throws GameParseException {
-    if (optional) {
-      return nodeFinder.getOptionalSingleChild(name, node);
-    }
-    return nodeFinder.getSingleChild(name, node);
+    return Optional.ofNullable(nodeFinder.getOptionalSingleChild(name, node));
   }
 
   private List<Element> getChildren(final String name, final Node node) {
@@ -526,7 +523,7 @@ public final class GameParser {
     }
     // if relationships aren't initialized based on relationshipInitialize we use the alliances to
     // set the relationships
-    if (getSingleChild("relationshipInitialize", root, true) == null) {
+    if (getSingleChildOptional("relationshipInitialize", root).orElse(null) == null) {
       final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
       final RelationshipTypeList relationshipTypeList = data.getRelationshipTypeList();
       // iterate through all players to get known allies and enemies
@@ -570,7 +567,7 @@ public final class GameParser {
   private void parseGamePlay(final Element root) throws GameParseException {
     parseDelegates(getChildren("delegate", root));
     parseSequence(getSingleChild("sequence", root));
-    parseOffset(getSingleChild("offset", root, true));
+    parseOffset(getSingleChildOptional("offset", root).orElse(null));
   }
 
   private void parseProperties(final Node root) throws GameParseException {
@@ -756,7 +753,7 @@ public final class GameParser {
   }
 
   private void parseTechnology(final Node root) throws GameParseException {
-    parseTechnologies(getSingleChild("technologies", root, true));
+    parseTechnologies(getSingleChildOptional("technologies", root).orElse(null));
     parsePlayerTech(getChildren("playerTech", root));
   }
 
@@ -1154,23 +1151,24 @@ public final class GameParser {
 
   private void parseInitialization(final Node root) throws GameParseException {
     // parse territory owners
-    final Node owner = getSingleChild("ownerInitialize", root, true);
+    final Node owner = getSingleChildOptional("ownerInitialize", root).orElse(null);
     if (owner != null) {
       parseOwner(getChildren("territoryOwner", owner));
     }
     // parse initial unit placement
-    final Node unit = getSingleChild("unitInitialize", root, true);
+    final Node unit = getSingleChildOptional("unitInitialize", root).orElse(null);
     if (unit != null) {
       parseUnitPlacement(getChildren("unitPlacement", unit));
       parseHeldUnits(getChildren("heldUnits", unit));
     }
     // parse resources given
-    final Node resource = getSingleChild("resourceInitialize", root, true);
+    final Node resource = getSingleChildOptional("resourceInitialize", root).orElse(null);
     if (resource != null) {
       parseResourceInitialization(getChildren("resourceGiven", resource));
     }
     // parse relationships
-    final Node relationInitialize = getSingleChild("relationshipInitialize", root, true);
+    final Node relationInitialize =
+        getSingleChildOptional("relationshipInitialize", root).orElse(null);
     if (relationInitialize != null) {
       parseRelationInitialize(getChildren("relationship", relationInitialize));
     }
