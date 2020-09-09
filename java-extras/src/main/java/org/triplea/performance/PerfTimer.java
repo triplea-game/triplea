@@ -4,8 +4,9 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
 import lombok.extern.java.Log;
+import org.triplea.java.function.ThrowingRunnable;
+import org.triplea.java.function.ThrowingSupplier;
 
 /**
  * Provides a high level API to the game engine for performance measurements. This class handles the
@@ -47,8 +48,8 @@ public class PerfTimer implements Closeable {
   }
 
   @SuppressWarnings("unused")
-  public static PerfTimer startTimer(final String title) {
-    return startTimer(title, 1);
+  public static PerfTimer time(final String title) {
+    return time(title, 1);
   }
 
   /**
@@ -61,7 +62,7 @@ public class PerfTimer implements Closeable {
    * @return the perf timer object
    */
   @SuppressWarnings("unused")
-  public static PerfTimer startTimer(final String title, final int reportingFrequency) {
+  public static PerfTimer time(final String title, final int reportingFrequency) {
     return new PerfTimer(title, reportingFrequency);
   }
 
@@ -101,17 +102,26 @@ public class PerfTimer implements Closeable {
     return String.format("%s.%s", millis, milliFraction);
   }
 
-  public static <T> T time(final String title, final Supplier<T> functionToTime) {
+  public static <T> T time(final String title, final ThrowingSupplier<T, ?> functionToTime) {
     final T value;
-    try (PerfTimer timer = startTimer(title)) {
+    try (PerfTimer timer = time(title)) {
       value = functionToTime.get();
+    } catch (final Throwable throwable) {
+      throw new IllegalStateException(
+          "Unexpected throwable in timed method: " + throwable.getMessage(), throwable);
     }
+
     return value;
   }
 
-  public static void time(final String title, final Runnable functionToTime) {
-    try (PerfTimer timer = startTimer(title)) {
-      functionToTime.run();
+  public static void time(final String title, final ThrowingRunnable<?> functionToTime) {
+    try (PerfTimer timer = time(title)) {
+      try {
+        functionToTime.run();
+      } catch (final Throwable throwable) {
+        throw new IllegalStateException(
+            "Unexpected throwable in timed method: " + throwable.getMessage(), throwable);
+      }
     }
   }
 }
