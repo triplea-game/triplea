@@ -1,9 +1,6 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.gameparser;
 
-import games.strategy.engine.data.gameparser.XmlReader;
-import java.util.ArrayList;
 import java.util.Collection;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXParseException;
 
 /** A checked exception that indicates an error occurred while parsing a map. */

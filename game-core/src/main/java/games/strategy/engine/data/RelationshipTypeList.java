@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import java.util.Collection;

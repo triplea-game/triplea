@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.gameparser.GameParseException;
 import org.junit.jupiter.api.Test;
 
 class AbstractConditionsAttachmentTest {

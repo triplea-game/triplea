@@ -20,12 +20,12 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import java.security.SecureRandom;
