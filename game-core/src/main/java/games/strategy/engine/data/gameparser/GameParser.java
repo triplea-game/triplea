@@ -39,7 +39,6 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -1241,29 +1240,6 @@ public final class GameParser {
       final Territory territory = getTerritory(current, "territory");
       final GamePlayer owner = getPlayerId(current, "owner", true);
       territory.setOwner(owner);
-      // Set the original owner on startup.
-      // TODO Look into this
-      // The addition of this caused the automated tests to fail as TestAttachment can't be cast to
-      // TerritoryAttachment
-      // The addition of this IF to pass the tests is wrong, but works until a better solution is
-      // found.
-      // Kevin will look into it.
-      if (!territory.getData().getGameName().equals("gameExample")
-          && !territory.getData().getGameName().equals("test")) {
-        // set the original owner
-        final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-        if (ta != null) {
-          // If we already have an original owner set (ie: we set it previously in the attachment
-          // using originalOwner or
-          // occupiedTerrOf), then we DO NOT set the original owner again.
-          // This is how we can have a game start with territories owned by 1 faction but controlled
-          // by a 2nd faction.
-          final GamePlayer currentOwner = ta.getOriginalOwner();
-          if (currentOwner == null) {
-            ta.setOriginalOwner(owner);
-          }
-        }
-      }
     }
   }
 
