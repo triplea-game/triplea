@@ -33,8 +33,7 @@ public class MessageBroadcaster implements BiConsumer<Collection<Session>, Messa
   @Override
   public void accept(final Collection<Session> sessions, final MessageEnvelope messageEnvelope) {
     log.info("Broadcasting: {}", messageEnvelope);
-    sessions
-        .parallelStream()
+    sessions.parallelStream()
         .filter(Session::isOpen)
         .forEach(s -> messageSender.accept(s, messageEnvelope));
   }

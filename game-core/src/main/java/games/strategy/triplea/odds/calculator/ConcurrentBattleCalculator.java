@@ -215,8 +215,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final var runCountDistributor = new RunCountDistributor(runCount, workers.size());
       final AggregateResults results =
           new AggregateResults(
-              workers
-                  .parallelStream()
+              workers.parallelStream()
                   .map(
                       worker ->
                           worker.calculate(

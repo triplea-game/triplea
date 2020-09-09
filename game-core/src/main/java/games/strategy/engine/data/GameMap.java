@@ -111,9 +111,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (cond == null) {
       return getNeighbors(territory);
     }
-    return connections
-        .getOrDefault(territory, Set.of())
-        .parallelStream()
+    return connections.getOrDefault(territory, Set.of()).parallelStream()
         .filter(cond)
         .collect(Collectors.toSet());
   }

@@ -27,8 +27,7 @@ public class AvailableSupportCalculator {
       final boolean defence,
       final boolean allies) {
     final Set<UnitSupportAttachment> rules =
-        UnitSupportAttachment.get(data)
-            .parallelStream()
+        UnitSupportAttachment.get(data).parallelStream()
             .filter(usa -> (usa.getAaRoll() || usa.getAaStrength()))
             .collect(Collectors.toSet());
     return getSortedSupport(unitsGivingTheSupport, rules, defence, allies);
