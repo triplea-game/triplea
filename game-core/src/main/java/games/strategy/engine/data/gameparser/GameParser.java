@@ -84,10 +84,6 @@ public final class GameParser {
   private final GameDataVariableParser variableParser = new GameDataVariableParser();
   private final NodeFinder nodeFinder = new NodeFinder();
 
-  GameParser(final GameData gameData, final String mapName) {
-    this(gameData, mapName, new XmlGameElementMapper());
-  }
-
   private GameParser(
       final GameData gameData,
       final String mapName,
@@ -102,12 +98,19 @@ public final class GameParser {
    *
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  public static Optional<GameData> parse(final URI mapUri) {
+  public static Optional<GameData> parse(final URI mapURI) {
+    return parse(mapURI, new XmlGameElementMapper());
+  }
+
+  @VisibleForTesting
+  public static Optional<GameData> parse(
+      final URI mapUri, final XmlGameElementMapper xmlGameElementMapper) {
     return UrlStreams.openStream(
         mapUri,
         inputStream -> {
           try {
-            return parse(mapUri.toString(), inputStream, new XmlGameElementMapper());
+            return new GameParser(new GameData(), mapUri.toString(), xmlGameElementMapper)
+                .parse(inputStream);
           } catch (final EngineVersionException e) {
             log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
             return null;
@@ -116,20 +119,6 @@ public final class GameParser {
             return null;
           }
         });
-  }
-
-  @Nonnull
-  @VisibleForTesting
-  public static GameData parse(
-      final String mapName,
-      final InputStream stream,
-      final XmlGameElementMapper xmlGameElementMapper)
-      throws GameParseException, EngineVersionException {
-    checkNotNull(mapName);
-    checkNotNull(stream);
-    checkNotNull(xmlGameElementMapper);
-
-    return new GameParser(new GameData(), mapName, xmlGameElementMapper).parse(stream);
   }
 
   @Nonnull
