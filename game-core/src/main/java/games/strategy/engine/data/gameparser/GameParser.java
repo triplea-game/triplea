@@ -112,23 +112,10 @@ public final class GameParser {
       throws GameParseException, EngineVersionException {
 
     final Collection<SAXParseException> errorsSax = new ArrayList<>();
-
     final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
 
     if (!errorsSax.isEmpty()) {
-      final StringBuilder errorMessage = new StringBuilder();
-      errorsSax.forEach(
-          error ->
-              errorMessage.append(
-                  "SAXParseException: game: "
-                      + (data.getGameName() == null ? "?" : data.getGameName())
-                      + ", line: "
-                      + error.getLineNumber()
-                      + ", column: "
-                      + error.getColumnNumber()
-                      + ", error: "
-                      + error.getMessage()));
-      throw newGameParseException("Xml errors: " + errorMessage.toString());
+      throw new GameParseException(errorsSax);
     }
 
     parseMapPropertiesAndDetails(root);
