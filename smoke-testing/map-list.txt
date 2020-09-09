@@ -203,7 +203,6 @@ https://raw.githubusercontent.com/triplea-maps/ultimate_world_variants/master/ma
 https://raw.githubusercontent.com/triplea-maps/ur_quan_war_masters_edition/master/map/games/UrQuanWarMastersEdition.xml
 https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/map/games/warcraft_war_heroes.xml
 https://raw.githubusercontent.com/triplea-maps/war_of_the_lance/master/map/games/War_of_the_Lance.xml
-https://raw.githubusercontent.com/triplea-maps/war_of_the_relics/master/map/games/war_of_the_relics.xml
 https://raw.githubusercontent.com/triplea-maps/world_at_war/master/map/games/WAW40.xml
 https://raw.githubusercontent.com/triplea-maps/world_at_war/master/map/games/World_At_War.xml
 https://raw.githubusercontent.com/triplea-maps/world_at_war_variants/master/map/games/World_at_War_Variant_-_FUEL-AA-Range.xml
