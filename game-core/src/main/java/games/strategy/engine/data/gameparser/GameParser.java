@@ -544,8 +544,6 @@ public final class GameParser {
   private void parseProperties(final Node root) throws GameParseException {
     final GameProperties properties = data.getProperties();
     for (final Element current : getChildren("property", root)) {
-      final String editable = current.getAttribute("editable");
-      final String property = current.getAttribute("name");
       String value = current.getAttribute("value");
       if (value == null || value.length() == 0) {
         final List<Element> valueChildren = getChildren("value", current);
@@ -556,6 +554,9 @@ public final class GameParser {
           }
         }
       }
+
+      final String editable = current.getAttribute("editable");
+      final String property = current.getAttribute("name");
       if (editable != null && editable.equalsIgnoreCase("true")) {
         parseEditableProperty(current, property, value);
       } else {
