@@ -136,8 +136,7 @@ public final class GameParser {
   private GameData parse(final InputStream stream)
       throws GameParseException, EngineVersionException {
     final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
-    parseMapProperties(root);
-    parseMapDetails(root);
+    parseMapPropertiesAndDetails(root);
     return data;
   }
 
@@ -152,7 +151,7 @@ public final class GameParser {
         String.format("map name: '%s', game name: '%s', %s", mapName, gameName, message), cause);
   }
 
-  private void parseMapProperties(final Element root)
+  private void parseMapPropertiesAndDetails(final Element root)
       throws GameParseException, EngineVersionException {
     // mandatory fields
     // get the name of the map
@@ -184,9 +183,7 @@ public final class GameParser {
     if (properties != null) {
       parseProperties(properties);
     }
-  }
 
-  private void parseMapDetails(final Element root) throws GameParseException {
     final Map<String, List<String>> variables = variableParser.parseVariables(root);
     parseMap(getSingleChild("map", root));
     final Element resourceList = getSingleChild("resourceList", root, true);
