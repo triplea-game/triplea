@@ -325,22 +325,15 @@ public final class GameParser {
   }
 
   /** If cannot find the productionRule an exception will be thrown. */
-  private ProductionRule getProductionRule(final Element element) throws GameParseException {
-    return Optional.ofNullable(
-            data.getProductionRuleList().getProductionRule(element.getAttribute("name")))
-        .orElseThrow(
-            () ->
-                newGameParseException(
-                    "Could not find production rule:" + element.getAttribute("name")));
+  private ProductionRule getProductionRule(final String name) throws GameParseException {
+    return Optional.ofNullable(data.getProductionRuleList().getProductionRule(name))
+        .orElseThrow(() -> newGameParseException("Could not find production rule:" + name));
   }
 
   /** If cannot find the repairRule an exception will be thrown. */
-  private RepairRule getRepairRule(final Element element) throws GameParseException {
-    return Optional.ofNullable(data.getRepairRules().getRepairRule(element.getAttribute("name")))
-        .orElseThrow(
-            () ->
-                newGameParseException(
-                    "Could not find repair rule:" + element.getAttribute("name")));
+  private RepairRule getRepairRule(final String name) throws GameParseException {
+    return Optional.ofNullable(data.getRepairRules().getRepairRule(name))
+        .orElseThrow(() -> newGameParseException("Could not find repair rule:" + name));
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
@@ -366,12 +359,9 @@ public final class GameParser {
   }
 
   /** If cannot find the Delegate an exception will be thrown. */
-  private IDelegate getDelegate(final Element element) throws GameParseException {
-    return Optional.ofNullable(data.getDelegate(element.getAttribute("delegate")))
-        .orElseThrow(
-            () ->
-                newGameParseException(
-                    "Could not find delegate:" + element.getAttribute("delegate")));
+  private IDelegate getDelegate(final String name) throws GameParseException {
+    return Optional.ofNullable(data.getDelegate(name))
+        .orElseThrow(() -> newGameParseException("Could not find delegate:" + name));
   }
 
   private Resource getResource(final String name) throws GameParseException {
@@ -385,25 +375,15 @@ public final class GameParser {
   }
 
   /** If cannot find the productionRule an exception will be thrown. */
-  private ProductionFrontier getProductionFrontier(final Element element)
-      throws GameParseException {
-    return Optional.ofNullable(
-            data.getProductionFrontierList()
-                .getProductionFrontier(element.getAttribute("frontier")))
-        .orElseThrow(
-            () ->
-                newGameParseException(
-                    "Could not find production frontier:" + element.getAttribute("frontier")));
+  private ProductionFrontier getProductionFrontier(final String name) throws GameParseException {
+    return Optional.ofNullable(data.getProductionFrontierList().getProductionFrontier(name))
+        .orElseThrow(() -> newGameParseException("Could not find production frontier:" + name));
   }
 
   /** If cannot find the repairFrontier an exception will be thrown. */
-  private RepairFrontier getRepairFrontier(final Element element) throws GameParseException {
-    return Optional.ofNullable(
-            data.getRepairFrontierList().getRepairFrontier(element.getAttribute("frontier")))
-        .orElseThrow(
-            () ->
-                newGameParseException(
-                    "Could not find repair frontier:" + element.getAttribute("frontier")));
+  private RepairFrontier getRepairFrontier(final String name) throws GameParseException {
+    return Optional.ofNullable(data.getRepairFrontierList().getRepairFrontier(name))
+        .orElseThrow(() -> newGameParseException("Could not find repair frontier:" + name));
   }
 
   /** Get the given child. If there is not exactly one child throws a GameParseException */
@@ -735,7 +715,7 @@ public final class GameParser {
 
   private void parseSteps(final List<Element> stepList) throws GameParseException {
     for (final Element current : stepList) {
-      final IDelegate delegate = getDelegate(current);
+      final IDelegate delegate = getDelegate(current.getAttribute("delegate"));
       final GamePlayer player = getPlayerIdOptional(current.getAttribute("player")).orElse(null);
       final String name = current.getAttribute("name");
       String displayName = null;
@@ -915,7 +895,7 @@ public final class GameParser {
   private void parsePlayerProduction(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
       final GamePlayer player = getPlayerId(current.getAttribute("player"));
-      final ProductionFrontier frontier = getProductionFrontier(current);
+      final ProductionFrontier frontier = getProductionFrontier(current.getAttribute("frontier"));
       player.setProductionFrontier(frontier);
     }
   }
@@ -923,7 +903,7 @@ public final class GameParser {
   private void parsePlayerRepair(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
       final GamePlayer player = getPlayerId(current.getAttribute("player"));
-      final RepairFrontier repairFrontier = getRepairFrontier(current);
+      final RepairFrontier repairFrontier = getRepairFrontier(current.getAttribute("frontier"));
       player.setRepairFrontier(repairFrontier);
     }
   }
@@ -931,7 +911,7 @@ public final class GameParser {
   private void parseFrontierRules(final List<Element> elements, final ProductionFrontier frontier)
       throws GameParseException {
     for (final Element element : elements) {
-      frontier.addRule(getProductionRule(element));
+      frontier.addRule(getProductionRule(element.getAttribute("name")));
     }
   }
 
@@ -973,7 +953,7 @@ public final class GameParser {
   private void parseRepairFrontierRules(final List<Element> elements, final RepairFrontier frontier)
       throws GameParseException {
     for (final Element element : elements) {
-      frontier.addRule(getRepairRule(element));
+      frontier.addRule(getRepairRule(element.getAttribute("name")));
     }
   }
 
