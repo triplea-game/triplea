@@ -73,7 +73,6 @@ public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
   @Nonnull private final GameData data;
-  private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   private final String mapName;
   private final XmlGameElementMapper xmlGameElementMapper;
 
@@ -111,7 +110,27 @@ public final class GameParser {
   @Nonnull
   private GameData parse(final InputStream stream)
       throws GameParseException, EngineVersionException {
+
+    final Collection<SAXParseException> errorsSax = new ArrayList<>();
+
     final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
+
+    if (!errorsSax.isEmpty()) {
+      final StringBuilder errorMessage = new StringBuilder();
+      errorsSax.forEach(
+          error ->
+              errorMessage.append(
+                  "SAXParseException: game: "
+                      + (data.getGameName() == null ? "?" : data.getGameName())
+                      + ", line: "
+                      + error.getLineNumber()
+                      + ", column: "
+                      + error.getColumnNumber()
+                      + ", error: "
+                      + error.getMessage()));
+      throw newGameParseException("Xml errors: " + errorMessage.toString());
+    }
+
     parseMapPropertiesAndDetails(root);
     return data;
   }
@@ -138,19 +157,7 @@ public final class GameParser {
     // if we manage to get this far, past the minimum engine version number test, AND we are still
     // good, then check and
     // see if we have any SAX errors we need to show
-    if (!errorsSax.isEmpty()) {
-      for (final SAXParseException error : errorsSax) {
-        log.severe(
-            "SAXParseException: game: "
-                + (data.getGameName() == null ? "?" : data.getGameName())
-                + ", line: "
-                + error.getLineNumber()
-                + ", column: "
-                + error.getColumnNumber()
-                + ", error: "
-                + error.getMessage());
-      }
-    }
+
     parseDiceSides(getSingleChildOptional("diceSides", root).orElse(null));
     final Element playerListNode = getSingleChild("playerList", root);
     parsePlayerList(playerListNode);
