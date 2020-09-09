@@ -58,13 +58,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     }
     TriggerAttachment trigger = null;
     for (final GamePlayer player : getData().getPlayerList().getPlayers()) {
-      for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
-        if (ta.getName().equals(s[0])) {
-          trigger = ta;
-          break;
-        }
-      }
-      if (trigger != null) {
+      final TriggerAttachment ta = (TriggerAttachment) player.getAttachment(s[0]);
+      if(ta != null) {
+        trigger = ta;
         break;
       }
     }

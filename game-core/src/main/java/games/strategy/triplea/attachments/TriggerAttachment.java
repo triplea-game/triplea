@@ -353,13 +353,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     TriggerAttachment trigger = null;
     for (final GamePlayer player : getData().getPlayerList().getPlayers()) {
-      for (final TriggerAttachment ta : getTriggers(player, null)) {
-        if (ta.getName().equals(s[0])) {
-          trigger = ta;
-          break;
-        }
-      }
-      if (trigger != null) {
+      final TriggerAttachment triggerAttachment = (TriggerAttachment) player.getAttachment(s[0]);
+      if (triggerAttachment != null) {
+        trigger = triggerAttachment;
         break;
       }
     }
