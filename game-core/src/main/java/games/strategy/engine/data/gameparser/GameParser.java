@@ -1,7 +1,5 @@
 package games.strategy.engine.data.gameparser;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import games.strategy.engine.ClientContext;
