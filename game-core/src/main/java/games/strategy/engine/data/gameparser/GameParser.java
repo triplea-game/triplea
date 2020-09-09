@@ -82,11 +82,8 @@ public final class GameParser {
   private final GameDataVariableParser variableParser = new GameDataVariableParser();
   private final NodeFinder nodeFinder = new NodeFinder();
 
-  private GameParser(
-      final GameData gameData,
-      final String mapName,
-      final XmlGameElementMapper xmlGameElementMapper) {
-    data = checkNotNull(gameData);
+  private GameParser(final String mapName, final XmlGameElementMapper xmlGameElementMapper) {
+    data = new GameData();
     this.mapName = mapName;
     this.xmlGameElementMapper = xmlGameElementMapper;
   }
@@ -107,8 +104,7 @@ public final class GameParser {
         mapUri,
         inputStream -> {
           try {
-            return new GameParser(new GameData(), mapUri.toString(), xmlGameElementMapper)
-                .parse(inputStream);
+            return new GameParser(mapUri.toString(), xmlGameElementMapper).parse(inputStream);
           } catch (final EngineVersionException e) {
             log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
             return null;
