@@ -563,18 +563,13 @@ public final class GameParser {
         if (children2.isEmpty()) {
           // we don't know what type this property is!!, it appears like only numbers and string may
           // be represented without proper type definition
-
-          if (value == null) {
-            properties.set(property, null);
-          } else {
-            try {
-              // test if it is an integer
-              final int integer = Integer.parseInt(value);
-              properties.set(property, integer);
-            } catch (final NumberFormatException e) {
-              // then it must be a string
-              properties.set(property, value);
-            }
+          try {
+            // test if it is an integer
+            final int integer = Integer.parseInt(value);
+            properties.set(property, integer);
+          } catch (final NumberFormatException e) {
+            // then it must be a string
+            properties.set(property, value);
           }
         } else {
           final String type = children2.get(0).getNodeName();
