@@ -19,6 +19,7 @@ dependencies {
     implementation project(":domain-data")
     implementation project(":http-clients")
     implementation project(":java-extras")
+    implementation project(":map-data")
     implementation project(":swing-lib")
     implementation project(":xml-reader")
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
