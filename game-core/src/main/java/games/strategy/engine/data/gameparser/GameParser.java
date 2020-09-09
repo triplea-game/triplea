@@ -305,139 +305,105 @@ public final class GameParser {
     }
   }
 
-  private <T> T getValidatedObject(
-      final String name,
-      final boolean mustFind,
-      final Function<String, T> function,
-      final String errorName)
-      throws GameParseException {
-    final T attachable = function.apply(name);
-    if (attachable == null && mustFind) {
-      throw newGameParseException("Could not find " + errorName + ". name:" + name);
-    }
-    return attachable;
-  }
-
   private GamePlayer getPlayerId(final String name) throws GameParseException {
-    return getValidatedObject(name, true, data.getPlayerList()::getPlayerId, "player");
+    return getPlayerIdOptional(name)
+        .orElseThrow(() -> newGameParseException("Could not find player name:" + name));
   }
 
-  /** If mustfind is true and cannot find the player an exception will be thrown. */
-  private GamePlayer getPlayerId(final String playerId, final boolean mustFind)
-      throws GameParseException {
-    return getValidatedObject(playerId, mustFind, data.getPlayerList()::getPlayerId, "player");
+  private Optional<GamePlayer> getPlayerIdOptional(final String name) {
+    return Optional.ofNullable(data.getPlayerList().getPlayerId(name));
   }
 
   private RelationshipType getRelationshipType(final String name) throws GameParseException {
-    return getValidatedObject(
-        name, true, data.getRelationshipTypeList()::getRelationshipType, "relation");
-  }
-
-  /**
-   * If cannot find the player an exception will be thrown.
-   *
-   * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes
-   *     should have been declared
-   */
-  private RelationshipType getRelationshipType(final Element element, final String attribute)
-      throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute(attribute),
-        true,
-        data.getRelationshipTypeList()::getRelationshipType,
-        "relation");
+    return Optional.ofNullable(data.getRelationshipTypeList().getRelationshipType(name))
+        .orElseThrow(() -> newGameParseException("Could not find relationship type:" + name));
   }
 
   private TerritoryEffect getTerritoryEffect(final String name) throws GameParseException {
-    return getValidatedObject(name, true, data.getTerritoryEffectList()::get, "territoryEffect");
+    return Optional.ofNullable(data.getTerritoryEffectList().get(name))
+        .orElseThrow(() -> newGameParseException("Could not find territoryEffect:" + name));
   }
 
   /** If cannot find the productionRule an exception will be thrown. */
   private ProductionRule getProductionRule(final Element element) throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute("name"),
-        true,
-        data.getProductionRuleList()::getProductionRule,
-        "production rule");
+    return Optional.ofNullable(
+            data.getProductionRuleList().getProductionRule(element.getAttribute("name")))
+        .orElseThrow(
+            () ->
+                newGameParseException(
+                    "Could not find production rule:" + element.getAttribute("name")));
   }
 
   /** If cannot find the repairRule an exception will be thrown. */
   private RepairRule getRepairRule(final Element element) throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute("name"), true, data.getRepairRules()::getRepairRule, "repair rule");
+    return Optional.ofNullable(data.getRepairRules().getRepairRule(element.getAttribute("name")))
+        .orElseThrow(
+            () ->
+                newGameParseException(
+                    "Could not find repair rule:" + element.getAttribute("name")));
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
-    return getValidatedObject(name, true, data.getMap()::getTerritory, "territory");
-  }
-
-  /** If cannot find the territory an exception will be thrown. */
-  private Territory getTerritory(final Element element, final String attribute)
-      throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute(attribute), true, data.getMap()::getTerritory, "territory");
+    return Optional.ofNullable(data.getMap().getTerritory(name))
+        .orElseThrow(() -> newGameParseException("Could not find territory:" + name));
   }
 
   private UnitType getUnitType(final String name) throws GameParseException {
-    return getValidatedObject(name, true, data.getUnitTypeList()::getUnitType, "unitType");
+    return getUnitTypeOptional(name)
+        .orElseThrow(() -> newGameParseException("Could not find unitType:" + name));
   }
 
   /** If mustfind is true and cannot find the unitType an exception will be thrown. */
-  private UnitType getUnitType(
-      final Element element, final String attribute, final boolean mustFind)
-      throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute(attribute), mustFind, data.getUnitTypeList()::getUnitType, "unitType");
+  private Optional<UnitType> getUnitTypeOptional(final String name) {
+    return Optional.ofNullable(data.getUnitTypeList().getUnitType(name));
   }
 
   private TechAdvance getTechnology(final String name) throws GameParseException {
-    return getValidatedObject(name, true, this::getTechnologyFromFrontier, "technology");
-  }
-
-  private TechAdvance getTechnologyFromFrontier(final String name) {
     final TechnologyFrontier frontier = data.getTechnologyFrontier();
-    TechAdvance type = frontier.getAdvanceByName(name);
-    if (type == null) {
-      type = frontier.getAdvanceByProperty(name);
-    }
-    return type;
+    return Optional.ofNullable(frontier.getAdvanceByName(name))
+        .or(() -> Optional.ofNullable(frontier.getAdvanceByProperty(name)))
+        .orElseThrow(() -> newGameParseException("Could not find technology:" + name));
   }
 
   /** If cannot find the Delegate an exception will be thrown. */
   private IDelegate getDelegate(final Element element) throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute("delegate"), true, data::getDelegate, "delegate");
+    return Optional.ofNullable(data.getDelegate(element.getAttribute("delegate")))
+        .orElseThrow(
+            () ->
+                newGameParseException(
+                    "Could not find delegate:" + element.getAttribute("delegate")));
   }
 
   private Resource getResource(final String name) throws GameParseException {
-    return getValidatedObject(name, true, data.getResourceList()::getResource, "resource");
+    return getResourceOptional(name)
+        .orElseThrow(() -> newGameParseException("Could not find resource:" + name));
   }
 
   /** If mustfind is true and cannot find the Resource an exception will be thrown. */
-  private Resource getResource(
-      final Element element, final String attribute, final boolean mustFind)
-      throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute(attribute), mustFind, data.getResourceList()::getResource, "resource");
+  private Optional<Resource> getResourceOptional(final String name) {
+    return Optional.ofNullable(data.getResourceList().getResource(name));
   }
 
   /** If cannot find the productionRule an exception will be thrown. */
   private ProductionFrontier getProductionFrontier(final Element element)
       throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute("frontier"),
-        true,
-        data.getProductionFrontierList()::getProductionFrontier,
-        "production frontier");
+    return Optional.ofNullable(
+            data.getProductionFrontierList()
+                .getProductionFrontier(element.getAttribute("frontier")))
+        .orElseThrow(
+            () ->
+                newGameParseException(
+                    "Could not find production frontier:" + element.getAttribute("frontier")));
   }
 
   /** If cannot find the repairFrontier an exception will be thrown. */
   private RepairFrontier getRepairFrontier(final Element element) throws GameParseException {
-    return getValidatedObject(
-        element.getAttribute("frontier"),
-        true,
-        data.getRepairFrontierList()::getRepairFrontier,
-        "repair frontier");
+    return Optional.ofNullable(
+            data.getRepairFrontierList().getRepairFrontier(element.getAttribute("frontier")))
+        .orElseThrow(
+            () ->
+                newGameParseException(
+                    "Could not find repair frontier:" + element.getAttribute("frontier")));
   }
 
   /** Get the given child. If there is not exactly one child throws a GameParseException */
@@ -500,8 +466,8 @@ public final class GameParser {
   private void parseConnections(final List<Element> connections) throws GameParseException {
     final GameMap map = data.getMap();
     for (final Element current : connections) {
-      final Territory t1 = getTerritory(current, "t1");
-      final Territory t2 = getTerritory(current, "t2");
+      final Territory t1 = getTerritory(current.getAttribute("t1"));
+      final Territory t2 = getTerritory(current.getAttribute("t2"));
       map.addConnection(t1, t2);
     }
   }
@@ -574,7 +540,7 @@ public final class GameParser {
     final AllianceTracker allianceTracker = data.getAllianceTracker();
     final Collection<GamePlayer> players = data.getPlayerList().getPlayers();
     for (final Element current : getChildren("alliance", root)) {
-      final GamePlayer p1 = getPlayerId(current.getAttribute("player"), true);
+      final GamePlayer p1 = getPlayerId(current.getAttribute("player"));
       final String alliance = current.getAttribute("alliance");
       allianceTracker.addToAlliance(p1, alliance);
     }
@@ -612,9 +578,9 @@ public final class GameParser {
     if (!relations.isEmpty()) {
       final RelationshipTracker tracker = data.getRelationshipTracker();
       for (final Element current : relations) {
-        final GamePlayer p1 = getPlayerId(current.getAttribute("player1"), true);
-        final GamePlayer p2 = getPlayerId(current.getAttribute("player2"), true);
-        final RelationshipType r = getRelationshipType(current, "type");
+        final GamePlayer p1 = getPlayerId(current.getAttribute("player1"));
+        final GamePlayer p2 = getPlayerId(current.getAttribute("player2"));
+        final RelationshipType r = getRelationshipType(current.getAttribute("type"));
         final int roundValue = Integer.parseInt(current.getAttribute("roundValue"));
         tracker.setRelationship(p1, p2, r, roundValue);
       }
@@ -770,7 +736,7 @@ public final class GameParser {
   private void parseSteps(final List<Element> stepList) throws GameParseException {
     for (final Element current : stepList) {
       final IDelegate delegate = getDelegate(current);
-      final GamePlayer player = getPlayerId(current.getAttribute("player"), false);
+      final GamePlayer player = getPlayerIdOptional(current.getAttribute("player")).orElse(null);
       final String name = current.getAttribute("name");
       String displayName = null;
       final List<Element> propertyElements = getChildren("stepProperty", current);
@@ -840,7 +806,7 @@ public final class GameParser {
       throw newGameParseException("no costs  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
-      final Resource resource = getResource(current, "resource", true);
+      final Resource resource = getResource(current.getAttribute("resource"));
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       rule.addCost(resource, quantity);
     }
@@ -852,7 +818,7 @@ public final class GameParser {
       throw newGameParseException("no costs  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
-      final Resource resource = getResource(current, "resource", true);
+      final Resource resource = getResource(current.getAttribute("resource"));
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       rule.addCost(resource, quantity);
     }
@@ -865,9 +831,10 @@ public final class GameParser {
     }
     for (final Element current : elements) {
       // must find either a resource or a unit with the given name
-      NamedAttachable result = getResource(current, "resourceOrUnit", false);
+      NamedAttachable result =
+          getResourceOptional(current.getAttribute("resourceOrUnit")).orElse(null);
       if (result == null) {
-        result = getUnitType(current, "resourceOrUnit", false);
+        result = getUnitTypeOptional(current.getAttribute("resourceOrUnit")).orElse(null);
       }
       if (result == null) {
         throw newGameParseException(
@@ -885,9 +852,10 @@ public final class GameParser {
     }
     for (final Element current : elements) {
       // must find either a resource or a unit with the given name
-      NamedAttachable result = getResource(current, "resourceOrUnit", false);
+      NamedAttachable result =
+          getResourceOptional(current.getAttribute("resourceOrUnit")).orElse(null);
       if (result == null) {
-        result = getUnitType(current, "resourceOrUnit", false);
+        result = getUnitTypeOptional(current.getAttribute("resourceOrUnit")).orElse(null);
       }
       if (result == null) {
         throw newGameParseException(
@@ -918,7 +886,7 @@ public final class GameParser {
 
   private void parsePlayerTech(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final GamePlayer player = getPlayerId(current.getAttribute("player"), true);
+      final GamePlayer player = getPlayerId(current.getAttribute("player"));
       final TechnologyFrontierList categories = player.getTechnologyFrontierList();
       parseCategories(getChildren("category", current), categories);
     }
@@ -946,7 +914,7 @@ public final class GameParser {
 
   private void parsePlayerProduction(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final GamePlayer player = getPlayerId(current.getAttribute("player"), true);
+      final GamePlayer player = getPlayerId(current.getAttribute("player"));
       final ProductionFrontier frontier = getProductionFrontier(current);
       player.setProductionFrontier(frontier);
     }
@@ -954,7 +922,7 @@ public final class GameParser {
 
   private void parsePlayerRepair(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final GamePlayer player = getPlayerId(current.getAttribute("player"), true);
+      final GamePlayer player = getPlayerId(current.getAttribute("player"));
       final RepairFrontier repairFrontier = getRepairFrontier(current);
       player.setRepairFrontier(repairFrontier);
     }
@@ -1230,16 +1198,16 @@ public final class GameParser {
 
   private void parseOwner(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final Territory territory = getTerritory(current, "territory");
-      final GamePlayer owner = getPlayerId(current.getAttribute("owner"), true);
+      final Territory territory = getTerritory(current.getAttribute("territory"));
+      final GamePlayer owner = getPlayerId(current.getAttribute("owner"));
       territory.setOwner(owner);
     }
   }
 
   private void parseUnitPlacement(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final Territory territory = getTerritory(current, "territory");
-      final UnitType type = getUnitType(current, "unitType", true);
+      final Territory territory = getTerritory(current.getAttribute("territory"));
+      final UnitType type = getUnitType(current.getAttribute("unitType"));
       final String ownerString = current.getAttribute("owner");
       final String hitsTakenString = current.getAttribute("hitsTaken");
       final String unitDamageString = current.getAttribute("unitDamage");
@@ -1247,7 +1215,7 @@ public final class GameParser {
       if (ownerString == null || ownerString.isBlank()) {
         owner = GamePlayer.NULL_PLAYERID;
       } else {
-        owner = getPlayerId(current.getAttribute("owner"), false);
+        owner = getPlayerIdOptional(current.getAttribute("owner")).orElse(null);
       }
       final int hits;
       if (hitsTakenString != null && !hitsTakenString.isBlank()) {
@@ -1275,8 +1243,8 @@ public final class GameParser {
 
   private void parseHeldUnits(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final GamePlayer player = getPlayerId(current.getAttribute("player"), true);
-      final UnitType type = getUnitType(current, "unitType", true);
+      final GamePlayer player = getPlayerId(current.getAttribute("player"));
+      final UnitType type = getUnitType(current.getAttribute("unitType"));
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       player.getUnitCollection().addAll(type.create(quantity, player));
     }
@@ -1284,8 +1252,8 @@ public final class GameParser {
 
   private void parseResourceInitialization(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final GamePlayer player = getPlayerId(current.getAttribute("player"), true);
-      final Resource resource = getResource(current, "resource", true);
+      final GamePlayer player = getPlayerId(current.getAttribute("player"));
+      final Resource resource = getResource(current.getAttribute("resource"));
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       player.getResources().addResource(resource, quantity);
     }
