@@ -8,7 +8,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -65,7 +64,7 @@ public final class GameChooserModel extends DefaultListModel<DefaultGameChooserE
               }
               return Stream.empty();
             })
-        .map(GameChooserModel::newGameChooserEntry)
+        .map(DefaultGameChooserEntry::newDefaultGameChooserEntry)
         .flatMap(Optional::stream)
         .collect(Collectors.toUnmodifiableSet());
   }
@@ -132,20 +131,6 @@ public final class GameChooserModel extends DefaultListModel<DefaultGameChooserE
                     JOptionPane.showMessageDialog(null, message, title, messageType);
                   }
                 }));
-  }
-
-  /**
-   * From a given URI, creates a GameChooserEntry and adds to the given entries list.
-   *
-   * @param uri URI of the new entry
-   */
-  private static Optional<DefaultGameChooserEntry> newGameChooserEntry(final URI uri) {
-    try {
-      return Optional.of(new DefaultGameChooserEntry(uri));
-    } catch (final Exception e) {
-      log.log(Level.INFO, "Invalid map: " + uri + ", " + e.getMessage(), e);
-    }
-    return Optional.empty();
   }
 
   /** Searches for a GameChooserEntry whose gameName matches the input parameter. */

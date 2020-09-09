@@ -1,7 +1,6 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.gameparser.ShallowGameParser;
 import java.io.File;
 import java.net.URI;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -67,14 +65,7 @@ final class AvailableGames {
     log.info("Loading XML: " + uri);
     return UrlStreams.openStream(
         uri,
-        inputStream -> {
-          try {
-            return ShallowGameParser.readGameName(uri.toString(), inputStream);
-          } catch (final GameParseException e) {
-            log.log(Level.SEVERE, "Exception while parsing: " + uri, e);
-            return null;
-          }
-        });
+        inputStream -> ShallowGameParser.readGameName(uri.toString(), inputStream).orElse(null));
   }
 
   boolean hasGame(final String gameName) {
