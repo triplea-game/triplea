@@ -4,7 +4,9 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrike;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,31 +46,7 @@ class OffensiveStandardTest {
       final BattleState battleState =
           givenBattleStateBuilder().attackingUnits(List.of(givenUnitFirstStrike())).build();
       final OffensiveStandard offensiveStandard = new OffensiveStandard(battleState, battleActions);
-      assertThat(offensiveStandard.getNames(), hasSize(0));
-    }
-  }
-
-  @Nested
-  class FireAa {
-    @Test
-    void onlyFireStandardUnits() {
-      final OffensiveStandard offensiveStandard =
-          new OffensiveStandard(
-              givenBattleStateBuilder().defendingAa(List.of()).build(), battleActions);
-
-      offensiveStandard.execute(executionStack, delegateBridge);
-
-      verify(battleActions)
-          .findTargetGroupsAndFire(
-              eq(MustFightBattle.ReturnFire.ALL),
-              any(),
-              eq(false),
-              any(),
-              any(),
-              anyCollection(),
-              anyCollection(),
-              anyCollection(),
-              anyCollection());
+      assertThat(offensiveStandard.getNames(), is(empty()));
     }
   }
 }
