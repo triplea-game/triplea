@@ -71,6 +71,6 @@ public enum TestMapGameData {
             new XmlGameElementMapper(
                 Map.of("TestDelegate", TestDelegate::new),
                 Map.of("TestAttachment", TestAttachment::new)))
-        .orElseThrow();
+        .orElseThrow(() -> new IllegalStateException("Error parsing: " + mapUri));
   }
 }
