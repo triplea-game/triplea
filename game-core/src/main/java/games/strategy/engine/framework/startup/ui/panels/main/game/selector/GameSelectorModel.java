@@ -44,7 +44,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
-    this(uri -> GameParser.parse(uri, new XmlGameElementMapper());
+    this(uri -> GameParser.parse(uri, new XmlGameElementMapper()));
   }
 
   GameSelectorModel(final Function<URI, Optional<GameData>> gameParser) {
