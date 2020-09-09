@@ -381,11 +381,9 @@ public final class GameParser {
         .collect(Collectors.toList());
   }
 
-  private void parseInfo(final Node info) {
-    final String gameName = ((Element) info).getAttribute("name");
-    data.setGameName(gameName);
-    final String version = ((Element) info).getAttribute("version");
-    data.setGameVersion(new Version(version));
+  private void parseInfo(final Element info) {
+    data.setGameName(info.getAttribute("name"));
+    data.setGameVersion(new Version(info.getAttribute("version")));
   }
 
   private void parseMap(final Node map) throws GameParseException {
