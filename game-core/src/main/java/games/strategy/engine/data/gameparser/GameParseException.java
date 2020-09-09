@@ -11,10 +11,6 @@ public final class GameParseException extends Exception {
     super(message);
   }
 
-  public GameParseException(final Throwable cause) {
-    super(cause);
-  }
-
   public GameParseException(final String message, final Throwable cause) {
     super(message, cause);
   }
