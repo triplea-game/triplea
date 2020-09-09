@@ -21,7 +21,8 @@ class PlayerGamesTab {
         new JTextAreaBuilder()
             .readOnly()
             .text(
-                playerSummary.getCurrentGames() //
+                playerSummary
+                    .getCurrentGames() //
                     .stream()
                     .sorted()
                     .collect(Collectors.joining("\n")))

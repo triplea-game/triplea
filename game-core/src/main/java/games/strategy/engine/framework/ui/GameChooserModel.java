@@ -53,8 +53,7 @@ public final class GameChooserModel extends DefaultListModel<DefaultGameChooserE
   }
 
   public static Set<DefaultGameChooserEntry> parseMapFiles() {
-    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
-        .parallelStream()
+    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).parallelStream()
         .flatMap(
             map -> {
               if (map.isDirectory()) {
