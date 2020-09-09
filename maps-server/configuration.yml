@@ -9,7 +9,7 @@ database:
   driverClass: org.postgresql.Driver
   user: maps_user
   password: postgres
-  url: jdbc:postgresql://localhost:${MAPS_SERVER_DB_PORT:-5433}/maps_db
+  url: jdbc:postgresql://localhost:5432/maps_db
   properties:
     charSet: UTF-8
   validationQuery: select 1

@@ -8,6 +8,7 @@
   roles:
     - system/hostname
     - system/apt_update
+    - {name: system/apt_common_tools, tags: [ database, flyway ]}
     - system/admin_user
     - system/firewall
     - system/security

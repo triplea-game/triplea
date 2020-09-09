@@ -15,7 +15,7 @@
     owner: flyway
     group: flyway
 
-- name: extract flyway
+- name: extract flyway CLI
   become: true
   unarchive:
     copy: no
@@ -25,41 +25,24 @@
     owner: flyway
     group: flyway
 
-- name: deploy flyway conf file
-  become: true
-  template:
-    src: flyway.conf.j2
-    dest: "{{ flyway_extracted_location }}/conf/flyway.conf"
-    mode: "644"
-    owner: flyway
-    group: flyway
-
 - name: copy flyway migrations zip if deploying latest
   become: true
-  when: using_latest
+  when: using_latest == "true"
   copy:
-    src: "{{ item.migration.zip }}"
-    dest: "/home/flyway/{{ item.migration.zip }}"
+    src: "migrations.zip"
+    dest: "/home/flyway/migrations.zip"
     mode: "644"
     owner: flyway
     group: flyway
-  loop: "{{ flyway_args }}"
-  loop_control:
-    label: "{{ item.migration.zip }}"
-  no_log: true
 
 - name: download flyway migrations if deploying a specific version
   become: true
-  when: not using_latest
+  when: using_latest == "false"
   get_url:
-    url: "{{ item.migration.url }}"
-    dest: "/home/flyway/{{ item.migration.zip }}"
+    url: "{{ migrations_url }}"
+    dest: "/home/flyway/migrations.zip"
     owner: flyway
     group: flyway
-  loop: "{{ flyway_args }}"
-  loop_control:
-    label: "{{ item.migration.url }}"
-  no_log: true
 
 - name: create migration folders
   become: true
@@ -68,34 +51,25 @@
     mode: "0755"
     owner: flyway
     group: flyway
-    path : "{{ flyway_extracted_location }}/{{ item.migration.dir }}/"
-  loop: "{{ flyway_args }}"
-  loop_control:
-    label: "{{ item.migration.dir }}"
-  no_log: true
+    path : "{{ flyway_extracted_location }}/migrations"
 
 - name: extract migrations
   become: true
   unarchive:
-     src: "/home/flyway/{{ item.migration.zip }}"
+     src: "/home/flyway/migrations.zip"
      remote_src: true
-     dest: "{{ flyway_extracted_location }}/{{ item.migration.dir }}/"
+     dest: "{{ flyway_extracted_location }}/migrations"
      mode: "644"
      owner: flyway
      group: flyway
-  loop: "{{ flyway_args }}"
-  loop_control:
-    label: "{{ item.migration.zip }}"
-  no_log: true
 
 - name: run flyway
   become: true
   become_user: flyway
-  command: "{{ flyway_extracted_location }}/flyway -user={{ item.user }} -password={{ item.password }} -url={{ item.url }} -locations={{ item.migration.dir }}  migrate"
+  command: "{{ flyway_extracted_location }}/flyway -user={{ item.user }} -password={{ item.password }} -url={{ item.url }} -locations={{ item.migration_dir }} migrate"
   register: flyway
   changed_when: '"is up to date. No migration necessary" not in flyway.stdout'
   loop: "{{ flyway_args }}"
   loop_control:
-    label: "{{ item.migration.dir }}"
-  no_log: true
-
+    label: "{{ item.migration_dir }}"
+  no_log: true 
