@@ -12,7 +12,15 @@ public interface BattleState {
 
   enum Side {
     OFFENSE,
-    DEFENSE,
+    DEFENSE;
+
+    public Side getOpposite() {
+      if (this == OFFENSE) {
+        return DEFENSE;
+      } else {
+        return OFFENSE;
+      }
+    }
   }
 
   int getBattleRound();
@@ -21,9 +29,11 @@ public interface BattleState {
 
   Collection<Unit> getAttackingUnits();
 
-  Collection<Unit> getAttackingWaitingToDie();
-
   Collection<Unit> getDefendingUnits();
+
+  Collection<Unit> getUnits(EnumSet<Side> sides);
+
+  Collection<Unit> getAttackingWaitingToDie();
 
   Collection<Unit> getDefendingWaitingToDie();
 

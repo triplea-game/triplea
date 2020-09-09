@@ -1,54 +1,36 @@
 package games.strategy.triplea.delegate.battle;
 
-import static games.strategy.engine.data.Unit.ALREADY_MOVED;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
 import static games.strategy.triplea.Constants.LAND_BATTLE_ROUNDS;
 import static games.strategy.triplea.Constants.SEA_BATTLE_ROUNDS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
-import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
 import static games.strategy.triplea.Constants.WW2V2;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.WATER;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.UnitAndAttachment;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrike;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.newUnitAndAttachment;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
-import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
-import junit.framework.AssertionFailedError;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,340 +76,10 @@ class MustFightBattleExecutablesTest {
 
     final RelationshipTracker mockRelationshipTracker = mock(RelationshipTracker.class);
     when(gameData.getRelationshipTracker()).thenReturn(mockRelationshipTracker);
-    lenient().when(mockRelationshipTracker.isAtWar(attacker, defender)).thenReturn(true);
-    lenient().when(mockRelationshipTracker.isAllied(attacker, attacker)).thenReturn(true);
-    lenient().when(mockRelationshipTracker.isAllied(defender, defender)).thenReturn(true);
-    lenient().when(mockRelationshipTracker.isAllied(defender, attacker)).thenReturn(false);
-    lenient().when(mockRelationshipTracker.isAllied(attacker, defender)).thenReturn(false);
+    when(mockRelationshipTracker.isAtWar(attacker, defender)).thenReturn(true);
+    when(mockRelationshipTracker.isAtWar(defender, attacker)).thenReturn(true);
 
     return new MustFightBattle(battleSite, attacker, gameData, battleTracker);
-  }
-
-  private void assertThatStepIsMissing(
-      final List<IExecutable> execs, final Class<? extends IExecutable> stepClass) {
-    final AssertionFailedError missingClassException =
-        assertThrows(
-            AssertionFailedError.class,
-            () -> getIndex(execs, stepClass),
-            stepClass.getName() + " should not be in the steps");
-
-    assertThat(missingClassException.toString(), containsString("No instance:"));
-  }
-
-  private void assertThatStepExists(
-      final List<IExecutable> execs, final Class<? extends IExecutable> stepClass) {
-    assertThat(
-        stepClass.getName() + " is missing from the steps",
-        getIndex(execs, stepClass),
-        greaterThanOrEqualTo(0));
-  }
-
-  @Test
-  @DisplayName("Verify transports are removed if TRANSPORT_CASUALTIES_RESTRICTED is true")
-  void transportsAreRemovedIfTransportCasualtiesRestricted() {
-    final MustFightBattle battle = newBattle(WATER);
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    assertThatStepExists(execs, MustFightBattle.RemoveUndefendedTransports.class);
-  }
-
-  @Test
-  @DisplayName("Verify transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is false")
-  void transportsAreNotRemovedIfTransportCasualtiesUnRestricted() {
-    final MustFightBattle battle = newBattle(WATER);
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    assertThatStepIsMissing(execs, MustFightBattle.RemoveUndefendedTransports.class);
-  }
-
-  @Test
-  @DisplayName("Verify unescorted attacking transports are removed if casualities are restricted")
-  void unescortedAttackingTransportsAreRemovedWhenCasualtiesAreRestricted() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
-    doNothing().when(battle).remove(any(), any(), any(), any());
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getUnit();
-    when(unit.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
-    when(attachment1.getIsCombatTransport()).thenReturn(false);
-    when(attachment1.getTransportCapacity()).thenReturn(2);
-    when(attachment1.getIsSea()).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getUnit();
-    when(unit2.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
-    when(attachment2.getTransportCapacity()).thenReturn(-1);
-    when(attachment2.getMovement(attacker)).thenReturn(1);
-    when(attachment2.getAttack(attacker)).thenReturn(1);
-    when(attachment2.getIsSea()).thenReturn(true);
-    when(unit2.getMovementLeft()).thenReturn(BigDecimal.ZERO);
-    final MutableProperty<Boolean> alreadyMovedProperty = MutableProperty.ofReadOnly(() -> true);
-    doReturn(alreadyMovedProperty).when(unit2).getPropertyOrThrow(ALREADY_MOVED);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
-
-    battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge).addChange(any());
-    verify(battle).remove(any(), any(), any(), eq(false));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking transports are not removed if "
-          + "TRANSPORT_CASUALTIES_RESTRICTED is true but has retreat territories")
-  void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButHasRetreat() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of(retreatSite)).when(battle).getAttackerRetreatTerritories();
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    final Unit unit = givenAnyUnit();
-    when(unit.getOwner()).thenReturn(attacker);
-
-    battle.setUnits(List.of(), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge, never()).addChange(any());
-    verify(battle, never()).remove(any(), any(), any(), eq(false));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking transports are not removed if "
-          + "TRANSPORT_CASUALTIES_RESTRICTED is true but has no transports")
-  void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoTransports() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    final Unit unit = givenAnyUnit();
-    when(unit.getOwner()).thenReturn(attacker);
-
-    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getUnit();
-    when(unit2.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
-    when(attachment2.getTransportCapacity()).thenReturn(-1);
-    when(attachment2.getIsSea()).thenReturn(true);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
-
-    battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge, never()).addChange(any());
-    verify(battle, never()).remove(any(), any(), any(), eq(false));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking transports are not removed if "
-          + "TRANSPORT_CASUALTIES_RESTRICTED is true but no defenders")
-  void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoDefenders() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getUnit();
-    when(unit.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
-    when(attachment1.getIsCombatTransport()).thenReturn(false);
-    when(attachment1.getTransportCapacity()).thenReturn(2);
-    when(attachment1.getIsSea()).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getUnit();
-    when(unit2.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
-    when(attachment2.getTransportCapacity()).thenReturn(-1);
-    when(attachment2.getMovement(attacker)).thenReturn(0);
-    when(attachment2.getIsSea()).thenReturn(true);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
-
-    battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge, never()).addChange(any());
-    verify(battle, never()).remove(any(), any(), any(), eq(false));
-  }
-
-  @Test
-  @DisplayName("Verify unescorted defending transports are removed if casualities are restricted")
-  void unescortedDefendingTransportsAreRemovedWhenCasualtiesAreRestricted() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
-    doNothing().when(battle).remove(any(), any(), any(), any());
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getUnit();
-    when(unit.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
-    when(attachment1.getIsCombatTransport()).thenReturn(false);
-    when(attachment1.getTransportCapacity()).thenReturn(2);
-    when(attachment1.getIsSea()).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getUnit();
-    when(unit2.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
-    when(attachment2.getTransportCapacity()).thenReturn(-1);
-    when(attachment2.getMovement(defender)).thenReturn(1);
-    when(attachment2.getAttack(defender)).thenReturn(1);
-    when(attachment2.getIsSea()).thenReturn(true);
-    when(unit2.getMovementLeft()).thenReturn(BigDecimal.ZERO);
-    final MutableProperty<Boolean> alreadyMovedProperty = MutableProperty.ofReadOnly(() -> true);
-    doReturn(alreadyMovedProperty).when(unit2).getPropertyOrThrow(ALREADY_MOVED);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
-
-    battle.setUnits(List.of(unit), List.of(unit2), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge).addChange(any());
-    verify(battle).remove(any(), any(), any(), eq(true));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify defending transports are not removed if "
-          + "TRANSPORT_CASUALTIES_RESTRICTED is true but has no transports")
-  void defendingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoTransports() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    final Unit unit = givenAnyUnit();
-    when(unit.getOwner()).thenReturn(defender);
-
-    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getUnit();
-    when(unit2.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
-    when(attachment2.getIsSea()).thenReturn(true);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
-
-    battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge, never()).addChange(any());
-    verify(battle, never()).remove(any(), any(), any(), eq(false));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify defending transports are not removed if "
-          + "TRANSPORT_CASUALTIES_RESTRICTED is true but no defenders")
-  void defendingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoDefenders() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getUnit();
-    when(unit.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
-    when(attachment1.getIsCombatTransport()).thenReturn(false);
-    when(attachment1.getTransportCapacity()).thenReturn(2);
-    when(attachment1.getIsSea()).thenReturn(true);
-
-    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getUnit();
-    when(unit2.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
-    when(attachment2.getMovement(defender)).thenReturn(0);
-    when(attachment2.getIsSea()).thenReturn(true);
-
-    when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
-
-    battle.setUnits(List.of(unit2), List.of(unit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables();
-
-    final int index = getIndex(execs, MustFightBattle.RemoveUndefendedTransports.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge, never()).addChange(any());
-    verify(battle, never()).remove(any(), any(), any(), eq(false));
   }
 
   @Test
@@ -453,7 +105,6 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(ww2v2);
     lenient()
         .when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false))
@@ -461,6 +112,8 @@ class MustFightBattleExecutablesTest {
 
     final Unit attackerUnit = attackerDestroyer ? givenUnitDestroyer() : givenAnyUnit();
     final Unit defenderUnit = defenderDestroyer ? givenUnitDestroyer() : givenAnyUnit();
+    when(attackerUnit.getOwner()).thenReturn(attacker);
+    when(defenderUnit.getOwner()).thenReturn(defender);
 
     battle.setUnits(
         List.of(defenderUnit, givenUnitFirstStrike()),

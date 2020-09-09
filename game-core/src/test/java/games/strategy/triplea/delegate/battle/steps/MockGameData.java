@@ -11,14 +11,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.properties.GameProperties;
 
 public class MockGameData {
   private final GameData gameData = mock(GameData.class);
   private final GameProperties gameProperties = mock(GameProperties.class);
+  private final RelationshipTracker relationshipTracker = mock(RelationshipTracker.class);
 
   private MockGameData() {
     lenient().when(gameData.getProperties()).thenReturn(gameProperties);
+    lenient().when(gameData.getRelationshipTracker()).thenReturn(relationshipTracker);
   }
 
   public static MockGameData givenGameData() {
@@ -27,6 +31,18 @@ public class MockGameData {
 
   public GameData build() {
     return gameData;
+  }
+
+  public MockGameData withAlliedRelationship(
+      final GamePlayer player1, final GamePlayer player2, final boolean value) {
+    when(relationshipTracker.isAllied(player1, player2)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withWarRelationship(
+      final GamePlayer player1, final GamePlayer player2, final boolean value) {
+    when(relationshipTracker.isAtWar(player1, player2)).thenReturn(value);
+    return this;
   }
 
   public MockGameData withTransportCasualtiesRestricted(final boolean value) {

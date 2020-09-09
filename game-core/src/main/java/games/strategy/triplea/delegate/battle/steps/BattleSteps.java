@@ -13,12 +13,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -106,6 +106,18 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   }
 
   @Override
+  public Collection<Unit> getUnits(final EnumSet<Side> sides) {
+    final Collection<Unit> units = new ArrayList<>();
+    if (sides.contains(Side.OFFENSE)) {
+      units.addAll(attackingUnits);
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      units.addAll(defendingUnits);
+    }
+    return units;
+  }
+
+  @Override
   public Collection<Unit> getWaitingToDie(final EnumSet<Side> sides) {
     final Collection<Unit> waitingToDie = new ArrayList<>();
     if (sides.contains(Side.OFFENSE)) {
@@ -143,6 +155,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep offensiveAaStep = new OffensiveAaFire(this, battleActions);
     final BattleStep defensiveAaStep = new DefensiveAaFire(this, battleActions);
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, battleActions);
+    final BattleStep removeUndefendedUnits = new RemoveUnprotectedUnits(this, battleActions);
     final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this);
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
     final BattleStep navalBombardment = new NavalBombardment(this, battleActions);
@@ -168,13 +181,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     if (defensiveSubsSubmerge.getOrder() == SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.addAll(defensiveSubsSubmerge.getNames());
     }
-    // See if there any unescorted transports
-    if (isBattleSiteWater
-        && Properties.getTransportCasualtiesRestricted(gameData)
-        && (attackingUnits.stream().anyMatch(Matches.unitIsTransport())
-            || defendingUnits.stream().anyMatch(Matches.unitIsTransport()))) {
-      steps.add(REMOVE_UNESCORTED_TRANSPORTS);
-    }
+    steps.addAll(removeUndefendedUnits.getNames());
     steps.addAll(submergeSubsVsOnlyAir.getNames());
 
     if (offensiveFirstStrike.getOrder() == FIRST_STRIKE_OFFENSIVE) {

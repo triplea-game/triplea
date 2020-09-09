@@ -41,6 +41,7 @@ import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -98,16 +99,6 @@ public class MustFightBattle extends DependentBattle
     SUBS,
     PLANES,
     PARTIAL_AMPHIB
-  }
-
-  /**
-   * An action representing removing undefended transports.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class RemoveUndefendedTransports implements IExecutable {
-    private static final long serialVersionUID = 1369227461759133105L;
   }
 
   private static final long serialVersionUID = 5879502298361231540L;
@@ -333,6 +324,18 @@ public class MustFightBattle extends DependentBattle
   @Override
   public List<Unit> getDefendingAa() {
     return defendingAa;
+  }
+
+  @Override
+  public Collection<Unit> getUnits(final EnumSet<Side> sides) {
+    final Collection<Unit> units = new ArrayList<>();
+    if (sides.contains(Side.OFFENSE)) {
+      units.addAll(attackingUnits);
+    }
+    if (sides.contains(Side.DEFENSE)) {
+      units.addAll(defendingUnits);
+    }
+    return units;
   }
 
   @Override
@@ -1427,6 +1430,7 @@ public class MustFightBattle extends DependentBattle
     final BattleStep firstStrikeCasualties = new ClearFirstStrikeCasualties(this, this);
     final BattleStep offensiveStandard = new OffensiveGeneral(this, this);
     final BattleStep defensiveStandard = new DefensiveGeneral(this, this);
+    final BattleStep removeUndefendedUnits = new RemoveUnprotectedUnits(this, this);
 
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.add(offensiveSubsRetreat);
@@ -1462,21 +1466,16 @@ public class MustFightBattle extends DependentBattle
         }
       };
     }
-    // Remove undefended transports
-    if (Properties.getTransportCasualtiesRestricted(gameData)) {
-      steps.add(
-          new RemoveUndefendedTransports() {
-            private static final long serialVersionUID = 99989L;
+    steps.add(removeUndefendedUnits);
+    new IExecutable() {
+      private static final long serialVersionUID = 99989L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              checkUndefendedTransports(bridge, defender);
-              checkUndefendedTransports(bridge, attacker);
-              checkForUnitsThatCanRollLeft(bridge, true);
-              checkForUnitsThatCanRollLeft(bridge, false);
-            }
-          });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new RemoveUnprotectedUnits(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
+      }
+    };
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, this);
     steps.add(submergeSubsVsOnlyAir);
@@ -1581,106 +1580,6 @@ public class MustFightBattle extends DependentBattle
     };
   }
 
-  /** Check for unescorted transports and kill them immediately. */
-  private void checkUndefendedTransports(final IDelegateBridge bridge, final GamePlayer player) {
-    // if we are the attacker, we can retreat instead of dying
-    if (player.equals(attacker)
-        && (!getAttackerRetreatTerritories().isEmpty()
-            || attackingUnits.stream().anyMatch(Matches.unitIsAir()))) {
-      return;
-    }
-    // Get all allied transports in the territory
-    final Predicate<Unit> matchAllied =
-        Matches.unitIsTransport()
-            .and(Matches.unitIsNotCombatTransport())
-            .and(Matches.isUnitAllied(player, gameData))
-            .and(Matches.unitIsSea());
-    final List<Unit> alliedTransports =
-        CollectionUtils.getMatches(battleSite.getUnits(), matchAllied);
-    // If no transports, just return
-    if (alliedTransports.isEmpty()) {
-      return;
-    }
-    // Get all ALLIED, sea & air units in the territory (that are NOT submerged)
-    final Predicate<Unit> alliedUnitsMatch =
-        Matches.isUnitAllied(player, gameData)
-            .and(Matches.unitIsNotLand())
-            .and(Matches.unitIsSubmerged().negate());
-    final Collection<Unit> alliedUnits =
-        CollectionUtils.getMatches(battleSite.getUnits(), alliedUnitsMatch);
-    // If transports are unescorted, check opposing forces to see if the Trns die automatically
-    if (alliedTransports.size() == alliedUnits.size()) {
-      // Get all the ENEMY sea and air units (that can attack) in the territory
-      final Predicate<Unit> enemyUnitsMatch =
-          Matches.unitIsNotLand()
-              .and(Matches.unitIsSubmerged().negate())
-              .and(Matches.unitCanAttack(player));
-      final Collection<Unit> enemyUnits =
-          CollectionUtils.getMatches(battleSite.getUnits(), enemyUnitsMatch);
-      // If there are attackers set their movement to 0 and kill the transports
-      if (!enemyUnits.isEmpty()) {
-        final Change change =
-            ChangeFactory.markNoMovementChange(
-                CollectionUtils.getMatches(enemyUnits, Matches.unitIsSea()));
-        bridge.addChange(change);
-        final boolean defender = player.equals(this.defender);
-        remove(alliedTransports, bridge, battleSite, defender);
-      }
-    }
-  }
-
-  private void checkForUnitsThatCanRollLeft(final IDelegateBridge bridge, final boolean attacker) {
-    // if we are the attacker, we can retreat instead of dying
-    if (attacker
-        && (!getAttackerRetreatTerritories().isEmpty()
-            || attackingUnits.stream().anyMatch(Matches.unitIsAir()))) {
-      return;
-    }
-    if (attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
-      return;
-    }
-    final Predicate<Unit> notSubmergedAndType =
-        Matches.unitIsSubmerged()
-            .negate()
-            .and(
-                Matches.territoryIsLand().test(battleSite)
-                    ? Matches.unitIsSea().negate()
-                    : Matches.unitIsLand().negate());
-    final Collection<Unit> unitsToKill;
-    final boolean hasUnitsThatCanRollLeft;
-    if (attacker) {
-      hasUnitsThatCanRollLeft =
-          attackingUnits.stream()
-              .anyMatch(
-                  notSubmergedAndType.and(Matches.unitIsSupporterOrHasCombatAbility(attacker)));
-      unitsToKill =
-          CollectionUtils.getMatches(
-              attackingUnits, notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
-    } else {
-      hasUnitsThatCanRollLeft =
-          defendingUnits.stream()
-              .anyMatch(
-                  notSubmergedAndType.and(Matches.unitIsSupporterOrHasCombatAbility(attacker)));
-      unitsToKill =
-          CollectionUtils.getMatches(
-              defendingUnits, notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
-    }
-    final boolean enemy = !attacker;
-    final boolean enemyHasUnitsThatCanRollLeft;
-    if (enemy) {
-      enemyHasUnitsThatCanRollLeft =
-          attackingUnits.stream()
-              .anyMatch(notSubmergedAndType.and(Matches.unitIsSupporterOrHasCombatAbility(enemy)));
-    } else {
-      enemyHasUnitsThatCanRollLeft =
-          defendingUnits.stream()
-              .anyMatch(notSubmergedAndType.and(Matches.unitIsSupporterOrHasCombatAbility(enemy)));
-    }
-    if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
-      remove(unitsToKill, bridge, battleSite, !attacker);
-    }
-  }
-
   @Override
   public void findTargetGroupsAndFire(
       final ReturnFire returnFire,
@@ -1749,11 +1648,8 @@ public class MustFightBattle extends DependentBattle
             } else if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure())
                     .size()
                 == 0) {
-              if (Properties.getTransportCasualtiesRestricted(gameData)) {
-                // If there are undefended attacking transports, determine if they automatically die
-                checkUndefendedTransports(bridge, defender);
-              }
-              checkForUnitsThatCanRollLeft(bridge, false);
+              new RemoveUnprotectedUnits(MustFightBattle.this, MustFightBattle.this)
+                  .checkAndRemoveUnits(bridge, Side.DEFENSE);
               endBattle(bridge);
               attackerWins(bridge);
             } else if (maxRounds > 0 && maxRounds <= round) {
