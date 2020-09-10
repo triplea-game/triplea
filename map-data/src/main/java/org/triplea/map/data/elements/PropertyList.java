@@ -33,11 +33,14 @@ public class PropertyList {
       @BodyText private java.lang.String data;
     }
 
+    @SuppressWarnings("JavaLangClash")
     public static class Boolean {}
 
+    @SuppressWarnings("JavaLangClash")
     public static class String {}
 
     @Getter
+    @SuppressWarnings("JavaLangClash")
     public static class Number {
       @Attribute private int min;
       @Attribute private int max;
