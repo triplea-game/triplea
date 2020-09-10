@@ -56,8 +56,7 @@ class GameParsingValidation {
       // in relation to every player
       for (final GamePlayer player2 : data.getPlayerList()) {
         // See if there is a relationship between them
-        if ((data.getRelationshipTracker().getRelationshipType(player, player2) == null)) {
-          // or else throw an exception!
+        if (data.getRelationshipTracker().getRelationship(player, player2) == null) {
           throw new GameParseException(
               "No relation set for: " + player.getName() + " and " + player2.getName());
         }
