@@ -42,6 +42,8 @@ import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
+import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveFirstStrikeSuicide;
+import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveGeneralSuicide;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -1437,6 +1439,7 @@ public class MustFightBattle extends DependentBattle
     final BattleStep offensiveStandard = new OffensiveGeneral(this, this);
     final BattleStep defensiveStandard = new DefensiveGeneral(this, this);
     final BattleStep removeUnprotectedUnits = new RemoveUnprotectedUnits(this, this);
+    final BattleStep removeFirstStrike = new RemoveFirstStrikeSuicide(this, this);
 
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.add(offensiveSubsRetreat);
@@ -1539,15 +1542,16 @@ public class MustFightBattle extends DependentBattle
     };
     steps.add(firstStrikeCasualties);
 
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = -7634700553071456768L;
+    steps.add(removeFirstStrike);
+    new IExecutable() {
+      private static final long serialVersionUID = -7634700553071456768L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            removeFirstStrikeSuicideUnits(bridge);
-          }
-        });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new RemoveFirstStrikeSuicide(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
+      }
+    };
     if (offensiveFirstStrike.getOrder() == FIRST_STRIKE_OFFENSIVE_REGULAR) {
       steps.add(offensiveFirstStrike);
     }
@@ -1623,6 +1627,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addCheckEndBattleAndRetreatingSteps(final List<IExecutable> steps) {
+    final BattleStep removeGeneralSuicide = new RemoveGeneralSuicide(this, this);
     steps.add(
         new IExecutable() {
           private static final long serialVersionUID = 8611067962952500496L;
@@ -1632,15 +1637,15 @@ public class MustFightBattle extends DependentBattle
             clearWaitingToDieAndDamagedChangesInto(bridge);
           }
         });
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 6387198382888361848L;
+    steps.add(removeGeneralSuicide);
+    new IExecutable() {
+      private static final long serialVersionUID = 6387198382888361848L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            removeStandardSuicideUnits(bridge);
-          }
-        });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new RemoveGeneralSuicide(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
+      }
+    };
     steps.add(
         new IExecutable() {
           private static final long serialVersionUID = 5259103822937067667L;
@@ -1808,30 +1813,6 @@ public class MustFightBattle extends DependentBattle
             }
           }
         });
-  }
-
-  private void removeFirstStrikeSuicideUnits(final IDelegateBridge bridge) {
-    removeSuicideUnits(bridge, Matches.unitIsFirstStrike());
-  }
-
-  private void removeStandardSuicideUnits(final IDelegateBridge bridge) {
-    removeSuicideUnits(bridge, Matches.unitIsFirstStrike().negate());
-  }
-
-  private void removeSuicideUnits(final IDelegateBridge bridge, final Predicate<Unit> unitMatch) {
-    final Collection<Unit> deadAttackers =
-        CollectionUtils.getMatches(attackingUnits, unitMatch.and(Matches.unitIsSuicideOnAttack()));
-    final Collection<Unit> deadDefenders =
-        CollectionUtils.getMatches(defendingUnits, unitMatch.and(Matches.unitIsSuicideOnDefense()));
-    bridge
-        .getDisplayChannelBroadcaster()
-        .deadUnitNotification(battleId, attacker, deadAttackers, dependentUnits);
-    bridge
-        .getDisplayChannelBroadcaster()
-        .deadUnitNotification(battleId, defender, deadDefenders, dependentUnits);
-    final List<Unit> deadUnits = new ArrayList<>(deadAttackers);
-    deadUnits.addAll(deadDefenders);
-    remove(deadUnits, bridge, battleSite, null);
   }
 
   private void attackerRetreatPlanes(final IDelegateBridge bridge) {

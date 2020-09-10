@@ -6,6 +6,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.UUID;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
@@ -22,6 +23,8 @@ public interface BattleState {
   int getBattleRound();
 
   Territory getBattleSite();
+
+  UUID getBattleId();
 
   Collection<Unit> getAttackingUnits();
 
