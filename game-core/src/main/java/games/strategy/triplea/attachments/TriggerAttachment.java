@@ -1,6 +1,7 @@
 package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
@@ -51,6 +52,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
@@ -180,9 +182,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    */
   static Set<TriggerAttachment> getTriggers(
       final GamePlayer player, final Predicate<TriggerAttachment> cond) {
+    Preconditions.checkNotNull(cond);
     final Set<TriggerAttachment> trigs = new HashSet<>();
     for (final IAttachment a : player.getAttachments().values()) {
-      if (a instanceof TriggerAttachment && (cond == null || cond.test((TriggerAttachment) a))) {
+      if (a instanceof TriggerAttachment && cond.test((TriggerAttachment) a)) {
         trigs.add((TriggerAttachment) a);
       }
     }
@@ -222,11 +225,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public static Set<TriggerAttachment> collectForAllTriggersMatching(
       final Set<GamePlayer> players, final Predicate<TriggerAttachment> triggerMatch) {
-    final Set<TriggerAttachment> toFirePossible = new HashSet<>();
-    for (final GamePlayer player : players) {
-      toFirePossible.addAll(TriggerAttachment.getTriggers(player, triggerMatch));
-    }
-    return toFirePossible;
+    Preconditions.checkNotNull(triggerMatch);
+
+    return players.stream()
+        .map(player -> TriggerAttachment.getTriggers(player, triggerMatch))
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public static Map<ICondition, Boolean> collectTestsForAllTriggers(
@@ -353,13 +357,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     TriggerAttachment trigger = null;
     for (final GamePlayer player : getData().getPlayerList().getPlayers()) {
-      for (final TriggerAttachment ta : getTriggers(player, null)) {
-        if (ta.getName().equals(s[0])) {
-          trigger = ta;
-          break;
-        }
-      }
-      if (trigger != null) {
+      final TriggerAttachment triggerAttachment = (TriggerAttachment) player.getAttachment(s[0]);
+      if (triggerAttachment != null) {
+        trigger = triggerAttachment;
         break;
       }
     }
@@ -2474,13 +2474,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         // numberOfTimes:useUses:testUses:testConditions:testChance
         TriggerAttachment toFire = null;
         for (final GamePlayer player : data.getPlayerList().getPlayers()) {
-          for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
-            if (ta.getName().equals(tuple.getFirst())) {
-              toFire = ta;
-              break;
-            }
-          }
-          if (toFire != null) {
+          final TriggerAttachment ta = (TriggerAttachment) player.getAttachment(tuple.getFirst());
+          if (ta != null) {
+            toFire = ta;
             break;
           }
         }
