@@ -1,46 +1,30 @@
 package games.strategy.engine.data.properties;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import java.util.List;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 final class NumberPropertyTest {
-  @Nested
-  final class ConstructorTest {
-    private static final String NAME = "name";
-    private static final String DESCRIPTION = "description";
-    private static final int MAX_VALUE = 100;
-    private static final int MIN_VALUE = 0;
-    private static final int DEFAULT_VALUE = 42;
+  private static final String NAME = "name";
+  private static final String DESCRIPTION = "description";
+  private static final int MAX_VALUE = 100;
+  private static final int MIN_VALUE = 0;
+  private static final int DEFAULT_VALUE = 42;
 
-    @Test
-    void shouldThrowExceptionWhenMaxValueLessThanMinValue() {
-      final Exception e =
-          assertThrows(
-              IllegalArgumentException.class,
-              () -> new NumberProperty(NAME, DESCRIPTION, MIN_VALUE - 1, MIN_VALUE, DEFAULT_VALUE));
-      assertThat(e.getMessage(), is("Max must be greater than min"));
-    }
+  @ParameterizedTest
+  @MethodSource
+  void shouldThrow(final Executable numberPropertySupplier) {
+    assertThrows(IllegalArgumentException.class, numberPropertySupplier);
+  }
 
-    @Test
-    void shouldThrowExceptionWhenDefaultValueGreaterThanMaxValue() {
-      final Exception e =
-          assertThrows(
-              IllegalArgumentException.class,
-              () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MAX_VALUE + 1));
-      assertThat(e.getMessage(), is("Default value out of range"));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDefaultValueLessThanMinValue() {
-      final Exception e =
-          assertThrows(
-              IllegalArgumentException.class,
-              () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MIN_VALUE - 1));
-      assertThat(e.getMessage(), is("Default value out of range"));
-    }
+  @SuppressWarnings("unused")
+  static List<Executable> shouldThrow() {
+    return List.of(
+        () -> new NumberProperty(NAME, DESCRIPTION, MIN_VALUE - 1, MIN_VALUE, DEFAULT_VALUE),
+        () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MAX_VALUE + 1),
+        () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MIN_VALUE - 1));
   }
 }
