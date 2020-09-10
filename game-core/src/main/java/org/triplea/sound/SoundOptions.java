@@ -18,7 +18,14 @@ public final class SoundOptions {
   public static JMenuItem buildSoundOptionsMenuItem() {
     final JMenuItem soundOptions = new JMenuItem("Sound Options");
     soundOptions.setMnemonic(KeyEvent.VK_S);
-    soundOptions.addActionListener(e -> showSoundOptions(soundOptions));
+
+    if (ClipPlayer.hasAudio()) {
+      soundOptions.addActionListener(e -> showSoundOptions(soundOptions));
+    } else {
+      soundOptions.setEnabled(false);
+      soundOptions.setToolTipText("No audio device detected on your system");
+    }
+
     return soundOptions;
   }
 
@@ -62,8 +69,15 @@ public final class SoundOptions {
 
   /** Builds a checkbox menu item to turn sounds on or off. */
   public static JMenuItem buildGlobalSoundSwitchMenuItem() {
-    return new JMenuItemCheckBoxBuilder("Enable Sound", 'N')
-        .bindSetting(ClientSetting.soundEnabled)
-        .build();
+    final JMenuItem enableSoundMenuItem =
+        new JMenuItemCheckBoxBuilder("Enable Sound", 'N')
+            .bindSetting(ClientSetting.soundEnabled)
+            .build();
+
+    if (!ClipPlayer.hasAudio()) {
+      enableSoundMenuItem.setEnabled(false);
+      enableSoundMenuItem.setToolTipText("No audio device detected on your system");
+    }
+    return enableSoundMenuItem;
   }
 }
