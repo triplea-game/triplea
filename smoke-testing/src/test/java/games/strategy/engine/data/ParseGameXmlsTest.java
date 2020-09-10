@@ -26,8 +26,7 @@ class ParseGameXmlsTest {
 
   @SuppressWarnings("unused")
   static Collection<File> parseGameFiles() {
-    return TestDataFileLister.listFilesInTestResourcesDirectory("map-xmls")
-        .stream()
+    return TestDataFileLister.listFilesInTestResourcesDirectory("map-xmls").stream()
         .sorted(Comparator.comparing(file -> file.getName().toUpperCase()))
         .collect(Collectors.toList());
   }
