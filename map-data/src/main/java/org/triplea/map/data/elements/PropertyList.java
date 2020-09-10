@@ -16,8 +16,7 @@ public class PropertyList {
   public static class Property {
     @Attribute private java.lang.String name;
 
-    @Attribute(defaultValue = "false")
-    private java.lang.String editable;
+    @Attribute private boolean editable;
 
     @Attribute private java.lang.String player;
 
