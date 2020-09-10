@@ -14,7 +14,6 @@ dropwizardHosts
 support01.triplea-game.org
 
 [botHosts]
-prod2-bot05.triplea-game.org  bot_prefix=5 bot_name=Texas
 prod2-bot06.triplea-game.org  bot_prefix=6 bot_name=California
 prod2-bot07.triplea-game.org  bot_prefix=7 bot_name=Jersey
 prod2-bot08.triplea-game.org  bot_prefix=8 bot_name=London
