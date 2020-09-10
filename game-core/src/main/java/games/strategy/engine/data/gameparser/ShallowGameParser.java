@@ -2,7 +2,6 @@ package games.strategy.engine.data.gameparser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.data.GameParseException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.logging.Level;
