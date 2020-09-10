@@ -7,7 +7,9 @@ import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import java.io.File;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.test.common.Integration;
@@ -24,6 +26,9 @@ class ParseGameXmlsTest {
 
   @SuppressWarnings("unused")
   static Collection<File> parseGameFiles() {
-    return TestDataFileLister.listFilesInTestResourcesDirectory("map-xmls");
+    return TestDataFileLister.listFilesInTestResourcesDirectory("map-xmls")
+        .stream()
+        .sorted(Comparator.comparing(file -> file.getName().toUpperCase()))
+        .collect(Collectors.toList());
   }
 }
