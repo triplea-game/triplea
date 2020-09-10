@@ -2167,3 +2167,15 @@
         More details in the docs! Enjoy!
     </p><br>
     <br>
+- mapName: World War II v3 1941 Balanced Mod
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/1941balancedmod/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/description/TripleA_ww2v3_1941_mini.png
+  description: |
+   <br>A new version of World War II v3 that uses a small, steady flow of cash instead of a large initial bid to balance the game for the Allies.
+   <br>New national objectives encourage players to compete in both the Atlantic and Pacific theaters, with front lines appearing in historically plausible regions like the Solomon Islands, Eastern Ukraine, and Norway.
+   <br>China is preserved as a playable country with a modest setup change and an increased ability to collect reinforcements, including artillery from the Burma Road.
+   <br>Otherwise, unit types, regions, etc. have all been preserved so that players can take advantage of their previous experience with the World War II v3 map.
+   <br>Initial playtesting with human opponents suggests that the map is balanced without a bid -- but the TripleA community will be the ultimate judge.
+   <br>Try it and see what you think!
