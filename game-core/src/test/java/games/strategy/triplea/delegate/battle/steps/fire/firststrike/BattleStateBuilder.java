@@ -7,7 +7,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreatTest.MockGameData;
+import games.strategy.triplea.delegate.battle.steps.MockGameData;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.experimental.UtilityClass;

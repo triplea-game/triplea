@@ -47,6 +47,8 @@ import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
+import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
@@ -106,16 +108,6 @@ public class MustFightBattle extends DependentBattle
    */
   public abstract static class RemoveUndefendedTransports implements IExecutable {
     private static final long serialVersionUID = 1369227461759133105L;
-  }
-
-  /**
-   * An action representing standard attacking fire.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class StandardAttackersFire implements IExecutable {
-    private static final long serialVersionUID = -6026031760663113621L;
   }
 
   private static final long serialVersionUID = 5879502298361231540L;
@@ -1433,6 +1425,8 @@ public class MustFightBattle extends DependentBattle
     final BattleStep offensiveFirstStrike = new OffensiveFirstStrike(this, this);
     final BattleStep defensiveFirstStrike = new DefensiveFirstStrike(this, this);
     final BattleStep firstStrikeCasualties = new ClearFirstStrikeCasualties(this, this);
+    final BattleStep offensiveStandard = new OffensiveGeneral(this, this);
+    final BattleStep defensiveStandard = new DefensiveGeneral(this, this);
 
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.add(offensiveSubsRetreat);
@@ -1553,15 +1547,15 @@ public class MustFightBattle extends DependentBattle
       steps.add(offensiveFirstStrike);
     }
     // Attacker fire remaining units
-    steps.add(
-        new StandardAttackersFire() {
-          private static final long serialVersionUID = 99994L;
+    steps.add(offensiveStandard);
+    new IExecutable() {
+      private static final long serialVersionUID = 99994L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            standardAttackersFire();
-          }
-        });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new OffensiveGeneral(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
+      }
+    };
 
     if (defensiveFirstStrike.getOrder() == FIRST_STRIKE_DEFENSIVE_REGULAR) {
       steps.add(defensiveFirstStrike);
@@ -1576,15 +1570,15 @@ public class MustFightBattle extends DependentBattle
       }
     };
 
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 1560702114917865290L;
+    steps.add(defensiveStandard);
+    new IExecutable() {
+      private static final long serialVersionUID = 1560702114917865290L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            standardDefendersFire();
-          }
-        });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new DefensiveGeneral(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
+      }
+    };
   }
 
   /** Check for unescorted transports and kill them immediately. */
@@ -1685,32 +1679,6 @@ public class MustFightBattle extends DependentBattle
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
       remove(unitsToKill, bridge, battleSite, !attacker);
     }
-  }
-
-  private void standardAttackersFire() {
-    findTargetGroupsAndFire(
-        ReturnFire.ALL,
-        defender.getName() + SELECT_CASUALTIES,
-        false,
-        attacker,
-        Matches.unitIsFirstStrike().negate(),
-        attackingUnits,
-        attackingWaitingToDie,
-        defendingUnits,
-        defendingWaitingToDie);
-  }
-
-  private void standardDefendersFire() {
-    findTargetGroupsAndFire(
-        ReturnFire.ALL,
-        attacker.getName() + SELECT_CASUALTIES,
-        true,
-        defender,
-        Matches.unitIsFirstStrikeOnDefense(gameData).negate(),
-        defendingUnits,
-        defendingWaitingToDie,
-        attackingUnits,
-        attackingWaitingToDie);
   }
 
   @Override
