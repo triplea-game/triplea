@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -14,7 +15,9 @@ class GameDataEventListeners implements Consumer<GameDataEvent> {
 
   @Override
   public void accept(final GameDataEvent gameDataEvent) {
-    listeners.get(gameDataEvent).forEach(Runnable::run);
+    // Create a list copy to avoid a ConcurrentModificationException
+    // The list copy is a band-aid fix for: https://github.com/triplea-game/triplea/issues/7588
+    List.copyOf(listeners.get(gameDataEvent)).forEach(Runnable::run);
   }
 
   void addListener(final GameDataEvent event, final Runnable runnable) {
