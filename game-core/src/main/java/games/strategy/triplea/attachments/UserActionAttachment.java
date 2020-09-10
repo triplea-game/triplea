@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -108,9 +109,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       // numberOfTimes:useUses:testUses:testConditions:testChance
       final Optional<TriggerAttachment> optionalTrigger =
           data.getPlayerList().getPlayers().stream()
-              .map(player -> TriggerAttachment.getTriggers(player, null))
-              .flatMap(Collection::stream)
-              .filter(ta -> ta.getName().equals(tuple.getFirst()))
+              .map(player -> (TriggerAttachment) player.getAttachment(tuple.getFirst()))
+              .filter(Objects::nonNull)
               .findAny();
       if (optionalTrigger.isEmpty()) {
         continue;
