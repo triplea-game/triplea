@@ -13,16 +13,27 @@ import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.triplea.io.FileUtils;
 
+/**
+ * Reads from file system to find all available games. We then shallow parse each available game to
+ * find the game name and we create a mapping of game name to location on disk. Values read from
+ * disk are cached (can be updated by calling "{@code addNewMapToCache}).
+ */
 @UtilityClass
 public class AvailableGamesFileSystemReader {
 
   private static final String ZIP_EXTENSION = ".zip";
 
-  public static AvailableGamesList parseMapFiles() {
-    final Set<DefaultGameChooserEntry> entries = new HashSet<>();
-    entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
-    entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
-    return new AvailableGamesList(entries);
+  private static AvailableGamesList availableGamesListCache;
+
+  public static synchronized AvailableGamesList parseMapFiles() {
+    if (availableGamesListCache == null) {
+      final Set<DefaultGameChooserEntry> entries = new HashSet<>();
+      entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
+      entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
+      availableGamesListCache = new AvailableGamesList(entries);
+    }
+
+    return availableGamesListCache;
   }
 
   private Collection<DefaultGameChooserEntry> mapXmlsGameNamesByUri(
@@ -64,5 +75,16 @@ public class AvailableGamesFileSystemReader {
         .filter(game -> game.getName().toLowerCase().endsWith("xml"))
         .map(File::toURI)
         .collect(Collectors.toList());
+  }
+
+  public static void addNewMapToCache(final File installLocation) {
+    if (availableGamesListCache == null) {
+      parseMapFiles();
+    }
+
+    if (installLocation.getName().endsWith(ZIP_EXTENSION)) {
+      mapXmlsGameNamesByUri(MapZipReaderUtil.findGameXmlFilesInZip(installLocation))
+          .forEach(availableGamesListCache::add);
+    }
   }
 }

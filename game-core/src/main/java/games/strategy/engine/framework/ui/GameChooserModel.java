@@ -13,6 +13,7 @@ import lombok.extern.java.Log;
 public final class GameChooserModel extends DefaultListModel<String> {
   private static final long serialVersionUID = -2044689419834812524L;
   private final AvailableGamesList availableGamesList;
+
   /**
    * Initializes a new {@code GameChooserModel} using all available maps installed in the user's
    * maps folder. This method will block until all maps are parsed and should not be called from the

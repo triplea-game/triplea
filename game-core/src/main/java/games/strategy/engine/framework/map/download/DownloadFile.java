@@ -92,7 +92,7 @@ final class DownloadFile {
                 .saveForZip(download.getInstallLocation());
           }
 
-          downloadListener.downloadStopped(download);
+          downloadListener.downloadComplete(download);
         });
   }
 
