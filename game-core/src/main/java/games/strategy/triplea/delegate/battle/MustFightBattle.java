@@ -1430,7 +1430,7 @@ public class MustFightBattle extends DependentBattle
     final BattleStep firstStrikeCasualties = new ClearFirstStrikeCasualties(this, this);
     final BattleStep offensiveStandard = new OffensiveGeneral(this, this);
     final BattleStep defensiveStandard = new DefensiveGeneral(this, this);
-    final BattleStep removeUndefendedUnits = new RemoveUnprotectedUnits(this, this);
+    final BattleStep removeUnprotectedUnits = new RemoveUnprotectedUnits(this, this);
 
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.add(offensiveSubsRetreat);
@@ -1466,7 +1466,7 @@ public class MustFightBattle extends DependentBattle
         }
       };
     }
-    steps.add(removeUndefendedUnits);
+    steps.add(removeUnprotectedUnits);
     new IExecutable() {
       private static final long serialVersionUID = 99989L;
 
@@ -1649,7 +1649,7 @@ public class MustFightBattle extends DependentBattle
                     .size()
                 == 0) {
               new RemoveUnprotectedUnits(MustFightBattle.this, MustFightBattle.this)
-                  .checkAndRemoveUnits(bridge, Side.DEFENSE);
+                  .removeUnprotectedUnits(bridge, Side.DEFENSE);
               endBattle(bridge);
               attackerWins(bridge);
             } else if (maxRounds > 0 && maxRounds <= round) {

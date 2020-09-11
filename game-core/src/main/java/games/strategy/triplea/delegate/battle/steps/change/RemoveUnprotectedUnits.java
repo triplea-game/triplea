@@ -47,11 +47,11 @@ public class RemoveUnprotectedUnits implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    checkAndRemoveUnits(bridge, BattleState.Side.DEFENSE);
-    checkAndRemoveUnits(bridge, BattleState.Side.OFFENSE);
+    removeUnprotectedUnits(bridge, BattleState.Side.DEFENSE);
+    removeUnprotectedUnits(bridge, BattleState.Side.OFFENSE);
   }
 
-  public void checkAndRemoveUnits(final IDelegateBridge bridge, final BattleState.Side side) {
+  public void removeUnprotectedUnits(final IDelegateBridge bridge, final BattleState.Side side) {
     if (Properties.getTransportCasualtiesRestricted(battleState.getGameData())) {
       checkUndefendedTransports(bridge, side);
       checkUnprotectedUnits(bridge, side);
@@ -128,11 +128,11 @@ public class RemoveUnprotectedUnits implements BattleStep {
         .isEmpty()) {
       return;
     }
-    final Collection<Unit> unprotectedUnits = getUnprotectedUnits(side);
     final boolean hasUnitsThatCanRollLeft = areFightingOrSupportingUnitsLeft(side);
     final boolean enemyHasUnitsThatCanRollLeft =
         areFightingOrSupportingUnitsLeft(side.getOpposite());
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
+      final Collection<Unit> unprotectedUnits = getUnprotectedUnits(side);
       battleActions.remove(
           unprotectedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
     }
@@ -143,22 +143,14 @@ public class RemoveUnprotectedUnits implements BattleStep {
   }
 
   private Predicate<Unit> unitIsActiveAndCanFight(final BattleState.Side side) {
-    return getActiveUnits()
+    return Matches.unitIsActiveInTerritory(battleState.getBattleSite())
         .and(Matches.unitIsSupporterOrHasCombatAbility(side == BattleState.Side.OFFENSE));
-  }
-
-  private Predicate<Unit> getActiveUnits() {
-    return Matches.unitIsSubmerged()
-        .negate()
-        .and(
-            Matches.territoryIsLand().test(battleState.getBattleSite())
-                ? Matches.unitIsSea().negate()
-                : Matches.unitIsLand().negate());
   }
 
   private Collection<Unit> getUnprotectedUnits(final BattleState.Side side) {
     return CollectionUtils.getMatches(
         battleState.getUnits(EnumSet.of(side)),
-        getActiveUnits().and(Matches.unitIsNotInfrastructure()));
+        Matches.unitIsActiveInTerritory(battleState.getBattleSite())
+            .and(Matches.unitIsNotInfrastructure()));
   }
 }

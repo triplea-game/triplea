@@ -2349,4 +2349,14 @@ public final class Matches {
   public static <T> Predicate<T> isNotInList(final List<T> list) {
     return not(list::contains);
   }
+
+  /** Ignores units that are submerged or not valid for the specific battle site */
+  public static Predicate<Unit> unitIsActiveInTerritory(final Territory battleSite) {
+    return Matches.unitIsSubmerged()
+        .negate()
+        .and(
+            Matches.territoryIsLand().test(battleSite)
+                ? Matches.unitIsSea().negate()
+                : Matches.unitIsLand().negate());
+  }
 }
