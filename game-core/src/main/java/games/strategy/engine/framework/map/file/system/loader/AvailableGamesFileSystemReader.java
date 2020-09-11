@@ -3,14 +3,19 @@ package games.strategy.engine.framework.map.file.system.loader;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import org.triplea.io.FileUtils;
 
 /**
@@ -19,6 +24,7 @@ import org.triplea.io.FileUtils;
  * disk are cached (can be updated by calling "{@code addNewMapToCache}).
  */
 @UtilityClass
+@Log
 public class AvailableGamesFileSystemReader {
 
   private static final String ZIP_EXTENSION = ".zip";
@@ -62,19 +68,23 @@ public class AvailableGamesFileSystemReader {
         .collect(Collectors.toList());
   }
 
-  private static List<URI> getDirectoryUris(final File mapDir) {
-    // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents
-    // directly
-    final File mapFolder = new File(mapDir, "map");
-
-    final File parentFolder = mapFolder.exists() ? mapFolder : mapDir;
-    final File games = new File(parentFolder, "games");
-    return FileUtils.listFiles(games).stream()
-        .parallel()
-        .filter(File::isFile)
-        .filter(game -> game.getName().toLowerCase().endsWith("xml"))
-        .map(File::toURI)
-        .collect(Collectors.toList());
+  private static Collection<URI> getDirectoryUris(final File mapDir) {
+    // finds all XML files under mapDir
+    try {
+      return Files.find(
+              mapDir.toPath(),
+              8,
+              (path, basicAttributes) ->
+                  basicAttributes.isRegularFile() && path.getFileName().endsWith(".xml"))
+          .map(Path::toUri)
+          .collect(Collectors.toList());
+    } catch (final IOException e) {
+      log.log(
+          Level.WARNING,
+          "Unable to read map folder: " + mapDir.getAbsolutePath() + "," + e.getMessage(),
+          e);
+      return List.of();
+    }
   }
 
   public static void addNewMapToCache(final File installLocation) {
