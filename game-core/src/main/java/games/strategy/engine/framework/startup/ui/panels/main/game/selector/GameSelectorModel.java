@@ -169,6 +169,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
         .filter(
             defaultGame ->
                 defaultGame.contains(ClientFileSystemHelper.getUserRootFolder().toURI().toString()))
+        .filter(defaultGame -> new File(defaultGame).exists())
         .map(URI::create)
         .ifPresent(this::load);
   }
