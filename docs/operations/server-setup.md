@@ -51,7 +51,6 @@ and add it by clicking the 'add key' button).
 
 ![select-label-and-password](https://user-images.githubusercontent.com/12397753/77502470-3410ad00-6e18-11ea-85b8-7bbb7e5edd67.png)
 
-
 # Adding DNS Entries
 
 Create a DNS entries on [namecheap.com > account > dashboard > "manage" button > "advanced DNS"](https://ap.www.namecheap.com/Domains/DomainControlPanel/triplea-game.org/advancedns)
@@ -62,15 +61,12 @@ All servers will have both an 'A' (IPv4 address) and 'AAAA' (IPv6 address) recor
 
 ![A Record](https://user-images.githubusercontent.com/12397753/82977167-e9392000-9f95-11ea-823f-ac599b222ebf.png)
 
-
 ## Create an 'AAAA' Record
 ![AAAA Record](https://user-images.githubusercontent.com/12397753/82977170-e9d1b680-9f95-11ea-8186-70e891ac7b5a.png)
-
 
 ## Create CAA Record
 
 This is needed for lobby server or any server that will be serving https traffic.
 
 ![Screenshot from 2019-11-19 13-06-13](https://user-images.githubusercontent.com/12397753/69196411-48980e00-0ae3-11ea-9130-61e1fd5368b3.png)
-
 

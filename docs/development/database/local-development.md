@@ -12,12 +12,10 @@ and database config is in the 'database' subproject.
 - Install docker on your system
 - Run `database/start_docker_db`
 
-
 ## Working with Database
 
 Convenience scripts are checked in to make typical operations
 easy and available for reference by viewing the script contents.
-
 
 To connect to the locally running database with a psql CLI:
 ```

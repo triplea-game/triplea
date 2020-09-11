@@ -1,7 +1,7 @@
 
 <!--
   Commit comment above summarizing the update.  If multiple commits please
-  summarize the change above. 
+  summarize the change above.
   Code standards and PR guidelines can be found at:
   <https://github.com/triplea-game/triplea/wiki/Contribution-Guidelines>
 -->

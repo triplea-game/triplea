@@ -43,7 +43,7 @@ Docker for Mac can be obtained at: https://store.docker.com/editions/community/d
 ```bash
 cd http-server/
 ../gradlew run
-``` 
+```
 Run all tests and checks (run **this** before submitting PRs):
 ```bash
 ./verify
@@ -59,5 +59,4 @@ Run all tests and checks (run **this** before submitting PRs):
   - Update lobby host address to 'localhost' and save
   - restart the game-headed instance
   - click 'play online', connection will be to the local lobby
-
 

@@ -11,4 +11,3 @@
 - **Game**: (AKA Game XML) refers to a specific XML within a map
 - **Map**: collection of files, eg: images, polygons text, properties, and at least one game XML
 
-
