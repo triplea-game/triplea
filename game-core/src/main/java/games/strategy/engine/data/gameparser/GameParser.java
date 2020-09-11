@@ -106,7 +106,7 @@ public final class GameParser {
             log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
             return null;
           } catch (final GameParseException | XmlParsingException e) {
-            log.log(Level.WARNING, "Could not parse:" + mapUri + ", " + e.getMessage(), e);
+            log.log(Level.SEVERE, "Could not parse:" + mapUri + ", " + e.getMessage(), e);
             return null;
           }
         });
