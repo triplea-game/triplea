@@ -80,11 +80,8 @@ public abstract class DropwizardServerExtension<C extends Configuration>
   public void afterEach(final ExtensionContext context) throws Exception {
     final URL cleanupFileUrl = getClass().getClassLoader().getResource("db-cleanup.sql");
     if (cleanupFileUrl != null) {
-      log.info("Running database cleanup..");
       final String cleanupSql = Files.readString(Path.of(cleanupFileUrl.toURI()));
       jdbi.withHandle(handle -> handle.execute(cleanupSql));
-    } else {
-      log.debug("No cleanup file 'db-cleanup' found");
     }
   }
 
