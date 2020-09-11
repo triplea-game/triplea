@@ -13,6 +13,7 @@ import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.AvailableGamesFileSystemReader;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserModel;
@@ -359,7 +360,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
       final GameChooserModel gameChooserModel =
           new GameChooserModel(
               BackgroundTaskRunner.runInBackgroundAndReturn(
-                  "Loading all available games...", GameChooserModel::parseMapFiles));
+                  "Loading all available games...", AvailableGamesFileSystemReader::parseMapFiles));
       final DefaultGameChooserEntry entry =
           GameChooser.chooseGame(
               JOptionPane.getFrameForComponent(this), gameChooserModel, model.getGameName());
