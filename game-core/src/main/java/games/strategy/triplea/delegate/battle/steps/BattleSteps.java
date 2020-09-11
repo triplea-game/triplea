@@ -155,7 +155,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep offensiveAaStep = new OffensiveAaFire(this, battleActions);
     final BattleStep defensiveAaStep = new DefensiveAaFire(this, battleActions);
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, battleActions);
-    final BattleStep removeUndefendedUnits = new RemoveUnprotectedUnits(this, battleActions);
+    final BattleStep removeUnprotectedUnits = new RemoveUnprotectedUnits(this, battleActions);
     final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this);
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
     final BattleStep navalBombardment = new NavalBombardment(this, battleActions);
@@ -181,7 +181,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     if (defensiveSubsSubmerge.getOrder() == SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE) {
       steps.addAll(defensiveSubsSubmerge.getNames());
     }
-    steps.addAll(removeUndefendedUnits.getNames());
+    steps.addAll(removeUnprotectedUnits.getNames());
     steps.addAll(submergeSubsVsOnlyAir.getNames());
 
     if (offensiveFirstStrike.getOrder() == FIRST_STRIKE_OFFENSIVE) {

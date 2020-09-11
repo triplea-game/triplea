@@ -7,7 +7,9 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
@@ -54,7 +56,7 @@ class RemoveUnprotectedUnitsTest {
       final BattleState battleState = givenBattleStateBuilder().battleSite(battleSite).build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), hasSize(0));
+      assertThat(removeUnprotectedUnits.getNames(), is(empty()));
     }
 
     @Test
@@ -65,7 +67,7 @@ class RemoveUnprotectedUnitsTest {
           givenBattleStateBuilder().battleSite(battleSite).gameData(gameData).build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), hasSize(0));
+      assertThat(removeUnprotectedUnits.getNames(), is(empty()));
     }
 
     @Test
@@ -81,7 +83,7 @@ class RemoveUnprotectedUnitsTest {
               .build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), hasSize(0));
+      assertThat(removeUnprotectedUnits.getNames(), is(empty()));
     }
 
     @Test

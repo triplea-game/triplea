@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -26,20 +25,19 @@ public class RemoveUnprotectedUnits implements BattleStep {
 
   private static final long serialVersionUID = 4357860848979564096L;
 
-  protected final BattleState battleState;
+  private final BattleState battleState;
 
-  protected final BattleActions battleActions;
+  private final BattleActions battleActions;
 
   @Override
   public List<String> getNames() {
-    final List<String> steps = new ArrayList<>();
     if (battleState.getBattleSite().isWater()
         && Properties.getTransportCasualtiesRestricted(battleState.getGameData())
         && (battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsTransport())
             || battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsTransport()))) {
-      steps.add(REMOVE_UNESCORTED_TRANSPORTS);
+      return List.of(REMOVE_UNESCORTED_TRANSPORTS);
     }
-    return steps;
+    return List.of();
   }
 
   @Override
@@ -69,7 +67,6 @@ public class RemoveUnprotectedUnits implements BattleStep {
       return;
     }
     final List<Unit> alliedTransports = getAlliedTransports(player);
-    // If no transports, just return
     if (alliedTransports.isEmpty()) {
       return;
     }
@@ -142,15 +139,12 @@ public class RemoveUnprotectedUnits implements BattleStep {
   }
 
   private boolean areFightingOrSupportingUnitsLeft(final BattleState.Side side) {
-    final boolean hasUnitsThatCanRollLeft;
-    hasUnitsThatCanRollLeft =
-        battleState.getUnits(EnumSet.of(side)).stream()
-            .anyMatch(
-                getActiveUnits()
-                    .and(
-                        Matches.unitIsSupporterOrHasCombatAbility(
-                            side == BattleState.Side.OFFENSE)));
-    return hasUnitsThatCanRollLeft;
+    return battleState.getUnits(EnumSet.of(side)).stream().anyMatch(unitIsActiveAndCanFight(side));
+  }
+
+  private Predicate<Unit> unitIsActiveAndCanFight(final BattleState.Side side) {
+    return getActiveUnits()
+        .and(Matches.unitIsSupporterOrHasCombatAbility(side == BattleState.Side.OFFENSE));
   }
 
   private Predicate<Unit> getActiveUnits() {
@@ -163,11 +157,8 @@ public class RemoveUnprotectedUnits implements BattleStep {
   }
 
   private Collection<Unit> getUnprotectedUnits(final BattleState.Side side) {
-    final Collection<Unit> unitsToKill;
-    unitsToKill =
-        CollectionUtils.getMatches(
-            battleState.getUnits(EnumSet.of(side)),
-            getActiveUnits().and(Matches.unitIsNotInfrastructure()));
-    return unitsToKill;
+    return CollectionUtils.getMatches(
+        battleState.getUnits(EnumSet.of(side)),
+        getActiveUnits().and(Matches.unitIsNotInfrastructure()));
   }
 }
