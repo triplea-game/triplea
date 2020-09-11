@@ -4,6 +4,8 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaBattleSite;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -43,7 +45,7 @@ class NavalBombardmentTest {
     final BattleState battleState =
         givenBattleStateBuilder().bombardingUnits(List.of(mock(Unit.class))).battleRound(2).build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getNames(), hasSize(0));
+    assertThat(navalBombardment.getNames(), is(empty()));
     navalBombardment.execute(executionStack, delegateBridge);
     verify(battleActions, never()).fireNavalBombardment(delegateBridge);
   }
@@ -53,7 +55,7 @@ class NavalBombardmentTest {
     final BattleState battleState =
         givenBattleStateBuilder().bombardingUnits(List.of()).battleRound(1).build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getNames(), hasSize(0));
+    assertThat(navalBombardment.getNames(), is(empty()));
     navalBombardment.execute(executionStack, delegateBridge);
     verify(battleActions, never()).fireNavalBombardment(delegateBridge);
   }
@@ -67,7 +69,7 @@ class NavalBombardmentTest {
             .battleSite(givenSeaBattleSite())
             .build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getNames(), hasSize(0));
+    assertThat(navalBombardment.getNames(), is(empty()));
     navalBombardment.execute(executionStack, delegateBridge);
     verify(battleActions, never()).fireNavalBombardment(delegateBridge);
   }

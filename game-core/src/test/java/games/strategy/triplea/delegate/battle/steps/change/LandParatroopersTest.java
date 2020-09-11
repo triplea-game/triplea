@@ -5,6 +5,8 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -41,7 +43,7 @@ class LandParatroopersTest {
     final BattleState battleState = givenBattleStateBuilder().battleRound(2).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());
@@ -53,7 +55,7 @@ class LandParatroopersTest {
         givenBattleStateBuilder().battleRound(1).battleSite(givenSeaBattleSite()).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());
@@ -69,7 +71,7 @@ class LandParatroopersTest {
         givenBattleStateBuilder().battleRound(1).attacker(attacker).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());
@@ -101,7 +103,7 @@ class LandParatroopersTest {
 
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());

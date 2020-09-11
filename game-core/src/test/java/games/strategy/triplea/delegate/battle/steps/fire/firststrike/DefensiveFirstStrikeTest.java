@@ -4,6 +4,7 @@ import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.Batt
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
@@ -41,7 +42,7 @@ class DefensiveFirstStrikeTest {
 
     final DefensiveFirstStrike defensiveFirstStrike =
         new DefensiveFirstStrike(battleState, battleActions);
-    assertThat(defensiveFirstStrike.getNames(), hasSize(0));
+    assertThat(defensiveFirstStrike.getNames(), is(empty()));
 
     defensiveFirstStrike.execute(executionStack, delegateBridge);
     verify(battleActions, never())

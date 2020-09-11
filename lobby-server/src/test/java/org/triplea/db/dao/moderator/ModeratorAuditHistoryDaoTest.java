@@ -2,6 +2,7 @@ package org.triplea.db.dao.moderator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.test.common.IsInstant.isInstant;
@@ -93,6 +94,6 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
     assertThat(results.get(1).getActionTarget(), is("ACTION_TARGET1"));
 
     results = moderatorAuditHistoryDao.lookupHistoryItems(5, 3);
-    assertThat(results, hasSize(0));
+    assertThat(results, is(empty()));
   }
 }

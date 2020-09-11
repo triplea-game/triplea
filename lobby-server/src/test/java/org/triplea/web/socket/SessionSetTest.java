@@ -80,14 +80,14 @@ class SessionSetTest {
       sessionSet.put(session);
       sessionSet.remove(session);
 
-      assertThat(sessionSet.values(), hasSize(0));
+      assertThat(sessionSet.values(), is(empty()));
     }
 
     @Test
     void removeSessionThatDoesNotExistIsNoOp() {
       sessionSet.remove(session);
 
-      assertThat(sessionSet.values(), hasSize(0));
+      assertThat(sessionSet.values(), is(empty()));
     }
 
     @Test
