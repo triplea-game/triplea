@@ -2,6 +2,7 @@ package org.triplea.generic.xml.reader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
@@ -27,14 +28,20 @@ public class SimpleLibraryExampleTest extends AbstractXmlMapperTest {
     @Tag private MostRead mostReadExample;
     @Tag private Inventory libraryInventory;
 
+    @TagList private List<NotPresentListElement> exampleOfListThatIsNotPresent;
+
     @Getter
     public static class MostRead {
       @Attribute private String updated;
       @BodyText private String bodyText;
     }
 
+    public static class NotPresentListElement {}
+
     @Getter
     public static class Inventory {
+      @Attribute private String attributeThatDoesNotExist;
+
       @Attribute private String type;
 
       @TagList private List<Book> books;
@@ -59,8 +66,10 @@ public class SimpleLibraryExampleTest extends AbstractXmlMapperTest {
 
     assertThat(library, is(notNullValue()));
     assertThat(library.mostReadExample, is(notNullValue()));
+    assertThat(library.exampleOfListThatIsNotPresent, is(empty()));
 
     assertThat(library.libraryInventory, is(notNullValue()));
+    assertThat(library.libraryInventory.attributeThatDoesNotExist, is(""));
     assertThat(library.libraryInventory.type, is("available"));
     assertThat(library.libraryInventory.books, hasSize(2));
     assertThat(library.libraryInventory.books.get(0), is(notNullValue()));

@@ -75,3 +75,10 @@ Library library = mapper.mapXmlToObject(mapper);
 - Model POJO objects must have a no-arg constructor.
 - Variables annotated with `@BodyText` can have any name
 - List parsing maintains XML ordering..
+
+
+### Missing XML element behavior
+
+- If a `@Tag` is not present in XML it is null.
+- If a `@TagList` element is not present in XML the list is initialized to empty.
+- If an `@Attribute` is not present in XML the value is initialized.
