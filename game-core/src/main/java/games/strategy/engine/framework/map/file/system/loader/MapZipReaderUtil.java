@@ -1,4 +1,4 @@
-package org.triplea.game.server;
+package games.strategy.engine.framework.map.file.system.loader;
 
 import java.io.File;
 import java.io.FileInputStream;
