@@ -4,6 +4,8 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitWithTypeAa;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -41,7 +43,7 @@ class OffensiveAaFireTest {
     void hasNoNamesIfNoAaIsAvailable() {
       final BattleState battleState = givenBattleStateBuilder().offensiveAa(List.of()).build();
       final OffensiveAaFire offensiveAaFire = new OffensiveAaFire(battleState, battleActions);
-      assertThat(offensiveAaFire.getNames(), hasSize(0));
+      assertThat(offensiveAaFire.getNames(), is(empty()));
     }
   }
 

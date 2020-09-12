@@ -34,6 +34,7 @@ function main() {
   noTabsInSql
   useEmptyOverSizeEqualsZero
   useStaticImportsInTest
+  useIsEmptyMatcherOverHasSizeZero
 }
 
 function title() {
@@ -164,6 +165,20 @@ function useStaticImportsInTest() {
      && status=1 && found=1
   done <<< "$(cat "$testFiles")"
 
+  displayResult "$found"
+}
+
+function useIsEmptyMatcherOverHasSizeZero() {
+  title "Use IsEmptyCollection.isEmpty() instead of hasSize(0)"
+  example "assertThat(collection, hasSize(0)) -> assertThat(collection, is(empty())"
+  local found=0
+  while read -r file; do
+    grep --color=auto -Hn \
+      "hasSize(0)" \
+      "$file" \
+     && status=1 && found=1
+  done <<< "$(cat "$testFiles")"
+  
   displayResult "$found"
 }
 

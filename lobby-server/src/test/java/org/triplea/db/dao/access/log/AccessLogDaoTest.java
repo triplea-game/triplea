@@ -2,6 +2,7 @@ package org.triplea.db.dao.access.log;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.test.common.IsInstant.isInstant;
 
@@ -24,7 +25,7 @@ class AccessLogDaoTest extends LobbyServerTest {
   @Test
   @DataSet(cleanBefore = true, value = EMPTY_ACCESS_LOG, useSequenceFiltering = false)
   void emptyDataCase() {
-    assertThat(accessLogDao.fetchAccessLogRows(0, 1, "%", "%", "%"), hasSize(0));
+    assertThat(accessLogDao.fetchAccessLogRows(0, 1, "%", "%", "%"), is(empty()));
   }
 
   /**
@@ -103,7 +104,7 @@ class AccessLogDaoTest extends LobbyServerTest {
   @Test
   @DataSet(value = ACCESS_LOG_TABLES, useSequenceFiltering = false)
   void requestingRowsOffDataSetReturnsNothing() {
-    assertThat(accessLogDao.fetchAccessLogRows(2, 1, "%", "%", "%"), hasSize(0));
+    assertThat(accessLogDao.fetchAccessLogRows(2, 1, "%", "%", "%"), is(empty()));
   }
 
   @Test

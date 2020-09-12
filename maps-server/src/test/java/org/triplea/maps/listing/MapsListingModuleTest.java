@@ -2,6 +2,7 @@ package org.triplea.maps.listing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
@@ -76,7 +77,7 @@ class MapsListingModuleTest {
     assertThat(results.get(1).getUrl(), is("http://map-url-2"));
     assertThat(results.get(1).getDescription(), is("description-2"));
     assertThat(results.get(1).getMapCategory(), is("category-2"));
-    assertThat(results.get(1).getMapsSkins(), hasSize(0));
+    assertThat(results.get(1).getMapsSkins(), is(empty()));
 
     final MapSkinListing mapSkinListing = results.get(0).getMapsSkins().iterator().next();
     assertThat(mapSkinListing.getPreviewImageUrl(), is("http://map-skin-preview"));

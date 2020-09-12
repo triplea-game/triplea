@@ -7,6 +7,8 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -97,7 +99,7 @@ public class OffensiveSubsRetreatTest {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
   }
 
   @Test
@@ -111,7 +113,7 @@ public class OffensiveSubsRetreatTest {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
   }
 
   @Test
@@ -130,7 +132,7 @@ public class OffensiveSubsRetreatTest {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
   }
 
   @Test
@@ -143,7 +145,7 @@ public class OffensiveSubsRetreatTest {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(0));
+    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
   }
 
   @Test

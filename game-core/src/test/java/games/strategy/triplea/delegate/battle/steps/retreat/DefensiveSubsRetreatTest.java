@@ -6,6 +6,8 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -102,7 +104,7 @@ class DefensiveSubsRetreatTest {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), hasSize(0));
+    assertThat(defensiveSubsRetreat.getNames(), is(empty()));
   }
 
   @Test
@@ -115,7 +117,7 @@ class DefensiveSubsRetreatTest {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), hasSize(0));
+    assertThat(defensiveSubsRetreat.getNames(), is(empty()));
   }
 
   @Test

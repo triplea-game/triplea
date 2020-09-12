@@ -3,7 +3,8 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
@@ -40,7 +41,7 @@ class OffensiveFirstStrikeTest {
 
     final OffensiveFirstStrike offensiveFirstStrike =
         new OffensiveFirstStrike(battleState, battleActions);
-    assertThat(offensiveFirstStrike.getNames(), hasSize(0));
+    assertThat(offensiveFirstStrike.getNames(), is(empty()));
 
     offensiveFirstStrike.execute(executionStack, delegateBridge);
     verify(battleActions, never())
