@@ -204,6 +204,12 @@ public class BattleStepsTest {
     return unitAndAttachment.unit;
   }
 
+  public static Unit givenUnitIsSea() {
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsSea()).thenReturn(true);
+    return unitAndAttachment.unit;
+  }
+
   @SafeVarargs
   private List<String> mergeSteps(final List<String>... steps) {
     return Stream.of(steps).flatMap(Collection::stream).collect(Collectors.toList());

@@ -37,7 +37,7 @@ public class OffensiveGeneral implements BattleStep {
 
   @Override
   public Order getOrder() {
-    return Order.STANDARD_OFFENSIVE;
+    return Order.GENERAL_OFFENSIVE;
   }
 
   @Override

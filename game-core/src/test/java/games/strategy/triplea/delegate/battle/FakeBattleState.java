@@ -83,6 +83,24 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
+  public Collection<Unit> getUnits(final Side... sides) {
+    final Collection<Unit> units = new ArrayList<>();
+    for (final Side side : sides) {
+      switch (side) {
+        case OFFENSE:
+          units.addAll(attackingUnits);
+          break;
+        case DEFENSE:
+          units.addAll(defendingUnits);
+          break;
+        default:
+          break;
+      }
+    }
+    return units;
+  }
+
+  @Override
   public Collection<Unit> getWaitingToDie(final EnumSet<Side> sides) {
     final Collection<Unit> waitingToDie = new ArrayList<>();
     if (sides.contains(Side.OFFENSE)) {
