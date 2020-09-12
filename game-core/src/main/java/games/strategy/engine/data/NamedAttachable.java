@@ -26,7 +26,7 @@ public class NamedAttachable extends DefaultNamed implements Attachable {
 
   @Override
   public void addAttachment(final String key, final IAttachment value) {
-    attachments.put(key, value);
+    attachments.put(key.replaceAll("ttatchment", "ttachment"), value);
   }
 
   @Override

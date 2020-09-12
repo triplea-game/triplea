@@ -7,13 +7,17 @@ import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
 public class AttachmentList {
-  @TagList private List<Attachment> attachments;
+  @TagList(names = {"Attachment", "Attatchment"})
+  private List<Attachment> attachments;
 
   @Getter
   public static class Attachment {
     @Attribute private String foreach;
     @Attribute private String name;
-    @Attribute private String attachTo;
+
+    @Attribute(names = {"attachTo", "attatchTo"})
+    private String attachTo;
+
     @Attribute private String javaClass;
 
     @Attribute(defaultValue = "unitType")

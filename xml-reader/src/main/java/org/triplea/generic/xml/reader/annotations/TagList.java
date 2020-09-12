@@ -7,4 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface TagList {}
+public @interface TagList {
+  String[] names() default "";
+}

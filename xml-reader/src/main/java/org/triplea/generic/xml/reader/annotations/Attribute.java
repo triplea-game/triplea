@@ -29,6 +29,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Attribute {
+  String[] names() default "";
+
   String defaultValue() default "";
 
   int defaultInt() default 0;

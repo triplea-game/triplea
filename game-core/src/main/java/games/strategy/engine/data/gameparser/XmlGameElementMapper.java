@@ -176,7 +176,7 @@ public final class XmlGameElementMapper {
     checkNotNull(typeName);
 
     final String normalizedTypeName =
-        typeName.replaceAll("^games\\.strategy\\.triplea\\.attachments\\.", "");
+        typeName.replaceAll("^.*\\.", "");
     final @Nullable AttachmentFactory attachmentFactory =
         attachmentFactoriesByTypeName.get(normalizedTypeName);
     if (attachmentFactory != null) {

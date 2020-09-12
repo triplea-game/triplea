@@ -12,7 +12,10 @@ import org.triplea.generic.xml.reader.annotations.Tag;
 public class Game {
   @Tag private Info info;
   @Tag private Triplea triplea;
-  @Tag private AttachmentList attachmentList;
+
+  @Tag(names = {"attachmentList", "attatchmentList"})
+  private AttachmentList attachmentList;
+
   @Tag private DiceSides diceSides;
   @Tag private GamePlay gamePlay;
   @Tag private Initialize initialize;

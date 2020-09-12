@@ -10,7 +10,7 @@ public class ChangeAttachmentChange extends Change {
   private final Object newValue;
   private final Object oldValue;
   private final String property;
-  private boolean clearFirst = false;
+  private final boolean clearFirst;
 
   /**
    * Initializes a new instance of the ChangeAttachmentChange class.
@@ -21,13 +21,13 @@ public class ChangeAttachmentChange extends Change {
    */
   public ChangeAttachmentChange(
       final IAttachment attachment, final Object newValue, final String property) {
-    checkNotNull(attachment, "null attachment; newValue: " + newValue + ", property: " + property);
-
-    attachedTo = attachment.getAttachedTo();
-    attachmentName = attachment.getName();
-    oldValue = attachment.getPropertyOrThrow(property).getValue();
-    this.newValue = newValue;
-    this.property = property;
+    this(
+        attachment.getAttachedTo(),
+        attachment.getName(),
+        newValue,
+        attachment.getPropertyOrThrow(property).getValue(),
+        property,
+        false);
   }
 
   /**
@@ -38,15 +38,14 @@ public class ChangeAttachmentChange extends Change {
       final IAttachment attachment,
       final Object newValue,
       final String property,
-      final boolean resetFirst) {
-    checkNotNull(attachment, "null attachment; newValue: " + newValue + ", property: " + property);
-
-    attachedTo = attachment.getAttachedTo();
-    clearFirst = resetFirst;
-    attachmentName = attachment.getName();
-    oldValue = attachment.getPropertyOrThrow(property).getValue();
-    this.newValue = newValue;
-    this.property = property;
+      final boolean clearFirst) {
+    this(
+        attachment.getAttachedTo(),
+        attachment.getName(),
+        newValue,
+        attachment.getPropertyOrThrow(property).getValue(),
+        property,
+        clearFirst);
   }
 
   /**
@@ -59,13 +58,13 @@ public class ChangeAttachmentChange extends Change {
       final Object newValue,
       final Object oldValue,
       final String property,
-      final boolean resetFirst) {
-    this.attachmentName = attachmentName;
+      final boolean clearFirst) {
+    this.attachmentName = attachmentName.replaceAll("ttatch", "ttach");
     attachedTo = attachTo;
     this.newValue = newValue;
     this.oldValue = oldValue;
     this.property = property;
-    clearFirst = resetFirst;
+    this.clearFirst = clearFirst;
   }
 
   public Attachable getAttachedTo() {
