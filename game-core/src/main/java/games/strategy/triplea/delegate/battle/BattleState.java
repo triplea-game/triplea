@@ -15,11 +15,7 @@ public interface BattleState {
     DEFENSE;
 
     public Side getOpposite() {
-      if (this == OFFENSE) {
-        return DEFENSE;
-      } else {
-        return OFFENSE;
-      }
+      return this == OFFENSE ? DEFENSE : OFFENSE;
     }
   }
 
@@ -31,7 +27,7 @@ public interface BattleState {
 
   Collection<Unit> getDefendingUnits();
 
-  Collection<Unit> getUnits(EnumSet<Side> sides);
+  Collection<Unit> getUnits(Side... sides);
 
   Collection<Unit> getAttackingWaitingToDie();
 

@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
@@ -66,24 +65,29 @@ public class RemoveUnprotectedUnits implements BattleStep {
     if (attackerHasRetreat(side)) {
       return;
     }
+
     final List<Unit> alliedTransports = getAlliedTransports(player);
     if (alliedTransports.isEmpty()) {
       return;
     }
+
     final Collection<Unit> alliedUnits = getAlliedUnits(player);
-    // If transports are unescorted, check opposing forces to see if the Trns die automatically
-    if (alliedTransports.size() == alliedUnits.size()) {
-      final Collection<Unit> enemyUnits = getEnemyUnitsThatCanFire(player);
-      // If there are attackers set their movement to 0 and kill the transports
-      if (!enemyUnits.isEmpty()) {
-        final Change change =
-            ChangeFactory.markNoMovementChange(
-                CollectionUtils.getMatches(enemyUnits, Matches.unitIsSea()));
-        bridge.addChange(change);
-        battleActions.remove(
-            alliedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
-      }
+    if (alliedTransports.size() != alliedUnits.size()) {
+      return;
     }
+
+    final Collection<Unit> enemyUnits = getEnemyUnitsThatCanFire(player);
+    // if no enemies, then the transports can't be shot
+    if (enemyUnits.isEmpty()) {
+      return;
+    }
+
+    final Change change =
+        ChangeFactory.markNoMovementChange(
+            CollectionUtils.getMatches(enemyUnits, Matches.unitIsSea()));
+    bridge.addChange(change);
+    battleActions.remove(
+        alliedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
   }
 
   private boolean attackerHasRetreat(final BattleState.Side side) {
@@ -123,23 +127,26 @@ public class RemoveUnprotectedUnits implements BattleStep {
     if (attackerHasRetreat(side)) {
       return;
     }
-    if (battleState
-        .getUnits(EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE))
-        .isEmpty()) {
+
+    if (battleState.getUnits(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE).isEmpty()) {
       return;
     }
-    final boolean hasUnitsThatCanRollLeft = areFightingOrSupportingUnitsLeft(side);
-    final boolean enemyHasUnitsThatCanRollLeft =
-        areFightingOrSupportingUnitsLeft(side.getOpposite());
-    if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
-      final Collection<Unit> unprotectedUnits = getUnprotectedUnits(side);
-      battleActions.remove(
-          unprotectedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
+
+    if (areFightingOrSupportingUnitsLeft(side)) {
+      return;
     }
+
+    if (!areFightingOrSupportingUnitsLeft(side.getOpposite())) {
+      return;
+    }
+
+    final Collection<Unit> unprotectedUnits = getUnprotectedUnits(side);
+    battleActions.remove(
+        unprotectedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
   }
 
   private boolean areFightingOrSupportingUnitsLeft(final BattleState.Side side) {
-    return battleState.getUnits(EnumSet.of(side)).stream().anyMatch(unitIsActiveAndCanFight(side));
+    return battleState.getUnits(side).stream().anyMatch(unitIsActiveAndCanFight(side));
   }
 
   private Predicate<Unit> unitIsActiveAndCanFight(final BattleState.Side side) {
@@ -149,7 +156,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
 
   private Collection<Unit> getUnprotectedUnits(final BattleState.Side side) {
     return CollectionUtils.getMatches(
-        battleState.getUnits(EnumSet.of(side)),
+        battleState.getUnits(side),
         Matches.unitIsActiveInTerritory(battleState.getBattleSite())
             .and(Matches.unitIsNotInfrastructure()));
   }
