@@ -18,14 +18,16 @@ import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.game.startup.SetupModel;
@@ -39,7 +41,7 @@ public class HeadlessGameServer {
   public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
   private static HeadlessGameServer instance = null;
 
-  private final AvailableGames availableGames = new AvailableGames();
+  private final AvailableGamesList availableGames = AvailableGamesFileSystemReader.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final HeadlessServerSetupPanelModel setupPanelModel =
       new HeadlessServerSetupPanelModel(gameSelectorModel);
@@ -85,15 +87,15 @@ public class HeadlessGameServer {
         || Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
   }
 
-  public Set<String> getAvailableGames() {
-    return availableGames.getGameNames();
+  public Collection<String> getAvailableGames() {
+    return availableGames.getSortedGameList();
   }
 
   public synchronized void setGameMapTo(final String gameName) {
     log.info("Requested to change map to: " + gameName);
     // don't change mid-game and only if we have the game
     if (setupPanelModel.getPanel() != null && game == null && availableGames.hasGame(gameName)) {
-      gameSelectorModel.load(availableGames.getGameFilePath(gameName));
+      gameSelectorModel.load(availableGames.findGameUriByName(gameName).orElseThrow());
       log.info("Changed to game map: " + gameName);
     } else {
       log.info(

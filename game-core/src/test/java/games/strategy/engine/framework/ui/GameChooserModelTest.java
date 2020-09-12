@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
 import java.util.Set;
 import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Test;
@@ -19,16 +20,16 @@ class GameChooserModelTest {
           final DefaultGameChooserEntry entry1 = mock(DefaultGameChooserEntry.class);
           final DefaultGameChooserEntry entry2 = mock(DefaultGameChooserEntry.class);
           final DefaultGameChooserEntry entry3 = mock(DefaultGameChooserEntry.class);
-          when(entry1.compareTo(entry2)).thenReturn(-1);
-          when(entry2.compareTo(entry3)).thenReturn(-1);
-          when(entry3.compareTo(entry2)).thenReturn(1);
-          when(entry2.compareTo(entry1)).thenReturn(1);
-          when(entry1.compareTo(entry3)).thenReturn(-1);
-          when(entry3.compareTo(entry1)).thenReturn(1);
-          final GameChooserModel model = new GameChooserModel(Set.of(entry1, entry2, entry3));
-          assertEquals(entry1, model.get(0));
-          assertEquals(entry2, model.get(1));
-          assertEquals(entry3, model.get(2));
+
+          when(entry1.getGameName()).thenReturn("b");
+          when(entry2.getGameName()).thenReturn("a");
+          when(entry3.getGameName()).thenReturn("c");
+
+          final GameChooserModel model =
+              new GameChooserModel(new AvailableGamesList(Set.of(entry1, entry2, entry3)));
+          assertEquals("a", model.get(0));
+          assertEquals("b", model.get(1));
+          assertEquals("c", model.get(2));
         });
   }
 }

@@ -114,8 +114,8 @@ public final class DownloadCoordinator {
     }
 
     @Override
-    public void downloadStopped(final DownloadFileDescription download) {
-      downloadListeners.forEach(it -> it.downloadStopped(download));
+    public void downloadComplete(final DownloadFileDescription download) {
+      downloadListeners.forEach(it -> it.downloadComplete(download));
 
       synchronized (lock) {
         final Iterator<DownloadFile> iterator = activeDownloads.iterator();

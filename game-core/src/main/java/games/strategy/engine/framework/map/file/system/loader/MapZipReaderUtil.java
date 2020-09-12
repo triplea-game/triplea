@@ -1,4 +1,4 @@
-package org.triplea.game.server;
+package games.strategy.engine.framework.map.file.system.loader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +32,7 @@ class MapZipReaderUtil {
         URLClassLoader loader = new URLClassLoader(new URL[] {zipFile.toURI().toURL()})) {
       ZipEntry entry = zis.getNextEntry();
       while (entry != null) {
-        if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
+        if (entry.getName().toLowerCase().endsWith(".xml")) {
           Optional.ofNullable(loader.getResource(entry.getName()))
               .map(url -> URI.create(url.toString().replace(" ", "%20")))
               .ifPresent(zipFiles::add);

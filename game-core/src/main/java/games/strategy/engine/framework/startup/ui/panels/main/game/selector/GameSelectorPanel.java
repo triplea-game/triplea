@@ -9,11 +9,11 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
@@ -23,6 +23,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -359,12 +360,13 @@ public final class GameSelectorPanel extends JPanel implements Observer {
       final GameChooserModel gameChooserModel =
           new GameChooserModel(
               BackgroundTaskRunner.runInBackgroundAndReturn(
-                  "Loading all available games...", GameChooserModel::parseMapFiles));
-      final DefaultGameChooserEntry entry =
+                  "Loading all available games...", AvailableGamesFileSystemReader::parseMapFiles));
+      final URI gameUri =
           GameChooser.chooseGame(
-              JOptionPane.getFrameForComponent(this), gameChooserModel, model.getGameName());
-      if (entry != null) {
-        BackgroundTaskRunner.runInBackground("Loading map...", () -> model.load(entry.getUri()));
+                  JOptionPane.getFrameForComponent(this), gameChooserModel, model.getGameName())
+              .orElse(null);
+      if (gameUri != null) {
+        BackgroundTaskRunner.runInBackground("Loading map...", () -> model.load(gameUri));
         // warning: NPE check is not to protect against concurrency, another thread could still null
         // out game data.
         // The NPE check is to protect against the case where there are errors loading game, in
