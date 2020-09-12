@@ -1,6 +1,6 @@
 package games.strategy.engine.data;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Optional;
 
 /** A game data change that captures a change to an attachment property value. */
 public class ChangeAttachmentChange extends Change {
@@ -59,7 +59,10 @@ public class ChangeAttachmentChange extends Change {
       final Object oldValue,
       final String property,
       final boolean clearFirst) {
-    this.attachmentName = attachmentName.replaceAll("ttatch", "ttach");
+    this.attachmentName =
+        Optional.ofNullable(attachmentName)
+            .map(name -> name.replaceAll("ttatch", "ttach"))
+            .orElse(null);
     attachedTo = attachTo;
     this.newValue = newValue;
     this.oldValue = oldValue;

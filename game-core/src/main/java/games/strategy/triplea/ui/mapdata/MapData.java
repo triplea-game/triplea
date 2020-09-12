@@ -500,8 +500,10 @@ public class MapData {
 
   /** returns the color for impassable territories. */
   public Color impassableColor() {
-    // just use getPlayerColor, since it parses the properties
-    return getPlayerColor(Constants.PLAYER_NAME_IMPASSABLE);
+    return Optional.ofNullable(
+            getColorProperty(PROPERTY_COLOR_PREFIX + Constants.PLAYER_NAME_IMPASSABLE))
+        .or(() -> Optional.ofNullable(getColorProperty(PROPERTY_COLOR_PREFIX + "Impassible")))
+        .orElseGet(defaultColors::nextColor);
   }
 
   /**

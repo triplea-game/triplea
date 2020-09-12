@@ -29,6 +29,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Attribute {
+  /**
+   * By default the searched for attribute name will be be the name of annotated java field. This
+   * property overrides that default to search for a different set of names.For example, the below
+   * annotation would match attributes "foo" and "bar", but not "attribute".
+   *
+   * <pre>{@code
+   * class Tag {
+   *   @Attribute(names = {"foo" , "bar"}
+   *   private String attribute;
+   * }
+   * }</pre>
+   */
   String[] names() default "";
 
   String defaultValue() default "";

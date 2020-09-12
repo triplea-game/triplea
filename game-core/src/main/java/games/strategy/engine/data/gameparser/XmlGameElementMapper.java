@@ -175,8 +175,7 @@ public final class XmlGameElementMapper {
       final GameData gameData) {
     checkNotNull(typeName);
 
-    final String normalizedTypeName =
-        typeName.replaceAll("^.*\\.", "");
+    final String normalizedTypeName = typeName.replaceAll("^.*\\.", "");
     final @Nullable AttachmentFactory attachmentFactory =
         attachmentFactoriesByTypeName.get(normalizedTypeName);
     if (attachmentFactory != null) {

@@ -121,7 +121,6 @@ public class XmlMapper implements Closeable {
       for (final Field field : annotatedFields.getTagListFields()) {
         final List<Object> tagList = new ArrayList<>();
         field.set(instance, tagList);
-
         final Class<?> listType = ReflectionUtils.getGenericType(field);
 
         final String[] tagNames =

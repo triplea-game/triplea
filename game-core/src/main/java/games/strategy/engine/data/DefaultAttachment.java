@@ -115,7 +115,9 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @Override
   public String getName() {
-    return name;
+    return Optional.ofNullable(name)
+        .map(attachmentName -> attachmentName.replaceAll("ttatch", "ttach"))
+        .orElse(null);
   }
 
   @Override

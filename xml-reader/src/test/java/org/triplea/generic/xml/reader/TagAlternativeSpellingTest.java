@@ -12,6 +12,10 @@ import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
+/**
+ * Verifies that we can give tags, taglists and attributes alternative names and correctly match
+ * XMLs that contain those alternative names.
+ */
 @SuppressWarnings("UnmatchedTest")
 public class TagAlternativeSpellingTest extends AbstractXmlMapperTest {
 

@@ -908,11 +908,13 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     players = new ArrayList<>();
   }
 
-  private void setPlayerAttachmentName(final String name) throws GameParseException {
-    if (name == null) {
-      playerAttachmentName = null;
+  private void setPlayerAttachmentName(final String playerAttachmentName)
+      throws GameParseException {
+    if (playerAttachmentName == null) {
+      this.playerAttachmentName = null;
       return;
     }
+    final String name = playerAttachmentName.replaceAll("ttatch", "ttach");
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
@@ -961,7 +963,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         && !s[0].startsWith(Constants.USERACTION_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    playerAttachmentName = Tuple.of(s[1], s[0]);
+    this.playerAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   private void setPlayerAttachmentName(final Tuple<String, String> value) {
