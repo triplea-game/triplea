@@ -298,7 +298,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
                 .amphibious(false)
                 .build())
         .player(BRITISH)
-        .enemyUnits(List.of()) // << TODO: remove this parameter should not matter
+        .enemyUnits(List.of())
         .amphibiousLandAttackers(List.of())
         .battlesite(FRANCE)
         .costs(COST_MAP)

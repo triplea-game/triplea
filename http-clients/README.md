@@ -1,4 +1,3 @@
-// TODO: rename this sub-project to http-clients
 ## http-clients
 
 This sub-project contains all http-client libraries.
