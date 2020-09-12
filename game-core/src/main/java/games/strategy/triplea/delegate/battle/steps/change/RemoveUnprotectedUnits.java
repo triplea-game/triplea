@@ -51,20 +51,27 @@ public class RemoveUnprotectedUnits implements BattleStep {
   }
 
   public void removeUnprotectedUnits(final IDelegateBridge bridge, final BattleState.Side side) {
-    if (Properties.getTransportCasualtiesRestricted(battleState.getGameData())) {
-      checkUndefendedTransports(bridge, side);
-      checkUnprotectedUnits(bridge, side);
+    if (!Properties.getTransportCasualtiesRestricted(battleState.getGameData())) {
+      return;
     }
+    // if we are the attacker, we can retreat instead of dying
+    if (attackerHasRetreat(side)) {
+      return;
+    }
+    checkUndefendedTransports(bridge, side);
+    checkUnprotectedUnits(bridge, side);
+  }
+
+  private boolean attackerHasRetreat(final BattleState.Side side) {
+    return side == BattleState.Side.OFFENSE
+        && (!battleState.getAttackerRetreatTerritories().isEmpty()
+            || battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsAir()));
   }
 
   private void checkUndefendedTransports(
       final IDelegateBridge bridge, final BattleState.Side side) {
     final GamePlayer player =
         side == BattleState.Side.OFFENSE ? battleState.getAttacker() : battleState.getDefender();
-    // if we are the attacker, we can retreat instead of dying
-    if (attackerHasRetreat(side)) {
-      return;
-    }
 
     final List<Unit> alliedTransports = getAlliedTransports(player);
     if (alliedTransports.isEmpty()) {
@@ -88,12 +95,6 @@ public class RemoveUnprotectedUnits implements BattleStep {
     bridge.addChange(change);
     battleActions.remove(
         alliedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
-  }
-
-  private boolean attackerHasRetreat(final BattleState.Side side) {
-    return side == BattleState.Side.OFFENSE
-        && (!battleState.getAttackerRetreatTerritories().isEmpty()
-            || battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsAir()));
   }
 
   private List<Unit> getAlliedTransports(final GamePlayer player) {
@@ -123,11 +124,6 @@ public class RemoveUnprotectedUnits implements BattleStep {
   }
 
   private void checkUnprotectedUnits(final IDelegateBridge bridge, final BattleState.Side side) {
-    // if we are the attacker, we can retreat instead of dying
-    if (attackerHasRetreat(side)) {
-      return;
-    }
-
     if (battleState.getUnits(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE).isEmpty()) {
       return;
     }
