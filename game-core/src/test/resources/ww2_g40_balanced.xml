@@ -5,18 +5,6 @@
   <triplea minimumVersion="1.8"/>
   <diceSides value="6"/>
   <map>
-    <!-- Full europe list:
-                West Indies:Central United States:Central America:Greenland:Southeast Mexico:Eastern United States:West India:Belgian Congo:Iceland:Quebec:Alberta Saskatchewan Manitoba:Trans-Jordan:British Somaliland:Alexandria:Gibraltar:New Brunswick Nova Scotia:Egypt:Union of South Africa:Cyprus:British Guiana:Gold Coast:Rio de Oro:Ontario:Scotland:South West Africa:Nigeria:Kenya:Malta:United Kingdom:Anglo Egyptian Sudan:Rhodesia:Tanganyika Territory:Newfoundland Labrador:Morocco:French Equatorial Africa:Normandy Bordeaux:French Central Africa:French Madagascar:French Guiana:Algeria:Southern France:Syria:French West Africa:France:Tunisia:Greater Southern Germany:Slovakia Hungary:Western Germany:Romania:Poland:Germany:Norway:Denmark:Holland Belgium:Tobruk:Albania:Northern Italy:Libya:Sicily:Italian Somaliland:Southern Italy:Ethiopia:Sardinia:Belarus:Karelia:Baltic States:Bryansk:Rostov:Nenetsia:Vyborg:Archangel:Eastern Poland:Bessarabia:Russia:Tambov:Ukraine:Western Ukraine:Vologda:Volgograd:Turkmenistan:Novgorod:Caucasus:Smolensk:Samara:Portugal:Portuguese Guinea:Ecuador:Chile:Afghanistan:Sierra Leone:Turkey:Mozambique:Saudi Arabia:Paraguay:Switzerland:Pripet Marshes:Eire:Crete:Argentina:Bulgaria:Angola:Greece:Iraq:Eastern Persia:Uruguay:Brazil:Venezuela:Northwest Persia:Persia:Sweden:Yugoslavia:Spain:Colombia:Bolivia:Liberia:Peru:Finland:Suriname
-                -->
-    <!-- Border territories:
-                Evenkiyskiy:Urals:Novosibirsk:Himalayas:Kazakhstan:Timguska:India:Sikang:Tsinghai:Kansu
-                -->
-    <!-- Full pacific list:
-                Caroline Islands:Iwo Jima:Paulau Island:Marshall Islands:Shantung:Formosa:Kwangsi:Korea:Kiangsu:Kiangsi:Japan:Jehol:Okinawa:Marianas:Siam:Manchuria:Hainan:Shensi:Yunnan:Suiyuyan:Kweichow:Hunan:Hopei:Szechwan:Chahar:Anhwe:Gilbert Islands:Fiji:Ceylon:Samoa:Shan State:Burma:British Columbia:Malaya:Borneo:Yukon Territory:Kwangtung:Queensland:Victoria:New Britain:Northern Territory:New Zealand:New South Wales:South Australia:Western Australia:Solomon Islands:New Guinea:Philippines:Line Islands:Mexico:Guam:Wake Island:Western United States:Alaska:Aleutian Islands:Johnston Island:Hawaiian Islands:Midway:Sakha:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Siberia:Buryatia:French Indo China:New Hebrides:Celebes:Java:Dutch New Guinea:Sumatra:Olgiy:Dzavhan:Central Mongolia:Buyant-Uhaa:Ulaanbaatar:Tsagaan Olom
-                -->
-    <!-- Full sea zone list:
-                1 Sea Zone:2 Sea Zone:3 Sea Zone:4 Sea Zone:5 Sea Zone:6 Sea Zone:7 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone:13 Sea Zone:14 Sea Zone:15 Sea Zone:16 Sea Zone:17 Sea Zone:18 Sea Zone:19 Sea Zone:20 Sea Zone:21 Sea Zone:22 Sea Zone:23 Sea Zone:24 Sea Zone:25 Sea Zone:26 Sea Zone:27 Sea Zone:28 Sea Zone:29 Sea Zone:30 Sea Zone:31 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:35 Sea Zone:36 Sea Zone:37 Sea Zone:38 Sea Zone:39 Sea Zone:40 Sea Zone:41 Sea Zone:42 Sea Zone:43 Sea Zone:44 Sea Zone:45 Sea Zone:46 Sea Zone:47 Sea Zone:48 Sea Zone:49 Sea Zone:50 Sea Zone:51 Sea Zone:52 Sea Zone:53 Sea Zone:54 Sea Zone:55 Sea Zone:56 Sea Zone:57 Sea Zone:58 Sea Zone:59 Sea Zone:60 Sea Zone:61 Sea Zone:62 Sea Zone:63 Sea Zone:64 Sea Zone:65 Sea Zone:66 Sea Zone:67 Sea Zone:68 Sea Zone:69 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:73 Sea Zone:74 Sea Zone:75 Sea Zone:76 Sea Zone:77 Sea Zone:78 Sea Zone:79 Sea Zone:80 Sea Zone:81 Sea Zone:82 Sea Zone:83 Sea Zone:84 Sea Zone:85 Sea Zone:86 Sea Zone:87 Sea Zone:88 Sea Zone:89 Sea Zone:90 Sea Zone:91 Sea Zone:92 Sea Zone:93 Sea Zone:94 Sea Zone:95 Sea Zone:96 Sea Zone:97 Sea Zone:98 Sea Zone:99 Sea Zone:100 Sea Zone:101 Sea Zone:102 Sea Zone:103 Sea Zone:104 Sea Zone:105 Sea Zone:106 Sea Zone:107 Sea Zone:108 Sea Zone:109 Sea Zone:110 Sea Zone:111 Sea Zone:112 Sea Zone:113 Sea Zone:114 Sea Zone:115 Sea Zone:116 Sea Zone:117 Sea Zone:118 Sea Zone:119 Sea Zone:120 Sea Zone:121 Sea Zone:122 Sea Zone:123 Sea Zone:124 Sea Zone:125 Sea Zone:126 Sea Zone:127 Sea Zone:128 Sea Zone
-                -->
     <territory name="Caroline Islands"/>
     <territory name="Iwo Jima"/>
     <territory name="Paulau Island"/>
@@ -13395,7 +13383,6 @@
     </attachment>
     <attachment name="playerAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
       <option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/>
-      <!--<option name="suicideAttackTargets" value="battleship:carrier:cruiser:destroyer"/>-->
     </attachment>
     <attachment name="playerAttachment" attachTo="UK_Pacific" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
       <!-- giveUnitControl allow multiple players to give units to multiple other players, if those units are in a designated territory
@@ -13440,28 +13427,10 @@
       <option name="placementPerTerritory" value="9999999"/>
       <option name="unlimitedProduction" value="true"/>
     </attachment>
-    <!-- Americans in OOB are not allowed to move to or through these sea zones:
-                        125 Sea Zone:111 Sea Zone:119 Sea Zone:109 Sea Zone:104 Sea Zone:91 Sea Zone:87 Sea Zone:83 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:76 Sea Zone:80 Sea Zone:79 Sea Zone
-
-                     Americans in Alpha +3 are not allowed to end their movement in:
-                        Europe board: any sea zone not touching an American territory, plus 102 sz
-                        TODO: We need to disallow a movement ending in a territory
-                        TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 106 and 116 could be moved into on the way to 121.
-                            65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone
-                        Pacific board: any sea zone touching a Japanese controlled territory
-                        TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 17, 22, 32, 33, 34, and 37 could all be moved through on the way to another territory.
-                        TODO: Currently we have a "set list" of territories. Obviously if Japan conquers more territories, then this list should expand, but it doesn't yet.
-                            6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone
-                -->
     <attachment name="rulesAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
       <option name="movementRestrictionTerritories" value="65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone:19 Sea Zone:20 Sea Zone:36 Sea Zone"/>
-      <!-- :6 Sea Zone:17 Sea Zone:22 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:37 Sea Zone -->
       <option name="movementRestrictionType" value="disallowed"/>
     </attachment>
-    <!-- Japanese in Alpha +3 are not allowed to end their movement in:
-                        Any Sea zone within 2 spaces of Alaska or Western United States
-                            1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone
-                -->
     <attachment name="rulesAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
       <option name="movementRestrictionTerritories" value="1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone"/>
       <option name="movementRestrictionType" value="disallowed"/>
