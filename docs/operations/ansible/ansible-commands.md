@@ -5,7 +5,6 @@
   - [Deploy NGINX and CertBot](#deploy-nginx-and-certbot)
 - [Example Prod Deployment](#example-prod-deployment)
 
-
 # Ansible Commands
 
 Deployments are run as the last step of travis builds, after artifacts

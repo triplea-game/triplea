@@ -22,9 +22,9 @@ really need to fix something.
 - Change the version number in 'product.properties', increase the version number
 to prep for the next release.
 
-- Update partner sites:  
-  - http://www.freewarefiles.com/TripleA_program_56699.html  
-  - http://download.cnet.com/TripleA/3000-18516_4-75184098.html  
+- Update partner sites:
+  - http://www.freewarefiles.com/TripleA_program_56699.html
+  - http://download.cnet.com/TripleA/3000-18516_4-75184098.html
 
 - Post to forums:
   - https://forums.triplea-game.org/category/1/announcements
@@ -46,5 +46,4 @@ git push <patch-branch-name>
 Once the above is done, Travis will build and push artifacts to github releases.
 Double check the version number and follow the steps in the above sections to update
 version numbers and issue notifications.
-
 

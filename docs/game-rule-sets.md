@@ -15,5 +15,3 @@
 | Europe/Pacific/Global 1940.I | World War II Europe 1940 Original/ World War II Pacific 1940 Original/ World War II Global 1940 Original |
 | Europe/Pacific/Global 1940.II | World War II Europe 1940 2nd Edition/ World War II Pacific 1940 2nd Edition/ World War II Global 1940 2nd Edition |
 
-
-

@@ -76,9 +76,6 @@ lindoe web UI. Add this public key to your linode account profile (via the linod
 Then, when creating a new linode, select that public key and it will added to the root user
 'authorized_keys' file.
 
-
-
-
 # Https Certificate Installation
 
 The 'certbot' role will:

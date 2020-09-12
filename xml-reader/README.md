@@ -12,7 +12,6 @@ Mapping XML to POJO objects is done by creating annotated model objects.
 The parser library will then use reflection to map XML elements encountered
 (tags, attributes, and body content) onto the annotated model objects.
 
-
 ### Example
 
 XML:
@@ -75,7 +74,6 @@ Library library = mapper.mapXmlToObject(mapper);
 - Model POJO objects must have a no-arg constructor.
 - Variables annotated with `@BodyText` can have any name
 - List parsing maintains XML ordering..
-
 
 ### Missing XML element behavior
 

@@ -63,10 +63,10 @@ Once the key is imported, you need to verify its fingerprint:
 <pre>
 $ <b>gpg2 --edit-key tripleabuilderbot</b>
 pub  rsa2048/BC7A01365B474E6A
-     created: 2017-10-02  expires: never       usage: SC  
+     created: 2017-10-02  expires: never       usage: SC
      trust: unknown       validity: unknown
 sub  rsa2048/F86D2732621F466B
-     created: 2017-10-02  expires: never       usage: E   
+     created: 2017-10-02  expires: never       usage: E
 [ unknown] (1). tripleabuilderbot &lt;tripleabuilderbot@gmail.com&gt;
 
 gpg&gt; <b>fpr</b>
@@ -86,7 +86,7 @@ If the fingerprint matches, you may optionally sign the key to validate it:
 gpg&gt; <b>sign</b>
 
 pub  rsa2048/BC7A01365B474E6A
-     created: 2017-10-02  expires: never       usage: SC  
+     created: 2017-10-02  expires: never       usage: SC
      trust: unknown       validity: unknown
  Primary key fingerprint: 475F ABA4 0A16 B41B 27FB  A643 BC7A 0136 5B47 4E6A
 

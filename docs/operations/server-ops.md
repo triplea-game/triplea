@@ -1,6 +1,5 @@
 # Server Ops
 
-
 ## Logs
 Page through all logs
 ```

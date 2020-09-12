@@ -4,7 +4,6 @@
   - [Encrypting variables](#encrypting-variables)
   - [Ansible Vault File Encryption](#ansible-vault-file-encryption)
 
-
 # Secret Management
 
 Documentation for how passwords can be securely checked in and managed.
