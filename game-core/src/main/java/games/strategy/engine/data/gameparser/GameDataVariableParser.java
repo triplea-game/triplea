@@ -5,24 +5,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.w3c.dom.Element;
+import org.triplea.map.data.elements.VariableList;
 
 class GameDataVariableParser {
 
-  private final NodeFinder nodeFinder = new NodeFinder();
-
-  Map<String, List<String>> parseVariables(final Element root) throws GameParseException {
-    final Element variableList = nodeFinder.getOptionalSingleChild("variableList", root);
-    return variableList != null ? parseVariableElement(variableList) : Map.of();
+  Map<String, List<String>> parseVariables(final VariableList root) {
+    return root == null ? Map.of() : parseVariableElement(root.getVariables());
   }
 
-  private Map<String, List<String>> parseVariableElement(final Element root) {
+  private Map<String, List<String>> parseVariableElement(
+      final List<VariableList.Variable> variableList) {
     final Map<String, List<String>> variables = new HashMap<>();
-    for (final Element current : nodeFinder.getChildren("variable", root)) {
-      final String name = "$" + current.getAttribute("name") + "$";
+
+    for (final VariableList.Variable current : variableList) {
+      final String name = "$" + current.getName() + "$";
       final List<String> values =
-          nodeFinder.getChildren("element", current).stream()
-              .map(element -> element.getAttribute("name"))
+          current.getElements().stream()
+              .map(VariableList.Variable.Element::getName)
               .flatMap(value -> findNestedVariables(value, variables))
               .collect(Collectors.toList());
       variables.put(name, values);
