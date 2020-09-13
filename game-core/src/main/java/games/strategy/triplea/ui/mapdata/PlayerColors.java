@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-final class DefaultColors {
+final class PlayerColors {
   @VisibleForTesting
   static final ImmutableList<Color> COLORS =
       ImmutableList.of(

@@ -8,12 +8,12 @@ import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
-final class DefaultColorsTest {
-  private final DefaultColors defaultColors = new DefaultColors();
+final class PlayerColorsTest {
+  private final PlayerColors playerColors = new PlayerColors();
 
   @Test
   void nextColor_ShouldReturnNextColorWhenColorsAvailable() {
-    assertThat(defaultColors.nextColor(), is(DefaultColors.COLORS.get(0)));
+    assertThat(playerColors.nextColor(), is(PlayerColors.COLORS.get(0)));
   }
 
   @Test
@@ -21,7 +21,7 @@ final class DefaultColorsTest {
     assertThrows(
         NoSuchElementException.class,
         () ->
-            IntStream.range(0, DefaultColors.COLORS.size() + 1)
-                .forEach(i -> defaultColors.nextColor()));
+            IntStream.range(0, PlayerColors.COLORS.size() + 1)
+                .forEach(i -> playerColors.nextColor()));
   }
 }

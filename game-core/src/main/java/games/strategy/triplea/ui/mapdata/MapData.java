@@ -101,7 +101,7 @@ public class MapData {
   private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   private static final String DECORATIONS_FILE = "decorations.txt";
 
-  private final DefaultColors defaultColors = new DefaultColors();
+  private final PlayerColors playerColors = new PlayerColors();
   private Set<String> ignoreTransformingUnits;
   private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
   private final Map<String, List<Polygon>> polys = new HashMap<>();
@@ -493,7 +493,7 @@ public class MapData {
     Color color = getColorProperty(PROPERTY_COLOR_PREFIX + playerName);
     if (color == null) {
       // use one of our default colors, its ugly, but usable
-      color = defaultColors.nextColor();
+      color = playerColors.nextColor();
     }
     return color;
   }
@@ -503,7 +503,7 @@ public class MapData {
     return Optional.ofNullable(
             getColorProperty(PROPERTY_COLOR_PREFIX + Constants.PLAYER_NAME_IMPASSABLE))
         .or(() -> Optional.ofNullable(getColorProperty(PROPERTY_COLOR_PREFIX + "Impassible")))
-        .orElseGet(defaultColors::nextColor);
+        .orElseGet(playerColors::nextColor);
   }
 
   /**
