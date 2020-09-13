@@ -31,9 +31,7 @@ public interface BattleState {
 
   void clearWaitingToDie(Side... sides);
 
-  Collection<Unit> getOffensiveAa();
-
-  Collection<Unit> getDefendingAa();
+  Collection<Unit> getAa(Side... sides);
 
   Collection<Unit> getBombardingUnits();
 

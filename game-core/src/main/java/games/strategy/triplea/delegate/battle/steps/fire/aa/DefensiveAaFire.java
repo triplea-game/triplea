@@ -40,6 +40,6 @@ public class DefensiveAaFire extends AaFireAndCasualtyStep {
 
   @Override
   Collection<Unit> aaGuns() {
-    return battleState.getDefendingAa();
+    return battleState.getAa(BattleState.Side.DEFENSE);
   }
 }

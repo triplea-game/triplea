@@ -58,10 +58,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   @Getter(onMethod = @__({@Override}))
   final @NonNull GamePlayer defender;
 
-  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> offensiveAa;
 
-  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingAa;
 
   final @NonNull Collection<Unit> attackingUnits;
@@ -154,6 +152,24 @@ public class BattleSteps implements BattleStepStrings, BattleState {
           break;
       }
     }
+  }
+
+  @Override
+  public Collection<Unit> getAa(final Side... sides) {
+    final Collection<Unit> units = new ArrayList<>();
+    for (final Side side : sides) {
+      switch (side) {
+        case OFFENSE:
+          units.addAll(offensiveAa);
+          break;
+        case DEFENSE:
+          units.addAll(defendingAa);
+          break;
+        default:
+          break;
+      }
+    }
+    return units;
   }
 
   @Override

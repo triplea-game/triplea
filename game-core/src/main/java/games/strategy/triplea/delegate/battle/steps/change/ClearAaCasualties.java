@@ -28,7 +28,8 @@ public class ClearAaCasualties implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (!battleState.getOffensiveAa().isEmpty() || !battleState.getDefendingAa().isEmpty()) {
+    if (!battleState.getAa(BattleState.Side.OFFENSE).isEmpty()
+        || !battleState.getAa(BattleState.Side.DEFENSE).isEmpty()) {
       battleActions.clearWaitingToDieAndDamagedChangesInto(bridge);
     }
   }

@@ -311,16 +311,6 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public List<Unit> getOffensiveAa() {
-    return offensiveAa;
-  }
-
-  @Override
-  public List<Unit> getDefendingAa() {
-    return defendingAa;
-  }
-
-  @Override
   public Collection<Unit> getUnits(final Side... sides) {
     final Collection<Unit> units = new ArrayList<>();
     for (final Side side : sides) {
@@ -370,6 +360,24 @@ public class MustFightBattle extends DependentBattle
           break;
       }
     }
+  }
+
+  @Override
+  public Collection<Unit> getAa(final Side... sides) {
+    final Collection<Unit> units = new ArrayList<>();
+    for (final Side side : sides) {
+      switch (side) {
+        case OFFENSE:
+          units.addAll(offensiveAa);
+          break;
+        case DEFENSE:
+          units.addAll(defendingAa);
+          break;
+        default:
+          break;
+      }
+    }
+    return units;
   }
 
   /**
@@ -870,8 +878,8 @@ public class MustFightBattle extends DependentBattle
         .battleRound(round)
         .attacker(attacker)
         .defender(defender)
-        .offensiveAa(getOffensiveAa())
-        .defendingAa(getDefendingAa())
+        .offensiveAa(getAa(Side.OFFENSE))
+        .defendingAa(getAa(Side.DEFENSE))
         .attackingUnits(attackingUnits)
         .defendingUnits(defendingUnits)
         .attackingWaitingToDie(attackingWaitingToDie)
