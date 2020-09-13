@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
-public abstract class RemoveUnits implements BattleStep {
+abstract class RemoveUnits implements BattleStep {
   private static final long serialVersionUID = 1322821208196377684L;
 
   private final BattleState battleState;
@@ -24,11 +24,11 @@ public abstract class RemoveUnits implements BattleStep {
   private final BattleActions battleActions;
 
   protected void removeUnits(final IDelegateBridge bridge, final Predicate<Unit> unitMatch) {
-    final Collection<Unit> deadAttackers =
+    final Collection<Unit> suicideAttackers =
         CollectionUtils.getMatches(
             battleState.getUnits(BattleState.Side.OFFENSE),
             unitMatch.and(Matches.unitIsSuicideOnAttack()));
-    final Collection<Unit> deadDefenders =
+    final Collection<Unit> suicideDefenders =
         CollectionUtils.getMatches(
             battleState.getUnits(BattleState.Side.DEFENSE),
             unitMatch.and(Matches.unitIsSuicideOnDefense()));
@@ -37,17 +37,17 @@ public abstract class RemoveUnits implements BattleStep {
         .deadUnitNotification(
             battleState.getBattleId(),
             battleState.getAttacker(),
-            deadAttackers,
-            getDependents(deadAttackers));
+            suicideAttackers,
+            getDependents(suicideAttackers));
     bridge
         .getDisplayChannelBroadcaster()
         .deadUnitNotification(
             battleState.getBattleId(),
             battleState.getDefender(),
-            deadDefenders,
-            getDependents(deadDefenders));
-    final List<Unit> deadUnits = new ArrayList<>(deadAttackers);
-    deadUnits.addAll(deadDefenders);
+            suicideDefenders,
+            getDependents(suicideDefenders));
+    final List<Unit> deadUnits = new ArrayList<>(suicideAttackers);
+    deadUnits.addAll(suicideDefenders);
     battleActions.remove(deadUnits, bridge, battleState.getBattleSite(), null);
   }
 
