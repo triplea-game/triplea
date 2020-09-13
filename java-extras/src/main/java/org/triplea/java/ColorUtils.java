@@ -2,10 +2,16 @@ package org.triplea.java;
 
 import com.google.common.base.Preconditions;
 import java.awt.Color;
+import java.util.Random;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ColorUtils {
+  /**
+   * Returns a color parsed from the provided input hex string.
+   *
+   * @param colorString EG: 00FF00, FF00FF, 000000
+   */
   public Color fromHexString(final String colorString) {
     Preconditions.checkArgument(
         colorString.length() == 6,
@@ -16,5 +22,15 @@ public class ColorUtils {
       throw new IllegalArgumentException(
           "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
     }
+  }
+
+  public Color randomColor(final long randomSeed) {
+    final Random random = new Random(randomSeed);
+    return Color.getHSBColor(random.nextFloat(), random.nextFloat(), random.nextFloat());
+  }
+
+  /** Returns a randomly generated color. */
+  public Color randomColor() {
+    return Color.getHSBColor((float) Math.random(), (float) Math.random(), (float) Math.random());
   }
 }
