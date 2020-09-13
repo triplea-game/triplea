@@ -3691,12 +3691,6 @@ public class UnitAttachment extends DefaultAttachment {
             "isAir",
             MutableProperty.of(this::setIsAir, this::setIsAir, this::getIsAir, this::resetIsAir))
         .put(
-            "isMechanized", // kept for map compatibility; remove upon next map-incompatible release
-            MutableProperty.ofWriteOnlyString(s -> {}))
-        .put(
-            "isParatroop", // kept for map compatibility; remove upon next map-incompatible release
-            MutableProperty.ofWriteOnlyString(s -> {}))
-        .put(
             "isSea",
             MutableProperty.of(this::setIsSea, this::setIsSea, this::getIsSea, this::resetIsSea))
         .put(
@@ -3943,13 +3937,6 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsAirTransportable,
                 this::getIsAirTransportable,
                 this::resetIsAirTransportable))
-        .put(
-            "isInfantry", // kept for map compatibility; remove upon next map-incompatible release
-            MutableProperty.of(
-                this::setIsLandTransportable,
-                this::setIsLandTransportable,
-                this::getIsLandTransportable,
-                this::resetIsLandTransportable))
         .put(
             "isLandTransport",
             MutableProperty.of(

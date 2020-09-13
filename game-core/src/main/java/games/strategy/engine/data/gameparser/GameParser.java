@@ -467,21 +467,21 @@ public final class GameParser {
               .orElseGet(() -> Strings.emptyToNull(current.getValue()));
 
       final boolean editable = current.isEditable();
-      final String property = current.getName();
+      final String propertyName = LegacyPropertyMapper.mapPropertyName(current.getName());
       if (editable) {
-        parseEditableProperty(current, property, value);
+        parseEditableProperty(current, propertyName, value);
       } else {
         if (current.getBooleanProperty() != null) {
-          properties.set(property, Boolean.parseBoolean(value));
+          properties.set(propertyName, Boolean.parseBoolean(value));
         } else if (current.getStringProperty() != null) {
-          properties.set(property, value);
+          properties.set(propertyName, value);
         } else {
           try {
             final int integer = Integer.parseInt(value);
-            properties.set(property, integer);
+            properties.set(propertyName, integer);
           } catch (final NumberFormatException e) {
             // then it must be a string
-            properties.set(property, value);
+            properties.set(propertyName, value);
           }
         }
       }
@@ -900,7 +900,11 @@ public final class GameParser {
     final List<Tuple<String, String>> results = new ArrayList<>();
     for (final AttachmentList.Attachment.Option option : options) {
       // decapitalize the property name for backwards compatibility
-      final String name = decapitalize(option.getName());
+      final String name = LegacyPropertyMapper.mapLegacyOptionName(decapitalize(option.getName()));
+      if (LegacyPropertyMapper.ignoreOptionName(name)) {
+        continue;
+      }
+
       if (name.isEmpty()) {
         throw new GameParseException(
             "Option name with zero length for attachment: " + attachment.getName());
@@ -912,7 +916,8 @@ public final class GameParser {
         continue; // Skip adding option if contains empty foreach variable
       }
       final String valueWithForeach = replaceForeachVariables(countAndValue, foreach);
-      final String finalValue = replaceVariables(valueWithForeach, variables);
+      final String interpolatedValue = replaceVariables(valueWithForeach, variables);
+      final String finalValue = LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue);
       try {
         attachment
             .getProperty(name)
@@ -928,8 +933,8 @@ public final class GameParser {
       } catch (final Exception e) {
         throw new GameParseException(
             String.format(
-                "map name: '%s', Unexpected Exception while setting values for attachment: %s",
-                mapName, attachment),
+                "map name: '%s', Unexpected Exception while setting values for attachment: %s, %s",
+                mapName, attachment, e.getMessage()),
             e);
       }
       results.add(Tuple.of(name, finalValue));

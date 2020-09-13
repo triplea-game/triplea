@@ -5,12 +5,17 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.extern.java.Log;
+import org.triplea.generic.xml.reader.annotations.Attribute;
+import org.triplea.generic.xml.reader.annotations.Tag;
+import org.triplea.generic.xml.reader.annotations.TagList;
 import org.triplea.generic.xml.reader.exceptions.JavaDataModelException;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 
@@ -28,6 +33,11 @@ public class XmlMapper implements Closeable {
   }
 
   public <T> T mapXmlToObject(final Class<T> pojo) throws XmlParsingException {
+    return mapXmlToObject(pojo, pojo.getSimpleName());
+  }
+
+  public <T> T mapXmlToObject(final Class<T> pojo, final String tagName)
+      throws XmlParsingException {
     // At this point in parsing the XML cursor is just beyond the start tag.
     // We can read attributes directly off of the stream at this point.
     // If we do nothing more then the cursor will keep moving down and will not
@@ -60,8 +70,19 @@ public class XmlMapper implements Closeable {
 
       // set attributes on the current object
       for (final Field field : annotatedFields.getAttributeFields()) {
-        final String xmlAttributeValue = xmlStreamReader.getAttributeValue(null, field.getName());
-        final Object value = new AttributeValueCasting(field).castAttributeValue(xmlAttributeValue);
+
+        final String[] attributeNames =
+            getNamesFromAnnotationOrDefault(
+                field.getAnnotation(Attribute.class).names(), field.getName());
+
+        final String attributeValue =
+            Arrays.stream(attributeNames)
+                .map(attributeName -> xmlStreamReader.getAttributeValue(null, attributeName))
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElse(null);
+
+        final Object value = new AttributeValueCasting(field).castAttributeValue(attributeValue);
         field.set(instance, value);
       }
 
@@ -74,16 +95,25 @@ public class XmlMapper implements Closeable {
 
       // This parser will do the work of parsing the current tag, it'll look at all
       // child tags and the body text and invoke the right callback that we will define below.
-      final XmlParser tagParser = new XmlParser(pojo.getSimpleName());
+      final XmlParser tagParser = new XmlParser(tagName);
 
       // Set up tag parsing, as we scan through more elements when we see a matching
       // tag name we'll call the child tag handler. The child tag handler will
       // create a java model representing the child tag and set the field instance
       // on our current running instance object.
       for (final Field field : annotatedFields.getTagFields()) {
-        final String expectedTagName = field.getType().getSimpleName();
-        tagParser.childTagHandler(
-            expectedTagName, () -> field.set(instance, mapXmlToObject(field.getType())));
+
+        final String[] tagNames =
+            getNamesFromAnnotationOrDefault(
+                field.getAnnotation(Tag.class).names(), field.getType().getSimpleName());
+
+        Arrays.stream(tagNames)
+            .forEach(
+                expectedTagName ->
+                    tagParser.childTagHandler(
+                        expectedTagName,
+                        () ->
+                            field.set(instance, mapXmlToObject(field.getType(), expectedTagName))));
       }
 
       // Set up tag list parsing, similar to tag parsing except we set the field
@@ -92,8 +122,17 @@ public class XmlMapper implements Closeable {
         final List<Object> tagList = new ArrayList<>();
         field.set(instance, tagList);
         final Class<?> listType = ReflectionUtils.getGenericType(field);
-        tagParser.childTagHandler(
-            listType.getSimpleName(), () -> tagList.add(mapXmlToObject(listType)));
+
+        final String[] tagNames =
+            getNamesFromAnnotationOrDefault(
+                field.getAnnotation(TagList.class).names(), listType.getSimpleName());
+
+        Arrays.stream(tagNames)
+            .forEach(
+                expectedTagName ->
+                    tagParser.childTagHandler(
+                        expectedTagName,
+                        () -> tagList.add(mapXmlToObject(listType, expectedTagName))));
       }
 
       // Set up body text handler. The XML cursor will iterate over each line of body
@@ -121,6 +160,13 @@ public class XmlMapper implements Closeable {
         throw new XmlParsingException(xmlStreamReader, pojo, e);
       }
     }
+  }
+
+  private static String[] getNamesFromAnnotationOrDefault(
+      final String[] annotationValues, final String defaultValue) {
+    return annotationValues.length == 1 && annotationValues[0].isEmpty()
+        ? new String[] {defaultValue}
+        : annotationValues;
   }
 
   @Override

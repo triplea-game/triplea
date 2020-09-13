@@ -1,0 +1,12 @@
+<library>
+    <inventory type="available">
+        <items>
+            <book name="Crossing the Atlantic"/>
+            <book name="The Battle of the Bulge"/>
+        </items>
+        <items>
+            <dvd name="How to Win Revised"/>
+            <dvd name="Game of TripleA"/>
+        </items>
+    </inventory>
+</library>
