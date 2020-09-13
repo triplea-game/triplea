@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -70,7 +69,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
@@ -101,10 +99,8 @@ public class MustFightBattle extends DependentBattle
 
   private static final long serialVersionUID = 5879502298361231540L;
 
-  @Getter(onMethod = @__({@Override}))
   private final Collection<Unit> attackingWaitingToDie = new ArrayList<>();
 
-  @Getter(onMethod = @__({@Override}))
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> killed = new ArrayList<>();
@@ -343,24 +339,36 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public Collection<Unit> getWaitingToDie(final EnumSet<Side> sides) {
+  public Collection<Unit> getWaitingToDie(final Side... sides) {
     final Collection<Unit> waitingToDie = new ArrayList<>();
-    if (sides.contains(Side.OFFENSE)) {
-      waitingToDie.addAll(attackingWaitingToDie);
-    }
-    if (sides.contains(Side.DEFENSE)) {
-      waitingToDie.addAll(defendingWaitingToDie);
+    for (final Side side : sides) {
+      switch (side) {
+        case OFFENSE:
+          waitingToDie.addAll(attackingWaitingToDie);
+          break;
+        case DEFENSE:
+          waitingToDie.addAll(defendingWaitingToDie);
+          break;
+        default:
+          break;
+      }
     }
     return waitingToDie;
   }
 
   @Override
-  public void clearWaitingToDie(final EnumSet<Side> sides) {
-    if (sides.contains(Side.OFFENSE)) {
-      attackingWaitingToDie.clear();
-    }
-    if (sides.contains(Side.DEFENSE)) {
-      defendingWaitingToDie.clear();
+  public void clearWaitingToDie(final Side... sides) {
+    for (final Side side : sides) {
+      switch (side) {
+        case OFFENSE:
+          attackingWaitingToDie.clear();
+          break;
+        case DEFENSE:
+          defendingWaitingToDie.clear();
+          break;
+        default:
+          break;
+      }
     }
   }
 

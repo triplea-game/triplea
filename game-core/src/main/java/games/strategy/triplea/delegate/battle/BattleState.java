@@ -5,7 +5,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.UUID;
 
 /** Exposes the battle state and allows updates to it */
@@ -28,13 +27,9 @@ public interface BattleState {
 
   Collection<Unit> getUnits(Side... sides);
 
-  Collection<Unit> getAttackingWaitingToDie();
+  Collection<Unit> getWaitingToDie(Side... sides);
 
-  Collection<Unit> getDefendingWaitingToDie();
-
-  Collection<Unit> getWaitingToDie(EnumSet<Side> sides);
-
-  void clearWaitingToDie(EnumSet<Side> sides);
+  void clearWaitingToDie(Side... sides);
 
   Collection<Unit> getOffensiveAa();
 

@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,7 +17,6 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.BattleStateVariation;
-import java.util.EnumSet;
 import java.util.List;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +37,7 @@ class ClearFirstStrikeCasualtiesTest {
   void getStep(
       final List<BattleStateVariation> parameters,
       final boolean willExecute,
-      final EnumSet<BattleState.Side> sides) {
+      final List<BattleState.Side> sides) {
 
     final BattleState battleState = spy(givenBattleState(parameters));
     lenient().doNothing().when(battleState).clearWaitingToDie(any());
@@ -51,8 +51,21 @@ class ClearFirstStrikeCasualtiesTest {
 
     verify(battleActions, times(willExecute ? 1 : 0))
         .remove(anyCollection(), eq(delegateBridge), any(), eq(null));
-    verify(battleState, times(sides.isEmpty() ? 0 : 1)).clearWaitingToDie(eq(sides));
-    verify(battleState, times(sides.isEmpty() ? 0 : 1)).getWaitingToDie(eq(sides));
+    switch (sides.size()) {
+      case 0:
+      default:
+        verify(battleState, never()).getWaitingToDie(any());
+        verify(battleState, never()).clearWaitingToDie(any());
+        break;
+      case 1:
+        verify(battleState).getWaitingToDie(eq(sides.get(0)));
+        verify(battleState).clearWaitingToDie(eq(sides.get(0)));
+        break;
+      case 2:
+        verify(battleState).getWaitingToDie(eq(sides.get(0)), eq(sides.get(1)));
+        verify(battleState).clearWaitingToDie(eq(sides.get(0)), eq(sides.get(1)));
+        break;
+    }
   }
 
   static List<Arguments> getStep() {
@@ -60,72 +73,72 @@ class ClearFirstStrikeCasualtiesTest {
         Arguments.of(
             List.of(BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE, BattleStateVariation.HAS_WW2V2),
             true,
-            EnumSet.of(BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            EnumSet.of(BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -133,7 +146,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -141,7 +154,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -149,7 +162,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -158,76 +171,73 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
-        Arguments.of(
-            List.of(BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE),
-            false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
+        Arguments.of(List.of(BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE), false, List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE, BattleStateVariation.HAS_WW2V2),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE)),
+            List.of(BattleState.Side.OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE)),
+            List.of(BattleState.Side.OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE)),
+            List.of(BattleState.Side.OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -235,7 +245,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -243,7 +253,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -251,7 +261,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE)),
+            List.of(BattleState.Side.OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -260,41 +270,41 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -302,7 +312,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -310,7 +320,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            EnumSet.of(BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -318,7 +328,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -326,7 +336,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE)),
+            List.of(BattleState.Side.OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -334,7 +344,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -342,7 +352,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -351,7 +361,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -360,7 +370,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)),
+            List.of()),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -369,7 +379,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            EnumSet.of(BattleState.Side.OFFENSE)),
+            List.of(BattleState.Side.OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -379,6 +389,6 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             false,
-            EnumSet.noneOf(BattleState.Side.class)));
+            List.of()));
   }
 }

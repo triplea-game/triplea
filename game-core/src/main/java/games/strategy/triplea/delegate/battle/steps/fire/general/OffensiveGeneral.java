@@ -50,8 +50,8 @@ public class OffensiveGeneral implements BattleStep {
         battleState.getAttacker(),
         Matches.unitIsFirstStrike().negate(),
         battleState.getUnits(BattleState.Side.OFFENSE),
-        battleState.getAttackingWaitingToDie(),
+        battleState.getWaitingToDie(BattleState.Side.OFFENSE),
         battleState.getUnits(BattleState.Side.DEFENSE),
-        battleState.getDefendingWaitingToDie());
+        battleState.getWaitingToDie(BattleState.Side.DEFENSE));
   }
 }

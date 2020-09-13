@@ -102,8 +102,8 @@ public class DefensiveFirstStrike implements BattleStep {
         battleState.getDefender(),
         Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()),
         battleState.getUnits(BattleState.Side.DEFENSE),
-        battleState.getDefendingWaitingToDie(),
+        battleState.getWaitingToDie(BattleState.Side.DEFENSE),
         battleState.getUnits(BattleState.Side.OFFENSE),
-        battleState.getAttackingWaitingToDie());
+        battleState.getWaitingToDie(BattleState.Side.OFFENSE));
   }
 }

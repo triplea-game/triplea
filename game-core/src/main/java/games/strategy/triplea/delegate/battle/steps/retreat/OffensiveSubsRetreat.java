@@ -71,7 +71,8 @@ public class OffensiveSubsRetreat implements BattleStep {
   private boolean isDestroyerPresent() {
     return battleState.getUnits(BattleState.Side.DEFENSE).stream()
             .anyMatch(Matches.unitIsDestroyer())
-        || battleState.getDefendingWaitingToDie().stream().anyMatch(Matches.unitIsDestroyer());
+        || battleState.getWaitingToDie(BattleState.Side.DEFENSE).stream()
+            .anyMatch(Matches.unitIsDestroyer());
   }
 
   private boolean isEvaderPresent() {
