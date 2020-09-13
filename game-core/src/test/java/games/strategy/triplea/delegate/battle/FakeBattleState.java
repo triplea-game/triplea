@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -25,6 +26,9 @@ public class FakeBattleState implements BattleState {
 
   @Getter(onMethod = @__({@Override}))
   final int battleRound;
+
+  @Getter(onMethod = @__({@Override}))
+  final UUID battleId;
 
   @Getter(onMethod = @__({@Override}))
   final @NonNull Territory battleSite;

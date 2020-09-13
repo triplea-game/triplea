@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.Builder;
@@ -48,6 +49,9 @@ public class BattleSteps implements BattleStepStrings, BattleState {
 
   @Getter(onMethod = @__({@Override}))
   final int battleRound;
+
+  @Getter(onMethod = @__({@Override}))
+  final UUID battleId;
 
   @Getter(onMethod = @__({@Override}))
   final @NonNull GamePlayer attacker;
