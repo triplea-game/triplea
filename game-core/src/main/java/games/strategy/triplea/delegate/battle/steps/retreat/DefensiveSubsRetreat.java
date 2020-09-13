@@ -69,24 +69,26 @@ public class DefensiveSubsRetreat implements BattleStep {
         RetreatType.SUBS,
         bridge,
         battleState.getEmptyOrFriendlySeaNeighbors(
-            CollectionUtils.getMatches(battleState.getDefendingUnits(), Matches.unitCanEvade())));
+            CollectionUtils.getMatches(
+                battleState.getUnits(BattleState.Side.DEFENSE), Matches.unitCanEvade())));
 
     // If no defenders left, then battle is over. The reason we test a "second" time here,
     // is because otherwise the battle will try and do one more round and nothing will
     // happen in that round.
     if (getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE
-        && battleState.getDefendingUnits().isEmpty()) {
+        && battleState.getUnits(BattleState.Side.DEFENSE).isEmpty()) {
       battleActions.endBattle(bridge);
       battleActions.attackerWins(bridge);
     }
   }
 
   private boolean isEvaderPresent() {
-    return battleState.getDefendingUnits().stream().anyMatch(Matches.unitCanEvade());
+    return battleState.getUnits(BattleState.Side.DEFENSE).stream().anyMatch(Matches.unitCanEvade());
   }
 
   private boolean isDestroyerPresent() {
-    return battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsDestroyer())
+    return battleState.getUnits(BattleState.Side.OFFENSE).stream()
+            .anyMatch(Matches.unitIsDestroyer())
         || battleState.getAttackingWaitingToDie().stream().anyMatch(Matches.unitIsDestroyer());
   }
 
@@ -94,7 +96,8 @@ public class DefensiveSubsRetreat implements BattleStep {
     return Properties.getSubmersibleSubs(battleState.getGameData())
         || !battleState
             .getEmptyOrFriendlySeaNeighbors(
-                CollectionUtils.getMatches(battleState.getDefendingUnits(), Matches.unitCanEvade()))
+                CollectionUtils.getMatches(
+                    battleState.getUnits(BattleState.Side.DEFENSE), Matches.unitCanEvade()))
             .isEmpty();
   }
 }

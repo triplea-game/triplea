@@ -32,8 +32,10 @@ public class RemoveUnprotectedUnits implements BattleStep {
   public List<String> getNames() {
     if (battleState.getBattleSite().isWater()
         && Properties.getTransportCasualtiesRestricted(battleState.getGameData())
-        && (battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsTransport())
-            || battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsTransport()))) {
+        && (battleState.getUnits(BattleState.Side.OFFENSE).stream()
+                .anyMatch(Matches.unitIsTransport())
+            || battleState.getUnits(BattleState.Side.DEFENSE).stream()
+                .anyMatch(Matches.unitIsTransport()))) {
       return List.of(REMOVE_UNESCORTED_TRANSPORTS);
     }
     return List.of();
@@ -65,7 +67,8 @@ public class RemoveUnprotectedUnits implements BattleStep {
   private boolean attackerHasRetreat(final BattleState.Side side) {
     return side == BattleState.Side.OFFENSE
         && (!battleState.getAttackerRetreatTerritories().isEmpty()
-            || battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsAir()));
+            || battleState.getUnits(BattleState.Side.OFFENSE).stream()
+                .anyMatch(Matches.unitIsAir()));
   }
 
   private void checkUndefendedTransports(

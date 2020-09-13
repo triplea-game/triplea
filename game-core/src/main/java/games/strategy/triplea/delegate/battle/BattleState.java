@@ -26,10 +26,6 @@ public interface BattleState {
 
   UUID getBattleId();
 
-  Collection<Unit> getAttackingUnits();
-
-  Collection<Unit> getDefendingUnits();
-
   Collection<Unit> getUnits(Side... sides);
 
   Collection<Unit> getAttackingWaitingToDie();

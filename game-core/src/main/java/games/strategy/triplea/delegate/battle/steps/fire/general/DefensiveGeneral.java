@@ -26,7 +26,7 @@ public class DefensiveGeneral implements BattleStep {
   @Override
   public List<String> getNames() {
     final List<String> steps = new ArrayList<>();
-    if (battleState.getDefendingUnits().stream()
+    if (battleState.getUnits(BattleState.Side.DEFENSE).stream()
         .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()).negate())) {
       steps.add(battleState.getDefender().getName() + FIRE);
       steps.add(battleState.getAttacker().getName() + SELECT_CASUALTIES);
@@ -48,9 +48,9 @@ public class DefensiveGeneral implements BattleStep {
         true,
         battleState.getDefender(),
         Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()).negate(),
-        battleState.getDefendingUnits(),
+        battleState.getUnits(BattleState.Side.DEFENSE),
         battleState.getDefendingWaitingToDie(),
-        battleState.getAttackingUnits(),
+        battleState.getUnits(BattleState.Side.OFFENSE),
         battleState.getAttackingWaitingToDie());
   }
 }

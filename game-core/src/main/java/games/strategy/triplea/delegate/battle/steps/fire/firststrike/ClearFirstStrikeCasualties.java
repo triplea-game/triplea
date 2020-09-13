@@ -41,9 +41,11 @@ public class ClearFirstStrikeCasualties implements BattleStep {
   }
 
   private State calculateOffenseState() {
-    if (battleState.getAttackingUnits().stream().anyMatch(Matches.unitIsFirstStrike())) {
+    if (battleState.getUnits(BattleState.Side.OFFENSE).stream()
+        .anyMatch(Matches.unitIsFirstStrike())) {
       final boolean canSneakAttack =
-          battleState.getDefendingUnits().stream().noneMatch(Matches.unitIsDestroyer());
+          battleState.getUnits(BattleState.Side.DEFENSE).stream()
+              .noneMatch(Matches.unitIsDestroyer());
       if (canSneakAttack) {
         return State.SNEAK_ATTACK;
       }
@@ -52,12 +54,13 @@ public class ClearFirstStrikeCasualties implements BattleStep {
   }
 
   private State calculateDefenseState() {
-    if (battleState.getDefendingUnits().stream()
+    if (battleState.getUnits(BattleState.Side.DEFENSE).stream()
         .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
       final GameData gameData = battleState.getGameData();
       // WWW2V2 always gives defending subs sneak attack
       final boolean canSneakAttack =
-          battleState.getAttackingUnits().stream().noneMatch(Matches.unitIsDestroyer())
+          battleState.getUnits(BattleState.Side.OFFENSE).stream()
+                  .noneMatch(Matches.unitIsDestroyer())
               && (Properties.getWW2V2(gameData)
                   || Properties.getDefendingSubsSneakAttack(gameData));
       if (canSneakAttack) {

@@ -39,13 +39,11 @@ public class FakeBattleState implements BattleState {
   @Getter(onMethod = @__({@Override}))
   final @NonNull GamePlayer defender;
 
-  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> attackingUnits;
 
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> attackingWaitingToDie;
 
-  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingUnits;
 
   @Getter(onMethod = @__({@Override}))

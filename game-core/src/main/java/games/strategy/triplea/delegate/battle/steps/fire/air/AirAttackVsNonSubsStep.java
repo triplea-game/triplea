@@ -24,6 +24,8 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   private boolean valid() {
-    return airWillMissSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits());
+    return airWillMissSubs(
+        battleState.getUnits(BattleState.Side.OFFENSE),
+        battleState.getUnits(BattleState.Side.DEFENSE));
   }
 }

@@ -222,9 +222,12 @@ class DefensiveSubsRetreatTest {
                 .emptyOrFriendlySeaNeighbors(List.of())
                 .build());
 
+    doReturn(List.of()).when(battleState).getUnits(eq(BattleState.Side.OFFENSE));
     // first return an evader so it can retreat it
     // then return nothing to indicate that the evader retreated during the queryRetreat call
-    doReturn(List.of(givenUnitCanEvade()), List.of()).when(battleState).getDefendingUnits();
+    doReturn(List.of(givenUnitCanEvade()), List.of())
+        .when(battleState)
+        .getUnits(eq(BattleState.Side.DEFENSE));
 
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -252,11 +255,12 @@ class DefensiveSubsRetreatTest {
                 .emptyOrFriendlySeaNeighbors(List.of())
                 .build());
 
+    doReturn(List.of()).when(battleState).getUnits(eq(BattleState.Side.OFFENSE));
     // first return an evader so it can retreat it
     // then return nothing to indicate that the evader retreated during the queryRetreat call
     doReturn(List.of(givenUnitCanEvade(), mock(Unit.class)), List.of(givenAnyUnit()))
         .when(battleState)
-        .getDefendingUnits();
+        .getUnits(eq(BattleState.Side.DEFENSE));
 
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -284,12 +288,13 @@ class DefensiveSubsRetreatTest {
                 .emptyOrFriendlySeaNeighbors(List.of())
                 .build());
 
+    doReturn(List.of()).when(battleState).getUnits(eq(BattleState.Side.OFFENSE));
     // first return an evader so it can retreat it
     doReturn(List.of(givenUnitCanEvade()))
         // then return nothing to indicate that the evader retreated during the queryRetreat call
         .doReturn(List.of())
         .when(battleState)
-        .getDefendingUnits();
+        .getUnits(eq(BattleState.Side.DEFENSE));
 
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);

@@ -69,18 +69,19 @@ public class OffensiveSubsRetreat implements BattleStep {
   }
 
   private boolean isDestroyerPresent() {
-    return battleState.getDefendingUnits().stream().anyMatch(Matches.unitIsDestroyer())
+    return battleState.getUnits(BattleState.Side.DEFENSE).stream()
+            .anyMatch(Matches.unitIsDestroyer())
         || battleState.getDefendingWaitingToDie().stream().anyMatch(Matches.unitIsDestroyer());
   }
 
   private boolean isEvaderPresent() {
-    return battleState.getAttackingUnits().stream().anyMatch(Matches.unitCanEvade());
+    return battleState.getUnits(BattleState.Side.OFFENSE).stream().anyMatch(Matches.unitCanEvade());
   }
 
   private boolean isRetreatPossible() {
     return Properties.getSubmersibleSubs(battleState.getGameData())
         || RetreatChecks.canAttackerRetreat(
-            battleState.getDefendingUnits(),
+            battleState.getUnits(BattleState.Side.DEFENSE),
             battleState.getGameData(),
             battleState::getAttackerRetreatTerritories,
             battleState.isAmphibious());
@@ -88,6 +89,6 @@ public class OffensiveSubsRetreat implements BattleStep {
 
   private boolean isAutoWinScenario() {
     return RetreatChecks.onlyDefenselessDefendingTransportsLeft(
-        battleState.getDefendingUnits(), battleState.getGameData());
+        battleState.getUnits(BattleState.Side.DEFENSE), battleState.getGameData());
   }
 }

@@ -39,23 +39,33 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
   }
 
   private boolean valid() {
-    return (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())
-        || isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits()));
+    return (isOnlyAirVsSubs(
+            battleState.getUnits(BattleState.Side.OFFENSE),
+            battleState.getUnits(BattleState.Side.DEFENSE))
+        || isOnlyAirVsSubs(
+            battleState.getUnits(BattleState.Side.DEFENSE),
+            battleState.getUnits(BattleState.Side.OFFENSE)));
   }
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     final Collection<Unit> submergingSubs;
     final boolean defender;
-    if (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())) {
+    if (isOnlyAirVsSubs(
+        battleState.getUnits(BattleState.Side.OFFENSE),
+        battleState.getUnits(BattleState.Side.DEFENSE))) {
       // submerge the defending units
       submergingSubs =
-          CollectionUtils.getMatches(battleState.getDefendingUnits(), canNotBeTargetedByAllMatch);
+          CollectionUtils.getMatches(
+              battleState.getUnits(BattleState.Side.DEFENSE), canNotBeTargetedByAllMatch);
       defender = true;
-    } else if (isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits())) {
+    } else if (isOnlyAirVsSubs(
+        battleState.getUnits(BattleState.Side.DEFENSE),
+        battleState.getUnits(BattleState.Side.OFFENSE))) {
       // submerge the attacking units
       submergingSubs =
-          CollectionUtils.getMatches(battleState.getAttackingUnits(), canNotBeTargetedByAllMatch);
+          CollectionUtils.getMatches(
+              battleState.getUnits(BattleState.Side.OFFENSE), canNotBeTargetedByAllMatch);
       defender = false;
     } else {
       return;

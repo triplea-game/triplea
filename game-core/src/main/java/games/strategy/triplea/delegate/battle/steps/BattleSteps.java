@@ -65,10 +65,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingAa;
 
-  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> attackingUnits;
 
-  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingUnits;
 
   @Getter(onMethod = @__({@Override}))
