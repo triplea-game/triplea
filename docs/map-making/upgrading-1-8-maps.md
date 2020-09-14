@@ -1,8 +1,10 @@
-A list of (case sensitive) changes, to upgrade a map from a TripleA version to another one.
+# Upgrading Legacy Map Options & Properties
 
+A list of (case sensitive) changes to upgrade legacy TripleA Game XML properties and options
+to the most recent.
+ 
 When changes are required, all occurrences of the code before the `>>` must be substituted
-with the code after the `>>` (if there is no code after the `>>`, the code must be substituted
-with nothing (deleted)). In any code, the "\*" symbol means whatever (the change or deletion is
+with the code after the `>>`. In any code, the "\*" symbol means whatever (the change or deletion is
 to be applied to every given code having whatever character or characters in place of the "\*").
 
 ## Upgrade from 1.8.0.9 to 1.9.0.0.3266
@@ -19,8 +21,6 @@ this doesn't necessarily mean that you correctly upgraded it (for more informati
 section).
 
 ### New game (XML) file settings:
-
-Within every game (XML) file, inside the "games" folder inside the main folder of the map, change:
 
 `<triplea minimumVersion="*"/>`:`<triplea minimumVersion="1.9.0.0"/>`
 
@@ -78,18 +78,15 @@ Within every game file (XML), inside the "games" folder inside the main folder o
 - `="victoryCity" count="false"` >> `="victoryCity" count="0"`
 - `="victoryCity" count="-reset-false"` >> `="victoryCity" count="-reset-0"`
 
-### Deletions of already deprecated and ineffective game (XML) file items:
+### Deletions
 
-_(these items were already deprecated and were also ineffective, so you shouldn't have had these within the
-game file already, and, if you did, they were doing nothing)_
+_(these items were already deprecated and did nothing)_
 
-Within every game (XML) file, inside the "games" folder inside the main folder of the map, change (delete):
-
-- `<option name="isParatroop"*/>`:
-- `<option name="isMechanized"*/>`:
-- `<option name="takeUnitControl"*/>`:
-- `<option name="giveUnitControl" value="true"/>`:
-- `<option name="giveUnitControl" value="false"/>`:
+- `<option name="isParatroop"*/>`
+- `<option name="isMechanized"*/>`
+- `<option name="takeUnitControl"*/>`
+- `<option name="giveUnitControl" value="true"/>`
+- `<option name="giveUnitControl" value="false"/>`
 
 ### Changes of map (properties) file items:
 
