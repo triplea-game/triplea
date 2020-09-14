@@ -20,7 +20,11 @@ public class ColorUtils {
       return new Color(Integer.decode("0x" + colorString));
     } catch (final NumberFormatException nfe) {
       throw new IllegalArgumentException(
-          "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
+          "Colors must be 6 digit hex numbers, eg FF0011, not: "
+              + colorString
+              + ", "
+              + nfe.getMessage(),
+          nfe);
     }
   }
 
