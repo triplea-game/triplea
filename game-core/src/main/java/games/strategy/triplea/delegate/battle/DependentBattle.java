@@ -23,7 +23,7 @@ public abstract class DependentBattle extends AbstractBattle {
       final GamePlayer attacker,
       final BattleTracker battleTracker,
       final GameData data) {
-    super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
+    super(battleSite, attacker, battleTracker, BattleType.NORMAL, data);
     attackingFromMap = new HashMap<>();
     attackingFrom = new HashSet<>();
     amphibiousAttackFrom = new ArrayList<>();

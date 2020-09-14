@@ -441,7 +441,7 @@ public abstract class AbstractProAi extends AbstractAi {
     final GamePlayer player = this.getGamePlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle =
-        delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
+        delegate.getBattleTracker().getPendingBattle(scrambleTo, BattleType.NORMAL);
 
     // If battle is null then don't scramble
     if (battle == null) {
@@ -472,7 +472,7 @@ public abstract class AbstractProAi extends AbstractAi {
     final GamePlayer player = this.getGamePlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle =
-        delegate.getBattleTracker().getPendingBattle(unitTerritory, false, BattleType.NORMAL);
+        delegate.getBattleTracker().getPendingBattle(unitTerritory, BattleType.NORMAL);
 
     // If battle is null then don't attack
     if (battle == null) {

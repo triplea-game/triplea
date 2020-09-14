@@ -888,7 +888,7 @@ public class BattleDisplay extends JPanel {
       final List<Unit> units = new ArrayList<>(this.units);
       DiceRoll.sortByStrength(units, !attack);
       final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap;
-      final boolean isAirPreBattleOrPreRaid = battleType.isAirPreBattleOrPreRaid();
+      final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
       if (isAirPreBattleOrPreRaid) {
         unitPowerAndRollsMap = Map.of();
       } else {

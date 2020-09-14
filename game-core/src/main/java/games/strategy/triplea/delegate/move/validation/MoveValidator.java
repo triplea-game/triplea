@@ -134,7 +134,7 @@ public class MoveValidator {
 
     // Don't let the user move out of a battle zone, the exception is air units and unloading units
     // into a battle zone
-    if (AbstractMoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false)
+    if (AbstractMoveDelegate.getBattleTracker(data).hasPendingNonBombingBattle(route.getStart())
         && units.stream().anyMatch(Matches.unitIsNotAir())) {
       // if the units did not move into the territory, then they can move out this will happen if
       // there is a submerged

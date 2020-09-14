@@ -37,12 +37,11 @@ public class FinishedBattle extends AbstractBattle {
       final Territory battleSite,
       final GamePlayer attacker,
       final BattleTracker battleTracker,
-      final boolean isBombingRun,
       final BattleType battleType,
       final GameData data,
       final BattleResultDescription battleResultDescription,
       final WhoWon whoWon) {
-    super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
+    super(battleSite, attacker, battleTracker, battleType, data);
     this.battleResultDescription = battleResultDescription;
     this.whoWon = whoWon;
   }

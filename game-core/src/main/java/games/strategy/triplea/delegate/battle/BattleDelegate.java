@@ -219,7 +219,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @Override
   public String fightBattle(
       final Territory territory, final boolean bombing, final BattleType type) {
-    final IBattle battle = battleTracker.getPendingBattle(territory, bombing, type);
+    final IBattle battle = battleTracker.getPendingBattle(territory, type);
     if (currentBattle != null && currentBattle != battle) {
       return "Must finish "
           + getFightingWord(currentBattle)
@@ -265,7 +265,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
     for (final Territory t : adjBombardment.keySet()) {
-      if (!battleTracker.hasPendingBattle(t, false)) {
+      if (!battleTracker.hasPendingNonBombingBattle(t)) {
         Collection<IBattle> battles = adjBombardment.get(t);
         battles = CollectionUtils.getMatches(battles, Matches.battleIsAmphibious());
         if (!battles.isEmpty()) {
@@ -308,7 +308,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private Map<Territory, Collection<IBattle>> getPossibleBombardingTerritories() {
     final Map<Territory, Collection<IBattle>> possibleBombardingTerritories = new HashMap<>();
     for (final Territory t : battleTracker.getPendingBattleSites(false)) {
-      final IBattle battle = battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
+      final IBattle battle = battleTracker.getPendingBattle(t, BattleType.NORMAL);
       // we only care about battles where we must fight
       // this check is really to avoid implementing getAttackingFrom() in other battle subclasses
       if (!(battle instanceof MustFightBattle)) {
@@ -448,7 +448,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
         continue;
       }
-      IBattle battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
+      IBattle battle = battleTracker.getPendingBattle(territory, BattleType.NORMAL);
       if (battle == null) {
         // we must land any paratroopers here, but only if there is not going to be a battle (cus
         // battles land them
@@ -461,7 +461,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .startEvent(player.getName() + " creates battle in territory " + territory.getName());
         battleTracker.addBattle(
             new RouteScripted(territory), attackingUnits, player, bridge, null, null);
-        battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
+        battle = battleTracker.getPendingBattle(territory, BattleType.NORMAL);
       }
       if (battle == null) {
         continue;
@@ -661,7 +661,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       final IBattle nonFightingBattle =
-          battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
+          battleTracker.getPendingBattle(territory, BattleType.NORMAL);
       if (nonFightingBattle != null) {
         throw new IllegalStateException(
             "Should not be possible to have a normal battle in: "
@@ -719,7 +719,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       GamePlayer defender = GamePlayer.NULL_PLAYERID;
       if (!scramblers.isEmpty()) {
         // Determine defender.
-        if (battleTracker.hasPendingBattle(to, false)) {
+        if (battleTracker.hasPendingNonBombingBattle(to)) {
           defender = AbstractBattle.findDefender(to, player, data);
         }
         // find possible scrambling defending in the from territories
@@ -847,7 +847,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // make sure the units join the battle, or create a new battle.
       final IBattle bombing = battleTracker.getPendingBombingBattle(to);
-      IBattle battle = battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
+      IBattle battle = battleTracker.getPendingBattle(to, BattleType.NORMAL);
       if (battle == null) {
         final List<Unit> attackingUnits =
             to.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player));
@@ -866,7 +866,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // TODO: the attacking sea units do not remember where they came from, so they cannot
         // retreat anywhere. Need to fix.
         battleTracker.addBattle(new RouteScripted(to), attackingUnits, player, bridge, null, null);
-        battle = battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
+        battle = battleTracker.getPendingBattle(to, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
           // this is an ugly mess of hacks, but will have to stay here till all transport related
           // code is gutted and refactored.
@@ -911,8 +911,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             mfb.addDependentUnits(dependencies.get(to));
             for (final Territory territoryNeighborToNewBattle : neighborsLand) {
               final IBattle battleInTerritoryNeighborToNewBattle =
-                  battleTracker.getPendingBattle(
-                      territoryNeighborToNewBattle, false, BattleType.NORMAL);
+                  battleTracker.getPendingBattle(territoryNeighborToNewBattle, BattleType.NORMAL);
               if (battleInTerritoryNeighborToNewBattle instanceof MustFightBattle) {
                 final MustFightBattle mfbattleInTerritoryNeighborToNewBattle =
                     (MustFightBattle) battleInTerritoryNeighborToNewBattle;
@@ -953,8 +952,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // dependencies set.
       if (to.isWater()) {
         for (final Territory t : data.getMap().getNeighbors(to, Matches.territoryIsLand())) {
-          final IBattle adjacentBattle =
-              battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
+          final IBattle adjacentBattle = battleTracker.getPendingBattle(t, BattleType.NORMAL);
           if (adjacentBattle != null) {
             if (Matches.battleIsAmphibiousWithUnitsAttackingFrom(to).test(adjacentBattle)) {
               battleTracker.addDependency(adjacentBattle, battle);
@@ -1304,8 +1302,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           final Collection<Territory> landNeighbors =
               data.getMap().getNeighbors(t, Matches.territoryIsLand());
           for (final Territory neighbor : landNeighbors) {
-            final IBattle battle =
-                battleTracker.getPendingBattle(neighbor, false, BattleType.NORMAL);
+            final IBattle battle = battleTracker.getPendingBattle(neighbor, BattleType.NORMAL);
             if (battle == null) {
               final Map<Territory, Collection<Unit>> whereFrom =
                   battleTracker.getFinishedBattlesUnitAttackFromMap().get(neighbor);

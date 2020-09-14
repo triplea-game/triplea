@@ -139,7 +139,7 @@ public class ScrambleLogic {
           scrambleTerrs.put(battleTerr, new HashSet<>(canScrambleFrom));
         }
       }
-      final IBattle battle = battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
+      final IBattle battle = battleTracker.getPendingBattle(battleTerr, BattleType.NORMAL);
       // do not forget we may already have the territory in the list, so we need to add to the
       // collection, not overwrite it.
       if (battle != null && battle.isAmphibious() && battle instanceof DependentBattle) {

@@ -286,7 +286,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     if (onlyWhereUnderAttackAlready) {
       if (!battleTracker.getConquered().contains(end)) {
-        final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
+        final IBattle battle = battleTracker.getPendingBattle(end, BattleType.NORMAL);
         if (battle == null) {
           return result.setErrorReturnResult(
               "Airborne May Only Attack Territories Already Under Assault");

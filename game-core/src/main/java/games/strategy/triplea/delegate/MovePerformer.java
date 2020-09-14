@@ -472,7 +472,7 @@ public class MovePerformer implements Serializable {
       // any pending battles in the unloading zone?
       final BattleTracker tracker = getBattleTracker();
       final boolean pendingBattles =
-          tracker.getPendingBattle(route.getStart(), false, BattleType.NORMAL) != null;
+          tracker.getPendingBattle(route.getStart(), BattleType.NORMAL) != null;
       for (final Unit unit : units) {
         if (Matches.unitIsAir().test(unit)) {
           continue;
