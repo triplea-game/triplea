@@ -92,11 +92,9 @@ public class ClearFirstStrikeCasualties implements BattleStep {
 
     final EnumSet<BattleState.Side> sidesToClear = getSidesToClear();
     final Collection<Unit> unitsToRemove =
-        new ArrayList<>(
-            battleState.getWaitingToDie(
-                sidesToClear.toArray(new BattleState.Side[sidesToClear.size()])));
+        new ArrayList<>(battleState.getWaitingToDie(sidesToClear.toArray(new BattleState.Side[0])));
     battleActions.remove(unitsToRemove, bridge, battleState.getBattleSite(), null);
-    battleState.clearWaitingToDie(sidesToClear.toArray(new BattleState.Side[sidesToClear.size()]));
+    battleState.clearWaitingToDie(sidesToClear.toArray(new BattleState.Side[0]));
   }
 
   private EnumSet<BattleState.Side> getSidesToClear() {
