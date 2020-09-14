@@ -43,7 +43,6 @@ import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveGeneral
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
-import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
@@ -1040,27 +1039,8 @@ public class MustFightBattle extends DependentBattle
     if (defendingAa == null) {
       updateDefendingAaUnits();
     }
-    final List<BattleStep> battleSteps =
-        List.of(
-            new OffensiveAaFire(this, this),
-            new DefensiveAaFire(this, this),
-            new ClearAaCasualties(this, this),
-            new NavalBombardment(this, this),
-            new RemoveNonCombatants(this),
-            new LandParatroopers(this, this),
-            new MarkNoMovementLeft(this, this),
-            new OffensiveSubsRetreat(this, this),
-            new DefensiveSubsRetreat(this, this),
-            new OffensiveFirstStrike(this, this),
-            new DefensiveFirstStrike(this, this),
-            new ClearFirstStrikeCasualties(this, this),
-            new OffensiveGeneral(this, this),
-            new DefensiveGeneral(this, this),
-            new RemoveUnprotectedUnits(this, this),
-            new RemoveFirstStrikeSuicide(this, this),
-            new SubmergeSubsVsOnlyAirStep(this, this));
     final List<IExecutable> steps =
-        battleSteps.stream()
+        BattleStep.getAll(this, this).stream()
             .sorted(Comparator.comparing(BattleStep::getOrder))
             // *_AFTER_BATTLE order occurs in addCheckEndBattleAndRetreatingSteps()
             .filter(

@@ -18,7 +18,7 @@ public class ClearAaCasualties implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    return null;
+    return List.of();
   }
 
   @Override

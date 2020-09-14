@@ -1,6 +1,27 @@
 package games.strategy.triplea.delegate.battle.steps;
 
 import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
+import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
+import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
+import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveFirstStrikeSuicide;
+import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
+import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsStep;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
+import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
+import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.List;
 
 /**
@@ -50,4 +71,27 @@ public interface BattleStep extends IExecutable {
 
   /** @return The order in which this step should be called */
   Order getOrder();
+
+  static List<BattleStep> getAll(final BattleState battleState, final BattleActions battleActions) {
+    return List.of(
+        new OffensiveAaFire(battleState, battleActions),
+        new DefensiveAaFire(battleState, battleActions),
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
+        new RemoveUnprotectedUnits(battleState, battleActions),
+        new AirAttackVsNonSubsStep(battleState),
+        new AirDefendVsNonSubsStep(battleState),
+        new NavalBombardment(battleState, battleActions),
+        new LandParatroopers(battleState, battleActions),
+        new OffensiveSubsRetreat(battleState, battleActions),
+        new DefensiveSubsRetreat(battleState, battleActions),
+        new OffensiveFirstStrike(battleState, battleActions),
+        new DefensiveFirstStrike(battleState, battleActions),
+        new ClearFirstStrikeCasualties(battleState, battleActions),
+        new OffensiveGeneral(battleState, battleActions),
+        new DefensiveGeneral(battleState, battleActions),
+        new ClearAaCasualties(battleState, battleActions),
+        new RemoveNonCombatants(battleActions),
+        new MarkNoMovementLeft(battleState, battleActions),
+        new RemoveFirstStrikeSuicide(battleState, battleActions));
+  }
 }
