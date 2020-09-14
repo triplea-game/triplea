@@ -64,6 +64,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
     final Collection<GamePlayer> gamePlayers = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
+      if (subString.isBlank()) {
+        continue;
+      }
       this.conditions.add(
           gamePlayers.stream()
               .map(p -> p.getAttachment(subString))
@@ -73,7 +76,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
               .orElseThrow(
                   () ->
                       new GameParseException(
-                          "Could not find rule. name:" + subString + thisErrorMsg())));
+                          "Could not find rule. From conditions value: "
+                              + conditions
+                              + ", expected name: "
+                              + subString
+                              + thisErrorMsg())));
     }
   }
 
