@@ -64,7 +64,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
     final Collection<GamePlayer> gamePlayers = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
-      if(subString.isBlank()) {
+      if (subString.isBlank()) {
         continue;
       }
       this.conditions.add(
