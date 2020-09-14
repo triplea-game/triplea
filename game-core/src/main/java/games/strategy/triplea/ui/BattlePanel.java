@@ -116,7 +116,7 @@ public final class BattlePanel extends ActionPanel {
             .addCenter(
                 new JButton(
                     SwingAction.of(
-                        battleType.toString() + " in " + territory.getName() + "...",
+                        battleType.toDisplayText() + " in " + territory.getName() + "...",
                         () -> fightBattleAction(territory, bomb, battleType))))
             .addEast(
                 new JButtonBuilder()

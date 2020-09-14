@@ -50,6 +50,10 @@ public interface IBattle extends Serializable {
     public static Collection<BattleType> bombingBattleTypes() {
       return Arrays.stream(values()).filter(BattleType::isBombingRun).collect(Collectors.toSet());
     }
+
+    public String toDisplayText() {
+      return type;
+    }
   }
 
   /**
