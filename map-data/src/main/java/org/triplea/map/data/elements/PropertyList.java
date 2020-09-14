@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.Getter;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.BodyText;
+import org.triplea.generic.xml.reader.annotations.LegacyXml;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
@@ -14,33 +15,26 @@ public class PropertyList {
 
   @Getter
   public static class Property {
-    @Attribute private java.lang.String name;
-
+    @Attribute private String name;
     @Attribute private boolean editable;
-
-    @Attribute private java.lang.String player;
-
-    @Attribute private java.lang.String value;
+    @Attribute private String player;
+    @Attribute private String value;
+    @Attribute private Integer min;
+    @Attribute private Integer max;
 
     @Tag private Property.Value valueProperty;
-    @Tag private Property.Boolean booleanProperty;
-    @Tag private Property.String stringProperty;
-    @Tag private Property.Number numberProperty;
+
+    @Tag(names = "Number")
+    private XmlNumberTag numberProperty;
 
     @Getter
     public static class Value {
-      @BodyText private java.lang.String data;
+      @BodyText private String data;
     }
 
-    @SuppressWarnings("JavaLangClash")
-    public static class Boolean {}
-
-    @SuppressWarnings("JavaLangClash")
-    public static class String {}
-
+    @LegacyXml
     @Getter
-    @SuppressWarnings("JavaLangClash")
-    public static class Number {
+    public static class XmlNumberTag {
       @Attribute private int min;
       @Attribute private int max;
     }

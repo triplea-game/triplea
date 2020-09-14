@@ -29,7 +29,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
@@ -461,28 +460,48 @@ public final class GameParser {
     final GameProperties properties = data.getProperties();
 
     for (final PropertyList.Property current : propertyList.getProperties()) {
+      final String propertyName = LegacyPropertyMapper.mapPropertyName(current.getName());
+
+      // Get the value from first the body text of a "value" child node
+      // or get the value from the 'value' attribute of the current node.
       final String value =
           Optional.ofNullable(current.getValueProperty())
               .map(PropertyList.Property.Value::getData)
               .orElseGet(() -> Strings.emptyToNull(current.getValue()));
 
-      final boolean editable = current.isEditable();
-      final String propertyName = LegacyPropertyMapper.mapPropertyName(current.getName());
-      if (editable) {
-        parseEditableProperty(current, propertyName, value);
+      // Next, infer the type of property based on its value
+      // and set the property  in game data properties.
+      if (!current.isEditable()) {
+        final Object castedValue = PropertyValueTypeInference.castToInferredType(value);
+        properties.set(propertyName, castedValue);
       } else {
-        if (current.getBooleanProperty() != null) {
-          properties.set(propertyName, Boolean.parseBoolean(value));
-        } else if (current.getStringProperty() != null) {
-          properties.set(propertyName, value);
+        final Class<?> dataType = PropertyValueTypeInference.inferType(value);
+
+        if (dataType == Boolean.class) {
+          properties.addEditableProperty(
+              new BooleanProperty(propertyName, null, Boolean.parseBoolean(value)));
+        } else if (dataType == Integer.class) {
+          final int min =
+              Optional.ofNullable(current.getMin())
+                  .or(
+                      () ->
+                          Optional.ofNullable(current.getNumberProperty())
+                              .map(PropertyList.Property.XmlNumberTag::getMin))
+                  .orElse(Integer.MIN_VALUE);
+
+          final int max =
+              Optional.ofNullable(current.getMax())
+                  .or(
+                      () ->
+                          Optional.ofNullable(current.getNumberProperty())
+                              .map(PropertyList.Property.XmlNumberTag::getMax))
+                  .orElse(Integer.MAX_VALUE);
+
+          properties.addEditableProperty(
+              new NumberProperty(
+                  propertyName, null, max, min, value == null ? 0 : Integer.parseInt(value)));
         } else {
-          try {
-            final int integer = Integer.parseInt(value);
-            properties.set(propertyName, integer);
-          } catch (final NumberFormatException e) {
-            // then it must be a string
-            properties.set(propertyName, value);
-          }
+          properties.addEditableProperty(new StringProperty(propertyName, null, value));
         }
       }
     }
@@ -499,35 +518,6 @@ public final class GameParser {
                 data.getProperties()
                     .addPlayerProperty(
                         new NumberProperty(Constants.getPuIncomeBonus(playerId), null, 999, 0, 0)));
-  }
-
-  private void parseEditableProperty(
-      final PropertyList.Property property, final String name, final String defaultValue) {
-
-    final IEditableProperty<?> editableProperty;
-    if (property.getBooleanProperty() != null) {
-      editableProperty = new BooleanProperty(name, null, Boolean.parseBoolean(defaultValue));
-    } else if (property.getNumberProperty() != null) {
-      final Integer value;
-      if (property.getValue() == null && defaultValue == null) {
-        value = 0;
-      } else if (property.getValue() == null) {
-        value = Integer.parseInt(defaultValue);
-      } else {
-        value = Integer.parseInt(property.getValue());
-      }
-
-      editableProperty =
-          new NumberProperty(
-              name,
-              null,
-              property.getNumberProperty().getMax(),
-              property.getNumberProperty().getMin(),
-              value);
-    } else {
-      editableProperty = new StringProperty(name, null, defaultValue);
-    }
-    data.getProperties().addEditableProperty(editableProperty);
   }
 
   private void parseOffset(final GamePlay.Offset offset) {
