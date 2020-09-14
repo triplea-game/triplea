@@ -987,7 +987,7 @@ class WW2V3Year41Test {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + SUBS_SUBMERGE,
@@ -1029,7 +1029,7 @@ class WW2V3Year41Test {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 defender + SUBS_SUBMERGE,
@@ -1077,7 +1077,7 @@ class WW2V3Year41Test {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + SUBS_SUBMERGE,
@@ -1126,7 +1126,7 @@ class WW2V3Year41Test {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + FIRST_STRIKE_UNITS_FIRE,

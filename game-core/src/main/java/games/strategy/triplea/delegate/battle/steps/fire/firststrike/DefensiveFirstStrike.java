@@ -50,7 +50,7 @@ public class DefensiveFirstStrike implements BattleStep {
   }
 
   private State calculateState() {
-    if (battleState.getDefendingUnits().stream()
+    if (battleState.getUnits(BattleState.Side.DEFENSE).stream()
         .noneMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
       return State.NOT_APPLICABLE;
     }
@@ -61,7 +61,7 @@ public class DefensiveFirstStrike implements BattleStep {
     }
 
     final boolean canSneakAttack =
-        battleState.getAttackingUnits().stream().noneMatch(Matches.unitIsDestroyer())
+        battleState.getUnits(BattleState.Side.OFFENSE).stream().noneMatch(Matches.unitIsDestroyer())
             && Properties.getDefendingSubsSneakAttack(battleState.getGameData());
     if (canSneakAttack) {
       return State.FIRST_STRIKE;
@@ -101,9 +101,9 @@ public class DefensiveFirstStrike implements BattleStep {
         true,
         battleState.getDefender(),
         Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()),
-        battleState.getDefendingUnits(),
-        battleState.getDefendingWaitingToDie(),
-        battleState.getAttackingUnits(),
-        battleState.getAttackingWaitingToDie());
+        battleState.getUnits(BattleState.Side.DEFENSE),
+        battleState.getWaitingToDie(BattleState.Side.DEFENSE),
+        battleState.getUnits(BattleState.Side.OFFENSE),
+        battleState.getWaitingToDie(BattleState.Side.OFFENSE));
   }
 }

@@ -28,10 +28,10 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_PR
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBMERGE_SUBS_VS_AIR_ONLY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITHDRAW;
+import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleSteps.FIRE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -49,12 +49,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleActions;
-import java.util.Arrays;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Value;
@@ -71,10 +69,6 @@ public class BattleStepsTest {
   @Mock GameData gameData;
   @Mock GameProperties gameProperties;
   @Mock BattleActions battleActions;
-  @Mock Function<Collection<Unit>, Collection<Unit>> getDependentUnits;
-  @Mock Supplier<Collection<Territory>> getAttackerRetreatTerritories;
-
-  @Mock Function<Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
 
   @Mock Territory battleSite;
   @Mock GamePlayer attacker;
@@ -89,22 +83,6 @@ public class BattleStepsTest {
   private void givenPlayers() {
     when(attacker.getName()).thenReturn("mockAttacker");
     when(defender.getName()).thenReturn("mockDefender");
-  }
-
-  private void givenAttackerNoRetreatTerritories() {
-    when(getAttackerRetreatTerritories.get()).thenReturn(List.of());
-  }
-
-  private void givenAttackerRetreatTerritories(final Territory... territories) {
-    when(getAttackerRetreatTerritories.get()).thenReturn(Arrays.asList(territories));
-  }
-
-  private void givenDefenderNoRetreatTerritories() {
-    when(getEmptyOrFriendlySeaNeighbors.apply(any())).thenReturn(List.of());
-  }
-
-  private void givenDefenderRetreatTerritories(final Territory... territories) {
-    when(getEmptyOrFriendlySeaNeighbors.apply(any())).thenReturn(Arrays.asList(territories));
   }
 
   public static Territory givenSeaBattleSite() {
@@ -224,37 +202,27 @@ public class BattleStepsTest {
         REMOVE_CASUALTIES);
   }
 
-  private BattleSteps.BattleStepsBuilder newStepBuilder() {
+  private List<String> givenBattleSteps(final BattleState battleState) {
     return BattleSteps.builder()
-        .battleRound(1)
-        .attacker(attacker)
-        .defender(defender)
-        .offensiveAa(List.of())
-        .defendingAa(List.of())
-        .attackingUnits(List.of())
-        .defendingUnits(List.of())
-        .attackingWaitingToDie(List.of())
-        .defendingWaitingToDie(List.of())
-        .battleSite(battleSite)
-        .gameData(gameData)
-        .bombardingUnits(List.of())
-        .getDependentUnits(getDependentUnits)
-        .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
-        .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
         .battleActions(battleActions)
-        .isAmphibious(false)
-        .isOver(false);
+        .battleState(battleState)
+        .build()
+        .get();
   }
 
   @Test
   @DisplayName("Verify what an empty battle looks like")
   void emptyBattle() {
-    givenAttackerNoRetreatTerritories();
-    final List<String> steps = newStepBuilder().build().get();
+    final List<String> steps =
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .build());
 
     assertThat(steps, is(List.of(REMOVE_CASUALTIES)));
 
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -262,19 +230,20 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle (no aa, air, bombard, etc)")
   void basicLandBattle() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -282,18 +251,20 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with bombard on first run")
   void bombardOnFirstRun() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .bombardingUnits(List.of(mock(Unit.class)))
-            .battleSite(battleSite)
-            .battleRound(1)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .bombardingUnits(List.of(mock(Unit.class)))
+                .battleSite(battleSite)
+                .battleRound(1)
+                .build());
 
     assertThat(
         steps,
@@ -301,7 +272,6 @@ public class BattleStepsTest {
             mergeSteps(
                 List.of(NAVAL_BOMBARDMENT, SELECT_NAVAL_BOMBARDMENT_CASUALTIES),
                 basicFightSteps())));
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -309,20 +279,21 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with bombard on subsequent run")
   void bombardOnSubsequentRun() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
-        newStepBuilder()
-            .battleRound(2)
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .battleRound(2)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -330,21 +301,23 @@ public class BattleStepsTest {
   @DisplayName("Verify impossible sea battle with bombarding will not add a bombarding step")
   void impossibleSeaBattleWithBombarding() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .bombardingUnits(List.of(mock(Unit.class)))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .battleRound(1)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .bombardingUnits(List.of(mock(Unit.class)))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
 
-    verify(getDependentUnits, never()).apply(any());
     verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 
@@ -352,7 +325,6 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with paratroopers on first run")
   void paratroopersFirstRun() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenUnitAirTransport();
@@ -363,17 +335,20 @@ public class BattleStepsTest {
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
     when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));
-    when(getDependentUnits.apply(any())).thenReturn(List.of(mock(Unit.class)));
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .battleRound(1)
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .dependentUnits(List.of(mock(Unit.class)))
+                .build());
 
     assertThat(steps, is(mergeSteps(List.of(LAND_PARATROOPS), basicFightSteps())));
-    verify(getDependentUnits, times(1)).apply(any());
     verify(battleSite, times(1)).getUnits();
   }
 
@@ -381,22 +356,24 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with no AirTransport tech on first run")
   void noAirTransportTech() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenAnyUnit();
     when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(false);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .battleRound(1)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -404,21 +381,22 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with paratroopers on subsequent run")
   void paratroopersSubsequentRun() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
-        newStepBuilder()
-            .battleRound(2)
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .battleRound(2)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
     verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -426,7 +404,6 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with empty paratroopers on first run")
   void emptyParatroopersFirstRun() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenUnitAirTransport();
@@ -437,18 +414,20 @@ public class BattleStepsTest {
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
     when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));
-    when(getDependentUnits.apply(any())).thenReturn(List.of());
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .battleRound(1)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
 
-    verify(getDependentUnits, times(1)).apply(any());
     verify(battleSite, times(1)).getUnits();
   }
 
@@ -456,20 +435,22 @@ public class BattleStepsTest {
   @DisplayName("Verify impossible sea battle with paratroopers will not add a paratrooper step")
   void impossibleSeaBattleWithParatroopers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .battleRound(1)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
 
-    verify(getDependentUnits, never()).apply(any());
     verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 
@@ -477,18 +458,20 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with offensive Aa")
   void offensiveAaFire() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitWithTypeAa();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
-        newStepBuilder()
-            .offensiveAa(List.of(unit1))
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .offensiveAa(List.of(unit1))
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -500,7 +483,6 @@ public class BattleStepsTest {
                     defender.getName() + REMOVE_PREFIX + "AntiAirGun" + CASUALTIES_SUFFIX),
                 basicFightSteps())));
 
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -508,18 +490,20 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with defensive Aa")
   void defensiveAaFire() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitWithTypeAa();
 
     final List<String> steps =
-        newStepBuilder()
-            .defendingAa(List.of(unit2))
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .defendingAa(List.of(unit2))
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -531,7 +515,6 @@ public class BattleStepsTest {
                     attacker.getName() + REMOVE_PREFIX + "AntiAirGun" + CASUALTIES_SUFFIX),
                 basicFightSteps())));
 
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -539,19 +522,21 @@ public class BattleStepsTest {
   @DisplayName("Verify basic land battle with offensive and defensive Aa")
   void offensiveAndDefensiveAaFire() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitWithTypeAa();
     final Unit unit2 = givenUnitWithTypeAa();
 
     final List<String> steps =
-        newStepBuilder()
-            .offensiveAa(List.of(unit1))
-            .defendingAa(List.of(unit2))
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .offensiveAa(List.of(unit1))
+                .defendingAa(List.of(unit2))
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -566,7 +551,6 @@ public class BattleStepsTest {
                     attacker.getName() + REMOVE_PREFIX + "AntiAirGun" + CASUALTIES_SUFFIX),
                 basicFightSteps())));
 
-    verify(getDependentUnits, never()).apply(any());
     verify(battleSite, never()).getUnits();
   }
 
@@ -575,7 +559,6 @@ public class BattleStepsTest {
       "Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitCanEvade();
 
@@ -585,11 +568,15 @@ public class BattleStepsTest {
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps, is(mergeSteps(List.of(defender.getName() + SUBS_SUBMERGE), basicFightSteps())));
@@ -600,7 +587,6 @@ public class BattleStepsTest {
       "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
   void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitCanEvade();
 
@@ -610,11 +596,15 @@ public class BattleStepsTest {
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
   }
@@ -624,8 +614,6 @@ public class BattleStepsTest {
       "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
   void defendingSubsRetreatIfCanNotRetreatBeforeBattle() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitCanEvade();
 
@@ -634,11 +622,15 @@ public class BattleStepsTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
   }
@@ -649,7 +641,6 @@ public class BattleStepsTest {
           + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
   void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -660,11 +651,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -680,10 +675,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify unescorted attacking transports are removed if casualities are restricted")
+  @DisplayName("Verify unescorted attacking transports are removed if casualties are restricted")
   void unescortedAttackingTransportsAreRemovedWhenCasualtiesAreRestricted() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitTransport();
     final Unit unit2 = givenAnyUnit();
 
@@ -692,12 +686,15 @@ public class BattleStepsTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightSteps())));
   }
@@ -707,7 +704,6 @@ public class BattleStepsTest {
       "Verify unescorted attacking transports are not removed if casualties are not restricted")
   void unescortedAttackingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     final Unit unit1 = unitAndAttachment.unit;
     final Unit unit2 = givenAnyUnit();
@@ -717,19 +713,22 @@ public class BattleStepsTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
     verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
   }
 
   @Test
-  @DisplayName("Verify unescorted defending transports are removed if casualities are restricted")
+  @DisplayName("Verify unescorted defending transports are removed if casualties are restricted")
   void unescortedDefendingTransportsAreRemovedWhenCasualtiesAreRestricted() {
     givenPlayers();
     final Unit unit1 = givenAnyUnit();
@@ -740,22 +739,24 @@ public class BattleStepsTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightSteps())));
   }
 
   @Test
   @DisplayName(
-      "Verify unescorted defending transports are removed if casualities are not restricted")
+      "Verify unescorted defending transports are removed if casualties are not restricted")
   void unescortedDefendingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     final Unit unit2 = unitAndAttachment.unit;
@@ -765,12 +766,15 @@ public class BattleStepsTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
     verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
@@ -782,16 +786,19 @@ public class BattleStepsTest {
           + "(no other attackers, no special defenders, all options false)")
   void attackingFirstStrikeBasic() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -809,16 +816,19 @@ public class BattleStepsTest {
   @DisplayName("Verify attacker firstStrike with destroyers")
   void attackingFirstStrikeWithDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDestroyer();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -837,17 +847,19 @@ public class BattleStepsTest {
           + "(no other attackers, no special defenders, all options false)")
   void defendingFirstStrikeBasic() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -864,8 +876,6 @@ public class BattleStepsTest {
   @DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true")
   void defendingFirstStrikeWithSneakAttackAllowed() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -877,11 +887,15 @@ public class BattleStepsTest {
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -899,8 +913,6 @@ public class BattleStepsTest {
   @DisplayName("Verify defender firstStrike with WW2v2 true")
   void defendingFirstStrikeWithWW2v2() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -911,11 +923,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -933,8 +949,6 @@ public class BattleStepsTest {
   @DisplayName("Verify defender firstStrike with WW2v2 true and attacker destroyers")
   void defendingFirstStrikeWithWW2v2AndDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -945,11 +959,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -968,17 +986,19 @@ public class BattleStepsTest {
           + "(no other attackers, no special defenders, all options false)")
   void attackingDefendingFirstStrikeBasic() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -996,8 +1016,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true")
   void attackingDefendingFirstStrikeWithSneakAttackAllowed() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -1009,12 +1027,15 @@ public class BattleStepsTest {
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1033,8 +1054,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking/defender firstStrikes with WW2v2 true")
   void attackingDefendingFirstStrikeWithWW2v2() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -1045,12 +1064,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1070,8 +1092,6 @@ public class BattleStepsTest {
       "Verify attacking/defender firstStrikes with WW2v2 true and attacker/defender destroyers")
   void attackingDefendingFirstStrikeWithWW2v2AndDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
@@ -1084,12 +1104,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2, unit4))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2, unit4))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1112,8 +1135,6 @@ public class BattleStepsTest {
           + "DEFENDING_SUBS_SNEAK_ATTACK true and defender destroyers")
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDefendingDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
@@ -1126,12 +1147,15 @@ public class BattleStepsTest {
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2, unit3))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2, unit3))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1151,8 +1175,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and defender destroyers")
   void attackingDefendingFirstStrikeWithWW2v2AndDefendingDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
@@ -1164,12 +1186,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2, unit3))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2, unit3))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1189,8 +1214,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and attacking destroyers")
   void attackingDefendingFirstStrikeWithWW2v2AndAttackingDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
@@ -1202,12 +1225,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1227,7 +1253,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking firstStrikes against air")
   void attackingFirstStrikeVsAir() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit2 = givenUnitIsAir();
     final Unit unit1 = givenUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(unit2.getType());
 
@@ -1238,12 +1263,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1263,7 +1291,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking firstStrikes against air with destroyer")
   void attackingFirstStrikeVsAirAndDestroyer() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit2 = givenUnitIsAir();
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
@@ -1275,12 +1302,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2, unit3))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2, unit3))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1297,8 +1327,6 @@ public class BattleStepsTest {
   @DisplayName("Verify defending firstStrikes against air")
   void defendingFirstStrikeVsAir() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
 
@@ -1309,12 +1337,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1335,8 +1366,6 @@ public class BattleStepsTest {
   @DisplayName("Verify defending firstStrikes against air with destroyer")
   void defendingFirstStrikeVsAirAndDestroyer() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
     final Unit unit3 = givenUnitDestroyer();
@@ -1348,12 +1377,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps,
@@ -1371,7 +1403,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true")
   void attackingFirstStrikeCanSubmergeIfSubmersibleSubs() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
@@ -1382,11 +1413,15 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1405,7 +1440,6 @@ public class BattleStepsTest {
   @DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true")
   void defendingFirstStrikeCanSubmergeIfSubmersibleSubs() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -1419,11 +1453,15 @@ public class BattleStepsTest {
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1443,7 +1481,6 @@ public class BattleStepsTest {
       "Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
   void defendingFirstStrikeCanSubmergeIfSubmersibleSubsAndDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
@@ -1456,11 +1493,15 @@ public class BattleStepsTest {
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1478,16 +1519,20 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
   void attackingFirstStrikeWithdrawIfAble() {
     givenPlayers();
-    givenAttackerRetreatTerritories(battleSite);
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .attackerRetreatTerritories(List.of(battleSite))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1509,16 +1554,19 @@ public class BattleStepsTest {
           + "SUBMERSIBLE_SUBS is false and no retreat territories")
   void attackingFirstStrikeNoWithdrawIfEmptyTerritories() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1538,16 +1586,20 @@ public class BattleStepsTest {
           + "SUBMERSIBLE_SUBS is false and destroyers present")
   void attackingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
-    givenAttackerRetreatTerritories(battleSite);
     final Unit unit1 = givenUnitFirstStrike();
     final Unit unit2 = givenUnitDestroyer();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .attackerRetreatTerritories(List.of(battleSite))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1567,7 +1619,6 @@ public class BattleStepsTest {
           + "SUBMERSIBLE_SUBS is false and defenseless transports with non restricted casualties")
   void attackingFirstStrikeWithdrawIfNonRestrictedDefenselessTransports() {
     givenPlayers();
-    givenAttackerRetreatTerritories(battleSite);
     final Unit unit1 = givenUnitFirstStrikeAndEvade();
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     final Unit unit2 = unitAndAttachment.unit;
@@ -1578,12 +1629,16 @@ public class BattleStepsTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .attackerRetreatTerritories(List.of(battleSite))
+                .build());
 
     assertThat(
         steps,
@@ -1604,17 +1659,20 @@ public class BattleStepsTest {
   @DisplayName("Verify defending firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
   void defendingFirstStrikeWithdrawIfAble() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderRetreatTerritories(battleSite);
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .emptyOrFriendlySeaNeighbors(List.of(battleSite))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1634,17 +1692,19 @@ public class BattleStepsTest {
           + "SUBMERSIBLE_SUBS is false and no retreat territories")
   void defendingFirstStrikeNoWithdrawIfEmptyTerritories() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1663,17 +1723,19 @@ public class BattleStepsTest {
           + "SUBMERSIBLE_SUBS is false and destroyers present")
   void defendingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    givenDefenderNoRetreatTerritories();
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .build());
 
     assertThat(
         steps,
@@ -1690,17 +1752,19 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking air units at sea can withdraw")
   void attackingAirUnitsAtSeaCanWithdraw() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(givenSeaBattleSite())
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(givenSeaBattleSite())
+                .build());
 
     assertThat(
         steps, is(mergeSteps(basicFightSteps(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
@@ -1721,13 +1785,16 @@ public class BattleStepsTest {
     when(unit1.getWasAmphibious()).thenReturn(true);
     when(unit3.getWasAmphibious()).thenReturn(false);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(true)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(true)
+                .build());
 
     assertThat(
         steps, is(mergeSteps(basicFightSteps(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
@@ -1750,13 +1817,16 @@ public class BattleStepsTest {
     when(unit1.getWasAmphibious()).thenReturn(true);
     when(unit3.getWasAmphibious()).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(true)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(true)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
   }
@@ -1771,13 +1841,16 @@ public class BattleStepsTest {
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenAnyUnit();
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(true)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(true)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
     // should never check for amphibious units
@@ -1788,7 +1861,6 @@ public class BattleStepsTest {
   @DisplayName("Verify partial amphibious attack can not withdraw if not amphibious")
   void partialAmphibiousAttackCanNotWithdrawIfNotAmphibious() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenAnyUnit();
@@ -1800,13 +1872,16 @@ public class BattleStepsTest {
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(false)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(false)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
   }
@@ -1825,13 +1900,16 @@ public class BattleStepsTest {
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(true)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(true)
+                .build());
 
     assertThat(
         steps, is(mergeSteps(basicFightSteps(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
@@ -1856,13 +1934,16 @@ public class BattleStepsTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(true)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(true)
+                .build());
 
     assertThat(
         steps, is(mergeSteps(basicFightSteps(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
@@ -1883,13 +1964,16 @@ public class BattleStepsTest {
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(true)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(true)
+                .build());
 
     assertThat(
         steps, is(mergeSteps(basicFightSteps(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
@@ -1899,7 +1983,6 @@ public class BattleStepsTest {
   @DisplayName("Verify attacker planes can not withdraw if ww2v2 and not amphibious")
   void attackingPlanesCanNotWithdrawWW2v2AndNotAmphibious() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenAnyUnit();
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -1909,13 +1992,16 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(false)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(false)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
   }
@@ -1926,7 +2012,6 @@ public class BattleStepsTest {
           + "attacker can partial amphibious retreat and not amphibious")
   void attackingPlanesCanNotWithdrawPartialAmphibiousAndNotAmphibious() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenAnyUnit();
@@ -1939,13 +2024,16 @@ public class BattleStepsTest {
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1, unit3))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(false)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit3))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(false)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
   }
@@ -1955,7 +2043,6 @@ public class BattleStepsTest {
       "Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
   void attackingPlanesCanNotWithdrawPlanesRetreatAndNotAmphibious() {
     givenPlayers();
-    givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
     final Unit unit2 = givenAnyUnit();
 
@@ -1966,13 +2053,16 @@ public class BattleStepsTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
     final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .battleSite(battleSite)
-            .isAmphibious(false)
-            .build()
-            .get();
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(gameData)
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1))
+                .defendingUnits(List.of(unit2))
+                .battleSite(battleSite)
+                .amphibious(false)
+                .build());
 
     assertThat(steps, is(basicFightSteps()));
   }
