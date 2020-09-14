@@ -48,6 +48,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.data.BattleRecord;
@@ -1562,7 +1563,11 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addCheckEndBattleAndRetreatingSteps(final List<IExecutable> steps) {
+    final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
+    final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
     final BattleStep removeGeneralSuicide = new RemoveGeneralSuicide(this, this);
+    final BattleStep offensiveGeneralRetreat = new OffensiveGeneralRetreat(this, this);
+
     steps.add(
         new IExecutable() {
           private static final long serialVersionUID = 8611067962952500496L;
@@ -1600,7 +1605,8 @@ public class MustFightBattle extends DependentBattle
               attackerWins(bridge);
             } else if (maxRounds > 0 && maxRounds <= round) {
               if (canAttackerRetreatInStalemate()) {
-                attackerRetreat(bridge);
+                new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+                    .retreatUnits(bridge);
               }
 
               endBattle(bridge);
@@ -1636,7 +1642,8 @@ public class MustFightBattle extends DependentBattle
                       .getEffectivePower();
               if (attackPower == 0 && defensePower == 0) {
                 if (canAttackerRetreatInStalemate()) {
-                  attackerRetreat(bridge);
+                  new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+                      .retreatUnits(bridge);
                 }
 
                 endBattle(bridge);
@@ -1645,7 +1652,6 @@ public class MustFightBattle extends DependentBattle
             }
           }
         });
-    final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
       steps.add(offensiveSubsRetreat);
     }
@@ -1661,45 +1667,29 @@ public class MustFightBattle extends DependentBattle
         }
       }
     };
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = -1150863964807721395L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!isOver
-                && RetreatChecks.canAttackerRetreatPlanes(attackingUnits, gameData, isAmphibious)
-                && !RetreatChecks.canAttackerRetreatPartialAmphib(
-                    attackingUnits, gameData, isAmphibious)) {
-              attackerRetreatPlanes(bridge);
-            }
-          }
-        });
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = -1150863964807721395L;
+    steps.add(offensiveGeneralRetreat);
+    new IExecutable() {
+      private static final long serialVersionUID = -1150863964807721395L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!isOver
-                && RetreatChecks.canAttackerRetreatPartialAmphib(
-                    attackingUnits, gameData, isAmphibious)) {
-              attackerRetreatNonAmphibUnits(bridge);
-            }
-          }
-        });
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 669349383898975048L;
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = -1150863964807721395L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!isOver) {
-              attackerRetreat(bridge);
-            }
-          }
-        });
-    final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = 669349383898975048L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
+      }
+    };
     if (defensiveSubsRetreat.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
       steps.add(defensiveSubsRetreat);
     }
@@ -1748,34 +1738,6 @@ public class MustFightBattle extends DependentBattle
             }
           }
         });
-  }
-
-  private void attackerRetreatPlanes(final IDelegateBridge bridge) {
-    // planes retreat to the same square the battle is in, and then should move during non combat to
-    // their landing site, or be scrapped if they can't find one.
-    if (attackingUnits.stream().anyMatch(Matches.unitIsAir())) {
-      queryRetreat(false, RetreatType.PLANES, bridge, Set.of(battleSite));
-    }
-  }
-
-  private void attackerRetreatNonAmphibUnits(final IDelegateBridge bridge) {
-    final Collection<Territory> possible = getAttackerRetreatTerritories();
-    queryRetreat(false, RetreatType.PARTIAL_AMPHIB, bridge, possible);
-  }
-
-  private void attackerRetreat(final IDelegateBridge bridge) {
-    if (!RetreatChecks.canAttackerRetreat(
-        defendingUnits, gameData, this::getAttackerRetreatTerritories, isAmphibious)) {
-      return;
-    }
-    final Collection<Territory> possible = getAttackerRetreatTerritories();
-    if (!isOver) {
-      if (isAmphibious) {
-        queryRetreat(false, RetreatType.PARTIAL_AMPHIB, bridge, possible);
-      } else {
-        queryRetreat(false, RetreatType.DEFAULT, bridge, possible);
-      }
-    }
   }
 
   @Override
