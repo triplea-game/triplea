@@ -66,7 +66,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
               "<html>Select a game from all the maps/games that come with TripleA, "
                   + "<br>and the ones you have downloaded.</html>")
           .build();
-  private final JButton gameOptions =
+  private final JButton mapOptions =
       new JButtonBuilder()
           .title("Map Options")
           .toolTip(
@@ -119,7 +119,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
             .build();
     add(downloadMapButton, buildGridRow(0, 9, new Insets(0, 10, 10, 10)));
 
-    add(gameOptions, buildGridRow(0, 10, new Insets(25, 10, 10, 10)));
+    add(mapOptions, buildGridRow(0, 10, new Insets(25, 10, 10, 10)));
 
     // spacer
     add(
@@ -192,7 +192,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
             }
           }
         });
-    gameOptions.addActionListener(
+    mapOptions.addActionListener(
         e -> {
           if (canSelectLocalGameData()) {
             selectGameOptions();
@@ -297,9 +297,9 @@ public final class GameSelectorPanel extends JPanel implements Observer {
               || (canSelectGameData
                   && model.getGameData() != null
                   && !model.getGameData().getProperties().getEditableProperties().isEmpty())) {
-            gameOptions.setEnabled(true);
+            mapOptions.setEnabled(true);
           } else {
-            gameOptions.setEnabled(false);
+            mapOptions.setEnabled(false);
           }
         });
   }
