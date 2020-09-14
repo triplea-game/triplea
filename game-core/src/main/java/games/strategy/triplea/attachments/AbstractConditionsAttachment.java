@@ -108,7 +108,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @VisibleForTesting
   void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
-    if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
+    if (uppercaseValue.matches("AND|OR|\\d+(?:-\\d+)?")) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
         conditionType = uppercaseValue;
@@ -116,7 +116,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       }
     }
     throw new GameParseException(
-        "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
+        "conditionType must be equal to 'AND' or 'OR' or 'y' or 'y-z' where Y "
             + "and Z are valid positive integers and Z is greater than Y"
             + thisErrorMsg());
   }

@@ -2350,46 +2350,6 @@
                     <option name="bonusType" value="tactics1"/>
                     <option name="impArtTech" value="false"/>
                 </attachment>
-
-<!--  National Objectives -->
-    <!-- all Objective Attachments, Conditions, Triggers, Rules, etc, must have a unique name (if you don't use unique names, you may get funny results with your trigger attachments, or even java errors) -->
-    <!-- the following options are allowed for "objectiveAttachmentXXX" (and also for "conditionAttachmentXXX").  all options below have an "AND" relationship with each other.
-            conditions                          values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
-                                                            can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
-                                                            any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
-            conditionType                       values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the "conditions" option.
-                                                        AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
-                                                        conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
-            invert                              values: true or false. default if missing is false. if true, this attachment's condition will be reversed (does not reverse the effect).
-                                                        This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
-            objectiveValue                      values: any integer number of PUs to be given (example: value="4")
-            uses                                values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity. Only applies to objectiveValue, and does NOT determine if the conditions is true or false.
-            turns                               values: which turns this will be checked on (example: value="1:4:6-8:11-+" means turns 1,4,6,7,8,11,and all turns after 11)
-            relationship                        values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
-                                                        for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
-
-            count                               values: the number required to satisfy a rule. if missing, it defaults to ALL (unless specified). it can also be set to "each", which will act as "1" for the purposes of being a condition, but will multiply the bonus (do not use multiple options if you are using each).
-        the below options use count:
-            destroyedTUV                        values: count=an amount of TUV that the attached player must destroy. value=currentRound/allRounds. This is not counting neutral (null) player, and is based on the cost for the defender to buy the units.
-                                                        Be sure to check this condition only after the player's battle phase is completely over, since the data is only recorded after all battles are done. example: value="currentRound" count="20"
-            atWarPlayers                        values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players). if count is zero, then you must be at war with none.
-            techs                               values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
-            directOwnershipTerritories          values: "original", "enemy", or a : delimited list of territories
-            alliedOwnershipTerritories          values: "original", "enemy", or a : delimited list of territories
-            directExclusionTerritories          values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-            alliedExclusionTerritories          values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-            enemyExclusionTerritories           values: "original", "map" (map = all territories on map), or a : delimited list of territories
-            enemySurfaceExclusionTerritories    values: "original", "map" (map = all territories on map), or a : delimited list of territories
-            directPresenceTerritories           values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-            alliedPresenceTerritories           values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-            enemyPresenceTerritories            values: "original", "map" (map = all territories on map), or a : delimited list of territories
-            unitPresence                        values: "ANY" or the exact name or names of the units, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3", or: value="infantry:artillery:armour" count="3")
-                                                        unitPresence can be put in multiple times. Its purpose is to specify the units for presence and excluded territories. If missing, then presence needs only 1 of any unit, and excluded needs to be completely devoid of units
-                                                        For an "AND" relationship between the required units, put them in separately. For an "OR" relationship, put them in on one line with a colon separating them.
-                                                        It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExclusionTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
-                                                        If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories) (can not use "each" for count here).
-
-    -->
     <!-- German Objectives -->
                 <attachment name="objectiveAttachmentGermans1_EasternEurope" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                     <option name="objectiveValue" value="4"/>
