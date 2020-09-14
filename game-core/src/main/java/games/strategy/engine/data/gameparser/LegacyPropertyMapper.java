@@ -36,6 +36,9 @@ class LegacyPropertyMapper {
       } else {
         return optionValue;
       }
+    } else if (optionName.equalsIgnoreCase("conditionType")
+        && optionValue.equalsIgnoreCase("XOR")) {
+      return "1";
     }
     return optionValue;
   }

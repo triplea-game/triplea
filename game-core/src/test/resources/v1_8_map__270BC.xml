@@ -2303,6 +2303,7 @@
       <option name="gameProperty" value="8 Capital Victory"/>
       <option name="alliedOwnershipTerritories" value="Sparta:Thessalonica:Alexandria:Roma:Antioch:Carthago:Cirta:Persepolis" count="8"/>
       <option name="rounds" value="1:2"/>
+      <option name="conditionType" value="XOR"/>
     </attatchment>
     <attatchment name="conditionAttachmentRomanVictory8" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
       <option name="gameProperty" value="8 Capital Victory"/>
