@@ -1,0 +1,8 @@
+-  severe logging should be for unrecoverable exceptions
+-  severe logging prompts user to upload an error report, this should only be done for unexpected errors that caused a crash (hence, unrecoverable).
+-  last, it's really important we keep in mind we are dealing with a thick client when it comes to logging and not a web server. On a web server, all exceptions are typically logged to show that an error has happened (even if somehow the webpage gracefully degrades, you still want to know the of situation). On a thick client, any error popup will usually cause the user to restart the application, no matter what the error is. In essence, we need to be sure we handle errors as much as possible, and if not then we would want an error report to either give user a proper notification of an expected failure or simply just suppress the message because we handled the error in some way.  EG:
+     - no network connection -> show user a prompt and disable network dependent buttons.
+     - no password and can't post to forum -> show user a pop-up, and do not log anything.
+     -  can't post due to forum being down -> let the exception be thrown, severe log it, give user option to upload error report (or alternatively we handle this by doing retries and then we let user upload an error report).
+
+tl;dr: the error handling in TripleA is a bit sub-par in that we see control-flow by error handling and do not handle basic "errors" (anything that is user driven is not an error, eg: missing password), or alternatively we tend to log as if the application were a web-server, logging is not very useful on a thick-client app.
