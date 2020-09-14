@@ -699,7 +699,7 @@ public class MustFightBattle extends DependentBattle
     addDependentUnits(TransportTracker.transporting(attackingUnits));
     updateOffensiveAaUnits();
     updateDefendingAaUnits();
-    stepStrings = determineStepStrings(true);
+    stepStrings = determineStepStrings();
     final IDisplay display = bridge.getDisplayChannelBroadcaster();
     display.showBattle(
         battleId,
@@ -867,34 +867,14 @@ public class MustFightBattle extends DependentBattle
   }
 
   @VisibleForTesting
-  public List<String> determineStepStrings(final boolean showFirstRun) {
+  public List<String> determineStepStrings() {
     if (offensiveAa == null) {
       updateOffensiveAaUnits();
     }
     if (defendingAa == null) {
       updateDefendingAaUnits();
     }
-    return BattleSteps.builder()
-        .battleRound(round)
-        .attacker(attacker)
-        .defender(defender)
-        .offensiveAa(getAa(Side.OFFENSE))
-        .defendingAa(getAa(Side.DEFENSE))
-        .attackingUnits(attackingUnits)
-        .defendingUnits(defendingUnits)
-        .attackingWaitingToDie(attackingWaitingToDie)
-        .defendingWaitingToDie(defendingWaitingToDie)
-        .battleSite(battleSite)
-        .gameData(gameData)
-        .bombardingUnits(bombardingUnits)
-        .getDependentUnits(this::getDependentUnits)
-        .isAmphibious(isAmphibious)
-        .getAttackerRetreatTerritories(this::getAttackerRetreatTerritories)
-        .getEmptyOrFriendlySeaNeighbors(this::getEmptyOrFriendlySeaNeighbors)
-        .battleActions(this)
-        .isOver(isOver)
-        .build()
-        .get();
+    return BattleSteps.builder().battleState(this).battleActions(this).build().get();
   }
 
   private boolean canAttackerRetreatInStalemate() {
@@ -1775,7 +1755,7 @@ public class MustFightBattle extends DependentBattle
               // determine any AA
               updateOffensiveAaUnits();
               updateDefendingAaUnits();
-              stepStrings = determineStepStrings(false);
+              stepStrings = determineStepStrings();
               final IDisplay display = bridge.getDisplayChannelBroadcaster();
               display.listBattleSteps(battleId, stepStrings);
               // continue fighting the recursive steps

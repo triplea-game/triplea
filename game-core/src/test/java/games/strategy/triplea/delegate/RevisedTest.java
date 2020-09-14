@@ -992,7 +992,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + FIRE,
@@ -1023,7 +1023,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + FIRE,
@@ -1054,7 +1054,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + FIRST_STRIKE_UNITS_FIRE,
@@ -1098,7 +1098,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the
@@ -1169,7 +1169,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the
@@ -1240,7 +1240,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + FIRST_STRIKE_UNITS_FIRE,
@@ -1295,7 +1295,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side,
@@ -1366,7 +1366,7 @@ class RevisedTest {
     final MustFightBattle battle =
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
-    final List<String> steps = battle.determineStepStrings(true);
+    final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
                 attacker + FIRST_STRIKE_UNITS_FIRE,
