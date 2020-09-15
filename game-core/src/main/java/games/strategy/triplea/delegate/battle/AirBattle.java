@@ -63,17 +63,11 @@ public class AirBattle extends AbstractBattle {
 
   AirBattle(
       final Territory battleSite,
-      final boolean bombingRaid,
+      final BattleType battleType,
       final GameData data,
       final GamePlayer attacker,
       final BattleTracker battleTracker) {
-    super(
-        battleSite,
-        attacker,
-        battleTracker,
-        bombingRaid,
-        (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
-        data);
+    super(battleSite, attacker, battleTracker, battleType, data);
     isAmphibious = false;
     maxRounds = Properties.getAirBattleRounds(data);
     updateDefendingUnits();
@@ -388,13 +382,12 @@ public class AirBattle extends AbstractBattle {
           }
         }
         final IBattle battle = battleTracker.getPendingBombingBattle(battleSite);
-        final IBattle dependent =
-            battleTracker.getPendingBattle(battleSite, false, BattleType.NORMAL);
+        final IBattle dependent = battleTracker.getPendingBattle(battleSite, BattleType.NORMAL);
         if (dependent != null) {
           battleTracker.addDependency(dependent, battle);
         }
         final IBattle dependentAirBattle =
-            battleTracker.getPendingBattle(battleSite, false, BattleType.AIR_BATTLE);
+            battleTracker.getPendingBattle(battleSite, BattleType.AIR_BATTLE);
         if (dependentAirBattle != null) {
           battleTracker.addDependency(dependentAirBattle, battle);
         }

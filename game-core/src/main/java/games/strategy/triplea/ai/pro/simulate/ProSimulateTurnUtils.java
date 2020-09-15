@@ -55,9 +55,7 @@ public final class ProSimulateTurnUtils {
     for (final Entry<BattleType, Collection<Territory>> entry : battleTerritories.entrySet()) {
       for (final Territory t : entry.getValue()) {
         final IBattle battle =
-            battleDelegate
-                .getBattleTracker()
-                .getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
+            battleDelegate.getBattleTracker().getPendingBattle(t, entry.getKey());
         final Collection<Unit> attackers = new ArrayList<>(battle.getAttackingUnits());
         attackers.retainAll(t.getUnits());
         final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());

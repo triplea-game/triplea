@@ -70,7 +70,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final GameData data,
       final GamePlayer attacker,
       final BattleTracker battleTracker) {
-    super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
+    super(battleSite, attacker, battleTracker, BattleType.BOMBING_RAID, data);
     isAmphibious = false;
     updateDefendingUnits();
   }

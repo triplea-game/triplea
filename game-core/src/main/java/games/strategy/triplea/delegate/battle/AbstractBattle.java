@@ -71,14 +71,13 @@ abstract class AbstractBattle implements IBattle {
       final Territory battleSite,
       final GamePlayer attacker,
       final BattleTracker battleTracker,
-      final boolean isBombingRun,
       final BattleType battleType,
       final GameData data) {
     this.battleTracker = battleTracker;
     this.attacker = attacker;
     this.battleSite = battleSite;
     territoryEffects = TerritoryEffectHelper.getEffects(battleSite);
-    this.isBombingRun = isBombingRun;
+    this.isBombingRun = battleType.isBombingRun();
     this.battleType = battleType;
     gameData = data;
     defender = findDefender(battleSite, attacker, data);
@@ -214,7 +213,7 @@ abstract class AbstractBattle implements IBattle {
 
   @Override
   public boolean isBombingRun() {
-    return isBombingRun;
+    return battleType.isBombingRun();
   }
 
   @Override
@@ -274,7 +273,6 @@ abstract class AbstractBattle implements IBattle {
     }
     final IBattle other = (IBattle) o;
     return other.getTerritory().equals(this.battleSite)
-        && other.isBombingRun() == this.isBombingRun()
         && other.getBattleType() == this.getBattleType();
   }
 

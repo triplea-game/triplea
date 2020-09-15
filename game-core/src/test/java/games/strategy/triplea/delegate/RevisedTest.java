@@ -69,6 +69,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
@@ -284,8 +285,8 @@ class RevisedTest {
     battle.start();
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(gameData);
     // The battle should NOT be empty
-    assertTrue(tracker.hasPendingBattle(sz5, false));
-    assertFalse(tracker.getPendingBattle(sz5).isEmpty());
+    assertTrue(tracker.hasPendingNonBombingBattle(sz5));
+    assertFalse(tracker.getPendingBattle(sz5, BattleType.NORMAL).isEmpty());
     battle.end();
   }
 
@@ -799,7 +800,9 @@ class RevisedTest {
     moveDelegate(gameData).end();
     // Set up battle
     MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(fic);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData)
+                .getPendingBattle(fic, BattleType.NORMAL);
     // fight
     whenGetRandom(delegateBridge).thenAnswer(withValues(0)).thenAnswer(withValues(5));
     battle.fight(delegateBridge);
@@ -820,7 +823,9 @@ class RevisedTest {
     assertValid(validResults);
     moveDelegate(gameData).end();
     battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(fic);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData)
+                .getPendingBattle(fic, BattleType.NORMAL);
     // fight
     whenGetRandom(delegateBridge).thenAnswer(withValues(0)).thenAnswer(withValues(5));
     battle.fight(delegateBridge);

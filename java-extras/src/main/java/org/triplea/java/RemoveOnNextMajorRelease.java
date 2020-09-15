@@ -8,4 +8,6 @@ import java.lang.annotation.RetentionPolicy;
  * breaking save game compatibility.
  */
 @Retention(RetentionPolicy.SOURCE)
-public @interface RemoveOnNextMajorRelease {}
+public @interface RemoveOnNextMajorRelease {
+  String value() default "";
+}
