@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
-import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import games.strategy.engine.framework.ui.background.WaitWindow;

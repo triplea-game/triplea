@@ -26,6 +26,7 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.message.RemoteName;
@@ -144,7 +145,7 @@ public class ClientModel implements IMessengerErrorListener {
         }
       };
 
-  ClientModel(
+  public ClientModel(
       final GameSelectorModel gameSelectorModel,
       final SetupPanelModel typePanelModel,
       final LaunchAction launchAction) {
@@ -205,7 +206,7 @@ public class ClientModel implements IMessengerErrorListener {
     return result.result.orElse(null);
   }
 
-  boolean createClientMessenger(final Component ui) {
+  public boolean createClientMessenger(final Component ui) {
     this.ui = JOptionPane.getFrameForComponent(ui);
     gameDataOnStartup = gameSelectorModel.getGameData();
     gameSelectorModel.setCanSelect(false);
