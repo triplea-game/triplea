@@ -61,6 +61,7 @@ public class ChangeAttachmentChange extends Change {
       final boolean clearFirst) {
     this.attachmentName =
         Optional.ofNullable(attachmentName)
+            // replace-all to automatically correct legacy (1.8) attachment spelling
             .map(name -> name.replaceAll("ttatch", "ttach"))
             .orElse(null);
     attachedTo = attachTo;
