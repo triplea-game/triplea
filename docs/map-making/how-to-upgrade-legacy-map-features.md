@@ -1,4 +1,4 @@
-# Upgrading Legacy Maps
+# How To Upgrade Legacy Map Features
 
 A list of (case sensitive) changes to upgrade legacy TripleA Game XML properties and options
 to the most recent.
