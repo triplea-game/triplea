@@ -1,4 +1,4 @@
-# Upgrading Legacy Map Options & Properties
+# Upgrading Legacy Maps
 
 A list of (case sensitive) changes to upgrade legacy TripleA Game XML properties and options
 to the most recent.
@@ -34,7 +34,7 @@ Within every game (XML) file, inside the "games" folder inside the main folder o
 - `attatchment` >> `attachment`
 - `Attatchment` >> `Attachment`
 - `attatchTo=` >> `attachTo=`
-- `="isImpassible"`>> `="isImpassable"`
+- `="isImpassible"` >> `="isImpassable"`
 - `="conditionType" value="XOR"` >> `="conditionType" value="1"`
 - `="turns"` >> `="rounds"`
 - `="Battleships repair at end of round"` >> `="Units Repair Hits End Turn"`
@@ -78,7 +78,7 @@ Within every game file (XML), inside the "games" folder inside the main folder o
 - `="victoryCity" count="false"` >> `="victoryCity" count="0"`
 - `="victoryCity" count="-reset-false"` >> `="victoryCity" count="-reset-0"`
 
-### Deletions
+### XML Deletions
 
 _(these items were already deprecated and did nothing)_
 
