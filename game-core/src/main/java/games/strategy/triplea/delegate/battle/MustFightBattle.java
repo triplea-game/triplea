@@ -1673,13 +1673,17 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = -1150863964807721395L;
 
       @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // Intentionally left blank
+      }
     };
     new IExecutable() {
       private static final long serialVersionUID = -1150863964807721395L;
 
       @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // Intentionally left blank
+      }
     };
     new IExecutable() {
       private static final long serialVersionUID = 669349383898975048L;
