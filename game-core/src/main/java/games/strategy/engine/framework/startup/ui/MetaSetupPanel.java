@@ -39,12 +39,6 @@ public class MetaSetupPanel extends SetupPanel {
   public MetaSetupPanel(final SetupPanelModel model) {
     this.model = model;
 
-    createComponents();
-    layoutComponents();
-    setupListeners();
-  }
-
-  private void createComponents() {
     connectToLobby = new JButton("Play Online");
     final Font bigButtonFont =
         new Font(
@@ -80,9 +74,7 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences = new JButton("Engine Preferences");
     enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     userGuideButton = new JButton("User Guide & Help");
-  }
 
-  private void layoutComponents() {
     setLayout(new GridBagLayout());
     // top space
     int row = 0;
@@ -259,9 +251,7 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(0, 0, 0, 0),
             0,
             0));
-  }
 
-  private void setupListeners() {
     startLocal.addActionListener(e -> model.showLocal());
     startPbf.addActionListener(e -> model.showPbf());
     startPbem.addActionListener(e -> model.showPbem());
