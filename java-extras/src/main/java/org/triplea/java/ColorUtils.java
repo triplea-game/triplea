@@ -28,11 +28,6 @@ public class ColorUtils {
     }
   }
 
-  /** Returns a randomly generated color. */
-  public Color randomColor() {
-    return randomColor(123L);
-  }
-
   /** Returns a randomly generated color using a fixed random seed. */
   public Color randomColor(final long randomSeed) {
     final Random random = new Random(randomSeed);
