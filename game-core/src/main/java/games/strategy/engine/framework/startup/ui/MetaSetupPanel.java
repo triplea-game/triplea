@@ -16,6 +16,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
+import org.triplea.swing.jpanel.GridBagConstraintsFill;
 import tools.map.making.MapCreator;
 
 /**
@@ -78,123 +81,27 @@ public class MetaSetupPanel extends SetupPanel {
     int row = 0;
     add(
         new JPanel(),
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            1,
-            1,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(0, row)
+            .weightX(1.0)
+            .weightY(1.0)
+            .anchor(GridBagConstraintsAnchor.CENTER)
+            .insets(new Insets(0, 0, 0, 0))
+            .build());
     row++;
-    add(
-        connectToLobby,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
+    add(connectToLobby, buildConstraintForRow(row));
     row++;
-    add(
-        startLocal,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
+    add(startLocal, buildConstraintForRow(row));
     row++;
-    add(
-        startPbf,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
+    add(startPbf, buildConstraintForRow(row));
     row++;
-    add(
-        startPbem,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
+    add(startPbem, buildConstraintForRow(row));
+
     row++;
-    add(
-        hostGame,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
+    add(hostGame, buildConstraintForRow(row));
     row++;
-    add(
-        connectToHostedGame,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
+    add(connectToHostedGame, buildConstraintForRow(row));
     row++;
-    add(
-        enginePreferences,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
+    add(enginePreferences, buildConstraintForRow(row));
 
     final JButton mapCreator =
         new JButtonBuilder()
@@ -234,7 +141,7 @@ public class MetaSetupPanel extends SetupPanel {
             0,
             0));
 
-    // top space
+    // bottom space
     add(
         new JPanel(),
         new GridBagConstraints(
@@ -259,6 +166,14 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences.addActionListener(
         e -> ClientSetting.showSettingsWindow(JOptionPane.getFrameForComponent(this)));
     userGuideButton.addActionListener(e -> userGuidePage());
+  }
+
+  private GridBagConstraints buildConstraintForRow(int rowNumber) {
+    return new GridBagConstraintsBuilder(0, rowNumber)
+        .anchor(GridBagConstraintsAnchor.CENTER)
+        .fill(GridBagConstraintsFill.NONE)
+        .insets(new Insets(10, 0, 0, 0))
+        .build();
   }
 
   private static void userGuidePage() {
