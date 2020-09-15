@@ -5,7 +5,6 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -31,7 +30,6 @@ public class MetaSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 3926503672972937677L;
 
   public MetaSetupPanel(final SetupPanelModel model) {
-
     final JButton connectToLobby =
         new JButtonBuilder("Play Online")
             .biggerFont()
@@ -39,6 +37,7 @@ public class MetaSetupPanel extends SetupPanel {
                 "<html>Find Games Online on the Lobby Server. <br>"
                     + "TripleA is MEANT to be played Online against other humans. <br>"
                     + "Any other way is not as fun!</html>")
+            .actionListener(model::login)
             .build();
     final JButton startLocal =
         new JButtonBuilder("Start Local Game")
@@ -46,16 +45,24 @@ public class MetaSetupPanel extends SetupPanel {
                 "<html>Start a game on this computer. <br>"
                     + "You can play against a friend sitting besides you (hotseat mode), <br>"
                     + "or against one of the AIs.</html>")
+            .actionListener(model::showLocal)
             .build();
+
     final JButton startPbf =
         new JButtonBuilder("Play By Forum")
             .toolTipText(
-                "<html>Starts a game which will be posted to an online forum or message board.</html>")
+                "<html>"
+                    + "Starts a game which will be posted to an online forum or message board."
+                    + "</html>")
+            .actionListener(model::showPbf)
             .build();
     final JButton startPbem =
         new JButtonBuilder("Play By Email")
             .toolTipText(
-                "<html>Starts a game which will be emailed back and forth between all players.</html>")
+                "<html>"
+                    + "Starts a game which will be emailed back and forth between all players."
+                    + "</html>")
+            .actionListener(model::showPbem)
             .build();
     final JButton hostGame =
         new JButtonBuilder("Host Networked Game")
@@ -64,18 +71,31 @@ public class MetaSetupPanel extends SetupPanel {
                     + "Anyone on a LAN will be able to connect. <br>"
                     + "Anyone from the internet can connect as well, but only if the host has "
                     + "configured port forwarding correctly.</html>")
+            .actionListener(() -> new Thread(model::showServer).start())
             .build();
     final JButton connectToHostedGame =
         new JButtonBuilder("Connect to Networked Game")
             .toolTipText(
                 "<html>Connects to someone's hosted game, <br>"
                     + "so long as you know their IP address.</html>")
+            .actionListener(() -> new Thread(model::showClient).start())
             .build();
     final JButton enginePreferences =
         new JButtonBuilder("Engine Preferences")
             .toolTipText("<html>Configure certain options related to the engine.")
+            .actionListener(
+                () -> ClientSetting.showSettingsWindow(JOptionPane.getFrameForComponent(this)))
             .build();
-    final JButton userGuideButton = new JButton("User Guide & Help");
+    final JButton userGuideButton =
+        new JButtonBuilder("User Guide & Help")
+            .actionListener(
+                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE))
+            .build();
+    final JButton mapCreator =
+        new JButtonBuilder()
+            .title("Run the Map Creator")
+            .actionListener(MapCreator::openMapCreatorWindow)
+            .build();
 
     setLayout(new BorderLayout());
     final JPanel mainContents = new JPanel();
@@ -89,44 +109,24 @@ public class MetaSetupPanel extends SetupPanel {
     mainContents.add(startPbf, buildConstraintForRow(row));
     row++;
     mainContents.add(startPbem, buildConstraintForRow(row));
-
     row++;
     mainContents.add(hostGame, buildConstraintForRow(row));
     row++;
     mainContents.add(connectToHostedGame, buildConstraintForRow(row));
     row++;
     mainContents.add(enginePreferences, buildConstraintForRow(row));
-
-    final JButton mapCreator =
-        new JButtonBuilder()
-            .title("Run the Map Creator")
-            .actionListener(MapCreator::openMapCreatorWindow)
-            .build();
-
     row++;
     mainContents.add(mapCreator, buildConstraintForRow(row));
-
-    startLocal.addActionListener(e -> model.showLocal());
-    startPbf.addActionListener(e -> model.showPbf());
-    startPbem.addActionListener(e -> model.showPbem());
-    hostGame.addActionListener(e -> new Thread(model::showServer).start());
-    connectToHostedGame.addActionListener(e -> new Thread(model::showClient).start());
-    connectToLobby.addActionListener(e -> model.login());
-    enginePreferences.addActionListener(
-        e -> ClientSetting.showSettingsWindow(JOptionPane.getFrameForComponent(this)));
-    userGuideButton.addActionListener(e -> userGuidePage());
+    row++;
+    mainContents.add(userGuideButton, buildConstraintForRow(row));
   }
 
-  private GridBagConstraints buildConstraintForRow(int rowNumber) {
+  private GridBagConstraints buildConstraintForRow(final int rowNumber) {
     return new GridBagConstraintsBuilder(0, rowNumber)
         .anchor(GridBagConstraintsAnchor.CENTER)
         .fill(GridBagConstraintsFill.NONE)
         .insets(new Insets(10, 0, 0, 0))
         .build();
-  }
-
-  private static void userGuidePage() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE);
   }
 
   @Override
