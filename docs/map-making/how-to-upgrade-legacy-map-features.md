@@ -46,14 +46,7 @@ All occurrences of the code before the `>>` must be substituted with the code af
 - `="victoryCity" count="-reset-false"` >> `="victoryCity" count="-reset-0"`
 
 
-### Changes of non-code items:
-
----
-
-_All that follows is supposed to be unnecessary additional information: If you correctly already made all that is
-described above, all that follows is irrelevant and can be ignored._
-
-**Procedural alternatives:**
+### **Procedural alternatives:**
 
 For a more defined change, instead of the aforementioned:
 
@@ -66,19 +59,12 @@ you can change:
 - `attatchment>` >> `attachment>`
 - `="games.strategy.triplea.attatchments` >> `="games.strategy.triplea.attachments`
 
-For a more defined change, instead of the aforementioned:
-
-- `Attatchment` >> `Attachment`
-
-you can change:
-
 - `="techAttatchment` >> `="techAttachment`
 - `="unitAttatchment` >> `="unitAttachment`
 - `="territoryAttatchment` >> `="territoryAttachment`
 - `="canalAttatchment` >> `="canalAttachment`
 - `="rulesAttatchment` >> `="rulesAttachment`
 - `="playerAttatchment` >> `="playerAttachment`
-
 
 
 ### XML Deletions
