@@ -29,10 +29,9 @@ public class MapPropertiesPanel {
   private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 
   public JPanel build() {
-    final JPanel panel1 = new JPanel();
-    panel1.removeAll();
-    panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
-    panel1.add(Box.createVerticalStrut(30));
+    final JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+    panel.add(Box.createVerticalStrut(30));
     final JTextArea text = new JTextArea(12, 10);
     text.setWrapStyleWord(true);
     text.setLineWrap(true);
@@ -56,14 +55,14 @@ public class MapPropertiesPanel {
             + "and filling in the details below, before moving on to 'Step 2' and running the "
             + "map utilities.");
     final JScrollPane scrollText = new JScrollPane(text);
-    panel1.add(scrollText);
-    panel1.add(Box.createVerticalStrut(30));
-    panel1.add(new JLabel("Click button open up the readme file on how to make maps:"));
+    panel.add(scrollText);
+    panel.add(Box.createVerticalStrut(30));
+    panel.add(new JLabel("Click button open up the readme file on how to make maps:"));
     final JButton helpButton = new JButton("Start Tutorial  /  Show Help Document");
     helpButton.addActionListener(e -> OpenFileUtility.openUrl(UrlConstants.MAP_MAKER_HELP));
-    panel1.add(helpButton);
-    panel1.add(Box.createVerticalStrut(30));
-    panel1.add(new JLabel("Click button to select where your map folder is:"));
+    panel.add(helpButton);
+    panel.add(Box.createVerticalStrut(30));
+    panel.add(new JLabel("Click button to select where your map folder is:"));
     final JButton mapFolderButton = new JButton("Select Map Folder");
     mapFolderButton.addActionListener(
         SwingAction.of(
@@ -80,10 +79,10 @@ public class MapPropertiesPanel {
                 }
               }
             }));
-    panel1.add(mapFolderButton);
-    panel1.add(Box.createVerticalStrut(30));
-    panel1.add(new JLabel("Set the unit scaling (unit image zoom): "));
-    panel1.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
+    panel.add(mapFolderButton);
+    panel.add(Box.createVerticalStrut(30));
+    panel.add(new JLabel("Set the unit scaling (unit image zoom): "));
+    panel.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
     final JTextField unitZoomText = new JTextField("" + unitZoom);
     unitZoomText.setMaximumSize(new Dimension(100, 20));
     unitZoomText.addFocusListener(
@@ -102,9 +101,9 @@ public class MapPropertiesPanel {
             unitZoomText.setText("" + unitZoom);
           }
         });
-    panel1.add(unitZoomText);
-    panel1.add(Box.createVerticalStrut(30));
-    panel1.add(new JLabel("Set the width of the unit images: "));
+    panel.add(unitZoomText);
+    panel.add(Box.createVerticalStrut(30));
+    panel.add(new JLabel("Set the width of the unit images: "));
     final JTextField unitWidthText = new JTextField("" + unitWidth);
     unitWidthText.setMaximumSize(new Dimension(100, 20));
     unitWidthText.addFocusListener(
@@ -123,9 +122,9 @@ public class MapPropertiesPanel {
             unitWidthText.setText("" + unitWidth);
           }
         });
-    panel1.add(unitWidthText);
-    panel1.add(Box.createVerticalStrut(30));
-    panel1.add(new JLabel("Set the height of the unit images: "));
+    panel.add(unitWidthText);
+    panel.add(Box.createVerticalStrut(30));
+    panel.add(new JLabel("Set the height of the unit images: "));
     final JTextField unitHeightText = new JTextField("" + unitHeight);
     unitHeightText.setMaximumSize(new Dimension(100, 20));
     unitHeightText.addFocusListener(
@@ -144,15 +143,15 @@ public class MapPropertiesPanel {
             unitHeightText.setText("" + unitHeight);
           }
         });
-    panel1.add(unitHeightText);
-    panel1.add(Box.createVerticalStrut(30));
-    panel1.add(
+    panel.add(unitHeightText);
+    panel.add(Box.createVerticalStrut(30));
+    panel.add(
         new JLabel(
             "<html>Here you can set the 'max memory' that utilities like the Polygon "
                 + "Grabber will use.<br>"
                 + "This is useful is you have a very large map, or ever get any "
                 + "Java Heap Space errors.</html>"));
-    panel1.add(
+    panel.add(
         new JLabel(
             "Set the amount of memory to use when running new processes (in megabytes [mb]):"));
     final JTextField memoryText = new JTextField("" + (memoryInBytes / (1024 * 1024)));
@@ -175,9 +174,8 @@ public class MapPropertiesPanel {
             memoryText.setText("" + (memoryInBytes / (1024 * 1024)));
           }
         });
-    panel1.add(memoryText);
-    panel1.add(Box.createVerticalStrut(30));
-    panel1.validate();
-    return panel1;
+    panel.add(memoryText);
+    panel.add(Box.createVerticalStrut(30));
+    return panel;
   }
 }

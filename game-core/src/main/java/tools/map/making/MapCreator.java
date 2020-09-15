@@ -2,7 +2,6 @@ package tools.map.making;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.util.function.Consumer;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -12,9 +11,9 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
-import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
 import tools.map.making.ui.properties.MapPropertiesPanel;
 import tools.map.making.ui.skin.MapSkinPanel;
+import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
 import tools.map.making.ui.xml.XmlUtilitiesPanel;
 
 /** A frame that will run the different map making utilities we have. */
@@ -78,10 +77,6 @@ public class MapCreator extends JFrame {
           this.validate();
           this.repaint();
         });
-  }
-
-  private static void runUtility(final Consumer<String[]> entryPoint) {
-    entryPoint.accept(new String[0]);
   }
 
   /** Opens a map creator window. */
