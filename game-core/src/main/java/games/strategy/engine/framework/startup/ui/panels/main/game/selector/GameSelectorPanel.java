@@ -18,16 +18,19 @@ import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.TaskRunner;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.UrlConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -39,6 +42,7 @@ import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 
 /**
  * Left hand side panel of the launcher screen that has various info, like selected game and engine
@@ -66,7 +70,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
               "<html>Select a game from all the maps/games that come with TripleA, "
                   + "<br>and the ones you have downloaded.</html>")
           .build();
-  private final JButton gameOptions =
+  private final JButton mapOptions =
       new JButtonBuilder()
           .title("Map Options")
           .toolTip(
@@ -84,32 +88,54 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
     setLayout(new GridBagLayout());
 
-    add(new JLabel("Java Version:"), buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
+    final JLabel logoLabel =
+        new JLabel(
+            new ImageIcon(
+                ResourceLoader.loadImageAssert(Path.of("launch_screens", "triplea-logo.png"))));
+
+    int row = 0;
+    add(
+        logoLabel,
+        new GridBagConstraintsBuilder(0, row)
+            .gridWidth(2)
+            .insets(new Insets(10, 10, 3, 5))
+            .build());
+    row++;
+
+    add(new JLabel("Java Version:"), buildGridCell(0, row, new Insets(10, 10, 3, 5)));
     add(
         new JLabel(SystemProperties.getJavaVersion()),
-        buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
+        buildGridCell(1, row, new Insets(10, 0, 3, 0)));
+    row++;
 
-    add(new JLabel("Engine Version:"), buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
+    add(new JLabel("Engine Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
     add(
         new JLabel(ClientContext.engineVersion().toString()),
-        buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
+        buildGridCell(1, row, new Insets(0, 0, 3, 0)));
+    row++;
 
-    add(new JLabel("Map Name:"), buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
-    add(nameText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
+    add(new JLabel("Map Name:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
+    add(nameText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
+    row++;
 
-    add(new JLabel("Map Version:"), buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
-    add(versionText, buildGridCell(1, 3, new Insets(0, 0, 3, 0)));
+    add(new JLabel("Map Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
+    add(versionText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
+    row++;
 
-    add(new JLabel("Game Round:"), buildGridCell(0, 4, new Insets(0, 10, 3, 5)));
-    add(roundText, buildGridCell(1, 4, new Insets(0, 0, 3, 0)));
+    add(new JLabel("Game Round:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
+    add(roundText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
+    row++;
 
-    add(new JLabel("Loaded Savegame:"), buildGridCell(0, 5, new Insets(20, 10, 3, 5)));
+    add(new JLabel("Loaded Savegame:"), buildGridCell(0, row, new Insets(20, 10, 3, 5)));
+    row++;
 
-    add(saveGameText, buildGridRow(0, 6, new Insets(0, 10, 3, 5)));
+    add(saveGameText, buildGridRow(0, row, new Insets(0, 10, 3, 5)));
+    row++;
 
-    add(loadNewGame, buildGridRow(0, 7, new Insets(25, 10, 10, 10)));
+    add(loadNewGame, buildGridRow(0, row, new Insets(25, 10, 10, 10)));
+    row++;
 
-    add(loadSavedGame, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
+    add(loadSavedGame, buildGridRow(0, row, new Insets(0, 10, 10, 10)));
 
     final JButton downloadMapButton =
         new JButtonBuilder()
@@ -119,7 +145,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
             .build();
     add(downloadMapButton, buildGridRow(0, 9, new Insets(0, 10, 10, 10)));
 
-    add(gameOptions, buildGridRow(0, 10, new Insets(25, 10, 10, 10)));
+    add(mapOptions, buildGridRow(0, 10, new Insets(25, 10, 10, 10)));
 
     // spacer
     add(
@@ -192,7 +218,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
             }
           }
         });
-    gameOptions.addActionListener(
+    mapOptions.addActionListener(
         e -> {
           if (canSelectLocalGameData()) {
             selectGameOptions();
@@ -297,9 +323,9 @@ public final class GameSelectorPanel extends JPanel implements Observer {
               || (canSelectGameData
                   && model.getGameData() != null
                   && !model.getGameData().getProperties().getEditableProperties().isEmpty())) {
-            gameOptions.setEnabled(true);
+            mapOptions.setEnabled(true);
           } else {
-            gameOptions.setEnabled(false);
+            mapOptions.setEnabled(false);
           }
         });
   }

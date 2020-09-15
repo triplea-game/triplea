@@ -724,7 +724,7 @@ public final class DecorationPlacer {
             new File(
                 ClientFileSystemHelper.getRootFolder()
                     + File.separator
-                    + ResourceLoader.RESOURCE_FOLDER
+                    + ResourceLoader.ASSETS_FOLDER
                     + File.separator
                     + imagePointType.getFolderName(),
                 imagePointType.getImageName());

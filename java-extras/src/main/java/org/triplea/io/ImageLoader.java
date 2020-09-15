@@ -1,4 +1,4 @@
-package games.strategy.triplea.image;
+package org.triplea.io;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -6,12 +6,11 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-/** Utility class to load images from filesystem. */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ImageLoader {
+@UtilityClass
+public class ImageLoader {
+
   /**
    * Reads the given file as an image. Path is relative to the 'project root'.
    *

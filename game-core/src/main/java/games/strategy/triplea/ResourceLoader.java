@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.io.ImageLoader;
 import org.triplea.java.UrlStreams;
 import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
@@ -35,7 +37,7 @@ import org.triplea.swing.SwingComponents;
  */
 @Log
 public class ResourceLoader implements Closeable {
-  public static final String RESOURCE_FOLDER = "assets";
+  public static final String ASSETS_FOLDER = "assets";
 
   private final URLClassLoader loader;
   private final String mapPrefix;
@@ -65,6 +67,15 @@ public class ResourceLoader implements Closeable {
     this.mapName = mapName;
   }
 
+  /**
+   * Loads an image from the 'assets' folder. Images downloaded as part of the build to be included
+   * with the game are downloaded to this location. Check the gradle build file download images task
+   * for more information on what will be contained in that folder.
+   */
+  public static Image loadImageAssert(final Path path) {
+    return ImageLoader.getImage(Path.of(ASSETS_FOLDER).resolve(path).toFile());
+  }
+
   public static ResourceLoader getGameEngineAssetLoader() {
     return getMapResourceLoader("");
   }
@@ -89,7 +100,7 @@ public class ResourceLoader implements Closeable {
     final List<String> dirs = new ArrayList<>();
     dirs.add(dir.get());
 
-    findDirectory(ClientFileSystemHelper.getRootFolder(), RESOURCE_FOLDER)
+    findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
         .map(File::getAbsolutePath)
         .ifPresent(dirs::add);
 
