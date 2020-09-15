@@ -28,40 +28,49 @@ public class MetaSetupPanel extends SetupPanel {
 
   public MetaSetupPanel(final SetupPanelModel model) {
 
-    final JButton connectToLobby = new JButton("Play Online");
-    final Font bigButtonFont =
-        new Font(
-            connectToLobby.getFont().getName(),
-            connectToLobby.getFont().getStyle(),
-            connectToLobby.getFont().getSize() + 3);
-    connectToLobby.setFont(bigButtonFont);
-    connectToLobby.setToolTipText(
-        "<html>Find Games Online on the Lobby Server. <br>"
-            + "TripleA is MEANT to be played Online against other humans. <br>"
-            + "Any other way is not as fun!</html>");
-    final JButton startLocal = new JButton("Start Local Game");
-    startLocal.setToolTipText(
-        "<html>Start a game on this computer. <br>"
-            + "You can play against a friend sitting besides you (hotseat mode), <br>"
-            + "or against one of the AIs.</html>");
-    final JButton startPbf = new JButton("Play By Forum");
-    startPbf.setToolTipText(
-        "<html>Starts a game which will be posted to an online forum or message board.</html>");
-    final JButton startPbem = new JButton("Play By Email");
-    startPbem.setToolTipText(
-        "<html>Starts a game which will be emailed back and forth between all players.</html>");
-    final JButton hostGame = new JButton("Host Networked Game");
-    hostGame.setToolTipText(
-        "<html>Hosts a network game, which people can connect to. <br>"
-            + "Anyone on a LAN will be able to connect. <br>"
-            + "Anyone from the internet can connect as well, but only if the host has "
-            + "configured port forwarding correctly.</html>");
-    final JButton connectToHostedGame = new JButton("Connect to Networked Game");
-    connectToHostedGame.setToolTipText(
-        "<html>Connects to someone's hosted game, <br>"
-            + "so long as you know their IP address.</html>");
-    final JButton enginePreferences = new JButton("Engine Preferences");
-    enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
+    final JButton connectToLobby =
+        new JButtonBuilder("Play Online")
+            .biggerFont()
+            .toolTipText(
+                "<html>Find Games Online on the Lobby Server. <br>"
+                    + "TripleA is MEANT to be played Online against other humans. <br>"
+                    + "Any other way is not as fun!</html>")
+            .build();
+    final JButton startLocal =
+        new JButtonBuilder("Start Local Game")
+            .toolTipText(
+                "<html>Start a game on this computer. <br>"
+                    + "You can play against a friend sitting besides you (hotseat mode), <br>"
+                    + "or against one of the AIs.</html>")
+            .build();
+    final JButton startPbf =
+        new JButtonBuilder("Play By Forum")
+            .toolTipText(
+                "<html>Starts a game which will be posted to an online forum or message board.</html>")
+            .build();
+    final JButton startPbem =
+        new JButtonBuilder("Play By Email")
+            .toolTipText(
+                "<html>Starts a game which will be emailed back and forth between all players.</html>")
+            .build();
+    final JButton hostGame =
+        new JButtonBuilder("Host Networked Game")
+            .toolTipText(
+                "<html>Hosts a network game, which people can connect to. <br>"
+                    + "Anyone on a LAN will be able to connect. <br>"
+                    + "Anyone from the internet can connect as well, but only if the host has "
+                    + "configured port forwarding correctly.</html>")
+            .build();
+    final JButton connectToHostedGame =
+        new JButtonBuilder("Connect to Networked Game")
+            .toolTipText(
+                "<html>Connects to someone's hosted game, <br>"
+                    + "so long as you know their IP address.</html>")
+            .build();
+    final JButton enginePreferences =
+        new JButtonBuilder("Engine Preferences")
+            .toolTipText("<html>Configure certain options related to the engine.")
+            .build();
     final JButton userGuideButton = new JButton("User Guide & Help");
 
     setLayout(new GridBagLayout());
