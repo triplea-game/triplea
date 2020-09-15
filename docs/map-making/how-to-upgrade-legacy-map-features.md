@@ -46,30 +46,6 @@ All occurrences of the code before the `>>` must be substituted with the code af
 - `="victoryCity" count="-reset-false"` >> `="victoryCity" count="-reset-0"`
 
 
-### XML Deletions
-
-_(these items were already deprecated and did nothing)_
-
-- `<option name="isParatroop"*/>`
-- `<option name="isMechanized"*/>`
-- `<option name="takeUnitControl"*/>`
-- `<option name="giveUnitControl" value="true"/>`
-- `<option name="giveUnitControl" value="false"/>`
-
-## map.properties Changes
-
-Within every "map" properties file, inside the main folder of the map, change:
-
-- `color.Impassible=` >> `color.Impassable=`
-
-## Sound file changes
-
-Change all sounds inside the "sounds" main folder of the map from "wav" to "mp3" format.
-128Kbps and 168Kbps are the preferred bit rates.
-
-
-## More XML Changes
-
 ### Changes of non-code items:
 
 ---
@@ -104,16 +80,39 @@ you can change:
 - `="playerAttatchment` >> `="playerAttachment`
 
 
+
+### XML Deletions
+
+_(these items were already deprecated and did nothing)_
+
+- `<option name="isParatroop"*/>`
+- `<option name="isMechanized"*/>`
+- `<option name="takeUnitControl"*/>`
+- `<option name="giveUnitControl" value="true"/>`
+- `<option name="giveUnitControl" value="false"/>`
+
+## map.properties Changes
+
+Within every "map" properties file, inside the main folder of the map, change:
+
+- `color.Impassible=` >> `color.Impassable=`
+
+## Sound file changes
+
+Change all sounds inside the "sounds" main folder of the map from "wav" to "mp3" format.
+128Kbps and 168Kbps are the preferred bit rates.
+
+
 ## Warnings
 
-The following xml codes, as being properties, are not validated (if you leave them, the game will play, but they will
-set nothing in the engine) (it is suggested you double check you don't have them within any game files, after
-upgrading the map):
+The following xml codes, as being properties, are not validated (if you leave them, the game will play,
+but they will set nothing in the engine) (it is suggested you double check you don't have them within
+any game files, after upgrading the map):
 
 - `="Battleships repair at end of round"`
 - `="Battleships repair at beginning of round"`
 - `="Naval Bombard Casualties Return Fire Restricted"`
 - `="SBR Affects Unit Production"`
 
-While all options named "takeUnitControl" must be deleted, any option named "giveUnitControl" must be deleted only if
-its value is "true" or "false".
+While all options named "takeUnitControl" must be deleted, any option named "giveUnitControl" must be
+deleted only if its value is "true" or "false".
