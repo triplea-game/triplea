@@ -4,6 +4,7 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -76,32 +77,25 @@ public class MetaSetupPanel extends SetupPanel {
             .build();
     final JButton userGuideButton = new JButton("User Guide & Help");
 
-    setLayout(new GridBagLayout());
-    // top space
+    setLayout(new BorderLayout());
+    final JPanel mainContents = new JPanel();
+    add(mainContents);
+    mainContents.setLayout(new GridBagLayout());
     int row = 0;
-    add(
-        new JPanel(),
-        new GridBagConstraintsBuilder(0, row)
-            .weightX(1.0)
-            .weightY(1.0)
-            .anchor(GridBagConstraintsAnchor.CENTER)
-            .insets(new Insets(0, 0, 0, 0))
-            .build());
+    mainContents.add(connectToLobby, buildConstraintForRow(row));
     row++;
-    add(connectToLobby, buildConstraintForRow(row));
+    mainContents.add(startLocal, buildConstraintForRow(row));
     row++;
-    add(startLocal, buildConstraintForRow(row));
+    mainContents.add(startPbf, buildConstraintForRow(row));
     row++;
-    add(startPbf, buildConstraintForRow(row));
-    row++;
-    add(startPbem, buildConstraintForRow(row));
+    mainContents.add(startPbem, buildConstraintForRow(row));
 
     row++;
-    add(hostGame, buildConstraintForRow(row));
+    mainContents.add(hostGame, buildConstraintForRow(row));
     row++;
-    add(connectToHostedGame, buildConstraintForRow(row));
+    mainContents.add(connectToHostedGame, buildConstraintForRow(row));
     row++;
-    add(enginePreferences, buildConstraintForRow(row));
+    mainContents.add(enginePreferences, buildConstraintForRow(row));
 
     final JButton mapCreator =
         new JButtonBuilder()
@@ -110,52 +104,7 @@ public class MetaSetupPanel extends SetupPanel {
             .build();
 
     row++;
-    add(
-        mapCreator,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
-
-    row++;
-    add(
-        userGuideButton,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
-
-    // bottom space
-    add(
-        new JPanel(),
-        new GridBagConstraints(
-            0,
-            100,
-            1,
-            1,
-            1,
-            1,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
+    mainContents.add(mapCreator, buildConstraintForRow(row));
 
     startLocal.addActionListener(e -> model.showLocal());
     startPbf.addActionListener(e -> model.showPbf());
