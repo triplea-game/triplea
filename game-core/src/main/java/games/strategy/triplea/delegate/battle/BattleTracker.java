@@ -1320,7 +1320,6 @@ public class BattleTracker implements Serializable {
    * other combat.
    */
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge) {
-    final boolean bombing = true;
     fightAirRaidsAndStrategicBombing(
         delegateBridge, () -> getPendingBattleSites(true), this::getPendingBattle);
   }
