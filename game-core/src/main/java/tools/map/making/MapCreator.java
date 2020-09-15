@@ -51,7 +51,7 @@ public class MapCreator extends JFrame {
   private final JPanel panel4 = new JPanel();
 
   private MapCreator() {
-    super("TripleA Map Creator");
+    super("TripleA Map Creator Tools");
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     // components
     mainPanel = new JPanel();
