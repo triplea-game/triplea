@@ -115,9 +115,6 @@ public class MapCreator extends JFrame {
     text.setLineWrap(true);
     text.setText(
         "Welcome to Veqryn's map creator program for TripleA."
-            + "\nThis program just runs utilities inside the triplea.jar file for you, and you "
-            + "could easily run them yourself from the command line by reading the "
-            + "docs/developer_documentation.html"
             + "\n\nBefore you begin, go create a folder in your directory: "
             + "Users\\yourname\\triplea\\maps"
             + "\nName the folder with a short name of your map, do not use any special characters "
