@@ -42,6 +42,7 @@ import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 
 /**
  * Left hand side panel of the launcher screen that has various info, like selected game and engine
@@ -93,7 +94,12 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                 ResourceLoader.loadImageAssert(Path.of("launch_screens", "triplea-logo.png"))));
 
     int row = 0;
-    add(logoLabel, buildGridCell(0, row, new Insets(10, 10, 3, 5)));
+    add(
+        logoLabel,
+        new GridBagConstraintsBuilder(0, row)
+            .gridWidth(2)
+            .insets(new Insets(10, 10, 3, 5))
+            .build());
     row++;
 
     add(new JLabel("Java Version:"), buildGridCell(0, row, new Insets(10, 10, 3, 5)));
