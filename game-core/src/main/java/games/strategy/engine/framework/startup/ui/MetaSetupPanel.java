@@ -25,21 +25,10 @@ import tools.map.making.MapCreator;
 public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
-  private JButton startLocal;
-  private JButton startPbf;
-  private JButton startPbem;
-  private JButton hostGame;
-  private JButton connectToHostedGame;
-  private JButton connectToLobby;
-  private JButton enginePreferences;
-  private JButton userGuideButton;
-
-  private final SetupPanelModel model;
 
   public MetaSetupPanel(final SetupPanelModel model) {
-    this.model = model;
 
-    connectToLobby = new JButton("Play Online");
+    final JButton connectToLobby = new JButton("Play Online");
     final Font bigButtonFont =
         new Font(
             connectToLobby.getFont().getName(),
@@ -50,30 +39,30 @@ public class MetaSetupPanel extends SetupPanel {
         "<html>Find Games Online on the Lobby Server. <br>"
             + "TripleA is MEANT to be played Online against other humans. <br>"
             + "Any other way is not as fun!</html>");
-    startLocal = new JButton("Start Local Game");
+    final JButton startLocal = new JButton("Start Local Game");
     startLocal.setToolTipText(
         "<html>Start a game on this computer. <br>"
             + "You can play against a friend sitting besides you (hotseat mode), <br>"
             + "or against one of the AIs.</html>");
-    startPbf = new JButton("Play By Forum");
+    final JButton startPbf = new JButton("Play By Forum");
     startPbf.setToolTipText(
         "<html>Starts a game which will be posted to an online forum or message board.</html>");
-    startPbem = new JButton("Play By Email");
+    final JButton startPbem = new JButton("Play By Email");
     startPbem.setToolTipText(
         "<html>Starts a game which will be emailed back and forth between all players.</html>");
-    hostGame = new JButton("Host Networked Game");
+    final JButton hostGame = new JButton("Host Networked Game");
     hostGame.setToolTipText(
         "<html>Hosts a network game, which people can connect to. <br>"
             + "Anyone on a LAN will be able to connect. <br>"
             + "Anyone from the internet can connect as well, but only if the host has "
             + "configured port forwarding correctly.</html>");
-    connectToHostedGame = new JButton("Connect to Networked Game");
+    final JButton connectToHostedGame = new JButton("Connect to Networked Game");
     connectToHostedGame.setToolTipText(
         "<html>Connects to someone's hosted game, <br>"
             + "so long as you know their IP address.</html>");
-    enginePreferences = new JButton("Engine Preferences");
+    final JButton enginePreferences = new JButton("Engine Preferences");
     enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
-    userGuideButton = new JButton("User Guide & Help");
+    final JButton userGuideButton = new JButton("User Guide & Help");
 
     setLayout(new GridBagLayout());
     // top space
