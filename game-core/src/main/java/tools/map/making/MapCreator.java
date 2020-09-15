@@ -83,19 +83,6 @@ public class MapCreator extends JFrame {
     part3.addActionListener(SwingAction.of("Part 3", e -> setupMainPanel(panel3)));
     part4.addActionListener(SwingAction.of("Part 4", e -> setupMainPanel(panel4)));
     // set up the menu actions
-    final Action closeAction = SwingAction.of("Close", e -> dispose());
-    closeAction.putValue(Action.SHORT_DESCRIPTION, "Close Window");
-    // set up the menu items
-    final JMenuItem exitItem = new JMenuItem(closeAction);
-    // set up the menu bar
-    final JMenuBar menuBar = new JMenuBar();
-    setJMenuBar(menuBar);
-    final JMenu fileMenu = new JMenu("File");
-    fileMenu.setMnemonic('F');
-    fileMenu.addSeparator();
-    fileMenu.add(exitItem);
-    menuBar.add(fileMenu);
-    // set up the layout manager
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(new JScrollPane(sidePanel), BorderLayout.WEST);
     this.getContentPane().add(new JScrollPane(mainPanel), BorderLayout.CENTER);
