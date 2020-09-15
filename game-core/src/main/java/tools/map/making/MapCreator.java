@@ -31,7 +31,6 @@ import tools.image.CenterPicker;
 import tools.image.DecorationPlacer;
 import tools.image.FileSave;
 import tools.image.PolygonGrabber;
-import tools.image.ReliefImageBreaker;
 import tools.image.TileImageBreaker;
 import tools.image.TileImageReconstructor;
 import tools.util.ToolArguments;
@@ -341,11 +340,6 @@ public class MapCreator extends JFrame {
     panel4.setLayout(new BoxLayout(panel4, BoxLayout.PAGE_AXIS));
     panel4.add(Box.createVerticalStrut(30));
     panel4.add(new JLabel("Other or Optional Utilities:"));
-    panel4.add(Box.createVerticalStrut(30));
-    final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
-    reliefBreakerButton.addActionListener(
-        SwingAction.of("Run the Relief Image Breaker", e -> runUtility(ReliefImageBreaker::run)));
-    panel4.add(reliefBreakerButton);
     panel4.add(Box.createVerticalStrut(30));
     final JButton imageShrinkerButton = new JButton("Run the Image Shrinker");
     imageShrinkerButton.addActionListener(
