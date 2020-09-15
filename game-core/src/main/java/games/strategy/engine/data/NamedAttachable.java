@@ -26,6 +26,7 @@ public class NamedAttachable extends DefaultNamed implements Attachable {
 
   @Override
   public void addAttachment(final String key, final IAttachment value) {
+    // replace-all to automatically correct legacy (1.8) attachment spelling
     attachments.put(key.replaceAll("ttatchment", "ttachment"), value);
   }
 

@@ -914,6 +914,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       this.playerAttachmentName = null;
       return;
     }
+    // replace-all to automatically correct legacy (1.8) attachment spelling
     final String name = playerAttachmentName.replaceAll("ttatch", "ttach");
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
