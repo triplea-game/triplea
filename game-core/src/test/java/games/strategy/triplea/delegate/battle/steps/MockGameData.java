@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.battle.steps;
 import static games.strategy.triplea.Constants.ATTACKER_RETREAT_PLANES;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
+import static games.strategy.triplea.Constants.LHTR_HEAVY_BOMBERS;
 import static games.strategy.triplea.Constants.PARTIAL_AMPHIBIOUS_RETREAT;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
@@ -15,8 +16,10 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
 import java.util.Set;
 
@@ -25,11 +28,15 @@ public class MockGameData {
   private final GameProperties gameProperties = mock(GameProperties.class);
   private final RelationshipTracker relationshipTracker = mock(RelationshipTracker.class);
   private final GameMap gameMap = mock(GameMap.class);
+  private final UnitTypeList unitTypeList = mock(UnitTypeList.class);
+  private final GameSequence gameSequence = mock(GameSequence.class);
 
   private MockGameData() {
     lenient().when(gameData.getProperties()).thenReturn(gameProperties);
     lenient().when(gameData.getRelationshipTracker()).thenReturn(relationshipTracker);
     lenient().when(gameData.getMap()).thenReturn(gameMap);
+    lenient().when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
+    lenient().when(gameData.getSequence()).thenReturn(gameSequence);
   }
 
   public static MockGameData givenGameData() {
@@ -38,6 +45,11 @@ public class MockGameData {
 
   public GameData build() {
     return gameData;
+  }
+
+  public MockGameData withDiceSides(final int diceSides) {
+    when(gameData.getDiceSides()).thenReturn(diceSides);
+    return this;
   }
 
   public MockGameData withAlliedRelationship(
@@ -91,6 +103,11 @@ public class MockGameData {
 
   public MockGameData withAttackerRetreatPlanes(final boolean value) {
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withLhtrHeavyBombers(final boolean value) {
+    when(gameProperties.get(LHTR_HEAVY_BOMBERS, false)).thenReturn(value);
     return this;
   }
 

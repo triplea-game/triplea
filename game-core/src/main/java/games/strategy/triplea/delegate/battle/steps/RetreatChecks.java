@@ -21,16 +21,16 @@ public class RetreatChecks {
     if (isAmphibious) {
       return false;
     }
-    if (onlyDefenselessDefendingTransportsLeft(defendingUnits, gameData)) {
+    if (onlyDefenselessTransportsLeft(defendingUnits, gameData)) {
       return false;
     }
     return !getAttackerRetreatTerritories.get().isEmpty();
   }
 
-  public static boolean onlyDefenselessDefendingTransportsLeft(
-      final @NonNull Collection<Unit> defendingUnits, final @NonNull GameData gameData) {
+  public static boolean onlyDefenselessTransportsLeft(
+      final @NonNull Collection<Unit> units, final @NonNull GameData gameData) {
     return Properties.getTransportCasualtiesRestricted(gameData)
-        && !defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
+        && !units.isEmpty()
+        && units.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
 }

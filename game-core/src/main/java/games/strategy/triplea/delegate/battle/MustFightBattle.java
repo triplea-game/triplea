@@ -24,7 +24,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -33,6 +32,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import games.strategy.triplea.delegate.battle.steps.change.CheckGeneralBattleEnd;
 import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
@@ -380,6 +380,11 @@ public class MustFightBattle extends DependentBattle
       }
     }
     return units;
+  }
+
+  @Override
+  public int getMaxBattleRounds() {
+    return maxRounds;
   }
 
   /**
@@ -916,7 +921,7 @@ public class MustFightBattle extends DependentBattle
     // Rule: "In a sea battle, if both sides have only transports remaining, the
     // attacker’s transports can remain in the contested sea zone or retreat.
     return onlyPowerlessAttackingTransportsLeft()
-        && RetreatChecks.onlyDefenselessDefendingTransportsLeft(defendingUnits, gameData);
+        && RetreatChecks.onlyDefenselessTransportsLeft(defendingUnits, gameData);
   }
 
   private boolean onlyPowerlessAttackingTransportsLeft() {
@@ -1566,8 +1571,15 @@ public class MustFightBattle extends DependentBattle
     final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
     final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
     final BattleStep removeGeneralSuicide = new RemoveGeneralSuicide(this, this);
-    final BattleStep offensiveGeneralRetreat = new OffensiveGeneralRetreat(this, this);
+    final OffensiveGeneralRetreat offensiveGeneralRetreat = new OffensiveGeneralRetreat(this, this);
     final BattleStep clearGeneralCasualties = new ClearGeneralCasualties(this, this);
+    final RemoveUnprotectedUnits removeUnprotectedUnits = new RemoveUnprotectedUnits(this, this);
+    final BattleStep checkGeneralBattleEnd =
+        new CheckGeneralBattleEnd(
+            this,
+            this,
+            removeUnprotectedUnits::removeUnprotectedUnits,
+            offensiveGeneralRetreat::retreatUnits);
 
     steps.add(clearGeneralCasualties);
     new IExecutable() {
@@ -1590,72 +1602,25 @@ public class MustFightBattle extends DependentBattle
         new RemoveGeneralSuicide(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
       }
     };
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 5259103822937067667L;
+    steps.add(checkGeneralBattleEnd);
+    new IExecutable() {
+      private static final long serialVersionUID = 5259103822937067667L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size()
-                == 0) {
-              endBattle(bridge);
-              defenderWins(bridge);
-            } else if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure())
-                    .size()
-                == 0) {
-              new RemoveUnprotectedUnits(MustFightBattle.this, MustFightBattle.this)
-                  .removeUnprotectedUnits(bridge, Side.DEFENSE);
-              endBattle(bridge);
-              attackerWins(bridge);
-            } else if (maxRounds > 0 && maxRounds <= round) {
-              if (canAttackerRetreatInStalemate()) {
-                new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
-                    .retreatUnits(bridge);
-              }
-
-              endBattle(bridge);
-              nobodyWins(bridge);
-            } else {
-              final int attackPower =
-                  DiceRoll.getTotalPowerAndRolls(
-                          DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                              attackingUnits,
-                              defendingUnits,
-                              attackingUnits,
-                              false,
-                              gameData,
-                              battleSite,
-                              territoryEffects,
-                              isAmphibious,
-                              amphibiousLandAttackers),
-                          gameData)
-                      .getEffectivePower();
-              final int defensePower =
-                  DiceRoll.getTotalPowerAndRolls(
-                          DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                              defendingUnits,
-                              attackingUnits,
-                              defendingUnits,
-                              true,
-                              gameData,
-                              battleSite,
-                              territoryEffects,
-                              isAmphibious,
-                              amphibiousLandAttackers),
-                          gameData)
-                      .getEffectivePower();
-              if (attackPower == 0 && defensePower == 0) {
-                if (canAttackerRetreatInStalemate()) {
-                  new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
-                      .retreatUnits(bridge);
-                }
-
-                endBattle(bridge);
-                nobodyWins(bridge);
-              }
-            }
-          }
-        });
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this);
+        final RemoveUnprotectedUnits removeUnprotectedUnits =
+            new RemoveUnprotectedUnits(MustFightBattle.this, MustFightBattle.this);
+        new CheckGeneralBattleEnd(
+                MustFightBattle.this,
+                MustFightBattle.this,
+                removeUnprotectedUnits::removeUnprotectedUnits,
+                offensiveGeneralRetreat::retreatUnits)
+            .execute(stack, bridge);
+      }
+    };
     if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
       steps.add(offensiveSubsRetreat);
     }
@@ -2072,7 +2037,8 @@ public class MustFightBattle extends DependentBattle
     return change;
   }
 
-  private void defenderWins(final IDelegateBridge bridge) {
+  @Override
+  public void defenderWins(final IDelegateBridge bridge) {
     whoWon = WhoWon.DEFENDER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, defender.getName() + " win");
     if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData)) {
@@ -2127,7 +2093,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  private void nobodyWins(final IDelegateBridge bridge) {
+  @Override
+  public void nobodyWins(final IDelegateBridge bridge) {
     whoWon = WhoWon.DRAW;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Stalemate");
     bridge

@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.battle;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.UUID;
@@ -21,7 +22,11 @@ public interface BattleState {
 
   int getBattleRound();
 
+  int getMaxBattleRounds();
+
   Territory getBattleSite();
+
+  Collection<TerritoryEffect> getTerritoryEffects();
 
   UUID getBattleId();
 
@@ -34,6 +39,8 @@ public interface BattleState {
   Collection<Unit> getAa(Side... sides);
 
   Collection<Unit> getBombardingUnits();
+
+  Collection<Unit> getAmphibiousLandAttackers();
 
   GamePlayer getAttacker();
 

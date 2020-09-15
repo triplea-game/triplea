@@ -39,6 +39,10 @@ public interface BattleActions {
 
   void attackerWins(IDelegateBridge bridge);
 
+  void defenderWins(IDelegateBridge bridge);
+
+  void nobodyWins(IDelegateBridge bridge);
+
   void findTargetGroupsAndFire(
       ReturnFire returnFire,
       String stepName,
