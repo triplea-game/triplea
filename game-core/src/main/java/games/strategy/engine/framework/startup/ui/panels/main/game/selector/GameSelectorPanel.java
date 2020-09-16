@@ -136,6 +136,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     row++;
 
     add(loadSavedGame, buildGridRow(0, row, new Insets(0, 10, 10, 10)));
+    row++;
 
     final JButton downloadMapButton =
         new JButtonBuilder()
@@ -143,16 +144,18 @@ public final class GameSelectorPanel extends JPanel implements Observer {
             .toolTip("Click this button to install additional maps")
             .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
             .build();
-    add(downloadMapButton, buildGridRow(0, 9, new Insets(0, 10, 10, 10)));
+    add(downloadMapButton, buildGridRow(0, row, new Insets(0, 10, 10, 10)));
+    row++;
 
-    add(mapOptions, buildGridRow(0, 10, new Insets(25, 10, 10, 10)));
+    add(mapOptions, buildGridRow(0, row, new Insets(25, 10, 10, 10)));
+    row++;
 
     // spacer
     add(
         new JPanel(),
         new GridBagConstraints(
             0,
-            11,
+            row,
             2,
             1,
             1,
