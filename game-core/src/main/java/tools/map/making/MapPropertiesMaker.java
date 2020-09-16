@@ -70,7 +70,7 @@ public final class MapPropertiesMaker {
   private final MapProperties mapProperties = new MapProperties();
 
   private MapPropertiesMaker() {}
-  
+
   /**
    * Runs the map properties maker tool.
    *
