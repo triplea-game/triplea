@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.mapdata;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
@@ -31,6 +30,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
+import org.triplea.java.ColorUtils;
 import org.triplea.java.function.ThrowingFunction;
 import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.util.PointFileReaderWriter;
@@ -101,7 +101,7 @@ public class MapData {
   private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   private static final String DECORATIONS_FILE = "decorations.txt";
 
-  private final DefaultColors defaultColors = new DefaultColors();
+  private final PlayerColors playerColors;
   private Set<String> ignoreTransformingUnits;
   private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
   private final Map<String, List<Polygon>> polys = new HashMap<>();
@@ -172,6 +172,7 @@ public class MapData {
         log.log(Level.SEVERE, "Failed to initialize map data", ex);
       }
 
+      playerColors = new PlayerColors(mapProperties);
       vcImage = loader.loadImage("misc/vc.png").orElse(null);
       blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
       errorImage = loader.loadImage("misc/error.gif").orElse(null);
@@ -469,41 +470,22 @@ public class MapData {
    * Returns the value of the property named {@code propertiesKey} of type {@link Color}. Returns
    * {@code defaultColor} if the property doesn't exist.
    *
-   * @throws IllegalStateException If the property value does not represent a valid color.
+   * @throws IllegalArgumentException If the property value does not represent a valid color.
    */
   private Color getColorProperty(final String propertiesKey, final Color defaultColor) {
-    if (mapProperties.getProperty(propertiesKey) != null) {
-      final String colorString = mapProperties.getProperty(propertiesKey);
-      if (colorString.length() != 6) {
-        throw new IllegalStateException(
-            "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
-      }
-      try {
-        return new Color(Integer.decode("0x" + colorString));
-      } catch (final NumberFormatException nfe) {
-        throw new IllegalStateException(
-            "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
-      }
-    }
-    return defaultColor;
+    return Optional.ofNullable(mapProperties.getProperty(propertiesKey))
+        .map(ColorUtils::fromHexString)
+        .orElse(defaultColor);
   }
 
   /** Returns the color associated with the player named {@code playerName}. */
   public Color getPlayerColor(final String playerName) {
-    Color color = getColorProperty(PROPERTY_COLOR_PREFIX + playerName);
-    if (color == null) {
-      // use one of our default colors, its ugly, but usable
-      color = defaultColors.nextColor();
-    }
-    return color;
+    return playerColors.getPlayerColor(playerName);
   }
 
   /** returns the color for impassable territories. */
   public Color impassableColor() {
-    return Optional.ofNullable(
-            getColorProperty(PROPERTY_COLOR_PREFIX + Constants.PLAYER_NAME_IMPASSABLE))
-        .or(() -> Optional.ofNullable(getColorProperty(PROPERTY_COLOR_PREFIX + "Impassible")))
-        .orElseGet(defaultColors::nextColor);
+    return playerColors.getImpassableColor();
   }
 
   /**
