@@ -1,10 +1,13 @@
-package games.strategy.engine.framework.startup.mc;
+package games.strategy.engine.framework.startup.ui.panels.main;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.mc.ClientModel;
+import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
+import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;

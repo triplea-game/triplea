@@ -15,7 +15,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.triplea.ai.pro.ProAi;
