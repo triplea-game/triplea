@@ -70,16 +70,7 @@ public final class MapPropertiesMaker {
   private final MapProperties mapProperties = new MapProperties();
 
   private MapPropertiesMaker() {}
-
-  private static String[] getProperties() {
-    return new String[] {
-      ToolArguments.MAP_FOLDER,
-      ToolArguments.UNIT_ZOOM,
-      ToolArguments.UNIT_WIDTH,
-      ToolArguments.UNIT_HEIGHT
-    };
-  }
-
+  
   /**
    * Runs the map properties maker tool.
    *

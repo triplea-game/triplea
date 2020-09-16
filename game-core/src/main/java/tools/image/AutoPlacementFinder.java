@@ -62,15 +62,6 @@ public final class AutoPlacementFinder {
 
   private AutoPlacementFinder() {}
 
-  private static String[] getProperties() {
-    return new String[] {
-      ToolArguments.MAP_FOLDER,
-      ToolArguments.UNIT_ZOOM,
-      ToolArguments.UNIT_WIDTH,
-      ToolArguments.UNIT_HEIGHT
-    };
-  }
-
   /**
    * Runs the auto-placement finder tool.
    *
