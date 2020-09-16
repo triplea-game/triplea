@@ -4,7 +4,6 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -20,24 +19,26 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
 public class OffensiveGeneralRetreat implements BattleStep {
 
-  final BattleState battleState;
+  private final BattleState battleState;
 
-  final BattleActions battleActions;
+  private final BattleActions battleActions;
 
   @Override
   public List<String> getNames() {
-    if (canAttackerRetreat()
+    return isRetreatPossible()
+        ? List.of(battleState.getAttacker().getName() + ATTACKER_WITHDRAW)
+        : List.of();
+  }
+
+  private boolean isRetreatPossible() {
+    return canAttackerRetreat()
         || canAttackerRetreatSeaPlanes()
         || (battleState.isAmphibious()
-            && (canAttackerRetreatPartialAmphib() || canAttackerRetreatAmphibPlanes()))) {
-      return List.of(battleState.getAttacker().getName() + ATTACKER_WITHDRAW);
-    }
-    return List.of();
+            && (canAttackerRetreatPartialAmphib() || canAttackerRetreatAmphibPlanes()));
   }
 
   @Override
@@ -105,18 +106,13 @@ public class OffensiveGeneralRetreat implements BattleStep {
   }
 
   private boolean canAttackerRetreatPartialAmphib() {
-    if (Properties.getPartialAmphibiousRetreat(battleState.getGameData())) {
-      // Only include land units when checking for allow amphibious retreat
-      final List<Unit> landUnits =
-          CollectionUtils.getMatches(
-              battleState.getUnits(BattleState.Side.OFFENSE), Matches.unitIsLand());
-      for (final Unit unit : landUnits) {
-        if (!unit.getWasAmphibious()) {
-          return true;
-        }
-      }
+    if (!Properties.getPartialAmphibiousRetreat(battleState.getGameData())) {
+      return false;
     }
-    return false;
+    // Only include land units when checking for allow amphibious retreat
+    return battleState.getUnits(BattleState.Side.OFFENSE).stream()
+        .filter(Matches.unitIsLand())
+        .anyMatch(unit -> !unit.getWasAmphibious());
   }
 
   private boolean canAttackerRetreatAmphibPlanes() {
