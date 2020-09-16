@@ -1,9 +1,8 @@
 package games.strategy.triplea.ui.unit.scroller;
 
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.ImageLoader;
 import java.awt.Image;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -20,14 +19,14 @@ class UnitScrollerIcon implements Supplier<Icon> {
   static final UnitScrollerIcon SLEEP = new UnitScrollerIcon("unit_sleep.png");
   static final UnitScrollerIcon WAKE_ALL = new UnitScrollerIcon("wake_all.png");
 
-  private static final File IMAGE_PATH = new File(ResourceLoader.RESOURCE_FOLDER, "unit_scroller");
+  private static final String UNIT_SCROLLER_IMAGES_FOLDER = "unit_scroller";
 
   private final String imageFile;
 
   @Override
   public Icon get() {
     return new ImageIcon(
-        ImageLoader.getImage(new File(IMAGE_PATH, imageFile))
+        ResourceLoader.loadImageAssert(Path.of(UNIT_SCROLLER_IMAGES_FOLDER, imageFile))
             .getScaledInstance(25, 25, Image.SCALE_SMOOTH));
   }
 }

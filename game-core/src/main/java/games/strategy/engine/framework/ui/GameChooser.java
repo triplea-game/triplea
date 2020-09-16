@@ -198,20 +198,31 @@ public class GameChooser extends JDialog {
         "Number Of Players", shallowParsedGame.getPlayerList().getPlayers().size() + "", notes);
     appendListItem("Version", shallowParsedGame.getInfo().getVersion() + "", notes);
     notes.append("<p></p>");
-    final String gameNotes =
-        shallowParsedGame
-            .getProperty("notes")
-            .map(PropertyList.Property::getValueProperty)
-            .map(PropertyList.Property.Value::getData)
-            .orElse("");
-    if (!gameNotes.isEmpty()) {
-      shallowParsedGame
-          .getProperty("mapName")
-          .map(PropertyList.Property::getValue)
-          .ifPresent(
-              mapName -> notes.append(LocalizeHtml.localizeImgLinksInHtml(gameNotes, mapName)));
-    }
+
+    extractGameNotes(shallowParsedGame)
+        .ifPresent(
+            gameNotes ->
+                shallowParsedGame
+                    .getProperty("mapName")
+                    .map(PropertyList.Property::getValue)
+                    .ifPresent(
+                        mapName ->
+                            notes.append(LocalizeHtml.localizeImgLinksInHtml(gameNotes, mapName))));
     return notes.toString();
+  }
+
+  private static Optional<String> extractGameNotes(final ShallowParsedGame shallowParsedGame) {
+    return shallowParsedGame
+        // get 'value' attribute of 'notes' property
+        .getProperty("notes")
+        .map(PropertyList.Property::getValue)
+        // otherwise look for 'value' child node of 'notes' property
+        .or(
+            () ->
+                shallowParsedGame
+                    .getProperty("notes")
+                    .map(PropertyList.Property::getValueProperty)
+                    .map(PropertyList.Property.Value::getData));
   }
 
   private static void appendListItem(

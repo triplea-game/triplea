@@ -109,6 +109,11 @@ public class JButtonBuilder {
     return this;
   }
 
+  /** An alias for toolTip */
+  public JButtonBuilder toolTipText(final String toolTip) {
+    return toolTip(toolTip);
+  }
+
   /** Sets the event that occurs when the button is clicked. SIDE EFFECT: Enables the button */
   public JButtonBuilder actionListener(final Runnable actionListener) {
     checkNotNull(actionListener);

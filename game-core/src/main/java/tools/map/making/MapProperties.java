@@ -4,6 +4,7 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.mapdata.PlayerColors;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class MapProperties {
     colorMap.put(Constants.PLAYER_NAME_PUPPET_STATES, new Color(0x1B5DA0));
     colorMap.put(Constants.PLAYER_NAME_RUSSIANS, new Color(0xB23B00));
     colorMap.put(Constants.PLAYER_NAME_NEUTRAL, new Color(0xE2A071));
-    colorMap.put(Constants.PLAYER_NAME_IMPASSABLE, new Color(0xD8BA7C));
+    colorMap.put(PlayerColors.PLAYER_NAME_IMPASSABLE, PlayerColors.DEFAULT_IMPASSABLE_COLOR);
   }
 
   public Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> propertyWrapperUi(
@@ -83,7 +84,7 @@ public class MapProperties {
   public String outColorMap() {
     final StringBuilder buf = new StringBuilder();
     for (final Entry<String, Color> entry : colorMap.entrySet()) {
-      buf.append(MapData.PROPERTY_COLOR_PREFIX)
+      buf.append(PlayerColors.PROPERTY_COLOR_PREFIX)
           .append(entry.getKey())
           .append("=")
           .append(colorToHex(entry.getValue()))

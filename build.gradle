@@ -96,7 +96,7 @@ subprojects {
         jdbiVersion = '3.14.4'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.7.0'
-        junitPlatformLauncherVersion = '1.5.2' // do not upgrade this to beyond 1.5.2 without testing IDEA test runner.
+        junitPlatformLauncherVersion = '1.7.0'
         mockitoVersion = '3.5.10'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.16'
