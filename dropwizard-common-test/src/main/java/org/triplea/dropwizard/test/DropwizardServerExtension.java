@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 @Slf4j
 public abstract class DropwizardServerExtension<C extends Configuration>
-    implements BeforeAllCallback, AfterEachCallback, ParameterResolver {
+    implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
 
   private static Jdbi jdbi;
   private static URI serverUri;
@@ -77,7 +77,7 @@ public abstract class DropwizardServerExtension<C extends Configuration>
   }
 
   @Override
-  public void afterEach(final ExtensionContext context) throws Exception {
+  public void beforeEach(final ExtensionContext context) throws Exception {
     final URL cleanupFileUrl = getClass().getClassLoader().getResource("db-cleanup.sql");
     if (cleanupFileUrl != null) {
       final String cleanupSql = Files.readString(Path.of(cleanupFileUrl.toURI()));
