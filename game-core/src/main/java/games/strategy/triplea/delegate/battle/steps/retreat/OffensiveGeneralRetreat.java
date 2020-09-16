@@ -17,7 +17,9 @@ import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
@@ -52,27 +54,41 @@ public class OffensiveGeneralRetreat implements BattleStep {
     if (battleState.isOver()) {
       return;
     }
-    final RetreatType retreatType;
-    final Collection<Territory> retreatSites;
+    final RetreatData retreatData;
+
     if (battleState.isAmphibious()) {
-      if (canAttackerRetreatPartialAmphib()) {
-        retreatType = RetreatType.PARTIAL_AMPHIB;
-        retreatSites = battleState.getAttackerRetreatTerritories();
-      } else if (canAttackerRetreatAmphibPlanes()) {
-        retreatType = RetreatType.PLANES;
-        retreatSites = Set.of(battleState.getBattleSite());
-      } else {
+      retreatData = getAmphibiousRetreatData();
+      if (retreatData == null) {
         return;
       }
 
     } else if (canAttackerRetreat()) {
-      retreatType = RetreatType.DEFAULT;
-      retreatSites = battleState.getAttackerRetreatTerritories();
+      retreatData =
+          RetreatData.of(RetreatType.DEFAULT, battleState.getAttackerRetreatTerritories());
     } else {
       return;
     }
 
-    battleActions.queryRetreat(false, retreatType, bridge, retreatSites);
+    battleActions.queryRetreat(false, retreatData.retreatType, bridge, retreatData.retreatSites);
+  }
+
+  private @Nullable RetreatData getAmphibiousRetreatData() {
+    if (canAttackerRetreatPartialAmphib()) {
+      return RetreatData.of(
+          RetreatType.PARTIAL_AMPHIB, battleState.getAttackerRetreatTerritories());
+
+    } else if (canAttackerRetreatAmphibPlanes()) {
+      return RetreatData.of(RetreatType.PLANES, Set.of(battleState.getBattleSite()));
+
+    } else {
+      return null;
+    }
+  }
+
+  @Value(staticConstructor = "of")
+  private static class RetreatData {
+    RetreatType retreatType;
+    Collection<Territory> retreatSites;
   }
 
   private boolean canAttackerRetreat() {
