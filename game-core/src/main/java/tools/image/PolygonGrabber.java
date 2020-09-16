@@ -47,7 +47,6 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
-import tools.util.ToolArguments;
 
 /**
  * Utility to break a map into polygons. Inputs - a map with 1 pixel wide borders - a list of
@@ -65,18 +64,18 @@ public final class PolygonGrabber {
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
     try {
-      new PolygonGrabber().runInternal(args);
+      new PolygonGrabber().runInternal();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "failed to run polygon grabber", e);
     }
   }
 
-  private void runInternal(final String[] args) throws IOException {
-    handleCommandLineArgs(args);
+  private void runInternal() throws IOException {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
@@ -641,46 +640,6 @@ public final class PolygonGrabber {
       }
       log.info("Done finding polygon. total points;" + xpoints.length);
       return new Polygon(xpoints, ypoints, xpoints.length);
-    }
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
-  private void handleCommandLineArgs(final String[] args) {
-    // arg can only be the map folder location.
-    if (args.length == 1) {
-      final String value;
-      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
-        value = getValue(args[0]);
-      } else {
-        value = args[0];
-      }
-      final File mapFolder = new File(value);
-      if (mapFolder.exists()) {
-        mapFolderLocation = mapFolder;
-      } else {
-        log.info("Could not find directory: " + value);
-      }
-    } else if (args.length > 1) {
-      log.info("Only argument allowed is the map directory.");
-    }
-    // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
-      if (value != null && value.length() > 0) {
-        final File mapFolder = new File(value);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-        } else {
-          log.info("Could not find directory: " + value);
-        }
-      }
     }
   }
 }

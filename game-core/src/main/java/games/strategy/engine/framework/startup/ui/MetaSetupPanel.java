@@ -93,7 +93,7 @@ public class MetaSetupPanel extends SetupPanel {
             .build();
     final JButton mapCreator =
         new JButtonBuilder()
-            .title("Run the Map Creator")
+            .title("Map Creator Tools")
             .actionListener(MapCreator::openMapCreatorWindow)
             .build();
 

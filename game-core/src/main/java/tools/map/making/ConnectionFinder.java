@@ -37,7 +37,7 @@ import org.triplea.java.AlphanumComparator;
 import org.triplea.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.util.ToolArguments;
+import tools.image.MapFolderLocationSystemProperty;
 
 /**
  * Utility to find connections between polygons Not pretty, meant only for one time use. Inputs - a
@@ -61,21 +61,19 @@ public final class ConnectionFinder {
   // default 32, or if LINE_THICKNESS is given 16 x linethickness
   private double minOverlap = 32.0;
 
-  private ConnectionFinder() {}
-
   /**
    * Runs the connection finder tool.
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
-    new ConnectionFinder().runInternal(args);
+    new ConnectionFinder().runInternal();
   }
 
-  private void runInternal(final String[] args) {
-    handleCommandLineArgs(args);
+  private void runInternal() {
+    handleSystemProperties();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(
@@ -244,7 +242,7 @@ public final class ConnectionFinder {
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to write connections", e);
     }
-  } // end main
+  }
 
   /**
    * Creates the xml territory definitions.
@@ -427,42 +425,8 @@ public final class ConnectionFinder {
     return transform.createTransformedShape(currentPolygon);
   }
 
-  private void handleCommandLineArgs(final String[] args) {
-    for (final String arg : args) {
-      final String value = getValue(arg);
-      if (arg.startsWith(ToolArguments.MAP_FOLDER)) {
-        final File mapFolder = new File(value);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-        } else {
-          log.info("Could not find directory: " + value);
-        }
-      }
-      if (arg.startsWith(LINE_THICKNESS)) {
-        final int lineThickness = Integer.parseInt(value);
-        scalePixels = lineThickness * 4;
-        minOverlap = scalePixels * 4.0;
-        dimensionsSet = true;
-      }
-      if (arg.startsWith(MIN_OVERLAP)) {
-        minOverlap = Integer.parseInt(value);
-      }
-      if (arg.startsWith(SCALE_PIXELS)) {
-        scalePixels = Integer.parseInt(value);
-      }
-    }
-    // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
-      if (value != null && value.length() > 0) {
-        final File mapFolder = new File(value);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-        } else {
-          log.info("Could not find directory: " + value);
-        }
-      }
-    }
+  private void handleSystemProperties() {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     String value = System.getProperty(LINE_THICKNESS);
     if (value != null && value.length() > 0) {
       final int lineThickness = Integer.parseInt(value);
@@ -478,13 +442,5 @@ public final class ConnectionFinder {
     if (value != null && value.length() > 0) {
       scalePixels = Integer.parseInt(value);
     }
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
   }
 }

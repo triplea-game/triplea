@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import tools.image.FileOpen;
-import tools.util.ToolArguments;
+import tools.image.MapFolderLocationSystemProperty;
 
 /** Takes an image and shrinks it. Used for making small images. */
 @Log
@@ -35,18 +35,18 @@ public final class ImageShrinker {
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
     try {
-      new ImageShrinker().runInternal(args);
+      new ImageShrinker().runInternal();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "failed to run image shrinker", e);
     }
   }
 
-  private void runInternal(final String[] args) throws IOException {
-    handleCommandLineArgs(args);
+  private void runInternal() throws IOException {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(
@@ -93,45 +93,5 @@ public final class ImageShrinker {
       encoder.write(null, new IIOImage(thumbImage, null, null), param);
     }
     log.info("Image successfully written to " + file.getPath());
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
-  private void handleCommandLineArgs(final String[] args) {
-    // arg can only be the map folder location.
-    if (args.length == 1) {
-      final String value;
-      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
-        value = getValue(args[0]);
-      } else {
-        value = args[0];
-      }
-      final File mapFolder = new File(value);
-      if (mapFolder.exists()) {
-        mapFolderLocation = mapFolder;
-      } else {
-        log.info("Could not find directory: " + value);
-      }
-    } else if (args.length > 1) {
-      log.info("Only argument allowed is the map directory.");
-    }
-    // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
-      if (value != null && value.length() > 0) {
-        final File mapFolder = new File(value);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-        } else {
-          log.info("Could not find directory: " + value);
-        }
-      }
-    }
   }
 }

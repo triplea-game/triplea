@@ -31,7 +31,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import lombok.extern.java.Log;
 import org.triplea.util.PointFileReaderWriter;
-import tools.util.ToolArguments;
 
 /** For taking a folder of basetiles and putting them back together into an image. */
 @Log
@@ -61,14 +60,14 @@ public final class TileImageReconstructor {
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
-    new TileImageReconstructor().runInternal(args);
+    new TileImageReconstructor().runInternal();
   }
 
-  private void runInternal(final String[] args) {
-    handleCommandLineArgs(args);
+  private void runInternal() {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(
@@ -219,45 +218,5 @@ public final class TileImageReconstructor {
     textOptionPane.countDown();
     textOptionPane.dispose();
     JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
-  private void handleCommandLineArgs(final String[] args) {
-    // arg can only be the map folder location.
-    if (args.length == 1) {
-      final String value;
-      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
-        value = getValue(args[0]);
-      } else {
-        value = args[0];
-      }
-      final File mapFolder = new File(value);
-      if (mapFolder.exists()) {
-        mapFolderLocation = mapFolder;
-      } else {
-        log.info("Could not find directory: " + value);
-      }
-    } else if (args.length > 1) {
-      log.info("Only argument allowed is the map directory.");
-    }
-    // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
-      if (value != null && value.length() > 0) {
-        final File mapFolder = new File(value);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-        } else {
-          log.info("Could not find directory: " + value);
-        }
-      }
-    }
   }
 }
