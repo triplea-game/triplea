@@ -4,6 +4,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -16,6 +17,7 @@ import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -112,7 +114,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
     // Only include land units when checking for allow amphibious retreat
     return battleState.getUnits(BattleState.Side.OFFENSE).stream()
         .filter(Matches.unitIsLand())
-        .anyMatch(unit -> !unit.getWasAmphibious());
+        .anyMatch(Predicate.not(Unit::getWasAmphibious));
   }
 
   private boolean canAttackerRetreatAmphibPlanes() {
