@@ -71,6 +71,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
@@ -1072,6 +1073,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 3802352588499530533L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep offensiveAaStep =
             new OffensiveAaFire(MustFightBattle.this, MustFightBattle.this);
@@ -1083,6 +1085,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = -1370090785540214199L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep defensiveAaStep =
             new DefensiveAaFire(MustFightBattle.this, MustFightBattle.this);
@@ -1094,6 +1097,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 8762796262264296436L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep clearAaCasualties =
             new ClearAaCasualties(MustFightBattle.this, MustFightBattle.this);
@@ -1105,6 +1109,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 2781652892457063082L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
@@ -1115,6 +1120,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = -2255284529092427441L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep navalBombardment =
             new NavalBombardment(MustFightBattle.this, MustFightBattle.this);
@@ -1126,6 +1132,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 3389635558184415797L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
@@ -1136,6 +1143,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 7193353768857658286L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep landParatroopers =
             new LandParatroopers(MustFightBattle.this, MustFightBattle.this);
@@ -1147,6 +1155,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = -6676316363537467594L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep markNoMovementLeft =
             new MarkNoMovementLeft(MustFightBattle.this, MustFightBattle.this);
@@ -1157,6 +1166,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 6775880082912594489L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep offensiveSubsRetreat =
             new OffensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
@@ -1169,6 +1179,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 7056448091800764539L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep defensiveSubsRetreat =
             new DefensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
@@ -1181,6 +1192,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 99989L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new RemoveUnprotectedUnits(MustFightBattle.this, MustFightBattle.this)
             .execute(stack, bridge);
@@ -1190,6 +1202,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 99990L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep submergeSubsVsOnlyAir =
             new SubmergeSubsVsOnlyAirStep(MustFightBattle.this, MustFightBattle.this);
@@ -1200,6 +1213,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 99992L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new DefensiveFirstStrike(MustFightBattle.this, MustFightBattle.this, ReturnFire.NONE)
             .execute(stack, bridge);
@@ -1210,12 +1224,13 @@ public class MustFightBattle extends DependentBattle
     // be defined in the same scope as the IExecutables so that when
     // the save is loaded, it will correctly populate the saved value
     // of these variables.
-    final ReturnFire returnFireAgainstAttackingSubs = ReturnFire.ALL;
-    final ReturnFire returnFireAgainstDefendingSubs = ReturnFire.ALL;
+    @RemoveOnNextMajorRelease final ReturnFire returnFireAgainstAttackingSubs = ReturnFire.ALL;
+    @RemoveOnNextMajorRelease final ReturnFire returnFireAgainstDefendingSubs = ReturnFire.ALL;
     new IExecutable() {
       private static final long serialVersionUID = 99991L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new OffensiveFirstStrike(
                 MustFightBattle.this,
@@ -1229,6 +1244,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 99992L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new DefensiveFirstStrike(
                 MustFightBattle.this,
@@ -1242,6 +1258,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = -7634700553071456768L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new RemoveFirstStrikeSuicide(MustFightBattle.this, MustFightBattle.this)
             .execute(stack, bridge);
@@ -1251,6 +1268,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 99994L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new OffensiveGeneral(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
       }
@@ -1259,6 +1277,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 999921L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new DefensiveFirstStrike(MustFightBattle.this, MustFightBattle.this, ReturnFire.ALL)
             .execute(stack, bridge);
@@ -1268,6 +1287,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 1560702114917865290L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new DefensiveGeneral(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
       }
@@ -1582,6 +1602,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 6387198382888361848L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new RemoveGeneralSuicide(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
       }
@@ -1659,6 +1680,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = 6775880082912594489L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep offensiveSubsRetreat =
             new OffensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
@@ -1673,22 +1695,29 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = -1150863964807721395L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         // Intentionally left blank
+        // Old saves will fall through to the IExecutable that instantiates
+        // OffensiveGeneralRetreat which does the work that previously was here
       }
     };
     new IExecutable() {
       private static final long serialVersionUID = -1150863964807721395L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         // Intentionally left blank
+        // Old saves will fall through to the IExecutable that instantiates
+        // OffensiveGeneralRetreat which does the work that previously was here
       }
     };
     new IExecutable() {
       private static final long serialVersionUID = 669349383898975048L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
             .execute(stack, bridge);
@@ -1701,6 +1730,7 @@ public class MustFightBattle extends DependentBattle
       private static final long serialVersionUID = -1544916305666912480L;
 
       @Override
+      @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         final BattleStep defensiveSubsRetreat =
             new DefensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
