@@ -28,8 +28,8 @@ Caution, this list might not be complete, please let us know if there is anythin
 - `="victoryCity" count="-reset-true"` >> `="victoryCity" count="-reset-1"`
 - `="victoryCity" count="false"` >> `="victoryCity" count="0"`
 - `="victoryCity" count="true"` >> `="victoryCity" count="1"`
-- `="victoryCity" value="false"` >> `="victoryCity" count="0"`
-- `="victoryCity" value="true"` >> `="victoryCity" count="1"`
+- `="victoryCity" value="false"` >> `="victoryCity" value="0"`
+- `="victoryCity" value="true"` >> `="victoryCity" value="1"`
 - `attatchment` >> `attachment`
 - `Attatchment` >> `Attachment`
 - `attatchTo=` >> `attachTo=`
