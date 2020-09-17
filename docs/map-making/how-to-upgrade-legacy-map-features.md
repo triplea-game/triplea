@@ -6,33 +6,33 @@ Caution, this list might not be complete, please let us know if there is anythin
 
 ## XML Changes
 
+- `<option name="isMechanized"` >> `<optiona name="isLandTransportable"`
+- `<option name="isParatroop"` >> `<option name="isAirTransportable"`
+- `="Battleships repair at beginning of round"` >> `="Units Repair Hits Start Turn"`
+- `="Battleships repair at end of round"` >> `="Units Repair Hits End Turn"`
+- `="conditionType" count="-reset-XOR"` >> `="conditionType" count="-reset-1"`
+- `="conditionType" count="XOR"` >> `="conditionType" count="1"`
+- `="conditionType" value="XOR"` >> `="conditionType" value="1"`
+- `="isImpassible"` >> `="isImpassable"`
+- `="isTwoHit" count="-reset-false"` >> `="hitPoints" count="-reset-1"`
+- `="isTwoHit" count="-reset-true"` >> `="hitPoints" count="-reset-2"`
+- `="isTwoHit" count="false"` >> `="hitPoints" count="1"`
+- `="isTwoHit" count="true"` >> `="hitPoints" count="2"`
+- `="isTwoHit" value="false"` >> `="hitPoints" count="1"`
+- `="isTwoHit" value="true"` >> `="hitPoints" value="2"`
+- `="Naval Bombard Casualties Return Fire Restricted"` >> `="Naval Bombard Casualties Return Fire"`
+- `="occupiedTerrOf"` >> `="originalOwner"`
+- `="SBR Affects Unit Production"` >> `="Damage From Bombing Done To Units Instead Of Territories"`
+- `="turns"` >> `="rounds"`
+- `="victoryCity" count="-reset-false"` >> `="victoryCity" count="-reset-0"`
+- `="victoryCity" count="-reset-true"` >> `="victoryCity" count="-reset-1"`
+- `="victoryCity" count="false"` >> `="victoryCity" count="0"`
+- `="victoryCity" count="true"` >> `="victoryCity" count="1"`
+- `="victoryCity" value="false"` >> `="victoryCity" count="0"`
+- `="victoryCity" value="true"` >> `="victoryCity" count="1"`
 - `attatchment` >> `attachment`
 - `Attatchment` >> `Attachment`
 - `attatchTo=` >> `attachTo=`
-- `="isImpassible"` >> `="isImpassable"`
-- `="conditionType" value="XOR"` >> `="conditionType" value="1"`
-- `="turns"` >> `="rounds"`
-- `="Battleships repair at end of round"` >> `="Units Repair Hits End Turn"`
-- `="Battleships repair at beginning of round"` >> `="Units Repair Hits Start Turn"`
-- `="Naval Bombard Casualties Return Fire Restricted"` >> `="Naval Bombard Casualties Return Fire"`
-- `="SBR Affects Unit Production"` >> `="Damage From Bombing Done To Units Instead Of Territories"`
-- `="conditionType" count="XOR"` >> `="conditionType" count="1"`
-- `="conditionType" count="-reset-XOR"` >> `="conditionType" count="-reset-1"`
-- `="isTwoHit" count="true"` >> `="hitPoints" count="2"`
-- `="isTwoHit" count="false"` >> `="hitPoints" count="1"`
-- `="isTwoHit" value="true"` >> `="hitPoints" value="2"`
-- `="isTwoHit" value="false"` >> `="hitPoints" count="1"`
-- `="isTwoHit" count="-reset-true"` >> `="hitPoints" count="-reset-2"`
-- `="isTwoHit" count="-reset-false"` >> `="hitPoints" count="-reset-1"`
-- `="occupiedTerrOf"` >> `="originalOwner"`
-- `="victoryCity" count="true"` >> `="victoryCity" count="1"`
-- `="victoryCity" count="false"` >> `="victoryCity" count="0"`
-- `="victoryCity" value="true"` >> `="victoryCity" count="1"`
-- `="victoryCity" value="false"` >> `="victoryCity" count="0"`
-- `="victoryCity" count="-reset-true"` >> `="victoryCity" count="-reset-1"`
-- `="victoryCity" count="-reset-false"` >> `="victoryCity" count="-reset-0"`
-- `<option name="isParatroop"` >> `<option name="isAirTransportable"`
-- `<option name="isMechanized"` >> `<optiona name="isLandTransportable"`
 
 
 ```
