@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <game>
     <technology>
         <technologies>
@@ -5,7 +6,6 @@
             <techname name="tracer_rounds"/>
             <techname name="creeping_barrage" tech="improvedArtillerySupport"/>
         </technologies>
-
         <playerTech player="USA">
             <category name="Land">
                 <tech name="counter_battery_fire"/>
@@ -19,7 +19,6 @@
                 <tech name="radio"/>
             </category>
         </playerTech>
-
         <playerTech player="UK">
             <category name="Land">
                 <tech name="mobile_warfare"/>

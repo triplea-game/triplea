@@ -1,46 +1,75 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Technology {
 
-  @Tag private Technologies technologies;
+  @XmlElement @Tag private Technologies technologies;
 
-  @TagList private List<PlayerTech> playerTechs;
+  @XmlElement(name = "playerTech")
+  @TagList
+  private List<PlayerTech> playerTechs;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Technologies {
-    @TagList private List<TechName> techNames;
+    @XmlElement(name = "techname")
+    @TagList
+    private List<TechName> techNames;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TechName {
-      @Attribute String name;
-
-      @Attribute(defaultValue = "")
-      String tech;
+      @XmlAttribute @Attribute String name;
+      @XmlAttribute @Attribute String tech;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class PlayerTech {
-    @Attribute private String player;
+    @XmlAttribute @Attribute private String player;
 
-    @TagList private List<Category> categories;
+    @XmlElement(name = "category")
+    @TagList
+    private List<Category> categories;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Category {
-      @Attribute private String name;
+      @XmlAttribute @Attribute private String name;
 
-      @TagList private List<Tech> techs;
+      @XmlElement(name = "tech")
+      @TagList
+      private List<Tech> techs;
 
       @Getter
+      @Builder
+      @NoArgsConstructor
+      @AllArgsConstructor
       public static class Tech {
-        @Attribute private String name;
+        @XmlAttribute @Attribute private String name;
       }
     }
   }

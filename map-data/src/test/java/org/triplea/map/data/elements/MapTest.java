@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,11 @@ public class MapTest {
 
     assertThat(map.getTerritories().get(0), is(notNullValue()));
     assertThat(map.getTerritories().get(0).getName(), is("Belgium"));
-    assertThat(map.getTerritories().get(0).isWater(), is(false));
+    assertThat(map.getTerritories().get(0).getWater(), is(nullValue()));
 
     assertThat(map.getTerritories().get(1), is(notNullValue()));
     assertThat(map.getTerritories().get(1).getName(), is("Sea"));
-    assertThat(map.getTerritories().get(1).isWater(), is(true));
+    assertThat(map.getTerritories().get(1).getWater(), is(true));
 
     assertThat(map.getConnections(), is(notNullValue()));
     assertThat(map.getTerritories(), hasSize(2));

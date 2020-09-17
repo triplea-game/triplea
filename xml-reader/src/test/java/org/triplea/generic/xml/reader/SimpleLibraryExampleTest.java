@@ -5,6 +5,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 import java.util.List;
 import lombok.Getter;
@@ -61,6 +62,13 @@ public class SimpleLibraryExampleTest extends AbstractXmlMapperTest {
   }
 
   @Test
+  void attributesNotPresentInXmlAreNull() throws Exception {
+    final Library library = xmlMapper.mapXmlToObject(Library.class);
+
+    assertThat(library.libraryInventory.attributeThatDoesNotExist, is(nullValue()));
+  }
+
+  @Test
   void verifySimpleExample() throws Exception {
     final Library library = xmlMapper.mapXmlToObject(Library.class);
 
@@ -69,7 +77,6 @@ public class SimpleLibraryExampleTest extends AbstractXmlMapperTest {
     assertThat(library.exampleOfListThatIsNotPresent, is(empty()));
 
     assertThat(library.libraryInventory, is(notNullValue()));
-    assertThat(library.libraryInventory.attributeThatDoesNotExist, is(""));
     assertThat(library.libraryInventory.type, is("available"));
     assertThat(library.libraryInventory.books, hasSize(2));
     assertThat(library.libraryInventory.books.get(0), is(notNullValue()));

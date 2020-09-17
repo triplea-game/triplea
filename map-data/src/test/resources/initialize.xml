@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <game>
     <initialize>
         <ownerInitialize>
-            <territoryOwner territory="Poland" owner="Polish" />
-            <territoryOwner territory="France" owner="French" />
+            <territoryOwner territory="Poland" owner="Polish"/>
+            <territoryOwner territory="France" owner="French"/>
         </ownerInitialize>
         <unitInitialize>
             <unitPlacement unitType="Infantry" territory="Poland" quantity="1" owner="Polish" hitsTaken="1" unitDamage="2"/>
@@ -11,8 +12,8 @@
             <heldUnits unitType="Delkon" player="AI" quantity="1"/>
         </unitInitialize>
         <resourceInitialize>
-            <resourceGiven player="Anzac" resource="PUs" quantity="20" />
-            <resourceGiven player="Dutch" resource="PUs" quantity="0" />
+            <resourceGiven player="Anzac" resource="PUs" quantity="20"/>
+            <resourceGiven player="Dutch" resource="PUs" quantity="0"/>
         </resourceInitialize>
         <relationshipInitialize>
             <relationship type="Neutrality" roundValue="1" player1="Western" player2="Southern"/>

@@ -1,50 +1,73 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GamePlay {
 
-  @TagList private List<Delegate> delegates;
+  @XmlElement(name = "delegate")
+  @TagList
+  private List<Delegate> delegates;
 
-  @Tag private Sequence sequence;
-  @Tag private Offset offset;
+  @XmlElement @Tag private Sequence sequence;
+  @XmlElement @Tag private Offset offset;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Delegate {
-    @Attribute private String name;
-    @Attribute private String javaClass;
-    @Attribute private String display;
+    @XmlAttribute @Attribute private String name;
+    @XmlAttribute @Attribute private String javaClass;
+    @XmlAttribute @Attribute private String display;
   }
 
   @Getter
   public static class Sequence {
-    @TagList private List<Step> steps;
+    @XmlElement(name = "step")
+    @TagList
+    private List<Step> steps;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Step {
-      @Attribute private String name;
-      @Attribute private String delegate;
-      @Attribute private String player;
-      @Attribute private int maxRunCount;
-      @Attribute private String display;
+      @XmlAttribute @Attribute private String name;
+      @XmlAttribute @Attribute private String delegate;
+      @XmlAttribute @Attribute private String player;
+      @XmlAttribute @Attribute private Integer maxRunCount;
+      @XmlAttribute @Attribute private String display;
 
-      @TagList private List<StepProperty> stepProperties;
+      @XmlElement(name = "stepProperty")
+      @TagList
+      private List<StepProperty> stepProperties;
 
       @Getter
+      @Builder
+      @NoArgsConstructor
+      @AllArgsConstructor
       public static class StepProperty {
-        @Attribute private String name;
-        @Attribute private String value;
+        @XmlAttribute @Attribute private String name;
+        @XmlAttribute @Attribute private String value;
       }
     }
   }
 
   @Getter
   public static class Offset {
-    @Attribute private int round;
+    @XmlAttribute @Attribute private Integer round;
   }
 }

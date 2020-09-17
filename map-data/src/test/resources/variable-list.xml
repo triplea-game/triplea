@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <game>
     <variableList>
         <variable name="AllHeroUnits">
@@ -6,7 +7,6 @@
             <element name="Sevis"/>
             <element name="Sian-tsu"/>
         </variable>
-
         <variable name="AllAllianceHeroUnits">
             <element name="Arthur"/>
             <element name="Khorman"/>

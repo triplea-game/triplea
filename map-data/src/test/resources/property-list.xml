@@ -1,15 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <game>
     <propertyList>
         <property value="propValue" name="propName" editable="true" player="player1"/>
-
         <property value="100" name="number" min="1" max="1000"/>
-
         <property name="notes">
             <value>Notes here</value>
         </property>
-
         <property name="stringProperty"/>
-
         <property name="numberProperty">
             <number min="123" max="999"/>
         </property>

@@ -2,7 +2,6 @@ package games.strategy.engine.data.gameparser;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Attachable;
@@ -325,7 +324,12 @@ public final class GameParser {
       final List<org.triplea.map.data.elements.Map.Territory> territories) {
     territories.forEach(
         current ->
-            data.getMap().addTerritory(new Territory(current.getName(), current.isWater(), data)));
+            data.getMap()
+                .addTerritory(
+                    new Territory(
+                        current.getName(),
+                        Optional.ofNullable(current.getWater()).orElse(false),
+                        data)));
   }
 
   private void parseConnections(
@@ -344,7 +348,7 @@ public final class GameParser {
         resourceList.getResources()) {
       final String name = resource.getName();
       final String isDisplayedFor = resource.getIsDisplayedFor();
-      if (isDisplayedFor.isEmpty()) {
+      if (isDisplayedFor == null || isDisplayedFor.isEmpty()) {
         data.getResourceList()
             .addResource(new Resource(name, data, data.getPlayerList().getPlayers()));
       } else if (isDisplayedFor.equalsIgnoreCase(RESOURCE_IS_DISPLAY_FOR_NONE)) {
@@ -399,10 +403,10 @@ public final class GameParser {
                     .addPlayerId(
                         new GamePlayer(
                             current.getName(),
-                            current.isOptional(),
-                            current.isCanBeDisabled(),
-                            current.getDefaultType(),
-                            current.isHidden(),
+                            Optional.ofNullable(current.getOptional()).orElse(false),
+                            Optional.ofNullable(current.getCanBeDisabled()).orElse(false),
+                            Optional.ofNullable(current.getDefaultType()).orElse("Human"),
+                            Optional.ofNullable(current.getIsHidden()).orElse(false),
                             data)));
   }
 
@@ -460,6 +464,9 @@ public final class GameParser {
     final GameProperties properties = data.getProperties();
 
     for (final PropertyList.Property current : propertyList.getProperties()) {
+      if (current.getName() == null) {
+        return;
+      }
       final String propertyName = LegacyPropertyMapper.mapPropertyName(current.getName());
 
       // Get the value from first the body text of a "value" child node
@@ -467,11 +474,11 @@ public final class GameParser {
       final String value =
           Optional.ofNullable(current.getValueProperty())
               .map(PropertyList.Property.Value::getData)
-              .orElseGet(() -> Strings.emptyToNull(current.getValue()));
+              .orElseGet(current::getValue);
 
       // Next, infer the type of property based on its value
       // and set the property  in game data properties.
-      if (!current.isEditable()) {
+      if (current.getEditable() == null || !current.getEditable()) {
         final Object castedValue = PropertyValueTypeInference.castToInferredType(value);
         properties.set(propertyName, castedValue);
       } else {
@@ -521,7 +528,7 @@ public final class GameParser {
   }
 
   private void parseOffset(final GamePlay.Offset offset) {
-    data.getSequence().setRoundOffset(offset.getRound());
+    data.getSequence().setRoundOffset(Optional.ofNullable(offset.getRound()).orElse(0));
   }
 
   private void parseDelegates(final List<GamePlay.Delegate> delegateList)
@@ -551,11 +558,11 @@ public final class GameParser {
       final String name = current.getName();
       String displayName = null;
       final Properties stepProperties = parseStepProperties(current.getStepProperties());
-      if (!current.getDisplay().isBlank()) {
+      if (current.getDisplay() == null || !current.getDisplay().isBlank()) {
         displayName = current.getDisplay();
       }
       final GameStep step = new GameStep(name, displayName, player, delegate, data, stepProperties);
-      if (current.getMaxRunCount() > 0) {
+      if (current.getMaxRunCount() != null && current.getMaxRunCount() > 0) {
         step.setMaxRunCount(current.getMaxRunCount());
       }
       data.getSequence().addStep(step);
@@ -600,7 +607,7 @@ public final class GameParser {
     }
     for (final Production.ProductionRule.Cost current : elements) {
       final Resource resource = getResource(current.getResource());
-      final int quantity = current.getQuantity();
+      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addCost(resource, quantity);
     }
   }
@@ -613,7 +620,7 @@ public final class GameParser {
     }
     for (final Production.ProductionRule.Cost current : elements) {
       final Resource resource = getResource(current.getResource());
-      final int quantity = current.getQuantity();
+      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addCost(resource, quantity);
     }
   }
@@ -634,7 +641,7 @@ public final class GameParser {
         throw new GameParseException(
             "Could not find resource or unit" + current.getResourceOrUnit());
       }
-      final int quantity = current.getQuantity();
+      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addResult(result, quantity);
     }
   }
@@ -655,7 +662,7 @@ public final class GameParser {
         throw new GameParseException(
             "Could not find resource or unit" + current.getResourceOrUnit());
       }
-      final int quantity = current.getQuantity();
+      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addResult(result, quantity);
     }
   }
@@ -743,7 +750,7 @@ public final class GameParser {
       final String name = current.getName();
       final String tech = current.getTech();
       TechAdvance ta;
-      if (tech.length() > 0) {
+      if (tech != null && !tech.isBlank()) {
         ta =
             new GenericTechAdvance(
                 name, TechAdvance.findDefinedAdvanceAndCreateAdvance(tech, data), data);
@@ -786,7 +793,7 @@ public final class GameParser {
       throws GameParseException {
     for (final AttachmentList.Attachment current : root.getAttachments()) {
       final String foreach = current.getForeach();
-      if (foreach.isEmpty()) {
+      if (foreach == null || foreach.isBlank()) {
         parseAttachment(current, variables, Map.of());
       } else {
         final List<String> nestedForeach = Splitter.on("^").splitToList(foreach);
@@ -840,7 +847,8 @@ public final class GameParser {
       final Map<String, String> foreach)
       throws GameParseException {
     final String className = current.getJavaClass();
-    final Attachable attachable = findAttachment(current, current.getType(), foreach);
+    final Attachable attachable =
+        findAttachment(current, Optional.ofNullable(current.getType()).orElse("unitType"), foreach);
     final String name = replaceForeachVariables(current.getName(), foreach);
     final IAttachment attachment =
         xmlGameElementMapper
@@ -889,6 +897,9 @@ public final class GameParser {
       throws GameParseException {
     final List<Tuple<String, String>> results = new ArrayList<>();
     for (final AttachmentList.Attachment.Option option : options) {
+      if (option.getName() == null || option.getValue() == null) {
+        continue;
+      }
       // decapitalize the property name for backwards compatibility
       final String name = LegacyPropertyMapper.mapLegacyOptionName(decapitalize(option.getName()));
       if (LegacyPropertyMapper.ignoreOptionName(name)) {
@@ -901,7 +912,7 @@ public final class GameParser {
       }
       final String value = option.getValue();
       final String count = option.getCount();
-      final String countAndValue = (!count.isEmpty() ? count + ":" : "") + value;
+      final String countAndValue = (count != null && !count.isEmpty() ? count + ":" : "") + value;
       if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
       }
@@ -935,14 +946,14 @@ public final class GameParser {
   private String replaceForeachVariables(final String s, final Map<String, String> foreach) {
     String result = s;
     for (final Entry<String, String> entry : foreach.entrySet()) {
-      result = result.replace(entry.getKey(), entry.getValue());
+      result = result.replace(entry.getKey(), Optional.ofNullable(entry.getValue()).orElse(""));
     }
     return result;
   }
 
   private boolean containsEmptyForeachVariable(final String s, final Map<String, String> foreach) {
     for (final Entry<String, String> entry : foreach.entrySet()) {
-      if (entry.getValue().isEmpty() && s.contains(entry.getKey())) {
+      if ((entry.getValue() == null || entry.getValue().isEmpty()) && s.contains(entry.getKey())) {
         return true;
       }
     }
@@ -977,13 +988,13 @@ public final class GameParser {
       final Territory territory = getTerritory(current.getTerritory());
       final UnitType type = getUnitType(current.getUnitType());
       final String ownerString = current.getOwner();
-      final int hits = current.getHitsTaken();
+      final int hits = Optional.ofNullable(current.getHitsTaken()).orElse(0);
       if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
         throw new GameParseException(
             "hitsTaken cannot be less than zero or greater than one less than total hitPoints");
       }
 
-      final int unitDamage = current.getUnitDamage();
+      final int unitDamage = Optional.ofNullable(current.getUnitDamage()).orElse(0);
       if (unitDamage < 0) {
         throw new GameParseException("unitDamage cannot be less than zero");
       }
@@ -994,7 +1005,7 @@ public final class GameParser {
       } else {
         owner = getPlayerIdOptional(current.getOwner()).orElse(null);
       }
-      final int quantity = current.getQuantity();
+      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       territory.getUnitCollection().addAll(type.create(quantity, owner, false, hits, unitDamage));
     }
   }
