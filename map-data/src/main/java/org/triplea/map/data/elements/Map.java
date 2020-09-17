@@ -1,27 +1,45 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Map {
 
-  @TagList private List<Territory> territories;
+  @XmlElement(name = "territory")
+  @TagList
+  private List<Territory> territories;
 
-  @TagList private List<Connection> connections;
+  @XmlElement(name = "connection")
+  @TagList
+  private List<Connection> connections;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Territory {
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String name;
 
-    @Attribute private boolean water;
+    @XmlAttribute @Attribute private Boolean water;
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Connection {
-    @Attribute private String t1;
-    @Attribute private String t2;
+    @XmlAttribute @Attribute private String t1;
+    @XmlAttribute @Attribute private String t2;
   }
 }

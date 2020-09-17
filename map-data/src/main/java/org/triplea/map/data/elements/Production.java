@@ -1,100 +1,164 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Production {
 
-  @TagList private List<ProductionRule> productionRules;
+  @XmlElement(name = "productionRule")
+  @TagList
+  private List<ProductionRule> productionRules;
 
-  @TagList private List<RepairRule> repairRules;
+  @XmlElement(name = "repairRule")
+  @TagList
+  private List<RepairRule> repairRules;
 
-  @TagList private List<RepairFrontier> repairFrontiers;
+  @XmlElement(name = "repairFrontier")
+  @TagList
+  private List<RepairFrontier> repairFrontiers;
 
-  @TagList private List<ProductionFrontier> productionFrontiers;
+  @XmlElement(name = "productionFrontier")
+  @TagList
+  private List<ProductionFrontier> productionFrontiers;
 
-  @TagList private List<PlayerProduction> playerProductions;
+  @XmlElement(name = "playerProduction")
+  @TagList
+  private List<PlayerProduction> playerProductions;
 
-  @TagList private List<PlayerRepair> playerRepairs;
+  @XmlElement(name = "playerRepair")
+  @TagList
+  private List<PlayerRepair> playerRepairs;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class ProductionRule {
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String name;
 
-    @TagList private List<Cost> costs;
+    @XmlElement(name = "cost")
+    @TagList
+    private List<Cost> costs;
 
-    @TagList private List<Result> results;
+    @XmlElement(name = "result")
+    @TagList
+    private List<Result> results;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Cost {
-      @Attribute private String resource;
-      @Attribute private int quantity;
+      @XmlAttribute @Attribute private String resource;
+      @XmlAttribute @Attribute private Integer quantity;
     }
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Result {
-      @Attribute private String resourceOrUnit;
-      @Attribute private int quantity;
+      @XmlAttribute @Attribute private String resourceOrUnit;
+      @XmlAttribute @Attribute private Integer quantity;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class RepairRule {
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String name;
 
-    @TagList private List<ProductionRule.Cost> costs;
+    @XmlElement(name = "cost")
+    @TagList
+    private List<ProductionRule.Cost> costs;
 
-    @TagList private List<ProductionRule.Result> results;
+    @XmlElement(name = "result")
+    @TagList
+    private List<ProductionRule.Result> results;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Cost {
-      @Attribute private String resource;
-      @Attribute private String quantity;
+      @XmlAttribute @Attribute private String resource;
+      @XmlAttribute @Attribute private String quantity;
     }
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Result {
-      @Attribute private String resourceOrUnit;
-      @Attribute private String quantity;
+      @XmlAttribute @Attribute private String resourceOrUnit;
+      @XmlAttribute @Attribute private String quantity;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class RepairFrontier {
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String name;
 
-    @TagList private List<RepairRules> repairRules;
+    @XmlElement @TagList private List<RepairRules> repairRules;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RepairRules {
-      @Attribute private String name;
+      @XmlAttribute @Attribute private String name;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class ProductionFrontier {
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String name;
 
-    @TagList private List<FrontierRules> frontierRules;
+    @XmlElement @TagList private List<FrontierRules> frontierRules;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class FrontierRules {
-      @Attribute private String name;
+      @XmlAttribute @Attribute private String name;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class PlayerProduction {
-    @Attribute private String player;
-    @Attribute private String frontier;
+    @XmlAttribute @Attribute private String player;
+    @XmlAttribute @Attribute private String frontier;
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class PlayerRepair {
-    @Attribute private String player;
-    @Attribute private String frontier;
+    @XmlAttribute @Attribute private String player;
+    @XmlAttribute @Attribute private String frontier;
   }
 }

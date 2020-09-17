@@ -28,6 +28,7 @@ public class ExtendedLibraryExampleTest extends AbstractXmlMapperTest {
 
     static class Name {
       @Attribute private String libraryName;
+      @Attribute private String notInTheXml;
     }
 
     static class MostRead {
@@ -77,7 +78,6 @@ public class ExtendedLibraryExampleTest extends AbstractXmlMapperTest {
 
   @Test
   void verifyExtendedExample() throws Exception {
-
     final Library library = xmlMapper.mapXmlToObject(Library.class);
     assertThat(library, is(notNullValue()));
 

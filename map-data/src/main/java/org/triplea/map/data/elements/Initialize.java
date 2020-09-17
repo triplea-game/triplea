@@ -1,77 +1,117 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Initialize {
-  @Tag private OwnerInitialize ownerInitialize;
-  @Tag private UnitInitialize unitInitialize;
-  @Tag private ResourceInitialize resourceInitialize;
-  @Tag private RelationshipInitialize relationshipInitialize;
+  @XmlElement @Tag private OwnerInitialize ownerInitialize;
+  @XmlElement @Tag private UnitInitialize unitInitialize;
+  @XmlElement @Tag private ResourceInitialize resourceInitialize;
+  @XmlElement @Tag private RelationshipInitialize relationshipInitialize;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class OwnerInitialize {
-    @TagList private List<TerritoryOwner> territoryOwners;
+    @XmlElement(name = "territoryOwner")
+    @TagList
+    private List<TerritoryOwner> territoryOwners;
 
     @Getter
     public static class TerritoryOwner {
-      @Attribute private String territory;
-      @Attribute private String owner;
+      @XmlAttribute @Attribute private String territory;
+      @XmlAttribute @Attribute private String owner;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class UnitInitialize {
-    @TagList private List<UnitPlacement> unitPlacements;
+    @XmlElement(name = "unitPlacement")
+    @TagList
+    private List<UnitPlacement> unitPlacements;
 
-    @TagList private List<HeldUnits> heldUnits;
+    @XmlElement @TagList private List<HeldUnits> heldUnits;
 
     @Getter
     @ToString
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UnitPlacement {
-      @Attribute private String unitType;
-      @Attribute private String territory;
-      @Attribute private int quantity;
-      @Attribute private String owner;
-      @Attribute private int hitsTaken;
-      @Attribute private int unitDamage;
+      @XmlAttribute @Attribute private String unitType;
+      @XmlAttribute @Attribute private String territory;
+      @XmlAttribute @Attribute private int quantity;
+      @XmlAttribute @Attribute private String owner;
+      @XmlAttribute @Attribute private Integer hitsTaken;
+      @XmlAttribute @Attribute private Integer unitDamage;
     }
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class HeldUnits {
-      @Attribute private String unitType;
-      @Attribute private String player;
-      @Attribute private int quantity;
+      @XmlAttribute @Attribute private String unitType;
+      @XmlAttribute @Attribute private String player;
+      @XmlAttribute @Attribute private int quantity;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class ResourceInitialize {
-    @TagList private List<ResourceGiven> resourcesGiven;
+    @XmlElement(name = "resourceGiven")
+    @TagList
+    private List<ResourceGiven> resourcesGiven;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ResourceGiven {
-      @Attribute private String player;
-      @Attribute private String resource;
-      @Attribute private int quantity;
+      @XmlAttribute @Attribute private String player;
+      @XmlAttribute @Attribute private String resource;
+      @XmlAttribute @Attribute private int quantity;
     }
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class RelationshipInitialize {
-    @TagList private List<Relationship> relationships;
+    @XmlElement(name = "relationship")
+    @TagList
+    private List<Relationship> relationships;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Relationship {
-      @Attribute private String type;
-      @Attribute private int roundValue;
-      @Attribute private String player1;
-      @Attribute private String player2;
+      @XmlAttribute @Attribute private String type;
+      @XmlAttribute @Attribute private int roundValue;
+      @XmlAttribute @Attribute private String player1;
+      @XmlAttribute @Attribute private String player2;
     }
   }
 }

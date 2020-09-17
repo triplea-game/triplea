@@ -1,21 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <game>
     <attachmentList>
-        <attachment
-                foreach="foreach-value"
-                name="name-value"
-                attachTo="attachTo-value"
-                javaClass="javaClass-value">
-            <!-- type = default:"unitType" -->
+        <attachment foreach="foreach-value" name="name-value" attachTo="attachTo-value" javaClass="javaClass-value">
             <option name="default-option" value="some-value"/>
             <option name="default-option2" value="some-value2" count="2"/>
         </attachment>
-
-        <attachment
-                foreach="foreach-value2"
-                name="name-value2"
-                attachTo="attachTo-value2"
-                javaClass="javaClass-value2"
-                type="resource">
+        <attachment foreach="foreach-value2" name="name-value2" attachTo="attachTo-value2" javaClass="javaClass-value2" type="resource">
             <option name="option-name" value="option-value" count="option-count"/>
         </attachment>
     </attachmentList>

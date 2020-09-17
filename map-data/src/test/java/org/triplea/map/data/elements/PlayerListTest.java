@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
@@ -19,17 +20,17 @@ class PlayerListTest {
 
     assertThat(playerList.getPlayers().get(0), is(notNullValue()));
     assertThat(playerList.getPlayers().get(0).getName(), is("player1"));
-    assertThat(playerList.getPlayers().get(0).isOptional(), is(false));
-    assertThat(playerList.getPlayers().get(0).isCanBeDisabled(), is(false));
-    assertThat(playerList.getPlayers().get(0).getDefaultType(), is("Human"));
-    assertThat(playerList.getPlayers().get(0).isHidden(), is(false));
+    assertThat(playerList.getPlayers().get(0).getOptional(), is(nullValue()));
+    assertThat(playerList.getPlayers().get(0).getCanBeDisabled(), is(nullValue()));
+    assertThat(playerList.getPlayers().get(0).getDefaultType(), is(nullValue()));
+    assertThat(playerList.getPlayers().get(0).getIsHidden(), is(nullValue()));
 
     assertThat(playerList.getPlayers().get(1), is(notNullValue()));
     assertThat(playerList.getPlayers().get(1).getName(), is("player2"));
-    assertThat(playerList.getPlayers().get(1).isOptional(), is(true));
-    assertThat(playerList.getPlayers().get(1).isCanBeDisabled(), is(true));
+    assertThat(playerList.getPlayers().get(1).getOptional(), is(true));
+    assertThat(playerList.getPlayers().get(1).getCanBeDisabled(), is(true));
     assertThat(playerList.getPlayers().get(1).getDefaultType(), is("AI"));
-    assertThat(playerList.getPlayers().get(1).isHidden(), is(true));
+    assertThat(playerList.getPlayers().get(1).getIsHidden(), is(true));
 
     assertThat(playerList.getAlliances(), is(notNullValue()));
     assertThat(playerList.getAlliances(), hasSize(1));

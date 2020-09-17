@@ -1,37 +1,53 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AttachmentList {
   @TagList(names = {"Attachment", "Attatchment"})
+  @XmlElement(name = "attachment")
   private List<Attachment> attachments;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Attachment {
-    @Attribute private String foreach;
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String foreach;
+    @XmlAttribute @Attribute private String name;
 
     @Attribute(names = {"attachTo", "attatchTo"})
+    @XmlAttribute
     private String attachTo;
 
-    @Attribute private String javaClass;
+    @XmlAttribute @Attribute private String javaClass;
 
-    @Attribute(defaultValue = "unitType")
-    private String type;
+    @XmlAttribute @Attribute private String type;
 
-    @TagList private List<Option> options;
+    @XmlElement(name = "option")
+    @TagList
+    private List<Option> options;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Option {
-      @Attribute private String name;
-      @Attribute private String value;
+      @XmlAttribute @Attribute private String name;
+      @XmlAttribute @Attribute private String value;
 
-      @Attribute(defaultValue = "")
-      private String count;
+      @XmlAttribute @Attribute private String count;
     }
   }
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <game>
     <territoryEffectList>
         <territoryEffect name="city"/>
@@ -5,4 +6,3 @@
         <territoryEffect name="sea"/>
     </territoryEffectList>
 </game>
-

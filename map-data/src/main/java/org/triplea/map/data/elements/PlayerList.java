@@ -1,34 +1,51 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlayerList {
 
-  @TagList private List<Player> players;
+  @XmlElement(name = "player")
+  @TagList
+  private List<Player> players;
 
-  @TagList private List<Alliance> alliances;
+  @XmlElement(name = "alliance")
+  @TagList
+  private List<Alliance> alliances;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Player {
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String name;
 
-    @Attribute private boolean optional;
+    @XmlAttribute @Attribute private Boolean optional;
 
-    @Attribute private boolean canBeDisabled;
+    @XmlAttribute @Attribute private Boolean canBeDisabled;
 
-    @Attribute(defaultValue = "Human")
-    private String defaultType;
+    @XmlAttribute @Attribute private String defaultType;
 
-    @Attribute private boolean isHidden;
+    @XmlAttribute @Attribute private Boolean isHidden;
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Alliance {
-    @Attribute private String player;
-    @Attribute private String alliance;
+    @XmlAttribute @Attribute private String player;
+    @XmlAttribute @Attribute private String alliance;
   }
 }

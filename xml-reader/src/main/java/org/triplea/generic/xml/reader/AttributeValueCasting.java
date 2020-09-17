@@ -1,6 +1,7 @@
 package org.triplea.generic.xml.reader;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import org.triplea.generic.xml.reader.annotations.Attribute;
@@ -25,7 +26,8 @@ class AttributeValueCasting {
       return castToBoolean(attributeValue);
     } else {
       // type is a String
-      return Optional.ofNullable(attributeValue).orElseGet(attributeAnnotation::defaultValue);
+      return Strings.emptyToNull(
+          Optional.ofNullable(attributeValue).orElseGet(attributeAnnotation::defaultValue));
     }
   }
 

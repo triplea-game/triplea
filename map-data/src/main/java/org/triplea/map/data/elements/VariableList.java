@@ -1,24 +1,46 @@
 package org.triplea.map.data.elements;
 
 import java.util.List;
+import java.util.Optional;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VariableList {
 
-  @TagList private List<Variable> variables;
+  @XmlElement(name = "variable")
+  @TagList
+  private List<Variable> variables;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Variable {
-    @Attribute private String name;
+    @XmlAttribute @Attribute private String name;
 
-    @TagList private List<Element> elements;
+    @XmlElement(name = "element")
+    @TagList
+    private List<Element> elements;
 
-    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Element {
-      @Attribute private String name;
+      @XmlAttribute @Attribute private String name;
+
+      public String getName() {
+        return Optional.ofNullable(name).orElse("");
+      }
     }
   }
 }

@@ -1,6 +1,11 @@
 package org.triplea.map.data.elements;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Tag;
 
 /**
@@ -9,24 +14,29 @@ import org.triplea.generic.xml.reader.annotations.Tag;
  * without semantic meaning.
  */
 @Getter
+@XmlRootElement(name = "game")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Game {
-  @Tag private Info info;
-  @Tag private Triplea triplea;
+  @XmlElement @Tag private Info info;
+  @XmlElement @Tag private Triplea triplea;
 
+  @XmlElement(name = "attachmentList")
   @Tag(names = {"attachmentList", "attatchmentList"})
   private AttachmentList attachmentList;
 
-  @Tag private DiceSides diceSides;
-  @Tag private GamePlay gamePlay;
-  @Tag private Initialize initialize;
-  @Tag private Map map;
-  @Tag private ResourceList resourceList;
-  @Tag private PlayerList playerList;
-  @Tag private UnitList unitList;
-  @Tag private RelationshipTypes relationshipTypes;
-  @Tag private TerritoryEffectList territoryEffectList;
-  @Tag private Production production;
-  @Tag private Technology technology;
-  @Tag private PropertyList propertyList;
-  @Tag private VariableList variableList;
+  @XmlElement @Tag private DiceSides diceSides;
+  @XmlElement @Tag private GamePlay gamePlay;
+  @XmlElement @Tag private Initialize initialize;
+  @XmlElement @Tag private Map map;
+  @XmlElement @Tag private ResourceList resourceList;
+  @XmlElement @Tag private PlayerList playerList;
+  @XmlElement @Tag private UnitList unitList;
+  @XmlElement @Tag private RelationshipTypes relationshipTypes;
+  @XmlElement @Tag private TerritoryEffectList territoryEffectList;
+  @XmlElement @Tag private Production production;
+  @XmlElement @Tag private Technology technology;
+  @XmlElement @Tag private PropertyList propertyList;
+  @XmlElement @Tag private VariableList variableList;
 }
