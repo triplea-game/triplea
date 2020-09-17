@@ -25,6 +25,8 @@ import lombok.Value;
 @AllArgsConstructor
 public class OffensiveGeneralRetreat implements BattleStep {
 
+  private static final long serialVersionUID = -9192684621899682418L;
+
   private final BattleState battleState;
 
   private final BattleActions battleActions;
