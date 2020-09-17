@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 /** A collection of unit types. */
@@ -67,6 +68,10 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   @Override
   public Iterator<UnitType> iterator() {
     return unitTypes.values().iterator();
+  }
+
+  public Stream<UnitType> stream() {
+    return unitTypes.values().stream();
   }
 
   public Set<UnitType> getAllUnitTypes() {

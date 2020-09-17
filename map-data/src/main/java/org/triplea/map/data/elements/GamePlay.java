@@ -35,6 +35,9 @@ public class GamePlay {
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Sequence {
     @XmlElement(name = "step")
     @TagList
@@ -67,6 +70,9 @@ public class GamePlay {
   }
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Offset {
     @XmlAttribute @Attribute private Integer round;
   }
