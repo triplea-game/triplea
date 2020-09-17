@@ -45,9 +45,9 @@ public interface BattleState {
 
   boolean isOver();
 
-  Collection<Territory> getAttackerRetreatTerritories();
+  boolean isHeadless();
 
-  Collection<Territory> getEmptyOrFriendlySeaNeighbors(Collection<Unit> units);
+  Collection<Territory> getAttackerRetreatTerritories();
 
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 }

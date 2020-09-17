@@ -13,18 +13,23 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.properties.GameProperties;
+import java.util.Set;
 
 public class MockGameData {
   private final GameData gameData = mock(GameData.class);
   private final GameProperties gameProperties = mock(GameProperties.class);
   private final RelationshipTracker relationshipTracker = mock(RelationshipTracker.class);
+  private final GameMap gameMap = mock(GameMap.class);
 
   private MockGameData() {
     lenient().when(gameData.getProperties()).thenReturn(gameProperties);
     lenient().when(gameData.getRelationshipTracker()).thenReturn(relationshipTracker);
+    lenient().when(gameData.getMap()).thenReturn(gameMap);
   }
 
   public static MockGameData givenGameData() {
@@ -86,6 +91,12 @@ public class MockGameData {
 
   public MockGameData withAttackerRetreatPlanes(final boolean value) {
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withTerritoryHasNeighbors(
+      final Territory territory, final Set<Territory> neighbors) {
+    when(gameMap.getNeighbors(territory)).thenReturn(neighbors);
     return this;
   }
 }
