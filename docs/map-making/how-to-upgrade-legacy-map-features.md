@@ -1,4 +1,4 @@
-# Map Change Log
+# Map Features Change Log
 
 A list of changes to map files that have occurred over time.
 Caution, this list might not be complete, please let us know if there is anything missing.
@@ -35,12 +35,30 @@ Caution, this list might not be complete, please let us know if there is anythin
 - `<option name="isMechanized"` >> `<optiona name="isLandTransportable"`
 
 
+```
+<property name="..." value="...">
+   <number min="..." max="..."/>
+</property>
+
+>>
+
+<property name="..." value="..." min="..." max="..."/>
+```
+
 ### XML Deletions
 
 Delete these options entirely:
 
 - `<option name="takeUnitControl"`
 - `<option name="giveUnitControl"`
+
+
+Delete these tags (found under `<property>`)
+
+- `<boolean/>`
+- `<string/>`
+
+
 
 ## map.properties changes
 
