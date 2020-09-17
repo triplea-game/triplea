@@ -47,12 +47,6 @@ Caution, this list might not be complete, please let us know if there is anythin
 
 ### XML Deletions
 
-Delete these options entirely:
-
-- `<option name="takeUnitControl"`
-- `<option name="giveUnitControl"`
-
-
 Delete these tags (found under `<property>`)
 
 - `<boolean/>`
