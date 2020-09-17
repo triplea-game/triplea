@@ -188,6 +188,12 @@ public class BattleStepsTest {
     return unitAndAttachment.unit;
   }
 
+  public static Unit givenUnitWasAmphibious() {
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unit.getWasAmphibious()).thenReturn(true);
+    return unitAndAttachment.unit;
+  }
+
   @SafeVarargs
   private List<String> mergeSteps(final List<String>... steps) {
     return Stream.of(steps).flatMap(Collection::stream).collect(Collectors.toList());
@@ -711,7 +717,6 @@ public class BattleStepsTest {
         .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
     final List<String> steps =
         givenBattleSteps(
             givenBattleStateBuilder()
@@ -764,7 +769,6 @@ public class BattleStepsTest {
         .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
     final List<String> steps =
         givenBattleSteps(
             givenBattleStateBuilder()
@@ -1449,8 +1453,6 @@ public class BattleStepsTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     final List<String> steps =
         givenBattleSteps(
@@ -1489,8 +1491,6 @@ public class BattleStepsTest {
         .thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
     final List<String> steps =
         givenBattleSteps(
@@ -1780,7 +1780,6 @@ public class BattleStepsTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     when(unit1.getWasAmphibious()).thenReturn(true);
     when(unit3.getWasAmphibious()).thenReturn(false);
@@ -1812,7 +1811,6 @@ public class BattleStepsTest {
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     when(unit1.getWasAmphibious()).thenReturn(true);
     when(unit3.getWasAmphibious()).thenReturn(true);
@@ -1858,35 +1856,6 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify partial amphibious attack can not withdraw if not amphibious")
-  void partialAmphibiousAttackCanNotWithdrawIfNotAmphibious() {
-    givenPlayers();
-    final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenAnyUnit();
-    final Unit unit3 = givenAnyUnit();
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
-    final List<String> steps =
-        givenBattleSteps(
-            givenBattleStateBuilder()
-                .gameData(gameData)
-                .attacker(attacker)
-                .defender(defender)
-                .attackingUnits(List.of(unit1, unit3))
-                .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
-                .amphibious(false)
-                .build());
-
-    assertThat(steps, is(basicFightSteps()));
-  }
-
-  @Test
   @DisplayName("Verify attacker planes can withdraw if ww2v2 and amphibious")
   void attackingPlanesCanWithdrawWW2v2AndAmphibious() {
     givenPlayers();
@@ -1896,8 +1865,7 @@ public class BattleStepsTest {
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
     final List<String> steps =
         givenBattleSteps(
@@ -1931,7 +1899,6 @@ public class BattleStepsTest {
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
     final List<String> steps =
         givenBattleSteps(
@@ -1959,7 +1926,6 @@ public class BattleStepsTest {
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
     when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
 
@@ -1989,69 +1955,7 @@ public class BattleStepsTest {
         .thenReturn(false);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
-    final List<String> steps =
-        givenBattleSteps(
-            givenBattleStateBuilder()
-                .gameData(gameData)
-                .attacker(attacker)
-                .defender(defender)
-                .attackingUnits(List.of(unit1))
-                .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
-                .amphibious(false)
-                .build());
-
-    assertThat(steps, is(basicFightSteps()));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacker planes can not withdraw if "
-          + "attacker can partial amphibious retreat and not amphibious")
-  void attackingPlanesCanNotWithdrawPartialAmphibiousAndNotAmphibious() {
-    givenPlayers();
-    final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenAnyUnit();
-    final Unit unit3 = givenAnyUnit();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
-    final List<String> steps =
-        givenBattleSteps(
-            givenBattleStateBuilder()
-                .gameData(gameData)
-                .attacker(attacker)
-                .defender(defender)
-                .attackingUnits(List.of(unit1, unit3))
-                .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
-                .amphibious(false)
-                .build());
-
-    assertThat(steps, is(basicFightSteps()));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
-  void attackingPlanesCanNotWithdrawPlanesRetreatAndNotAmphibious() {
-    givenPlayers();
-    final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenAnyUnit();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
-        .thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
     final List<String> steps =
         givenBattleSteps(
             givenBattleStateBuilder()
