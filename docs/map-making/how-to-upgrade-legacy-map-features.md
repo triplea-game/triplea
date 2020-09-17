@@ -6,7 +6,7 @@ Caution, this list might not be complete, please let us know if there is anythin
 
 ## XML Changes
 
-- `<option name="isMechanized"` >> `<optiona name="isLandTransportable"`
+- `<option name="isMechanized"` >> `<option name="isLandTransportable"`
 - `<option name="isParatroop"` >> `<option name="isAirTransportable"`
 - `="Battleships repair at beginning of round"` >> `="Units Repair Hits Start Turn"`
 - `="Battleships repair at end of round"` >> `="Units Repair Hits End Turn"`
