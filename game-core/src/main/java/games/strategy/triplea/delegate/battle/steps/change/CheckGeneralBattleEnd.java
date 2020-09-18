@@ -52,11 +52,9 @@ public class CheckGeneralBattleEnd implements BattleStep {
       battleActions.endBattle(bridge);
       battleActions.attackerWins(bridge);
 
-    } else if (isStalemate()) {
-      if (!canAttackerRetreatInStalemate()) {
-        battleActions.endBattle(bridge);
-        battleActions.nobodyWins(bridge);
-      }
+    } else if (isStalemate() && !canAttackerRetreatInStalemate()) {
+      battleActions.endBattle(bridge);
+      battleActions.nobodyWins(bridge);
     }
   }
 
