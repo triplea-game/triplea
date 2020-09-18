@@ -19,7 +19,6 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -277,18 +276,18 @@ public class GameDataExporter {
   }
 
   private Initialize.OwnerInitialize ownerInitialize(final GameData data) {
-    final List<Initialize.OwnerInitialize.TerritoryOwner> territoryOwners = new ArrayList<>();
-
-    for (final Territory terr : data.getMap().getTerritories()) {
-      if (!terr.getOwner().getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
-        territoryOwners.add(
-            Initialize.OwnerInitialize.TerritoryOwner.builder()
-                .territory(terr.getName())
-                .owner(terr.getOwner().getName())
-                .build());
-      }
-    }
-    return Initialize.OwnerInitialize.builder().territoryOwners(territoryOwners).build();
+    return Initialize.OwnerInitialize.builder()
+        .territoryOwners(
+            data.getMap().getTerritories().stream()
+                .filter(terr -> !terr.getOwner().getName().equals(Constants.PLAYER_NAME_NEUTRAL))
+                .map(
+                    terr ->
+                        Initialize.OwnerInitialize.TerritoryOwner.builder()
+                            .territory(terr.getName())
+                            .owner(terr.getOwner().getName())
+                            .build())
+                .collect(Collectors.toList()))
+        .build();
   }
 
   private AttachmentList attachments(final GameData data) {
@@ -302,15 +301,14 @@ public class GameDataExporter {
 
   private static List<AttachmentList.Attachment.Option> printAttachmentOptionsBasedOnOriginalXml(
       final List<Tuple<String, String>> attachmentPlusValues) {
-    final List<AttachmentList.Attachment.Option> options = new ArrayList<>();
-    for (final Tuple<String, String> current : attachmentPlusValues) {
-      options.add(
-          AttachmentList.Attachment.Option.builder()
-              .name(current.getFirst())
-              .value(current.getSecond())
-              .build());
-    }
-    return options;
+    return attachmentPlusValues.stream()
+        .map(
+            current ->
+                AttachmentList.Attachment.Option.builder()
+                    .name(current.getFirst())
+                    .value(current.getSecond())
+                    .build())
+        .collect(Collectors.toList());
   }
 
   private AttachmentList.Attachment printAttachments(
@@ -319,40 +317,34 @@ public class GameDataExporter {
     final IAttachment attachment = attachmentPlusValues.getFirst();
     final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
 
-    String type = "";
-    if (attachTo.getClass().equals(GamePlayer.class)) {
-      type = "player";
-    }
-    if (attachTo.getClass().equals(UnitType.class)) {
-      type = "unitType";
-    }
-    if (attachTo.getClass().equals(Territory.class)) {
-      type = "territory";
-    }
-    if (attachTo.getClass().equals(TerritoryEffect.class)) {
-      type = "territoryEffect";
-    }
-    if (attachTo.getClass().equals(Resource.class)) {
-      type = "resource";
-    }
-    if (attachTo.getClass().equals(RelationshipType.class)) {
-      type = "relationship";
-    }
-    if (TechAdvance.class.isAssignableFrom(attachTo.getClass())) {
-      type = "technology";
-    }
-    if (type.isEmpty()) {
-      throw new AttachmentExportException(
-          "no attachmentType known for " + attachTo.getClass().getCanonicalName());
-    }
-
     return AttachmentList.Attachment.builder()
         .name(attachment.getName())
         .attachTo(attachTo.getName())
         .javaClass(attachment.getClass().getCanonicalName())
-        .type(type)
+        .type(determineAttachmentType(attachTo))
         .options(printAttachmentOptionsBasedOnOriginalXml(attachmentPlusValues.getSecond()))
         .build();
+  }
+
+  private static String determineAttachmentType(final NamedAttachable attachTo) {
+    if (attachTo.getClass().equals(GamePlayer.class)) {
+      return "player";
+    } else if (attachTo.getClass().equals(UnitType.class)) {
+      return "unitType";
+    } else if (attachTo.getClass().equals(Territory.class)) {
+      return "territory";
+    } else if (attachTo.getClass().equals(TerritoryEffect.class)) {
+      return "territoryEffect";
+    } else if (attachTo.getClass().equals(Resource.class)) {
+      return "resource";
+    } else if (attachTo.getClass().equals(RelationshipType.class)) {
+      return "relationship";
+    } else if (TechAdvance.class.isAssignableFrom(attachTo.getClass())) {
+      return "technology";
+    } else {
+      throw new AttachmentExportException(
+          "no attachmentType known for " + attachTo.getClass().getCanonicalName());
+    }
   }
 
   private static List<Production.RepairRule> repairRules(final GameData data) {
@@ -473,18 +465,17 @@ public class GameDataExporter {
   }
 
   private static GamePlay gamePlay(final GameData data) {
-    final List<GamePlay.Delegate> delegates = new ArrayList<>();
-    for (final IDelegate delegate : data.getDelegates()) {
-      if (!delegate.getName().equals("edit")) {
-        delegates.add(
-            GamePlay.Delegate.builder()
-                .name(delegate.getName())
-                .javaClass(delegate.getClass().getCanonicalName())
-                .display(delegate.getDisplayName())
-                .build());
-      }
-    }
-
+    final List<GamePlay.Delegate> delegates =
+        data.getDelegates().stream()
+            .filter(delegate -> !delegate.getName().equals("edit"))
+            .map(
+                delegate ->
+                    GamePlay.Delegate.builder()
+                        .name(delegate.getName())
+                        .javaClass(delegate.getClass().getCanonicalName())
+                        .display(delegate.getDisplayName())
+                        .build())
+            .collect(Collectors.toList());
     return GamePlay.builder()
         .delegates(delegates)
         .sequence(sequence(data))
