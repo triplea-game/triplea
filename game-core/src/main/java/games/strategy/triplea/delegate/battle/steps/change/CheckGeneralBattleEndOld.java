@@ -4,6 +4,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
@@ -22,21 +23,18 @@ public class CheckGeneralBattleEndOld extends CheckGeneralBattleEnd {
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (hasSideLost(BattleState.Side.OFFENSE)) {
-      getBattleActions().endBattle(bridge);
-      getBattleActions().defenderWins(bridge);
+      getBattleActions().endBattle(IBattle.WhoWon.DEFENDER, bridge);
 
     } else if (hasSideLost(BattleState.Side.DEFENSE)) {
       new RemoveUnprotectedUnits(getBattleState(), getBattleActions())
           .removeUnprotectedUnits(bridge, BattleState.Side.DEFENSE);
-      getBattleActions().endBattle(bridge);
-      getBattleActions().attackerWins(bridge);
+      getBattleActions().endBattle(IBattle.WhoWon.ATTACKER, bridge);
 
     } else if (isStalemate()) {
       if (canAttackerRetreatInStalemate()) {
         new OffensiveGeneralRetreat(getBattleState(), getBattleActions()).retreatUnits(bridge);
       }
-      getBattleActions().endBattle(bridge);
-      getBattleActions().nobodyWins(bridge);
+      getBattleActions().endBattle(IBattle.WhoWon.DRAW, bridge);
     }
   }
 }

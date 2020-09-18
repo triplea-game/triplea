@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
+import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit;
@@ -7,14 +10,23 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -93,17 +105,28 @@ class SubmergeSubsVsOnlyAirStepTest {
       final String displayName,
       final BattleState battleState,
       final List<Unit> expectedSubmergingSubs,
-      final boolean expectedSide) {
+      final BattleState.Side expectedSide) {
+
+    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
+    when(delegateBridge.getHistoryWriter()).thenReturn(mock(IDelegateHistoryWriter.class));
+
+    final BattleState battleStateSpy = spy(battleState);
+
     final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
+        new SubmergeSubsVsOnlyAirStep(battleStateSpy, battleActions);
 
     submergeSubsVsOnlyAirStep.execute(executionStack, delegateBridge);
 
-    verify(battleActions).submergeUnits(expectedSubmergingSubs, expectedSide, delegateBridge);
+    verify(battleStateSpy).retreatUnits(expectedSide, expectedSubmergingSubs);
   }
 
   static List<Arguments> submergeUnits() {
-    final Unit sub = givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit();
+    final UnitType unitType = mock(UnitType.class);
+    final UnitAttachment unitAttachment = mock(UnitAttachment.class);
+    when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
+    when(unitAttachment.getCanEvade()).thenReturn(true);
+    when(unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
+    final Unit sub = new Unit(unitType, mock(GamePlayer.class), mock(GameData.class));
     return List.of(
         Arguments.of(
             "Attacking subs submerge",
@@ -112,7 +135,7 @@ class SubmergeSubsVsOnlyAirStepTest {
                 .defendingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
                 .build(),
             List.of(sub),
-            false),
+            OFFENSE),
         Arguments.of(
             "Defending subs submerge",
             givenBattleStateBuilder()
@@ -120,6 +143,6 @@ class SubmergeSubsVsOnlyAirStepTest {
                 .defendingUnits(List.of(sub, givenAnyUnit()))
                 .build(),
             List.of(sub),
-            true));
+            DEFENSE));
   }
 }

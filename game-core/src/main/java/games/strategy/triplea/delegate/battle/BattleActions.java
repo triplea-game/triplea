@@ -4,7 +4,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -15,14 +14,6 @@ public interface BattleActions {
   void fireOffensiveAaGuns();
 
   void fireDefensiveAaGuns();
-
-  void submergeUnits(Collection<Unit> units, boolean defender, IDelegateBridge bridge);
-
-  void queryRetreat(
-      boolean defender,
-      RetreatType retreatType,
-      IDelegateBridge bridge,
-      Collection<Territory> initialAvailableTerritories);
 
   void fireNavalBombardment(IDelegateBridge bridge);
 
@@ -35,13 +26,7 @@ public interface BattleActions {
 
   void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge);
 
-  void endBattle(IDelegateBridge bridge);
-
-  void attackerWins(IDelegateBridge bridge);
-
-  void defenderWins(IDelegateBridge bridge);
-
-  void nobodyWins(IDelegateBridge bridge);
+  void endBattle(IBattle.WhoWon whoWon, IDelegateBridge bridge);
 
   void findTargetGroupsAndFire(
       ReturnFire returnFire,
@@ -65,4 +50,12 @@ public interface BattleActions {
       Collection<Unit> units,
       Collection<Unit> killedUnits,
       IDelegateBridge bridge);
+
+  Territory queryRetreatTerritory(
+      BattleState battleState,
+      IDelegateBridge bridge,
+      GamePlayer retreatingPlayer,
+      Collection<Territory> availableTerritories,
+      boolean submerge,
+      String text);
 }

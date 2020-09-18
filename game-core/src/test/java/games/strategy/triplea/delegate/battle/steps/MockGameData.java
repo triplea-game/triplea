@@ -5,6 +5,7 @@ import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
 import static games.strategy.triplea.Constants.LHTR_HEAVY_BOMBERS;
 import static games.strategy.triplea.Constants.PARTIAL_AMPHIBIOUS_RETREAT;
+import static games.strategy.triplea.Constants.SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
@@ -71,6 +72,11 @@ public class MockGameData {
 
   public MockGameData withSubmersibleSubs(final boolean value) {
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withSubmarinesDefendingMaySubmergeOrRetreat(final boolean value) {
+    when(gameProperties.get(SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT, false)).thenReturn(value);
     return this;
   }
 

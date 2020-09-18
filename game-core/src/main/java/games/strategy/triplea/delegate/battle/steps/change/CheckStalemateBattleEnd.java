@@ -4,6 +4,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.IBattle;
 import java.util.List;
 import org.triplea.java.ChangeOnNextMajorRelease;
 
@@ -27,8 +28,7 @@ public class CheckStalemateBattleEnd extends CheckGeneralBattleEnd {
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (isStalemate()) {
-      getBattleActions().endBattle(bridge);
-      getBattleActions().nobodyWins(bridge);
+      getBattleActions().endBattle(IBattle.WhoWon.DRAW, bridge);
     }
   }
 }

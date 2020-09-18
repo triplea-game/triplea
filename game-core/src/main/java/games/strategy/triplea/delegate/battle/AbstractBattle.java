@@ -136,7 +136,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   /** Figure out what units a transport is transporting and has to unloaded. */
-  Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
+  public Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (headless) {
       return List.of();
     } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {

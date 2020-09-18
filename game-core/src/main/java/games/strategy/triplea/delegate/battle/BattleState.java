@@ -14,11 +14,21 @@ import org.triplea.java.ChangeOnNextMajorRelease;
 public interface BattleState {
 
   enum Side {
-    OFFENSE,
-    DEFENSE;
+    OFFENSE(IBattle.WhoWon.ATTACKER),
+    DEFENSE(IBattle.WhoWon.DEFENDER);
+
+    private final IBattle.WhoWon whoWon;
+
+    Side(final IBattle.WhoWon whoWon) {
+      this.whoWon = whoWon;
+    }
 
     public Side getOpposite() {
       return this == OFFENSE ? DEFENSE : OFFENSE;
+    }
+
+    public IBattle.WhoWon won() {
+      return whoWon;
     }
   }
 
@@ -51,11 +61,15 @@ public interface BattleState {
 
   void clearWaitingToDie(Side... sides);
 
+  void retreatUnits(Side side, Collection<Unit> units);
+
   Collection<Unit> getAa(Side... sides);
 
   Collection<Unit> getBombardingUnits();
 
   Collection<Unit> getAmphibiousLandAttackers();
+
+  Collection<Unit> getKilled();
 
   GamePlayer getAttacker();
 
@@ -72,4 +86,8 @@ public interface BattleState {
   Collection<Territory> getAttackerRetreatTerritories();
 
   Collection<Unit> getDependentUnits(Collection<Unit> units);
+
+  Collection<Unit> getTransportDependents(Collection<Unit> units);
+
+  Collection<IBattle> getDependentBattles();
 }

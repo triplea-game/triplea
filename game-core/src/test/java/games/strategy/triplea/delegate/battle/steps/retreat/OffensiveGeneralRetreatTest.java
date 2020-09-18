@@ -14,26 +14,34 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.MustFightBattle;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.sound.ISound;
 
 @ExtendWith(MockitoExtension.class)
 class OffensiveGeneralRetreatTest {
@@ -283,237 +291,11 @@ class OffensiveGeneralRetreatTest {
   @Nested
   class Execute {
 
-    @Test
-    void yesIfWW2V2AndHasPlanes() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(givenUnitIsAir()))
-              .gameData(givenGameData().withWW2V2(true).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-      verify(battleActions)
-          .queryRetreat(
-              eq(false),
-              eq(MustFightBattle.RetreatType.PLANES),
-              eq(delegateBridge),
-              anyCollection());
-    }
-
-    @Test
-    void yesIfAttackerAirCanRetreatAndHasPlanes() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(givenUnitIsAir()))
-              .gameData(
-                  givenGameData()
-                      .withWW2V2(false)
-                      .withPartialAmphibiousRetreat(false)
-                      .withAttackerRetreatPlanes(true)
-                      .build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-      verify(battleActions)
-          .queryRetreat(
-              eq(false),
-              eq(MustFightBattle.RetreatType.PLANES),
-              eq(delegateBridge),
-              anyCollection());
-    }
-
-    @Test
-    void yesIfPartialAmphibiousRetreatAndHasPlanes() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(givenUnitIsAir()))
-              .gameData(givenGameData().withWW2V2(false).withPartialAmphibiousRetreat(true).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-      verify(battleActions)
-          .queryRetreat(
-              eq(false),
-              eq(MustFightBattle.RetreatType.PLANES),
-              eq(delegateBridge),
-              anyCollection());
-    }
-
-    @Test
-    void noIfWW2V2AndNoPlanes() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(givenAnyUnit()))
-              .gameData(givenGameData().withWW2V2(true).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-    }
-
-    @Test
-    void noIfAttackerAirCanRetreatAndNoPlanes() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(givenAnyUnit()))
-              .gameData(
-                  givenGameData()
-                      .withWW2V2(false)
-                      .withPartialAmphibiousRetreat(false)
-                      .withAttackerRetreatPlanes(true)
-                      .build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-    }
-
-    @Test
-    void yesIfNonAmphibUnits() {
-      final Unit amphibiousUnit = givenUnitWasAmphibious();
-      final Unit nonAmphibiousUnit = givenAnyUnit();
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(amphibiousUnit, nonAmphibiousUnit))
-              .gameData(givenGameData().withPartialAmphibiousRetreat(true).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-      verify(battleActions)
-          .queryRetreat(
-              eq(false),
-              eq(MustFightBattle.RetreatType.PARTIAL_AMPHIB),
-              eq(delegateBridge),
-              anyCollection());
-    }
-
-    @Test
-    void noIfNoNonAmphibUnits() {
-      final Unit amphibiousUnit = givenUnitWasAmphibious();
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(amphibiousUnit))
-              .gameData(givenGameData().withPartialAmphibiousRetreat(true).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-    }
-
-    @Test
-    void noIfPartialNotAllowed() {
-      final Unit amphibiousUnit = mock(Unit.class);
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .amphibious(true)
-              .attackingUnits(List.of(amphibiousUnit))
-              .gameData(givenGameData().withPartialAmphibiousRetreat(false).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-      // ensure that it doesn't even check for amphibious units
-      verify(amphibiousUnit, never()).getWasAmphibious();
-    }
-
-    @Test
-    void noIfNoRetreatTerritories() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .attackerRetreatTerritories(List.of())
-              .gameData(givenGameData().build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-    }
-
-    @Test
-    void yesIfRetreatTerritories() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .attackerRetreatTerritories(List.of(mock(Territory.class)))
-              .gameData(givenGameData().build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-      verify(battleActions)
-          .queryRetreat(
-              eq(false),
-              eq(MustFightBattle.RetreatType.DEFAULT),
-              eq(delegateBridge),
-              anyCollection());
-    }
-
-    @Test
-    void noIfDefenselessTransportsAndRestrictedCasualties() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .defendingUnits(List.of(givenUnitTransport()))
-              .attackerRetreatTerritories(List.of(mock(Territory.class)))
-              .gameData(
-                  givenGameData().withWW2V2(false).withTransportCasualtiesRestricted(true).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-    }
-
-    @Test
-    void yesIfNoRestrictedCasualtiesAndRetreatTerritories() {
-      final BattleState battleState =
-          givenBattleStateBuilder()
-              .attackingUnits(List.of(mock(Unit.class)))
-              .attackerRetreatTerritories(List.of(mock(Territory.class)))
-              .gameData(
-                  givenGameData().withWW2V2(false).withTransportCasualtiesRestricted(false).build())
-              .build();
-
-      final OffensiveGeneralRetreat offensiveGeneralRetreat =
-          new OffensiveGeneralRetreat(battleState, battleActions);
-      offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions).queryRetreat(anyBoolean(), any(), any(), anyCollection());
-      verify(battleActions)
-          .queryRetreat(
-              eq(false),
-              eq(MustFightBattle.RetreatType.DEFAULT),
-              eq(delegateBridge),
-              anyCollection());
-    }
+    @Mock GamePlayer attacker;
+    @Mock IDisplay display;
+    @Mock ISound sound;
+    @Mock IDelegateHistoryWriter historyWriter;
+    @Mock UnitCollection battleSiteCollection;
 
     @Test
     void noIfOver() {
@@ -522,7 +304,379 @@ class OffensiveGeneralRetreatTest {
       final OffensiveGeneralRetreat offensiveGeneralRetreat =
           new OffensiveGeneralRetreat(battleState, battleActions);
       offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).queryRetreat(anyBoolean(), any(), any(), anyCollection());
+      verify(battleActions, never())
+          .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+    }
+
+    @Nested
+    class AmphibRetreatPlanesAllowed {
+
+      @BeforeEach
+      public void setupMocks() {
+        when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
+        when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
+        when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
+        when(attacker.getName()).thenReturn("attacker");
+      }
+
+      @Test
+      void yesIfWW2V2AndHasPlanesDuringAmphibAttack() {
+        final Unit unit = givenUnitIsAir();
+        when(unit.getOwner()).thenReturn(attacker);
+        final Collection<Unit> retreatingUnits = List.of(unit);
+        final BattleState battleState =
+            spy(
+                givenBattleStateBuilder()
+                    .battleSite(battleSite)
+                    .attacker(attacker)
+                    .amphibious(true)
+                    .attackingUnits(retreatingUnits)
+                    .gameData(givenGameData().withWW2V2(true).build())
+                    .build());
+
+        when(battleActions.queryRetreatTerritory(
+                battleState,
+                delegateBridge,
+                attacker,
+                List.of(battleSite),
+                false,
+                "attacker retreat planes?"))
+            .thenReturn(battleSite);
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+
+        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      }
+
+      @Test
+      void yesIfAttackerAirCanRetreatAndHasPlanesDuringAmphibAttack() {
+        final Unit unit = givenUnitIsAir();
+        when(unit.getOwner()).thenReturn(attacker);
+        final Collection<Unit> retreatingUnits = List.of(unit);
+        final BattleState battleState =
+            spy(
+                givenBattleStateBuilder()
+                    .battleSite(battleSite)
+                    .attacker(attacker)
+                    .amphibious(true)
+                    .attackingUnits(retreatingUnits)
+                    .gameData(
+                        givenGameData()
+                            .withWW2V2(false)
+                            .withPartialAmphibiousRetreat(false)
+                            .withAttackerRetreatPlanes(true)
+                            .build())
+                    .build());
+
+        when(battleActions.queryRetreatTerritory(
+                battleState,
+                delegateBridge,
+                attacker,
+                List.of(battleSite),
+                false,
+                "attacker retreat planes?"))
+            .thenReturn(battleSite);
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+
+        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      }
+
+      @Test
+      void yesIfPartialAmphibiousRetreatAndHasPlanes() {
+        final Unit unit = givenUnitIsAir();
+        when(unit.getOwner()).thenReturn(attacker);
+        final Collection<Unit> retreatingUnits = List.of(unit);
+        final BattleState battleState =
+            spy(
+                givenBattleStateBuilder()
+                    .battleSite(battleSite)
+                    .attacker(attacker)
+                    .amphibious(true)
+                    .attackingUnits(retreatingUnits)
+                    .gameData(
+                        givenGameData().withWW2V2(false).withPartialAmphibiousRetreat(true).build())
+                    .build());
+
+        when(battleActions.queryRetreatTerritory(
+                battleState,
+                delegateBridge,
+                attacker,
+                List.of(battleSite),
+                false,
+                "attacker retreat planes?"))
+            .thenReturn(battleSite);
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      }
+    }
+
+    @Nested
+    class AmphibRetreatPartialAllowed {
+
+      @BeforeEach
+      public void setupMocks() {
+        when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
+        when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
+        when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
+        when(attacker.getName()).thenReturn("attacker");
+        when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);
+        when(battleSiteCollection.getHolder()).thenReturn(battleSite);
+      }
+
+      @Test
+      void yesIfNonAmphibUnitsDuringAmphibAttack() {
+        final Unit amphibiousUnit = givenUnitWasAmphibious();
+        final Unit nonAmphibiousUnit = givenAnyUnit();
+        when(nonAmphibiousUnit.getOwner()).thenReturn(attacker);
+        final Collection<Unit> retreatingUnits = List.of(nonAmphibiousUnit);
+        final Territory retreatSite = mock(Territory.class);
+        final UnitCollection retreatSiteCollection = mock(UnitCollection.class);
+        when(retreatSite.getUnitCollection()).thenReturn(retreatSiteCollection);
+        when(retreatSiteCollection.getHolder()).thenReturn(retreatSite);
+        final BattleState battleState =
+            spy(
+                givenBattleStateBuilder()
+                    .battleSite(battleSite)
+                    .attacker(attacker)
+                    .amphibious(true)
+                    .attackerRetreatTerritories(List.of(retreatSite))
+                    .attackingUnits(List.of(amphibiousUnit, nonAmphibiousUnit))
+                    .gameData(givenGameData().withPartialAmphibiousRetreat(true).build())
+                    .build());
+
+        when(battleActions.queryRetreatTerritory(
+                battleState,
+                delegateBridge,
+                attacker,
+                List.of(retreatSite),
+                false,
+                "attacker retreat non-amphibious units?"))
+            .thenReturn(retreatSite);
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      }
+    }
+
+    @Nested
+    class AmphibRetreatNotAllowed {
+      @Test
+      void noIfWW2V2AndNoPlanes() {
+        final BattleState battleState =
+            givenBattleStateBuilder()
+                .battleSite(battleSite)
+                .attacker(attacker)
+                .amphibious(true)
+                .attackingUnits(List.of(givenAnyUnit()))
+                .gameData(givenGameData().withWW2V2(true).build())
+                .build();
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleActions, never())
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+      }
+
+      @Test
+      void noIfAttackerAirCanRetreatAndNoPlanes() {
+        final BattleState battleState =
+            givenBattleStateBuilder()
+                .battleSite(battleSite)
+                .attacker(attacker)
+                .amphibious(true)
+                .attackingUnits(List.of(givenAnyUnit()))
+                .gameData(
+                    givenGameData()
+                        .withWW2V2(false)
+                        .withPartialAmphibiousRetreat(false)
+                        .withAttackerRetreatPlanes(true)
+                        .build())
+                .build();
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleActions, never())
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+      }
+
+      @Test
+      void noIfNoNonAmphibUnitsDuringAmphibAttack() {
+        final Unit amphibiousUnit = givenUnitWasAmphibious();
+        final BattleState battleState =
+            givenBattleStateBuilder()
+                .battleSite(battleSite)
+                .attacker(attacker)
+                .amphibious(true)
+                .attackingUnits(List.of(amphibiousUnit))
+                .gameData(givenGameData().withPartialAmphibiousRetreat(true).build())
+                .build();
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleActions, never())
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+      }
+
+      @Test
+      void noIfPartialNotAllowedDuringAmphibAttack() {
+        final Unit amphibiousUnit = mock(Unit.class);
+        final BattleState battleState =
+            givenBattleStateBuilder()
+                .battleSite(battleSite)
+                .attacker(attacker)
+                .amphibious(true)
+                .attackingUnits(List.of(amphibiousUnit))
+                .gameData(givenGameData().withPartialAmphibiousRetreat(false).build())
+                .build();
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleActions, never())
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+      }
+    }
+
+    @Nested
+    class NonAmphibRetreatAllowed {
+
+      @BeforeEach
+      public void setupMocks() {
+        when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
+        when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
+        when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
+        when(attacker.getName()).thenReturn("attacker");
+        when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);
+        when(battleSiteCollection.getHolder()).thenReturn(battleSite);
+      }
+
+      @Test
+      void yesIfRetreatTerritories() {
+        final Unit unit = givenAnyUnit();
+        when(unit.getOwner()).thenReturn(attacker);
+        final Collection<Unit> retreatingUnits = Set.of(unit);
+        final Territory retreatSite = mock(Territory.class);
+        final UnitCollection retreatSiteCollection = mock(UnitCollection.class);
+        when(retreatSite.getUnitCollection()).thenReturn(retreatSiteCollection);
+        when(retreatSiteCollection.getHolder()).thenReturn(retreatSite);
+        final BattleState battleState =
+            spy(
+                givenBattleStateBuilder()
+                    .battleSite(battleSite)
+                    .attacker(attacker)
+                    .attackingUnits(retreatingUnits)
+                    .attackerRetreatTerritories(List.of(retreatSite))
+                    .gameData(givenGameData().build())
+                    .build());
+
+        when(battleActions.queryRetreatTerritory(
+                battleState,
+                delegateBridge,
+                attacker,
+                List.of(retreatSite),
+                false,
+                "attacker retreat?"))
+            .thenReturn(retreatSite);
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      }
+
+      @Test
+      void yesIfNoRestrictedCasualtiesAndRetreatTerritories() {
+        final Unit unit = givenAnyUnit();
+        when(unit.getOwner()).thenReturn(attacker);
+        final Collection<Unit> retreatingUnits = Set.of(unit);
+        final Territory retreatSite = mock(Territory.class);
+        final UnitCollection retreatSiteCollection = mock(UnitCollection.class);
+        when(retreatSite.getUnitCollection()).thenReturn(retreatSiteCollection);
+        when(retreatSiteCollection.getHolder()).thenReturn(retreatSite);
+        final BattleState battleState =
+            spy(
+                givenBattleStateBuilder()
+                    .battleSite(battleSite)
+                    .attacker(attacker)
+                    .attackingUnits(retreatingUnits)
+                    .attackerRetreatTerritories(List.of(retreatSite))
+                    .gameData(
+                        givenGameData()
+                            .withWW2V2(false)
+                            .withTransportCasualtiesRestricted(false)
+                            .build())
+                    .build());
+
+        when(battleActions.queryRetreatTerritory(
+                battleState,
+                delegateBridge,
+                attacker,
+                List.of(retreatSite),
+                false,
+                "attacker retreat?"))
+            .thenReturn(retreatSite);
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      }
+    }
+
+    @Nested
+    class NonAmphibRetreatNotAllowed {
+
+      @Test
+      void noIfNoRetreatTerritories() {
+        final BattleState battleState =
+            givenBattleStateBuilder()
+                .battleSite(battleSite)
+                .attacker(attacker)
+                .attackerRetreatTerritories(List.of())
+                .gameData(givenGameData().build())
+                .build();
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleActions, never())
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+      }
+
+      @Test
+      void noIfDefenselessTransportsAndRestrictedCasualties() {
+        final BattleState battleState =
+            givenBattleStateBuilder()
+                .battleSite(battleSite)
+                .attacker(attacker)
+                .defendingUnits(List.of(givenUnitTransport()))
+                .attackerRetreatTerritories(List.of(mock(Territory.class)))
+                .gameData(
+                    givenGameData()
+                        .withWW2V2(false)
+                        .withTransportCasualtiesRestricted(true)
+                        .build())
+                .build();
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleActions, never())
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+      }
     }
   }
 }
