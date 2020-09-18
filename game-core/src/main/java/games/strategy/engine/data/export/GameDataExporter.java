@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -53,7 +54,7 @@ import org.triplea.util.Tuple;
 /** Exports a {@link GameData} instance in XML format. */
 @UtilityClass
 public class GameDataExporter {
-  public Game mapData(final GameData data) {
+  public static Game mapData(final GameData data) {
     return Game.builder()
         .info(info(data))
         .triplea(Triplea.builder().minimumVersion(ClientContext.engineVersion().toString()).build())
@@ -139,23 +140,27 @@ public class GameDataExporter {
         .build();
   }
 
-  private PropertyList propertyList(final GameData data) {
+  private static PropertyList propertyList(final GameData data) {
     final List<PropertyList.Property> properties =
-        new ArrayList<>(
-            printConstantProperties(data.getProperties().getConstantPropertiesByName()));
+        data.getProperties().getConstantPropertiesByName().entrySet().stream()
+            .map(entry -> mapToProperty(entry.getKey(), entry.getValue()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+
     properties.addAll(printEditableProperties(data.getProperties().getEditablePropertiesByName()));
 
     return PropertyList.builder().properties(properties).build();
   }
 
-  private List<PropertyList.Property> printEditableProperties(
+  private static List<PropertyList.Property> printEditableProperties(
       final Map<String, IEditableProperty<?>> editableProperties) {
     return editableProperties.values().stream()
         .map(GameDataExporter::printEditableProperty)
         .collect(Collectors.toList());
   }
 
-  private PropertyList.Property printEditableProperty(final IEditableProperty<?> prop) {
+  private static PropertyList.Property printEditableProperty(final IEditableProperty<?> prop) {
     final var propertyBuilder =
         PropertyList.Property.builder().editable(true).value(String.valueOf(prop.getValue()));
 
@@ -166,42 +171,31 @@ public class GameDataExporter {
     return propertyBuilder.build();
   }
 
-  private List<PropertyList.Property> printConstantProperties(
-      final Map<String, Object> conProperties) {
-    final List<PropertyList.Property> propertyList = new ArrayList<>();
-
-    for (final String propName : conProperties.keySet()) {
-      switch (propName) {
-        case "notes":
-          // Special handling of notes property
-          propertyList.add(printNotes((String) conProperties.get(propName)));
-          break;
-        case "EditMode":
-        case "GAME_UUID":
-        case ServerGame.GAME_HAS_BEEN_SAVED_PROPERTY:
-          // Don't print these options
-          break;
-        default:
-          propertyList.add(printConstantProperty(propName, conProperties.get(propName)));
-          break;
-      }
+  private static Optional<PropertyList.Property> mapToProperty(
+      final String propertyName, final Object propertyValue) {
+    switch (propertyName) {
+      case "notes":
+        // Special handling of notes property
+        return Optional.of(
+            PropertyList.Property.builder()
+                .valueProperty(
+                    PropertyList.Property.Value.builder().data((String) propertyValue).build())
+                .build());
+      case "EditMode":
+      case "GAME_UUID":
+      case ServerGame.GAME_HAS_BEEN_SAVED_PROPERTY:
+        // Don't print these options
+        return Optional.empty();
+      default:
+        return Optional.of(
+            PropertyList.Property.builder()
+                .name(propertyName)
+                .value(Optional.ofNullable(propertyValue).map(String::valueOf).orElse(null))
+                .build());
     }
-    return propertyList;
   }
 
-  private PropertyList.Property printNotes(final String notes) {
-    return PropertyList.Property.builder()
-        .valueProperty(
-            PropertyList.Property.Value.builder().data("<![CDATA[\n" + notes + "]]>\n").build())
-        .build();
-  }
-
-  private PropertyList.Property printConstantProperty(
-      final String propName, final Object property) {
-    return PropertyList.Property.builder().name(propName).value(String.valueOf(property)).build();
-  }
-
-  private Initialize.RelationshipInitialize relationshipInitialize(final GameData data) {
+  private static Initialize.RelationshipInitialize relationshipInitialize(final GameData data) {
     if (data.getRelationshipTypeList().getAllRelationshipTypes().size() <= 4) {
       return null;
     }
@@ -231,7 +225,7 @@ public class GameDataExporter {
     return Initialize.RelationshipInitialize.builder().relationships(relationships).build();
   }
 
-  private Initialize.ResourceInitialize resourceInitialize(final GameData data) {
+  private static Initialize.ResourceInitialize resourceInitialize(final GameData data) {
     final List<Initialize.ResourceInitialize.ResourceGiven> resourcesGiven = new ArrayList<>();
 
     for (final GamePlayer player : data.getPlayerList()) {
@@ -249,7 +243,7 @@ public class GameDataExporter {
     return Initialize.ResourceInitialize.builder().resourcesGiven(resourcesGiven).build();
   }
 
-  private Initialize.UnitInitialize unitInitialize(final GameData data) {
+  private static Initialize.UnitInitialize unitInitialize(final GameData data) {
     final List<Initialize.UnitInitialize.UnitPlacement> unitPlacements = new ArrayList<>();
 
     for (final Territory terr : data.getMap().getTerritories()) {
@@ -275,7 +269,7 @@ public class GameDataExporter {
     return Initialize.UnitInitialize.builder().unitPlacements(unitPlacements).build();
   }
 
-  private Initialize.OwnerInitialize ownerInitialize(final GameData data) {
+  private static Initialize.OwnerInitialize ownerInitialize(final GameData data) {
     return Initialize.OwnerInitialize.builder()
         .territoryOwners(
             data.getMap().getTerritories().stream()
@@ -290,7 +284,7 @@ public class GameDataExporter {
         .build();
   }
 
-  private AttachmentList attachments(final GameData data) {
+  private static AttachmentList attachments(final GameData data) {
     return AttachmentList.builder()
         .attachments(
             data.getAttachmentOrderAndValues().stream()
@@ -311,7 +305,7 @@ public class GameDataExporter {
         .collect(Collectors.toList());
   }
 
-  private AttachmentList.Attachment printAttachments(
+  private static AttachmentList.Attachment printAttachments(
       final Tuple<IAttachment, List<Tuple<String, String>>> attachmentPlusValues) {
 
     final IAttachment attachment = attachmentPlusValues.getFirst();
