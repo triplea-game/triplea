@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
+import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
@@ -1587,16 +1588,19 @@ public class MustFightBattle extends DependentBattle
     final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
     final BattleStep removeGeneralSuicide = new RemoveGeneralSuicide(this, this);
     final BattleStep offensiveGeneralRetreat = new OffensiveGeneralRetreat(this, this);
+    final BattleStep clearGeneralCasualties = new ClearGeneralCasualties(this, this);
 
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 8611067962952500496L;
+    steps.add(clearGeneralCasualties);
+    new IExecutable() {
+      private static final long serialVersionUID = 8611067962952500496L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            clearWaitingToDieAndDamagedChangesInto(bridge);
-          }
-        });
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new ClearGeneralCasualties(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
+      }
+    };
     steps.add(removeGeneralSuicide);
     new IExecutable() {
       private static final long serialVersionUID = 6387198382888361848L;

@@ -12,6 +12,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
+import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
@@ -58,7 +59,10 @@ public class BattleSteps implements BattleStepStrings {
         new ClearFirstStrikeCasualties(battleState, battleActions);
     final BattleStep offensiveStandard = new OffensiveGeneral(battleState, battleActions);
     final BattleStep defensiveStandard = new DefensiveGeneral(battleState, battleActions);
-    final BattleStep generalRetreat = new OffensiveGeneralRetreat(battleState, battleActions);
+    final BattleStep offensiveGeneralRetreat =
+        new OffensiveGeneralRetreat(battleState, battleActions);
+    final BattleStep clearGeneralCasualties =
+        new ClearGeneralCasualties(battleState, battleActions);
 
     final List<String> steps = new ArrayList<>();
     steps.addAll(offensiveAaStep.getNames());
@@ -96,13 +100,11 @@ public class BattleSteps implements BattleStepStrings {
     steps.addAll(airDefendVsNonSubs.getNames());
     steps.addAll(defensiveStandard.getNames());
 
-    // remove casualties
-    steps.add(REMOVE_CASUALTIES);
-    // retreat attacking subs
+    steps.addAll(clearGeneralCasualties.getNames());
     if (offensiveSubsSubmerge.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
       steps.addAll(offensiveSubsSubmerge.getNames());
     }
-    steps.addAll(generalRetreat.getNames());
+    steps.addAll(offensiveGeneralRetreat.getNames());
     if (defensiveSubsSubmerge.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
       steps.addAll(defensiveSubsSubmerge.getNames());
     }
