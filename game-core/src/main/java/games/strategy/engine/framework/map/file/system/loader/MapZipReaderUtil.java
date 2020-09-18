@@ -1,9 +1,7 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -29,7 +27,7 @@ class MapZipReaderUtil {
     final List<URI> zipFiles = new ArrayList<>();
 
     try (ZipFile zipFile = new ZipFile(zip);
-         URLClassLoader loader = new URLClassLoader(new URL[] {zip.toURI().toURL()})) {
+        URLClassLoader loader = new URLClassLoader(new URL[] {zip.toURI().toURL()})) {
 
       final Enumeration<? extends ZipEntry> entries = zipFile.entries();
       while (entries.hasMoreElements()) {
