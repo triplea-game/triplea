@@ -465,7 +465,7 @@ public final class GameParser {
 
     for (final PropertyList.Property current : propertyList.getProperties()) {
       if (current.getName() == null) {
-        return;
+        continue;
       }
       final String propertyName = LegacyPropertyMapper.mapPropertyName(current.getName());
 
