@@ -13,6 +13,7 @@ public class ShallowParsedGame {
 
   public Optional<PropertyList.Property> getProperty(final String propertyName) {
     return propertyList.getProperties().stream()
+        .filter(property -> property.getName() != null)
         .filter(property -> property.getName().equalsIgnoreCase(propertyName))
         .findAny();
   }
