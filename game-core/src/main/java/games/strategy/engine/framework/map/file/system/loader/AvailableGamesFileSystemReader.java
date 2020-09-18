@@ -42,6 +42,10 @@ public class AvailableGamesFileSystemReader {
     return availableGamesListCache;
   }
 
+  public static void populateAvailableMapFilesCache() {
+    parseMapFiles();
+  }
+
   private Collection<DefaultGameChooserEntry> mapXmlsGameNamesByUri(
       final Collection<URI> fileList) {
     return fileList.stream()
