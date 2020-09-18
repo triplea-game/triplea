@@ -8,6 +8,7 @@ import games.strategy.engine.framework.CliProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
@@ -91,5 +92,6 @@ public final class HeadedGameRunner {
     SwingUtilities.invokeLater(ConsoleConfiguration::initialize);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
     GameRunner.start();
+    new Thread(AvailableGamesFileSystemReader::populateAvailableMapFilesCache).start();
   }
 }
