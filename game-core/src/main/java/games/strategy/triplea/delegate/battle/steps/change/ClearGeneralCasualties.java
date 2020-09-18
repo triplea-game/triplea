@@ -14,9 +14,9 @@ import lombok.AllArgsConstructor;
 public class ClearGeneralCasualties implements BattleStep {
   private static final long serialVersionUID = 995118832242624142L;
 
-  protected final BattleState battleState;
+  private final BattleState battleState;
 
-  protected final BattleActions battleActions;
+  private final BattleActions battleActions;
 
   @Override
   public List<String> getNames() {
