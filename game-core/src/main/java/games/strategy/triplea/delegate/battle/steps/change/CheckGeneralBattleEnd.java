@@ -13,8 +13,6 @@ import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
@@ -26,9 +24,13 @@ public class CheckGeneralBattleEnd implements BattleStep {
 
   private final BattleActions battleActions;
 
-  private final BiConsumer<IDelegateBridge, BattleState.Side> removeUnprotectedUnits;
+  protected BattleActions getBattleActions() {
+    return battleActions;
+  }
 
-  private final Consumer<IDelegateBridge> retreatUnits;
+  protected BattleState getBattleState() {
+    return battleState;
+  }
 
   @Override
   public List<String> getNames() {
@@ -47,24 +49,22 @@ public class CheckGeneralBattleEnd implements BattleStep {
       battleActions.defenderWins(bridge);
 
     } else if (hasSideLost(BattleState.Side.DEFENSE)) {
-      removeUnprotectedUnits.accept(bridge, BattleState.Side.DEFENSE);
       battleActions.endBattle(bridge);
       battleActions.attackerWins(bridge);
 
     } else if (isStalemate()) {
-      if (canAttackerRetreatInStalemate()) {
-        retreatUnits.accept(bridge);
+      if (!canAttackerRetreatInStalemate()) {
+        battleActions.endBattle(bridge);
+        battleActions.nobodyWins(bridge);
       }
-      battleActions.endBattle(bridge);
-      battleActions.nobodyWins(bridge);
     }
   }
 
-  private boolean hasSideLost(final BattleState.Side side) {
+  protected boolean hasSideLost(final BattleState.Side side) {
     return battleState.getUnits(side).stream().noneMatch(Matches.unitIsNotInfrastructure());
   }
 
-  private boolean isStalemate() {
+  protected boolean isStalemate() {
     return (battleState.getMaxBattleRounds() > 0
             && battleState.getMaxBattleRounds() <= battleState.getBattleRound())
         || (getPower(BattleState.Side.OFFENSE) == 0 && getPower(BattleState.Side.DEFENSE) == 0);
@@ -86,7 +86,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
         .getEffectivePower();
   }
 
-  private boolean canAttackerRetreatInStalemate() {
+  protected boolean canAttackerRetreatInStalemate() {
     // First check if any units have an explicit "can retreat on stalemate"
     // property. If none do (all are null), then we will use a fallback algorithm.
     // If any unit has "can retreat on stalemate" set, then we will return true

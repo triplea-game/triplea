@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
@@ -52,6 +53,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
     removeUnprotectedUnits(bridge, BattleState.Side.OFFENSE);
   }
 
+  @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
   public void removeUnprotectedUnits(final IDelegateBridge bridge, final BattleState.Side side) {
     if (!Properties.getTransportCasualtiesRestricted(battleState.getGameData())) {
       return;

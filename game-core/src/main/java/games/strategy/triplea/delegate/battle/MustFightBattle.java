@@ -32,12 +32,15 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.change.CheckGeneralBattleEnd;
+import games.strategy.triplea.delegate.battle.steps.change.CheckGeneralBattleEndOld;
+import games.strategy.triplea.delegate.battle.steps.change.CheckStalemateBattleEnd;
 import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnitsGeneral;
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveFirstStrikeSuicide;
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveGeneralSuicide;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
@@ -1523,15 +1526,11 @@ public class MustFightBattle extends DependentBattle
     final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
     final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
     final BattleStep removeGeneralSuicide = new RemoveGeneralSuicide(this, this);
-    final OffensiveGeneralRetreat offensiveGeneralRetreat = new OffensiveGeneralRetreat(this, this);
+    final BattleStep offensiveGeneralRetreat = new OffensiveGeneralRetreat(this, this);
     final BattleStep clearGeneralCasualties = new ClearGeneralCasualties(this, this);
-    final RemoveUnprotectedUnits removeUnprotectedUnits = new RemoveUnprotectedUnits(this, this);
-    final BattleStep checkGeneralBattleEnd =
-        new CheckGeneralBattleEnd(
-            this,
-            this,
-            removeUnprotectedUnits::removeUnprotectedUnits,
-            offensiveGeneralRetreat::retreatUnits);
+    final BattleStep removeUnprotectedUnitsGeneral = new RemoveUnprotectedUnitsGeneral(this, this);
+    final BattleStep checkGeneralBattleEnd = new CheckGeneralBattleEnd(this, this);
+    final BattleStep checkStalemateBattleEnd = new CheckStalemateBattleEnd(this, this);
 
     steps.add(clearGeneralCasualties);
     new IExecutable() {
@@ -1554,6 +1553,7 @@ public class MustFightBattle extends DependentBattle
         new RemoveGeneralSuicide(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
       }
     };
+    steps.add(removeUnprotectedUnitsGeneral);
     steps.add(checkGeneralBattleEnd);
     new IExecutable() {
       private static final long serialVersionUID = 5259103822937067667L;
@@ -1561,15 +1561,7 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final OffensiveGeneralRetreat offensiveGeneralRetreat =
-            new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this);
-        final RemoveUnprotectedUnits removeUnprotectedUnits =
-            new RemoveUnprotectedUnits(MustFightBattle.this, MustFightBattle.this);
-        new CheckGeneralBattleEnd(
-                MustFightBattle.this,
-                MustFightBattle.this,
-                removeUnprotectedUnits::removeUnprotectedUnits,
-                offensiveGeneralRetreat::retreatUnits)
+        new CheckGeneralBattleEndOld(MustFightBattle.this, MustFightBattle.this)
             .execute(stack, bridge);
       }
     };
@@ -1623,6 +1615,7 @@ public class MustFightBattle extends DependentBattle
             .execute(stack, bridge);
       }
     };
+    steps.add(checkStalemateBattleEnd);
     if (defensiveSubsRetreat.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
       steps.add(defensiveSubsRetreat);
     }
