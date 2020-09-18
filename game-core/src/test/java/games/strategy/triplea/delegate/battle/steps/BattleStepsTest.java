@@ -40,9 +40,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
@@ -68,6 +70,7 @@ public class BattleStepsTest {
 
   @Mock GameData gameData;
   @Mock GameProperties gameProperties;
+  @Mock GameMap gameMap;
   @Mock BattleActions battleActions;
 
   @Mock Territory battleSite;
@@ -78,6 +81,7 @@ public class BattleStepsTest {
   @BeforeEach
   void setupMocks() {
     when(gameData.getProperties()).thenReturn(gameProperties);
+    lenient().when(gameData.getMap()).thenReturn(gameMap);
   }
 
   private void givenPlayers() {
@@ -1662,6 +1666,14 @@ public class BattleStepsTest {
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
+    final Territory retreatTerritory = mock(Territory.class);
+    when(retreatTerritory.isWater()).thenReturn(true);
+    when(retreatTerritory.getUnitCollection()).thenReturn(mock(UnitCollection.class));
+
+    final GameMap gameMap = mock(GameMap.class);
+    lenient().when(gameData.getMap()).thenReturn(gameMap);
+    when(gameMap.getNeighbors(battleSite)).thenReturn(Set.of(retreatTerritory));
+
     final List<String> steps =
         givenBattleSteps(
             givenBattleStateBuilder()
@@ -1670,7 +1682,6 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .emptyOrFriendlySeaNeighbors(List.of(battleSite))
                 .battleSite(battleSite)
                 .build());
 

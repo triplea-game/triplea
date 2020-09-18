@@ -4,6 +4,7 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -16,16 +17,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
-import games.strategy.triplea.delegate.battle.steps.MockGameData;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -37,14 +40,22 @@ class DefensiveSubsRetreatTest {
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
+  @Mock Territory battleSite;
 
   @Test
   void hasNamesWhenNotSubmersibleButHasRetreatTerritories() {
+    final Territory retreatTerritory = mock(Territory.class);
+    when(retreatTerritory.isWater()).thenReturn(true);
+    when(retreatTerritory.getUnitCollection()).thenReturn(mock(UnitCollection.class));
+
     final BattleState battleState =
         givenBattleStateBuilder()
+            .battleSite(battleSite)
             .defendingUnits(List.of(givenUnitCanEvade()))
-            .gameData(MockGameData.givenGameData().build())
-            .emptyOrFriendlySeaNeighbors(List.of(mock(Territory.class)))
+            .gameData(
+                givenGameData()
+                    .withTerritoryHasNeighbors(battleSite, Set.of(retreatTerritory))
+                    .build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -58,11 +69,7 @@ class DefensiveSubsRetreatTest {
         givenBattleStateBuilder()
             .defendingUnits(List.of(givenUnitCanEvade()))
             .gameData(
-                MockGameData.givenGameData()
-                    .withSubRetreatBeforeBattle(false)
-                    .withSubmersibleSubs(true)
-                    .build())
-            .emptyOrFriendlySeaNeighbors(List.of())
+                givenGameData().withSubRetreatBeforeBattle(false).withSubmersibleSubs(true).build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -78,10 +85,7 @@ class DefensiveSubsRetreatTest {
             .attackingUnits(List.of(mock(Unit.class)))
             .defendingUnits(List.of(givenUnitCanEvade()))
             .gameData(
-                MockGameData.givenGameData()
-                    .withSubRetreatBeforeBattle(false)
-                    .withSubmersibleSubs(true)
-                    .build())
+                givenGameData().withSubRetreatBeforeBattle(false).withSubmersibleSubs(true).build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -96,10 +100,7 @@ class DefensiveSubsRetreatTest {
             .attackingUnits(List.of(givenUnitDestroyer()))
             .defendingUnits(List.of(givenUnitCanEvade()))
             .gameData(
-                MockGameData.givenGameData()
-                    .withSubmersibleSubs(true)
-                    .withSubRetreatBeforeBattle(true)
-                    .build())
+                givenGameData().withSubmersibleSubs(true).withSubRetreatBeforeBattle(true).build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -110,10 +111,7 @@ class DefensiveSubsRetreatTest {
   @Test
   void hasNoNamesWhenCanNotSubmergeAndNoRetreatTerritories() {
     final BattleState battleState =
-        givenBattleStateBuilder()
-            .gameData(MockGameData.givenGameData().build())
-            .emptyOrFriendlySeaNeighbors(List.of())
-            .build();
+        givenBattleStateBuilder().gameData(givenGameData().build()).build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
@@ -122,11 +120,18 @@ class DefensiveSubsRetreatTest {
 
   @Test
   void retreatHappensWhenNotSubmersibleButHasRetreatTerritories() {
+    final Territory retreatTerritory = mock(Territory.class);
+    when(retreatTerritory.isWater()).thenReturn(true);
+    when(retreatTerritory.getUnitCollection()).thenReturn(mock(UnitCollection.class));
+
     final BattleState battleState =
         givenBattleStateBuilder()
             .defendingUnits(List.of(givenUnitCanEvade()))
-            .gameData(MockGameData.givenGameData().build())
-            .emptyOrFriendlySeaNeighbors(List.of(mock(Territory.class)))
+            .battleSite(battleSite)
+            .gameData(
+                givenGameData()
+                    .withTerritoryHasNeighbors(battleSite, Set.of(retreatTerritory))
+                    .build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -139,8 +144,7 @@ class DefensiveSubsRetreatTest {
     final BattleState battleState =
         givenBattleStateBuilder()
             .defendingUnits(List.of(givenUnitCanEvade()))
-            .gameData(MockGameData.givenGameData().withSubmersibleSubs(true).build())
-            .emptyOrFriendlySeaNeighbors(List.of())
+            .gameData(givenGameData().withSubmersibleSubs(true).build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -196,10 +200,7 @@ class DefensiveSubsRetreatTest {
   @Test
   void retreatDoesNotHappenWhenCanNotSubmergeAndNoRetreatTerritories() {
     final BattleState battleState =
-        givenBattleStateBuilder()
-            .gameData(MockGameData.givenGameData().build())
-            .emptyOrFriendlySeaNeighbors(List.of())
-            .build();
+        givenBattleStateBuilder().gameData(givenGameData().build()).build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
@@ -215,11 +216,10 @@ class DefensiveSubsRetreatTest {
         spy(
             givenBattleStateBuilder()
                 .gameData(
-                    MockGameData.givenGameData()
+                    givenGameData()
                         .withSubmersibleSubs(true)
                         .withSubRetreatBeforeBattle(false)
                         .build())
-                .emptyOrFriendlySeaNeighbors(List.of())
                 .build());
 
     doReturn(List.of()).when(battleState).getUnits(eq(BattleState.Side.OFFENSE));
@@ -248,11 +248,10 @@ class DefensiveSubsRetreatTest {
         spy(
             givenBattleStateBuilder()
                 .gameData(
-                    MockGameData.givenGameData()
+                    givenGameData()
                         .withSubmersibleSubs(true)
                         .withSubRetreatBeforeBattle(false)
                         .build())
-                .emptyOrFriendlySeaNeighbors(List.of())
                 .build());
 
     doReturn(List.of()).when(battleState).getUnits(eq(BattleState.Side.OFFENSE));
@@ -281,11 +280,10 @@ class DefensiveSubsRetreatTest {
         spy(
             givenBattleStateBuilder()
                 .gameData(
-                    MockGameData.givenGameData()
+                    givenGameData()
                         .withSubmersibleSubs(true)
                         .withSubRetreatBeforeBattle(true)
                         .build())
-                .emptyOrFriendlySeaNeighbors(List.of())
                 .build());
 
     doReturn(List.of()).when(battleState).getUnits(eq(BattleState.Side.OFFENSE));

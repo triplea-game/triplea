@@ -984,27 +984,6 @@ public class MustFightBattle extends DependentBattle
     return possible;
   }
 
-  @Override
-  public Collection<Territory> getEmptyOrFriendlySeaNeighbors(
-      final Collection<Unit> unitsToRetreat) {
-    Collection<Territory> possible = gameData.getMap().getNeighbors(battleSite);
-    if (headless) {
-      return possible;
-    }
-    // make sure we can move through the any canals
-    final Predicate<Territory> canalMatch =
-        t -> {
-          final Route r = new Route(battleSite, t);
-          return new MoveValidator(gameData).validateCanal(r, unitsToRetreat, defender) == null;
-        };
-    final Predicate<Territory> match =
-        Matches.territoryIsWater()
-            .and(Matches.territoryHasNoEnemyUnits(defender, gameData))
-            .and(canalMatch);
-    possible = CollectionUtils.getMatches(possible, match);
-    return possible;
-  }
-
   private void pushFightLoopOnStack() {
     if (isOver) {
       return;

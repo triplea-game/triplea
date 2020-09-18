@@ -60,19 +60,15 @@ public class FakeBattleState implements BattleState {
   final boolean over;
 
   @Getter(onMethod = @__({@Override}))
-  final Collection<Territory> attackerRetreatTerritories;
+  final boolean headless;
 
-  final Collection<Territory> emptyOrFriendlySeaNeighbors;
+  @Getter(onMethod = @__({@Override}))
+  final Collection<Territory> attackerRetreatTerritories;
 
   final Collection<Unit> dependentUnits;
 
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> bombardingUnits;
-
-  @Override
-  public Collection<Territory> getEmptyOrFriendlySeaNeighbors(final Collection<Unit> units) {
-    return emptyOrFriendlySeaNeighbors;
-  }
 
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
@@ -166,7 +162,6 @@ public class FakeBattleState implements BattleState {
         .gameData(mock(GameData.class))
         .amphibious(false)
         .over(false)
-        .attackerRetreatTerritories(List.of())
-        .emptyOrFriendlySeaNeighbors(List.of());
+        .attackerRetreatTerritories(List.of());
   }
 }
