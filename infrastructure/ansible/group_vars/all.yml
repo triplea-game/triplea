@@ -2,7 +2,6 @@
 # Other than these variables, roles should be fully self-contained.
 
 ansible_connection: ssh
-ansible_user: root
 
 lobby_db_name: lobby_db
 lobby_db_user: lobby_user
