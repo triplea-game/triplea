@@ -1,6 +1,8 @@
 - hosts: all
+  tags: system
   roles:
     - system/admin_user
+    - system/journald
 
 - hosts: support
   tags: support
