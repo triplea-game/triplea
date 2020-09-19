@@ -18,13 +18,11 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the game
  * selector panel on the staging screens, eg: map, round, filename.
  */
-@Log
 public class GameSelectorModel extends Observable implements GameSelector {
 
   private final Function<URI, Optional<GameData>> gameParser;
