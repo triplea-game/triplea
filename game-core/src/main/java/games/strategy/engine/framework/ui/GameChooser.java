@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.util.Optional;
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
@@ -29,6 +30,8 @@ import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.util.LocalizeHtml;
 
 /**
@@ -117,13 +120,16 @@ public class GameChooser extends JDialog {
           setVisible(false);
         };
 
+    final JButton cancelButton = new JButtonBuilder("Cancel").actionListener(this::dispose).build();
+    SwingKeyBinding.addKeyBinding(cancelButton, KeyCode.ESCAPE, this::dispose);
+
     final JPanel buttonsPanel =
         new JPanelBuilder()
             .boxLayoutHorizontal()
             .addHorizontalStrut(30)
             .add(Box.createGlue())
             .add(new JButtonBuilder("OK").actionListener(selectAndReturn).build())
-            .add(new JButtonBuilder("Cancel").actionListener(this::dispose).build())
+            .add(cancelButton)
             .add(Box.createGlue())
             .build();
     add(buttonsPanel, BorderLayout.SOUTH);
