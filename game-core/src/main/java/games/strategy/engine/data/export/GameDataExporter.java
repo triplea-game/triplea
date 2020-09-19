@@ -54,7 +54,7 @@ import org.triplea.util.Tuple;
 /** Exports a {@link GameData} instance in XML format. */
 @UtilityClass
 public class GameDataExporter {
-  public static Game mapData(final GameData data) {
+  public static Game convertToXmlModel(final GameData data) {
     return Game.builder()
         .info(info(data))
         .triplea(Triplea.builder().minimumVersion(ClientContext.engineVersion().toString()).build())

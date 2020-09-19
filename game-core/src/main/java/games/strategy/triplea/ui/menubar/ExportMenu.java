@@ -112,7 +112,7 @@ final class ExportMenu extends JMenu {
     }
     try {
       gameData.acquireReadLock();
-      final Game xmlGameModel = GameDataExporter.mapData(gameData);
+      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData);
       GameXmlWriter.exportXml(xmlGameModel, chooser.getSelectedFile().toPath());
     } finally {
       gameData.releaseReadLock();
