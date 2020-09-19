@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.ToString;
 
 /** Wrapper around the set of players in a game to provide utility functions and methods. */
@@ -47,6 +48,10 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
   @Override
   public Iterator<GamePlayer> iterator() {
     return getPlayers().iterator();
+  }
+
+  public Stream<GamePlayer> stream() {
+    return getPlayers().stream();
   }
 
   public Collection<String> getPlayersThatMayBeDisabled() {

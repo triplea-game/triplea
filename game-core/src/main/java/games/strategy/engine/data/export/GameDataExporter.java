@@ -2,262 +2,206 @@ package games.strategy.engine.data.export;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.ProductionFrontier;
-import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.RepairFrontier;
-import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.gameparser.XmlReader;
-import games.strategy.engine.data.properties.BooleanProperty;
-import games.strategy.engine.data.properties.ColorProperty;
-import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.data.properties.StringProperty;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.extern.java.Log;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.map.data.elements.AttachmentList;
+import org.triplea.map.data.elements.DiceSides;
+import org.triplea.map.data.elements.Game;
+import org.triplea.map.data.elements.GamePlay;
+import org.triplea.map.data.elements.Info;
+import org.triplea.map.data.elements.Initialize;
+import org.triplea.map.data.elements.PlayerList;
+import org.triplea.map.data.elements.Production;
+import org.triplea.map.data.elements.PropertyList;
+import org.triplea.map.data.elements.RelationshipTypes;
+import org.triplea.map.data.elements.ResourceList;
+import org.triplea.map.data.elements.Technology;
+import org.triplea.map.data.elements.TerritoryEffectList;
+import org.triplea.map.data.elements.Triplea;
+import org.triplea.map.data.elements.UnitList;
 import org.triplea.util.Tuple;
 
 /** Exports a {@link GameData} instance in XML format. */
-@Log
+@UtilityClass
 public class GameDataExporter {
-  private final StringBuilder xmlfile;
-
-  public GameDataExporter(final GameData data) {
-    xmlfile = new StringBuilder();
-    init(data);
-    tripleaMinimumVersion();
-    diceSides(data);
-    map(data);
-    resourceList(data);
-    playerList(data);
-    unitList(data);
-    relationshipTypeList(data);
-    territoryEffectList(data);
-    gamePlay(data);
-    production(data);
-    technology(data);
-    attachments(data);
-    initialize(data);
-    propertyList(data);
-    finish();
+  public static Game convertToXmlModel(final GameData data) {
+    return Game.builder()
+        .info(info(data))
+        .triplea(Triplea.builder().minimumVersion(ClientContext.engineVersion().toString()).build())
+        .diceSides(DiceSides.builder().value(data.getDiceSides()).build())
+        .map(map(data))
+        .resourceList(resourceList(data))
+        .playerList(playerList(data))
+        .unitList(unitList(data))
+        .relationshipTypes(relationshipTypeList(data))
+        .territoryEffectList(territoryEffectList(data))
+        .gamePlay(gamePlay(data))
+        .production(
+            Production.builder()
+                .productionRules(productionRules(data))
+                .repairRules(repairRules(data))
+                .repairFrontiers(repairFrontiers(data))
+                .productionFrontiers(productionFrontiers(data))
+                .playerProductions(playerProduction(data))
+                .playerRepairs(playerRepair(data))
+                .build())
+        .technology(
+            Technology.builder()
+                .technologies(technologies(data))
+                .playerTechs(playertechs(data))
+                .build())
+        .attachmentList(attachments(data))
+        .initialize(
+            Initialize.builder()
+                .ownerInitialize(ownerInitialize(data))
+                .unitInitialize(unitInitialize(data))
+                .resourceInitialize(resourceInitialize(data))
+                .relationshipInitialize(relationshipInitialize(data))
+                .build())
+        .propertyList(propertyList(data))
+        .build();
   }
 
-  private void tripleaMinimumVersion() {
-    // Since we do not keep the minimum version info in the game data, just put the current version
-    // of triplea here
-    // (since we have successfully started the map, it is basically correct)
-    xmlfile
-        .append("    <triplea minimumVersion=\"")
-        .append(ClientContext.engineVersion())
-        .append("\"/>\n");
-  }
+  private static List<Technology.PlayerTech> playertechs(final GameData data) {
+    final List<Technology.PlayerTech> playerTechs = new ArrayList<>();
 
-  private void diceSides(final GameData data) {
-    final int diceSides = data.getDiceSides();
-    xmlfile.append("    <diceSides value=\"").append(diceSides).append("\"/>\n");
-  }
-
-  private void technology(final GameData data) {
-    final String technologies = technologies(data);
-    final String playerTechs = playertechs(data);
-    if (technologies.length() > 0 || playerTechs.length() > 0) {
-      xmlfile.append("    <technology>\n");
-      xmlfile.append(technologies);
-      xmlfile.append(playerTechs);
-      xmlfile.append("    </technology>\n");
-    }
-  }
-
-  private static String playertechs(final GameData data) {
-    final StringBuilder returnValue = new StringBuilder();
     for (final GamePlayer player : data.getPlayerList()) {
       if (!player.getTechnologyFrontierList().getFrontiers().isEmpty()) {
-        returnValue
-            .append("        <playerTech player=\"")
-            .append(player.getName())
-            .append("\">\n");
+        final var playerTechBuilder = Technology.PlayerTech.builder().player(player.getName());
+
+        final List<Technology.PlayerTech.Category> categories = new ArrayList<>();
         for (final TechnologyFrontier frontier :
             player.getTechnologyFrontierList().getFrontiers()) {
-          returnValue
-              .append("            <category name=\"")
-              .append(frontier.getName())
-              .append("\">\n");
+          final var technologyFrontierBuilder =
+              Technology.PlayerTech.Category.builder().name(frontier.getName());
+
+          final List<Technology.PlayerTech.Category.Tech> techs = new ArrayList<>();
           for (final TechAdvance tech : frontier.getTechs()) {
-            String name = tech.getName();
-            final String cat = tech.getProperty();
-            if (TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES.contains(name)) {
-              name = cat;
-            }
-            returnValue.append("                <tech name=\"").append(name).append("\"/>\n");
+            techs.add(
+                Technology.PlayerTech.Category.Tech.builder()
+                    .name(
+                        TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES.contains(tech.getName())
+                            ? tech.getProperty()
+                            : tech.getName())
+                    .build());
           }
-          returnValue.append("            </category>\n");
+          categories.add(technologyFrontierBuilder.techs(techs).build());
         }
-        returnValue.append("        </playerTech>\n");
+
+        playerTechs.add(playerTechBuilder.categories(categories).build());
       }
     }
-    return returnValue.toString();
+    return playerTechs;
   }
 
-  private static String technologies(final GameData data) {
-    final StringBuilder returnValue = new StringBuilder();
-    if (!data.getTechnologyFrontier().getTechs().isEmpty()) {
-      returnValue.append("        <technologies>\n");
-      for (final TechAdvance tech : data.getTechnologyFrontier().getTechs()) {
-        String name = tech.getName();
-        final String cat = tech.getProperty();
-        // definedAdvances are handled differently by gameparser, they are set in xml with the
-        // category as the name but
-        // stored in java with the normal category and name, this causes an xml bug when exporting.
-        for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
-          if (definedName.equals(name)) {
-            name = cat;
-            break;
-          }
-        }
-        returnValue.append("            <techname name=\"").append(name).append("\"");
-        if (!name.equals(cat)) {
-          returnValue.append(" tech=\"").append(cat).append("\" ");
-        }
-        returnValue.append("/>\n");
-      }
-      returnValue.append("        </technologies>\n");
-    }
-    return returnValue.toString();
+  private static Technology.Technologies technologies(final GameData data) {
+    return Technology.Technologies.builder()
+        .techNames(
+            data.getTechnologyFrontier().getTechs().stream()
+                .map(
+                    tech ->
+                        Technology.Technologies.TechName.builder()
+                            .name(
+                                TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES.contains(tech.getName())
+                                    ? tech.getProperty()
+                                    : tech.getName())
+                            .build())
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  private void propertyList(final GameData data) {
-    xmlfile.append("    <propertyList>\n");
-    final GameProperties gameProperties = data.getProperties();
-    printConstantProperties(gameProperties.getConstantPropertiesByName());
-    printEditableProperties(gameProperties.getEditablePropertiesByName());
-    xmlfile.append("    </propertyList>\n");
+  private static PropertyList propertyList(final GameData data) {
+    final List<PropertyList.Property> properties =
+        data.getProperties().getConstantPropertiesByName().entrySet().stream()
+            .map(entry -> mapToProperty(entry.getKey(), entry.getValue()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+
+    properties.addAll(printEditableProperties(data.getProperties().getEditablePropertiesByName()));
+
+    return PropertyList.builder().properties(properties).build();
   }
 
-  private void printEditableProperties(final Map<String, IEditableProperty<?>> editableProperties) {
-    editableProperties.values().forEach(this::printEditableProperty);
+  private static List<PropertyList.Property> printEditableProperties(
+      final Map<String, IEditableProperty<?>> editableProperties) {
+    return editableProperties.values().stream()
+        .map(GameDataExporter::printEditableProperty)
+        .collect(Collectors.toList());
   }
 
-  private void printEditableProperty(final IEditableProperty<?> prop) {
-    String typeString = "";
-    String value = "" + prop.getValue();
-    if (prop.getClass().equals(BooleanProperty.class)) {
-      typeString = "            <boolean/>\n";
-    }
-    if (prop.getClass().equals(StringProperty.class)) {
-      typeString = "            <string/>\n";
-    }
-    if (prop.getClass().equals(ColorProperty.class)) {
-      typeString = "            <color/>\n";
-      value = "0x" + Integer.toHexString(((Integer) prop.getValue())).toUpperCase();
-    }
+  private static PropertyList.Property printEditableProperty(final IEditableProperty<?> prop) {
+    final var propertyBuilder =
+        PropertyList.Property.builder().editable(true).value(String.valueOf(prop.getValue()));
+
     if (prop.getClass().equals(NumberProperty.class)) {
       final NumberProperty numberProperty = (NumberProperty) prop;
-      typeString =
-          String.format(
-              "            <number min=\"%d\" max=\"%d\"/>\n",
-              numberProperty.getMin(), numberProperty.getMax());
+      propertyBuilder.min(numberProperty.getMin()).max(numberProperty.getMax());
     }
-    xmlfile
-        .append("        <property name=\"")
-        .append(prop.getName())
-        .append("\" value=\"")
-        .append(value)
-        .append("\" editable=\"true\">\n");
-    xmlfile.append(typeString);
-    xmlfile.append("        </property>\n");
+    return propertyBuilder.build();
   }
 
-  private void printConstantProperties(final Map<String, Object> conProperties) {
-    for (final String propName : conProperties.keySet()) {
-      switch (propName) {
-        case "notes":
-          // Special handling of notes property
-          printNotes((String) conProperties.get(propName));
-          break;
-        case "EditMode":
-        case "GAME_UUID":
-        case ServerGame.GAME_HAS_BEEN_SAVED_PROPERTY:
-          // Don't print these options
-          break;
-        default:
-          printConstantProperty(propName, conProperties.get(propName));
-          break;
-      }
+  private static Optional<PropertyList.Property> mapToProperty(
+      final String propertyName, final Object propertyValue) {
+    switch (propertyName) {
+      case "notes":
+        // Special handling of notes property
+        return Optional.of(
+            PropertyList.Property.builder()
+                .valueProperty(
+                    PropertyList.Property.Value.builder().data((String) propertyValue).build())
+                .build());
+      case "EditMode":
+      case "GAME_UUID":
+      case ServerGame.GAME_HAS_BEEN_SAVED_PROPERTY:
+        // Don't print these options
+        return Optional.empty();
+      default:
+        return Optional.of(
+            PropertyList.Property.builder()
+                .name(propertyName)
+                .value(Optional.ofNullable(propertyValue).map(String::valueOf).orElse(null))
+                .build());
     }
   }
 
-  private void printNotes(final String notes) {
-    xmlfile.append("        <property name=\"notes\">\n");
-    xmlfile.append("            <value>\n");
-    xmlfile.append("            <![CDATA[\n");
-    xmlfile.append(notes);
-    xmlfile.append("]]>\n");
-    xmlfile.append("            </value>\n");
-    xmlfile.append("        </property>\n");
-  }
-
-  private void printConstantProperty(final String propName, final Object property) {
-    xmlfile
-        .append("        <property name=\"")
-        .append(propName)
-        .append("\" value=\"")
-        .append(property.toString())
-        .append("\" editable=\"false\">\n");
-    if (property.getClass().equals(String.class)) {
-      xmlfile.append("            <string/>\n");
-    }
-    if (property.getClass().equals(File.class)) {
-      xmlfile.append("            <file/>\n");
-    }
-    if (property.getClass().equals(Boolean.class)) {
-      xmlfile.append("            <boolean/>\n");
-    }
-    xmlfile.append("        </property>\n");
-  }
-
-  private void initialize(final GameData data) {
-    xmlfile.append("    <initialize>\n");
-    ownerInitialize(data);
-    unitInitialize(data);
-    resourceInitialize(data);
-    relationshipInitialize(data);
-    xmlfile.append("    </initialize>\n");
-  }
-
-  private void relationshipInitialize(final GameData data) {
+  private static Initialize.RelationshipInitialize relationshipInitialize(final GameData data) {
     if (data.getRelationshipTypeList().getAllRelationshipTypes().size() <= 4) {
-      return;
+      return null;
     }
+    final List<Initialize.RelationshipInitialize.Relationship> relationships = new ArrayList<>();
+
     final RelationshipTracker rt = data.getRelationshipTracker();
-    xmlfile.append("        <relationshipInitialize>\n");
     final Collection<GamePlayer> players = data.getPlayerList().getPlayers();
     final Collection<GamePlayer> playersAlreadyDone = new HashSet<>();
     for (final GamePlayer p1 : players) {
@@ -267,409 +211,348 @@ public class GameDataExporter {
         }
         final RelationshipType type = rt.getRelationshipType(p1, p2);
         final int roundValue = rt.getRoundRelationshipWasCreated(p1, p2);
-        xmlfile
-            .append("            <relationship type=\"")
-            .append(type.getName())
-            .append("\" player1=\"")
-            .append(p1.getName())
-            .append("\" player2=\"")
-            .append(p2.getName())
-            .append("\" roundValue=\"")
-            .append(roundValue)
-            .append("\"/>\n");
+
+        relationships.add(
+            Initialize.RelationshipInitialize.Relationship.builder()
+                .type(type.getName())
+                .player1(p1.getName())
+                .player2(p2.getName())
+                .roundValue(roundValue)
+                .build());
       }
       playersAlreadyDone.add(p1);
     }
-    xmlfile.append("        </relationshipInitialize>\n");
+    return Initialize.RelationshipInitialize.builder().relationships(relationships).build();
   }
 
-  private void resourceInitialize(final GameData data) {
-    xmlfile.append("        <resourceInitialize>\n");
+  private static Initialize.ResourceInitialize resourceInitialize(final GameData data) {
+    final List<Initialize.ResourceInitialize.ResourceGiven> resourcesGiven = new ArrayList<>();
+
     for (final GamePlayer player : data.getPlayerList()) {
       for (final Resource resource : data.getResourceList().getResources()) {
         if (player.getResources().getQuantity(resource.getName()) > 0) {
-          xmlfile
-              .append("            <resourceGiven player=\"")
-              .append(player.getName())
-              .append("\" resource=\"")
-              .append(resource.getName())
-              .append("\" quantity=\"")
-              .append(player.getResources().getQuantity(resource.getName()))
-              .append("\"/>\n");
+          resourcesGiven.add(
+              Initialize.ResourceInitialize.ResourceGiven.builder()
+                  .player(player.getName())
+                  .resource(resource.getName())
+                  .quantity(player.getResources().getQuantity(resource.getName()))
+                  .build());
         }
       }
     }
-    xmlfile.append("        </resourceInitialize>\n");
+    return Initialize.ResourceInitialize.builder().resourcesGiven(resourcesGiven).build();
   }
 
-  private void unitInitialize(final GameData data) {
-    xmlfile.append("        <unitInitialize>\n");
+  private static Initialize.UnitInitialize unitInitialize(final GameData data) {
+    final List<Initialize.UnitInitialize.UnitPlacement> unitPlacements = new ArrayList<>();
+
     for (final Territory terr : data.getMap().getTerritories()) {
       final UnitCollection uc = terr.getUnitCollection();
       for (final GamePlayer player : uc.getPlayersWithUnits()) {
         final IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
         for (final UnitType unit : ucp.keySet()) {
-          if (player == null || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
-            xmlfile
-                .append("            <unitPlacement unitType=\"")
-                .append(unit.getName())
-                .append("\" territory=\"")
-                .append(terr.getName())
-                .append("\" quantity=\"")
-                .append(ucp.getInt(unit))
-                .append("\"/>\n");
-          } else {
-            xmlfile
-                .append("            <unitPlacement unitType=\"")
-                .append(unit.getName())
-                .append("\" territory=\"")
-                .append(terr.getName())
-                .append("\" quantity=\"")
-                .append(ucp.getInt(unit))
-                .append("\" owner=\"")
-                .append(player.getName())
-                .append("\"/>\n");
-          }
+
+          unitPlacements.add(
+              Initialize.UnitInitialize.UnitPlacement.builder()
+                  .owner(
+                      player == null || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)
+                          ? null
+                          : player.getName())
+                  .unitType(unit.getName())
+                  .territory(terr.getName())
+                  .quantity(ucp.getInt(unit))
+                  .build());
         }
       }
     }
-    xmlfile.append("        </unitInitialize>\n");
+
+    return Initialize.UnitInitialize.builder().unitPlacements(unitPlacements).build();
   }
 
-  private void ownerInitialize(final GameData data) {
-    xmlfile.append("        <ownerInitialize>\n");
-    for (final Territory terr : data.getMap().getTerritories()) {
-      if (!terr.getOwner().getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
-        xmlfile
-            .append("            <territoryOwner territory=\"")
-            .append(terr.getName())
-            .append("\" owner=\"")
-            .append(terr.getOwner().getName())
-            .append("\"/>\n");
-      }
-    }
-    xmlfile.append("        </ownerInitialize>\n");
+  private static Initialize.OwnerInitialize ownerInitialize(final GameData data) {
+    return Initialize.OwnerInitialize.builder()
+        .territoryOwners(
+            data.getMap().getTerritories().stream()
+                .filter(terr -> !terr.getOwner().getName().equals(Constants.PLAYER_NAME_NEUTRAL))
+                .map(
+                    terr ->
+                        Initialize.OwnerInitialize.TerritoryOwner.builder()
+                            .territory(terr.getName())
+                            .owner(terr.getOwner().getName())
+                            .build())
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  private void attachments(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("    <attachmentList>\n");
-    for (final Tuple<IAttachment, List<Tuple<String, String>>> attachment :
-        data.getAttachmentOrderAndValues()) {
-      // TODO: use a ui switch to determine if we are printing the xml as it was created, or as it
-      // stands right now
-      // (including changes to the game data)
-      printAttachments(attachment);
-    }
-    xmlfile.append("    </attachmentList>\n");
+  private static AttachmentList attachments(final GameData data) {
+    return AttachmentList.builder()
+        .attachments(
+            data.getAttachmentOrderAndValues().stream()
+                .map(GameDataExporter::printAttachments)
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  private static String printAttachmentOptionsBasedOnOriginalXml(
-      final List<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
-    if (attachmentPlusValues.isEmpty()) {
-      return "";
-    }
-    final StringBuilder sb = new StringBuilder();
-    boolean alreadyHasOccupiedTerrOf = false;
-    for (final Tuple<String, String> current : attachmentPlusValues) {
-      sb.append("            <option name=\"")
-          .append(current.getFirst())
-          .append("\" value=\"")
-          .append(current.getSecond())
-          .append("\"/>\n");
-      if (current.getFirst().equals("occupiedTerrOf")) {
-        alreadyHasOccupiedTerrOf = true;
-      }
-    }
-    // add occupiedTerrOf until we fix engine to only use originalOwner
-    if (!alreadyHasOccupiedTerrOf && attachment instanceof TerritoryAttachment) {
-      final TerritoryAttachment ta = (TerritoryAttachment) attachment;
-      if (ta.getOriginalOwner() != null) {
-        sb.append("            <option name=\"occupiedTerrOf\" value=\"")
-            .append(ta.getOriginalOwner().getName())
-            .append("\"/>\n");
-      }
-    }
-    return sb.toString();
+  private static List<AttachmentList.Attachment.Option> printAttachmentOptionsBasedOnOriginalXml(
+      final List<Tuple<String, String>> attachmentPlusValues) {
+    return attachmentPlusValues.stream()
+        .map(
+            current ->
+                AttachmentList.Attachment.Option.builder()
+                    .name(current.getFirst())
+                    .value(current.getSecond())
+                    .build())
+        .collect(Collectors.toList());
   }
 
-  private void printAttachments(
+  private static AttachmentList.Attachment printAttachments(
       final Tuple<IAttachment, List<Tuple<String, String>>> attachmentPlusValues) {
+
     final IAttachment attachment = attachmentPlusValues.getFirst();
-    try {
-      // TODO: none of the attachment exporter classes have been updated since TripleA version
-      // 1.3.2.2
-      final String attachmentOptions;
-      attachmentOptions =
-          printAttachmentOptionsBasedOnOriginalXml(attachmentPlusValues.getSecond(), attachment);
-      final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
-      // TODO: keep this list updated
-      String type = "";
-      if (attachTo.getClass().equals(GamePlayer.class)) {
-        type = "player";
-      }
-      if (attachTo.getClass().equals(UnitType.class)) {
-        type = "unitType";
-      }
-      if (attachTo.getClass().equals(Territory.class)) {
-        type = "territory";
-      }
-      if (attachTo.getClass().equals(TerritoryEffect.class)) {
-        type = "territoryEffect";
-      }
-      if (attachTo.getClass().equals(Resource.class)) {
-        type = "resource";
-      }
-      if (attachTo.getClass().equals(RelationshipType.class)) {
-        type = "relationship";
-      }
-      if (TechAdvance.class.isAssignableFrom(attachTo.getClass())) {
-        type = "technology";
-      }
-      if (type.isEmpty()) {
-        throw new AttachmentExportException(
-            "no attachmentType known for " + attachTo.getClass().getCanonicalName());
-      }
-      if (attachmentOptions.length() > 0) {
-        xmlfile
-            .append("        <attachment name=\"")
-            .append(attachment.getName())
-            .append("\" attachTo=\"")
-            .append(attachTo.getName())
-            .append("\" javaClass=\"")
-            .append(attachment.getClass().getCanonicalName())
-            .append("\" type=\"")
-            .append(type)
-            .append("\">\n");
-        xmlfile.append(attachmentOptions);
-        xmlfile.append("        </attachment>\n");
-      }
-    } catch (final Exception e) {
-      log.log(
-          Level.SEVERE,
-          "An Error occurred whilst trying to print the Attachment \""
-              + attachment.getName()
-              + "\"",
-          e);
+    final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
+
+    return AttachmentList.Attachment.builder()
+        .name(attachment.getName())
+        .attachTo(attachTo.getName())
+        .javaClass(attachment.getClass().getCanonicalName())
+        .type(determineAttachmentType(attachTo))
+        .options(printAttachmentOptionsBasedOnOriginalXml(attachmentPlusValues.getSecond()))
+        .build();
+  }
+
+  private static String determineAttachmentType(final NamedAttachable attachTo) {
+    if (attachTo.getClass().equals(GamePlayer.class)) {
+      return "player";
+    } else if (attachTo.getClass().equals(UnitType.class)) {
+      return "unitType";
+    } else if (attachTo.getClass().equals(Territory.class)) {
+      return "territory";
+    } else if (attachTo.getClass().equals(TerritoryEffect.class)) {
+      return "territoryEffect";
+    } else if (attachTo.getClass().equals(Resource.class)) {
+      return "resource";
+    } else if (attachTo.getClass().equals(RelationshipType.class)) {
+      return "relationship";
+    } else if (TechAdvance.class.isAssignableFrom(attachTo.getClass())) {
+      return "technology";
+    } else {
+      throw new AttachmentExportException(
+          "no attachmentType known for " + attachTo.getClass().getCanonicalName());
     }
   }
 
-  private void production(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("    <production>\n");
-    productionRules(data);
-    repairRules(data);
-    repairFrontiers(data);
-    productionFrontiers(data);
-    playerProduction(data);
-    playerRepair(data);
-    xmlfile.append("    </production>\n");
+  private static List<Production.RepairRule> repairRules(final GameData data) {
+
+    return data.getRepairRules().getRepairRules().stream()
+        .map(
+            rr ->
+                Production.RepairRule.builder()
+                    .costs(
+                        rr.getCosts().keySet().stream()
+                            .map(
+                                cost ->
+                                    Production.ProductionRule.Cost.builder()
+                                        .resource(cost.getName())
+                                        .quantity(rr.getCosts().getInt(cost))
+                                        .build())
+                            .collect(Collectors.toList()))
+                    .results(
+                        rr.getResults().keySet().stream()
+                            .map(
+                                result ->
+                                    Production.ProductionRule.Result.builder()
+                                        .resourceOrUnit(result.getName())
+                                        .quantity(rr.getResults().getInt(result))
+                                        .build())
+                            .collect(Collectors.toList()))
+                    .build())
+        .collect(Collectors.toList());
   }
 
-  private void repairRules(final GameData data) {
-    for (final RepairRule rr : data.getRepairRules().getRepairRules()) {
-      xmlfile.append("        <repairRule name=\"").append(rr.getName()).append("\">\n");
-      for (final Resource cost : rr.getCosts().keySet()) {
-        xmlfile
-            .append("            <cost resource=\"")
-            .append(cost.getName())
-            .append("\" quantity=\"")
-            .append(rr.getCosts().getInt(cost))
-            .append("\"/>\n");
-      }
-      for (final NamedAttachable result : rr.getResults().keySet()) {
-        xmlfile
-            .append("            <result resourceOrUnit=\"")
-            .append(result.getName())
-            .append("\" quantity=\"")
-            .append(rr.getResults().getInt(result))
-            .append("\"/>\n");
-      }
-      xmlfile.append("        </repairRule>\n");
-    }
+  private static List<Production.RepairFrontier> repairFrontiers(final GameData data) {
+    return data.getRepairFrontierList().getRepairFrontierNames().stream()
+        .map(frontierName -> data.getRepairFrontierList().getRepairFrontier(frontierName))
+        .map(
+            frontier ->
+                Production.RepairFrontier.builder()
+                    .name(frontier.getName())
+                    .repairRules(
+                        frontier.getRules().stream()
+                            .map(DefaultNamed::getName)
+                            .map(
+                                name ->
+                                    Production.RepairFrontier.RepairRules.builder()
+                                        .name(name)
+                                        .build())
+                            .collect(Collectors.toList()))
+                    .build())
+        .collect(Collectors.toList());
   }
 
-  private void repairFrontiers(final GameData data) {
-    for (final String frontierName : data.getRepairFrontierList().getRepairFrontierNames()) {
-      final RepairFrontier frontier = data.getRepairFrontierList().getRepairFrontier(frontierName);
-      xmlfile.append("\n");
-      xmlfile.append("        <repairFrontier name=\"").append(frontier.getName()).append("\">\n");
-      for (final RepairRule rule : frontier.getRules()) {
-        xmlfile.append("            <repairRules name=\"").append(rule.getName()).append("\"/>\n");
-      }
-      xmlfile.append("        </repairFrontier>\n");
-    }
-    xmlfile.append("\n");
+  private static List<Production.PlayerRepair> playerRepair(final GameData data) {
+    return data.getPlayerList().stream()
+        .filter(player -> player.getRepairFrontier() != null)
+        .filter(player -> player.getName() != null)
+        .map(
+            player ->
+                Production.PlayerRepair.builder()
+                    .player(player.getName())
+                    .frontier(player.getRepairFrontier().getName())
+                    .build())
+        .collect(Collectors.toList());
   }
 
-  private void playerRepair(final GameData data) {
-    for (final GamePlayer player : data.getPlayerList()) {
-      try {
-        final String playerRepair = player.getRepairFrontier().getName();
-        final String playername = player.getName();
-        xmlfile
-            .append("        <playerRepair player=\"")
-            .append(playername)
-            .append("\" frontier=\"")
-            .append(playerRepair)
-            .append("\"/>\n");
-      } catch (final NullPointerException npe) {
-        // neutral?
-      }
-    }
+  private static List<Production.PlayerProduction> playerProduction(final GameData data) {
+    return data.getPlayerList().stream()
+        .filter(player -> player.getName() != null)
+        .filter(player -> player.getProductionFrontier() != null)
+        .map(
+            player ->
+                Production.PlayerProduction.builder()
+                    .player(player.getName())
+                    .frontier(player.getProductionFrontier().getName())
+                    .build())
+        .collect(Collectors.toList());
   }
 
-  private void playerProduction(final GameData data) {
-    for (final GamePlayer player : data.getPlayerList()) {
-      try {
-        final String playerfrontier = player.getProductionFrontier().getName();
-        final String playername = player.getName();
-        xmlfile
-            .append("        <playerProduction player=\"")
-            .append(playername)
-            .append("\" frontier=\"")
-            .append(playerfrontier)
-            .append("\"/>\n");
-      } catch (final NullPointerException npe) {
-        // neutral?
-      }
-    }
+  private static List<Production.ProductionFrontier> productionFrontiers(final GameData data) {
+    return data.getProductionFrontierList().getProductionFrontierNames().stream()
+        .map(frontierName -> data.getProductionFrontierList().getProductionFrontier(frontierName))
+        .map(
+            frontier ->
+                Production.ProductionFrontier.builder()
+                    .name(frontier.getName())
+                    .frontierRules(
+                        frontier.getRules().stream()
+                            .map(DefaultNamed::getName)
+                            .map(Production.ProductionFrontier.FrontierRules::new)
+                            .collect(Collectors.toList()))
+                    .build())
+        .collect(Collectors.toList());
   }
 
-  private void productionFrontiers(final GameData data) {
-    for (final String frontierName :
-        data.getProductionFrontierList().getProductionFrontierNames()) {
-      final ProductionFrontier frontier =
-          data.getProductionFrontierList().getProductionFrontier(frontierName);
-      xmlfile.append("\n");
-      xmlfile
-          .append("        <productionFrontier name=\"")
-          .append(frontier.getName())
-          .append("\">\n");
-      for (final ProductionRule rule : frontier.getRules()) {
-        xmlfile
-            .append("            <frontierRules name=\"")
-            .append(rule.getName())
-            .append("\"/>\n");
-      }
-      xmlfile.append("        </productionFrontier>\n");
-    }
-    xmlfile.append("\n");
+  private static List<Production.ProductionRule> productionRules(final GameData data) {
+    return data.getProductionRuleList().getProductionRules().stream()
+        .map(
+            productionRule ->
+                Production.ProductionRule.builder()
+                    .costs(
+                        productionRule.getCosts().entrySet().stream()
+                            .map(
+                                costEntry ->
+                                    Production.ProductionRule.Cost.builder()
+                                        .resource(costEntry.getKey().getName())
+                                        .quantity(costEntry.getValue())
+                                        .build())
+                            .collect(Collectors.toList()))
+                    .results(
+                        productionRule.getResults().entrySet().stream()
+                            .map(
+                                resultEntry ->
+                                    Production.ProductionRule.Result.builder()
+                                        .resourceOrUnit(resultEntry.getKey().getName())
+                                        .quantity(resultEntry.getValue())
+                                        .build())
+                            .collect(Collectors.toList()))
+                    .build())
+        .collect(Collectors.toList());
   }
 
-  private void productionRules(final GameData data) {
-    for (final ProductionRule pr : data.getProductionRuleList().getProductionRules()) {
-      xmlfile.append("        <productionRule name=\"").append(pr.getName()).append("\">\n");
-      for (final Resource cost : pr.getCosts().keySet()) {
-        xmlfile
-            .append("            <cost resource=\"")
-            .append(cost.getName())
-            .append("\" quantity=\"")
-            .append(pr.getCosts().getInt(cost))
-            .append("\"/>\n");
-      }
-      for (final NamedAttachable result : pr.getResults().keySet()) {
-        xmlfile
-            .append("            <result resourceOrUnit=\"")
-            .append(result.getName())
-            .append("\" quantity=\"")
-            .append(pr.getResults().getInt(result))
-            .append("\"/>\n");
-      }
-      xmlfile.append("        </productionRule>\n");
-    }
+  private static GamePlay gamePlay(final GameData data) {
+    final List<GamePlay.Delegate> delegates =
+        data.getDelegates().stream()
+            .filter(delegate -> !delegate.getName().equals("edit"))
+            .map(
+                delegate ->
+                    GamePlay.Delegate.builder()
+                        .name(delegate.getName())
+                        .javaClass(delegate.getClass().getCanonicalName())
+                        .display(delegate.getDisplayName())
+                        .build())
+            .collect(Collectors.toList());
+    return GamePlay.builder()
+        .delegates(delegates)
+        .sequence(sequence(data))
+        .offset(GamePlay.Offset.builder().round(data.getSequence().getRound() - 1).build())
+        .build();
   }
 
-  private void gamePlay(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("    <gamePlay>\n");
-    for (final IDelegate delegate : data.getDelegates()) {
-      if (!delegate.getName().equals("edit")) {
-        xmlfile
-            .append("        <delegate name=\"")
-            .append(delegate.getName())
-            .append("\" javaClass=\"")
-            .append(delegate.getClass().getCanonicalName())
-            .append("\" display=\"")
-            .append(delegate.getDisplayName())
-            .append("\"/>\n");
-      }
-    }
-    sequence(data);
-    xmlfile
-        .append("        <offset round=\"")
-        .append(data.getSequence().getRound() - 1)
-        .append("\"/>\n");
-    xmlfile.append("    </gamePlay>\n");
-  }
+  private static GamePlay.Sequence sequence(final GameData data) {
+    final List<GamePlay.Sequence.Step> steps = new ArrayList<>();
 
-  private void sequence(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("        <sequence>\n");
     for (final GameStep step : data.getSequence()) {
-      xmlfile.append("            <step");
-      xmlfile.append(" name=\"").append(step.getName()).append("\"");
-      xmlfile.append(" delegate=\"").append(step.getDelegate().getName()).append("\"");
+      final var stepBuilder =
+          GamePlay.Sequence.Step.builder()
+              .name(step.getName())
+              .delegate(step.getDelegate().getName());
+
       if (step.getPlayerId() != null) {
-        xmlfile.append(" player=\"").append(step.getPlayerId().getName()).append("\"");
+        stepBuilder.player(step.getPlayerId().getName());
       }
       if (step.getDisplayName() != null) {
-        xmlfile.append(" display=\"").append(step.getDisplayName()).append("\"");
+        stepBuilder.display(step.getDisplayName());
       }
       if (step.getMaxRunCount() > -1) {
         int maxRun = step.getMaxRunCount();
         if (maxRun == 0) {
           maxRun = 1;
         }
-        xmlfile.append(" maxRunCount=\"").append(maxRun).append("\"");
+        stepBuilder.maxRunCount(maxRun);
       }
-      xmlfile.append("/>\n");
+      steps.add(stepBuilder.build());
     }
-    xmlfile.append("        </sequence>\n");
+
+    return GamePlay.Sequence.builder().steps(steps).build();
   }
 
-  private void unitList(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("    <unitList>\n");
-    for (final UnitType unit : data.getUnitTypeList()) {
-      xmlfile.append("        <unit name=\"").append(unit.getName()).append("\"/>\n");
-    }
-    xmlfile.append("    </unitList>\n");
+  private static UnitList unitList(final GameData data) {
+    return UnitList.builder()
+        .units(
+            data.getUnitTypeList().stream()
+                .map(DefaultNamed::getName)
+                .map(name -> UnitList.Unit.builder().name(name).build())
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  private void playerList(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("    <playerList>\n");
-    for (final GamePlayer player : data.getPlayerList().getPlayers()) {
-      xmlfile
-          .append("        <player name=\"")
-          .append(player.getName())
-          .append("\" optional=\"")
-          .append(player.getOptional())
-          .append("\"/>\n");
-    }
-    for (final String allianceName : data.getAllianceTracker().getAlliances()) {
-      for (final GamePlayer alliedPlayer :
-          data.getAllianceTracker().getPlayersInAlliance(allianceName)) {
-        xmlfile
-            .append("        <alliance player=\"")
-            .append(alliedPlayer.getName())
-            .append("\" alliance=\"")
-            .append(allianceName)
-            .append("\"/>\n");
-      }
-    }
-    xmlfile.append("    </playerList>\n");
+  private static PlayerList playerList(final GameData data) {
+    return PlayerList.builder()
+        .players(
+            data.getPlayerList().getPlayers().stream()
+                .map(
+                    player ->
+                        PlayerList.Player.builder()
+                            .name(player.getName())
+                            .optional(player.getOptional())
+                            .isHidden(player.isHidden())
+                            .canBeDisabled(player.getCanBeDisabled())
+                            .build())
+                .collect(Collectors.toList()))
+        .alliances(
+            data.getAllianceTracker().getAlliances().stream()
+                .map(
+                    allianceName ->
+                        data.getAllianceTracker().getPlayersInAlliance(allianceName).stream()
+                            .map(
+                                player ->
+                                    PlayerList.Alliance.builder()
+                                        .player(player.getName())
+                                        .alliance(allianceName)
+                                        .build())
+                            .collect(Collectors.toList()))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  private void relationshipTypeList(final GameData data) {
+  private static RelationshipTypes relationshipTypeList(final GameData data) {
     final Collection<RelationshipType> types =
         data.getRelationshipTypeList().getAllRelationshipTypes();
     if (types.size() <= 4) {
-      return;
+      return null;
     }
-    xmlfile.append("\n");
-    xmlfile.append("    <relationshipTypes>\n");
+
+    final List<RelationshipTypes.RelationshipType> relationshipTypes = new ArrayList<>();
     for (final RelationshipType current : types) {
       final String name = current.getName();
       if (name.equals(Constants.RELATIONSHIP_TYPE_SELF)
@@ -678,47 +561,66 @@ public class GameDataExporter {
           || name.equals(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED)) {
         continue;
       }
-      xmlfile.append("        <relationshipType name=\"").append(name).append("\"/>\n");
+
+      relationshipTypes.add(RelationshipTypes.RelationshipType.builder().name(name).build());
     }
-    xmlfile.append("    </relationshipTypes>\n");
+    return RelationshipTypes.builder().relationshipTypes(relationshipTypes).build();
   }
 
-  private void territoryEffectList(final GameData data) {
+  private static TerritoryEffectList territoryEffectList(final GameData data) {
     final Collection<TerritoryEffect> types = data.getTerritoryEffectList().values();
     if (types.isEmpty()) {
-      return;
+      return null;
     }
-    xmlfile.append("\n");
-    xmlfile.append("    <territoryEffectList>\n");
-    for (final TerritoryEffect current : types) {
-      xmlfile.append("        <territoryEffect name=\"").append(current.getName()).append("\"/>\n");
-    }
-    xmlfile.append("    </territoryEffectList>\n");
+    return TerritoryEffectList.builder()
+        .territoryEffects(
+            types.stream()
+                .map(DefaultNamed::getName)
+                .map(name -> TerritoryEffectList.TerritoryEffect.builder().name(name).build())
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  private void resourceList(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("    <resourceList>\n");
-    for (final Resource resource : data.getResourceList().getResources()) {
-      xmlfile.append("        <resource name=\"").append(resource.getName()).append("\"/>\n");
-    }
-    xmlfile.append("    </resourceList>\n");
+  private static ResourceList resourceList(final GameData data) {
+    return ResourceList.builder()
+        .resources(
+            data.getResourceList().getResources().stream()
+                .map(GameDataExporter::convertResource)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  private void map(final GameData data) {
-    xmlfile.append("\n");
-    xmlfile.append("    <map>\n");
-    xmlfile.append("        <!-- Territory Definitions -->\n");
-    final GameMap map = data.getMap();
-    for (final Territory ter : map.getTerritories()) {
-      xmlfile.append("        <territory name=\"").append(ter.getName()).append("\"");
-      if (ter.isWater()) {
-        xmlfile.append(" water=\"true\"");
-      }
-      xmlfile.append("/>\n");
-    }
+  private static List<ResourceList.Resource> convertResource(final Resource resource) {
+    return resource.getPlayers().isEmpty()
+        ? List.of(ResourceList.Resource.builder().name(resource.getName()).build())
+        : resource.getPlayers().stream()
+            .map(
+                player ->
+                    ResourceList.Resource.builder()
+                        .name(resource.getName())
+                        .isDisplayedFor(player.getName())
+                        .build())
+            .collect(Collectors.toList());
+  }
+
+  private static org.triplea.map.data.elements.Map map(final GameData data) {
+    final List<org.triplea.map.data.elements.Map.Territory> territories =
+        data.getMap().getTerritories().stream()
+            .map(
+                ter ->
+                    org.triplea.map.data.elements.Map.Territory.builder()
+                        .name(ter.getName())
+                        .water(ter.isWater())
+                        .build())
+            .collect(Collectors.toList());
+
     connections(data);
-    xmlfile.append("    </map>\n");
+
+    return org.triplea.map.data.elements.Map.builder()
+        .territories(territories)
+        .connections(connections(data))
+        .build();
   }
 
   @AllArgsConstructor
@@ -729,43 +631,32 @@ public class GameDataExporter {
     private final Territory territory2;
   }
 
-  private void connections(final GameData data) {
-    xmlfile.append("        <!-- Territory Connections -->\n");
+  private static List<org.triplea.map.data.elements.Map.Connection> connections(
+      final GameData data) {
+    final List<org.triplea.map.data.elements.Map.Connection> connections = new ArrayList<>();
+
     final GameMap map = data.getMap();
-    final List<Connection> reverseConnectionTracker = new ArrayList<>();
+    final Set<Connection> reverseConnectionTracker = new HashSet<>();
+
     for (final Territory ter : map.getTerritories()) {
       for (final Territory nb : map.getNeighbors(ter)) {
         if (!reverseConnectionTracker.contains(new Connection(ter, nb))) {
-          xmlfile
-              .append("        <connection t1=\"")
-              .append(ter.getName())
-              .append("\" t2=\"")
-              .append(nb.getName())
-              .append("\"/>\n");
-          reverseConnectionTracker.add(new Connection(nb, ter));
+          connections.add(
+              org.triplea.map.data.elements.Map.Connection.builder()
+                  .t1(ter.getName())
+                  .t2(nb.getName())
+                  .build());
+          reverseConnectionTracker.add(new Connection(ter, nb));
         }
       }
     }
+    return connections;
   }
 
-  private void init(final GameData data) {
-    xmlfile.append("<?xml version=\"1.0\"?>\n");
-    xmlfile.append("<!DOCTYPE game SYSTEM \"" + XmlReader.DTD_FILE_NAME + "\">\n");
-    xmlfile.append("<game>\n");
-    xmlfile
-        .append("    <info name=\"")
-        .append(data.getGameName())
-        .append("\" version=\"")
-        .append(data.getGameVersion().toString())
-        .append("\"/>\n");
-  }
-
-  private void finish() {
-    xmlfile.append("\n");
-    xmlfile.append("</game>\n");
-  }
-
-  public String getXml() {
-    return xmlfile.toString();
+  private static Info info(final GameData data) {
+    return Info.builder()
+        .name(data.getGameName())
+        .version(data.getGameVersion().toString())
+        .build();
   }
 }

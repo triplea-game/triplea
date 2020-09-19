@@ -32,6 +32,9 @@ public class Initialize {
     private List<TerritoryOwner> territoryOwners;
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TerritoryOwner {
       @XmlAttribute @Attribute private String territory;
       @XmlAttribute @Attribute private String owner;

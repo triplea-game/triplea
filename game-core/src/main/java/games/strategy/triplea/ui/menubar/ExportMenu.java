@@ -53,6 +53,8 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.java.Log;
+import org.triplea.map.data.elements.Game;
+import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
@@ -108,20 +110,12 @@ final class ExportMenu extends JMenu {
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
-    final String xmlFile;
     try {
       gameData.acquireReadLock();
-      final GameDataExporter exporter = new GameDataExporter(gameData);
-      xmlFile = exporter.getXml();
+      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData);
+      GameXmlWriter.exportXml(xmlGameModel, chooser.getSelectedFile().toPath());
     } finally {
       gameData.releaseReadLock();
-    }
-    try (Writer writer =
-        Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
-      writer.write(xmlFile);
-    } catch (final IOException e1) {
-      log.log(
-          Level.SEVERE, "Failed to write XML: " + chooser.getSelectedFile().getAbsolutePath(), e1);
     }
   }
 
