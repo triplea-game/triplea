@@ -63,8 +63,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
   }
 
   protected boolean isStalemate() {
-    return (battleState.getMaxBattleRounds() > 0
-            && battleState.getMaxBattleRounds() <= battleState.getBattleRound())
+    return battleState.getBattleRoundState().isLastRound()
         || (getPower(BattleState.Side.OFFENSE) == 0 && getPower(BattleState.Side.DEFENSE) == 0);
   }
 

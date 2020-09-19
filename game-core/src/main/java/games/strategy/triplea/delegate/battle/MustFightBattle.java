@@ -314,6 +314,11 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
+  public BattleRound getBattleRoundState() {
+    return BattleRound.of(round, maxRounds);
+  }
+
+  @Override
   public Collection<Unit> getUnits(final Side... sides) {
     final Collection<Unit> units = new ArrayList<>();
     for (final Side side : sides) {
@@ -381,11 +386,6 @@ public class MustFightBattle extends DependentBattle
       }
     }
     return units;
-  }
-
-  @Override
-  public int getMaxBattleRounds() {
-    return maxRounds;
   }
 
   /**

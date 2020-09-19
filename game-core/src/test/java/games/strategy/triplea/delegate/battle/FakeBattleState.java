@@ -24,10 +24,8 @@ import lombok.NonNull;
 @Builder
 public class FakeBattleState implements BattleState {
 
-  @Getter(onMethod = @__({@Override}))
   final int battleRound;
 
-  @Getter(onMethod = @__({@Override}))
   final int maxBattleRounds;
 
   @Getter(onMethod = @__({@Override}))
@@ -83,6 +81,11 @@ public class FakeBattleState implements BattleState {
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
     return dependentUnits;
+  }
+
+  @Override
+  public BattleRound getBattleRoundState() {
+    return BattleRound.of(battleRound, maxBattleRounds);
   }
 
   @Override

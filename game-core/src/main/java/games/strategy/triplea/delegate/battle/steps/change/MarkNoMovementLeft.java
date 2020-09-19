@@ -29,7 +29,7 @@ public class MarkNoMovementLeft implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (battleState.getBattleRound() == 1) {
+    if (battleState.getBattleRoundState().isFirstRound()) {
       battleActions.markNoMovementLeft(bridge);
     }
   }

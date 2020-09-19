@@ -7,6 +7,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.UUID;
+import lombok.Value;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
@@ -20,9 +21,21 @@ public interface BattleState {
     }
   }
 
-  int getBattleRound();
+  @Value(staticConstructor = "of")
+  class BattleRound {
+    int round;
+    int maxRounds;
 
-  int getMaxBattleRounds();
+    public boolean isLastRound() {
+      return maxRounds > 0 && maxRounds <= round;
+    }
+
+    public boolean isFirstRound() {
+      return round == 1;
+    }
+  }
+
+  BattleRound getBattleRoundState();
 
   Territory getBattleSite();
 
