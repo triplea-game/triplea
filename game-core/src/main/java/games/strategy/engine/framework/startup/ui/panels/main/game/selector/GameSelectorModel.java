@@ -86,15 +86,8 @@ public class GameSelectorModel extends Observable implements GameSelector {
       // try to load it as a saved game whatever the extension
       final GameData newData = GameDataManager.loadGame(file);
       newData.setSaveGameFileName(file.getName());
+      this.fileName = file.getName();
       setGameData(newData);
-    }
-  }
-
-  public void load(final @Nullable GameData data, final @Nullable String fileName) {
-    setGameData(data);
-    this.fileName = fileName;
-    if (data != null) {
-      log.info("Loaded game: " + data.getGameName() + ", in file: " + fileName);
     }
   }
 

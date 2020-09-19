@@ -129,15 +129,13 @@ public class HeadlessGameServer {
    * Loads a save game from the specified stream.
    *
    * @param input The stream containing the save game.
-   * @param fileName The label used to identify the save game in the UI. Typically the file name of
-   *     the save game on the remote client that requested the save game to be loaded.
    */
-  public synchronized void loadGameSave(final InputStream input, final String fileName) {
+  public synchronized void loadGameSave(final InputStream input) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
       getGameData(input)
           .filter(this::checkGameIsAvailableOnServer)
-          .ifPresent(data -> gameSelectorModel.load(data, fileName));
+          .ifPresent(gameSelectorModel::setGameData);
     }
   }
 
