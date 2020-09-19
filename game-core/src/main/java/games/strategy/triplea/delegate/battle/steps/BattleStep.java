@@ -3,12 +3,17 @@ package games.strategy.triplea.delegate.battle.steps;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.steps.change.CheckGeneralBattleEnd;
+import games.strategy.triplea.delegate.battle.steps.change.CheckStalemateBattleEnd;
 import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
+import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnitsGeneral;
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveFirstStrikeSuicide;
+import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveGeneralSuicide;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
@@ -20,6 +25,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.List;
@@ -97,6 +103,12 @@ public interface BattleStep extends IExecutable {
         new ClearAaCasualties(battleState, battleActions),
         new RemoveNonCombatants(battleActions),
         new MarkNoMovementLeft(battleState, battleActions),
-        new RemoveFirstStrikeSuicide(battleState, battleActions));
+        new RemoveFirstStrikeSuicide(battleState, battleActions),
+        new RemoveGeneralSuicide(battleState, battleActions),
+        new OffensiveGeneralRetreat(battleState, battleActions),
+        new ClearGeneralCasualties(battleState, battleActions),
+        new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
+        new CheckGeneralBattleEnd(battleState, battleActions),
+        new CheckStalemateBattleEnd(battleState, battleActions));
   }
 }
