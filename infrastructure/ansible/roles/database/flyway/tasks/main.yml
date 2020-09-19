@@ -1,12 +1,10 @@
 - name: create service user to run flyway
-  become: true
   user:
     name: flyway
     create_home: yes
     system: yes
 
 - name: Download flyway CLI
-  become: true
   get_url:
     url: "{{ flyway_download_location }}"
     dest: "/home/flyway/flyway-cli.tar.gz"
@@ -16,7 +14,6 @@
     group: flyway
 
 - name: extract flyway CLI
-  become: true
   unarchive:
     copy: no
     src: "/home/flyway/flyway-cli.tar.gz"
@@ -26,7 +23,6 @@
     group: flyway
 
 - name: copy flyway migrations zip if deploying latest
-  become: true
   when: using_latest == "true"
   copy:
     src: "migrations.zip"
@@ -36,7 +32,6 @@
     group: flyway
 
 - name: download flyway migrations if deploying a specific version
-  become: true
   when: using_latest == "false"
   get_url:
     url: "{{ migrations_url }}"
@@ -45,7 +40,6 @@
     group: flyway
 
 - name: create migration folders
-  become: true
   file:
     state: directory
     mode: "0755"
@@ -54,7 +48,6 @@
     path : "{{ flyway_extracted_location }}/migrations"
 
 - name: extract migrations
-  become: true
   unarchive:
      src: "/home/flyway/migrations.zip"
      remote_src: true
@@ -64,7 +57,6 @@
      group: flyway
 
 - name: run flyway
-  become: true
   become_user: flyway
   command: "{{ flyway_extracted_location }}/flyway -user={{ item.user }} -password={{ item.password }} -url={{ item.url }} -locations={{ item.migration_dir }} migrate"
   register: flyway

@@ -1,28 +1,23 @@
 - name: UFW allow SSH
-  become: true
   ufw:
     rule: allow
     name: OpenSSH
 
 - name: Turn on firewall
-  become: true
   ufw:
     state: enabled
 
 - name: UFW deny incoming by default
-  become: true
   ufw:
     default: deny
     direction: incoming
 
 - name: UFW allow outgoing by default
-  become: true
   ufw:
     default: allow
     direction: outgoing
 
 - name: turn on ssh rate limiting
-  become: true
   ufw:
     rule: limit
     port: ssh
