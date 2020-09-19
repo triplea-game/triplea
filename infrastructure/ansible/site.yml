@@ -1,17 +1,6 @@
-#
-# This is the main ansible playbook to deploy TripleA server software.
-# See the README.md files for details on running and testing.
-#
-
 - hosts: all
-  tags: system
   roles:
-    - system/hostname
-    - system/apt_update
-    - {name: system/apt_common_tools, tags: [ database, flyway ]}
     - system/admin_user
-    - system/firewall
-    - system/security
 
 - hosts: support
   tags: support
@@ -19,11 +8,10 @@
     - support/log_aggregation_server
 
 - hosts: postgresHosts
+  tags: [database, flyway]
   roles:
-    - name: database/postgres
-      tags: database
-    - name: database/flyway
-      tags: flyway
+    - database/postgres
+    - database/flyway
 
 - hosts: dropwizardHosts
   tags: lobby
@@ -50,4 +38,3 @@
     - java
     - bot
     - support/log_aggregation_sender
-

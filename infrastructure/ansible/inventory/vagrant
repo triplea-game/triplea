@@ -1,3 +1,6 @@
+[setup]
+vagrant
+
 [vagrant]
 vagrant ansible_host=127.0.0.1 ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/vagrantHost/virtualbox/private_key
 

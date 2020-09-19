@@ -19,8 +19,13 @@ function main() {
 
   ansible-playbook -D -v \
       "$@" \
-      ansible/site.yml \
-      -i ansible/inventory/vagrant
+      -i ansible/inventory/vagrant \
+      ansible/setup.yml
+
+  ansible-playbook -D -v \
+      "$@" \
+      -i ansible/inventory/vagrant \
+      ansible/site.yml
   # Update certs to pick up new or updated certs from nginx
   sudo update-ca-certificates -f
 }
