@@ -246,7 +246,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 bytes,
                 is -> {
                   try (InputStream inputStream = new BufferedInputStream(is)) {
-                    headless.loadGameSave(inputStream, fileName);
+                    headless.loadGameSave(inputStream);
                   }
                 });
           } catch (final Exception e) {

@@ -18,13 +18,11 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the game
  * selector panel on the staging screens, eg: map, round, filename.
  */
-@Log
 public class GameSelectorModel extends Observable implements GameSelector {
 
   private final Function<URI, Optional<GameData>> gameParser;
@@ -86,15 +84,8 @@ public class GameSelectorModel extends Observable implements GameSelector {
       // try to load it as a saved game whatever the extension
       final GameData newData = GameDataManager.loadGame(file);
       newData.setSaveGameFileName(file.getName());
+      this.fileName = file.getName();
       setGameData(newData);
-    }
-  }
-
-  public void load(final @Nullable GameData data, final @Nullable String fileName) {
-    setGameData(data);
-    this.fileName = fileName;
-    if (data != null) {
-      log.info("Loaded game: " + data.getGameName() + ", in file: " + fileName);
     }
   }
 

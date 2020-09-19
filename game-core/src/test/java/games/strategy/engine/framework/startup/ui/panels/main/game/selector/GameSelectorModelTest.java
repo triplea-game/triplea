@@ -2,10 +2,8 @@ package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +30,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   private static final String fakeGameVersion = "12.34.56";
   private static final String fakeGameRound = "3";
   private static final String fakeGameName = "_fakeGameName_";
-  private static final String fakeFileName = "/hack/and/slash";
 
   private GameSelectorModel testObj;
 
@@ -137,30 +134,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void saveGameNameGetsResetWhenLoadingOtherMap() throws Exception {
-    final String testFileName = "someFileName";
-    testObj = new GameSelectorModel(uri -> Optional.of(mockGameData));
-    when(mockGameData.getSequence()).thenReturn(mock(GameSequence.class));
-    when(mockGameData.getGameVersion()).thenReturn(new Version(0, 0, 0));
-    when(mockGameData.getGameName()).thenReturn("Dummy name");
-    testObj.load(mockGameData, testFileName);
-    assertThat(testObj.getFileName(), is(testFileName));
-
-    testObj.load(new URI("abc"));
-    assertThat(testObj.getFileName(), is(not(testFileName)));
-  }
-
-  @Test
-  void testLoadFromGameDataFileNamePair() {
-    assertHasEmptyData(testObj);
-
-    prepareMockGameDataExpectations();
-    testObj.load(mockGameData, fakeFileName);
-    assertThat(testObj.getGameData(), sameInstance(mockGameData));
-    assertThat(testObj.getFileName(), is(fakeFileName));
-  }
-
-  @Test
   void testGetGameData() {
     assertThat(testObj.getGameData(), nullValue());
     prepareMockGameDataExpectations();
@@ -184,14 +157,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertThat(testObj.getClientModelForHostBots(), sameInstance(mockClientModel));
     testObj.setClientModelForHostBots(null);
     assertThat(testObj.getClientModelForHostBots(), nullValue());
-  }
-
-  @Test
-  void testGetFileName() {
-    assertThat(testObj.getFileName(), is("-"));
-    prepareMockGameDataExpectations();
-    testObj.load(mockGameData, fakeFileName);
-    assertThat(testObj.getFileName(), is(fakeFileName));
   }
 
   @Test
