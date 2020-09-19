@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 @AllArgsConstructor
 public class OffensiveGeneralRetreat implements BattleStep {
@@ -55,6 +56,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
     retreatUnits(bridge);
   }
 
+  @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
   public void retreatUnits(final IDelegateBridge bridge) {
     if (battleState.isOver()) {
       return;

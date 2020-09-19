@@ -50,7 +50,7 @@ public class LandParatroopers implements BattleStep {
     private Collection<Unit> paratroopers = new ArrayList<>();
 
     private TransportsAndParatroopers() {
-      if (battleState.getBattleRound() == 1
+      if (battleState.getBattleRoundState().isFirstRound()
           && !battleState.getBattleSite().isWater()
           && TechAttachment.isAirTransportable(battleState.getAttacker())) {
         final Collection<Unit> airTransports =

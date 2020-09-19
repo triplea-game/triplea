@@ -3,9 +3,11 @@ package games.strategy.triplea.delegate.battle;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.UUID;
+import lombok.Value;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
@@ -19,9 +21,25 @@ public interface BattleState {
     }
   }
 
-  int getBattleRound();
+  @Value(staticConstructor = "of")
+  class BattleRound {
+    int round;
+    int maxRounds;
+
+    public boolean isLastRound() {
+      return maxRounds > 0 && maxRounds <= round;
+    }
+
+    public boolean isFirstRound() {
+      return round == 1;
+    }
+  }
+
+  BattleRound getBattleRoundState();
 
   Territory getBattleSite();
+
+  Collection<TerritoryEffect> getTerritoryEffects();
 
   UUID getBattleId();
 
@@ -34,6 +52,8 @@ public interface BattleState {
   Collection<Unit> getAa(Side... sides);
 
   Collection<Unit> getBombardingUnits();
+
+  Collection<Unit> getAmphibiousLandAttackers();
 
   GamePlayer getAttacker();
 

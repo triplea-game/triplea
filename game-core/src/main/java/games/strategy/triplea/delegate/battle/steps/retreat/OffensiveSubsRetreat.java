@@ -89,7 +89,7 @@ public class OffensiveSubsRetreat implements BattleStep {
   }
 
   private boolean isAutoWinScenario() {
-    return RetreatChecks.onlyDefenselessDefendingTransportsLeft(
+    return RetreatChecks.onlyDefenselessTransportsLeft(
         battleState.getUnits(BattleState.Side.DEFENSE), battleState.getGameData());
   }
 }

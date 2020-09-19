@@ -59,7 +59,7 @@ abstract class AbstractBattle implements IBattle {
   List<Unit> defendingUnits = new ArrayList<>();
   List<Unit> amphibiousLandAttackers = new ArrayList<>();
   List<Unit> bombardingUnits = new ArrayList<>();
-  Collection<TerritoryEffect> territoryEffects;
+  @Getter Collection<TerritoryEffect> territoryEffects;
   BattleResultDescription battleResultDescription;
   WhoWon whoWon = WhoWon.NOT_FINISHED;
   int attackerLostTuv = 0;
