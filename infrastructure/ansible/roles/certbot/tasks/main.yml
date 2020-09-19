@@ -1,11 +1,9 @@
 - name: install software properties common
-  become: true
   apt:
     state: present
     name: software-properties-common
 
 - name: install certbot and python for certbot on nginx
-  become: true
   apt:
     update_cache: yes
     name:
@@ -13,13 +11,11 @@
       - python3-certbot-nginx
 
 - name: look for certbot generated key file
-  become: true
   stat:
     path: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
   register: has_certbot_pem
 
 - name: run certbot
-  become: true
   command: |
      certbot --nginx -n \
          -m tripleabuilderbot@gmail.com \
