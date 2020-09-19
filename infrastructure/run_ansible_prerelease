@@ -65,6 +65,11 @@ function addPrivateSshKeyToAgent() {
 
 function runDeployment() {
   ansible-playbook \
+    -i ansible/inventory/prerelease \
+   "$@" \
+   ansible/setup.yml
+
+  ansible-playbook \
     --vault-password-file "$VAULT_PASSWORD_FILE" \
     -i ansible/inventory/prerelease \
    "$@" \
