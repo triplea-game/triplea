@@ -2,6 +2,8 @@ package org.triplea.swing;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.Window;
 import java.time.Duration;
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
@@ -62,7 +64,9 @@ public class Toast {
     window.add(panel);
     window.setSize(windowWidth, windowHeight);
 
-    window.setOpacity(1);
+    if (supportsTranslucency(window)) {
+      window.setOpacity(1);
+    }
     window.setVisible(true);
 
     new Thread(
@@ -82,12 +86,20 @@ public class Toast {
                   Thread.currentThread().interrupt();
                   return;
                 }
-                final float newOpacity = (float) d;
-                SwingUtilities.invokeLater(() -> window.setOpacity(newOpacity));
+                if (supportsTranslucency(window)) {
+                  final float newOpacity = (float) d;
+                  SwingUtilities.invokeLater(() -> window.setOpacity(newOpacity));
+                }
               }
-
               SwingUtilities.invokeLater(window::dispose);
             })
         .start();
+  }
+
+  private static boolean supportsTranslucency(final Window window) {
+    return window
+        .getGraphicsConfiguration()
+        .getDevice()
+        .isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.TRANSLUCENT);
   }
 }
