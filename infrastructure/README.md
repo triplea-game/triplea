@@ -1,58 +1,18 @@
 # Infrastructure Project
 
-Hosts [ansible](https://www.ansible.com) code that maintains
-[infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code)
-
-In short, we should never log in to a server, all changes are checked
-in and then applied by running a deployment. This creates
-a consistent and documented server state that anyone can reproduce.
-
-More operations details are on the [wiki](https://github.com/triplea-game/triplea/wik)
-
-## Deployments
-
-Deployments to prerelease and production are automated.
-Prerelease will receive the latest code after every merge. Production
-deployments are controlled by a version number variable in configuration.
-If the version value does not change, the deployment is idempotent
-and nothing will change on the server.
-
-Deployments are triggered as part of
-[travis](https://travis-ci.org/github/triplea-game/triplea) builds.
-
-## Production Deployment
-
-It can be useful to make changes locally, run a production deployment,
-and then check in the changes after-the fact. This is very risky,
-user beware. Typical command to do this will be with a limit
-to restrict deployments to specific hosts. EG:
-
-```
-./run_ansible_production --limit prod2-bot02.triplea-game.org
-```
-
-## Ansible Structure
-
-Ansible has three parts:
-
-- inventory (lists hosts)
-- roles (can be thought of as applications)
-- playbooks, binds hosts to roles.
-
-The only different between environments should be the list
-of hosts in an inventory file. Each environment (IE: prerelease, prod)
-will have its own inventory file. Each inventory file has the same
-set of hostgroups, only the hostnames are different between them.
-
-Each [role](./ansible/roles) should have a short README.md file that
-describes  what is deployed by that role.
+This project hosts the code and configuration that controls
+deployments. For design, conventions and a description of 
+the deployment process, please see the documentation in
+ the [/docs](/docs) folder.
 
 ## Local Development with Vagrant
 
-Ansible configuration development can be done locally with vagrant.
-Vagrant provides a virtual machine that can be used as the target for
-deployments. This avoids the need for a live linode server to verify
-updates and/or build new roles.
+- Deployments can be tested using Vagrant. Vagrant allows you to launch
+virtual machines via CLI.
+
+- Use vagrant to test deployments and configuration updates.
+
+- Don't worry, the initial setup is not too bad and once done it's pretty easy.
 
 ### Installation
 
@@ -68,9 +28,8 @@ Install from the [vagrant download site](https://www.vagrantup.com/downloads.htm
 
 The version in 'apt' is likely to be out of date and could have Ruby errors.
 
-Once downloaded, unzip somewhere, add that somewhere to your path so the
-command "vagrant" is available. If not added to your path, fully quality
-the command 'vagrant' in the steps below to match.
+Once downloaded, unzip somewhere, and add to your path so you have
+the command 'vagrant ' available.
 
 #### (2) Launch Vagrant virtual machine
 
@@ -103,6 +62,7 @@ be picked up and added as a trusted certificate.
 
 ```bash
 cd ~/triplea/infrastructure
+## vagrant ssh will connect you to the running virtualbox instance
 vagrant ssh
 
 ## check apps are running
