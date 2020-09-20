@@ -291,9 +291,7 @@ public final class BattlePanel extends ActionPanel {
           }
           if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
             battleWindow.setVisible(true);
-            battleWindow.validate();
-            battleWindow.invalidate();
-            battleWindow.repaint();
+            SwingComponents.redraw(battleWindow);
             battleWindow.toFront();
           } else {
             battleWindow.setVisible(false);

@@ -448,4 +448,10 @@ public final class SwingComponents {
       }
     };
   }
+
+  /** Redraws a component, useful if the contents of the component have been changed. */
+  public static void redraw(final Component component) {
+    component.revalidate();
+    component.repaint();
+  }
 }

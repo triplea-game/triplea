@@ -60,7 +60,6 @@ public class ColorProperty extends AbstractEditableProperty<Color> {
                     (ColorProperty.this.color == null ? Color.black : ColorProperty.this.color));
             if (colorSelected != null) {
               color = colorSelected;
-              // Ask Swing to repaint this label when it's convenient
               SwingUtilities.invokeLater(label::repaint);
             }
           }

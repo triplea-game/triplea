@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import tools.map.making.ui.properties.MapPropertiesPanel;
 import tools.map.making.ui.skin.MapSkinPanel;
 import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
@@ -80,10 +81,6 @@ public class MapCreator {
     container.removeAll();
     container.add(panel);
 
-    SwingAction.invokeNowOrLater(
-        () -> {
-          container.revalidate();
-          container.repaint();
-        });
+    SwingAction.invokeNowOrLater(() -> SwingComponents.redraw(container));
   }
 }
