@@ -66,8 +66,7 @@ public class MapPropertiesPanel {
             "Select Map Folder",
             e -> {
               final String path =
-                  new FileSave("Where is your map's folder?", null, null)
-                      .getPathString();
+                  new FileSave("Where is your map's folder?", null, null).getPathString();
               if (path != null) {
                 final File mapFolder = new File(path);
                 if (mapFolder.exists()) {
@@ -90,7 +89,8 @@ public class MapPropertiesPanel {
           @Override
           public void focusLost(final FocusEvent e) {
             try {
-              final double unitZoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
+              final double unitZoom =
+                  Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
               System.setProperty(ToolArguments.UNIT_ZOOM, "" + unitZoom);
               unitZoomText.setText(String.valueOf(unitZoom));
             } catch (final NumberFormatException ex) {
