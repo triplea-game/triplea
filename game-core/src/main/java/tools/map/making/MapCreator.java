@@ -71,10 +71,7 @@ public class MapCreator extends JFrame {
   private void setupMainPanel(final JPanel panel) {
     mainPanel.removeAll();
     mainPanel.add(panel);
-    setWidgetActivation();
-  }
 
-  private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(
         () -> {
           mainPanel.revalidate();
