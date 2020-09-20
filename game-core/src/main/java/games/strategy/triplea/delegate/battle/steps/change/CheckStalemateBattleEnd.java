@@ -5,10 +5,10 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
-import org.triplea.java.RemoveOnNextMajorRelease;
+import org.triplea.java.ChangeOnNextMajorRelease;
 
-@RemoveOnNextMajorRelease(
-    "CheckStalemateBattleEnd should be worked so that it doesn't inherit from CheckGeneralBattleEnd")
+@ChangeOnNextMajorRelease(
+    "This should be reworked so that it doesn't inherit from CheckGeneralBattleEnd")
 public class CheckStalemateBattleEnd extends CheckGeneralBattleEnd {
   public CheckStalemateBattleEnd(final BattleState battleState, final BattleActions battleActions) {
     super(battleState, battleActions);

@@ -8,7 +8,7 @@ import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.UUID;
 import lombok.Value;
-import org.triplea.java.RemoveOnNextMajorRelease;
+import org.triplea.java.ChangeOnNextMajorRelease;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
@@ -42,7 +42,7 @@ public interface BattleState {
 
   Collection<TerritoryEffect> getTerritoryEffects();
 
-  @RemoveOnNextMajorRelease("Use a BattleId class instead of UUID")
+  @ChangeOnNextMajorRelease("Use a BattleId class instead of UUID")
   UUID getBattleId();
 
   Collection<Unit> getUnits(Side... sides);
