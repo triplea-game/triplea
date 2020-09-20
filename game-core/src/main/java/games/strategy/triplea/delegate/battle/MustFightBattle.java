@@ -31,16 +31,13 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
-import games.strategy.triplea.delegate.battle.steps.change.CheckGeneralBattleEnd;
 import games.strategy.triplea.delegate.battle.steps.change.CheckGeneralBattleEndOld;
-import games.strategy.triplea.delegate.battle.steps.change.CheckStalemateBattleEnd;
 import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
-import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnitsGeneral;
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveFirstStrikeSuicide;
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveGeneralSuicide;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
@@ -984,14 +981,9 @@ public class MustFightBattle extends DependentBattle
     final List<IExecutable> steps =
         BattleStep.getAll(this, this).stream()
             .sorted(Comparator.comparing(BattleStep::getOrder))
-            // *_AFTER_BATTLE order occurs in addCheckEndBattleAndRetreatingSteps()
-            .filter(
-                step ->
-                    step.getOrder() != SUB_OFFENSIVE_RETREAT_AFTER_BATTLE
-                        && step.getOrder() != SUB_DEFENSIVE_RETREAT_AFTER_BATTLE)
             .collect(Collectors.toList());
 
-    addCheckEndBattleAndRetreatingSteps(steps);
+    addRoundResetStep(steps);
     return steps;
   }
 
@@ -1230,6 +1222,93 @@ public class MustFightBattle extends DependentBattle
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         new DefensiveGeneral(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = 8611067962952500496L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new ClearGeneralCasualties(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = 6387198382888361848L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new RemoveGeneralSuicide(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = 5259103822937067667L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new CheckGeneralBattleEndOld(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = 6775880082912594489L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep offensiveSubsRetreat =
+            new OffensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
+        if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
+          offensiveSubsRetreat.execute(stack, bridge);
+        }
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = -1150863964807721395L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // Intentionally left blank
+        // Old saves will fall through to the IExecutable that instantiates
+        // OffensiveGeneralRetreat which does the work that previously was here
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = -1150863964807721395L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // Intentionally left blank
+        // Old saves will fall through to the IExecutable that instantiates
+        // OffensiveGeneralRetreat which does the work that previously was here
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = 669349383898975048L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
+      }
+    };
+    new IExecutable() {
+      private static final long serialVersionUID = -1544916305666912480L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep defensiveSubsRetreat =
+            new DefensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
+        if (defensiveSubsRetreat.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
+          defensiveSubsRetreat.execute(stack, bridge);
+        }
       }
     };
   }
@@ -1522,116 +1601,7 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  private void addCheckEndBattleAndRetreatingSteps(final List<IExecutable> steps) {
-    final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
-    final BattleStep defensiveSubsRetreat = new DefensiveSubsRetreat(this, this);
-    final BattleStep removeGeneralSuicide = new RemoveGeneralSuicide(this, this);
-    final BattleStep offensiveGeneralRetreat = new OffensiveGeneralRetreat(this, this);
-    final BattleStep clearGeneralCasualties = new ClearGeneralCasualties(this, this);
-    final BattleStep removeUnprotectedUnitsGeneral = new RemoveUnprotectedUnitsGeneral(this, this);
-    final BattleStep checkGeneralBattleEnd = new CheckGeneralBattleEnd(this, this);
-    final BattleStep checkStalemateBattleEnd = new CheckStalemateBattleEnd(this, this);
-
-    steps.add(clearGeneralCasualties);
-    new IExecutable() {
-      private static final long serialVersionUID = 8611067962952500496L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        new ClearGeneralCasualties(MustFightBattle.this, MustFightBattle.this)
-            .execute(stack, bridge);
-      }
-    };
-    steps.add(removeGeneralSuicide);
-    new IExecutable() {
-      private static final long serialVersionUID = 6387198382888361848L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        new RemoveGeneralSuicide(MustFightBattle.this, MustFightBattle.this).execute(stack, bridge);
-      }
-    };
-    steps.add(removeUnprotectedUnitsGeneral);
-    steps.add(checkGeneralBattleEnd);
-    new IExecutable() {
-      private static final long serialVersionUID = 5259103822937067667L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        new CheckGeneralBattleEndOld(MustFightBattle.this, MustFightBattle.this)
-            .execute(stack, bridge);
-      }
-    };
-    if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
-      steps.add(offensiveSubsRetreat);
-    }
-    new IExecutable() {
-      private static final long serialVersionUID = 6775880082912594489L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep offensiveSubsRetreat =
-            new OffensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
-        if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
-          offensiveSubsRetreat.execute(stack, bridge);
-        }
-      }
-    };
-
-    steps.add(offensiveGeneralRetreat);
-    new IExecutable() {
-      private static final long serialVersionUID = -1150863964807721395L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
-      }
-    };
-    new IExecutable() {
-      private static final long serialVersionUID = -1150863964807721395L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
-      }
-    };
-    new IExecutable() {
-      private static final long serialVersionUID = 669349383898975048L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        new OffensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
-            .execute(stack, bridge);
-      }
-    };
-    steps.add(checkStalemateBattleEnd);
-    if (defensiveSubsRetreat.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
-      steps.add(defensiveSubsRetreat);
-    }
-    new IExecutable() {
-      private static final long serialVersionUID = -1544916305666912480L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep defensiveSubsRetreat =
-            new DefensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
-        if (defensiveSubsRetreat.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
-          defensiveSubsRetreat.execute(stack, bridge);
-        }
-      }
-    };
+  private void addRoundResetStep(final List<IExecutable> steps) {
     final IExecutable loop =
         new IExecutable() {
           private static final long serialVersionUID = 3118458517320468680L;
