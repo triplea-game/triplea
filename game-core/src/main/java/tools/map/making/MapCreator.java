@@ -81,14 +81,9 @@ public class MapCreator extends JFrame {
 
   /** Opens a map creator window. */
   public static void openMapCreatorWindow() {
-    Interruptibles.await(
-        () ->
-            SwingAction.invokeAndWait(
-                () -> {
-                  final MapCreator creator = new MapCreator();
-                  creator.setSize(800, 600);
-                  creator.setLocationRelativeTo(null);
-                  creator.setVisible(true);
-                }));
+    final MapCreator creator = new MapCreator();
+    creator.setSize(800, 600);
+    creator.setLocationRelativeTo(null);
+    creator.setVisible(true);
   }
 }
