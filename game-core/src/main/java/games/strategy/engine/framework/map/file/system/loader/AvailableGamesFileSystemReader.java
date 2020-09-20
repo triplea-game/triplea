@@ -37,6 +37,8 @@ public class AvailableGamesFileSystemReader {
       entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
       entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
       availableGamesListCache = new AvailableGamesList(entries);
+      entries.forEach(
+          entry -> log.info("Found game: " + entry.getGameName() + " @ " + entry.getUri()));
     }
 
     return availableGamesListCache;
