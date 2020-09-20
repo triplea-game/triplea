@@ -22,7 +22,6 @@ import tools.util.ToolArguments;
 
 @UtilityClass
 public class MapPropertiesPanel {
-  private static double unitZoom = 0.75;
   private static int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 
@@ -80,7 +79,8 @@ public class MapPropertiesPanel {
     panel.add(Box.createVerticalStrut(30));
     panel.add(new JLabel("Set the unit scaling (unit image zoom): "));
     panel.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
-    final JTextField unitZoomText = new JTextField("" + unitZoom);
+
+    final JTextField unitZoomText = new JTextField("0.75");
     unitZoomText.setMaximumSize(new Dimension(100, 20));
     unitZoomText.addFocusListener(
         new FocusListener() {
@@ -90,12 +90,13 @@ public class MapPropertiesPanel {
           @Override
           public void focusLost(final FocusEvent e) {
             try {
-              unitZoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
+              final double unitZoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
               System.setProperty(ToolArguments.UNIT_ZOOM, "" + unitZoom);
-            } catch (final Exception ex) {
+              unitZoomText.setText(String.valueOf(unitZoom));
+            } catch (final NumberFormatException ex) {
               // ignore malformed input
+              unitZoomText.setText("");
             }
-            unitZoomText.setText("" + unitZoom);
           }
         });
     panel.add(unitZoomText);
