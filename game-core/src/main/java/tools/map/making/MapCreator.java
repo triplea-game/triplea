@@ -77,10 +77,8 @@ public class MapCreator extends JFrame {
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(
         () -> {
-          mainPanel.validate();
+          mainPanel.revalidate();
           mainPanel.repaint();
-          this.validate();
-          this.repaint();
         });
   }
 
