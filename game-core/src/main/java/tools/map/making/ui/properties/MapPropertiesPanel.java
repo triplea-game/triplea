@@ -22,9 +22,6 @@ import tools.util.ToolArguments;
 
 @UtilityClass
 public class MapPropertiesPanel {
-  private static long memoryInBytes = Runtime.getRuntime().maxMemory();
-  private static File mapFolderLocation = null;
-  private static double unitZoom = 0.75;
   private static int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 
@@ -69,13 +66,11 @@ public class MapPropertiesPanel {
             "Select Map Folder",
             e -> {
               final String path =
-                  new FileSave("Where is your map's folder?", null, mapFolderLocation)
-                      .getPathString();
+                  new FileSave("Where is your map's folder?", null, null).getPathString();
               if (path != null) {
                 final File mapFolder = new File(path);
                 if (mapFolder.exists()) {
-                  mapFolderLocation = mapFolder;
-                  System.setProperty(ToolArguments.MAP_FOLDER, mapFolderLocation.getPath());
+                  System.setProperty(ToolArguments.MAP_FOLDER, path);
                 }
               }
             }));
@@ -83,7 +78,8 @@ public class MapPropertiesPanel {
     panel.add(Box.createVerticalStrut(30));
     panel.add(new JLabel("Set the unit scaling (unit image zoom): "));
     panel.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
-    final JTextField unitZoomText = new JTextField("" + unitZoom);
+
+    final JTextField unitZoomText = new JTextField("0.75");
     unitZoomText.setMaximumSize(new Dimension(100, 20));
     unitZoomText.addFocusListener(
         new FocusListener() {
@@ -93,12 +89,14 @@ public class MapPropertiesPanel {
           @Override
           public void focusLost(final FocusEvent e) {
             try {
-              unitZoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
+              final double unitZoom =
+                  Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
               System.setProperty(ToolArguments.UNIT_ZOOM, "" + unitZoom);
-            } catch (final Exception ex) {
+              unitZoomText.setText(String.valueOf(unitZoom));
+            } catch (final NumberFormatException ex) {
               // ignore malformed input
+              unitZoomText.setText("");
             }
-            unitZoomText.setText("" + unitZoom);
           }
         });
     panel.add(unitZoomText);
@@ -144,37 +142,6 @@ public class MapPropertiesPanel {
           }
         });
     panel.add(unitHeightText);
-    panel.add(Box.createVerticalStrut(30));
-    panel.add(
-        new JLabel(
-            "<html>Here you can set the 'max memory' that utilities like the Polygon "
-                + "Grabber will use.<br>"
-                + "This is useful is you have a very large map, or ever get any "
-                + "Java Heap Space errors.</html>"));
-    panel.add(
-        new JLabel(
-            "Set the amount of memory to use when running new processes (in megabytes [mb]):"));
-    final JTextField memoryText = new JTextField("" + (memoryInBytes / (1024 * 1024)));
-    memoryText.setMaximumSize(new Dimension(100, 20));
-    memoryText.addFocusListener(
-        new FocusListener() {
-          @Override
-          public void focusGained(final FocusEvent e) {}
-
-          @Override
-          public void focusLost(final FocusEvent e) {
-            try {
-              memoryInBytes =
-                  (long) 1024
-                      * 1024
-                      * Math.min(4096, Math.max(256, Integer.parseInt(memoryText.getText())));
-            } catch (final Exception ex) {
-              // ignore malformed input
-            }
-            memoryText.setText("" + (memoryInBytes / (1024 * 1024)));
-          }
-        });
-    panel.add(memoryText);
     panel.add(Box.createVerticalStrut(30));
     return panel;
   }
