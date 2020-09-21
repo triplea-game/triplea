@@ -20,6 +20,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
@@ -325,14 +326,23 @@ public class MustFightBattle extends DependentBattle
       final GamePlayer retreatingPlayer,
       final Collection<Territory> availableTerritories,
       final String text) {
+    return retreatQuery(
+        battleState, getRemote(retreatingPlayer, bridge), availableTerritories, false, text);
+  }
+
+  private @Nullable Territory retreatQuery(
+      final BattleState battleState,
+      final Player remotePlayer,
+      final Collection<Territory> availableTerritories,
+      final boolean submerge,
+      final String text) {
     final Territory retreatTo =
-        getRemote(retreatingPlayer, bridge)
-            .retreatQuery(
-                battleState.getBattleId(),
-                false,
-                battleState.getBattleSite(),
-                availableTerritories,
-                text);
+        remotePlayer.retreatQuery(
+            battleState.getBattleId(),
+            submerge,
+            battleState.getBattleSite(),
+            availableTerritories,
+            text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
       log.severe(
           "Invalid retreat selection: "
@@ -351,23 +361,8 @@ public class MustFightBattle extends DependentBattle
       final GamePlayer retreatingPlayer,
       final Collection<Territory> availableTerritories,
       final String text) {
-    final Territory retreatTo =
-        getRemote(retreatingPlayer, bridge)
-            .retreatQuery(
-                battleState.getBattleId(),
-                true,
-                battleState.getBattleSite(),
-                availableTerritories,
-                text);
-    if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      log.severe(
-          "Invalid retreat selection: "
-              + retreatTo
-              + " not in "
-              + MyFormatter.defaultNamedToTextList(availableTerritories));
-      return null;
-    }
-    return retreatTo;
+    return retreatQuery(
+        battleState, getRemote(retreatingPlayer, bridge), availableTerritories, true, text);
   }
 
   @Override

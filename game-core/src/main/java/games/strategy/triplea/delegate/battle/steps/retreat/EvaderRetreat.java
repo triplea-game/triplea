@@ -31,17 +31,15 @@ public class EvaderRetreat {
     final String text = retreatingPlayer.getName() + " retreat subs?";
 
     bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), step);
-    final Territory retreatTo;
-    if (possibleRetreatSites.size() == 1
-        && possibleRetreatSites.contains(battleState.getBattleSite())) {
-      retreatTo =
-          battleActions.querySubmergeTerritory(
-              battleState, bridge, retreatingPlayer, possibleRetreatSites, text);
-    } else {
-      retreatTo =
-          battleActions.queryRetreatTerritory(
-              battleState, bridge, retreatingPlayer, possibleRetreatSites, text);
-    }
+    final boolean isAttemptingSubmerge =
+        possibleRetreatSites.size() == 1
+            && possibleRetreatSites.contains(battleState.getBattleSite());
+    final Territory retreatTo =
+        isAttemptingSubmerge
+            ? battleActions.querySubmergeTerritory(
+                battleState, bridge, retreatingPlayer, possibleRetreatSites, text)
+            : battleActions.queryRetreatTerritory(
+                battleState, bridge, retreatingPlayer, possibleRetreatSites, text);
     if (retreatTo == null) {
       return;
     }
