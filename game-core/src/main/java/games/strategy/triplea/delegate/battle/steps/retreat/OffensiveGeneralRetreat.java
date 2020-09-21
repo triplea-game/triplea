@@ -149,10 +149,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
         bridge, retreatingUnitMap.get(Retreater.RetreatLocation.SAME_TERRITORY));
     change.add(
         retreatOtherTerritoryUnits(
-            bridge,
-            retreatTo,
-            change,
-            retreatingUnitMap.get(Retreater.RetreatLocation.OTHER_TERRITORY)));
+            bridge, retreatTo, retreatingUnitMap.get(Retreater.RetreatLocation.OTHER_TERRITORY)));
 
     bridge.addChange(change);
 
@@ -183,7 +180,6 @@ public class OffensiveGeneralRetreat implements BattleStep {
   private Change retreatOtherTerritoryUnits(
       final IDelegateBridge bridge,
       final Territory retreatTo,
-      final CompositeChange change,
       final Collection<Unit> retreatingUnits) {
     if (retreatingUnits != null && !retreatingUnits.isEmpty()) {
       battleState.retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
