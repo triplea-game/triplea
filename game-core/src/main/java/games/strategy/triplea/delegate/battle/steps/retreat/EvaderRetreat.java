@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
@@ -24,26 +23,25 @@ public class EvaderRetreat {
       final BattleActions battleActions,
       final BattleState.Side side,
       final IDelegateBridge bridge,
-      final GamePlayer retreatingPlayer,
       final Collection<Territory> possibleRetreatSites,
       final Collection<Unit> units,
       final String step) {
-    final boolean canDefendingSubsSubmergeOrRetreat =
-        side == BattleState.Side.DEFENSE
-            && Properties.getSubmarinesDefendingMaySubmergeOrRetreat(battleState.getGameData());
-    final boolean submerge = Properties.getSubmersibleSubs(battleState.getGameData());
-
+    final GamePlayer retreatingPlayer =
+        side == BattleState.Side.DEFENSE ? battleState.getDefender() : battleState.getAttacker();
     final String text = retreatingPlayer.getName() + " retreat subs?";
 
     bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), step);
-    final Territory retreatTo =
-        battleActions.queryRetreatTerritory(
-            battleState,
-            bridge,
-            retreatingPlayer,
-            possibleRetreatSites,
-            (canDefendingSubsSubmergeOrRetreat || submerge),
-            text);
+    final Territory retreatTo;
+    if (possibleRetreatSites.size() == 1
+        && possibleRetreatSites.contains(battleState.getBattleSite())) {
+      retreatTo =
+          battleActions.querySubmergeTerritory(
+              battleState, bridge, retreatingPlayer, possibleRetreatSites, text);
+    } else {
+      retreatTo =
+          battleActions.queryRetreatTerritory(
+              battleState, bridge, retreatingPlayer, possibleRetreatSites, text);
+    }
     if (retreatTo == null) {
       return;
     }
@@ -52,7 +50,14 @@ public class EvaderRetreat {
       submergeEvaders(battleState, battleActions, units, side, bridge);
       broadcastRetreat(bridge, retreatingPlayer, step, " submerges subs");
     } else {
-      retreatEvaders(battleState, battleActions, units, retreatTo, side, bridge);
+
+      final CompositeChange change = new CompositeChange();
+      change.add(ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, units));
+      bridge.addChange(change);
+      battleState.retreatUnits(side, units);
+
+      addHistoryRetreat(bridge, units, " retreated to " + retreatTo.getName());
+      notifyRetreat(battleState, battleActions, units, side, bridge);
       broadcastRetreat(
           bridge, retreatingPlayer, step, " retreats", " retreats subs to " + retreatTo.getName());
     }
@@ -124,22 +129,5 @@ public class EvaderRetreat {
     bridge
         .getDisplayChannelBroadcaster()
         .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
-  }
-
-  private static void retreatEvaders(
-      final BattleState battleState,
-      final BattleActions battleActions,
-      final Collection<Unit> retreating,
-      final Territory to,
-      final BattleState.Side side,
-      final IDelegateBridge bridge) {
-
-    final CompositeChange change = new CompositeChange();
-    change.add(ChangeFactory.moveUnits(battleState.getBattleSite(), to, retreating));
-    bridge.addChange(change);
-    battleState.retreatUnits(side, retreating);
-
-    addHistoryRetreat(bridge, retreating, " retreated to " + to.getName());
-    notifyRetreat(battleState, battleActions, retreating, side, bridge);
   }
 }

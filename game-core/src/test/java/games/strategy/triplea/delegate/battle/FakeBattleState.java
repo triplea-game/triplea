@@ -61,6 +61,8 @@ public class FakeBattleState implements BattleState {
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> killed;
 
+  final @NonNull Collection<Unit> retreatUnits;
+
   @Getter(onMethod = @__({@Override}))
   final @NonNull GameData gameData;
 
@@ -154,7 +156,9 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
-  public void retreatUnits(final Side side, final Collection<Unit> units) {}
+  public void retreatUnits(final Side side, final Collection<Unit> units) {
+    retreatUnits.addAll(units);
+  }
 
   @Override
   public Collection<Unit> getAa(final Side... sides) {
@@ -192,6 +196,7 @@ public class FakeBattleState implements BattleState {
         .dependentUnits(List.of())
         .amphibiousLandAttackers(List.of())
         .killed(List.of())
+        .retreatUnits(new ArrayList<>())
         .gameData(mock(GameData.class))
         .amphibious(false)
         .over(false)

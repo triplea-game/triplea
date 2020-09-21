@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -32,7 +31,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.steps.MockGameData;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -146,7 +144,7 @@ class DefensiveSubsRetreatTest {
 
     @Test
     void retreatHappensWhenHasNoRetreatTerritoriesButIsSubmersible() {
-      final GameData gameData = MockGameData.givenGameData().withSubmersibleSubs(true).build();
+      final GameData gameData = givenGameData().withSubmersibleSubs(true).build();
 
       final Unit unit = givenRealUnitCanEvade(gameData, defender);
 
@@ -160,13 +158,8 @@ class DefensiveSubsRetreatTest {
                   .gameData(gameData)
                   .build());
 
-      when(battleActions.queryRetreatTerritory(
-              battleState,
-              delegateBridge,
-              defender,
-              List.of(battleSite),
-              true,
-              "defender retreat subs?"))
+      when(battleActions.querySubmergeTerritory(
+              battleState, delegateBridge, defender, List.of(battleSite), "defender retreat subs?"))
           .thenReturn(battleSite);
 
       final DefensiveSubsRetreat defensiveSubsRetreat =
@@ -180,7 +173,7 @@ class DefensiveSubsRetreatTest {
     @Test
     void retreatHappensWhenHasNoRetreatTerritoriesButDefendingIsSubmersible() {
       final GameData gameData =
-          MockGameData.givenGameData()
+          givenGameData()
               .withSubmersibleSubs(false)
               .withSubmarinesDefendingMaySubmergeOrRetreat(true)
               .build();
@@ -197,13 +190,8 @@ class DefensiveSubsRetreatTest {
                   .gameData(gameData)
                   .build());
 
-      when(battleActions.queryRetreatTerritory(
-              battleState,
-              delegateBridge,
-              defender,
-              List.of(battleSite),
-              true,
-              "defender retreat subs?"))
+      when(battleActions.querySubmergeTerritory(
+              battleState, delegateBridge, defender, List.of(battleSite), "defender retreat subs?"))
           .thenReturn(battleSite);
 
       final DefensiveSubsRetreat defensiveSubsRetreat =
@@ -235,7 +223,7 @@ class DefensiveSubsRetreatTest {
 
     @Test
     void retreatHappensWhenNotSubmersibleButHasRetreatTerritories() {
-      final GameData gameData = MockGameData.givenGameData().build();
+      final GameData gameData = givenGameData().build();
 
       final Unit unit = givenRealUnitCanEvade(gameData, defender);
       final UnitAttachment unitAttachment =
@@ -266,7 +254,6 @@ class DefensiveSubsRetreatTest {
               delegateBridge,
               defender,
               List.of(retreatTerritory),
-              false,
               "defender retreat subs?"))
           .thenReturn(retreatTerritory);
 
@@ -287,7 +274,7 @@ class DefensiveSubsRetreatTest {
       when(retreatTerritoryCollection.getHolder()).thenReturn(retreatTerritory);
 
       final GameData gameData =
-          MockGameData.givenGameData()
+          givenGameData()
               .withSubmersibleSubs(false)
               .withSubmarinesDefendingMaySubmergeOrRetreat(true)
               .withTerritoryHasNeighbors(battleSite, Set.of(retreatTerritory))
@@ -313,7 +300,6 @@ class DefensiveSubsRetreatTest {
               delegateBridge,
               defender,
               List.of(retreatTerritory, battleSite),
-              true,
               "defender retreat subs?"))
           .thenReturn(retreatTerritory);
 
@@ -335,7 +321,7 @@ class DefensiveSubsRetreatTest {
     defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -351,7 +337,7 @@ class DefensiveSubsRetreatTest {
     defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -367,7 +353,7 @@ class DefensiveSubsRetreatTest {
     defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -380,6 +366,6 @@ class DefensiveSubsRetreatTest {
     defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 }

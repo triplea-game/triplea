@@ -71,7 +71,6 @@ public class OffensiveGeneralRetreat implements BattleStep {
     // Only include land units when checking for allow amphibious retreat
     return battleState.getUnits(BattleState.Side.OFFENSE).stream()
         .filter(Matches.unitIsLand())
-        // .anyMatch(Predicate.not(Unit::getWasAmphibious));
         .anyMatch(Matches.unitWasNotAmphibious());
   }
 
@@ -127,11 +126,14 @@ public class OffensiveGeneralRetreat implements BattleStep {
     bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
     final Territory retreatTo =
         battleActions.queryRetreatTerritory(
-            battleState, bridge, battleState.getAttacker(), possibleRetreatSites, false, text);
+            battleState, bridge, battleState.getAttacker(), possibleRetreatSites, text);
     if (retreatTo == null) {
       return;
     }
-    playRetreatSound(bridge, retreatUnits, RetreatType.PARTIAL_AMPHIB);
+    if (!battleState.isHeadless()) {
+      SoundUtils.playRetreatType(
+          battleState.getAttacker(), retreatUnits, RetreatType.PARTIAL_AMPHIB, bridge);
+    }
 
     // the air units don't retreat to the `retreatTo` territory
     final Collection<Unit> airRetreating =
@@ -152,16 +154,6 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
     notifyRetreat(retreatUnits, bridge);
     broadcastRetreat(bridge, " retreats non-amphibious units");
-  }
-
-  private void playRetreatSound(
-      final IDelegateBridge bridge,
-      final Collection<Unit> retreatUnits,
-      final RetreatType partialAmphib) {
-    if (battleState.isHeadless()) {
-      return;
-    }
-    SoundUtils.playRetreatType(battleState.getAttacker(), retreatUnits, partialAmphib, bridge);
   }
 
   private void addHistoryRetreatToTerritory(
@@ -207,11 +199,14 @@ public class OffensiveGeneralRetreat implements BattleStep {
     bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
     final Territory retreatTo =
         battleActions.queryRetreatTerritory(
-            battleState, bridge, battleState.getAttacker(), possibleRetreatSites, false, text);
+            battleState, bridge, battleState.getAttacker(), possibleRetreatSites, text);
     if (retreatTo == null) {
       return;
     }
-    playRetreatSound(bridge, retreatUnits, RetreatType.PLANES);
+    if (!battleState.isHeadless()) {
+      SoundUtils.playRetreatType(
+          battleState.getAttacker(), retreatUnits, RetreatType.PLANES, bridge);
+    }
     addHistoryRetreat(bridge, retreatUnits);
 
     battleState.retreatUnits(BattleState.Side.OFFENSE, retreatUnits);
@@ -243,11 +238,14 @@ public class OffensiveGeneralRetreat implements BattleStep {
     bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
     final Territory retreatTo =
         battleActions.queryRetreatTerritory(
-            battleState, bridge, battleState.getAttacker(), possibleRetreatSites, false, text);
+            battleState, bridge, battleState.getAttacker(), possibleRetreatSites, text);
     if (retreatTo == null) {
       return;
     }
-    playRetreatSound(bridge, retreatUnits, RetreatType.DEFAULT);
+    if (!battleState.isHeadless()) {
+      SoundUtils.playRetreatType(
+          battleState.getAttacker(), retreatUnits, RetreatType.DEFAULT, bridge);
+    }
 
     // attacker's air units don't retreat to the `retreatTo` territory
     final Collection<Unit> airRetreating =

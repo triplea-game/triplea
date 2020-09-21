@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -211,13 +210,8 @@ public class OffensiveSubsRetreatTest {
                   .attackerRetreatTerritories(List.of())
                   .build());
 
-      when(battleActions.queryRetreatTerritory(
-              battleState,
-              delegateBridge,
-              attacker,
-              List.of(battleSite),
-              true,
-              "attacker retreat subs?"))
+      when(battleActions.querySubmergeTerritory(
+              battleState, delegateBridge, attacker, List.of(battleSite), "attacker retreat subs?"))
           .thenReturn(battleSite);
 
       final OffensiveSubsRetreat offensiveSubsRetreat =
@@ -249,13 +243,8 @@ public class OffensiveSubsRetreatTest {
                   .defendingUnits(List.of(givenUnitTransport(), givenAnyUnit()))
                   .build());
 
-      when(battleActions.queryRetreatTerritory(
-              battleState,
-              delegateBridge,
-              attacker,
-              List.of(battleSite),
-              true,
-              "attacker retreat subs?"))
+      when(battleActions.querySubmergeTerritory(
+              battleState, delegateBridge, attacker, List.of(battleSite), "attacker retreat subs?"))
           .thenReturn(battleSite);
 
       final OffensiveSubsRetreat offensiveSubsRetreat =
@@ -307,7 +296,6 @@ public class OffensiveSubsRetreatTest {
               delegateBridge,
               attacker,
               List.of(retreatTerritory),
-              false,
               "attacker retreat subs?"))
           .thenReturn(retreatTerritory);
 
@@ -330,7 +318,7 @@ public class OffensiveSubsRetreatTest {
     offensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -346,7 +334,7 @@ public class OffensiveSubsRetreatTest {
     offensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -362,7 +350,7 @@ public class OffensiveSubsRetreatTest {
     offensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -379,7 +367,7 @@ public class OffensiveSubsRetreatTest {
     offensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -401,7 +389,7 @@ public class OffensiveSubsRetreatTest {
     offensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -422,7 +410,7 @@ public class OffensiveSubsRetreatTest {
     offensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 
   @Test
@@ -438,6 +426,6 @@ public class OffensiveSubsRetreatTest {
     offensiveSubsRetreat.execute(executionStack, delegateBridge);
 
     verify(battleActions, never())
-        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+        .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
   }
 }

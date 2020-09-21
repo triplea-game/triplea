@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -305,7 +304,7 @@ class OffensiveGeneralRetreatTest {
           new OffensiveGeneralRetreat(battleState, battleActions);
       offensiveGeneralRetreat.execute(executionStack, delegateBridge);
       verify(battleActions, never())
-          .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+          .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
     }
 
     @Nested
@@ -339,7 +338,6 @@ class OffensiveGeneralRetreatTest {
                 delegateBridge,
                 attacker,
                 List.of(battleSite),
-                false,
                 "attacker retreat planes?"))
             .thenReturn(battleSite);
 
@@ -375,7 +373,6 @@ class OffensiveGeneralRetreatTest {
                 delegateBridge,
                 attacker,
                 List.of(battleSite),
-                false,
                 "attacker retreat planes?"))
             .thenReturn(battleSite);
 
@@ -407,7 +404,6 @@ class OffensiveGeneralRetreatTest {
                 delegateBridge,
                 attacker,
                 List.of(battleSite),
-                false,
                 "attacker retreat planes?"))
             .thenReturn(battleSite);
 
@@ -457,7 +453,6 @@ class OffensiveGeneralRetreatTest {
                 delegateBridge,
                 attacker,
                 List.of(retreatSite),
-                false,
                 "attacker retreat non-amphibious units?"))
             .thenReturn(retreatSite);
 
@@ -485,7 +480,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
         verify(battleActions, never())
-            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
       }
 
       @Test
@@ -508,7 +503,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
         verify(battleActions, never())
-            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
       }
 
       @Test
@@ -527,7 +522,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
         verify(battleActions, never())
-            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
       }
 
       @Test
@@ -546,7 +541,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
         verify(battleActions, never())
-            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
       }
     }
 
@@ -583,12 +578,7 @@ class OffensiveGeneralRetreatTest {
                     .build());
 
         when(battleActions.queryRetreatTerritory(
-                battleState,
-                delegateBridge,
-                attacker,
-                List.of(retreatSite),
-                false,
-                "attacker retreat?"))
+                battleState, delegateBridge, attacker, List.of(retreatSite), "attacker retreat?"))
             .thenReturn(retreatSite);
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
@@ -621,12 +611,7 @@ class OffensiveGeneralRetreatTest {
                     .build());
 
         when(battleActions.queryRetreatTerritory(
-                battleState,
-                delegateBridge,
-                attacker,
-                List.of(retreatSite),
-                false,
-                "attacker retreat?"))
+                battleState, delegateBridge, attacker, List.of(retreatSite), "attacker retreat?"))
             .thenReturn(retreatSite);
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
@@ -653,7 +638,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
         verify(battleActions, never())
-            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
       }
 
       @Test
@@ -675,7 +660,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
         verify(battleActions, never())
-            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyBoolean(), anyString());
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
       }
     }
   }

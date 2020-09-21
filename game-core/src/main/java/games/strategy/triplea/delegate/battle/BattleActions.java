@@ -56,6 +56,12 @@ public interface BattleActions {
       IDelegateBridge bridge,
       GamePlayer retreatingPlayer,
       Collection<Territory> availableTerritories,
-      boolean submerge,
+      String text);
+
+  Territory querySubmergeTerritory(
+      BattleState battleState,
+      IDelegateBridge bridge,
+      GamePlayer retreatingPlayer,
+      Collection<Territory> availableTerritories,
       String text);
 }

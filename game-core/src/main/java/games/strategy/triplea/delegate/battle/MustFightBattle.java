@@ -324,13 +324,38 @@ public class MustFightBattle extends DependentBattle
       final IDelegateBridge bridge,
       final GamePlayer retreatingPlayer,
       final Collection<Territory> availableTerritories,
-      final boolean submerge,
       final String text) {
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge)
             .retreatQuery(
                 battleState.getBattleId(),
-                submerge,
+                false,
+                battleState.getBattleSite(),
+                availableTerritories,
+                text);
+    if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
+      log.severe(
+          "Invalid retreat selection: "
+              + retreatTo
+              + " not in "
+              + MyFormatter.defaultNamedToTextList(availableTerritories));
+      return null;
+    }
+    return retreatTo;
+  }
+
+  @Override
+  public @Nullable Territory querySubmergeTerritory(
+      final BattleState battleState,
+      final IDelegateBridge bridge,
+      final GamePlayer retreatingPlayer,
+      final Collection<Territory> availableTerritories,
+      final String text) {
+    final Territory retreatTo =
+        getRemote(retreatingPlayer, bridge)
+            .retreatQuery(
+                battleState.getBattleId(),
+                true,
                 battleState.getBattleSite(),
                 availableTerritories,
                 text);
