@@ -91,13 +91,15 @@ public class DefensiveSubsRetreat implements BattleStep {
     }
 
     EvaderRetreat.retreatUnits(
-        battleState,
-        battleActions,
-        BattleState.Side.DEFENSE,
-        bridge,
-        retreatTerritories,
-        unitsToRetreat,
-        getName());
+        EvaderRetreat.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .side(BattleState.Side.DEFENSE)
+            .bridge(bridge)
+            .possibleRetreatSites(retreatTerritories)
+            .units(unitsToRetreat)
+            .step(getName())
+            .build());
   }
 
   private boolean isEvaderNotPresent() {

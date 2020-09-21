@@ -87,13 +87,15 @@ public class OffensiveSubsRetreat implements BattleStep {
     }
 
     EvaderRetreat.retreatUnits(
-        battleState,
-        battleActions,
-        BattleState.Side.OFFENSE,
-        bridge,
-        retreatTerritories,
-        unitsToRetreat,
-        getName());
+        EvaderRetreat.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .side(BattleState.Side.OFFENSE)
+            .bridge(bridge)
+            .possibleRetreatSites(retreatTerritories)
+            .units(unitsToRetreat)
+            .step(getName())
+            .build());
   }
 
   private boolean isDestroyerPresent() {

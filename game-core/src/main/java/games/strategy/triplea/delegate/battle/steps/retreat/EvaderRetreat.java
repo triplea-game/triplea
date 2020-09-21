@@ -12,20 +12,32 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import lombok.Builder;
 import lombok.experimental.UtilityClass;
 import org.triplea.sound.SoundUtils;
 
 @UtilityClass
 public class EvaderRetreat {
 
-  public static void retreatUnits(
-      final BattleState battleState,
-      final BattleActions battleActions,
-      final BattleState.Side side,
-      final IDelegateBridge bridge,
-      final Collection<Territory> possibleRetreatSites,
-      final Collection<Unit> units,
-      final String step) {
+  @Builder(toBuilder = true)
+  static class Parameters {
+    BattleState battleState;
+    BattleActions battleActions;
+    BattleState.Side side;
+    IDelegateBridge bridge;
+    Collection<Territory> possibleRetreatSites;
+    Collection<Unit> units;
+    String step;
+  }
+
+  public static void retreatUnits(final Parameters parameters) {
+    final BattleState battleState = parameters.battleState;
+    final BattleActions battleActions = parameters.battleActions;
+    final BattleState.Side side = parameters.side;
+    final IDelegateBridge bridge = parameters.bridge;
+    final Collection<Territory> possibleRetreatSites = parameters.possibleRetreatSites;
+    final Collection<Unit> units = parameters.units;
+    final String step = parameters.step;
     final GamePlayer retreatingPlayer =
         side == BattleState.Side.DEFENSE ? battleState.getDefender() : battleState.getAttacker();
     final String text = retreatingPlayer.getName() + " retreat subs?";
