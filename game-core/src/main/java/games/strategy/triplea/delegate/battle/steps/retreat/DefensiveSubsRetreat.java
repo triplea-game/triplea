@@ -95,7 +95,6 @@ public class DefensiveSubsRetreat implements BattleStep {
         battleActions,
         BattleState.Side.DEFENSE,
         bridge,
-        battleState.getDefender(),
         retreatTerritories,
         unitsToRetreat,
         getName());

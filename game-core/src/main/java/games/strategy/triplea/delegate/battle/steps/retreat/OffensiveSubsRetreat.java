@@ -91,7 +91,6 @@ public class OffensiveSubsRetreat implements BattleStep {
         battleActions,
         BattleState.Side.OFFENSE,
         bridge,
-        battleState.getAttacker(),
         retreatTerritories,
         unitsToRetreat,
         getName());
