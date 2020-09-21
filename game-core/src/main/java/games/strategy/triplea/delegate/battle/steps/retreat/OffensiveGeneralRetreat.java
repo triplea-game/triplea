@@ -98,23 +98,26 @@ public class OffensiveGeneralRetreat implements BattleStep {
       return;
     }
 
-    final Retreater retreater;
+    Retreater retreater = null;
 
     if (battleState.isAmphibious()) {
-      if (canAttackerRetreatPartialAmphib()) {
-        retreater = new RetreaterPartialAmphibious(battleState);
-      } else if (canAttackerRetreatAmphibPlanes()) {
-        retreater = new RetreaterAirAmphibious(battleState);
-      } else {
-        return;
-      }
+      retreater = getAmphibiousRetreater();
     } else if (canAttackerRetreat()) {
       retreater = new RetreaterGeneral(battleState);
-    } else {
-      return;
     }
 
-    retreat(bridge, retreater);
+    if (retreater != null) {
+      retreat(bridge, retreater);
+    }
+  }
+
+  private Retreater getAmphibiousRetreater() {
+    if (canAttackerRetreatPartialAmphib()) {
+      return new RetreaterPartialAmphibious(battleState);
+    } else if (canAttackerRetreatAmphibPlanes()) {
+      return new RetreaterAirAmphibious(battleState);
+    }
+    return null;
   }
 
   private void retreat(final IDelegateBridge bridge, final Retreater retreater) {
@@ -137,34 +140,19 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
     final CompositeChange change = new CompositeChange();
 
-    final Change extraRetreatChange = retreater.extraRetreatChange(retreatTo, retreatUnits);
-    if (!extraRetreatChange.isEmpty()) {
-      change.add(extraRetreatChange);
-    }
+    change.add(retreater.extraRetreatChange(retreatTo, retreatUnits));
 
     final Map<Retreater.RetreatLocation, Collection<Unit>> retreatingUnitMap =
         retreater.splitRetreatUnits(retreatUnits);
 
-    if (retreatingUnitMap.containsKey(Retreater.RetreatLocation.SAME_TERRITORY)) {
-      final Collection<Unit> sameTerritoryRetreatingUnits =
-          retreatingUnitMap.get(Retreater.RetreatLocation.SAME_TERRITORY);
-      if (!sameTerritoryRetreatingUnits.isEmpty()) {
-        battleState.retreatUnits(BattleState.Side.OFFENSE, sameTerritoryRetreatingUnits);
-        addRetreatToHistory(bridge, sameTerritoryRetreatingUnits);
-      }
-    }
-
-    if (retreatingUnitMap.containsKey(Retreater.RetreatLocation.OTHER_TERRITORY)) {
-      final Collection<Unit> otherTerritoryRetreatingUnits =
-          retreatingUnitMap.get(Retreater.RetreatLocation.OTHER_TERRITORY);
-      if (!otherTerritoryRetreatingUnits.isEmpty()) {
-        battleState.retreatUnits(BattleState.Side.OFFENSE, otherTerritoryRetreatingUnits);
-        addTerritoryRetreatToHistory(retreatTo, bridge, otherTerritoryRetreatingUnits);
-        change.add(
-            ChangeFactory.moveUnits(
-                battleState.getBattleSite(), retreatTo, otherTerritoryRetreatingUnits));
-      }
-    }
+    retreatSameTerritoryUnits(
+        bridge, retreatingUnitMap.get(Retreater.RetreatLocation.SAME_TERRITORY));
+    change.add(
+        retreatOtherTerritoryUnits(
+            bridge,
+            retreatTo,
+            change,
+            retreatingUnitMap.get(Retreater.RetreatLocation.OTHER_TERRITORY)));
 
     bridge.addChange(change);
 
@@ -174,29 +162,36 @@ public class OffensiveGeneralRetreat implements BattleStep {
       bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreatUnits);
     }
 
-    broadcastRetreat(
-        bridge, retreater.getShortBroadcastSuffix(), retreater.getLongBroadcastSuffix(retreatTo));
-  }
-
-  private void addTerritoryRetreatToHistory(
-      final Territory to, final IDelegateBridge bridge, final Collection<Unit> units) {
-    final String transcriptText = MyFormatter.unitsToText(units) + " retreated to " + to.getName();
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(units));
-  }
-
-  private void addRetreatToHistory(final IDelegateBridge bridge, final Collection<Unit> units) {
-    final String transcriptText = MyFormatter.unitsToText(units) + " retreated";
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(units));
-  }
-
-  private void broadcastRetreat(
-      final IDelegateBridge bridge,
-      final String messageShortSuffix,
-      final String messageLongSuffix) {
-    final String messageShort = battleState.getAttacker().getName() + messageShortSuffix;
-    final String messageLong = battleState.getAttacker().getName() + messageLongSuffix;
     bridge
         .getDisplayChannelBroadcaster()
-        .notifyRetreat(messageShort, messageLong, getName(), battleState.getAttacker());
+        .notifyRetreat(
+            battleState.getAttacker().getName() + retreater.getShortBroadcastSuffix(),
+            battleState.getAttacker().getName() + retreater.getLongBroadcastSuffix(retreatTo),
+            getName(),
+            battleState.getAttacker());
+  }
+
+  private void retreatSameTerritoryUnits(
+      final IDelegateBridge bridge, final Collection<Unit> retreatingUnits) {
+    if (retreatingUnits != null && !retreatingUnits.isEmpty()) {
+      battleState.retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      final String transcriptText = MyFormatter.unitsToText(retreatingUnits) + " retreated";
+      bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreatingUnits));
+    }
+  }
+
+  private Change retreatOtherTerritoryUnits(
+      final IDelegateBridge bridge,
+      final Territory retreatTo,
+      final CompositeChange change,
+      final Collection<Unit> retreatingUnits) {
+    if (retreatingUnits != null && !retreatingUnits.isEmpty()) {
+      battleState.retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+      final String transcriptText =
+          MyFormatter.unitsToText(retreatingUnits) + " retreated to " + retreatTo.getName();
+      bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreatingUnits));
+      return ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, retreatingUnits);
+    }
+    return ChangeFactory.EMPTY_CHANGE;
   }
 }
