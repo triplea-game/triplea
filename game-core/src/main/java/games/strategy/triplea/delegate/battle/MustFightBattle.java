@@ -1043,7 +1043,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
+        final BattleStep removeNonCombatants =
+            new RemoveNonCombatants(MustFightBattle.this, MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
       }
     };
@@ -1066,7 +1067,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
+        final BattleStep removeNonCombatants =
+            new RemoveNonCombatants(MustFightBattle.this, MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
       }
     };

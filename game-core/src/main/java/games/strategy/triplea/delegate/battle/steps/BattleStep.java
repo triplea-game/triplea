@@ -101,7 +101,7 @@ public interface BattleStep extends IExecutable {
         new OffensiveGeneral(battleState, battleActions),
         new DefensiveGeneral(battleState, battleActions),
         new ClearAaCasualties(battleState, battleActions),
-        new RemoveNonCombatants(battleActions),
+        new RemoveNonCombatants(battleState, battleActions),
         new MarkNoMovementLeft(battleState, battleActions),
         new RemoveFirstStrikeSuicide(battleState, battleActions),
         new RemoveGeneralSuicide(battleState, battleActions),
