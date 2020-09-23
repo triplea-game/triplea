@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Maintains the state of a group of units firing during a {@link MustFightBattle}. */
@@ -46,6 +47,9 @@ public class Fire implements IExecutable {
   private final Collection<Unit> allFriendlyUnitsNotIncludingWaitingToDie;
   private final Collection<Unit> allEnemyUnitsNotIncludingWaitingToDie;
   private final boolean isAmphibious;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  private final Collection<Unit> amphibiousLandAttackers = List.of();
 
   // These variables change state during execution
   private DiceRoll dice;

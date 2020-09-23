@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundUtils;
 
@@ -47,6 +48,10 @@ public class FireAa implements IExecutable {
   private final List<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
   private final boolean isAmphibious;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  private final Collection<Unit> amphibiousLandAttackers = List.of();
+
   private final List<String> aaTypes;
 
   // These variables change state during execution
