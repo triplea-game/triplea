@@ -154,8 +154,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         () -> {
           if (showUnitsToPlace) {
             unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
-            unitsToPlacePanel.revalidate();
-            unitsToPlacePanel.repaint();
+            SwingComponents.redraw(unitsToPlacePanel);
           } else {
             unitsToPlacePanel.removeAll();
           }

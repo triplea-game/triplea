@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /**
  * Headed Implementation of SetupConfiguration. This is the base-class for any panel that configures
@@ -248,9 +249,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             }
           }
         });
-
-    panel.validate();
-    panel.repaint();
+    SwingComponents.redraw(panel);
   }
 
   public abstract boolean isCancelButtonVisible();

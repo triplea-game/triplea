@@ -50,6 +50,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
 import tools.image.FileSave;
 import tools.image.MapFolderLocationSystemProperty;
@@ -343,8 +344,7 @@ public final class MapPropertiesMaker {
                 JOptionPane.showMessageDialog(this, propertyWrapperUi.getFirst());
                 mapProperties.writePropertiesToObject(propertyWrapperUi.getSecond());
                 createPlayerColorChooser();
-                validate();
-                repaint();
+                SwingComponents.redraw(this);
               }));
       panel.add(
           showMore,

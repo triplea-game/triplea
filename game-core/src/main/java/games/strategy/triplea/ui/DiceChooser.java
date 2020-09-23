@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 class DiceChooser extends JPanel {
   private static final long serialVersionUID = -3658408802544268998L;
@@ -52,9 +53,7 @@ class DiceChooser extends JPanel {
     dicePanel.add(Box.createHorizontalStrut(2));
     random[diceCount++] = roll - 1;
     updateDiceCount();
-    validate();
-    invalidate();
-    repaint();
+    SwingComponents.redraw(this);
   }
 
   private void removeLastDie() {
@@ -64,9 +63,7 @@ class DiceChooser extends JPanel {
     dicePanel.remove(lastIndex - 1);
     diceCount--;
     updateDiceCount();
-    validate();
-    invalidate();
-    repaint();
+    SwingComponents.redraw(this);
   }
 
   private void updateDiceCount() {

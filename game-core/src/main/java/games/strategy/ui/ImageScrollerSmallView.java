@@ -16,6 +16,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
+import org.triplea.swing.SwingComponents;
 
 /**
  * A small image that tracks a selection area within a small image. Generally used in conjunction
@@ -91,8 +92,7 @@ public class ImageScrollerSmallView extends JComponent {
     setPreferredSize(prefSize);
     setMinimumSize(prefSize);
     setMaximumSize(prefSize);
-    this.validate();
-    this.repaint();
+    SwingComponents.redraw(this);
   }
 
   private int getInsetsWidth() {

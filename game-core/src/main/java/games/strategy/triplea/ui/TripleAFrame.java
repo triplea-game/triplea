@@ -243,8 +243,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     new Insets(0, 0, 0, 0),
                     0,
                     0));
-            territoryInfo.revalidate();
-            territoryInfo.repaint();
+            SwingComponents.redraw(territoryInfo);
             return;
           }
 
@@ -342,8 +341,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     0,
                     0));
           }
-          territoryInfo.revalidate();
-          territoryInfo.repaint();
+          SwingComponents.redraw(territoryInfo);
         }
       };
 

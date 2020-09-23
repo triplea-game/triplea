@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import org.triplea.swing.ScrollableJPanel;
+import org.triplea.swing.SwingComponents;
 
 /**
  * A UI component that displays details about the currently-selected history node.
@@ -106,8 +107,7 @@ public class HistoryDetailsPanel extends JPanel {
       }
     }
     content.add(Box.createGlue());
-    validate();
-    repaint();
+    SwingComponents.redraw(this);
   }
 
   private void showTerritory(final Territory territory) {
