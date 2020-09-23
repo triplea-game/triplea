@@ -216,15 +216,7 @@ public final class ProSortMoveOptionsUtils {
             (includeUnit ? 1 : -1)
                 * DiceRoll.getTotalPower(
                     DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                        sortedUnits,
-                        defendingUnits,
-                        sortedUnits,
-                        false,
-                        data,
-                        t,
-                        effects,
-                        false,
-                        null),
+                        sortedUnits, defendingUnits, sortedUnits, false, data, t, effects),
                     data);
       }
       if (powerDifference < minPower) {

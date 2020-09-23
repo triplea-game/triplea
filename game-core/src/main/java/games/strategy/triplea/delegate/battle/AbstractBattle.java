@@ -57,7 +57,6 @@ abstract class AbstractBattle implements IBattle {
 
   List<Unit> attackingUnits = new ArrayList<>();
   List<Unit> defendingUnits = new ArrayList<>();
-  List<Unit> amphibiousLandAttackers = new ArrayList<>();
   List<Unit> bombardingUnits = new ArrayList<>();
   @Getter Collection<TerritoryEffect> territoryEffects;
   BattleResultDescription battleResultDescription;
@@ -176,11 +175,6 @@ abstract class AbstractBattle implements IBattle {
   @Override
   public boolean isAmphibious() {
     return isAmphibious;
-  }
-
-  @Override
-  public Collection<Unit> getAmphibiousLandAttackers() {
-    return Collections.unmodifiableCollection(amphibiousLandAttackers);
   }
 
   @Override

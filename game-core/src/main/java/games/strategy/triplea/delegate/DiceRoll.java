@@ -693,9 +693,7 @@ public class DiceRoll implements Externalizable {
       final boolean defending,
       final GameData data,
       final Territory location,
-      final Collection<TerritoryEffect> territoryEffects,
-      final boolean isAmphibiousBattle,
-      final Collection<Unit> amphibiousLandAttackers) {
+      final Collection<TerritoryEffect> territoryEffects) {
 
     return getUnitPowerAndRollsForNormalBattles(
         unitsGettingPowerFor,
@@ -705,8 +703,6 @@ public class DiceRoll implements Externalizable {
         data,
         location,
         territoryEffects,
-        isAmphibiousBattle,
-        amphibiousLandAttackers,
         new HashMap<>(),
         new HashMap<>());
   }
@@ -725,8 +721,6 @@ public class DiceRoll implements Externalizable {
       final GameData data,
       final Territory location,
       final Collection<TerritoryEffect> territoryEffects,
-      final boolean isAmphibiousBattle,
-      final Collection<Unit> amphibiousLandAttackers,
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
@@ -803,7 +797,7 @@ public class DiceRoll implements Externalizable {
                 UnitSupportAttachment::getStrength);
       } else {
         strength = ua.getAttack(unit.getOwner());
-        if (ua.getIsMarine() != 0 && isAmphibiousBattle && amphibiousLandAttackers.contains(unit)) {
+        if (ua.getIsMarine() != 0 && unit.getWasAmphibious()) {
           strength += ua.getIsMarine();
         }
         if (ua.getIsSea() && Matches.territoryIsLand().test(location)) {
@@ -956,8 +950,6 @@ public class DiceRoll implements Externalizable {
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
     final Territory location = battle.getTerritory();
-    final boolean isAmphibiousBattle = battle.isAmphibious();
-    final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
@@ -966,9 +958,7 @@ public class DiceRoll implements Externalizable {
             defending,
             data,
             location,
-            territoryEffects,
-            isAmphibiousBattle,
-            amphibiousLandAttackers);
+            territoryEffects);
 
     final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
@@ -1165,8 +1155,6 @@ public class DiceRoll implements Externalizable {
     final GameData data = bridge.getData();
     sortByStrength(units, defending);
     final Territory location = battle.getTerritory();
-    final boolean isAmphibiousBattle = battle.isAmphibious();
-    final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
@@ -1175,9 +1163,7 @@ public class DiceRoll implements Externalizable {
             defending,
             data,
             location,
-            territoryEffects,
-            isAmphibiousBattle,
-            amphibiousLandAttackers);
+            territoryEffects);
 
     final TotalPowerAndTotalRolls totalPowerAndRolls =
         getTotalPowerAndRolls(unitPowerAndRollsMap, data);

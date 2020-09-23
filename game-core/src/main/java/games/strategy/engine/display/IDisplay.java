@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /**
  * A Display is a view of the game. Displays listen on the display channel for game events. A
@@ -54,6 +55,8 @@ public interface IDisplay extends IChannelSubscriber {
    * @param attacker - PlayerId of attacker
    * @param defender - PlayerId of defender
    */
+  @RemoveOnNextMajorRelease(
+      "Remove isAmphibious, amphibiousLandAttackers, dependentUnits, and battleTitle")
   @RemoteActionCode(12)
   void showBattle(
       UUID battleId,

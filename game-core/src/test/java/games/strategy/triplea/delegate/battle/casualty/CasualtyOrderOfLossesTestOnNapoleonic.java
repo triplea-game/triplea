@@ -98,7 +98,6 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
                 .build())
         .player(BRITISH)
         .enemyUnits(List.of())
-        .amphibiousLandAttackers(List.of())
         .battlesite(NORMANDY)
         .costs(COST_MAP)
         .data(data)

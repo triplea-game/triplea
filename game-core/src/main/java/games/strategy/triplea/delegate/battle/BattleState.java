@@ -55,8 +55,6 @@ public interface BattleState {
 
   Collection<Unit> getBombardingUnits();
 
-  Collection<Unit> getAmphibiousLandAttackers();
-
   GamePlayer getAttacker();
 
   GamePlayer getDefender();

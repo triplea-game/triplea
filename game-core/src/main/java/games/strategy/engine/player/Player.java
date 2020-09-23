@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -73,6 +74,7 @@ public interface Player extends IRemote {
    *     one hitpoints left?
    * @return CasualtyDetails
    */
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers isn't used anymore")
   @RemoteActionCode(19)
   CasualtyDetails selectCasualties(
       Collection<Unit> selectFrom,

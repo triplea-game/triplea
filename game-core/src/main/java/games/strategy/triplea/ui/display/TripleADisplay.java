@@ -24,8 +24,6 @@ public class TripleADisplay implements IDisplay {
     this.ui = ui;
   }
 
-  // TODO: unit_dependents and battleTitle are both likely not used, they have been removed
-  // from BattlePane().showBattle( .. ) already
   @Override
   public void showBattle(
       final UUID battleId,
@@ -53,9 +51,7 @@ public class TripleADisplay implements IDisplay {
             defendingWaitingToDie,
             attacker,
             defender,
-            isAmphibious,
-            battleType,
-            amphibiousLandAttackers);
+            battleType);
   }
 
   @Override

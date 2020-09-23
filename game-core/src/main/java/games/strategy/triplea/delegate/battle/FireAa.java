@@ -47,7 +47,6 @@ public class FireAa implements IExecutable {
   private final List<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
   private final boolean isAmphibious;
-  private final Collection<Unit> amphibiousLandAttackers;
   private final List<String> aaTypes;
 
   // These variables change state during execution
@@ -84,7 +83,6 @@ public class FireAa implements IExecutable {
     this.allFriendlyUnitsAliveOrWaitingToDie = allFriendlyUnitsAliveOrWaitingToDie;
     this.allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
     isAmphibious = this.battle.isAmphibious();
-    amphibiousLandAttackers = this.battle.getAmphibiousLandAttackers();
     this.aaTypes = aaTypes;
   }
 
@@ -200,8 +198,7 @@ public class FireAa implements IExecutable {
         battleId,
         battleSite,
         territoryEffects,
-        isAmphibious,
-        amphibiousLandAttackers);
+        isAmphibious);
   }
 
   private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {

@@ -60,7 +60,6 @@ public class CasualtySelector {
       final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits,
       final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite,
       final Collection<TerritoryEffect> territoryEffects,
       final IDelegateBridge bridge,
@@ -95,7 +94,7 @@ public class CasualtySelector {
           friendlyUnits,
           enemyUnits,
           amphibious,
-          amphibiousLandAttackers,
+          List.of(),
           new CasualtyDetails(),
           battleId,
           battlesite,
@@ -124,7 +123,6 @@ public class CasualtySelector {
             player,
             enemyUnits,
             amphibious,
-            amphibiousLandAttackers,
             battlesite,
             costs,
             territoryEffects,
@@ -154,7 +152,7 @@ public class CasualtySelector {
                 friendlyUnits,
                 enemyUnits,
                 amphibious,
-                amphibiousLandAttackers,
+                List.of(),
                 defaultCasualties,
                 battleId,
                 battlesite,
@@ -197,7 +195,6 @@ public class CasualtySelector {
           friendlyUnits,
           enemyUnits,
           amphibious,
-          amphibiousLandAttackers,
           battlesite,
           territoryEffects,
           bridge,
@@ -226,7 +223,6 @@ public class CasualtySelector {
           friendlyUnits,
           enemyUnits,
           amphibious,
-          amphibiousLandAttackers,
           battlesite,
           territoryEffects,
           bridge,
@@ -290,7 +286,6 @@ public class CasualtySelector {
       final GamePlayer player,
       final Collection<Unit> enemyUnits,
       final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite,
       final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects,
@@ -311,8 +306,6 @@ public class CasualtySelector {
                         .amphibious(amphibious)
                         .defending(defending)
                         .build())
-                .amphibiousLandAttackers(
-                    amphibiousLandAttackers == null ? List.of() : amphibiousLandAttackers)
                 .battlesite(battlesite)
                 .costs(costs)
                 .data(data)

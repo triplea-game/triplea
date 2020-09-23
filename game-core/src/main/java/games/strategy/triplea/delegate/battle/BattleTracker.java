@@ -1374,9 +1374,7 @@ public class BattleTracker implements Serializable {
                       true,
                       gameData,
                       territory,
-                      TerritoryEffectHelper.getEffects(territory),
-                      false,
-                      null),
+                      TerritoryEffectHelper.getEffects(territory)),
                   gameData)
               == 0) {
         battle.fight(bridge);

@@ -590,7 +590,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           attackingUnits,
           defendingUnits,
           isAmphibious,
-          amphibiousLandAttackers,
           battleSite,
           territoryEffects,
           bridge,
@@ -615,8 +614,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             battleId,
             battleSite,
             territoryEffects,
-            isAmphibious,
-            amphibiousLandAttackers);
+            isAmphibious);
     final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
     if (casualties.size() != totalExpectingHits) {
       throw new IllegalStateException(

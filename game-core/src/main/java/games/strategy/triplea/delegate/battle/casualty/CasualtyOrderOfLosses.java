@@ -40,7 +40,6 @@ class CasualtyOrderOfLosses {
     @Nonnull Collection<Unit> targetsToPickFrom;
     @Nonnull GamePlayer player;
     @Nonnull Collection<Unit> enemyUnits;
-    @Nonnull Collection<Unit> amphibiousLandAttackers;
     @Nonnull Territory battlesite;
     @Nonnull IntegerMap<UnitType> costs;
     @Nonnull CombatModifiers combatModifiers;
@@ -64,12 +63,8 @@ class CasualtyOrderOfLosses {
     for (final Unit u : parameters.targetsToPickFrom) {
       targetTypes.add(u.getType());
     }
-    final List<UnitType> amphibTypes = new ArrayList<>();
-    for (final Unit u : parameters.amphibiousLandAttackers) {
-      amphibTypes.add(u.getType());
-    }
     // Calculate hashes and cache key
-    String key = computeOolCacheKey(parameters, targetTypes, amphibTypes);
+    String key = computeOolCacheKey(parameters, targetTypes);
     // Check OOL cache
     final List<UnitType> stored = oolCache.get(key);
     if (stored != null) {
@@ -119,8 +114,6 @@ class CasualtyOrderOfLosses {
             parameters.data,
             parameters.battlesite,
             parameters.combatModifiers.getTerritoryEffects(),
-            parameters.combatModifiers.isAmphibious(),
-            parameters.amphibiousLandAttackers,
             unitSupportPowerMap,
             unitSupportRollsMap);
 
@@ -254,20 +247,13 @@ class CasualtyOrderOfLosses {
       oolCache.put(key, new ArrayList<>(unitTypes));
       final UnitType unitTypeToRemove = it.next();
       targetTypes.remove(unitTypeToRemove);
-      if (Collections.frequency(targetTypes, unitTypeToRemove)
-          < Collections.frequency(amphibTypes, unitTypeToRemove)) {
-        amphibTypes.remove(unitTypeToRemove);
-      }
-      key = computeOolCacheKey(parameters, targetTypes, amphibTypes);
+      key = computeOolCacheKey(parameters, targetTypes);
       it.remove();
     }
     return sortedWellEnoughUnitsList;
   }
 
-  static String computeOolCacheKey(
-      final Parameters parameters,
-      final List<UnitType> targetTypes,
-      final List<UnitType> amphibTypes) {
+  static String computeOolCacheKey(final Parameters parameters, final List<UnitType> targetTypes) {
     return parameters.player.getName()
         + "|"
         + parameters.battlesite.getName()
@@ -276,8 +262,6 @@ class CasualtyOrderOfLosses {
         + "|"
         + parameters.combatModifiers.isAmphibious()
         + "|"
-        + Objects.hashCode(targetTypes)
-        + "|"
-        + Objects.hashCode(amphibTypes);
+        + Objects.hashCode(targetTypes);
   }
 }

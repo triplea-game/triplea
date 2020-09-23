@@ -14,7 +14,7 @@ public class CasualtySortingUtil {
    * In an amphibious assault, sort on who is unloading from transports first as this will allow the
    * marines with higher scores to get killed last.
    */
-  public static void sortAmphib(final List<Unit> units, final List<Unit> amphibiousLandAttackers) {
+  public static void sortAmphib(final List<Unit> units) {
     final Comparator<Unit> decreasingMovement =
         UnitComparator.getLowestToHighestMovementComparator();
     units.sort(
@@ -24,18 +24,17 @@ public class CasualtySortingUtil {
                   final UnitAttachment ua = UnitAttachment.get(u1.getType());
                   final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
                   if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
-                    return compareAccordingToAmphibious(u1, u2, amphibiousLandAttackers);
+                    return compareAccordingToAmphibious(u1, u2);
                   }
                   return 0;
                 })
             .thenComparing(decreasingMovement));
   }
 
-  private static int compareAccordingToAmphibious(
-      final Unit u1, final Unit u2, final List<Unit> amphibiousLandAttackers) {
-    if (amphibiousLandAttackers.contains(u1) && !amphibiousLandAttackers.contains(u2)) {
+  private static int compareAccordingToAmphibious(final Unit u1, final Unit u2) {
+    if (u1.getWasAmphibious() && !u2.getWasAmphibious()) {
       return -1;
-    } else if (amphibiousLandAttackers.contains(u2) && !amphibiousLandAttackers.contains(u1)) {
+    } else if (u2.getWasAmphibious() && !u1.getWasAmphibious()) {
       return 1;
     }
     final int m1 = UnitAttachment.get(u1.getType()).getIsMarine();

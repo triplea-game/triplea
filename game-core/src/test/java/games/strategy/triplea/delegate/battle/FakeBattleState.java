@@ -56,9 +56,6 @@ public class FakeBattleState implements BattleState {
   final @NonNull Collection<Unit> defendingAa;
 
   @Getter(onMethod = @__({@Override}))
-  final Collection<Unit> amphibiousLandAttackers;
-
-  @Getter(onMethod = @__({@Override}))
   final @NonNull GameData gameData;
 
   @Getter(onMethod = @__({@Override}))
@@ -174,7 +171,6 @@ public class FakeBattleState implements BattleState {
         .defendingAa(List.of())
         .bombardingUnits(List.of())
         .dependentUnits(List.of())
-        .amphibiousLandAttackers(List.of())
         .gameData(mock(GameData.class))
         .amphibious(false)
         .over(false)
