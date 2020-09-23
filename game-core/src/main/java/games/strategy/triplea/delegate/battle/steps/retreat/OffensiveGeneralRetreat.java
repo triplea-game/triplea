@@ -133,10 +133,8 @@ public class OffensiveGeneralRetreat implements BattleStep {
     if (retreatTo == null) {
       return;
     }
-    if (!battleState.isHeadless()) {
-      SoundUtils.playRetreatType(
-          battleState.getAttacker(), retreatUnits, retreater.getRetreatType(), bridge);
-    }
+    SoundUtils.playRetreatType(
+        battleState.getAttacker(), retreatUnits, retreater.getRetreatType(), bridge);
 
     final CompositeChange change = new CompositeChange();
 

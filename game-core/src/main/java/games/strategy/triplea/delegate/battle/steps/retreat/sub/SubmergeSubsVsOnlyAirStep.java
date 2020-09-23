@@ -71,7 +71,14 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
     } else {
       return;
     }
-    EvaderRetreat.submergeEvaders(battleState, battleActions, submergingSubs, side, bridge);
+    EvaderRetreat.submergeEvaders(
+        EvaderRetreat.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .units(submergingSubs)
+            .side(side)
+            .bridge(bridge)
+            .build());
   }
 
   private boolean isOnlyAirVsSubs(

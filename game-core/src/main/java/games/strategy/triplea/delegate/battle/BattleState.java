@@ -7,12 +7,14 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.Value;
 import org.triplea.java.ChangeOnNextMajorRelease;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
 
+  @Getter
   enum Side {
     OFFENSE(IBattle.WhoWon.ATTACKER),
     DEFENSE(IBattle.WhoWon.DEFENDER);
@@ -25,10 +27,6 @@ public interface BattleState {
 
     public Side getOpposite() {
       return this == OFFENSE ? DEFENSE : OFFENSE;
-    }
-
-    public IBattle.WhoWon won() {
-      return whoWon;
     }
   }
 

@@ -20,7 +20,7 @@ import org.triplea.sound.SoundUtils;
 public class EvaderRetreat {
 
   @Builder(toBuilder = true)
-  static class Parameters {
+  public static class Parameters {
     BattleState battleState;
     BattleActions battleActions;
     BattleState.Side side;
@@ -31,74 +31,76 @@ public class EvaderRetreat {
   }
 
   public static void retreatUnits(final Parameters parameters) {
-    final BattleState battleState = parameters.battleState;
-    final BattleActions battleActions = parameters.battleActions;
-    final BattleState.Side side = parameters.side;
-    final IDelegateBridge bridge = parameters.bridge;
-    final Collection<Territory> possibleRetreatSites = parameters.possibleRetreatSites;
-    final Collection<Unit> units = parameters.units;
-    final String step = parameters.step;
     final GamePlayer retreatingPlayer =
-        side == BattleState.Side.DEFENSE ? battleState.getDefender() : battleState.getAttacker();
+        parameters.side == BattleState.Side.DEFENSE
+            ? parameters.battleState.getDefender()
+            : parameters.battleState.getAttacker();
     final String text = retreatingPlayer.getName() + " retreat subs?";
 
-    bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), step);
+    parameters
+        .bridge
+        .getDisplayChannelBroadcaster()
+        .gotoBattleStep(parameters.battleState.getBattleId(), parameters.step);
     final boolean isAttemptingSubmerge =
-        possibleRetreatSites.size() == 1
-            && possibleRetreatSites.contains(battleState.getBattleSite());
+        parameters.possibleRetreatSites.size() == 1
+            && parameters.possibleRetreatSites.contains(parameters.battleState.getBattleSite());
     final Territory retreatTo =
         isAttemptingSubmerge
-            ? battleActions.querySubmergeTerritory(
-                battleState, bridge, retreatingPlayer, possibleRetreatSites, text)
-            : battleActions.queryRetreatTerritory(
-                battleState, bridge, retreatingPlayer, possibleRetreatSites, text);
+            ? parameters.battleActions.querySubmergeTerritory(
+                parameters.battleState,
+                parameters.bridge,
+                retreatingPlayer,
+                parameters.possibleRetreatSites,
+                text)
+            : parameters.battleActions.queryRetreatTerritory(
+                parameters.battleState,
+                parameters.bridge,
+                retreatingPlayer,
+                parameters.possibleRetreatSites,
+                text);
     if (retreatTo == null) {
       return;
     }
-    playSound(battleState, bridge, retreatingPlayer, units);
-    if (battleState.getBattleSite().equals(retreatTo)) {
-      submergeEvaders(battleState, battleActions, units, side, bridge);
-      broadcastRetreat(bridge, retreatingPlayer, step, " submerges subs");
+    SoundUtils.playRetreatType(
+        retreatingPlayer, parameters.units, MustFightBattle.RetreatType.SUBS, parameters.bridge);
+    if (parameters.battleState.getBattleSite().equals(retreatTo)) {
+      submergeEvaders(parameters);
+      parameters
+          .bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(
+              retreatingPlayer.getName() + " submerges subs",
+              retreatingPlayer.getName() + " submerges subs",
+              parameters.step,
+              retreatingPlayer);
     } else {
-
-      final CompositeChange change = new CompositeChange();
-      change.add(ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, units));
-      bridge.addChange(change);
-      battleState.retreatUnits(side, units);
-
-      addHistoryRetreat(bridge, units, " retreated to " + retreatTo.getName());
-      notifyRetreat(battleState, battleActions, units, side, bridge);
-      broadcastRetreat(
-          bridge, retreatingPlayer, step, " retreats", " retreats subs to " + retreatTo.getName());
+      retreatEvaders(parameters, retreatTo);
+      parameters
+          .bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(
+              retreatingPlayer.getName() + " retreats",
+              retreatingPlayer.getName() + (" retreats subs to " + retreatTo.getName()),
+              parameters.step,
+              retreatingPlayer);
     }
   }
 
-  private static void playSound(
-      final BattleState battleState,
-      final IDelegateBridge bridge,
-      final GamePlayer retreatingPlayer,
-      final Collection<Unit> units) {
-    if (battleState.isHeadless()) {
-      return;
-    }
-    SoundUtils.playRetreatType(retreatingPlayer, units, MustFightBattle.RetreatType.SUBS, bridge);
-  }
-
-  public static void submergeEvaders(
-      final BattleState battleState,
-      final BattleActions battleActions,
-      final Collection<Unit> submerging,
-      final BattleState.Side side,
-      final IDelegateBridge bridge) {
+  public static void submergeEvaders(final Parameters parameters) {
     final CompositeChange change = new CompositeChange();
-    for (final Unit u : submerging) {
+    for (final Unit u : parameters.units) {
       change.add(ChangeFactory.unitPropertyChange(u, true, Unit.SUBMERGED));
     }
-    bridge.addChange(change);
-    battleState.retreatUnits(side, submerging);
+    parameters.bridge.addChange(change);
+    parameters.battleState.retreatUnits(parameters.side, parameters.units);
 
-    addHistoryRetreat(bridge, submerging, " submerged");
-    notifyRetreat(battleState, battleActions, submerging, side, bridge);
+    addHistoryRetreat(parameters.bridge, parameters.units, " submerged");
+    notifyRetreat(
+        parameters.battleState,
+        parameters.battleActions,
+        parameters.units,
+        parameters.side,
+        parameters.bridge);
   }
 
   private static void addHistoryRetreat(
@@ -114,30 +116,26 @@ public class EvaderRetreat {
       final BattleState.Side side,
       final IDelegateBridge bridge) {
     if (battleState.getUnits(side).isEmpty()) {
-      battleActions.endBattle(side.getOpposite().won(), bridge);
+      battleActions.endBattle(side.getOpposite().getWhoWon(), bridge);
     } else {
       bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreating);
     }
   }
 
-  private static void broadcastRetreat(
-      final IDelegateBridge bridge,
-      final GamePlayer retreatingPlayer,
-      final String step,
-      final String messageShortSuffix) {
-    broadcastRetreat(bridge, retreatingPlayer, step, messageShortSuffix, messageShortSuffix);
-  }
+  private static void retreatEvaders(final Parameters parameters, final Territory retreatTo) {
+    final CompositeChange change = new CompositeChange();
+    change.add(
+        ChangeFactory.moveUnits(
+            parameters.battleState.getBattleSite(), retreatTo, parameters.units));
+    parameters.bridge.addChange(change);
+    parameters.battleState.retreatUnits(parameters.side, parameters.units);
 
-  private static void broadcastRetreat(
-      final IDelegateBridge bridge,
-      final GamePlayer retreatingPlayer,
-      final String step,
-      final String messageShortSuffix,
-      final String messageLongSuffix) {
-    final String messageShort = retreatingPlayer.getName() + messageShortSuffix;
-    final String messageLong = retreatingPlayer.getName() + messageLongSuffix;
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
+    addHistoryRetreat(parameters.bridge, parameters.units, " retreated to " + retreatTo.getName());
+    notifyRetreat(
+        parameters.battleState,
+        parameters.battleActions,
+        parameters.units,
+        parameters.side,
+        parameters.bridge);
   }
 }
