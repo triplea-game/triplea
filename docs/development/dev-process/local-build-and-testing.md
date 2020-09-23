@@ -25,6 +25,35 @@ cd lobby-db/
 ./load_sample_data
 ```
 
+## Running tests
+
+Assuming docker is installed and a mac or linux system, first start database:
+```
+cd triplea/database/
+./start-database
+```
+
+Next run verify script:
+```
+cd triplea/
+./verify
+```
+
+## Testing a local lobby
+
+* Start database. If you just ran tests, reset the data:
+```
+cd ./database
+./reset_docker_db
+```
+* Start lobby, look for the lobby server launcher
+* Start a bot, look for the headless game launcher
+* Start the client, look for headed-game client launcher
+* In engine settings, go to test, select "use local lobby"
+* Click play online, log in without an account or use the predefined
+  moderator account (user:password) "test:test"
+
+
 *Note*: integration tests will overwrite DB data, `./load_sample_data` will need to be re-run after running integ tests.
 
 Docker for Mac can be obtained at: https://store.docker.com/editions/community/docker-ce-desktop-mac
