@@ -59,7 +59,6 @@ public class CasualtySelector {
       final Collection<Unit> targetsToPickFrom,
       final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits,
-      final boolean amphibious,
       final Territory battlesite,
       final Collection<TerritoryEffect> territoryEffects,
       final IDelegateBridge bridge,
@@ -93,7 +92,7 @@ public class CasualtySelector {
           player,
           friendlyUnits,
           enemyUnits,
-          amphibious,
+          false,
           List.of(),
           new CasualtyDetails(),
           battleId,
@@ -122,7 +121,6 @@ public class CasualtySelector {
             defending,
             player,
             enemyUnits,
-            amphibious,
             battlesite,
             costs,
             territoryEffects,
@@ -151,7 +149,7 @@ public class CasualtySelector {
                 player,
                 friendlyUnits,
                 enemyUnits,
-                amphibious,
+                false,
                 List.of(),
                 defaultCasualties,
                 battleId,
@@ -194,7 +192,6 @@ public class CasualtySelector {
           sortedTargetsToPickFrom,
           friendlyUnits,
           enemyUnits,
-          amphibious,
           battlesite,
           territoryEffects,
           bridge,
@@ -222,7 +219,6 @@ public class CasualtySelector {
           sortedTargetsToPickFrom,
           friendlyUnits,
           enemyUnits,
-          amphibious,
           battlesite,
           territoryEffects,
           bridge,
@@ -285,7 +281,6 @@ public class CasualtySelector {
       final boolean defending,
       final GamePlayer player,
       final Collection<Unit> enemyUnits,
-      final boolean amphibious,
       final Territory battlesite,
       final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects,
@@ -303,7 +298,7 @@ public class CasualtySelector {
                 .combatModifiers(
                     CombatModifiers.builder()
                         .territoryEffects(territoryEffects)
-                        .amphibious(amphibious)
+                        .amphibious(targetsToPickFrom.stream().anyMatch(Unit::getWasAmphibious))
                         .defending(defending)
                         .build())
                 .battlesite(battlesite)

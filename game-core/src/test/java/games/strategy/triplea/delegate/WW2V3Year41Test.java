@@ -192,8 +192,7 @@ class WW2V3Year41Test {
                 null,
                 null,
                 territory("Germany", gameData),
-                null,
-                false)
+                null)
             .getKilled();
     assertEquals(2, casualties.size());
     // should be 1 fighter and 1 bomber
@@ -248,8 +247,7 @@ class WW2V3Year41Test {
                 null,
                 null,
                 territory("Germany", gameData),
-                null,
-                false)
+                null)
             .getKilled();
     assertEquals(3, casualties.size());
     // should be 1 fighter and 2 bombers
@@ -307,8 +305,7 @@ class WW2V3Year41Test {
                 null,
                 null,
                 territory("Germany", gameData),
-                null,
-                false)
+                null)
             .getKilled();
     assertEquals(2, casualties.size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(3));

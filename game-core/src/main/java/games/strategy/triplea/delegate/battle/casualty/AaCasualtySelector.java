@@ -42,8 +42,7 @@ public class AaCasualtySelector {
       final GamePlayer hitPlayer,
       final UUID battleId,
       final Territory terr,
-      final Collection<TerritoryEffect> territoryEffects,
-      final boolean amphibious) {
+      final Collection<TerritoryEffect> territoryEffects) {
     if (planes.isEmpty()) {
       return new CasualtyDetails();
     }
@@ -60,7 +59,6 @@ public class AaCasualtySelector {
           planes,
           allFriendlyUnits,
           allEnemyUnits,
-          amphibious,
           terr,
           territoryEffects,
           bridge,

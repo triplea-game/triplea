@@ -47,7 +47,9 @@ public class FireAa implements IExecutable {
   private final Collection<TerritoryEffect> territoryEffects;
   private final List<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
-  private final boolean isAmphibious;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  private final boolean isAmphibious = false;
 
   @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
   private final Collection<Unit> amphibiousLandAttackers = List.of();
@@ -87,7 +89,6 @@ public class FireAa implements IExecutable {
     this.territoryEffects = territoryEffects;
     this.allFriendlyUnitsAliveOrWaitingToDie = allFriendlyUnitsAliveOrWaitingToDie;
     this.allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
-    isAmphibious = this.battle.isAmphibious();
     this.aaTypes = aaTypes;
   }
 
@@ -202,8 +203,7 @@ public class FireAa implements IExecutable {
         hitPlayer,
         battleId,
         battleSite,
-        territoryEffects,
-        isAmphibious);
+        territoryEffects);
   }
 
   private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {

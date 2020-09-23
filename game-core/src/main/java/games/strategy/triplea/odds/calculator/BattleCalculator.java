@@ -118,12 +118,7 @@ class BattleCalculator implements IBattleCalculator {
               });
         }
         battle.setUnits(
-            defendingUnits,
-            attackingUnits,
-            bombardingUnits,
-            amphibious,
-            defender2,
-            territoryEffects2);
+            defendingUnits, attackingUnits, bombardingUnits, defender2, territoryEffects2);
         bridge1.setBattle(battle);
         battle.fight(bridge);
         aggregateResults.addResult(new BattleResults(battle, gameData));

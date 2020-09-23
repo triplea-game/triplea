@@ -145,13 +145,11 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> defending,
       final Collection<Unit> attacking,
       final Collection<Unit> bombarding,
-      final boolean amphibious,
       final GamePlayer defender,
       final Collection<TerritoryEffect> territoryEffects) {
     defendingUnits = new ArrayList<>(defending);
     attackingUnits = new ArrayList<>(attacking);
     bombardingUnits = new ArrayList<>(bombarding);
-    isAmphibious = amphibious;
     this.defender = defender;
     this.territoryEffects = territoryEffects;
   }
@@ -672,7 +670,7 @@ public class MustFightBattle extends DependentBattle
           dependentUnits,
           attacker,
           defender,
-          isAmphibious(),
+          false,
           getBattleType(),
           List.of());
       display.listBattleSteps(battleId, stepStrings);
@@ -711,17 +709,13 @@ public class MustFightBattle extends DependentBattle
         dependentUnits,
         attacker,
         defender,
-        isAmphibious(),
+        false,
         getBattleType(),
         List.of());
     display.listBattleSteps(battleId, stepStrings);
     if (!headless) {
       // take the casualties with least movement first
-      if (isAmphibious()) {
-        CasualtySortingUtil.sortAmphib(attackingUnits);
-      } else {
-        CasualtySortingUtil.sortPreBattle(attackingUnits);
-      }
+      CasualtySortingUtil.sortPreBattle(attackingUnits);
       CasualtySortingUtil.sortPreBattle(defendingUnits);
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
     }

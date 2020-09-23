@@ -46,7 +46,9 @@ public class Fire implements IExecutable {
   private final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final Collection<Unit> allFriendlyUnitsNotIncludingWaitingToDie;
   private final Collection<Unit> allEnemyUnitsNotIncludingWaitingToDie;
-  private final boolean isAmphibious;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  private final boolean isAmphibious = false;
 
   @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
   private final Collection<Unit> amphibiousLandAttackers = List.of();
@@ -93,7 +95,6 @@ public class Fire implements IExecutable {
         this.defending ? this.battle.getDefendingUnits() : this.battle.getAttackingUnits();
     allEnemyUnitsNotIncludingWaitingToDie =
         !this.defending ? this.battle.getDefendingUnits() : this.battle.getAttackingUnits();
-    isAmphibious = this.battle.isAmphibious();
   }
 
   /** We must execute in atomic steps, push these steps onto the stack, and let them execute. */
@@ -252,7 +253,6 @@ public class Fire implements IExecutable {
         targetsToPickFrom,
         allEnemyUnitsNotIncludingWaitingToDie,
         allFriendlyUnitsNotIncludingWaitingToDie,
-        isAmphibious,
         battleSite,
         territoryEffects,
         bridge,

@@ -335,8 +335,7 @@ class AaInMoveUtil implements Serializable {
             player,
             null,
             territory,
-            TerritoryEffectHelper.getEffects(territory),
-            false);
+            TerritoryEffectHelper.getEffects(territory));
     bridge
         .getRemotePlayer(player)
         .reportMessage(

@@ -74,7 +74,7 @@ public interface Player extends IRemote {
    *     one hitpoints left?
    * @return CasualtyDetails
    */
-  @RemoveOnNextMajorRelease("amphibiousLandAttackers isn't used anymore")
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers and amphibious isn't used anymore")
   @RemoteActionCode(19)
   CasualtyDetails selectCasualties(
       Collection<Unit> selectFrom,

@@ -561,7 +561,7 @@ public class AirBattle extends AbstractBattle {
             Map.of(),
             attacker,
             defender,
-            isAmphibious(),
+            false,
             getBattleType(),
             Set.of());
     bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
@@ -704,7 +704,6 @@ public class AirBattle extends AbstractBattle {
                       defendingUnits,
                       defendingUnits,
                       attackingUnits,
-                      false,
                       battleSite,
                       null,
                       bridge,
@@ -767,7 +766,6 @@ public class AirBattle extends AbstractBattle {
                       attackingUnits,
                       attackingUnits,
                       defendingUnits,
-                      false,
                       battleSite,
                       null,
                       bridge,
