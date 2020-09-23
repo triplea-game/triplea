@@ -92,6 +92,6 @@ public final class HeadedGameRunner {
     SwingUtilities.invokeLater(ConsoleConfiguration::initialize);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
     GameRunner.start();
-    new Thread(AvailableGamesFileSystemReader::populateAvailableMapFilesCache).start();
+    AvailableGamesFileSystemReader.refreshMapFileCache();
   }
 }
