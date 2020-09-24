@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -35,7 +37,7 @@ public class EvaderRetreat {
       final Collection<Territory> possibleRetreatSites,
       final String step) {
     final GamePlayer retreatingPlayer =
-        parameters.side == BattleState.Side.DEFENSE
+        parameters.side == DEFENSE
             ? parameters.battleState.getDefender()
             : parameters.battleState.getAttacker();
     final String text = retreatingPlayer.getName() + " retreat subs?";
@@ -44,6 +46,7 @@ public class EvaderRetreat {
         .bridge
         .getDisplayChannelBroadcaster()
         .gotoBattleStep(parameters.battleState.getBattleId(), step);
+
     final boolean isAttemptingSubmerge =
         possibleRetreatSites.size() == 1
             && possibleRetreatSites.contains(parameters.battleState.getBattleSite());
@@ -61,32 +64,36 @@ public class EvaderRetreat {
                 retreatingPlayer,
                 possibleRetreatSites,
                 text);
-    if (retreatTo == null) {
-      return;
+    if (retreatTo != null) {
+      retreatUnits(parameters, step, retreatTo);
     }
+  }
+
+  private static void retreatUnits(
+      final Parameters parameters, final String step, final Territory retreatTo) {
+    final GamePlayer retreatingPlayer =
+        parameters.side == DEFENSE
+            ? parameters.battleState.getDefender()
+            : parameters.battleState.getAttacker();
+
     SoundUtils.playRetreatType(
         retreatingPlayer, parameters.units, MustFightBattle.RetreatType.SUBS, parameters.bridge);
+
+    final String shortMessage;
+    final String longMessage;
     if (parameters.battleState.getBattleSite().equals(retreatTo)) {
       submergeEvaders(parameters);
-      parameters
-          .bridge
-          .getDisplayChannelBroadcaster()
-          .notifyRetreat(
-              retreatingPlayer.getName() + " submerges subs",
-              retreatingPlayer.getName() + " submerges subs",
-              step,
-              retreatingPlayer);
+      longMessage = shortMessage = retreatingPlayer.getName() + " submerges subs";
     } else {
       retreatEvaders(parameters, retreatTo);
-      parameters
-          .bridge
-          .getDisplayChannelBroadcaster()
-          .notifyRetreat(
-              retreatingPlayer.getName() + " retreats",
-              retreatingPlayer.getName() + (" retreats subs to " + retreatTo.getName()),
-              step,
-              retreatingPlayer);
+      shortMessage = retreatingPlayer.getName() + " retreats";
+      longMessage = retreatingPlayer.getName() + " retreats subs to " + retreatTo.getName();
     }
+
+    parameters
+        .bridge
+        .getDisplayChannelBroadcaster()
+        .notifyRetreat(shortMessage, longMessage, step, retreatingPlayer);
   }
 
   public static void submergeEvaders(final Parameters parameters) {
