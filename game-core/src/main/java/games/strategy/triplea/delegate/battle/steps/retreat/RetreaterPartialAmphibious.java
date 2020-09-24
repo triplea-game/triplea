@@ -52,7 +52,9 @@ class RetreaterPartialAmphibious implements Retreater {
     final List<RetreatHistoryChild> historyChildren = new ArrayList<>();
 
     final Collection<Unit> airRetreating =
-        CollectionUtils.getMatches(retreatUnits, Matches.unitIsAir());
+        CollectionUtils.getMatches(
+            retreatUnits,
+            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getAttacker())));
 
     if (!airRetreating.isEmpty()) {
       battleState.retreatUnits(BattleState.Side.OFFENSE, airRetreating);
