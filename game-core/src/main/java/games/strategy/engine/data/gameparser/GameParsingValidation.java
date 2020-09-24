@@ -19,55 +19,66 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-class GameParsingValidation {
+public class GameParsingValidation {
 
-  private GameData data;
+  private final GameData data;
 
-  void validate() throws GameParseException {
+  public List<String> validate() {
+    final List<String> validationErrors = new ArrayList<>();
     // validate unit attachments
     for (final UnitType u : data.getUnitTypeList()) {
-      validateAttachments(u);
+      validationErrors.addAll(validateAttachments(u));
     }
     for (final Territory t : data.getMap()) {
-      validateAttachments(t);
+      validationErrors.addAll(validateAttachments(t));
     }
     for (final Resource r : data.getResourceList().getResources()) {
-      validateAttachments(r);
+      validationErrors.addAll(validateAttachments(r));
     }
     for (final GamePlayer r : data.getPlayerList().getPlayers()) {
-      validateAttachments(r);
+      validationErrors.addAll(validateAttachments(r));
     }
     for (final RelationshipType r : data.getRelationshipTypeList().getAllRelationshipTypes()) {
-      validateAttachments(r);
+      validationErrors.addAll(validateAttachments(r));
     }
     for (final TerritoryEffect r : data.getTerritoryEffectList().values()) {
-      validateAttachments(r);
+      validationErrors.addAll(validateAttachments(r));
     }
     for (final TechAdvance r : data.getTechnologyFrontier().getTechs()) {
-      validateAttachments(r);
+      validationErrors.addAll(validateAttachments(r));
     }
     // if relationships are used, every player should have a relationship with every other player
-    validateRelationships();
+    validationErrors.addAll(validateRelationships());
+    validationErrors.addAll(checkThatAllUnitsHaveAttachments());
+    return validationErrors;
   }
 
-  private void validateRelationships() throws GameParseException {
+  private List<String> validateRelationships() {
+    final List<String> validationErrors = new ArrayList<>();
     // for every player
     for (final GamePlayer player : data.getPlayerList()) {
       // in relation to every player
       for (final GamePlayer player2 : data.getPlayerList()) {
         // See if there is a relationship between them
         if (data.getRelationshipTracker().getRelationship(player, player2) == null) {
-          throw new GameParseException(
+          validationErrors.add(
               "No relation set for: " + player.getName() + " and " + player2.getName());
         }
       }
     }
+    return validationErrors;
   }
 
-  private void validateAttachments(final Attachable attachable) throws GameParseException {
+  private List<String> validateAttachments(final Attachable attachable) {
+    final List<String> validationErrors = new ArrayList<>();
     for (final IAttachment a : attachable.getAttachments().values()) {
-      a.validate(data);
+      try {
+        a.validate(data);
+      } catch (final GameParseException e) {
+        validationErrors.add(e.getMessage());
+      }
     }
+    return validationErrors;
   }
 
   static void validateForeachVariables(
@@ -91,7 +102,7 @@ class GameParsingValidation {
     }
   }
 
-  void checkThatAllUnitsHaveAttachments() throws GameParseException {
+  private List<String> checkThatAllUnitsHaveAttachments() {
     final Collection<UnitType> errors = new ArrayList<>();
     for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
       final UnitAttachment ua = UnitAttachment.get(ut);
@@ -99,11 +110,15 @@ class GameParsingValidation {
         errors.add(ut);
       }
     }
+
     if (!errors.isEmpty()) {
-      throw new GameParseException(
+      return List.of(
           data.getGameName()
               + " does not have unit attachments for: "
               + MyFormatter.defaultNamedToTextList(errors));
+
+    } else {
+      return List.of();
     }
   }
 }
