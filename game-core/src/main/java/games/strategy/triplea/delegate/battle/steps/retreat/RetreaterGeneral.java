@@ -50,11 +50,6 @@ class RetreaterGeneral implements Retreater {
   }
 
   @Override
-  public String getQueryText() {
-    return battleState.getAttacker().getName() + " retreat?";
-  }
-
-  @Override
   public MustFightBattle.RetreatType getRetreatType() {
     return MustFightBattle.RetreatType.DEFAULT;
   }
@@ -139,15 +134,5 @@ class RetreaterGeneral implements Retreater {
       change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
     }
     return change;
-  }
-
-  @Override
-  public String getShortBroadcastSuffix() {
-    return " retreats";
-  }
-
-  @Override
-  public String getLongBroadcastSuffix(final Territory retreatTo) {
-    return " retreats all units to " + retreatTo.getName();
   }
 }

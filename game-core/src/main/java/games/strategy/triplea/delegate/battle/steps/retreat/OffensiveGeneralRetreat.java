@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import java.util.Collection;
@@ -104,12 +105,15 @@ public class OffensiveGeneralRetreat implements BattleStep {
       final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
       final Collection<Territory> possibleRetreatSites =
           retreater.getPossibleRetreatSites(retreatUnits);
-      final String text = retreater.getQueryText();
 
       bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
       final Territory retreatTo =
           battleActions.queryRetreatTerritory(
-              battleState, bridge, battleState.getAttacker(), possibleRetreatSites, text);
+              battleState,
+              bridge,
+              battleState.getAttacker(),
+              possibleRetreatSites,
+              getQueryText(retreater.getRetreatType()));
 
       if (retreatTo != null) {
         retreat(bridge, retreater, retreatTo);
@@ -124,6 +128,18 @@ public class OffensiveGeneralRetreat implements BattleStep {
       return new RetreaterAirAmphibious(battleState);
     }
     return null;
+  }
+
+  private String getQueryText(final MustFightBattle.RetreatType retreatType) {
+    switch (retreatType) {
+      case DEFAULT:
+      default:
+        return battleState.getAttacker().getName() + " retreat?";
+      case PARTIAL_AMPHIB:
+        return battleState.getAttacker().getName() + " retreat non-amphibious units?";
+      case PLANES:
+        return battleState.getAttacker().getName() + " retreat planes?";
+    }
   }
 
   private void retreat(
@@ -154,9 +170,36 @@ public class OffensiveGeneralRetreat implements BattleStep {
     bridge
         .getDisplayChannelBroadcaster()
         .notifyRetreat(
-            battleState.getAttacker().getName() + retreater.getShortBroadcastSuffix(),
-            battleState.getAttacker().getName() + retreater.getLongBroadcastSuffix(retreatTo),
+            battleState.getAttacker().getName()
+                + getShortBroadcastSuffix(retreater.getRetreatType()),
+            battleState.getAttacker().getName()
+                + getLongBroadcastSuffix(retreater.getRetreatType(), retreatTo),
             getName(),
             battleState.getAttacker());
+  }
+
+  private String getShortBroadcastSuffix(final MustFightBattle.RetreatType retreatType) {
+    switch (retreatType) {
+      case DEFAULT:
+      default:
+        return " retreats";
+      case PARTIAL_AMPHIB:
+        return " retreats non-amphibious units";
+      case PLANES:
+        return " retreats planes";
+    }
+  }
+
+  private String getLongBroadcastSuffix(
+      final MustFightBattle.RetreatType retreatType, final Territory retreatTo) {
+    switch (retreatType) {
+      case DEFAULT:
+      default:
+        return " retreats all units to " + retreatTo.getName();
+      case PARTIAL_AMPHIB:
+        return " retreats non-amphibious units";
+      case PLANES:
+        return " retreats planes";
+    }
   }
 }

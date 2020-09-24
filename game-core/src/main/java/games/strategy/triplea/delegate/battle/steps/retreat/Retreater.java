@@ -26,13 +26,7 @@ interface Retreater {
 
   Collection<Territory> getPossibleRetreatSites(Collection<Unit> retreatUnits);
 
-  String getQueryText();
-
   MustFightBattle.RetreatType getRetreatType();
 
   RetreatChanges computeChanges(Territory retreatTo);
-
-  String getShortBroadcastSuffix();
-
-  String getLongBroadcastSuffix(Territory retreatTo);
 }

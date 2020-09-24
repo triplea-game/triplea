@@ -31,11 +31,6 @@ class RetreaterAirAmphibious implements Retreater {
   }
 
   @Override
-  public String getQueryText() {
-    return battleState.getAttacker().getName() + " retreat planes?";
-  }
-
-  @Override
   public MustFightBattle.RetreatType getRetreatType() {
     return MustFightBattle.RetreatType.PLANES;
   }
@@ -51,15 +46,5 @@ class RetreaterAirAmphibious implements Retreater {
     historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(retreatingUnits)));
 
     return RetreatChanges.of(EMPTY_CHANGE, historyChildren);
-  }
-
-  @Override
-  public String getShortBroadcastSuffix() {
-    return " retreats planes";
-  }
-
-  @Override
-  public String getLongBroadcastSuffix(final Territory retreatTo) {
-    return getShortBroadcastSuffix();
   }
 }

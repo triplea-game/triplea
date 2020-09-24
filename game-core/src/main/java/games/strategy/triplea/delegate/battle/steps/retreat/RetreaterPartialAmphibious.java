@@ -35,11 +35,6 @@ class RetreaterPartialAmphibious implements Retreater {
   }
 
   @Override
-  public String getQueryText() {
-    return battleState.getAttacker().getName() + " retreat non-amphibious units?";
-  }
-
-  @Override
   public MustFightBattle.RetreatType getRetreatType() {
     return MustFightBattle.RetreatType.PARTIAL_AMPHIB;
   }
@@ -76,15 +71,5 @@ class RetreaterPartialAmphibious implements Retreater {
     }
 
     return RetreatChanges.of(change, historyChildren);
-  }
-
-  @Override
-  public String getShortBroadcastSuffix() {
-    return " retreats non-amphibious units";
-  }
-
-  @Override
-  public String getLongBroadcastSuffix(final Territory retreatTo) {
-    return getShortBroadcastSuffix();
   }
 }
