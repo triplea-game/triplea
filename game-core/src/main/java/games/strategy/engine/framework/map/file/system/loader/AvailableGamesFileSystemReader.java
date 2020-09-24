@@ -44,8 +44,9 @@ public class AvailableGamesFileSystemReader {
     return availableGamesListCache;
   }
 
-  public static void populateAvailableMapFilesCache() {
-    parseMapFiles();
+  public static void refreshMapFileCache() {
+    availableGamesListCache = null;
+    new Thread(AvailableGamesFileSystemReader::parseMapFiles).start();
   }
 
   private Collection<DefaultGameChooserEntry> mapXmlsGameNamesByUri(
