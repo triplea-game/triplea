@@ -202,13 +202,13 @@ public final class GameParser {
     // set default tech attachments (comes after we parse all technologies, parse all attachments,
     // and parse all game options/properties)
     TechAbilityAttachment.setDefaultTechnologyAttachments(data);
-    try {
-      final var validation = new GameParsingValidation(data);
-      validation.validate();
-      validation.checkThatAllUnitsHaveAttachments();
-    } catch (final Exception e) {
+
+    final List<String> validationErrors = new GameParsingValidation(data).validate();
+    if (!validationErrors.isEmpty()) {
       throw new GameParseException(
-          String.format("map name: '%s', validation failed: %s", mapName, e.getMessage()), e);
+          String.format(
+              "map name: '%s', validation failed: %s",
+              mapName, String.join("\n", validationErrors)));
     }
     return data;
   }
