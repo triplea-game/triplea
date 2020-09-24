@@ -48,9 +48,11 @@ public class Fire implements IExecutable {
   private final Collection<Unit> allEnemyUnitsNotIncludingWaitingToDie;
 
   @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
   private final boolean isAmphibious = false;
 
   @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
   private final Collection<Unit> amphibiousLandAttackers = List.of();
 
   // These variables change state during execution

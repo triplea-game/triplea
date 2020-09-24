@@ -49,9 +49,11 @@ public class FireAa implements IExecutable {
   private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
 
   @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
   private final boolean isAmphibious = false;
 
   @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
   private final Collection<Unit> amphibiousLandAttackers = List.of();
 
   private final List<String> aaTypes;
