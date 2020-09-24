@@ -92,10 +92,10 @@ public class OffensiveSubsRetreat implements BattleStep {
             .battleActions(battleActions)
             .side(BattleState.Side.OFFENSE)
             .bridge(bridge)
-            .possibleRetreatSites(retreatTerritories)
             .units(unitsToRetreat)
-            .step(getName())
-            .build());
+            .build(),
+        retreatTerritories,
+        getName());
   }
 
   private boolean isDestroyerPresent() {

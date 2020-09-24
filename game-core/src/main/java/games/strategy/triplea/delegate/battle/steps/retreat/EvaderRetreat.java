@@ -13,24 +13,27 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.triplea.sound.SoundUtils;
 
+/** Utility class for handling retreating or submerging of `canEvade` units */
 @UtilityClass
 public class EvaderRetreat {
 
   @Builder(toBuilder = true)
   public static class Parameters {
-    BattleState battleState;
-    BattleActions battleActions;
-    BattleState.Side side;
-    IDelegateBridge bridge;
-    Collection<Territory> possibleRetreatSites;
-    Collection<Unit> units;
-    String step;
+    final @NonNull BattleState battleState;
+    final @NonNull BattleActions battleActions;
+    final @NonNull BattleState.Side side;
+    final @NonNull IDelegateBridge bridge;
+    final @NonNull Collection<Unit> units;
   }
 
-  public static void retreatUnits(final Parameters parameters) {
+  public static void retreatUnits(
+      final Parameters parameters,
+      final Collection<Territory> possibleRetreatSites,
+      final String step) {
     final GamePlayer retreatingPlayer =
         parameters.side == BattleState.Side.DEFENSE
             ? parameters.battleState.getDefender()
@@ -40,23 +43,23 @@ public class EvaderRetreat {
     parameters
         .bridge
         .getDisplayChannelBroadcaster()
-        .gotoBattleStep(parameters.battleState.getBattleId(), parameters.step);
+        .gotoBattleStep(parameters.battleState.getBattleId(), step);
     final boolean isAttemptingSubmerge =
-        parameters.possibleRetreatSites.size() == 1
-            && parameters.possibleRetreatSites.contains(parameters.battleState.getBattleSite());
+        possibleRetreatSites.size() == 1
+            && possibleRetreatSites.contains(parameters.battleState.getBattleSite());
     final Territory retreatTo =
         isAttemptingSubmerge
             ? parameters.battleActions.querySubmergeTerritory(
                 parameters.battleState,
                 parameters.bridge,
                 retreatingPlayer,
-                parameters.possibleRetreatSites,
+                possibleRetreatSites,
                 text)
             : parameters.battleActions.queryRetreatTerritory(
                 parameters.battleState,
                 parameters.bridge,
                 retreatingPlayer,
-                parameters.possibleRetreatSites,
+                possibleRetreatSites,
                 text);
     if (retreatTo == null) {
       return;
@@ -71,7 +74,7 @@ public class EvaderRetreat {
           .notifyRetreat(
               retreatingPlayer.getName() + " submerges subs",
               retreatingPlayer.getName() + " submerges subs",
-              parameters.step,
+              step,
               retreatingPlayer);
     } else {
       retreatEvaders(parameters, retreatTo);
@@ -81,7 +84,7 @@ public class EvaderRetreat {
           .notifyRetreat(
               retreatingPlayer.getName() + " retreats",
               retreatingPlayer.getName() + (" retreats subs to " + retreatTo.getName()),
-              parameters.step,
+              step,
               retreatingPlayer);
     }
   }
