@@ -5,7 +5,6 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITH
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE;
 
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
@@ -79,13 +78,6 @@ public class OffensiveSubsRetreat implements BattleStep {
       return;
     }
 
-    final Collection<Territory> retreatTerritories;
-    if (Properties.getSubmersibleSubs(battleState.getGameData())) {
-      retreatTerritories = List.of(battleState.getBattleSite());
-    } else {
-      retreatTerritories = battleState.getAttackerRetreatTerritories();
-    }
-
     EvaderRetreat.retreatUnits(
         EvaderRetreat.Parameters.builder()
             .battleState(battleState)
@@ -94,7 +86,9 @@ public class OffensiveSubsRetreat implements BattleStep {
             .bridge(bridge)
             .units(unitsToRetreat)
             .build(),
-        retreatTerritories,
+        Properties.getSubmersibleSubs(battleState.getGameData())
+            ? List.of(battleState.getBattleSite())
+            : battleState.getAttackerRetreatTerritories(),
         getName());
   }
 
