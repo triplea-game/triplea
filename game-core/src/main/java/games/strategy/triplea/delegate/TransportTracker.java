@@ -48,16 +48,6 @@ public class TransportTracker {
     return transport.getTransporting();
   }
 
-  /**
-   * @return Unmodifiable collection of units that the given transport is transporting.
-   * @deprecated Invoke unit.getTransporting(Collection) directly
-   */
-  @Deprecated
-  public static List<Unit> transporting(
-      final Unit transport, final Collection<Unit> transportedUnitsPossible) {
-    return transport.getTransporting(transportedUnitsPossible);
-  }
-
   /** @return Unmodifiable map of transport -> collection of transported units. */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return transporting(units, TransportTracker::transporting);
@@ -83,11 +73,11 @@ public class TransportTracker {
   /**
    * Returns a map of transport -> collection of transported units. This method is identical to
    * {@link #transporting(Collection)} except that it considers all elements in {@code units} as the
-   * possible units to transport (see {@link #transporting(Unit, Collection)}).
+   * possible units to transport
    */
   public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(
       final Collection<Unit> units) {
-    return transporting(units, transport -> transporting(transport, units));
+    return transporting(units, transport -> transport.getTransporting(units));
   }
 
   public static boolean isTransporting(final Unit transport) {
@@ -146,10 +136,7 @@ public class TransportTracker {
     change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
       change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_IN_COMBAT_PHASE));
-      // change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
       change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_IN_COMBAT_PHASE));
-      // change.add(ChangeFactory.unitPropertyChange(transport, true,
-      // TripleAUnit.UNLOADED_AMPHIBIOUS));
     }
     if (!dependentBattle) {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling
