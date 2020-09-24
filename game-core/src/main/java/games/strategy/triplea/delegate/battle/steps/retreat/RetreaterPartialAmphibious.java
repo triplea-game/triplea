@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -23,7 +26,7 @@ class RetreaterPartialAmphibious implements Retreater {
   @Override
   public Collection<Unit> getRetreatUnits() {
     return CollectionUtils.getMatches(
-        battleState.getUnits(BattleState.Side.OFFENSE), Matches.unitWasNotAmphibious());
+        battleState.getUnits(ALIVE, OFFENSE), Matches.unitWasNotAmphibious());
   }
 
   @Override
@@ -49,10 +52,10 @@ class RetreaterPartialAmphibious implements Retreater {
     final Collection<Unit> airRetreating =
         CollectionUtils.getMatches(
             retreatUnits,
-            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getAttacker())));
+            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))));
 
     if (!airRetreating.isEmpty()) {
-      battleState.retreatUnits(BattleState.Side.OFFENSE, airRetreating);
+      battleState.retreatUnits(OFFENSE, airRetreating);
       final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
       historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
     }
@@ -62,7 +65,7 @@ class RetreaterPartialAmphibious implements Retreater {
     nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
 
     if (!nonAirRetreating.isEmpty()) {
-      battleState.retreatUnits(BattleState.Side.OFFENSE, nonAirRetreating);
+      battleState.retreatUnits(OFFENSE, nonAirRetreating);
       historyChildren.add(
           RetreatHistoryChild.of(
               MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),

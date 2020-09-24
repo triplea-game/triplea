@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
@@ -345,7 +346,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
 
-        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+        verify(battleState).retreatUnits(OFFENSE, retreatingUnits);
       }
 
       @Test
@@ -380,7 +381,7 @@ class OffensiveGeneralRetreatTest {
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
 
-        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+        verify(battleState).retreatUnits(OFFENSE, retreatingUnits);
       }
 
       @Test
@@ -410,7 +411,7 @@ class OffensiveGeneralRetreatTest {
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+        verify(battleState).retreatUnits(OFFENSE, retreatingUnits);
       }
     }
 
@@ -459,7 +460,7 @@ class OffensiveGeneralRetreatTest {
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+        verify(battleState).retreatUnits(OFFENSE, retreatingUnits);
       }
     }
 
@@ -584,7 +585,7 @@ class OffensiveGeneralRetreatTest {
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+        verify(battleState).retreatUnits(OFFENSE, retreatingUnits);
       }
 
       @Test
@@ -617,7 +618,7 @@ class OffensiveGeneralRetreatTest {
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
         offensiveGeneralRetreat.execute(executionStack, delegateBridge);
-        verify(battleState).retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+        verify(battleState).retreatUnits(OFFENSE, retreatingUnits);
       }
     }
 

@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.change.suicide;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
@@ -26,24 +30,22 @@ abstract class RemoveUnits implements BattleStep {
   protected void removeUnits(final IDelegateBridge bridge, final Predicate<Unit> unitMatch) {
     final Collection<Unit> suicideAttackers =
         CollectionUtils.getMatches(
-            battleState.getUnits(BattleState.Side.OFFENSE),
-            unitMatch.and(Matches.unitIsSuicideOnAttack()));
+            battleState.getUnits(ALIVE, OFFENSE), unitMatch.and(Matches.unitIsSuicideOnAttack()));
     final Collection<Unit> suicideDefenders =
         CollectionUtils.getMatches(
-            battleState.getUnits(BattleState.Side.DEFENSE),
-            unitMatch.and(Matches.unitIsSuicideOnDefense()));
+            battleState.getUnits(ALIVE, DEFENSE), unitMatch.and(Matches.unitIsSuicideOnDefense()));
     bridge
         .getDisplayChannelBroadcaster()
         .deadUnitNotification(
             battleState.getBattleId(),
-            battleState.getAttacker(),
+            battleState.getPlayer(OFFENSE),
             suicideAttackers,
             getDependents(suicideAttackers));
     bridge
         .getDisplayChannelBroadcaster()
         .deadUnitNotification(
             battleState.getBattleId(),
-            battleState.getDefender(),
+            battleState.getPlayer(DEFENSE),
             suicideDefenders,
             getDependents(suicideDefenders));
     final List<Unit> deadUnits = new ArrayList<>(suicideAttackers);

@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.fire.general;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
 
@@ -26,10 +30,10 @@ public class DefensiveGeneral implements BattleStep {
   @Override
   public List<String> getNames() {
     final List<String> steps = new ArrayList<>();
-    if (battleState.getUnits(BattleState.Side.DEFENSE).stream()
+    if (battleState.getUnits(ALIVE, DEFENSE).stream()
         .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()).negate())) {
-      steps.add(battleState.getDefender().getName() + FIRE);
-      steps.add(battleState.getAttacker().getName() + SELECT_CASUALTIES);
+      steps.add(battleState.getPlayer(DEFENSE).getName() + FIRE);
+      steps.add(battleState.getPlayer(OFFENSE).getName() + SELECT_CASUALTIES);
     }
 
     return steps;
@@ -44,13 +48,13 @@ public class DefensiveGeneral implements BattleStep {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     battleActions.findTargetGroupsAndFire(
         ReturnFire.ALL,
-        battleState.getAttacker().getName() + SELECT_CASUALTIES,
+        battleState.getPlayer(OFFENSE).getName() + SELECT_CASUALTIES,
         true,
-        battleState.getDefender(),
+        battleState.getPlayer(DEFENSE),
         Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()).negate(),
-        battleState.getUnits(BattleState.Side.DEFENSE),
-        battleState.getWaitingToDie(BattleState.Side.DEFENSE),
-        battleState.getUnits(BattleState.Side.OFFENSE),
-        battleState.getWaitingToDie(BattleState.Side.OFFENSE));
+        battleState.getUnits(ALIVE, DEFENSE),
+        battleState.getUnits(CASUALTY, DEFENSE),
+        battleState.getUnits(ALIVE, OFFENSE),
+        battleState.getUnits(CASUALTY, OFFENSE));
   }
 }

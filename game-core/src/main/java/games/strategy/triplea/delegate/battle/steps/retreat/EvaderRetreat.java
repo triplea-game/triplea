@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GamePlayer;
@@ -36,10 +36,7 @@ public class EvaderRetreat {
       final Parameters parameters,
       final Collection<Territory> possibleRetreatSites,
       final String step) {
-    final GamePlayer retreatingPlayer =
-        parameters.side == DEFENSE
-            ? parameters.battleState.getDefender()
-            : parameters.battleState.getAttacker();
+    final GamePlayer retreatingPlayer = parameters.battleState.getPlayer(parameters.side);
     final String text = retreatingPlayer.getName() + " retreat subs?";
 
     parameters
@@ -71,10 +68,7 @@ public class EvaderRetreat {
 
   private static void retreatUnits(
       final Parameters parameters, final String step, final Territory retreatTo) {
-    final GamePlayer retreatingPlayer =
-        parameters.side == DEFENSE
-            ? parameters.battleState.getDefender()
-            : parameters.battleState.getAttacker();
+    final GamePlayer retreatingPlayer = parameters.battleState.getPlayer(parameters.side);
 
     SoundUtils.playRetreatType(
         retreatingPlayer, parameters.units, MustFightBattle.RetreatType.SUBS, parameters.bridge);
@@ -125,7 +119,7 @@ public class EvaderRetreat {
       final Collection<Unit> retreating,
       final BattleState.Side side,
       final IDelegateBridge bridge) {
-    if (battleState.getUnits(side).isEmpty()) {
+    if (battleState.getUnits(ALIVE, side).isEmpty()) {
       battleActions.endBattle(side.getOpposite().getWhoWon(), bridge);
     } else {
       bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreating);

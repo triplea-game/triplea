@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
 
@@ -50,8 +54,7 @@ public class OffensiveFirstStrike implements BattleStep {
   }
 
   private State calculateState() {
-    if (battleState.getUnits(BattleState.Side.OFFENSE).stream()
-        .noneMatch(Matches.unitIsFirstStrike())) {
+    if (battleState.getUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitIsFirstStrike())) {
       return State.NOT_APPLICABLE;
     }
 
@@ -61,8 +64,7 @@ public class OffensiveFirstStrike implements BattleStep {
     }
 
     final boolean canSneakAttack =
-        battleState.getUnits(BattleState.Side.DEFENSE).stream()
-            .noneMatch(Matches.unitIsDestroyer());
+        battleState.getUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitIsDestroyer());
     if (canSneakAttack) {
       return State.FIRST_STRIKE;
     }
@@ -76,8 +78,8 @@ public class OffensiveFirstStrike implements BattleStep {
       return steps;
     }
 
-    steps.add(battleState.getAttacker().getName() + FIRST_STRIKE_UNITS_FIRE);
-    steps.add(battleState.getDefender().getName() + SELECT_FIRST_STRIKE_CASUALTIES);
+    steps.add(battleState.getPlayer(OFFENSE).getName() + FIRST_STRIKE_UNITS_FIRE);
+    steps.add(battleState.getPlayer(DEFENSE).getName() + SELECT_FIRST_STRIKE_CASUALTIES);
 
     return steps;
   }
@@ -97,13 +99,13 @@ public class OffensiveFirstStrike implements BattleStep {
     }
     battleActions.findTargetGroupsAndFire(
         returnFire,
-        battleState.getDefender().getName() + SELECT_FIRST_STRIKE_CASUALTIES,
+        battleState.getPlayer(DEFENSE).getName() + SELECT_FIRST_STRIKE_CASUALTIES,
         false,
-        battleState.getAttacker(),
+        battleState.getPlayer(OFFENSE),
         Matches.unitIsFirstStrike(),
-        battleState.getUnits(BattleState.Side.OFFENSE),
-        battleState.getWaitingToDie(BattleState.Side.OFFENSE),
-        battleState.getUnits(BattleState.Side.DEFENSE),
-        battleState.getWaitingToDie(BattleState.Side.DEFENSE));
+        battleState.getUnits(ALIVE, OFFENSE),
+        battleState.getUnits(CASUALTY, OFFENSE),
+        battleState.getUnits(ALIVE, DEFENSE),
+        battleState.getUnits(CASUALTY, DEFENSE));
   }
 }

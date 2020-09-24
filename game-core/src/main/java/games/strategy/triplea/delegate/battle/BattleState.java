@@ -30,10 +30,24 @@ public interface BattleState {
     }
   }
 
+  enum UnitsStatus {
+    // units that have not been hit
+    ALIVE,
+    // both ALIVE and CASUALTY
+    ACTIVE,
+    // units that have been hit but not yet cleared
+    CASUALTY,
+    // units that are dead
+    DEAD,
+  }
+
   @Value(staticConstructor = "of")
-  class BattleRound {
+  class BattleStatus {
     int round;
     int maxRounds;
+    boolean isOver;
+    boolean isAmphibious;
+    boolean isHeadless;
 
     public boolean isLastRound() {
       return maxRounds > 0 && maxRounds <= round;
@@ -44,7 +58,7 @@ public interface BattleState {
     }
   }
 
-  BattleRound getBattleRoundState();
+  BattleStatus getStatus();
 
   Territory getBattleSite();
 
@@ -53,9 +67,7 @@ public interface BattleState {
   @ChangeOnNextMajorRelease("Use a BattleId class instead of UUID")
   UUID getBattleId();
 
-  Collection<Unit> getUnits(Side... sides);
-
-  Collection<Unit> getWaitingToDie(Side... sides);
+  Collection<Unit> getUnits(UnitsStatus status, Side... sides);
 
   void clearWaitingToDie(Side... sides);
 
@@ -65,19 +77,9 @@ public interface BattleState {
 
   Collection<Unit> getBombardingUnits();
 
-  Collection<Unit> getKilled();
-
-  GamePlayer getAttacker();
-
-  GamePlayer getDefender();
+  GamePlayer getPlayer(Side side);
 
   GameData getGameData();
-
-  boolean isAmphibious();
-
-  boolean isOver();
-
-  boolean isHeadless();
 
   Collection<Territory> getAttackerRetreatTerritories();
 

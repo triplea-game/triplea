@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.fire.air;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AIR_ATTACK_NON_SUBS;
 
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -25,7 +28,6 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
 
   private boolean valid() {
     return airWillMissSubs(
-        battleState.getUnits(BattleState.Side.OFFENSE),
-        battleState.getUnits(BattleState.Side.DEFENSE));
+        battleState.getUnits(ALIVE, OFFENSE), battleState.getUnits(ALIVE, DEFENSE));
   }
 }
