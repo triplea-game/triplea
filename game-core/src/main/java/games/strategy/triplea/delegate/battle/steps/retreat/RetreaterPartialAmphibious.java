@@ -1,16 +1,17 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
-import static games.strategy.engine.data.changefactory.ChangeFactory.EMPTY_CHANGE;
-
-import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -44,23 +45,35 @@ class RetreaterPartialAmphibious implements Retreater {
   }
 
   @Override
-  public Map<RetreatLocation, Collection<Unit>> splitRetreatUnits(
-      final Collection<Unit> retreatUnits) {
+  public RetreatChanges computeChanges(final Territory retreatTo) {
+    final Collection<Unit> retreatUnits = getRetreatUnits();
+
+    final CompositeChange change = new CompositeChange();
+    final List<RetreatHistoryChild> historyChildren = new ArrayList<>();
+
     final Collection<Unit> airRetreating =
         CollectionUtils.getMatches(retreatUnits, Matches.unitIsAir());
 
-    final Collection<Unit> nonAirRetreating = new ArrayList<>(retreatUnits);
+    if (!airRetreating.isEmpty()) {
+      battleState.retreatUnits(BattleState.Side.OFFENSE, airRetreating);
+      final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
+      historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
+    }
+
+    final Collection<Unit> nonAirRetreating = new HashSet<>(retreatUnits);
     nonAirRetreating.removeAll(airRetreating);
     nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
 
-    return Map.of(
-        RetreatLocation.SAME_TERRITORY, airRetreating,
-        RetreatLocation.OTHER_TERRITORY, nonAirRetreating);
-  }
+    if (!nonAirRetreating.isEmpty()) {
+      battleState.retreatUnits(BattleState.Side.OFFENSE, nonAirRetreating);
+      historyChildren.add(
+          RetreatHistoryChild.of(
+              MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),
+              new ArrayList<>(nonAirRetreating)));
+      change.add(ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, nonAirRetreating));
+    }
 
-  @Override
-  public Change extraRetreatChange(final Territory retreatTo, final Collection<Unit> retreatUnits) {
-    return EMPTY_CHANGE;
+    return RetreatChanges.of(change, historyChildren);
   }
 
   @Override

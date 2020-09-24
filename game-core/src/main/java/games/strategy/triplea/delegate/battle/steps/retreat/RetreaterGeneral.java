@@ -11,11 +11,11 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -60,23 +60,43 @@ class RetreaterGeneral implements Retreater {
   }
 
   @Override
-  public Map<RetreatLocation, Collection<Unit>> splitRetreatUnits(
-      final Collection<Unit> retreatUnits) {
+  public RetreatChanges computeChanges(final Territory retreatTo) {
+    final Collection<Unit> retreatUnits = getRetreatUnits();
+
+    final CompositeChange change = new CompositeChange();
+    final List<RetreatHistoryChild> historyChildren = new ArrayList<>();
+
+    change.add(computeDependentUnitChanges(retreatTo, retreatUnits));
+
     final Collection<Unit> airRetreating =
         CollectionUtils.getMatches(
             retreatUnits,
             Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getAttacker())));
+
+    if (!airRetreating.isEmpty()) {
+      battleState.retreatUnits(BattleState.Side.OFFENSE, airRetreating);
+      final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
+      historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
+    }
+
     final Collection<Unit> nonAirRetreating = new HashSet<>(retreatUnits);
     nonAirRetreating.removeAll(airRetreating);
     nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
 
-    return Map.of(
-        RetreatLocation.SAME_TERRITORY, airRetreating,
-        RetreatLocation.OTHER_TERRITORY, nonAirRetreating);
+    if (!nonAirRetreating.isEmpty()) {
+      battleState.retreatUnits(BattleState.Side.OFFENSE, nonAirRetreating);
+      historyChildren.add(
+          RetreatHistoryChild.of(
+              MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),
+              new ArrayList<>(nonAirRetreating)));
+      change.add(ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, nonAirRetreating));
+    }
+
+    return RetreatChanges.of(change, historyChildren);
   }
 
-  @Override
-  public Change extraRetreatChange(final Territory retreatTo, final Collection<Unit> retreatUnits) {
+  private Change computeDependentUnitChanges(
+      final Territory retreatTo, final Collection<Unit> retreatUnits) {
     final Collection<IBattle> dependentBattles = battleState.getDependentBattles();
     if (dependentBattles.isEmpty()) {
       // If there are no dependent battles, check landings in allied territories

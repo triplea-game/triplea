@@ -2,12 +2,9 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -17,11 +14,8 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
-import games.strategy.triplea.formatter.MyFormatter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.sound.SoundUtils;
@@ -107,7 +101,19 @@ public class OffensiveGeneralRetreat implements BattleStep {
     }
 
     if (retreater != null) {
-      retreat(bridge, retreater);
+      final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
+      final Collection<Territory> possibleRetreatSites =
+          retreater.getPossibleRetreatSites(retreatUnits);
+      final String text = retreater.getQueryText();
+
+      bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
+      final Territory retreatTo =
+          battleActions.queryRetreatTerritory(
+              battleState, bridge, battleState.getAttacker(), possibleRetreatSites, text);
+
+      if (retreatTo != null) {
+        retreat(bridge, retreater, retreatTo);
+      }
     }
   }
 
@@ -120,36 +126,24 @@ public class OffensiveGeneralRetreat implements BattleStep {
     return null;
   }
 
-  private void retreat(final IDelegateBridge bridge, final Retreater retreater) {
+  private void retreat(
+      final IDelegateBridge bridge, final Retreater retreater, final Territory retreatTo) {
     final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
-    final Collection<Territory> possibleRetreatSites =
-        retreater.getPossibleRetreatSites(retreatUnits);
-    final String text = retreater.getQueryText();
 
-    bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
-    final Territory retreatTo =
-        battleActions.queryRetreatTerritory(
-            battleState, bridge, battleState.getAttacker(), possibleRetreatSites, text);
-    if (retreatTo == null) {
-      return;
-    }
     SoundUtils.playRetreatType(
         battleState.getAttacker(), retreatUnits, retreater.getRetreatType(), bridge);
 
-    final CompositeChange change = new CompositeChange();
+    final Retreater.RetreatChanges retreatChanges = retreater.computeChanges(retreatTo);
+    bridge.addChange(retreatChanges.getChange());
 
-    change.add(retreater.extraRetreatChange(retreatTo, retreatUnits));
-
-    final Map<Retreater.RetreatLocation, Collection<Unit>> retreatingUnitMap =
-        retreater.splitRetreatUnits(retreatUnits);
-
-    retreatSameTerritoryUnits(
-        bridge, retreatingUnitMap.get(Retreater.RetreatLocation.SAME_TERRITORY));
-    change.add(
-        retreatOtherTerritoryUnits(
-            bridge, retreatTo, retreatingUnitMap.get(Retreater.RetreatLocation.OTHER_TERRITORY)));
-
-    bridge.addChange(change);
+    retreatChanges
+        .getHistoryText()
+        .forEach(
+            historyChild -> {
+              bridge
+                  .getHistoryWriter()
+                  .addChildToEvent(historyChild.getText(), historyChild.getUnits());
+            });
 
     if (battleState.getUnits(BattleState.Side.OFFENSE).isEmpty()) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
@@ -164,28 +158,5 @@ public class OffensiveGeneralRetreat implements BattleStep {
             battleState.getAttacker().getName() + retreater.getLongBroadcastSuffix(retreatTo),
             getName(),
             battleState.getAttacker());
-  }
-
-  private void retreatSameTerritoryUnits(
-      final IDelegateBridge bridge, final Collection<Unit> retreatingUnits) {
-    if (retreatingUnits != null && !retreatingUnits.isEmpty()) {
-      battleState.retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
-      final String transcriptText = MyFormatter.unitsToText(retreatingUnits) + " retreated";
-      bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreatingUnits));
-    }
-  }
-
-  private Change retreatOtherTerritoryUnits(
-      final IDelegateBridge bridge,
-      final Territory retreatTo,
-      final Collection<Unit> retreatingUnits) {
-    if (retreatingUnits != null && !retreatingUnits.isEmpty()) {
-      battleState.retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
-      final String transcriptText =
-          MyFormatter.unitsToText(retreatingUnits) + " retreated to " + retreatTo.getName();
-      bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreatingUnits));
-      return ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, retreatingUnits);
-    }
-    return ChangeFactory.EMPTY_CHANGE;
   }
 }

@@ -432,7 +432,7 @@ class OffensiveGeneralRetreatTest {
         final Unit amphibiousUnit = givenUnitWasAmphibious();
         final Unit nonAmphibiousUnit = givenAnyUnit();
         when(nonAmphibiousUnit.getOwner()).thenReturn(attacker);
-        final Collection<Unit> retreatingUnits = List.of(nonAmphibiousUnit);
+        final Collection<Unit> retreatingUnits = Set.of(nonAmphibiousUnit);
         final Territory retreatSite = mock(Territory.class);
         final UnitCollection retreatSiteCollection = mock(UnitCollection.class);
         when(retreatSite.getUnitCollection()).thenReturn(retreatSiteCollection);

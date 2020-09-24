@@ -5,13 +5,21 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import lombok.Value;
 
 interface Retreater {
 
-  enum RetreatLocation {
-    SAME_TERRITORY,
-    OTHER_TERRITORY;
+  @Value(staticConstructor = "of")
+  class RetreatChanges {
+    Change change;
+    List<RetreatHistoryChild> historyText;
+  }
+
+  @Value(staticConstructor = "of")
+  class RetreatHistoryChild {
+    String text;
+    Collection<Unit> units;
   }
 
   Collection<Unit> getRetreatUnits();
@@ -22,9 +30,7 @@ interface Retreater {
 
   MustFightBattle.RetreatType getRetreatType();
 
-  Map<RetreatLocation, Collection<Unit>> splitRetreatUnits(Collection<Unit> retreatUnits);
-
-  Change extraRetreatChange(Territory retreatTo, Collection<Unit> retreatUnits);
+  RetreatChanges computeChanges(Territory retreatTo);
 
   String getShortBroadcastSuffix();
 
