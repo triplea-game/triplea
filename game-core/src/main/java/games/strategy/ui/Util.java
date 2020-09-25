@@ -10,19 +10,16 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import lombok.experimental.UtilityClass;
 
 /** A collection of methods useful for rendering the UI. */
+@UtilityClass
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
@@ -30,8 +27,6 @@ public final class Util {
       new Component() {
         private static final long serialVersionUID = 1800075529163275600L;
       };
-
-  private Util() {}
 
   public static void ensureImageLoaded(final Image anImage) {
     final MediaTracker tracker = new MediaTracker(component);
@@ -59,24 +54,6 @@ public final class Util {
   public static BufferedImage newImage(final int width, final int height, final boolean needAlpha) {
     return new BufferedImage(
         width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
-  }
-
-  /** Centers the specified window on the screen. */
-  public static void center(final Window w) {
-    final Dimension screenSize = getScreenSize(w);
-    final int screenWidth = screenSize.width;
-    final int screenHeight = screenSize.height;
-    final int windowWidth = w.getWidth();
-    final int windowHeight = w.getHeight();
-    if (windowHeight > screenHeight) {
-      return;
-    }
-    if (windowWidth > screenWidth) {
-      return;
-    }
-    final int x = (screenWidth - windowWidth) / 2;
-    final int y = (screenHeight - windowHeight) / 2;
-    w.setLocation(x, y);
   }
 
   /**
@@ -134,48 +111,6 @@ public final class Util {
     final float loginStringX = w * .05f;
     g2.drawString(text, loginStringX, loginStringY);
     return img;
-  }
-
-  /**
-   * Finds a land territory name or some sea zone name where the point is contained in according to
-   * the territory name -> polygons map.
-   *
-   * @param p A point on the map.
-   * @param terrPolygons a map territory name -> polygons
-   */
-  public static Optional<String> findTerritoryName(
-      final Point p, final Map<String, List<Polygon>> terrPolygons) {
-    return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
-  }
-
-  /**
-   * Finds a land territory name or some sea zone name where the point is contained in according to
-   * the territory name -> polygons map. If no land or sea territory has been found a default name
-   * is returned.
-   *
-   * @param p A point on the map.
-   * @param terrPolygons a map territory name -> polygons
-   * @param defaultTerrName Default territory name that gets returns if nothing was found.
-   * @return found territory name of defaultTerrName
-   */
-  public static String findTerritoryName(
-      final Point p, final Map<String, List<Polygon>> terrPolygons, final String defaultTerrName) {
-    String lastWaterTerrName = defaultTerrName;
-    // try to find a land territory.
-    // sea zones often surround a land territory
-    for (final String terrName : terrPolygons.keySet()) {
-      final Collection<Polygon> polygons = terrPolygons.get(terrName);
-      for (final Polygon poly : polygons) {
-        if (poly.contains(p)) {
-          if (Util.isTerritoryNameIndicatingWater(terrName)) {
-            lastWaterTerrName = terrName;
-          } else {
-            return terrName;
-          }
-        } // if p is contained
-      } // polygons collection loop
-    } // terrPolygons map loop
-    return lastWaterTerrName;
   }
 
   /**

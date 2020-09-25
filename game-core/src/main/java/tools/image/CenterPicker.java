@@ -42,6 +42,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.ToolsUtil;
 
 /**
  * The center picker map-making tool.
@@ -287,7 +288,7 @@ public final class CenterPicker {
      * @param p A point on the map.
      */
     private String findTerritoryName(final Point p) {
-      return Util.findTerritoryName(p, polygons, "unknown");
+      return ToolsUtil.findTerritoryName(p, polygons, "unknown");
     }
 
     private void mouseEvent(final Point point, final boolean rightMouse) {

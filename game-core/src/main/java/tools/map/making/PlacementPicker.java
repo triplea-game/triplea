@@ -56,6 +56,7 @@ import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.image.MapFolderLocationSystemProperty;
 import tools.util.ToolArguments;
+import tools.util.ToolsUtil;
 
 /**
  * The placement picker map making tool.
@@ -592,7 +593,7 @@ public final class PlacementPicker {
      */
     private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
       if (!rightMouse && !ctrlDown) {
-        currentCountry = Util.findTerritoryName(point, polygons, "there be dragons");
+        currentCountry = ToolsUtil.findTerritoryName(point, polygons, "there be dragons");
         // If there isn't an existing array, create one
         if (placements == null || placements.get(currentCountry) == null) {
           currentPlacements = new ArrayList<>();
