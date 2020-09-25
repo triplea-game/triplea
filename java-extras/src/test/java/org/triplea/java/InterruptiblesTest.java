@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.Runnables;
 import java.time.Duration;
@@ -13,12 +12,8 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.function.ThrowingRunnable;
 
-@ExtendWith(MockitoExtension.class)
 final class InterruptiblesTest {
   @AfterEach
   @SuppressWarnings("static-method")
@@ -28,13 +23,14 @@ final class InterruptiblesTest {
 
   @Nested
   final class AwaitTest {
-    @Mock private ThrowingRunnable<InterruptedException> runnable;
+    private boolean invoked;
+    private final ThrowingRunnable<InterruptedException> runnable = () -> invoked = true;
 
     @Test
     void shouldReturnTrueWhenCompleted() throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 
-      verify(runnable).run();
+      assertThat(invoked, is(true));
       assertThat(completed, is(true));
     }
 
