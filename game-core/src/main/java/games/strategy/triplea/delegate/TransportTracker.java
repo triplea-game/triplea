@@ -129,10 +129,6 @@ public class TransportTracker {
       return change;
     }
     assertTransport(transport);
-    if (!transport.getTransporting().contains(unit)) {
-      throw new IllegalStateException(
-          "Not being carried, unit:" + unit + " transport:" + transport);
-    }
     change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
       change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_IN_COMBAT_PHASE));
