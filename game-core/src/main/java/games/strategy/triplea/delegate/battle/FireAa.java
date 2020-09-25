@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundUtils;
 
@@ -46,8 +47,15 @@ public class FireAa implements IExecutable {
   private final Collection<TerritoryEffect> territoryEffects;
   private final List<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
-  private final boolean isAmphibious;
-  private final Collection<Unit> amphibiousLandAttackers;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
+  private final boolean isAmphibious = false;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
+  private final Collection<Unit> amphibiousLandAttackers = List.of();
+
   private final List<String> aaTypes;
 
   // These variables change state during execution
@@ -83,8 +91,6 @@ public class FireAa implements IExecutable {
     this.territoryEffects = territoryEffects;
     this.allFriendlyUnitsAliveOrWaitingToDie = allFriendlyUnitsAliveOrWaitingToDie;
     this.allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
-    isAmphibious = this.battle.isAmphibious();
-    amphibiousLandAttackers = this.battle.getAmphibiousLandAttackers();
     this.aaTypes = aaTypes;
   }
 
@@ -199,9 +205,7 @@ public class FireAa implements IExecutable {
         hitPlayer,
         battleId,
         battleSite,
-        territoryEffects,
-        isAmphibious,
-        amphibiousLandAttackers);
+        territoryEffects);
   }
 
   private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {

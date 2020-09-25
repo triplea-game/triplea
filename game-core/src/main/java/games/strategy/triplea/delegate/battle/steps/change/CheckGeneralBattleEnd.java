@@ -76,9 +76,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
                 side == BattleState.Side.DEFENSE,
                 battleState.getGameData(),
                 battleState.getBattleSite(),
-                battleState.getTerritoryEffects(),
-                battleState.isAmphibious(),
-                battleState.getAmphibiousLandAttackers()),
+                battleState.getTerritoryEffects()),
             battleState.getGameData())
         .getEffectivePower();
   }

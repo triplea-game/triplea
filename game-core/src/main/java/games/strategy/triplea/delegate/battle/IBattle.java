@@ -127,9 +127,6 @@ public interface IBattle extends Serializable {
   /** @return Unmodifiable collection of units that are dependent on the given units. */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
-  /** @return Unmodifiable collection of units that are assaulting amphibiously. */
-  Collection<Unit> getAmphibiousLandAttackers();
-
   /** @return Unmodifiable collection of units that are bombarding. */
   Collection<Unit> getBombardingUnits();
 

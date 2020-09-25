@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -181,10 +182,21 @@ class DiceRollTest {
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
+    attackers.forEach(
+        unit -> {
+          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+              .ifPresent(
+                  property -> {
+                    try {
+                      property.setValue(true);
+                    } catch (final MutableProperty.InvalidValueException e) {
+                      // ignore
+                    }
+                  });
+        });
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
     final IBattle battle = mock(IBattle.class);
-    when(battle.getAmphibiousLandAttackers()).thenReturn(attackers);
     when(battle.isAmphibious()).thenReturn(true);
     final DiceRoll roll =
         DiceRoll.rollDice(
@@ -200,9 +212,20 @@ class DiceRollTest {
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(3, americans);
+    attackers.forEach(
+        unit -> {
+          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+              .ifPresent(
+                  property -> {
+                    try {
+                      property.setValue(true);
+                    } catch (final MutableProperty.InvalidValueException e) {
+                      // ignore
+                    }
+                  });
+        });
     final IDelegateBridge bridge = newDelegateBridge(americans);
     final IBattle battle = mock(IBattle.class);
-    when(battle.getAmphibiousLandAttackers()).thenReturn(attackers);
     when(battle.isAmphibious()).thenReturn(true);
     final DiceRoll roll =
         DiceRoll.rollDice(
@@ -218,11 +241,21 @@ class DiceRollTest {
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
+    attackers.forEach(
+        unit -> {
+          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+              .ifPresent(
+                  property -> {
+                    try {
+                      property.setValue(false);
+                    } catch (final MutableProperty.InvalidValueException e) {
+                      // ignore
+                    }
+                  });
+        });
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
     final IBattle battle = mock(IBattle.class);
-    when(battle.getAmphibiousLandAttackers()).thenReturn(List.of());
-    when(battle.isAmphibious()).thenReturn(true);
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackers, false, americans, bridge, battle, TerritoryEffectHelper.getEffects(algeria));
@@ -709,9 +742,7 @@ class DiceRollTest {
                 false,
                 twwGameData,
                 berlin,
-                new ArrayList<>(),
-                false,
-                null),
+                new ArrayList<>()),
             twwGameData);
     assertEquals(attackPower, 6, "1 artillery should provide +1 support to the infantry");
 
@@ -725,9 +756,7 @@ class DiceRollTest {
                 false,
                 twwGameData,
                 berlin,
-                new ArrayList<>(),
-                false,
-                null),
+                new ArrayList<>()),
             twwGameData);
     assertEquals(
         attackPower,
@@ -744,9 +773,7 @@ class DiceRollTest {
                 false,
                 twwGameData,
                 berlin,
-                new ArrayList<>(),
-                false,
-                null),
+                new ArrayList<>()),
             twwGameData);
     assertEquals(
         attackPower,
