@@ -1,30 +1,43 @@
 package org.triplea.java;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.BooleanSupplier;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class RetryableTest {
 
-  @Mock private BooleanSupplier task;
-  @Mock private Consumer<Duration> threadSleeper;
+  /**
+   * Increment the invocation count and return true if the invocation count matches the input
+   * parameter. In other words, we can say "return true on the 3rd invocation."
+   */
+  @RequiredArgsConstructor
+  private static final class Task implements Supplier<Optional<Boolean>> {
+    private final int successIteration;
+    private int invocationCount;
+
+    @Override
+    public Optional<Boolean> get() {
+      invocationCount++;
+      return invocationCount == successIteration ? Optional.of(true) : Optional.empty();
+    }
+  }
+
+  private int sleepCount;
+  private final Consumer<Duration> threadSleeper = duration -> sleepCount++;
 
   @ParameterizedTest
   @ValueSource(ints = {0, 1})
@@ -54,68 +67,61 @@ class RetryableTest {
 
   @Test
   void retryIfTaskReturnsFalseAndReturnFalseIfAllFail() {
-    final boolean result =
-        Retryable.builder()
+    final Task task = new Task(3);
+    final Optional<Boolean> result =
+        Retryable.<Boolean>builder()
             .withMaxAttempts(2)
             .withFixedBackOff(Duration.ofMillis(1))
             .withTask(task)
             .buildAndExecute();
 
-    assertThat(result, is(false));
-    verify(task, times(2)).getAsBoolean();
+    assertThat(result, isEmpty());
+    assertThat(task.invocationCount, is(2));
   }
 
   @Test
-  void retriedTaskIsInvokedMultipleTimes() {
-    Retryable.builder()
-        .withMaxAttempts(3)
-        .withFixedBackOff(Duration.ofMillis(1))
-        .withTask(task)
-        .buildAndExecute();
+  void retriedTaskSucceedsOnSecondInvocation() {
+    final Task task = new Task(2);
 
-    verify(task, times(3)).getAsBoolean();
+    final Optional<Boolean> result =
+        Retryable.<Boolean>builder()
+            .withMaxAttempts(2)
+            .withFixedBackOff(Duration.ofMillis(1))
+            .withTask(task)
+            .buildAndExecute();
+
+    assertThat(result, is(isPresent()));
+    assertThat(task.invocationCount, is(2));
   }
 
   @Test
   void successOnFirstIsNotRetried() {
-    when(task.getAsBoolean()).thenReturn(true);
+    final Task task = new Task(1);
 
-    final boolean result =
-        Retryable.builder()
+    final Optional<Boolean> result =
+        Retryable.<Boolean>builder()
             .withMaxAttempts(3)
             .withFixedBackOff(Duration.ofMillis(1))
             .withTask(task)
             .buildAndExecute();
 
-    assertThat(result, is(true));
-    verify(task).getAsBoolean();
+    assertThat(result, is(isPresent()));
+    assertThat(task.invocationCount, is(1));
   }
 
   @Test
   @DisplayName("We should only sleep between retries, do not sleep after the last attempt")
   void noSleepAfterLastRetry() {
     final int maxAttempts = 3;
+    final Task task = new Task(maxAttempts + 1);
+
     final Duration backOff = Duration.ofMillis(1);
-    Retryable.builder(threadSleeper)
+    Retryable.<Boolean>builder(threadSleeper)
         .withMaxAttempts(maxAttempts)
         .withFixedBackOff(backOff)
-        .withTask(() -> false)
+        .withTask(task)
         .buildAndExecute();
-    verify(threadSleeper, times(maxAttempts - 1)).accept(backOff);
-  }
 
-  @Test
-  void returnsTrueIfRetryIsSuccess() {
-    when(task.getAsBoolean()).thenReturn(false).thenReturn(true);
-
-    final boolean result =
-        Retryable.builder()
-            .withMaxAttempts(3)
-            .withFixedBackOff(Duration.ofMillis(1))
-            .withTask(task)
-            .buildAndExecute();
-
-    assertThat(result, is(true));
-    verify(task, times(2)).getAsBoolean();
+    assertThat(sleepCount, is(maxAttempts - 1));
   }
 }
