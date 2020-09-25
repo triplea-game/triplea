@@ -31,7 +31,7 @@ task flywayMigrateAll(dependsOn: [flywayMigrateLobbyDb, flywayMigrateMapsDb])
 
 task portableInstaller(type: Zip, group: 'release') {
     from 'src/main/resources/db/migration/'
-    archiveName 'migrations.zip'
+    archiveFileName = 'migrations.zip'
 }
 
 task release(group: 'release', dependsOn: portableInstaller) {
