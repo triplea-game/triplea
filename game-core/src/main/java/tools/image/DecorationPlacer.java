@@ -57,6 +57,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
+import tools.util.ToolsUtil;
 
 /**
  * This is the DecorationPlacer, it will create a text file for you containing the points to place
@@ -857,7 +858,8 @@ public final class DecorationPlacer {
           && staticImageForPlacing != null
           && currentSelectedImage == null) {
         // create a new point here in this territory
-        final Optional<String> territoryName = Util.findTerritoryName(currentMousePoint, polygons);
+        final Optional<String> territoryName =
+            ToolsUtil.findTerritoryName(currentMousePoint, polygons);
         if (territoryName.isPresent()) {
           final List<Point> points = new ArrayList<>();
           points.add(new Point(currentMousePoint));
