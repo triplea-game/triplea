@@ -1,23 +1,21 @@
 package org.triplea.java.concurrency;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 final class CompletableFutureUtilsTest {
-  @ExtendWith(MockitoExtension.class)
   @Nested
   final class LogExceptionWhenCompleteTest {
-    @Mock private Consumer<Throwable> exceptionConsumer;
+    private Throwable consumedObject;
+    private final Consumer<Throwable> exceptionConsumer = throwable -> consumedObject = throwable;
 
     @Test
     void shouldNotWriteLogWhenFutureCompletesNormally() {
@@ -25,7 +23,7 @@ final class CompletableFutureUtilsTest {
       CompletableFutureUtils.logExceptionWhenComplete(future, exceptionConsumer);
       future.complete(new Object());
 
-      verify(exceptionConsumer, never()).accept(any(Throwable.class));
+      assertThat(consumedObject, nullValue());
     }
 
     @Test
@@ -35,7 +33,7 @@ final class CompletableFutureUtilsTest {
       final Exception ex = new Exception();
       future.completeExceptionally(ex);
 
-      verify(exceptionConsumer).accept(ex);
+      assertThat(consumedObject, is(sameInstance(ex)));
     }
   }
 }
