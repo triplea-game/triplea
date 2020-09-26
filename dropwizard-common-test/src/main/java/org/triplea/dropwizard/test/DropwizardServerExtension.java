@@ -9,7 +9,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -28,7 +27,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  *
  * @param <C> Server configuration type.
  */
-@Slf4j
 public abstract class DropwizardServerExtension<C extends Configuration>
     implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
 
