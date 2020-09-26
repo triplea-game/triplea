@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
@@ -61,7 +62,7 @@ class CasualtyOrderOfLosses {
     // Convert unit lists to unit type lists
     final List<AmphibType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {
-      targetTypes.add(AmphibType.of(u.getType(), u.getWasAmphibious()));
+      targetTypes.add(AmphibType.of(u));
     }
     // Calculate hashes and cache key
     String key = computeOolCacheKey(parameters, targetTypes);
@@ -70,11 +71,11 @@ class CasualtyOrderOfLosses {
     if (stored != null) {
       final List<Unit> result = new ArrayList<>();
       final List<Unit> selectFrom = new ArrayList<>(parameters.targetsToPickFrom);
-      for (final AmphibType ut : stored) {
+      for (final AmphibType amphibType : stored) {
         for (final Iterator<Unit> it = selectFrom.iterator(); it.hasNext(); ) {
-          final Unit u = it.next();
-          if (ut.type.equals(u.getType()) && ut.isAmphibious == u.getWasAmphibious()) {
-            result.add(u);
+          final Unit unit = it.next();
+          if (amphibType.matches(unit)) {
+            result.add(unit);
             it.remove();
           }
         }
@@ -239,7 +240,7 @@ class CasualtyOrderOfLosses {
     // Cache result and all subsets of the result
     final List<AmphibType> unitTypes = new ArrayList<>();
     for (final Unit u : sortedWellEnoughUnitsList) {
-      unitTypes.add(AmphibType.of(u.getType(), u.getWasAmphibious()));
+      unitTypes.add(AmphibType.of(u));
     }
     for (final Iterator<AmphibType> it = unitTypes.iterator(); it.hasNext(); ) {
       oolCache.put(key, new ArrayList<>(unitTypes));
@@ -251,10 +252,22 @@ class CasualtyOrderOfLosses {
     return sortedWellEnoughUnitsList;
   }
 
-  @Value(staticConstructor = "of")
+  @Value
   static class AmphibType {
     UnitType type;
     boolean isAmphibious;
+
+    static AmphibType of(final Unit unit) {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      // only track amphibious if both marine and was amphibious
+      return new AmphibType(unit.getType(), ua.getIsMarine() != 0 && unit.getWasAmphibious());
+    }
+
+    boolean matches(final Unit unit) {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      return type.equals(unit.getType())
+          && (ua.getIsMarine() == 0 || isAmphibious == unit.getWasAmphibious());
+    }
   }
 
   static String computeOolCacheKey(

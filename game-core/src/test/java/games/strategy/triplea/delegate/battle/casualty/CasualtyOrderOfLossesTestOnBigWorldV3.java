@@ -166,26 +166,24 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
   void nonAmphibiousMarineWithAmphibiousAssault() {
     testData.addTech(new ImprovedArtillerySupportAdvance(testData.gameData));
 
-    final List<Unit> amphibUnits = new ArrayList<>();
-    amphibUnits.addAll(testData.tank(1));
-    amphibUnits.addAll(testData.artillery(1));
-    amphibUnits.addAll(testData.marine(1));
-
-    amphibUnits.forEach(
-        unit -> {
-          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
-              .ifPresent(
-                  property -> {
-                    try {
-                      property.setValue(true);
-                    } catch (final MutableProperty.InvalidValueException e) {
-                      // should not happen
-                    }
-                  });
-        });
-
-    final List<Unit> attackingUnits = new ArrayList<>(amphibUnits);
+    final List<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(testData.tank(1));
+    attackingUnits.addAll(testData.artillery(1));
     attackingUnits.addAll(testData.marine(1));
+
+    final List<Unit> amphibMarines = new ArrayList<>(testData.marine(1));
+    amphibMarines
+        .get(0)
+        .getProperty(Unit.UNLOADED_AMPHIBIOUS)
+        .ifPresent(
+            property -> {
+              try {
+                property.setValue(true);
+              } catch (final MutableProperty.InvalidValueException e) {
+                // should not happen
+              }
+            });
+    attackingUnits.addAll(amphibMarines);
 
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
@@ -204,9 +202,9 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     assertThat(
         "Non amphibious marine only has attack of 2 since it doesn't get marine bonus",
         result.get(0),
-        is(attackingUnits.get(3)));
+        is(attackingUnits.get(2)));
     assertThat(result.get(1), is(attackingUnits.get(1)));
-    assertThat("Amphibious marine has attack of 3", result.get(2), is(attackingUnits.get(2)));
+    assertThat("Amphibious marine has attack of 3", result.get(2), is(attackingUnits.get(3)));
     assertThat(result.get(3), is(attackingUnits.get(0)));
   }
 
