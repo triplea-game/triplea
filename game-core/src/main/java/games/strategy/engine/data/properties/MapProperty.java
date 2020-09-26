@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.swing.JComponent;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Basically creates a map of other properties.
  *
  * @param <V> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
-@Log
+@Slf4j
 public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
   private static final long serialVersionUID = -8021039503574228146L;
 
@@ -109,7 +109,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
       final Map<String, ?> typedOtherMap = (Map<String, ?>) otherMap;
       resetProperties(typedOtherMap, new ArrayList<>(), getDescription());
     } catch (final IllegalArgumentException e) {
-      log.warning("Validation failed: " + e.getMessage());
+      log.warn("Validation failed: " + e.getMessage());
       return false;
     }
 

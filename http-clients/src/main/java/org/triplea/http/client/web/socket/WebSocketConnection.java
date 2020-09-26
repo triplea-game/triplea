@@ -16,12 +16,10 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.logging.Level;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.Retryable;
 import org.triplea.java.timer.ScheduledTimer;
@@ -38,7 +36,7 @@ import org.triplea.java.timer.Timers;
  *   <li>Issuing periodic keep-alive messages (ping) to keep the websocket connection open
  * </ul>
  */
-@Log
+@Slf4j
 class WebSocketConnection {
   @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
 
@@ -115,8 +113,7 @@ class WebSocketConnection {
               .buildAndExecute();
 
       if (pingSuccess.isEmpty()) {
-        log.log(
-            Level.WARNING,
+        log.warn(
             "Failed to send pings to server, retries exhausted. "
                 + "If the server does not receive pings then the connection to "
                 + "the server will be disconnected. Expecting to be disconnected "
@@ -133,7 +130,11 @@ class WebSocketConnection {
     if (client != null && !client.isOutputClosed()) {
       client
           .sendClose(WebSocket.NORMAL_CLOSURE, CLIENT_DISCONNECT_MESSAGE)
-          .exceptionally(logWebSocketError(Level.INFO, "Failed to close"));
+          .exceptionally(
+              e -> {
+                log.info("Failed to close websocket", e);
+                return null;
+              });
     }
   }
 
@@ -153,7 +154,7 @@ class WebSocketConnection {
         .exceptionally(
             throwable -> {
               // Do a single retry with fixed back-off
-              log.log(Level.INFO, "Failed to connect, will retrying", throwable);
+              log.info("Failed to connect, will retrying", throwable);
               Interruptibles.sleep(1000);
               retryConnection(errorHandler);
               return null;
@@ -172,7 +173,7 @@ class WebSocketConnection {
     connectAsyncAndStartPingSender()
         .exceptionally(
             throwable -> {
-              log.log(Level.INFO, "Failed to connect", throwable);
+              log.info("Failed to connect", throwable);
               errorHandler.accept("Failed to connect: " + throwable.getMessage());
               return null;
             });
@@ -195,17 +196,13 @@ class WebSocketConnection {
       } else {
         client
             .sendText(message, true)
-            .exceptionally(logWebSocketError(Level.SEVERE, "Failed to send text."));
+            .exceptionally(
+                e -> {
+                  log.error("Failed to send text", e);
+                  return null;
+                });
       }
     }
-  }
-
-  private <T> Function<Throwable, T> logWebSocketError(
-      final Level level, final String errorMessage) {
-    return throwable -> {
-      log.log(level, errorMessage, throwable);
-      return null;
-    };
   }
 
   @VisibleForTesting
@@ -221,7 +218,11 @@ class WebSocketConnection {
             message ->
                 client
                     .sendText(message, true)
-                    .exceptionally(logWebSocketError(Level.SEVERE, "Failed to send queued text.")));
+                    .exceptionally(
+                        e -> {
+                          log.error("Failed to send queued text.", e);
+                          return null;
+                        }));
         queuedMessages.clear();
       }
       // Allow onText to be called at least once, WebSocketConnection is initialized

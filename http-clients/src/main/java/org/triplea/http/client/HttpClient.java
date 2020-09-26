@@ -15,12 +15,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 
 /**
@@ -31,7 +30,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
  * @param <ClientTypeT> The feign client interface, should be an interface type that has feign
  *     annotations on it.
  */
-@Log
+@Slf4j
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
@@ -78,7 +77,7 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
                   final String configKey, final String format, final Object... args) {
                 final String logMessage = String.format(format, args);
                 if (!logMessage.contains(LobbyWatcherClient.KEEP_ALIVE_PATH)) {
-                  log.info(configKey + ": " + logMessage);
+                  log.trace(configKey + ": " + logMessage);
                 }
               }
             })
@@ -104,7 +103,7 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
                 return new HttpInteractionException(
                     response.status(), firstLine + "\n" + errorMessageBody);
               } catch (final IOException e) {
-                log.log(Level.INFO, "An additional error occurred when decoding response", e);
+                log.info("An additional error occurred when decoding response", e);
                 return new HttpInteractionException(response.status(), firstLine);
               }
             })

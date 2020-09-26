@@ -10,13 +10,13 @@ import java.nio.file.Path;
 import java.security.CodeSource;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.ApplicationContext;
 import org.triplea.io.FileUtils;
 import org.triplea.util.Services;
 
 /** Provides methods to work with common file locations in a client installation. */
-@Log
+@Slf4j
 public final class ClientFileSystemHelper {
   private ClientFileSystemHelper() {}
 
@@ -118,7 +118,7 @@ public final class ClientFileSystemHelper {
                 () -> userHomeRootFolderSupplier.get().toPath().resolve("downloadedMaps").toFile());
 
     if (!mapsFolder.exists() && !mapsFolder.mkdirs()) {
-      log.severe("Error, could not create map download folder: " + mapsFolder.getAbsolutePath());
+      log.error("Error, could not create map download folder: {}", mapsFolder.getAbsolutePath());
     }
     return mapsFolder;
   }

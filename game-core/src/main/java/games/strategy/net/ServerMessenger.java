@@ -23,16 +23,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 
 /** A Messenger that can have many clients connected to it. */
-@Log
+@Slf4j
 public class ServerMessenger implements IServerMessenger, NioSocketListener {
   public final Object newNodeLock = new Object();
 
@@ -183,7 +182,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     final SocketChannel fromChannel = nodeToChannel.get(msg.getFrom());
     final List<SocketChannel> nodes = new ArrayList<>(nodeToChannel.values());
-    log.finest(() -> "broadcasting to" + nodes);
     for (final SocketChannel channel : nodes) {
       if (channel != fromChannel) {
         nioSocket.send(channel, msg);
@@ -233,14 +231,14 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       try {
         socketChannel.register(acceptorSelector, SelectionKey.OP_ACCEPT);
       } catch (final ClosedChannelException e) {
-        log.log(Level.SEVERE, "socket closed", e);
+        log.error("socket closed", e);
         shutDown();
       }
       while (!shutdown) {
         try {
           acceptorSelector.select();
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Could not accept on server", e);
+          log.error("Could not accept on server", e);
           shutDown();
         }
         if (shutdown) {
@@ -263,13 +261,13 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               socketChannel.configureBlocking(false);
               socketChannel.socket().setKeepAlive(true);
             } catch (final IOException e) {
-              log.log(Level.SEVERE, "Could not accept channel", e);
+              log.error("Could not accept channel", e);
               try {
                 if (socketChannel != null) {
                   socketChannel.close();
                 }
               } catch (final IOException e2) {
-                log.log(Level.SEVERE, "Could not close channel", e2);
+                log.error("Could not close channel", e2);
               }
               continue;
             }
@@ -278,7 +276,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               try {
                 socketChannel.close();
               } catch (final IOException e) {
-                log.log(Level.SEVERE, "Could not close channel", e);
+                log.error("Could not close channel", e);
               }
               continue;
             }
@@ -307,7 +305,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
-      log.warning("Could not find node to remove: " + nodeToRemove);
+      log.warn("Could not find node to remove: " + nodeToRemove);
       return;
     }
     channelToNode.remove(channel);

@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.moderator.ModeratorsDao;
@@ -16,7 +16,7 @@ import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 
 @Builder
-@Log
+@Slf4j
 class ModeratorsService {
   @Nonnull private final ModeratorsDao moderatorsDao;
   @Nonnull private final UserJdbiDao userJdbiDao;

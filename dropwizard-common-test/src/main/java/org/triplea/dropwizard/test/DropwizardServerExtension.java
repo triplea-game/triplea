@@ -9,7 +9,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -28,7 +27,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  *
  * @param <C> Server configuration type.
  */
-@Slf4j
 public abstract class DropwizardServerExtension<C extends Configuration>
     implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
 
@@ -60,7 +58,6 @@ public abstract class DropwizardServerExtension<C extends Configuration>
   @Override
   public void beforeAll(final ExtensionContext context) {
     final DropwizardTestSupport<C> support = getSupport();
-    log.info("Starting local server for testing..");
     support.before();
 
     if (jdbi == null) {
@@ -68,12 +65,10 @@ public abstract class DropwizardServerExtension<C extends Configuration>
           Jdbi.create(getDatabase().getUrl(), getDatabase().getUser(), getDatabase().getPassword());
       jdbi.installPlugin(new SqlObjectPlugin());
       rowMappers().forEach(jdbi::registerRowMapper);
-      log.info("Created JDBI connection to: {}", getDatabase().getUrl());
     }
 
     final String localUri = "http://localhost:" + support.getLocalPort();
     serverUri = URI.create(localUri);
-    log.info("Local server URL set to: {}", localUri);
   }
 
   @Override
