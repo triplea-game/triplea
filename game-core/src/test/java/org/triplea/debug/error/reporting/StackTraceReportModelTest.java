@@ -8,13 +8,13 @@ import static org.mockito.Mockito.when;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.LogRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.debug.LoggerRecord;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,7 +22,7 @@ class StackTraceReportModelTest {
 
   private static final String STRING_VALUE = "Dominas studere, tanquam brevis canis.";
 
-  @Mock private LogRecord logRecord;
+  @Mock private LoggerRecord logRecord;
 
   @Mock private StackTraceReportView stackTraceReportView;
 

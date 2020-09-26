@@ -9,13 +9,14 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.SystemProperties;
 import java.util.Arrays;
-import java.util.logging.LogRecord;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.debug.LoggerRecord;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,20 +27,19 @@ class StackTraceErrorReportFormatterTest {
 
   private static final String CLASS_SHORT_NAME = "ClassShortName";
   private static final String CLASS_NAME = "org.triplea." + CLASS_SHORT_NAME;
-  private static final String METHOD_NAME = "methodParrot";
   private static final Exception EXCEPTION_WITH_MESSAGE =
       new RuntimeException("simulated exception");
   private static final Exception EXCEPTION_WITH_NO_MESSAGE = new NullPointerException();
   private static final Exception EXCEPTION_WITH_CAUSE =
       new RuntimeException(EXCEPTION_WITH_MESSAGE);
 
-  @Mock private LogRecord logRecord;
+  @Mock private LoggerRecord logRecord;
 
   @Nested
   final class VerifyVersion {
     @Test
     void verifyVersion() {
-      when(logRecord.getSourceClassName()).thenReturn("org.ClassName");
+      when(logRecord.getLoggerClassName()).thenReturn("org.ClassName");
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter(() -> "4.1")
@@ -58,9 +58,8 @@ class StackTraceErrorReportFormatterTest {
   final class VerifyTitle {
     @Test
     void logMessageOnly() {
-      when(logRecord.getSourceClassName()).thenReturn("org.ClassName");
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
-      when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
+      when(logRecord.getLoggerClassName()).thenReturn("org.ClassName");
+      when(logRecord.getLogMessage()).thenReturn(LOG_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter(() -> "4.1")
@@ -71,15 +70,13 @@ class StackTraceErrorReportFormatterTest {
                       .logRecord(logRecord)
                       .build());
 
-      assertThat(
-          errorReportResult.getTitle(), is("ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
+      assertThat(errorReportResult.getTitle(), is("ClassName - " + LOG_MESSAGE));
     }
 
     @Test
     void logMessageOnlyWithTripleaPackage() {
-      when(logRecord.getSourceClassName()).thenReturn("org.triplea.ClassName");
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
-      when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
+      when(logRecord.getLoggerClassName()).thenReturn("org.triplea.ClassName");
+      when(logRecord.getLogMessage()).thenReturn(LOG_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter(() -> "4.1")
@@ -90,13 +87,19 @@ class StackTraceErrorReportFormatterTest {
                       .logRecord(logRecord)
                       .build());
 
-      assertThat(
-          errorReportResult.getTitle(), is("ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
+      assertThat(errorReportResult.getTitle(), is("ClassName - " + LOG_MESSAGE));
     }
 
     @Test
     void handleNullLogMessageAndNullExceptionMessage() {
-      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
+      when(logRecord.getExceptions())
+          .thenReturn(
+              List.of(
+                  LoggerRecord.ExceptionDetails.builder()
+                      .exceptionClassName(
+                          EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName())
+                      .stackTraceElements(EXCEPTION_WITH_NO_MESSAGE.getStackTrace())
+                      .build()));
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter(() -> "5.6")
@@ -119,8 +122,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void handleClassNameWithNoPackages() {
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
-      when(logRecord.getSourceClassName()).thenReturn("ClassInDefaultPackage");
+      when(logRecord.getLoggerClassName()).thenReturn("ClassInDefaultPackage");
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
@@ -136,7 +138,16 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void handleExceptionWithCause() {
-      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_CAUSE);
+      when(logRecord.getExceptions())
+          .thenReturn(
+              List.of(
+                  LoggerRecord.ExceptionDetails.builder()
+                      .exceptionClassName("exception name")
+                      .build(),
+                  LoggerRecord.ExceptionDetails.builder()
+                      .stackTraceElements(EXCEPTION_WITH_CAUSE.getCause().getStackTrace())
+                      .exceptionClassName(EXCEPTION_WITH_CAUSE.getClass().getSimpleName())
+                      .build()));
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter(() -> "5.6")
@@ -162,8 +173,7 @@ class StackTraceErrorReportFormatterTest {
   final class VerifyBodyContains {
     @Test
     void containsUseSuppliedData() {
-      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
+      when(logRecord.getLoggerClassName()).thenReturn(CLASS_NAME);
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
@@ -179,8 +189,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsMapName() {
-      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
+      when(logRecord.getLoggerClassName()).thenReturn(CLASS_NAME);
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
@@ -196,8 +205,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsSystemData() {
-      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
+      when(logRecord.getLoggerClassName()).thenReturn(CLASS_NAME);
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
@@ -218,7 +226,45 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsStackTraceData() {
-      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_CAUSE);
+
+      final LoggerRecord logRecord =
+          new LoggerRecord() {
+            @Override
+            public String getLoggerClassName() {
+              return CLASS_NAME;
+            }
+
+            @Override
+            public String getLogMessage() {
+              return null;
+            }
+
+            @Override
+            public boolean isError() {
+              return true;
+            }
+
+            @Override
+            public boolean isWarning() {
+              return false;
+            }
+
+            @Override
+            public List<ExceptionDetails> getExceptions() {
+              return List.of(
+                  LoggerRecord.ExceptionDetails.builder()
+                      .stackTraceElements(EXCEPTION_WITH_CAUSE.getStackTrace())
+                      .exceptionMessage(EXCEPTION_WITH_CAUSE.getMessage())
+                      .exceptionClassName(EXCEPTION_WITH_CAUSE.getClass().getSimpleName())
+                      .build(),
+                  LoggerRecord.ExceptionDetails.builder()
+                      .stackTraceElements(EXCEPTION_WITH_MESSAGE.getStackTrace())
+                      .exceptionMessage(EXCEPTION_WITH_MESSAGE.getMessage())
+                      .exceptionClassName(EXCEPTION_WITH_MESSAGE.getClass().getSimpleName())
+                      .build());
+            }
+          };
+
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
               .apply(
@@ -246,8 +292,15 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsExceptionMessageAndLogMessageWhenBothArePresent() {
-      when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
-      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
+      when(logRecord.getLoggerClassName()).thenReturn(CLASS_NAME);
+      when(logRecord.getLogMessage()).thenReturn(LOG_MESSAGE);
+      when(logRecord.getExceptions()).thenReturn(
+          List.of(LoggerRecord.ExceptionDetails.builder()
+              .exceptionClassName(EXCEPTION_WITH_MESSAGE.getClass().getName())
+              .exceptionMessage(EXCEPTION_WITH_MESSAGE.getMessage())
+              .build())
+
+      );
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
@@ -268,7 +321,36 @@ class StackTraceErrorReportFormatterTest {
   final class BodyNullMessageHandling {
     @Test
     void nullLogMessage() {
-      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
+      final LoggerRecord logRecord =
+          new LoggerRecord() {
+            @Override
+            public String getLoggerClassName() {
+              return "logged-class-name";
+            }
+
+            @Override
+            public String getLogMessage() {
+              return null;
+            }
+
+            @Override
+            public boolean isError() {
+              return true;
+            }
+
+            @Override
+            public boolean isWarning() {
+              return false;
+            }
+
+            @Override
+            public List<ExceptionDetails> getExceptions() {
+              return List.of(
+                  ExceptionDetails.builder()
+                      .exceptionClassName("NullPointerException")
+                      .build());
+            }
+          };
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
@@ -279,9 +361,7 @@ class StackTraceErrorReportFormatterTest {
                       .logRecord(logRecord)
                       .build());
 
-      assertThat(
-          errorReportResult.getBody(),
-          containsString(EXCEPTION_WITH_NO_MESSAGE.getClass().getName()));
+      assertThat(errorReportResult.getBody(), containsString("NullPointerException"));
     }
   }
 }

@@ -1,9 +1,9 @@
 package org.triplea.debug.error.reporting;
 
 import games.strategy.engine.ClientContext;
-import java.util.logging.LogRecord;
 import javax.swing.JFrame;
 import lombok.experimental.UtilityClass;
+import org.triplea.debug.LoggerRecord;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
 
@@ -17,7 +17,7 @@ import org.triplea.http.client.error.report.ErrorReportClient;
 public class UploadDecisionModule {
 
   public static void processUploadDecision(
-      final JFrame parentWindow, final ErrorReportClient uploader, final LogRecord logRecord) {
+      final JFrame parentWindow, final ErrorReportClient uploader, final LoggerRecord logRecord) {
 
     final var canUploadRequest =
         CanUploadRequest.builder()

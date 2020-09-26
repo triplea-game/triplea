@@ -1,7 +1,7 @@
 package org.triplea.debug.error.reporting;
 
 import java.awt.Component;
-import java.util.logging.LogRecord;
+import org.triplea.debug.LoggerRecord;
 import org.triplea.http.client.error.report.ErrorReportClient;
 
 /** Interface for interactions with the stack trace user-reporting window UI. */
@@ -27,7 +27,9 @@ public interface StackTraceReportView {
    * information around the circumstances of an error.
    */
   static void showWindow(
-      final Component parentWindow, final ErrorReportClient uploader, final LogRecord logRecord) {
+      final Component parentWindow,
+      final ErrorReportClient uploader,
+      final LoggerRecord logRecord) {
 
     final StackTraceReportView window = new StackTraceReportSwingView(parentWindow);
 

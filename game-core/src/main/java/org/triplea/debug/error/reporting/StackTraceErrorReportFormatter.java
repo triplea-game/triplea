@@ -8,13 +8,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.LogRecord;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.debug.LoggerRecord;
+import org.triplea.debug.LoggerRecord.ExceptionDetails;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 
 /**
@@ -51,49 +55,48 @@ class StackTraceErrorReportFormatter
    * logging or exception, and we expect for there to always either be at least a log message or an
    * exception.
    */
-  static String createTitle(final LogRecord logRecord) {
+  static String createTitle(final LoggerRecord logRecord) {
     // if we have a stack trace with a triplea class in it, use that for the title;
     // EG: org.triplea.TripleaClass.method:[lineNumber] - [exception]; Caused by: [exception cause]
-    return extractTripleAClassAndLine(logRecord)
-        .map(
-            title ->
-                title + " - " + extractExceptionCauseNameOrUseExceptionName(logRecord.getThrown()))
+
+    final List<StackTraceElement[]> stackTrace =
+        logRecord.getExceptions().stream()
+            .map(ExceptionDetails::getStackTraceElements)
+            .collect(Collectors.toList());
+
+    return StackTraceErrorReportFormatter.extractTripleAClassAndLineNumberFromStackTrace(stackTrace)
+        .map(title -> title + " - " + extractExceptionCauseNameOrUseExceptionName(logRecord))
         .orElseGet(
             // Use the log record to create a title.
             () -> {
               final String classNameWithoutPackage =
-                  logRecord.getSourceClassName().contains(".")
+                  logRecord.getLoggerClassName().contains(".")
                       ? logRecord
-                          .getSourceClassName()
-                          .substring(logRecord.getSourceClassName().lastIndexOf(".") + 1)
-                      : logRecord.getSourceClassName();
+                          .getLoggerClassName()
+                          .substring(logRecord.getLoggerClassName().lastIndexOf(".") + 1)
+                      : logRecord.getLoggerClassName();
 
               return classNameWithoutPackage
-                  + "#"
-                  + logRecord.getSourceMethodName()
-                  + Optional.ofNullable(logRecord.getMessage())
+                  + Optional.ofNullable(logRecord.getLogMessage())
                       .map(message -> " - " + message)
                       .orElse("");
             });
   }
 
-  private static String extractExceptionCauseNameOrUseExceptionName(final Throwable thrown) {
-    return Optional.ofNullable(thrown.getCause()) //
-        .orElse(thrown)
-        .getClass()
-        .getSimpleName();
-  }
-
-  private static Optional<String> extractTripleAClassAndLine(final LogRecord logRecord) {
-    // Try to use any exception cause if we have it otherwise use our exception.
-    // Once we have an exception send the stack trace for formatting.
-    // If the stack trace contains a triplea class we'll get a formatted message back,
-    // otherwise we will get an empty value back.
-    return Optional.ofNullable(logRecord.getThrown())
-        .map(Throwable::getCause)
-        .or(() -> Optional.ofNullable(logRecord.getThrown()))
-        .map(Throwable::getStackTrace)
-        .map(StackTraceErrorReportFormatter::extractTripleAClassAndLineNumberFromStackTrace);
+  /**
+   * Prefer to return the name of the first 'caused by' exception if present, typically it will be
+   * more descriptive of the actual error.
+   */
+  @Nullable
+  private static String extractExceptionCauseNameOrUseExceptionName(
+      final LoggerRecord loggerRecord) {
+    if (loggerRecord.getExceptions().isEmpty()) {
+      return null;
+    } else if (loggerRecord.getExceptions().size() == 1) {
+      return loggerRecord.getExceptions().get(0).getExceptionClassName();
+    } else {
+      return loggerRecord.getExceptions().get(1).getExceptionClassName();
+    }
   }
 
   /**
@@ -101,17 +104,21 @@ class StackTraceErrorReportFormatter
    * using that stack trace element we create a formatted message with exception class name, method
    * name and line number.
    */
-  @Nullable
-  private static String extractTripleAClassAndLineNumberFromStackTrace(
-      final StackTraceElement[] stackTrace) {
-    return Arrays.stream(stackTrace)
+  private static Optional<String> extractTripleAClassAndLineNumberFromStackTrace(
+      final List<StackTraceElement[]> stackTrace) {
+    if (stackTrace == null || stackTrace.isEmpty()) {
+      return Optional.empty();
+    }
+
+    return stackTrace.stream()
+        .filter(Objects::nonNull)
+        .flatMap(Arrays::stream)
         .filter(
             stackTraceElement ->
                 stackTraceElement.getClassName().contains("triplea")
                     || stackTraceElement.getClassName().contains("games.strategy"))
         .findFirst()
-        .map(StackTraceErrorReportFormatter::formatStackTraceElement)
-        .orElse(null);
+        .map(StackTraceErrorReportFormatter::formatStackTraceElement);
   }
 
   /**
@@ -143,14 +150,14 @@ class StackTraceErrorReportFormatter
       @Nullable final String userDescription,
       @Nullable final String mapName,
       final String memoryStatistics,
-      final LogRecord logRecord) {
+      final LoggerRecord logRecord) {
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
             .map(description -> "## User Description\n" + description + "\n\n")
             .orElse("")
         + Optional.ofNullable(Strings.emptyToNull(mapName))
             .map(description -> "## Map\n" + mapName + "\n\n")
             .orElse("")
-        + Optional.ofNullable(logRecord.getMessage())
+        + Optional.ofNullable(logRecord.getLogMessage())
             .map(msg -> "## Log Message\n" + msg + "\n\n")
             .orElse("")
         + "## TripleA Version\n"
@@ -164,17 +171,41 @@ class StackTraceErrorReportFormatter
         + "\n\n"
         + "## Memory\n"
         + memoryStatistics
-        + "\n\n"
-        + Optional.ofNullable(logRecord.getThrown())
-            .map(StackTraceErrorReportFormatter::throwableToString)
-            .orElse("");
+        + (logRecord.getExceptions().isEmpty()
+            ? ""
+            : "\n\n" + StackTraceErrorReportFormatter.throwableToString(logRecord.getExceptions()));
   }
 
-  private static String throwableToString(final Throwable e) {
-    final var outputStream = new ByteArrayOutputStream();
-    try (PrintWriter printWriter = new PrintWriter(outputStream, false, StandardCharsets.UTF_8)) {
-      e.printStackTrace(printWriter);
-    }
-    return "## Stack Trace\n```\n" + outputStream.toString(StandardCharsets.UTF_8) + "\n```\n\n";
+  private static String throwableToString(final List<ExceptionDetails> exceptionDetails) {
+    final String traces =
+        exceptionDetails.stream()
+            .map(
+                exception -> {
+                  if (exception.getStackTraceElements() == null
+                      || exception.getStackTraceElements().length == 0) {
+                    return "Exception: "
+                        + exception.getExceptionClassName()
+                        + " "
+                        + Optional.ofNullable(exception.getExceptionMessage()).orElse("");
+                  } else {
+                    final var outputStream = new ByteArrayOutputStream();
+                    try (PrintWriter printWriter =
+                        new PrintWriter(outputStream, false, StandardCharsets.UTF_8)) {
+                      final Exception exceptionForStackTracePrinting = new Exception();
+                      exceptionForStackTracePrinting.setStackTrace(
+                          exception.getStackTraceElements());
+                      exceptionForStackTracePrinting.printStackTrace(printWriter);
+                    }
+                    return "Exception: "
+                        + exception.getExceptionClassName()
+                        + Optional.ofNullable(exception.getExceptionMessage()).orElse("")
+                        + "\n"
+                        + outputStream.toString(StandardCharsets.UTF_8)
+                        + "\n";
+                  }
+                })
+            .collect(Collectors.joining("\n"));
+
+    return "## Stack Trace\n```\n" + traces + "\n```\n\n";
   }
 }

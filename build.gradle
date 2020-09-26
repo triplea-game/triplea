@@ -97,6 +97,7 @@ subprojects {
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.7.0'
         junitPlatformLauncherVersion = '1.7.0'
+        logbackClassicVersion = '1.2.3'
         mockitoVersion = '3.5.13'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.16'
@@ -117,6 +118,7 @@ subprojects {
 
     dependencies {
         errorprone "com.google.errorprone:error_prone_core:$errorProneVersion"
+        implementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
         implementation "com.google.guava:guava:$guavaVersion"
         testImplementation "com.github.npathai:hamcrest-optional:$hamcrestOptionalVersion"
         testImplementation "nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion"
