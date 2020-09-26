@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
@@ -28,7 +29,7 @@ import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
 class CasualtyOrderOfLosses {
-  private final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
+  private final Map<String, List<AmphibType>> oolCache = new ConcurrentHashMap<>();
 
   void clearOolCache() {
     oolCache.clear();
@@ -59,22 +60,22 @@ class CasualtyOrderOfLosses {
    */
   List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     // Convert unit lists to unit type lists
-    final List<UnitType> targetTypes = new ArrayList<>();
+    final List<AmphibType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {
-      targetTypes.add(u.getType());
+      targetTypes.add(AmphibType.of(u));
     }
     // Calculate hashes and cache key
     String key = computeOolCacheKey(parameters, targetTypes);
     // Check OOL cache
-    final List<UnitType> stored = oolCache.get(key);
+    final List<AmphibType> stored = oolCache.get(key);
     if (stored != null) {
       final List<Unit> result = new ArrayList<>();
       final List<Unit> selectFrom = new ArrayList<>(parameters.targetsToPickFrom);
-      for (final UnitType ut : stored) {
+      for (final AmphibType amphibType : stored) {
         for (final Iterator<Unit> it = selectFrom.iterator(); it.hasNext(); ) {
-          final Unit u = it.next();
-          if (ut.equals(u.getType())) {
-            result.add(u);
+          final Unit unit = it.next();
+          if (amphibType.matches(unit)) {
+            result.add(unit);
             it.remove();
           }
         }
@@ -90,8 +91,7 @@ class CasualtyOrderOfLosses {
                 parameters.combatModifiers.getTerritoryEffects(),
                 parameters.data,
                 true,
-                false,
-                parameters.combatModifiers.isAmphibious())
+                false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
@@ -101,8 +101,7 @@ class CasualtyOrderOfLosses {
             parameters.combatModifiers.getTerritoryEffects(),
             parameters.data,
             true,
-            true,
-            parameters.combatModifiers.isAmphibious());
+            true);
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
@@ -239,13 +238,13 @@ class CasualtyOrderOfLosses {
     }
     sortedWellEnoughUnitsList.addAll(sortedUnitsList);
     // Cache result and all subsets of the result
-    final List<UnitType> unitTypes = new ArrayList<>();
+    final List<AmphibType> unitTypes = new ArrayList<>();
     for (final Unit u : sortedWellEnoughUnitsList) {
-      unitTypes.add(u.getType());
+      unitTypes.add(AmphibType.of(u));
     }
-    for (final Iterator<UnitType> it = unitTypes.iterator(); it.hasNext(); ) {
+    for (final Iterator<AmphibType> it = unitTypes.iterator(); it.hasNext(); ) {
       oolCache.put(key, new ArrayList<>(unitTypes));
-      final UnitType unitTypeToRemove = it.next();
+      final AmphibType unitTypeToRemove = it.next();
       targetTypes.remove(unitTypeToRemove);
       key = computeOolCacheKey(parameters, targetTypes);
       it.remove();
@@ -253,14 +252,31 @@ class CasualtyOrderOfLosses {
     return sortedWellEnoughUnitsList;
   }
 
-  static String computeOolCacheKey(final Parameters parameters, final List<UnitType> targetTypes) {
+  @Value
+  static class AmphibType {
+    UnitType type;
+    boolean isAmphibious;
+
+    static AmphibType of(final Unit unit) {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      // only track amphibious if both marine and was amphibious
+      return new AmphibType(unit.getType(), ua.getIsMarine() != 0 && unit.getWasAmphibious());
+    }
+
+    boolean matches(final Unit unit) {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      return type.equals(unit.getType())
+          && (ua.getIsMarine() == 0 || isAmphibious == unit.getWasAmphibious());
+    }
+  }
+
+  static String computeOolCacheKey(
+      final Parameters parameters, final List<AmphibType> targetTypes) {
     return parameters.player.getName()
         + "|"
         + parameters.battlesite.getName()
         + "|"
         + parameters.combatModifiers.isDefending()
-        + "|"
-        + parameters.combatModifiers.isAmphibious()
         + "|"
         + Objects.hashCode(targetTypes);
   }

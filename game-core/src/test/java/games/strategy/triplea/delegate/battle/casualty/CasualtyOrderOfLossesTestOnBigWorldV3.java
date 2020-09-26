@@ -62,11 +62,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(amphibUnits)
         .combatModifiers(
-            CombatModifiers.builder()
-                .defending(false)
-                .amphibious(true)
-                .territoryEffects(List.of())
-                .build())
+            CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(testData.british)
         .enemyUnits(List.of())
         .battlesite(testData.france)
@@ -164,5 +160,114 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     assertThat(result.get(0).getType(), is(testData.infantry));
     assertThat(
         "Artillery has the better total power", result.get(1).getType(), is(testData.artillery));
+  }
+
+  @Test
+  void nonAmphibiousMarineWithAmphibiousAssault() {
+    testData.addTech(new ImprovedArtillerySupportAdvance(testData.gameData));
+
+    final List<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(testData.tank(1));
+    attackingUnits.addAll(testData.artillery(1));
+    attackingUnits.addAll(testData.marine(1));
+
+    final List<Unit> amphibMarines = new ArrayList<>(testData.marine(1));
+    amphibMarines
+        .get(0)
+        .getProperty(Unit.UNLOADED_AMPHIBIOUS)
+        .ifPresent(
+            property -> {
+              try {
+                property.setValue(true);
+              } catch (final MutableProperty.InvalidValueException e) {
+                // should not happen
+              }
+            });
+    attackingUnits.addAll(amphibMarines);
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
+            CasualtyOrderOfLosses.Parameters.builder()
+                .targetsToPickFrom(attackingUnits)
+                .combatModifiers(
+                    CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
+                .player(testData.british)
+                .enemyUnits(List.of())
+                .battlesite(testData.france)
+                .costs(testData.costMap)
+                .data(testData.gameData)
+                .build());
+
+    assertThat(result, hasSize(4));
+    assertThat(
+        "Non amphibious marine only has attack of 2 since it doesn't get marine bonus",
+        result.get(0),
+        is(attackingUnits.get(2)));
+    assertThat(result.get(1), is(attackingUnits.get(1)));
+    assertThat("Amphibious marine has attack of 3", result.get(2), is(attackingUnits.get(3)));
+    assertThat(result.get(3), is(attackingUnits.get(0)));
+  }
+
+  @Test
+  void amphibiousAndNonAmphibiousCaching() {
+    testData.addTech(new ImprovedArtillerySupportAdvance(testData.gameData));
+
+    final List<Unit> amphibUnits = new ArrayList<>();
+    amphibUnits.addAll(testData.tank(1));
+    amphibUnits.addAll(testData.artillery(1));
+    amphibUnits.addAll(testData.marine(1));
+
+    amphibUnits.forEach(
+        unit -> {
+          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+              .ifPresent(
+                  property -> {
+                    try {
+                      property.setValue(true);
+                    } catch (final MutableProperty.InvalidValueException e) {
+                      // should not happen
+                    }
+                  });
+        });
+
+    final List<Unit> attackingUnits = new ArrayList<>(amphibUnits);
+    attackingUnits.addAll(testData.marine(1));
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
+            CasualtyOrderOfLosses.Parameters.builder()
+                .targetsToPickFrom(attackingUnits)
+                .combatModifiers(
+                    CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
+                .player(testData.british)
+                .enemyUnits(List.of())
+                .battlesite(testData.france)
+                .costs(testData.costMap)
+                .data(testData.gameData)
+                .build());
+
+    assertThat(
+        "Non amphibious marine only has attack of 2 since it doesn't get marine bonus",
+        result.get(0),
+        is(attackingUnits.get(3)));
+    assertThat("Amphibious marine has attack of 3", result.get(2), is(attackingUnits.get(2)));
+
+    final List<Unit> result2 =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
+            CasualtyOrderOfLosses.Parameters.builder()
+                .targetsToPickFrom(attackingUnits.subList(0, 3))
+                .combatModifiers(
+                    CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
+                .player(testData.british)
+                .enemyUnits(List.of())
+                .battlesite(testData.france)
+                .costs(testData.costMap)
+                .data(testData.gameData)
+                .build());
+
+    assertThat(result2, hasSize(3));
+    assertThat(result2.get(0), is(attackingUnits.get(1)));
+    assertThat("Amphibious marine has attack of 3", result2.get(1), is(attackingUnits.get(2)));
+    assertThat(result2.get(2), is(attackingUnits.get(0)));
   }
 }
