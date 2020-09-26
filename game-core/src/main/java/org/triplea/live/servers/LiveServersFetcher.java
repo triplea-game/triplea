@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.java.function.ThrowingSupplier;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
 
 /**
@@ -37,6 +38,29 @@ public class LiveServersFetcher {
             .contentDownloader(networkFetcher)
             .yamlParser(new ServerYamlParser())
             .build());
+  }
+
+  /**
+   * Fetches from online configuration server properties. The online configuration is a fixed
+   * configuration file at a known URI. The server properties lists which lobbies are available for
+   * which game versions.
+   */
+  public static Optional<ServerProperties> fetch() {
+    final ServerProperties serverProperties = new LiveServersFetcher().serverForCurrentVersion();
+    if (serverProperties.isInactive()) {
+      SwingComponents.showDialogWithLinks(
+          SwingComponents.DialogWithLinksParams.builder()
+              .title("Lobby Not Available")
+              .dialogText(
+                  String.format(
+                      "Your version of TripleA is out of date, please download the latest:"
+                          + "<br><a href=\"%s\">%s</a>",
+                      UrlConstants.DOWNLOAD_WEBSITE, UrlConstants.DOWNLOAD_WEBSITE))
+              .dialogType(SwingComponents.DialogWithLinksTypes.ERROR)
+              .build());
+      return Optional.empty();
+    }
+    return Optional.of(serverProperties);
   }
 
   public Optional<Version> latestVersion() {
