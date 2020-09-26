@@ -5,17 +5,19 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITH
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE;
 
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
 public class OffensiveSubsRetreat implements BattleStep {
@@ -28,7 +30,7 @@ public class OffensiveSubsRetreat implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    if (!isEvaderPresent() || !isRetreatPossible()) {
+    if (isEvaderNotPresent() || isRetreatNotPossible()) {
       return List.of();
     }
 
@@ -39,10 +41,14 @@ public class OffensiveSubsRetreat implements BattleStep {
       return List.of();
     }
 
+    return List.of(getName());
+  }
+
+  private String getName() {
     if (Properties.getSubmersibleSubs(battleState.getGameData())) {
-      return List.of(battleState.getAttacker().getName() + SUBS_SUBMERGE);
+      return battleState.getAttacker().getName() + SUBS_SUBMERGE;
     } else {
-      return List.of(battleState.getAttacker().getName() + SUBS_WITHDRAW);
+      return battleState.getAttacker().getName() + SUBS_WITHDRAW;
     }
   }
 
@@ -59,13 +65,31 @@ public class OffensiveSubsRetreat implements BattleStep {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (battleState.isOver()
         || isDestroyerPresent()
-        || !isEvaderPresent()
-        || !isRetreatPossible()
+        || isEvaderNotPresent()
+        || isRetreatNotPossible()
         || isAutoWinScenario()) {
       return;
     }
-    battleActions.queryRetreat(
-        false, RetreatType.SUBS, bridge, battleState.getAttackerRetreatTerritories());
+
+    final Collection<Unit> unitsToRetreat =
+        CollectionUtils.getMatches(
+            battleState.getUnits(BattleState.Side.OFFENSE), Matches.unitCanEvade());
+    if (unitsToRetreat.isEmpty()) {
+      return;
+    }
+
+    EvaderRetreat.retreatUnits(
+        EvaderRetreat.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .side(BattleState.Side.OFFENSE)
+            .bridge(bridge)
+            .units(unitsToRetreat)
+            .build(),
+        Properties.getSubmersibleSubs(battleState.getGameData())
+            ? List.of(battleState.getBattleSite())
+            : battleState.getAttackerRetreatTerritories(),
+        getName());
   }
 
   private boolean isDestroyerPresent() {
@@ -75,13 +99,14 @@ public class OffensiveSubsRetreat implements BattleStep {
             .anyMatch(Matches.unitIsDestroyer());
   }
 
-  private boolean isEvaderPresent() {
-    return battleState.getUnits(BattleState.Side.OFFENSE).stream().anyMatch(Matches.unitCanEvade());
+  private boolean isEvaderNotPresent() {
+    return battleState.getUnits(BattleState.Side.OFFENSE).stream()
+        .noneMatch(Matches.unitCanEvade());
   }
 
-  private boolean isRetreatPossible() {
-    return Properties.getSubmersibleSubs(battleState.getGameData())
-        || RetreatChecks.canAttackerRetreat(
+  private boolean isRetreatNotPossible() {
+    return !Properties.getSubmersibleSubs(battleState.getGameData())
+        && !RetreatChecks.canAttackerRetreat(
             battleState.getUnits(BattleState.Side.DEFENSE),
             battleState.getGameData(),
             battleState::getAttackerRetreatTerritories,

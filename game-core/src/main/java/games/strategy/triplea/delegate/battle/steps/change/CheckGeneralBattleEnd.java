@@ -8,6 +8,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import java.util.List;
@@ -45,16 +46,13 @@ public class CheckGeneralBattleEnd implements BattleStep {
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (hasSideLost(BattleState.Side.OFFENSE)) {
-      battleActions.endBattle(bridge);
-      battleActions.defenderWins(bridge);
+      battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
 
     } else if (hasSideLost(BattleState.Side.DEFENSE)) {
-      battleActions.endBattle(bridge);
-      battleActions.attackerWins(bridge);
+      battleActions.endBattle(IBattle.WhoWon.ATTACKER, bridge);
 
     } else if (isStalemate() && !canAttackerRetreatInStalemate()) {
-      battleActions.endBattle(bridge);
-      battleActions.nobodyWins(bridge);
+      battleActions.endBattle(IBattle.WhoWon.DRAW, bridge);
     }
   }
 

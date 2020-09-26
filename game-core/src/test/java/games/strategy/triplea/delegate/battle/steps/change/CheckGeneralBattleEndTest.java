@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsInfrastructure;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.IBattle;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,8 +45,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions).endBattle(delegateBridge);
-    verify(battleActions).defenderWins(delegateBridge);
+    verify(battleActions).endBattle(IBattle.WhoWon.DEFENDER, delegateBridge);
   }
 
   @Test
@@ -55,8 +56,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions).endBattle(delegateBridge);
-    verify(battleActions).defenderWins(delegateBridge);
+    verify(battleActions).endBattle(IBattle.WhoWon.DEFENDER, delegateBridge);
   }
 
   @Test
@@ -71,8 +71,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions).endBattle(delegateBridge);
-    verify(battleActions).attackerWins(delegateBridge);
+    verify(battleActions).endBattle(IBattle.WhoWon.ATTACKER, delegateBridge);
   }
 
   @Test
@@ -87,8 +86,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions).endBattle(delegateBridge);
-    verify(battleActions).attackerWins(delegateBridge);
+    verify(battleActions).endBattle(IBattle.WhoWon.ATTACKER, delegateBridge);
   }
 
   @Test
@@ -107,8 +105,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions).endBattle(delegateBridge);
-    verify(battleActions).nobodyWins(delegateBridge);
+    verify(battleActions).endBattle(IBattle.WhoWon.DRAW, delegateBridge);
   }
 
   @Test
@@ -125,8 +122,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions).endBattle(delegateBridge);
-    verify(battleActions).nobodyWins(delegateBridge);
+    verify(battleActions).endBattle(IBattle.WhoWon.DRAW, delegateBridge);
   }
 
   @Test
@@ -144,7 +140,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions, never()).endBattle(delegateBridge);
+    verify(battleActions, never()).endBattle(any(), any());
   }
 
   private Unit givenUnitWithAttackPower(final GamePlayer player) {
@@ -173,7 +169,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions, never()).endBattle(delegateBridge);
+    verify(battleActions, never()).endBattle(any(), any());
   }
 
   private Unit givenUnitWithDefensePower(final GamePlayer player) {
@@ -207,8 +203,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions, never()).endBattle(delegateBridge);
-    verify(battleActions, never()).nobodyWins(delegateBridge);
+    verify(battleActions, never()).endBattle(IBattle.WhoWon.DRAW, delegateBridge);
   }
 
   @Test
@@ -235,8 +230,7 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions).endBattle(delegateBridge);
-    verify(battleActions).nobodyWins(delegateBridge);
+    verify(battleActions).endBattle(IBattle.WhoWon.DRAW, delegateBridge);
   }
 
   @Test
@@ -264,7 +258,6 @@ class CheckGeneralBattleEndTest {
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
-    verify(battleActions, never()).endBattle(delegateBridge);
-    verify(battleActions, never()).nobodyWins(delegateBridge);
+    verify(battleActions, never()).endBattle(IBattle.WhoWon.DRAW, delegateBridge);
   }
 }

@@ -20,6 +20,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
@@ -68,6 +69,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
@@ -103,6 +106,7 @@ public class MustFightBattle extends DependentBattle
 
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
+  @Getter(onMethod = @__({@Override}))
   private final Collection<Unit> killed = new ArrayList<>();
   // keep track of all the units that die this round to see if they change into another unit
   private final List<Unit> killedDuringCurrentRound = new ArrayList<>();
@@ -308,6 +312,57 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
+  public @Nullable Territory queryRetreatTerritory(
+      final BattleState battleState,
+      final IDelegateBridge bridge,
+      final GamePlayer retreatingPlayer,
+      final Collection<Territory> availableTerritories,
+      final String text) {
+    return retreatQuery(
+        battleState, getRemote(retreatingPlayer, bridge), availableTerritories, false, text);
+  }
+
+  private @Nullable Territory retreatQuery(
+      final BattleState battleState,
+      final Player remotePlayer,
+      final Collection<Territory> availableTerritories,
+      final boolean submerge,
+      final String text) {
+    final Territory retreatTo =
+        remotePlayer.retreatQuery(
+            battleState.getBattleId(),
+            submerge,
+            battleState.getBattleSite(),
+            availableTerritories,
+            text);
+    if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
+      log.severe(
+          "Invalid retreat selection: "
+              + retreatTo
+              + " not in "
+              + MyFormatter.defaultNamedToTextList(availableTerritories));
+      return null;
+    }
+    return retreatTo;
+  }
+
+  @Override
+  public @Nullable Territory querySubmergeTerritory(
+      final BattleState battleState,
+      final IDelegateBridge bridge,
+      final GamePlayer retreatingPlayer,
+      final Collection<Territory> availableTerritories,
+      final String text) {
+    return retreatQuery(
+        battleState, getRemote(retreatingPlayer, bridge), availableTerritories, true, text);
+  }
+
+  @Override
+  public Collection<IBattle> getDependentBattles() {
+    return battleTracker.getBlocked(this);
+  }
+
+  @Override
   public Collection<Unit> getUnits(final Side... sides) {
     final Collection<Unit> units = new ArrayList<>();
     for (final Side side : sides) {
@@ -357,6 +412,15 @@ public class MustFightBattle extends DependentBattle
           break;
       }
     }
+  }
+
+  @Override
+  public void retreatUnits(final Side side, final Collection<Unit> retreatingUnits) {
+    final Collection<Unit> units = side == Side.DEFENSE ? defendingUnits : attackingUnits;
+    final Collection<Unit> unitsRetreated =
+        side == Side.DEFENSE ? defendingUnitsRetreated : attackingUnitsRetreated;
+    units.removeAll(retreatingUnits);
+    unitsRetreated.addAll(retreatingUnits);
   }
 
   @Override
@@ -432,7 +496,23 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void endBattle(final IDelegateBridge bridge) {
+  public void endBattle(final WhoWon whoWon, final IDelegateBridge bridge) {
+    switch (whoWon) {
+      case ATTACKER:
+        attackerWins(bridge);
+        break;
+      case DEFENDER:
+        defenderWins(bridge);
+        break;
+      case DRAW:
+        nobodyWins(bridge);
+        break;
+      default:
+        throw new IllegalStateException("WhoWon? " + whoWon);
+    }
+  }
+
+  private void endBattle(final IDelegateBridge bridge) {
     clearWaitingToDieAndDamagedChangesInto(bridge);
     isOver = true;
     battleTracker.removeBattle(this, bridge.getData());
@@ -682,13 +762,11 @@ public class MustFightBattle extends DependentBattle
     markAttackingTransports(bridge);
     writeUnitsToHistory(bridge);
     if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).isEmpty()) {
-      endBattle(bridge);
-      defenderWins(bridge);
+      endBattle(WhoWon.DEFENDER, bridge);
       return;
     }
     if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).isEmpty()) {
-      endBattle(bridge);
-      attackerWins(bridge);
+      endBattle(WhoWon.ATTACKER, bridge);
       return;
     }
     addDependentUnits(TransportTracker.transporting(defendingUnits));
@@ -1626,323 +1704,8 @@ public class MustFightBattle extends DependentBattle
         });
   }
 
-  @Override
-  public void queryRetreat(
-      final boolean defender,
-      final RetreatType retreatType,
-      final IDelegateBridge bridge,
-      final Collection<Territory> initialAvailableTerritories) {
-    final boolean planes = retreatType == RetreatType.PLANES;
-    final boolean subs = retreatType == RetreatType.SUBS;
-    final boolean canSubsSubmerge = Properties.getSubmersibleSubs(gameData);
-    final boolean canDefendingSubsSubmergeOrRetreat =
-        subs && defender && Properties.getSubmarinesDefendingMaySubmergeOrRetreat(gameData);
-    final boolean partialAmphib = retreatType == RetreatType.PARTIAL_AMPHIB;
-    final boolean submerge = subs && canSubsSubmerge;
-    if (initialAvailableTerritories.isEmpty() && !(submerge || canDefendingSubsSubmergeOrRetreat)) {
-      return;
-    }
-
-    // If attacker then add all owned units at battle site as some might have been removed from
-    // battle (infra)
-    Collection<Unit> units = defender ? defendingUnits : attackingUnits;
-    if (!defender) {
-      units = new HashSet<>(units);
-      units.addAll(
-          battleSite
-              .getUnitCollection()
-              .getMatches(Matches.unitIsOwnedBy(attacker).and(Matches.unitIsSubmerged().negate())));
-      units.removeAll(killed);
-    }
-    if (subs) {
-      units = CollectionUtils.getMatches(units, Matches.unitCanEvade());
-    } else if (planes) {
-      units = CollectionUtils.getMatches(units, Matches.unitIsAir());
-    } else if (partialAmphib) {
-      units = CollectionUtils.getMatches(units, Matches.unitWasNotAmphibious());
-    }
-    final Collection<Territory> availableTerritories =
-        units.stream().anyMatch(Matches.unitIsSea())
-            ? CollectionUtils.getMatches(initialAvailableTerritories, Matches.territoryIsWater())
-            : new ArrayList<>(initialAvailableTerritories);
-    if (canDefendingSubsSubmergeOrRetreat) {
-      availableTerritories.add(battleSite);
-    } else if (submerge) {
-      availableTerritories.clear();
-      availableTerritories.add(battleSite);
-    }
-    if (planes) {
-      availableTerritories.clear();
-      availableTerritories.add(battleSite);
-    }
-    if (units.isEmpty()) {
-      return;
-    }
-    final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
-    final String text;
-    if (subs) {
-      text = retreatingPlayer.getName() + " retreat subs?";
-    } else if (planes) {
-      text = retreatingPlayer.getName() + " retreat planes?";
-    } else if (partialAmphib) {
-      text = retreatingPlayer.getName() + " retreat non-amphibious units?";
-    } else {
-      text = retreatingPlayer.getName() + " retreat?";
-    }
-    final String step;
-    if (defender) {
-      step = this.defender.getName() + (canSubsSubmerge ? SUBS_SUBMERGE : SUBS_WITHDRAW);
-    } else {
-      if (subs) {
-        step = attacker.getName() + (canSubsSubmerge ? SUBS_SUBMERGE : SUBS_WITHDRAW);
-      } else {
-        step = attacker.getName() + ATTACKER_WITHDRAW;
-      }
-    }
-    bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, step);
-    final Territory retreatTo =
-        getRemote(retreatingPlayer, bridge)
-            .retreatQuery(
-                battleId,
-                (submerge || canDefendingSubsSubmergeOrRetreat),
-                battleSite,
-                availableTerritories,
-                text);
-    if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs) {
-      log.severe(
-          "Invalid retreat selection: "
-              + retreatTo
-              + " not in "
-              + MyFormatter.defaultNamedToTextList(availableTerritories));
-      return;
-    }
-    if (retreatTo != null) {
-      // if attacker retreating non subs then its all over
-      if (!defender && !subs && !planes && !partialAmphib) {
-        isOver = true;
-      }
-      if (!headless) {
-        SoundUtils.playRetreatType(attacker, units, retreatType, bridge);
-      }
-      if (subs && battleSite.equals(retreatTo) && (submerge || canDefendingSubsSubmergeOrRetreat)) {
-        submergeUnits(units, defender, bridge);
-        final String messageShort = retreatingPlayer.getName() + " submerges subs";
-        bridge
-            .getDisplayChannelBroadcaster()
-            .notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
-      } else if (planes) {
-        retreatPlanes(units, defender, bridge);
-        final String messageShort = retreatingPlayer.getName() + " retreats planes";
-        bridge
-            .getDisplayChannelBroadcaster()
-            .notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
-      } else if (partialAmphib) {
-        // remove amphib units from those retreating
-        units = CollectionUtils.getMatches(units, Matches.unitWasNotAmphibious());
-        retreatUnitsAndPlanes(units, retreatTo, defender, bridge);
-        final String messageShort = retreatingPlayer.getName() + " retreats non-amphibious units";
-        bridge
-            .getDisplayChannelBroadcaster()
-            .notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
-      } else {
-        retreatUnits(units, retreatTo, defender, bridge);
-        final String messageShort = retreatingPlayer.getName() + " retreats";
-        final String messageLong;
-        if (subs) {
-          messageLong = retreatingPlayer.getName() + " retreats subs to " + retreatTo.getName();
-        } else {
-          messageLong =
-              retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
-        }
-        bridge
-            .getDisplayChannelBroadcaster()
-            .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
-      }
-    }
-  }
-
-  @Override
-  public void submergeUnits(
-      final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge) {
-    final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
-    final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
-    final Collection<Unit> unitsRetreated =
-        defender ? defendingUnitsRetreated : attackingUnitsRetreated;
-    final CompositeChange change = new CompositeChange();
-    for (final Unit u : submerging) {
-      change.add(ChangeFactory.unitPropertyChange(u, true, Unit.SUBMERGED));
-    }
-    bridge.addChange(change);
-    units.removeAll(submerging);
-    unitsRetreated.addAll(submerging);
-    if (!units.isEmpty() && !isOver) {
-      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleId, submerging);
-    }
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(submerging));
-  }
-
-  private void retreatPlanes(
-      final Collection<Unit> retreating, final boolean defender, final IDelegateBridge bridge) {
-    final String transcriptText = MyFormatter.unitsToText(retreating) + " retreated";
-    final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
-    final Collection<Unit> unitsRetreated =
-        defender ? defendingUnitsRetreated : attackingUnitsRetreated;
-    units.removeAll(retreating);
-    unitsRetreated.removeAll(retreating);
-    if (units.isEmpty() || isOver) {
-      endBattle(bridge);
-      if (defender) {
-        attackerWins(bridge);
-      } else {
-        defenderWins(bridge);
-      }
-    } else {
-      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleId, retreating);
-    }
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreating));
-  }
-
-  private void retreatUnitsAndPlanes(
-      final Collection<Unit> retreating,
-      final Territory to,
-      final boolean defender,
-      final IDelegateBridge bridge) {
-    // Remove air from battle
-    final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
-    final Collection<Unit> unitsRetreated =
-        defender ? defendingUnitsRetreated : attackingUnitsRetreated;
-    units.removeAll(CollectionUtils.getMatches(units, Matches.unitIsAir()));
-    // add all land units' dependents
-    retreating.addAll(getDependentUnits(units));
-    // our own air units don't retreat with land units
-    final Predicate<Unit> notMyAir =
-        Matches.unitIsNotAir().or(Matches.unitIsOwnedBy(attacker).negate());
-    final Collection<Unit> nonAirRetreating = CollectionUtils.getMatches(retreating, notMyAir);
-    final String transcriptText =
-        MyFormatter.unitsToTextNoOwner(nonAirRetreating) + " retreated to " + to.getName();
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(nonAirRetreating));
-    final CompositeChange change = new CompositeChange();
-    change.add(ChangeFactory.moveUnits(battleSite, to, nonAirRetreating));
-    if (isOver) {
-      final Collection<IBattle> dependentBattles = battleTracker.getBlocked(this);
-      // If there are no dependent battles, check landings in allied territories
-      if (dependentBattles.isEmpty()) {
-        change.add(retreatFromNonCombat(nonAirRetreating, to));
-        // Else retreat the units from combat when their transport retreats
-      } else {
-        change.add(retreatFromDependents(nonAirRetreating, to, dependentBattles));
-      }
-    }
-    bridge.addChange(change);
-    units.removeAll(nonAirRetreating);
-    unitsRetreated.addAll(nonAirRetreating);
-    if (units.isEmpty() || isOver) {
-      endBattle(bridge);
-      if (defender) {
-        attackerWins(bridge);
-      } else {
-        defenderWins(bridge);
-      }
-    } else {
-      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleId, retreating);
-    }
-  }
-
-  /** Added for test case calls. */
-  @VisibleForTesting
-  public void externalRetreat(
-      final Collection<Unit> retreaters,
-      final Territory retreatTo,
-      final boolean defender,
-      final IDelegateBridge bridge) {
-    isOver = true;
-    retreatUnits(retreaters, retreatTo, defender, bridge);
-  }
-
-  private void retreatUnits(
-      final Collection<Unit> initialRetreating,
-      final Territory to,
-      final boolean defender,
-      final IDelegateBridge bridge) {
-    Collection<Unit> retreating = initialRetreating;
-    retreating.addAll(getDependentUnits(retreating));
-    // our own air units don't retreat with land units
-    final Predicate<Unit> notMyAir =
-        Matches.unitIsNotAir().or(Matches.unitIsOwnedBy(attacker).negate());
-    retreating = CollectionUtils.getMatches(retreating, notMyAir);
-    final String transcriptText;
-    // in WW2V1, defending subs can retreat so show owner
-    if (Properties.getWW2V2(gameData)) {
-      transcriptText = MyFormatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
-    } else {
-      transcriptText = MyFormatter.unitsToText(retreating) + " retreated to " + to.getName();
-    }
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreating));
-    final CompositeChange change = new CompositeChange();
-    change.add(ChangeFactory.moveUnits(battleSite, to, retreating));
-    if (isOver) {
-      final Collection<IBattle> dependentBattles = battleTracker.getBlocked(this);
-      // If there are no dependent battles, check landings in allied territories
-      if (dependentBattles.isEmpty()) {
-        change.add(retreatFromNonCombat(retreating, to));
-        // Else retreat the units from combat when their transport retreats
-      } else {
-        change.add(retreatFromDependents(retreating, to, dependentBattles));
-      }
-    }
-    bridge.addChange(change);
-    final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
-    final Collection<Unit> unitsRetreated =
-        defender ? defendingUnitsRetreated : attackingUnitsRetreated;
-    units.removeAll(retreating);
-    unitsRetreated.addAll(retreating);
-    if (units.isEmpty() || isOver) {
-      endBattle(bridge);
-      if (defender) {
-        attackerWins(bridge);
-      } else {
-        defenderWins(bridge);
-      }
-    } else {
-      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleId, retreating);
-    }
-  }
-
-  /** Retreat landed units from allied territory when their transport retreats. */
-  private Change retreatFromNonCombat(final Collection<Unit> units, final Territory retreatTo) {
-    final CompositeChange change = new CompositeChange();
-    final Collection<Unit> transports =
-        CollectionUtils.getMatches(units, Matches.unitIsTransport());
-    final Collection<Unit> retreated = getTransportDependents(transports);
-    if (!retreated.isEmpty()) {
-      for (final Unit unit : transports) {
-        final Territory retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
-        if (retreatedFrom != null) {
-          TransportTracker.reloadTransports(transports, change);
-          change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));
-        }
-      }
-    }
-    return change;
-  }
-
-  private Change retreatFromDependents(
-      final Collection<Unit> units,
-      final Territory retreatTo,
-      final Collection<IBattle> dependentBattles) {
-    final CompositeChange change = new CompositeChange();
-    for (final IBattle dependent : dependentBattles) {
-      final Route route = new Route(battleSite, dependent.getTerritory());
-      final Collection<Unit> retreatedUnits = dependent.getDependentUnits(units);
-      dependent.removeAttack(route, retreatedUnits);
-      TransportTracker.reloadTransports(units, change);
-      change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
-    }
-    return change;
-  }
-
-  @Override
-  public void defenderWins(final IDelegateBridge bridge) {
+  private void defenderWins(final IDelegateBridge bridge) {
+    endBattle(bridge);
     whoWon = WhoWon.DEFENDER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, defender.getName() + " win");
     if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData)) {
@@ -1997,8 +1760,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  @Override
-  public void nobodyWins(final IDelegateBridge bridge) {
+  private void nobodyWins(final IDelegateBridge bridge) {
+    endBattle(bridge);
     whoWon = WhoWon.DRAW;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Stalemate");
     bridge
@@ -2024,8 +1787,8 @@ public class MustFightBattle extends DependentBattle
     checkDefendingPlanesCanLand();
   }
 
-  @Override
-  public void attackerWins(final IDelegateBridge bridge) {
+  private void attackerWins(final IDelegateBridge bridge) {
+    endBattle(bridge);
     whoWon = WhoWon.ATTACKER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, attacker.getName() + " win");
     if (headless) {

@@ -9,6 +9,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.retreat.EvaderRetreat;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -50,7 +51,7 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     final Collection<Unit> submergingSubs;
-    final boolean defender;
+    final BattleState.Side side;
     if (isOnlyAirVsSubs(
         battleState.getUnits(BattleState.Side.OFFENSE),
         battleState.getUnits(BattleState.Side.DEFENSE))) {
@@ -58,7 +59,7 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
       submergingSubs =
           CollectionUtils.getMatches(
               battleState.getUnits(BattleState.Side.DEFENSE), canNotBeTargetedByAllMatch);
-      defender = true;
+      side = BattleState.Side.DEFENSE;
     } else if (isOnlyAirVsSubs(
         battleState.getUnits(BattleState.Side.DEFENSE),
         battleState.getUnits(BattleState.Side.OFFENSE))) {
@@ -66,11 +67,18 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
       submergingSubs =
           CollectionUtils.getMatches(
               battleState.getUnits(BattleState.Side.OFFENSE), canNotBeTargetedByAllMatch);
-      defender = false;
+      side = BattleState.Side.OFFENSE;
     } else {
       return;
     }
-    battleActions.submergeUnits(submergingSubs, defender, bridge);
+    EvaderRetreat.submergeEvaders(
+        EvaderRetreat.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .units(submergingSubs)
+            .side(side)
+            .bridge(bridge)
+            .build());
   }
 
   private boolean isOnlyAirVsSubs(

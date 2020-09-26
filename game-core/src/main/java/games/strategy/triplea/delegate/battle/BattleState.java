@@ -7,15 +7,23 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.Value;
 import org.triplea.java.ChangeOnNextMajorRelease;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
 
+  @Getter
   enum Side {
-    OFFENSE,
-    DEFENSE;
+    OFFENSE(IBattle.WhoWon.ATTACKER),
+    DEFENSE(IBattle.WhoWon.DEFENDER);
+
+    private final IBattle.WhoWon whoWon;
+
+    Side(final IBattle.WhoWon whoWon) {
+      this.whoWon = whoWon;
+    }
 
     public Side getOpposite() {
       return this == OFFENSE ? DEFENSE : OFFENSE;
@@ -51,9 +59,13 @@ public interface BattleState {
 
   void clearWaitingToDie(Side... sides);
 
+  void retreatUnits(Side side, Collection<Unit> units);
+
   Collection<Unit> getAa(Side... sides);
 
   Collection<Unit> getBombardingUnits();
+
+  Collection<Unit> getKilled();
 
   GamePlayer getAttacker();
 
@@ -70,4 +82,8 @@ public interface BattleState {
   Collection<Territory> getAttackerRetreatTerritories();
 
   Collection<Unit> getDependentUnits(Collection<Unit> units);
+
+  Collection<Unit> getTransportDependents(Collection<Unit> units);
+
+  Collection<IBattle> getDependentBattles();
 }

@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.util.Collection;
@@ -34,7 +33,7 @@ public class DefensiveSubsRetreat implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    if (!isEvaderPresent() || !isRetreatPossible()) {
+    if (isEvaderNotPresent() || isRetreatNotPossible()) {
       return List.of();
     }
 
@@ -45,10 +44,14 @@ public class DefensiveSubsRetreat implements BattleStep {
       return List.of();
     }
 
+    return List.of(getName());
+  }
+
+  private String getName() {
     if (Properties.getSubmersibleSubs(battleState.getGameData())) {
-      return List.of(battleState.getDefender().getName() + SUBS_SUBMERGE);
+      return battleState.getDefender().getName() + SUBS_SUBMERGE;
     } else {
-      return List.of(battleState.getDefender().getName() + SUBS_WITHDRAW);
+      return battleState.getDefender().getName() + SUBS_WITHDRAW;
     }
   }
 
@@ -65,25 +68,43 @@ public class DefensiveSubsRetreat implements BattleStep {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (battleState.isOver()
         || isDestroyerPresent()
-        || !isEvaderPresent()
-        || !isRetreatPossible()) {
+        || isEvaderNotPresent()
+        || isRetreatNotPossible()) {
       return;
     }
 
-    battleActions.queryRetreat(true, RetreatType.SUBS, bridge, getEmptyOrFriendlySeaNeighbors());
-
-    // If no defenders left, then battle is over. The reason we test a "second" time here,
-    // is because otherwise the battle will try and do one more round and nothing will
-    // happen in that round.
-    if (getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE
-        && battleState.getUnits(BattleState.Side.DEFENSE).isEmpty()) {
-      battleActions.endBattle(bridge);
-      battleActions.attackerWins(bridge);
+    final Collection<Unit> unitsToRetreat =
+        CollectionUtils.getMatches(
+            battleState.getUnits(BattleState.Side.DEFENSE), Matches.unitCanEvade());
+    if (unitsToRetreat.isEmpty()) {
+      return;
     }
+
+    final Collection<Territory> retreatTerritories;
+    if (Properties.getSubmersibleSubs(battleState.getGameData())) {
+      retreatTerritories = List.of(battleState.getBattleSite());
+    } else {
+      retreatTerritories = getEmptyOrFriendlySeaNeighbors();
+      if (Properties.getSubmarinesDefendingMaySubmergeOrRetreat(battleState.getGameData())) {
+        retreatTerritories.add(battleState.getBattleSite());
+      }
+    }
+
+    EvaderRetreat.retreatUnits(
+        EvaderRetreat.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .side(BattleState.Side.DEFENSE)
+            .bridge(bridge)
+            .units(unitsToRetreat)
+            .build(),
+        retreatTerritories,
+        getName());
   }
 
-  private boolean isEvaderPresent() {
-    return battleState.getUnits(BattleState.Side.DEFENSE).stream().anyMatch(Matches.unitCanEvade());
+  private boolean isEvaderNotPresent() {
+    return battleState.getUnits(BattleState.Side.DEFENSE).stream()
+        .noneMatch(Matches.unitCanEvade());
   }
 
   private boolean isDestroyerPresent() {
@@ -93,9 +114,10 @@ public class DefensiveSubsRetreat implements BattleStep {
             .anyMatch(Matches.unitIsDestroyer());
   }
 
-  private boolean isRetreatPossible() {
-    return Properties.getSubmersibleSubs(battleState.getGameData())
-        || !getEmptyOrFriendlySeaNeighbors().isEmpty();
+  private boolean isRetreatNotPossible() {
+    return !(Properties.getSubmersibleSubs(battleState.getGameData())
+            || Properties.getSubmarinesDefendingMaySubmergeOrRetreat(battleState.getGameData()))
+        && getEmptyOrFriendlySeaNeighbors().isEmpty();
   }
 
   public Collection<Territory> getEmptyOrFriendlySeaNeighbors() {
