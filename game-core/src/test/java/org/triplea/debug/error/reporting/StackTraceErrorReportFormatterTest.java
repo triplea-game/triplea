@@ -96,8 +96,7 @@ class StackTraceErrorReportFormatterTest {
           .thenReturn(
               List.of(
                   LoggerRecord.ExceptionDetails.builder()
-                      .exceptionClassName(
-                          EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName())
+                      .exceptionClassName(EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName())
                       .stackTraceElements(EXCEPTION_WITH_NO_MESSAGE.getStackTrace())
                       .build()));
 
@@ -294,13 +293,13 @@ class StackTraceErrorReportFormatterTest {
     void containsExceptionMessageAndLogMessageWhenBothArePresent() {
       when(logRecord.getLoggerClassName()).thenReturn(CLASS_NAME);
       when(logRecord.getLogMessage()).thenReturn(LOG_MESSAGE);
-      when(logRecord.getExceptions()).thenReturn(
-          List.of(LoggerRecord.ExceptionDetails.builder()
-              .exceptionClassName(EXCEPTION_WITH_MESSAGE.getClass().getName())
-              .exceptionMessage(EXCEPTION_WITH_MESSAGE.getMessage())
-              .build())
-
-      );
+      when(logRecord.getExceptions())
+          .thenReturn(
+              List.of(
+                  LoggerRecord.ExceptionDetails.builder()
+                      .exceptionClassName(EXCEPTION_WITH_MESSAGE.getClass().getName())
+                      .exceptionMessage(EXCEPTION_WITH_MESSAGE.getMessage())
+                      .build()));
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter()
@@ -346,9 +345,7 @@ class StackTraceErrorReportFormatterTest {
             @Override
             public List<ExceptionDetails> getExceptions() {
               return List.of(
-                  ExceptionDetails.builder()
-                      .exceptionClassName("NullPointerException")
-                      .build());
+                  ExceptionDetails.builder().exceptionClassName("NullPointerException").build());
             }
           };
 
