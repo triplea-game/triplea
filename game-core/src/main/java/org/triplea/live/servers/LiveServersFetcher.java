@@ -8,9 +8,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.logging.Level;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
@@ -20,7 +19,7 @@ import org.triplea.util.Version;
  * LiveServers} can be used to determine the latest TripleA version and the address of any lobbies
  * that can be connected to.
  */
-@Log
+@Slf4j
 @AllArgsConstructor(onConstructor_ = @VisibleForTesting)
 public class LiveServersFetcher {
   private final Function<LiveServers, ServerProperties> currentVersionSelector;
@@ -67,7 +66,7 @@ public class LiveServersFetcher {
     try {
       return Optional.of(liveServersFetcher.get().getLatestEngineVersion());
     } catch (final IOException e) {
-      log.log(Level.INFO, "(No network connection?) Failed to get server properties", e);
+      log.info("(No network connection?) Failed to get server properties", e);
       return Optional.empty();
     }
   }
@@ -99,7 +98,7 @@ public class LiveServersFetcher {
       final var liveServers = liveServersFetcher.get();
       return Optional.of(currentVersionSelector.apply(liveServers));
     } catch (final IOException e) {
-      log.log(Level.WARNING, "(No network connection?) Failed to get server locations", e);
+      log.warn("(No network connection?) Failed to get server locations", e);
       return Optional.empty();
     }
   }

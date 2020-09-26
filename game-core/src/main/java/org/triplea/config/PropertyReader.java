@@ -2,8 +2,7 @@ package org.triplea.config;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Reads properties from a source. */
 public interface PropertyReader {
@@ -66,9 +65,8 @@ public interface PropertyReader {
       try {
         return Integer.parseInt(value);
       } catch (final NumberFormatException e) {
-        Logger.getLogger(PropertyReader.class.getName())
-            .log(
-                Level.WARNING,
+        LoggerFactory.getLogger(PropertyReader.class.getName())
+            .warn(
                 String.format(
                     "property '%s' has a value ('%s') that is not an integer; using default "
                         + "value (%d) instead",

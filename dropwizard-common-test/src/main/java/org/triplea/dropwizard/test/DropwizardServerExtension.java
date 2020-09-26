@@ -60,7 +60,6 @@ public abstract class DropwizardServerExtension<C extends Configuration>
   @Override
   public void beforeAll(final ExtensionContext context) {
     final DropwizardTestSupport<C> support = getSupport();
-    log.info("Starting local server for testing..");
     support.before();
 
     if (jdbi == null) {
@@ -68,12 +67,10 @@ public abstract class DropwizardServerExtension<C extends Configuration>
           Jdbi.create(getDatabase().getUrl(), getDatabase().getUser(), getDatabase().getPassword());
       jdbi.installPlugin(new SqlObjectPlugin());
       rowMappers().forEach(jdbi::registerRowMapper);
-      log.info("Created JDBI connection to: {}", getDatabase().getUrl());
     }
 
     final String localUri = "http://localhost:" + support.getLocalPort();
     serverUri = URI.create(localUri);
-    log.info("Local server URL set to: {}", localUri);
   }
 
   @Override

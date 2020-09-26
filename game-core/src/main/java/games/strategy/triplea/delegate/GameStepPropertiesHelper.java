@@ -10,14 +10,14 @@ import games.strategy.triplea.Properties;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nullable;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A helper class for determining Game Step Properties. These are things such as whether a move
  * phase is combat move or noncombat move, or whether we are going to post to a forum during this
  * end turn phase.
  */
-@Log
+@Slf4j
 public final class GameStepPropertiesHelper {
   private GameStepPropertiesHelper() {}
 
@@ -68,11 +68,11 @@ public final class GameStepPropertiesHelper {
           if (player != null) {
             players.add(player);
           } else {
-            log.warning(
-                () ->
-                    String.format(
-                        "gameplay sequence step: %s stepProperty: %s player: %s DOES NOT EXIST",
-                        gameData.getSequence().getStep().getName(), propertyKey, playerName));
+            log.warn(
+                "gameplay sequence step: {} stepProperty: {} player: {} DOES NOT EXIST",
+                gameData.getSequence().getStep().getName(),
+                propertyKey,
+                playerName);
           }
         }
       }

@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ColorUtils;
 import org.triplea.java.function.ThrowingFunction;
 import org.triplea.java.function.ThrowingSupplier;
@@ -37,7 +38,7 @@ import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
 
 /** contains data about the territories useful for drawing. */
-@Log
+@Slf4j
 public class MapData {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
   public static final String PROPERTY_UNITS_WIDTH = "units.width";
@@ -164,12 +165,12 @@ public class MapData {
         try (InputStream inputStream = loader.requiredResource(MAP_PROPERTIES).get()) {
           mapProperties.load(inputStream);
         } catch (final Exception e) {
-          log.log(Level.SEVERE, "Error reading map.properties", e);
+          log.error("Error reading map.properties", e);
         }
 
         contains.putAll(IslandTerritoryFinder.findIslands(polys));
       } catch (final IOException ex) {
-        log.log(Level.SEVERE, "Failed to initialize map data", ex);
+        log.error("Failed to initialize map data", ex);
       }
 
       playerColors = new PlayerColors(mapProperties);
@@ -281,7 +282,7 @@ public class MapData {
     try {
       return parser.apply(encodedValue);
     } catch (final NumberFormatException e) {
-      log.log(Level.SEVERE, "Failed to parse map property: " + name, e);
+      log.error("Failed to parse map property: " + name, e);
       return defaultValueSupplier.get();
     }
   }

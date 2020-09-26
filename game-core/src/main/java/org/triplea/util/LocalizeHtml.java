@@ -9,13 +9,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.extern.java.Log;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Provides methods that convert relative links within a game description into absolute links that
  * will work on the local system.
  */
-@Log
+@Slf4j
+@UtilityClass
 public final class LocalizeHtml {
   private static final String ASSET_IMAGE_FOLDER = "doc/images/";
   private static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
@@ -23,8 +25,6 @@ public final class LocalizeHtml {
   private static final Pattern PATTERN_HTML_IMG_SRC_TAG =
       Pattern.compile(
           "(<img[^>]*src\\s*=\\s*)(?:\"([^\"]+)\"|'([^']+)')([^>]*/?>)", Pattern.CASE_INSENSITIVE);
-
-  private LocalizeHtml() {}
 
   /**
    * This is only useful once we are IN a game. Before we go into the game, resource loader will
@@ -71,11 +71,11 @@ public final class LocalizeHtml {
     URL replacementUrl = loader.getResource(firstOption);
 
     if (replacementUrl == null) {
-      log.severe(String.format("Could not find: %s/%s", loader.getMapName(), firstOption));
+      log.error(String.format("Could not find: %s/%s", loader.getMapName(), firstOption));
       final String secondFallback = ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND;
       replacementUrl = loader.getResource(secondFallback);
       if (replacementUrl == null) {
-        log.severe(String.format("Could not find: %s", secondFallback));
+        log.error(String.format("Could not find: %s", secondFallback));
         return link;
       }
     }

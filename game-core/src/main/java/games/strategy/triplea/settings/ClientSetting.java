@@ -24,7 +24,7 @@ import java.util.prefs.Preferences;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * List of settings that can be adjusted and stored with a Client's OS. On windows this would be the
@@ -46,7 +46,7 @@ import lombok.extern.java.Log;
  * @param <T> The type of the setting value.
  */
 @SuppressWarnings("StaticInitializerReferencesSubClass")
-@Log
+@Slf4j
 public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> aiMovePauseDuration =
       new IntegerClientSetting("AI_PAUSE_DURATION", 300);
@@ -256,7 +256,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     try {
       preferences.flush();
     } catch (final BackingStoreException e) {
-      log.log(Level.SEVERE, "Failed to persist client settings", e);
+      log.error("Failed to persist client settings", e);
     }
   }
 
@@ -298,7 +298,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
         getPreferences().put(name, encodedValue);
         listeners.forEach(listener -> listener.accept(this));
       } catch (final IllegalArgumentException e) {
-        log.log(Level.SEVERE, "Failed to save value", e);
+        log.error("Failed to save value", e);
       }
     }
   }
@@ -311,10 +311,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     try {
       return encodeValue(value);
     } catch (final ValueEncodingException e) {
-      log.log(
-          Level.WARNING,
-          String.format("Failed to encode value: '%s' in client setting '%s'", value, name),
-          e);
+      log.warn(
+          String.format("Failed to encode value: '%s' in client setting '%s'", value, name), e);
       return getEncodedCurrentValue().orElse(null);
     }
   }
@@ -358,8 +356,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     try {
       return decodeValue(encodedValue);
     } catch (final ValueEncodingException e) {
-      log.log(
-          Level.INFO,
+      log.info(
           String.format(
               "Failed to decode encoded value: '%s' in client setting '%s'", encodedValue, name),
           e);

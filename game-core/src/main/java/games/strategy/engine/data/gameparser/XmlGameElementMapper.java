@@ -44,6 +44,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class creates objects referred to by game XMLs via the 'javaClass' property. For example:
@@ -59,7 +60,7 @@ import lombok.extern.java.Log;
  * <p>Note: attachments and delegates are initialized slightly differently, one is is no-arg the
  * other has initialization parameters.
  */
-@Log
+@Slf4j
 public final class XmlGameElementMapper {
   private final ImmutableMap<String, Supplier<IDelegate>> delegateFactoriesByTypeName;
   private final ImmutableMap<String, AttachmentFactory> attachmentFactoriesByTypeName;
@@ -154,7 +155,7 @@ public final class XmlGameElementMapper {
   }
 
   private static void handleMissingObject(final String objectTypeName, final String objectName) {
-    log.severe(
+    log.error(
         "Could not find "
             + objectTypeName
             + " '"

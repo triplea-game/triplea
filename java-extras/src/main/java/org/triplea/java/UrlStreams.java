@@ -9,11 +9,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** Utility class for opening input streams from URL and URI objects. */
-@Log
+@Slf4j
 public final class UrlStreams {
   /** Used to obtain a connection from a given URL. */
   private final Function<URL, URLConnection> urlConnectionFactory;
@@ -73,7 +72,7 @@ public final class UrlStreams {
       try (InputStream inputStream = stream.get()) {
         return Optional.ofNullable(streamOperation.apply(inputStream));
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Unable to open: " + uri + ", " + e.getMessage(), e);
+        log.error("Unable to open: " + uri + ", " + e.getMessage(), e);
         return Optional.empty();
       }
     } else {
@@ -87,7 +86,7 @@ public final class UrlStreams {
       final URLConnection connection = newUrlConnection(url);
       return Optional.of(connection.getInputStream());
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Unable to open: " + url + ", " + e.getMessage(), e);
+      log.error("Unable to open: " + url + ", " + e.getMessage(), e);
       return Optional.empty();
     }
   }
