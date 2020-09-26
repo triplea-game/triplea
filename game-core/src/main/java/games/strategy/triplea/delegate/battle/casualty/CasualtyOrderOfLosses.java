@@ -28,7 +28,7 @@ import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
 class CasualtyOrderOfLosses {
-  private final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
+  private final Map<String, List<AmphibType>> oolCache = new ConcurrentHashMap<>();
 
   void clearOolCache() {
     oolCache.clear();
@@ -59,21 +59,21 @@ class CasualtyOrderOfLosses {
    */
   List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     // Convert unit lists to unit type lists
-    final List<UnitType> targetTypes = new ArrayList<>();
+    final List<AmphibType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {
-      targetTypes.add(u.getType());
+      targetTypes.add(AmphibType.of(u.getType(), u.getWasAmphibious()));
     }
     // Calculate hashes and cache key
     String key = computeOolCacheKey(parameters, targetTypes);
     // Check OOL cache
-    final List<UnitType> stored = oolCache.get(key);
+    final List<AmphibType> stored = oolCache.get(key);
     if (stored != null) {
       final List<Unit> result = new ArrayList<>();
       final List<Unit> selectFrom = new ArrayList<>(parameters.targetsToPickFrom);
-      for (final UnitType ut : stored) {
+      for (final AmphibType ut : stored) {
         for (final Iterator<Unit> it = selectFrom.iterator(); it.hasNext(); ) {
           final Unit u = it.next();
-          if (ut.equals(u.getType())) {
+          if (ut.type.equals(u.getType()) && ut.isAmphibious == u.getWasAmphibious()) {
             result.add(u);
             it.remove();
           }
@@ -90,8 +90,7 @@ class CasualtyOrderOfLosses {
                 parameters.combatModifiers.getTerritoryEffects(),
                 parameters.data,
                 true,
-                false,
-                parameters.combatModifiers.isAmphibious())
+                false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
@@ -101,8 +100,7 @@ class CasualtyOrderOfLosses {
             parameters.combatModifiers.getTerritoryEffects(),
             parameters.data,
             true,
-            true,
-            parameters.combatModifiers.isAmphibious());
+            true);
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
@@ -239,13 +237,13 @@ class CasualtyOrderOfLosses {
     }
     sortedWellEnoughUnitsList.addAll(sortedUnitsList);
     // Cache result and all subsets of the result
-    final List<UnitType> unitTypes = new ArrayList<>();
+    final List<AmphibType> unitTypes = new ArrayList<>();
     for (final Unit u : sortedWellEnoughUnitsList) {
-      unitTypes.add(u.getType());
+      unitTypes.add(AmphibType.of(u.getType(), u.getWasAmphibious()));
     }
-    for (final Iterator<UnitType> it = unitTypes.iterator(); it.hasNext(); ) {
+    for (final Iterator<AmphibType> it = unitTypes.iterator(); it.hasNext(); ) {
       oolCache.put(key, new ArrayList<>(unitTypes));
-      final UnitType unitTypeToRemove = it.next();
+      final AmphibType unitTypeToRemove = it.next();
       targetTypes.remove(unitTypeToRemove);
       key = computeOolCacheKey(parameters, targetTypes);
       it.remove();
@@ -253,14 +251,19 @@ class CasualtyOrderOfLosses {
     return sortedWellEnoughUnitsList;
   }
 
-  static String computeOolCacheKey(final Parameters parameters, final List<UnitType> targetTypes) {
+  @Value(staticConstructor = "of")
+  static class AmphibType {
+    UnitType type;
+    boolean isAmphibious;
+  }
+
+  static String computeOolCacheKey(
+      final Parameters parameters, final List<AmphibType> targetTypes) {
     return parameters.player.getName()
         + "|"
         + parameters.battlesite.getName()
         + "|"
         + parameters.combatModifiers.isDefending()
-        + "|"
-        + parameters.combatModifiers.isAmphibious()
         + "|"
         + Objects.hashCode(targetTypes);
   }

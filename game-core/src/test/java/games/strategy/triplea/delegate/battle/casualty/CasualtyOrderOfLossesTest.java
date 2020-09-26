@@ -39,11 +39,17 @@ class CasualtyOrderOfLossesTest {
 
     final String key1 =
         CasualtyOrderOfLosses.computeOolCacheKey(
-            withFakeParameters(), List.of(typePikemen, typeVeteranFootmen));
+            withFakeParameters(),
+            List.of(
+                CasualtyOrderOfLosses.AmphibType.of(typePikemen, false),
+                CasualtyOrderOfLosses.AmphibType.of(typeVeteranFootmen, false)));
 
     final String key2 =
         CasualtyOrderOfLosses.computeOolCacheKey(
-            withFakeParameters(), List.of(typeFootmen, typeVeteranPikemen));
+            withFakeParameters(),
+            List.of(
+                CasualtyOrderOfLosses.AmphibType.of(typeFootmen, false),
+                CasualtyOrderOfLosses.AmphibType.of(typeVeteranPikemen, false)));
 
     assertThat(key1, is(not(key2)));
   }
@@ -58,7 +64,6 @@ class CasualtyOrderOfLossesTest {
         .combatModifiers(
             UnitBattleComparator.CombatModifiers.builder()
                 .defending(false)
-                .amphibious(false)
                 .territoryEffects(List.of())
                 .build())
         .player(player)

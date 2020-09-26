@@ -32,14 +32,13 @@ public class UnitBattleComparator implements Comparator<Unit> {
   private final boolean ignorePrimaryPower;
   private final Collection<TerritoryEffect> territoryEffects;
   private final Collection<UnitType> multiHitpointCanRepair = new HashSet<>();
-  private final boolean amphibious;
 
   public UnitBattleComparator(
       final boolean defending,
       final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects,
       final GameData data) {
-    this(defending, costs, territoryEffects, data, false, false, false);
+    this(defending, costs, territoryEffects, data, false, false);
   }
 
   public UnitBattleComparator(
@@ -48,7 +47,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
       final Collection<TerritoryEffect> territoryEffects,
       final GameData data,
       final boolean bonus) {
-    this(defending, costs, territoryEffects, data, bonus, false, false);
+    this(defending, costs, territoryEffects, data, bonus, false);
   }
 
   public UnitBattleComparator(
@@ -57,14 +56,12 @@ public class UnitBattleComparator implements Comparator<Unit> {
       final Collection<TerritoryEffect> territoryEffects,
       final GameData data,
       final boolean bonus,
-      final boolean ignorePrimaryPower,
-      final boolean isAmphibious) {
+      final boolean ignorePrimaryPower) {
     this.defending = defending;
     this.costs = costs;
     this.bonus = bonus;
     this.ignorePrimaryPower = ignorePrimaryPower;
     this.territoryEffects = territoryEffects;
-    this.amphibious = isAmphibious;
     if (Properties.getBattleshipsRepairAtEndOfRound(data)
         || Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
       for (final UnitType ut : data.getUnitTypeList()) {
@@ -85,7 +82,9 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final boolean transporting2 = TransportTracker.isTransporting(u2);
     final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
     final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-    if (ua1.equals(ua2) && u1.getOwner().equals(u2.getOwner())) {
+    if (ua1.equals(ua2)
+        && u1.getOwner().equals(u2.getOwner())
+        && u1.getWasAmphibious() == u2.getWasAmphibious()) {
       if (transporting1 && !transporting2) {
         return 1;
       }
@@ -110,11 +109,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final boolean multiHpCanRepair2 = multiHitpointCanRepair.contains(u2.getType());
     if (!ignorePrimaryPower) {
       final var combatModifiers =
-          CombatModifiers.builder()
-              .defending(defending)
-              .territoryEffects(territoryEffects)
-              .amphibious(amphibious)
-              .build();
+          CombatModifiers.builder().defending(defending).territoryEffects(territoryEffects).build();
       int power1 = 8 * getUnitPowerForSorting(u1, combatModifiers);
       int power2 = 8 * getUnitPowerForSorting(u2, combatModifiers);
       if (bonus) {
@@ -155,7 +150,6 @@ public class UnitBattleComparator implements Comparator<Unit> {
           CombatModifiers.builder()
               .defending(!defending)
               .territoryEffects(territoryEffects)
-              .amphibious(amphibious)
               .build();
       int power1reverse = 8 * getUnitPowerForSorting(u1, combatModifiers);
       int power2reverse = 8 * getUnitPowerForSorting(u2, combatModifiers);
@@ -211,8 +205,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
   @Builder
   @Getter
   public static class CombatModifiers {
-    @Builder.Default private Collection<TerritoryEffect> territoryEffects = List.of();
-    private final boolean amphibious;
+    @Builder.Default private final Collection<TerritoryEffect> territoryEffects = List.of();
     private final boolean defending;
   }
 
@@ -252,7 +245,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
     }
 
-    if (combatModifiers.amphibious) {
+    if (unit.getWasAmphibious()) {
       strengthWithoutSupport += ua.getIsMarine();
     }
     return strengthWithoutSupport;

@@ -298,7 +298,6 @@ public class CasualtySelector {
                 .combatModifiers(
                     CombatModifiers.builder()
                         .territoryEffects(territoryEffects)
-                        .amphibious(targetsToPickFrom.stream().anyMatch(Unit::getWasAmphibious))
                         .defending(defending)
                         .build())
                 .battlesite(battlesite)

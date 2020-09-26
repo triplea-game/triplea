@@ -91,11 +91,7 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
         .combatModifiers(
-            CombatModifiers.builder()
-                .defending(false)
-                .amphibious(false)
-                .territoryEffects(List.of())
-                .build())
+            CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(BRITISH)
         .enemyUnits(List.of())
         .battlesite(NORMANDY)
