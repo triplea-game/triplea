@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBMERGE_SUBS_VS_AIR_ONLY;
 
 import games.strategy.engine.data.Unit;
@@ -44,9 +44,9 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
 
   private boolean valid() {
     return (isOnlyAirVsSubs(
-            battleState.getUnits(ALIVE, OFFENSE), battleState.getUnits(ALIVE, DEFENSE))
+            battleState.filterUnits(ALIVE, OFFENSE), battleState.filterUnits(ALIVE, DEFENSE))
         || isOnlyAirVsSubs(
-            battleState.getUnits(ALIVE, DEFENSE), battleState.getUnits(ALIVE, OFFENSE)));
+            battleState.filterUnits(ALIVE, DEFENSE), battleState.filterUnits(ALIVE, OFFENSE)));
   }
 
   @Override
@@ -54,18 +54,18 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
     final Collection<Unit> submergingSubs;
     final BattleState.Side side;
     if (isOnlyAirVsSubs(
-        battleState.getUnits(ALIVE, OFFENSE), battleState.getUnits(ALIVE, DEFENSE))) {
+        battleState.filterUnits(ALIVE, OFFENSE), battleState.filterUnits(ALIVE, DEFENSE))) {
       // submerge the defending units
       submergingSubs =
           CollectionUtils.getMatches(
-              battleState.getUnits(ALIVE, DEFENSE), canNotBeTargetedByAllMatch);
+              battleState.filterUnits(ALIVE, DEFENSE), canNotBeTargetedByAllMatch);
       side = DEFENSE;
     } else if (isOnlyAirVsSubs(
-        battleState.getUnits(ALIVE, DEFENSE), battleState.getUnits(ALIVE, OFFENSE))) {
+        battleState.filterUnits(ALIVE, DEFENSE), battleState.filterUnits(ALIVE, OFFENSE))) {
       // submerge the attacking units
       submergingSubs =
           CollectionUtils.getMatches(
-              battleState.getUnits(ALIVE, OFFENSE), canNotBeTargetedByAllMatch);
+              battleState.filterUnits(ALIVE, OFFENSE), canNotBeTargetedByAllMatch);
       side = OFFENSE;
     } else {
       return;

@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
@@ -78,7 +78,7 @@ public class DefensiveSubsRetreat implements BattleStep {
     }
 
     final Collection<Unit> unitsToRetreat =
-        CollectionUtils.getMatches(battleState.getUnits(ALIVE, DEFENSE), Matches.unitCanEvade());
+        CollectionUtils.getMatches(battleState.filterUnits(ALIVE, DEFENSE), Matches.unitCanEvade());
     if (unitsToRetreat.isEmpty()) {
       return;
     }
@@ -106,12 +106,12 @@ public class DefensiveSubsRetreat implements BattleStep {
   }
 
   private boolean isEvaderNotPresent() {
-    return battleState.getUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitCanEvade());
+    return battleState.filterUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitCanEvade());
   }
 
   private boolean isDestroyerPresent() {
-    return battleState.getUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsDestroyer())
-        || battleState.getUnits(CASUALTY, OFFENSE).stream().anyMatch(Matches.unitIsDestroyer());
+    return battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsDestroyer())
+        || battleState.filterUnits(CASUALTY, OFFENSE).stream().anyMatch(Matches.unitIsDestroyer());
   }
 
   private boolean isRetreatNotPossible() {
@@ -127,7 +127,7 @@ public class DefensiveSubsRetreat implements BattleStep {
       return possible;
     }
     final Collection<Unit> unitsToRetreat =
-        CollectionUtils.getMatches(battleState.getUnits(ALIVE, DEFENSE), Matches.unitCanEvade());
+        CollectionUtils.getMatches(battleState.filterUnits(ALIVE, DEFENSE), Matches.unitCanEvade());
 
     // make sure we can move through the any canals
     final Predicate<Territory> canalMatch =

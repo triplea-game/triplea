@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
 
@@ -54,7 +54,7 @@ public class OffensiveFirstStrike implements BattleStep {
   }
 
   private State calculateState() {
-    if (battleState.getUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitIsFirstStrike())) {
+    if (battleState.filterUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitIsFirstStrike())) {
       return State.NOT_APPLICABLE;
     }
 
@@ -64,7 +64,7 @@ public class OffensiveFirstStrike implements BattleStep {
     }
 
     final boolean canSneakAttack =
-        battleState.getUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitIsDestroyer());
+        battleState.filterUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitIsDestroyer());
     if (canSneakAttack) {
       return State.FIRST_STRIKE;
     }
@@ -103,9 +103,9 @@ public class OffensiveFirstStrike implements BattleStep {
         false,
         battleState.getPlayer(OFFENSE),
         Matches.unitIsFirstStrike(),
-        battleState.getUnits(ALIVE, OFFENSE),
-        battleState.getUnits(CASUALTY, OFFENSE),
-        battleState.getUnits(ALIVE, DEFENSE),
-        battleState.getUnits(CASUALTY, DEFENSE));
+        battleState.filterUnits(ALIVE, OFFENSE),
+        battleState.filterUnits(CASUALTY, OFFENSE),
+        battleState.filterUnits(ALIVE, DEFENSE),
+        battleState.filterUnits(CASUALTY, DEFENSE));
   }
 }

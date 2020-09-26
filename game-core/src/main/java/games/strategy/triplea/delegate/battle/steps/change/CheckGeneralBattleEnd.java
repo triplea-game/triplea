@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.change;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -61,7 +61,8 @@ public class CheckGeneralBattleEnd implements BattleStep {
   }
 
   protected boolean hasSideLost(final BattleState.Side side) {
-    return battleState.getUnits(ALIVE, side).stream().noneMatch(Matches.unitIsNotInfrastructure());
+    return battleState.filterUnits(ALIVE, side).stream()
+        .noneMatch(Matches.unitIsNotInfrastructure());
   }
 
   protected boolean isStalemate() {
@@ -72,9 +73,9 @@ public class CheckGeneralBattleEnd implements BattleStep {
   private int getPower(final BattleState.Side side) {
     return DiceRoll.getTotalPowerAndRolls(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                battleState.getUnits(ALIVE, side),
-                battleState.getUnits(ALIVE, side.getOpposite()),
-                battleState.getUnits(ALIVE, side),
+                battleState.filterUnits(ALIVE, side),
+                battleState.filterUnits(ALIVE, side.getOpposite()),
+                battleState.filterUnits(ALIVE, side),
                 side == DEFENSE,
                 battleState.getGameData(),
                 battleState.getBattleSite(),
@@ -98,7 +99,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
 
     // First, collect all of the non-null 'can retreat on stalemate' option values.
     final Set<Boolean> canRetreatOptions =
-        battleState.getUnits(ALIVE, OFFENSE).stream()
+        battleState.filterUnits(ALIVE, OFFENSE).stream()
             .map(Unit::getType)
             .map(UnitAttachment::get)
             .map(UnitAttachment::getCanRetreatOnStalemate)
@@ -120,8 +121,8 @@ public class CheckGeneralBattleEnd implements BattleStep {
     // Rule: "In a sea battle, if both sides have only transports remaining, the
     // attacker’s transports can remain in the contested sea zone or retreat.
     return RetreatChecks.onlyDefenselessTransportsLeft(
-            battleState.getUnits(ALIVE, OFFENSE), battleState.getGameData())
+            battleState.filterUnits(ALIVE, OFFENSE), battleState.getGameData())
         && RetreatChecks.onlyDefenselessTransportsLeft(
-            battleState.getUnits(ALIVE, DEFENSE), battleState.getGameData());
+            battleState.filterUnits(ALIVE, DEFENSE), battleState.getGameData());
   }
 }

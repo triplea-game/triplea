@@ -72,7 +72,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
@@ -370,7 +369,13 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public Collection<Unit> getUnits(final UnitBattleStatus status, final Side... sides) {
+  public Collection<Unit> filterUnits(final UnitBattleFilter filter, final Side... sides) {
+    return filter.getFilter().stream()
+        .flatMap(status -> getUnits(status, sides).stream())
+        .collect(Collectors.toList());
+  }
+
+  private Collection<Unit> getUnits(final UnitBattleStatus status, final Side... sides) {
     switch (status) {
       case ALIVE:
         return Collections.unmodifiableCollection(getUnits(sides));
@@ -381,13 +386,6 @@ public class MustFightBattle extends DependentBattle
       default:
         return List.of();
     }
-  }
-
-  @Override
-  public Collection<Unit> getUnits(
-      final UnitBattleStatus status1, final UnitBattleStatus status2, final Side... sides) {
-    return Stream.concat(getUnits(status1, sides).stream(), getUnits(status2, sides).stream())
-        .collect(Collectors.toUnmodifiableList());
   }
 
   private Collection<Unit> getUnits(final Side... sides) {

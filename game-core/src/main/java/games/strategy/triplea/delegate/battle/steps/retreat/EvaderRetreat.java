@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GamePlayer;
@@ -119,7 +119,7 @@ public class EvaderRetreat {
       final Collection<Unit> retreating,
       final BattleState.Side side,
       final IDelegateBridge bridge) {
-    if (battleState.getUnits(ALIVE, side).isEmpty()) {
+    if (battleState.filterUnits(ALIVE, side).isEmpty()) {
       battleActions.endBattle(side.getOpposite().getWhoWon(), bridge);
     } else {
       bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreating);

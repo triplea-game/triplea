@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
@@ -26,7 +26,7 @@ class RetreaterPartialAmphibious implements Retreater {
   @Override
   public Collection<Unit> getRetreatUnits() {
     return CollectionUtils.getMatches(
-        battleState.getUnits(ALIVE, OFFENSE), Matches.unitWasNotAmphibious());
+        battleState.filterUnits(ALIVE, OFFENSE), Matches.unitWasNotAmphibious());
   }
 
   @Override

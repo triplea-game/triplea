@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
 
 import games.strategy.engine.data.GameData;
@@ -47,7 +47,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
   private boolean canAttackerRetreat() {
     return RetreatChecks.canAttackerRetreat(
-        battleState.getUnits(ALIVE, DEFENSE),
+        battleState.filterUnits(ALIVE, DEFENSE),
         battleState.getGameData(),
         battleState::getAttackerRetreatTerritories,
         battleState.getStatus().isAmphibious());
@@ -55,7 +55,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
   private boolean canAttackerRetreatSeaPlanes() {
     return battleState.getBattleSite().isWater()
-        && battleState.getUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
+        && battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
   }
 
   private boolean canAttackerRetreatPartialAmphib() {
@@ -63,7 +63,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
       return false;
     }
     // Only include land units when checking for allow amphibious retreat
-    return battleState.getUnits(ALIVE, OFFENSE).stream()
+    return battleState.filterUnits(ALIVE, OFFENSE).stream()
         .filter(Matches.unitIsLand())
         .anyMatch(Matches.unitWasNotAmphibious());
   }
@@ -73,7 +73,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
     return (Properties.getWW2V2(gameData)
             || Properties.getAttackerRetreatPlanes(gameData)
             || Properties.getPartialAmphibiousRetreat(gameData))
-        && battleState.getUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
+        && battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
   }
 
   private String getName() {
@@ -164,7 +164,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
                   .addChildToEvent(historyChild.getText(), historyChild.getUnits());
             });
 
-    if (battleState.getUnits(ALIVE, OFFENSE).isEmpty()) {
+    if (battleState.filterUnits(ALIVE, OFFENSE).isEmpty()) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
     } else {
       bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreatUnits);

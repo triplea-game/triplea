@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.engine.data.changefactory.ChangeFactory.EMPTY_CHANGE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -23,7 +23,7 @@ class RetreaterAirAmphibious implements Retreater {
 
   @Override
   public Collection<Unit> getRetreatUnits() {
-    return CollectionUtils.getMatches(battleState.getUnits(ALIVE, OFFENSE), Matches.unitIsAir());
+    return CollectionUtils.getMatches(battleState.filterUnits(ALIVE, OFFENSE), Matches.unitIsAir());
   }
 
   @Override

@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
@@ -76,7 +76,7 @@ public class OffensiveSubsRetreat implements BattleStep {
     }
 
     final Collection<Unit> unitsToRetreat =
-        CollectionUtils.getMatches(battleState.getUnits(ALIVE, OFFENSE), Matches.unitCanEvade());
+        CollectionUtils.getMatches(battleState.filterUnits(ALIVE, OFFENSE), Matches.unitCanEvade());
     if (unitsToRetreat.isEmpty()) {
       return;
     }
@@ -96,18 +96,17 @@ public class OffensiveSubsRetreat implements BattleStep {
   }
 
   private boolean isDestroyerPresent() {
-    return battleState.getUnits(ALIVE, CASUALTY, DEFENSE).stream()
-        .anyMatch(Matches.unitIsDestroyer());
+    return battleState.filterUnits(ACTIVE, DEFENSE).stream().anyMatch(Matches.unitIsDestroyer());
   }
 
   private boolean isEvaderNotPresent() {
-    return battleState.getUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitCanEvade());
+    return battleState.filterUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitCanEvade());
   }
 
   private boolean isRetreatNotPossible() {
     return !Properties.getSubmersibleSubs(battleState.getGameData())
         && !RetreatChecks.canAttackerRetreat(
-            battleState.getUnits(ALIVE, DEFENSE),
+            battleState.filterUnits(ALIVE, DEFENSE),
             battleState.getGameData(),
             battleState::getAttackerRetreatTerritories,
             battleState.getStatus().isAmphibious());
@@ -115,6 +114,6 @@ public class OffensiveSubsRetreat implements BattleStep {
 
   private boolean isAutoWinScenario() {
     return RetreatChecks.onlyDefenselessTransportsLeft(
-        battleState.getUnits(ALIVE, DEFENSE), battleState.getGameData());
+        battleState.filterUnits(ALIVE, DEFENSE), battleState.getGameData());
   }
 }

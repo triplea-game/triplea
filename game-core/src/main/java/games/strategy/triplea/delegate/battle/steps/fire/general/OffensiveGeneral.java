@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.battle.steps.fire.general;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
 
@@ -31,7 +31,7 @@ public class OffensiveGeneral implements BattleStep {
   public List<String> getNames() {
     final List<String> steps = new ArrayList<>();
 
-    if (battleState.getUnits(ALIVE, OFFENSE).stream()
+    if (battleState.filterUnits(ALIVE, OFFENSE).stream()
         .anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(battleState.getPlayer(OFFENSE).getName() + FIRE);
       steps.add(battleState.getPlayer(DEFENSE).getName() + SELECT_CASUALTIES);
@@ -53,9 +53,9 @@ public class OffensiveGeneral implements BattleStep {
         false,
         battleState.getPlayer(OFFENSE),
         Matches.unitIsFirstStrike().negate(),
-        battleState.getUnits(ALIVE, OFFENSE),
-        battleState.getUnits(CASUALTY, OFFENSE),
-        battleState.getUnits(ALIVE, DEFENSE),
-        battleState.getUnits(CASUALTY, DEFENSE));
+        battleState.filterUnits(ALIVE, OFFENSE),
+        battleState.filterUnits(CASUALTY, OFFENSE),
+        battleState.filterUnits(ALIVE, DEFENSE),
+        battleState.filterUnits(CASUALTY, DEFENSE));
   }
 }

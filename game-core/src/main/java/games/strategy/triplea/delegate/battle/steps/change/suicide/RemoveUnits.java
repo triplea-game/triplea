@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.change.suicide;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -30,10 +30,12 @@ abstract class RemoveUnits implements BattleStep {
   protected void removeUnits(final IDelegateBridge bridge, final Predicate<Unit> unitMatch) {
     final Collection<Unit> suicideAttackers =
         CollectionUtils.getMatches(
-            battleState.getUnits(ALIVE, OFFENSE), unitMatch.and(Matches.unitIsSuicideOnAttack()));
+            battleState.filterUnits(ALIVE, OFFENSE),
+            unitMatch.and(Matches.unitIsSuicideOnAttack()));
     final Collection<Unit> suicideDefenders =
         CollectionUtils.getMatches(
-            battleState.getUnits(ALIVE, DEFENSE), unitMatch.and(Matches.unitIsSuicideOnDefense()));
+            battleState.filterUnits(ALIVE, DEFENSE),
+            unitMatch.and(Matches.unitIsSuicideOnDefense()));
     bridge
         .getDisplayChannelBroadcaster()
         .deadUnitNotification(

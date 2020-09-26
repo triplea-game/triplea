@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.REMOVED_CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.REMOVED_CASUALTY;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -30,7 +30,7 @@ class RetreaterGeneral implements Retreater {
 
   @Override
   public Collection<Unit> getRetreatUnits() {
-    final Collection<Unit> retreatUnits = new HashSet<>(battleState.getUnits(ALIVE, OFFENSE));
+    final Collection<Unit> retreatUnits = new HashSet<>(battleState.filterUnits(ALIVE, OFFENSE));
     // some units might have been removed from the battle (such as infra) so grab all units at the
     // battle site
     retreatUnits.addAll(
@@ -40,7 +40,7 @@ class RetreaterGeneral implements Retreater {
             .getMatches(
                 Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))
                     .and(Matches.unitIsSubmerged().negate())));
-    retreatUnits.removeAll(battleState.getUnits(REMOVED_CASUALTY));
+    retreatUnits.removeAll(battleState.filterUnits(REMOVED_CASUALTY));
     return retreatUnits;
   }
 

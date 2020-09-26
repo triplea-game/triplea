@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -57,15 +57,15 @@ class ClearFirstStrikeCasualtiesTest {
     switch (sides.size()) {
       case 0:
       default:
-        verify(battleState, never()).getUnits(eq(CASUALTY), any());
+        verify(battleState, never()).filterUnits(eq(CASUALTY), any());
         verify(battleState, never()).clearWaitingToDie(any());
         break;
       case 1:
-        verify(battleState).getUnits(CASUALTY, sides.get(0));
+        verify(battleState).filterUnits(CASUALTY, sides.get(0));
         verify(battleState).clearWaitingToDie(eq(sides.get(0)));
         break;
       case 2:
-        verify(battleState).getUnits(CASUALTY, sides.get(0), sides.get(1));
+        verify(battleState).filterUnits(CASUALTY, sides.get(0), sides.get(1));
         verify(battleState).clearWaitingToDie(eq(sides.get(0)), eq(sides.get(1)));
         break;
     }

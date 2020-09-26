@@ -6,6 +6,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Value;
@@ -40,6 +42,22 @@ public interface BattleState {
     REMOVED_CASUALTY,
   }
 
+  class UnitBattleFilter {
+    public static UnitBattleFilter ACTIVE =
+        new UnitBattleFilter(UnitBattleStatus.ALIVE, UnitBattleStatus.CASUALTY);
+    public static UnitBattleFilter ALIVE = new UnitBattleFilter(UnitBattleStatus.ALIVE);
+    public static UnitBattleFilter CASUALTY = new UnitBattleFilter(UnitBattleStatus.CASUALTY);
+    public static UnitBattleFilter REMOVED_CASUALTY =
+        new UnitBattleFilter(UnitBattleStatus.REMOVED_CASUALTY);
+
+    @Getter private final EnumSet<UnitBattleStatus> filter;
+
+    UnitBattleFilter(final UnitBattleStatus... status) {
+      this.filter = EnumSet.noneOf(UnitBattleStatus.class);
+      Collections.addAll(this.filter, status);
+    }
+  }
+
   @Value(staticConstructor = "of")
   class BattleStatus {
     int round;
@@ -66,13 +84,7 @@ public interface BattleState {
   @ChangeOnNextMajorRelease("Use a BattleId class instead of UUID")
   UUID getBattleId();
 
-  Collection<Unit> getUnits(UnitBattleStatus status, Side... sides);
-
-  /**
-   * Allow callers to request units from two different states. The overloaded method is required
-   * because Java doesn't support multiple varargs in the same method
-   */
-  Collection<Unit> getUnits(UnitBattleStatus status1, UnitBattleStatus status2, Side... sides);
+  Collection<Unit> filterUnits(UnitBattleFilter status, Side... sides);
 
   void clearWaitingToDie(Side... sides);
 
