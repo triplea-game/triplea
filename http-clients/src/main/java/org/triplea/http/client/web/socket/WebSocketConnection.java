@@ -9,9 +9,11 @@ import java.net.http.WebSocket.Listener;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayDeque;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -96,25 +98,25 @@ class WebSocketConnection {
    */
   private void sendPingTask() {
     if (!client.isOutputClosed()) {
-      final boolean pingSuccess =
-          Retryable.builder()
+
+      final Optional<Boolean> pingSuccess =
+          Retryable.<Boolean>builder()
               .withMaxAttempts(5)
               .withFixedBackOff(Duration.ofSeconds(3))
               .withTask(
-                  () ->
-                      client
-                              .sendPing(ByteBuffer.allocate(0))
-                              .exceptionally(
-                                  t -> {
-                                    log.log(Level.INFO, "Failed to send ping.");
-                                    return null;
-                                  })
-                          != null)
+                  () -> {
+                    try {
+                      client.sendPing(ByteBuffer.allocate(0)).get();
+                      return Optional.of(true);
+                    } catch (final ExecutionException | InterruptedException e) {
+                      return Optional.empty();
+                    }
+                  })
               .buildAndExecute();
 
-      if (!pingSuccess) {
+      if (pingSuccess.isEmpty()) {
         log.log(
-            Level.INFO,
+            Level.WARNING,
             "Failed to send pings to server, retries exhausted. "
                 + "If the server does not receive pings then the connection to "
                 + "the server will be disconnected. Expecting to be disconnected "

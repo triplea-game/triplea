@@ -84,17 +84,23 @@ public final class UrlStreams {
   @VisibleForTesting
   Optional<InputStream> newStream(final URL url) {
     try {
-      final URLConnection connection = urlConnectionFactory.apply(url);
-
-      // Turn off URL connection caching to avoid open file leaks. When caching is on, the
-      // InputStream returned is left open, even after you call 'InputStream.close()'
-      connection.setDefaultUseCaches(
-          false); // TODO: verify - setDefaultUseCaches(false) may not be necessary
-      connection.setUseCaches(false);
+      final URLConnection connection = newUrlConnection(url);
       return Optional.of(connection.getInputStream());
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Unable to open: " + url + ", " + e.getMessage(), e);
       return Optional.empty();
     }
+  }
+
+  @VisibleForTesting
+  URLConnection newUrlConnection(final URL url) {
+    final URLConnection connection = urlConnectionFactory.apply(url);
+
+    // Turn off URL connection caching to avoid open file leaks. When caching is on, the
+    // InputStream returned is left open, even after you call 'InputStream.close()'
+    connection.setDefaultUseCaches(
+        false); // TODO: verify - setDefaultUseCaches(false) may not be necessary
+    connection.setUseCaches(false);
+    return connection;
   }
 }
