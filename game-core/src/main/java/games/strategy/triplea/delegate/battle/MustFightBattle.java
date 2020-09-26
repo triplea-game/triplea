@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
@@ -370,7 +370,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public Collection<Unit> getUnits(final UnitsStatus status, final Side... sides) {
+  public Collection<Unit> getUnits(final UnitBattleStatus status, final Side... sides) {
     switch (status) {
       case ALIVE:
         return Collections.unmodifiableCollection(getUnits(sides));

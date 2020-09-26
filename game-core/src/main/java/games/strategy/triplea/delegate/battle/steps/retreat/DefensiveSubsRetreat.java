@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;

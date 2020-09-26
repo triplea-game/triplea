@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;

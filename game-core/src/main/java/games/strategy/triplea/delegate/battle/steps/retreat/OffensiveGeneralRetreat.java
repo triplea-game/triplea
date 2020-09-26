@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
 
 import games.strategy.engine.data.GameData;

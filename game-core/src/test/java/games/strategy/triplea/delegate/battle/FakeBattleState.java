@@ -104,7 +104,7 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
-  public Collection<Unit> getUnits(final UnitsStatus status, final Side... sides) {
+  public Collection<Unit> getUnits(final UnitBattleStatus status, final Side... sides) {
     switch (status) {
       case ALIVE:
         return Collections.unmodifiableCollection(getUnits(sides));

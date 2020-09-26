@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.change;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;

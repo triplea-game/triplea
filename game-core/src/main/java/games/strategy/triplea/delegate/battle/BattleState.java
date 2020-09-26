@@ -30,14 +30,15 @@ public interface BattleState {
     }
   }
 
-  enum UnitsStatus {
-    // units that have not been hit
+  enum UnitBattleStatus {
+    // units that are either undamaged or damaged
     ALIVE,
-    // both ALIVE and CASUALTY
+    // either ALIVE or CASUALTY
     ACTIVE,
-    // units that have been hit but not yet cleared
+    // units that are dead but can still act
+    // (such as defending units that haven't had their turn to return fire)
     CASUALTY,
-    // units that are dead
+    // units that are no longer in the game
     DEAD,
   }
 
@@ -67,7 +68,7 @@ public interface BattleState {
   @ChangeOnNextMajorRelease("Use a BattleId class instead of UUID")
   UUID getBattleId();
 
-  Collection<Unit> getUnits(UnitsStatus status, Side... sides);
+  Collection<Unit> getUnits(UnitBattleStatus status, Side... sides);
 
   void clearWaitingToDie(Side... sides);
 

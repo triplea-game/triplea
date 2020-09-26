@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
 

@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitsStatus.CASUALTY;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.CASUALTY;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
