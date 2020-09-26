@@ -117,10 +117,11 @@ public class MyFormatter {
     return pluralize(in);
   }
 
-  public static String pluralize(final String in) {
+  private static String pluralize(final String in) {
     if (plural.containsKey(in)) {
       return plural.get(in);
     }
+
     if (in.endsWith("man")) {
       return in.substring(0, in.lastIndexOf("man")) + "men";
     }
@@ -216,6 +217,7 @@ public class MyFormatter {
     if (roll == null || roll.isEmpty()) {
       return "none";
     }
+
     final StringBuilder buf = new StringBuilder();
     for (int i = 0; i < roll.size(); i++) {
       buf.append(roll.getDie(i).getValue() + 1);
@@ -235,14 +237,10 @@ public class MyFormatter {
     if (rolls == null || rolls.length == 0) {
       return "none";
     }
-    final StringBuilder buf = new StringBuilder(rolls.length * 2);
-    for (int i = 0; i < rolls.length; i++) {
-      buf.append(rolls[i] + 1);
-      if (i + 1 < rolls.length) {
-        buf.append(",");
-      }
-    }
-    return buf.toString();
+    return Arrays.stream(rolls)
+        .map(roll -> roll + 1)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(","));
   }
 
   /**
