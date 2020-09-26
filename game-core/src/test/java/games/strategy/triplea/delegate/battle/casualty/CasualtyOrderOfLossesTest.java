@@ -39,11 +39,11 @@ class CasualtyOrderOfLossesTest {
 
     final String key1 =
         CasualtyOrderOfLosses.computeOolCacheKey(
-            withFakeParameters(), List.of(typePikemen, typeVeteranFootmen), List.of());
+            withFakeParameters(), List.of(typePikemen, typeVeteranFootmen));
 
     final String key2 =
         CasualtyOrderOfLosses.computeOolCacheKey(
-            withFakeParameters(), List.of(typeFootmen, typeVeteranPikemen), List.of());
+            withFakeParameters(), List.of(typeFootmen, typeVeteranPikemen));
 
     assertThat(key1, is(not(key2)));
   }
@@ -63,7 +63,6 @@ class CasualtyOrderOfLossesTest {
                 .build())
         .player(player)
         .enemyUnits(List.of())
-        .amphibiousLandAttackers(List.of())
         .battlesite(territory)
         .costs(IntegerMap.of(Map.of()))
         .data(gameData)

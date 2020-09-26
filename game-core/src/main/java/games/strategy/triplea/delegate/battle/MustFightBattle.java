@@ -149,14 +149,11 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> defending,
       final Collection<Unit> attacking,
       final Collection<Unit> bombarding,
-      final Collection<Unit> amphibious,
       final GamePlayer defender,
       final Collection<TerritoryEffect> territoryEffects) {
     defendingUnits = new ArrayList<>(defending);
     attackingUnits = new ArrayList<>(attacking);
     bombardingUnits = new ArrayList<>(bombarding);
-    amphibiousLandAttackers = new ArrayList<>(amphibious);
-    isAmphibious = !amphibiousLandAttackers.isEmpty();
     this.defender = defender;
     this.territoryEffects = territoryEffects;
   }
@@ -180,9 +177,6 @@ public class MustFightBattle extends DependentBattle
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
-      if (!route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
-        amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
-      }
       // if none of the units is a land unit, the attack from that territory is no longer an
       // amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
@@ -220,8 +214,6 @@ public class MustFightBattle extends DependentBattle
         && !route.getEnd().isWater()
         && attackingUnits.stream().anyMatch(Matches.unitIsLand())) {
       getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
-      amphibiousLandAttackers.addAll(
-          CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand()));
       isAmphibious = true;
     }
     final Map<Unit, Collection<Unit>> dependencies =
@@ -464,8 +456,7 @@ public class MustFightBattle extends DependentBattle
     Collection<Unit> lost = new ArrayList<>(getDependentUnits(units));
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     // if all the amphibious attacking land units are lost, then we are no longer a naval invasion
-    amphibiousLandAttackers.removeAll(lost);
-    if (amphibiousLandAttackers.isEmpty()) {
+    if (getUnits(Side.OFFENSE).stream().noneMatch(Matches.unitWasAmphibious())) {
       isAmphibious = false;
       bombardingUnits.clear();
     }
@@ -759,9 +750,9 @@ public class MustFightBattle extends DependentBattle
           dependentUnits,
           attacker,
           defender,
-          isAmphibious(),
+          false,
           getBattleType(),
-          amphibiousLandAttackers);
+          List.of());
       display.listBattleSteps(battleId, stepStrings);
       stack.execute(bridge);
       return;
@@ -796,17 +787,13 @@ public class MustFightBattle extends DependentBattle
         dependentUnits,
         attacker,
         defender,
-        isAmphibious(),
+        false,
         getBattleType(),
-        amphibiousLandAttackers);
+        List.of());
     display.listBattleSteps(battleId, stepStrings);
     if (!headless) {
       // take the casualties with least movement first
-      if (isAmphibious()) {
-        CasualtySortingUtil.sortAmphib(attackingUnits, amphibiousLandAttackers);
-      } else {
-        CasualtySortingUtil.sortPreBattle(attackingUnits);
-      }
+      CasualtySortingUtil.sortPreBattle(attackingUnits);
       CasualtySortingUtil.sortPreBattle(defendingUnits);
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
     }
@@ -1121,7 +1108,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
+        final BattleStep removeNonCombatants =
+            new RemoveNonCombatants(MustFightBattle.this, MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
       }
     };
@@ -1144,7 +1132,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final BattleStep removeNonCombatants = new RemoveNonCombatants(MustFightBattle.this);
+        final BattleStep removeNonCombatants =
+            new RemoveNonCombatants(MustFightBattle.this, MustFightBattle.this);
         removeNonCombatants.execute(stack, bridge);
       }
     };

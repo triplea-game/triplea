@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -57,7 +58,10 @@ abstract class AbstractBattle implements IBattle {
 
   List<Unit> attackingUnits = new ArrayList<>();
   List<Unit> defendingUnits = new ArrayList<>();
-  List<Unit> amphibiousLandAttackers = new ArrayList<>();
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  List<Unit> amphibiousLandAttackers = List.of();
+
   List<Unit> bombardingUnits = new ArrayList<>();
   @Getter Collection<TerritoryEffect> territoryEffects;
   BattleResultDescription battleResultDescription;
@@ -176,11 +180,6 @@ abstract class AbstractBattle implements IBattle {
   @Override
   public boolean isAmphibious() {
     return isAmphibious;
-  }
-
-  @Override
-  public Collection<Unit> getAmphibiousLandAttackers() {
-    return Collections.unmodifiableCollection(amphibiousLandAttackers);
   }
 
   @Override

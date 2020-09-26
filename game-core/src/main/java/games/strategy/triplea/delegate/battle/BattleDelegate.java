@@ -281,7 +281,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             final IBattle battle = selectBombardingBattle(u, t, battles);
             if (battle != null) {
               if (Properties.getShoreBombardPerGroundUnitRestricted(getData())
-                  && battle.getAmphibiousLandAttackers().size()
+                  && battle.getAttackingUnits().stream().filter(Matches.unitWasAmphibious()).count()
                       <= battle.getBombardingUnits().size()) {
                 battles.remove(battle);
                 break;
@@ -349,7 +349,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // If Restricted & # of bombarding units => landing units, don't add territory to list to
       // bombard
       if (!Properties.getShoreBombardPerGroundUnitRestricted(getData())
-          || (battle.getBombardingUnits().size() < battle.getAmphibiousLandAttackers().size())) {
+          || (battle.getBombardingUnits().size()
+              < battle.getAttackingUnits().stream().filter(Matches.unitWasAmphibious()).count())) {
         territories.add(battle.getTerritory());
       }
       battleTerritories.put(battle.getTerritory(), battle);

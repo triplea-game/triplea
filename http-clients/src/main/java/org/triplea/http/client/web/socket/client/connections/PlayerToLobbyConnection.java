@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
@@ -32,7 +33,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUp
  * like chat messages, slap notifications, ban notifications.
  */
 public class PlayerToLobbyConnection {
-  private final HttpLobbyClient httpLobbyClient;
+  @Getter private final HttpLobbyClient httpLobbyClient;
   private GameListingClient gameListingClient;
   private WebSocket webSocket;
 

@@ -45,7 +45,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -129,9 +128,7 @@ public class BattleDisplay extends JPanel {
       final Collection<Unit> attackingWaitingToDie,
       final Collection<Unit> defendingWaitingToDie,
       final MapPanel mapPanel,
-      final boolean isAmphibious,
-      final BattleType battleType,
-      final Collection<Unit> amphibiousLandAttackers) {
+      final BattleType battleType) {
     this.defender = defender;
     this.attacker = attacker;
     this.battleLocation = territory;
@@ -149,8 +146,6 @@ public class BattleDisplay extends JPanel {
             gameData,
             battleLocation,
             territoryEffects,
-            isAmphibious,
-            Set.of(),
             uiContext);
     attackerModel =
         new BattleModel(
@@ -160,8 +155,6 @@ public class BattleDisplay extends JPanel {
             gameData,
             battleLocation,
             territoryEffects,
-            isAmphibious,
-            amphibiousLandAttackers,
             uiContext);
     defenderModel.setEnemyBattleModel(attackerModel);
     attackerModel.setEnemyBattleModel(defenderModel);
@@ -811,8 +804,6 @@ public class BattleDisplay extends JPanel {
     private final Territory location;
     private final BattleType battleType;
     private final Collection<TerritoryEffect> territoryEffects;
-    private final boolean isAmphibious;
-    private final Collection<Unit> amphibiousLandAttackers;
     private BattleModel enemyBattleModel = null;
 
     BattleModel(
@@ -822,8 +813,6 @@ public class BattleDisplay extends JPanel {
         final GameData data,
         final Territory battleLocation,
         final Collection<TerritoryEffect> territoryEffects,
-        final boolean isAmphibious,
-        final Collection<Unit> amphibiousLandAttackers,
         final UiContext uiContext) {
       super(new Object[0][0], varDiceArray(data));
       this.uiContext = uiContext;
@@ -834,8 +823,6 @@ public class BattleDisplay extends JPanel {
       location = battleLocation;
       this.battleType = battleType;
       this.territoryEffects = territoryEffects;
-      this.isAmphibious = isAmphibious;
-      this.amphibiousLandAttackers = amphibiousLandAttackers;
     }
 
     private static String[] varDiceArray(final GameData data) {
@@ -902,9 +889,7 @@ public class BattleDisplay extends JPanel {
                   !attack,
                   gameData,
                   location,
-                  territoryEffects,
-                  isAmphibious,
-                  amphibiousLandAttackers);
+                  territoryEffects);
         } finally {
           gameData.releaseReadLock();
         }

@@ -235,9 +235,7 @@ public final class BattlePanel extends ActionPanel {
       final Collection<Unit> defendingWaitingToDie,
       final GamePlayer attacker,
       final GamePlayer defender,
-      final boolean isAmphibious,
-      final BattleType battleType,
-      final Collection<Unit> amphibiousLandAttackers) {
+      final BattleType battleType) {
     // Copy all collection params so that they don't change underneath us while we execute async
     // code.
     final Collection<Unit> attackingUnitsCopy = List.copyOf(attackingUnits);
@@ -245,7 +243,6 @@ public final class BattlePanel extends ActionPanel {
     final Collection<Unit> killedUnitsCopy = List.copyOf(killedUnits);
     final Collection<Unit> attackingWaitingToDieCopy = List.copyOf(attackingWaitingToDie);
     final Collection<Unit> defendingWaitingToDieCopy = List.copyOf(defendingWaitingToDie);
-    final Collection<Unit> amphibiousLandAttackersCopy = List.copyOf(amphibiousLandAttackers);
     SwingUtilities.invokeLater(
         () -> {
           if (battleDisplay != null) {
@@ -264,9 +261,7 @@ public final class BattlePanel extends ActionPanel {
                   attackingWaitingToDieCopy,
                   defendingWaitingToDieCopy,
                   BattlePanel.this.getMap(),
-                  isAmphibious,
-                  battleType,
-                  amphibiousLandAttackersCopy);
+                  battleType);
           battleWindow.setTitle(
               attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
           battleWindow.getContentPane().removeAll();
@@ -291,9 +286,7 @@ public final class BattlePanel extends ActionPanel {
           }
           if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
             battleWindow.setVisible(true);
-            battleWindow.validate();
-            battleWindow.invalidate();
-            battleWindow.repaint();
+            SwingComponents.redraw(battleWindow);
             battleWindow.toFront();
           } else {
             battleWindow.setVisible(false);

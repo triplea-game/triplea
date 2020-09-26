@@ -59,8 +59,6 @@ public class CasualtySelector {
       final Collection<Unit> targetsToPickFrom,
       final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite,
       final Collection<TerritoryEffect> territoryEffects,
       final IDelegateBridge bridge,
@@ -94,8 +92,8 @@ public class CasualtySelector {
           player,
           friendlyUnits,
           enemyUnits,
-          amphibious,
-          amphibiousLandAttackers,
+          false,
+          List.of(),
           new CasualtyDetails(),
           battleId,
           battlesite,
@@ -123,8 +121,6 @@ public class CasualtySelector {
             defending,
             player,
             enemyUnits,
-            amphibious,
-            amphibiousLandAttackers,
             battlesite,
             costs,
             territoryEffects,
@@ -153,8 +149,8 @@ public class CasualtySelector {
                 player,
                 friendlyUnits,
                 enemyUnits,
-                amphibious,
-                amphibiousLandAttackers,
+                false,
+                List.of(),
                 defaultCasualties,
                 battleId,
                 battlesite,
@@ -196,8 +192,6 @@ public class CasualtySelector {
           sortedTargetsToPickFrom,
           friendlyUnits,
           enemyUnits,
-          amphibious,
-          amphibiousLandAttackers,
           battlesite,
           territoryEffects,
           bridge,
@@ -225,8 +219,6 @@ public class CasualtySelector {
           sortedTargetsToPickFrom,
           friendlyUnits,
           enemyUnits,
-          amphibious,
-          amphibiousLandAttackers,
           battlesite,
           territoryEffects,
           bridge,
@@ -289,8 +281,6 @@ public class CasualtySelector {
       final boolean defending,
       final GamePlayer player,
       final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite,
       final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects,
@@ -308,11 +298,9 @@ public class CasualtySelector {
                 .combatModifiers(
                     CombatModifiers.builder()
                         .territoryEffects(territoryEffects)
-                        .amphibious(amphibious)
+                        .amphibious(targetsToPickFrom.stream().anyMatch(Unit::getWasAmphibious))
                         .defending(defending)
                         .build())
-                .amphibiousLandAttackers(
-                    amphibiousLandAttackers == null ? List.of() : amphibiousLandAttackers)
                 .battlesite(battlesite)
                 .costs(costs)
                 .data(data)

@@ -192,8 +192,6 @@ class WW2V3Year41Test {
                 null,
                 null,
                 territory("Germany", gameData),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(2, casualties.size());
@@ -249,8 +247,6 @@ class WW2V3Year41Test {
                 null,
                 null,
                 territory("Germany", gameData),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(3, casualties.size());
@@ -309,8 +305,6 @@ class WW2V3Year41Test {
                 null,
                 null,
                 territory("Germany", gameData),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(2, casualties.size());

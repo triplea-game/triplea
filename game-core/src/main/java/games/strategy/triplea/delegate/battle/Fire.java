@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Maintains the state of a group of units firing during a {@link MustFightBattle}. */
@@ -45,8 +46,14 @@ public class Fire implements IExecutable {
   private final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final Collection<Unit> allFriendlyUnitsNotIncludingWaitingToDie;
   private final Collection<Unit> allEnemyUnitsNotIncludingWaitingToDie;
-  private final boolean isAmphibious;
-  private final Collection<Unit> amphibiousLandAttackers;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
+  private final boolean isAmphibious = false;
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  @SuppressWarnings("unused")
+  private final Collection<Unit> amphibiousLandAttackers = List.of();
 
   // These variables change state during execution
   private DiceRoll dice;
@@ -90,8 +97,6 @@ public class Fire implements IExecutable {
         this.defending ? this.battle.getDefendingUnits() : this.battle.getAttackingUnits();
     allEnemyUnitsNotIncludingWaitingToDie =
         !this.defending ? this.battle.getDefendingUnits() : this.battle.getAttackingUnits();
-    isAmphibious = this.battle.isAmphibious();
-    amphibiousLandAttackers = this.battle.getAmphibiousLandAttackers();
   }
 
   /** We must execute in atomic steps, push these steps onto the stack, and let them execute. */
@@ -250,8 +255,6 @@ public class Fire implements IExecutable {
         targetsToPickFrom,
         allEnemyUnitsNotIncludingWaitingToDie,
         allFriendlyUnitsNotIncludingWaitingToDie,
-        isAmphibious,
-        amphibiousLandAttackers,
         battleSite,
         territoryEffects,
         bridge,

@@ -93,8 +93,6 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(1, casualties.size());
@@ -124,9 +122,7 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                List.of(),
-                false,
-                null)
+                List.of())
             .getKilled();
     assertEquals(1, casualties.size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
@@ -168,9 +164,7 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                List.of(),
-                false,
-                null)
+                List.of())
             .getKilled();
     assertEquals(2, casualties.size());
     // should be 1 fighter and 1 bomber
@@ -218,8 +212,6 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(2, casualties.size());
@@ -268,9 +260,7 @@ class CasualtySelectorTest {
                 british(data),
                 null,
                 territory("Germany", data),
-                List.of(),
-                false,
-                null)
+                List.of())
             .getKilled();
     assertEquals(2, casualties.size());
     // we selected all bombers
@@ -318,9 +308,7 @@ class CasualtySelectorTest {
                 british(data),
                 null,
                 territory("Germany", data),
-                List.of(),
-                false,
-                null)
+                List.of())
             .getKilled();
     assertEquals(3, casualties.size());
     // we selected all bombers
@@ -370,8 +358,6 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(3, casualties.size());
@@ -426,8 +412,6 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(2, casualties.size());
@@ -477,8 +461,6 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                null,
-                false,
                 null)
             .getKilled();
     assertEquals(3, casualties.size());

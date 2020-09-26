@@ -14,6 +14,10 @@ TripleA is a free to play, volunteer run, 100% open source gaming community.
   - ***Technical Documentation***:
     - Map Making, Admin, and Developer Docs are on the [wiki](https://github.com/triplea-game/triplea/wiki)
 
+## Developer Getting Sarted
+
+[Setup Guide](/docs/development/README.md)
+
 ## License
 
 This project is licensed under the terms of the

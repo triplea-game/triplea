@@ -22,7 +22,7 @@ public class HttpLobbyClient {
   private final RemoteActionsClient remoteActionsClient;
   private final PlayerLobbyActionsClient playerLobbyActionsClient;
 
-  private HttpLobbyClient(final URI lobbyUri, final ApiKey apiKey) {
+  public HttpLobbyClient(final URI lobbyUri, final ApiKey apiKey) {
     this.lobbyUri = lobbyUri;
     this.apiKey = apiKey;
 

@@ -13,6 +13,28 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class MyFormatterTest {
+
+  @Nested
+  final class AsDiceTest {
+    @Test
+    void empty() {
+      final String result = MyFormatter.asDice(new int[] {});
+      assertThat(result, is("none"));
+    }
+
+    @Test
+    void singleton() {
+      final String result = MyFormatter.asDice(new int[] {1});
+      assertThat(result, is("2"));
+    }
+
+    @Test
+    void multiple() {
+      final String result = MyFormatter.asDice(new int[] {1, 2, 3, 10});
+      assertThat(result, is("2,3,4,11"));
+    }
+  }
+
   @Nested
   final class UnitsToTextTest {
     private final GameData gameData = new GameData();

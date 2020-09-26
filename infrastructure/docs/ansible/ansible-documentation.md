@@ -7,12 +7,16 @@
   - [Ansible Public Key](#ansible-public-key)
 - [Https Certificate Installation](#https-certificate-installation)
 
+
+[ansible](https://www.ansible.com) code maintains
+[infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code)
+
 # Ansible Overview
 
 Deployment is done with [ansible](https://www.ansible.com/)
 
-* Deployments are idempotent: https://shadow-soft.com/ansible-idempotency-configuration-
-drift/
+* Deployments are idempotent: <https://shadow-soft.com/ansible-idempotency-configuration-
+drift/>
 
 * Ansible consists of three main components:
   * roles: think of these as applications
@@ -25,11 +29,12 @@ files. For example the production inventory file will have a hostgroup called
 has variable values that only apply to the 'production' hosts. These variable
 values will 'override' any variable values defined in 'defaults'.
 
+
 ## Variables
 
 * Ansible allows variables to be defined in many places with differing
-levels of precendence. For simplicity,  in this project we constrain where
-variables are defined.
+levels of precedence. For simplicity,  in this project we constrain where
+variables are defined. Variables should use lower snake case naming.
 
 ### Role Defaults
 

@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -98,8 +99,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
       progressGrid.add(progressBars.get(download));
     }
 
-    revalidate();
-    repaint();
+    SwingComponents.redraw(this);
   }
 
   @Override

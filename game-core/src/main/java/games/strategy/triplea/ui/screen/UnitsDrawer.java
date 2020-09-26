@@ -9,7 +9,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
@@ -324,15 +323,5 @@ public class UnitsDrawer extends AbstractDrawable {
   @Override
   public DrawLevel getLevel() {
     return DrawLevel.UNITS_LEVEL;
-  }
-
-  @Override
-  public String toString() {
-    return "UnitsDrawer for "
-        + count
-        + " "
-        + MyFormatter.pluralize(unitType)
-        + " in  "
-        + territoryName;
   }
 }

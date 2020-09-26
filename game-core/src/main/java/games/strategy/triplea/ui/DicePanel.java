@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import org.triplea.swing.SwingComponents;
 import org.triplea.swing.WrapLayout;
 
 /**
@@ -61,9 +62,7 @@ public class DicePanel extends JPanel {
       add(create(dice));
     }
     addBottomSpacing();
-    invalidate();
-    validate();
-    repaint();
+    SwingComponents.redraw(this);
   }
 
   private JLabel makeDiceRolledLabel(final List<Die> dice, final int value) {

@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -18,6 +19,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.http.client.lobby.user.account.UserAccountClient;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.swing.DocumentListenerBuilder;
@@ -184,13 +188,34 @@ public final class ChangePasswordPanel extends JPanel {
 
   public static boolean doPasswordChange(
       final Window lobbyFrame,
+      final URI lobbyUri,
+      final ApiKey apiKey,
+      final AllowCancelMode allowCancelMode) {
+    return doPasswordChange(
+        lobbyFrame, new HttpLobbyClient(lobbyUri, apiKey).getUserAccountClient(), allowCancelMode);
+  }
+
+  public static boolean doPasswordChange(
+      final Window lobbyFrame,
       final PlayerToLobbyConnection playerToLobbyConnection,
       final AllowCancelMode allowCancelMode) {
+
+    return doPasswordChange(
+        lobbyFrame,
+        playerToLobbyConnection.getHttpLobbyClient().getUserAccountClient(),
+        allowCancelMode);
+  }
+
+  private static boolean doPasswordChange(
+      final Window lobbyFrame,
+      final UserAccountClient userAccountClient,
+      final AllowCancelMode allowCancelMode) {
+
     return new ChangePasswordPanel(allowCancelMode)
         .show(lobbyFrame)
         .map(
             pass -> {
-              playerToLobbyConnection.changePassword(pass);
+              userAccountClient.changePassword(pass);
               return true;
             })
         .orElse(false);

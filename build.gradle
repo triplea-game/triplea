@@ -5,7 +5,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.33.0'
     id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
     id 'net.ltgt.errorprone' version '1.2.1' apply false
-    id 'com.diffplug.spotless' version '5.5.1' apply false
+    id 'com.diffplug.spotless' version '5.6.1' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -97,7 +97,7 @@ subprojects {
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.7.0'
         junitPlatformLauncherVersion = '1.7.0'
-        mockitoVersion = '3.5.11'
+        mockitoVersion = '3.5.13'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.16'
         rateLimitjVersion = '0.6.0'

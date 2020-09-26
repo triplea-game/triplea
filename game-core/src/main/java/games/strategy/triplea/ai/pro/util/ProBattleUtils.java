@@ -74,9 +74,7 @@ public final class ProBattleUtils {
                 false,
                 data,
                 t,
-                TerritoryEffectHelper.getEffects(t),
-                false,
-                null),
+                TerritoryEffectHelper.getEffects(t)),
             data);
     final List<Unit> defendersWithHitPoints =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
@@ -163,9 +161,7 @@ public final class ProBattleUtils {
                 !attacking,
                 data,
                 t,
-                TerritoryEffectHelper.getEffects(t),
-                false,
-                null),
+                TerritoryEffectHelper.getEffects(t)),
             data);
     return (myPower * 6.0 / data.getDiceSides());
   }

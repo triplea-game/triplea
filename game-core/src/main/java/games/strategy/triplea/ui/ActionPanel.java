@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.triplea.swing.SwingComponents;
 
 /** Abstract superclass for all action panels. */
 public abstract class ActionPanel extends JPanel {
@@ -21,12 +22,7 @@ public abstract class ActionPanel extends JPanel {
   protected final MapPanel map;
   /** Refreshes the action panel. */
   protected final Runnable refresh =
-      () ->
-          SwingUtilities.invokeLater(
-              () -> {
-                revalidate();
-                repaint();
-              });
+      () -> SwingUtilities.invokeLater(() -> SwingComponents.redraw(this));
 
   @Getter(AccessLevel.PROTECTED)
   private final GameData data;

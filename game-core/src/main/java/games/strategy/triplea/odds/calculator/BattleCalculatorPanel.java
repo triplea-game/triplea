@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -1418,32 +1419,32 @@ class BattleCalculatorPanel extends JPanel {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data).reversed());
       final Territory location = findPotentialBattleSite();
+      if (isAmphibiousBattle()) {
+        attackers.stream()
+            .filter(Matches.unitIsLand())
+            .forEach(
+                unit -> {
+                  final Optional<MutableProperty<?>> property =
+                      unit.getProperty(Unit.UNLOADED_AMPHIBIOUS);
+                  if (property.isPresent()) {
+                    try {
+                      property.get().setValue(true);
+                    } catch (final MutableProperty.InvalidValueException e) {
+                      // ignore units that can't be unloaded
+                    }
+                  }
+                });
+      }
       final int attackPower =
           DiceRoll.getTotalPower(
               DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                  attackers,
-                  defenders,
-                  attackers,
-                  false,
-                  data,
-                  location,
-                  territoryEffects,
-                  isAmphibiousBattle(),
-                  attackers),
+                  attackers, defenders, attackers, false, data, location, territoryEffects),
               data);
       // defender is never amphibious
       final int defensePower =
           DiceRoll.getTotalPower(
               DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                  defenders,
-                  attackers,
-                  defenders,
-                  true,
-                  data,
-                  location,
-                  territoryEffects,
-                  false,
-                  new ArrayList<>()),
+                  defenders, attackers, defenders, true, data, location, territoryEffects),
               data);
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);

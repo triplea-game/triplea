@@ -1,17 +1,18 @@
 package tools.map.making;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Container;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import lombok.experimental.UtilityClass;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JButtonBuilder.AlignmentX;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import tools.map.making.ui.properties.MapPropertiesPanel;
 import tools.map.making.ui.skin.MapSkinPanel;
 import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
@@ -34,36 +35,38 @@ public class MapCreator {
     final JPanel panel4 = OptionalUtilitiesPanel.build();
 
     final JPanel mainPanel = new JPanel();
+    mainPanel.add(panel1);
+
     final JPanel sidePanel = new JPanel();
     sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.PAGE_AXIS));
     sidePanel.add(Box.createVerticalGlue());
 
-    final JButton part1 = new JButton("Step 1: Map Properties");
-    part1.addActionListener(
-        SwingAction.of("Part 1", e -> swapContainerContents(mainPanel, panel1)));
-    sidePanel.add(part1);
-    part1.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(
+        new JButtonBuilder("Step 1: Map Properties")
+            .actionListener(() -> swapContainerContents(mainPanel, panel1))
+            .alignmentX(AlignmentX.CENTER)
+            .build());
     sidePanel.add(Box.createVerticalGlue());
 
-    final JButton part2 = new JButton("Step 2: Map Utilities");
-    part2.addActionListener(
-        SwingAction.of("Part 2", e -> swapContainerContents(mainPanel, panel2)));
-    sidePanel.add(part2);
-    part2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(
+        new JButtonBuilder("Step 2: Map Utilities")
+            .actionListener(() -> swapContainerContents(mainPanel, panel2))
+            .alignmentX(AlignmentX.CENTER)
+            .build());
     sidePanel.add(Box.createVerticalGlue());
 
-    final JButton part3 = new JButton("Step 3: Game XML");
-    part3.addActionListener(
-        SwingAction.of("Part 3", e -> swapContainerContents(mainPanel, panel3)));
-    sidePanel.add(part3);
-    part3.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(
+        new JButtonBuilder("Step 3: Game XML")
+            .actionListener(() -> swapContainerContents(mainPanel, panel3))
+            .alignmentX(AlignmentX.CENTER)
+            .build());
     sidePanel.add(Box.createVerticalGlue());
 
-    final JButton part4 = new JButton("Other: Optional Things");
-    part4.addActionListener(
-        SwingAction.of("Part 4", e -> swapContainerContents(mainPanel, panel4)));
-    sidePanel.add(part4);
-    part4.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(
+        new JButtonBuilder("Other: Optional Things")
+            .actionListener(() -> swapContainerContents(mainPanel, panel4))
+            .alignmentX(AlignmentX.CENTER)
+            .build());
     sidePanel.add(Box.createVerticalGlue());
 
     // set up the menu actions
@@ -72,7 +75,6 @@ public class MapCreator {
     frame.getContentPane().add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 
     // now set up the main screen
-    mainPanel.add(panel1);
     frame.setVisible(true);
   }
 
@@ -80,10 +82,6 @@ public class MapCreator {
     container.removeAll();
     container.add(panel);
 
-    SwingAction.invokeNowOrLater(
-        () -> {
-          container.revalidate();
-          container.repaint();
-        });
+    SwingAction.invokeNowOrLater(() -> SwingComponents.redraw(container));
   }
 }

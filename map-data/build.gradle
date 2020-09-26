@@ -1,6 +1,6 @@
 dependencies {
     implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
     implementation project(":xml-reader")
-    testCompile "org.xmlunit:xmlunit-core:$xmlUnitCore"
-    testCompile "org.xmlunit:xmlunit-matchers:$xmlUnitMatchers"
+    testImplementation "org.xmlunit:xmlunit-core:$xmlUnitCore"
+    testImplementation "org.xmlunit:xmlunit-matchers:$xmlUnitMatchers"
 }

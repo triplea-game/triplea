@@ -35,6 +35,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -223,8 +224,7 @@ public class UnitScroller {
             selectUnitImagePanel.add(
                 avatarPanelFactory.buildPanel(moveableUnits, player, renderingWidth));
           }
-          selectUnitImagePanel.revalidate();
-          selectUnitImagePanel.repaint();
+          SwingComponents.redraw(selectUnitImagePanel);
         });
   }
 

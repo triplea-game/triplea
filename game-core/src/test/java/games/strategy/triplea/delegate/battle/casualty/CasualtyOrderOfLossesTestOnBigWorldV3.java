@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("SameParameterValue")
 class CasualtyOrderOfLossesTestOnBigWorldV3 {
 
-  private TestDataBigWorld1942V3 testData = new TestDataBigWorld1942V3();
+  private final TestDataBigWorld1942V3 testData = new TestDataBigWorld1942V3();
 
   @BeforeEach
   void clearCache() {
@@ -46,6 +47,18 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
   }
 
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
+    amphibUnits.forEach(
+        unit -> {
+          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+              .ifPresent(
+                  property -> {
+                    try {
+                      property.setValue(true);
+                    } catch (final MutableProperty.InvalidValueException e) {
+                      // should not happen
+                    }
+                  });
+        });
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(amphibUnits)
         .combatModifiers(
@@ -56,7 +69,6 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .build())
         .player(testData.british)
         .enemyUnits(List.of())
-        .amphibiousLandAttackers(amphibUnits)
         .battlesite(testData.france)
         .costs(testData.costMap)
         .data(testData.gameData)
