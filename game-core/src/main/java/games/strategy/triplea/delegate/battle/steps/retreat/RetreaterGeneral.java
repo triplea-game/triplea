@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.DEAD;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.REMOVED_CASUALTY;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -40,7 +40,7 @@ class RetreaterGeneral implements Retreater {
             .getMatches(
                 Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))
                     .and(Matches.unitIsSubmerged().negate())));
-    retreatUnits.removeAll(battleState.getUnits(DEAD));
+    retreatUnits.removeAll(battleState.getUnits(REMOVED_CASUALTY));
     return retreatUnits;
   }
 

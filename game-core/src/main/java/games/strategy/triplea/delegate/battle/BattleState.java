@@ -33,13 +33,11 @@ public interface BattleState {
   enum UnitBattleStatus {
     // units that are either undamaged or damaged
     ALIVE,
-    // either ALIVE or CASUALTY
-    ACTIVE,
     // units that are dead but can still act
     // (such as defending units that haven't had their turn to return fire)
     CASUALTY,
     // units that are no longer in the game
-    DEAD,
+    REMOVED_CASUALTY,
   }
 
   @Value(staticConstructor = "of")
@@ -69,6 +67,12 @@ public interface BattleState {
   UUID getBattleId();
 
   Collection<Unit> getUnits(UnitBattleStatus status, Side... sides);
+
+  /**
+   * Allow callers to request units from two different states. The overloaded method is required
+   * because Java doesn't support multiple varargs in the same method
+   */
+  Collection<Unit> getUnits(UnitBattleStatus status1, UnitBattleStatus status2, Side... sides);
 
   void clearWaitingToDie(Side... sides);
 

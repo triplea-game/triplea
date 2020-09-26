@@ -374,17 +374,20 @@ public class MustFightBattle extends DependentBattle
     switch (status) {
       case ALIVE:
         return Collections.unmodifiableCollection(getUnits(sides));
-      case ACTIVE:
-        return Collections.unmodifiableCollection(
-            Stream.concat(getUnits(sides).stream(), getWaitingToDie(sides).stream())
-                .collect(Collectors.toList()));
       case CASUALTY:
         return Collections.unmodifiableCollection(getWaitingToDie(sides));
-      case DEAD:
+      case REMOVED_CASUALTY:
         return Collections.unmodifiableCollection(killed);
       default:
         return List.of();
     }
+  }
+
+  @Override
+  public Collection<Unit> getUnits(
+      final UnitBattleStatus status1, final UnitBattleStatus status2, final Side... sides) {
+    return Stream.concat(getUnits(status1, sides).stream(), getUnits(status2, sides).stream())
+        .collect(Collectors.toUnmodifiableList());
   }
 
   private Collection<Unit> getUnits(final Side... sides) {
