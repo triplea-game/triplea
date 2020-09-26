@@ -18,8 +18,8 @@ import org.triplea.map.data.elements.ShallowParsedGame;
 @Log
 public class ShallowGameParser {
 
-  public static Optional<String> readGameName(final String mapName, final InputStream stream) {
-    checkNotNull(mapName);
+  public static Optional<String> readGameName(final String xmlName, final InputStream stream) {
+    checkNotNull(xmlName);
     checkNotNull(stream);
 
     try {
@@ -30,20 +30,19 @@ public class ShallowGameParser {
               .orElseThrow(
                   () ->
                       new GameParseException(
-                          "Error reading Game XML file in map: "
-                              + mapName
+                          "Error reading XML file: "
+                              + xmlName
                               + ". Game file is missing the tag: '<info name=\"Game Name\"/>'")));
     } catch (final GameParseException e) {
       log.log(
           Level.WARNING,
-          "Error reading XMl file (invalid XML): " + mapName + ", " + e.getMessage(),
+          "Error reading XMl file (invalid XML): " + xmlName + ", " + e.getMessage(),
           e);
       return Optional.empty();
-
     } catch (final XMLStreamException e) {
       log.log(
           Level.WARNING,
-          "Unexpected error reading Game XML file in map: " + mapName + ", " + e.getMessage(),
+          "Unexpected error reading XML file: " + xmlName + ", " + e.getMessage(),
           e);
       return Optional.empty();
     }

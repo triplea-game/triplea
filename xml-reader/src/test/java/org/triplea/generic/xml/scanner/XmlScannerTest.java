@@ -31,7 +31,7 @@ class XmlScannerTest {
   }
 
   @Test
-  void scanningForMapName() {
+  void scanningForMapName() throws Exception {
     final String result =
         xmlScanner
             .scanForAttributeValue(
@@ -43,7 +43,8 @@ class XmlScannerTest {
 
   @ParameterizedTest
   @MethodSource
-  void scanningForMapNameNegativeCases(final AttributeScannerParameters parameters) {
+  void scanningForMapNameNegativeCases(final AttributeScannerParameters parameters)
+      throws Exception {
     final Optional<String> result = xmlScanner.scanForAttributeValue(parameters);
 
     assertThat(result, isEmpty());

@@ -7,8 +7,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import lombok.extern.java.Log;
-import org.triplea.generic.xml.reader.exceptions.XmlReadException;
-import org.triplea.java.function.ThrowingSupplier;
 
 /**
  * Scans XML for a specific tag and returns specific data. Does not read the full XML file. This is
@@ -29,16 +27,10 @@ public class XmlScanner {
    *
    * @return The attribute value found, or an empty optional if not found.
    */
-  public Optional<String> scanForAttributeValue(final AttributeScannerParameters parameters) {
-    return executeScan(() -> AttributeScanner.scanForAttributeValue(xmlStreamReader, parameters));
-  }
-
-  private Optional<String> executeScan(
-      final ThrowingSupplier<Optional<String>, XMLStreamException> scanExecution) {
+  public Optional<String> scanForAttributeValue(final AttributeScannerParameters parameters)
+      throws XMLStreamException {
     try {
-      return scanExecution.get();
-    } catch (final XMLStreamException e) {
-      throw new XmlReadException(e);
+      return AttributeScanner.scanForAttributeValue(xmlStreamReader, parameters);
     } finally {
       try {
         xmlStreamReader.close();
