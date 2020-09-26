@@ -1,6 +1,6 @@
 [setup]
-prod02-bot01-dallas
-prod02-bot02-atlanta
+prod2-bot01-dallas
+prod2-bot02-atlanta
 
 [dropwizardHosts]
 prod2-lobby.triplea-game.org
