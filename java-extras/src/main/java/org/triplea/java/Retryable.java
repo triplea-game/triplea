@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Retryable<T> {
+  @SuppressWarnings("UnnecessaryLambda")
   private static final Consumer<Duration> DEFAULT_THREAD_SLEEP =
       duration -> Interruptibles.sleep(duration.toMillis());
 

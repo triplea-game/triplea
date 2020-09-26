@@ -66,6 +66,7 @@ public class PerfTimer implements Closeable {
     return time(title, 1);
   }
 
+  @SuppressWarnings("try")
   public static <T> T time(final String title, final ThrowingSupplier<T, ?> functionToTime) {
     final T value;
     try (PerfTimer timer = time(title)) {
@@ -77,6 +78,7 @@ public class PerfTimer implements Closeable {
     return value;
   }
 
+  @SuppressWarnings("try")
   public static void time(final String title, final ThrowingRunnable<?> functionToTime) {
     try (PerfTimer timer = time(title)) {
       try {
