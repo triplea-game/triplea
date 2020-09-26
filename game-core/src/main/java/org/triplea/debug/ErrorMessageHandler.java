@@ -32,7 +32,8 @@ public final class ErrorMessageHandler extends Handler {
 
   @Override
   public synchronized void publish(final LogRecord record) {
-    publish(record, ErrorMessage::show);
+    publish(
+        record, logRecord -> ErrorMessage.show(LoggerRecordAdapter.fromJavaUtilLogRecord(record)));
   }
 
   @VisibleForTesting
