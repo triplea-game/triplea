@@ -1,7 +1,7 @@
 package org.triplea.io;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
@@ -37,7 +37,7 @@ final class FileUtilsTest {
 
       assertThat(
           FileUtils.listFiles(tempDir),
-          contains(
+          containsInAnyOrder(
               tempDir.toPath().resolve("file1").toFile(),
               tempDir.toPath().resolve("file2").toFile(),
               tempDir.toPath().resolve("file3").toFile()));
