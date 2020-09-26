@@ -32,7 +32,7 @@ public class ExtendedLibraryExampleTest extends AbstractXmlMapperTest {
     }
 
     static class MostRead {
-      @Tag private Book book;
+      @Tag private MostRead.Book book;
       @Tag private Magazine magazine;
 
       static class Book {
@@ -47,7 +47,7 @@ public class ExtendedLibraryExampleTest extends AbstractXmlMapperTest {
     }
 
     static class Inventory {
-      @TagList private List<Book> books;
+      @TagList private List<Inventory.Book> books;
 
       @Tag private CdRom cdrom;
       @Tag private Gaming gaming;

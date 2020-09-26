@@ -16,7 +16,7 @@ public class XmlDataErrorTest extends AbstractXmlMapperTest {
   }
 
   public static class BadNumber {
-    @Tag private SingleChild singleChild;
+    @Tag private BadNumber.SingleChild singleChild;
 
     public static class SingleChild {
       // this has a 'string' value in the XML
@@ -25,7 +25,7 @@ public class XmlDataErrorTest extends AbstractXmlMapperTest {
   }
 
   public static class BadDouble {
-    @Tag private SingleChild singleChild;
+    @Tag private BadDouble.SingleChild singleChild;
 
     public static class SingleChild {
       // this has a 'string' value in the XML
@@ -34,7 +34,7 @@ public class XmlDataErrorTest extends AbstractXmlMapperTest {
   }
 
   public static class BadBoolean {
-    @Tag private SingleChild singleChild;
+    @Tag private BadBoolean.SingleChild singleChild;
 
     public static class SingleChild {
       // this has a 'string' value in the XML
