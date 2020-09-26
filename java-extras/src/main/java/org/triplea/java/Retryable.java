@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 /**
  * Module to execute a task with retries. Provides a builder interface to specify number of max
  * attempts (max number of times the task will be executed) and backoff.
+ *
+ * @param <T> Generic type that is returned by the retryable.
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Retryable<T> {
