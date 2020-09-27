@@ -45,10 +45,10 @@ public class NumberProperty extends AbstractEditableProperty<Integer> {
 
   @Override
   public JComponent getEditorComponent() {
-    final IntTextField field = new IntTextField(min, max);
-    field.setValue(value);
-    field.addChangeListener(aField -> value = aField.getValue());
-    return field;
+    final IntTextField intTextField = new IntTextField(min, max);
+    intTextField.setValue(value);
+    intTextField.addChangeListener(field -> value = field.getValue());
+    return intTextField;
   }
 
   @Override

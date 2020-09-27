@@ -147,6 +147,7 @@ public class LobbyWatcherController extends HttpController {
     return Response.ok().build();
   }
 
+  /** Endpoint used to consume and persist chat messages to database. */
   @POST
   @Path(LobbyWatcherClient.UPLOAD_CHAT_PATH)
   @RateLimited(

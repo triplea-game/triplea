@@ -17,6 +17,11 @@ import org.triplea.live.servers.LiveServersFetcher;
 @UtilityClass
 public class MapListingFetcher {
 
+  /**
+   * Parses a map list source for a list of maps available for download. Multiple sources for the
+   * download list are checked, first any override locations followed by the live file that is on
+   * remote server.
+   */
   public static List<DownloadFileDescription> getMapDownloadList() {
     if (ClientSetting.useMapsServerBetaFeature.getValue().orElse(false)) {
       // Get the URI of the maps server (either from override or read it from the servers file) and

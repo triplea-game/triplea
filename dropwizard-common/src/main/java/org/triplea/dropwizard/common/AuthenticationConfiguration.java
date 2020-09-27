@@ -18,6 +18,10 @@ import org.triplea.http.client.AuthenticationHeaders;
 @UtilityClass
 public class AuthenticationConfiguration {
 
+  /**
+   * Enables configuration via OAuth token. Endpoints annotated with @RolesAllowed will be activated
+   * and will require a user to have been a given role during per-request authentication.
+   */
   public static <UserT extends Principal> void enableAuthentication(
       final Environment environment,
       final MetricRegistry metrics,

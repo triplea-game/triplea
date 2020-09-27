@@ -125,30 +125,4 @@ public class LocalLauncher implements ILauncher {
             gameSelectorModel.getGameRound());
     return new LocalLauncher(gameSelectorModel, new PlainRandomSource(), pl, parent, launchAction);
   }
-
-  public static LocalLauncher create(
-      final List<Entry<String, String>> roleMapping,
-      final Predicate<String> isDisabled,
-      final GameData gameData) {
-    final Predicate<Entry<String, String>> isPlayerEnabled =
-        entry -> !isDisabled.test(entry.getValue());
-    final PlayerListing playerListing =
-        new PlayerListing(
-            roleMapping.stream()
-                .collect(Collectors.toUnmodifiableMap(Entry::getKey, isPlayerEnabled::test)),
-            roleMapping.stream()
-                .filter(isPlayerEnabled)
-                .collect(
-                    Collectors.toUnmodifiableMap(
-                        Entry::getKey, entry -> PlayerType.fromLabel(entry.getValue()))),
-            gameData.getGameVersion(),
-            gameData.getGameName(),
-            String.valueOf(gameData.getCurrentRound()));
-    return new LocalLauncher(
-        GameSelector.fromGameData(gameData),
-        new PlainRandomSource(),
-        playerListing,
-        null,
-        new HeadedLaunchAction(null));
-  }
 }

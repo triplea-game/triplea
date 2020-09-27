@@ -56,6 +56,7 @@ public final class GameDataManager {
    * @return The loaded game data.
    * @throws IOException If an error occurs while loading the game.
    */
+  @SuppressWarnings("deprecation")
   public static GameData loadGame(final InputStream is) throws IOException {
     checkNotNull(is);
 

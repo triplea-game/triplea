@@ -206,6 +206,11 @@ public class ClientModel implements IMessengerErrorListener {
     return result.result.orElse(null);
   }
 
+  /**
+   * Factory method to create and connect a client messenger to server, returns false if not
+   * connected (user messaging will be handled by this method). Method returns true if successfully
+   * connected.
+   */
   public boolean createClientMessenger(final Component ui) {
     this.ui = JOptionPane.getFrameForComponent(ui);
     gameDataOnStartup = gameSelectorModel.getGameData();

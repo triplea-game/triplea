@@ -36,7 +36,7 @@ public class XmlMapper implements Closeable {
     return mapXmlToObject(pojo, pojo.getSimpleName());
   }
 
-  public <T> T mapXmlToObject(final Class<T> pojo, final String tagName)
+  private <T> T mapXmlToObject(final Class<T> pojo, final String tagName)
       throws XmlParsingException {
     // At this point in parsing the XML cursor is just beyond the start tag.
     // We can read attributes directly off of the stream at this point.

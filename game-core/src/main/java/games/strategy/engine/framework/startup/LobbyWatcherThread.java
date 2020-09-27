@@ -23,6 +23,7 @@ public class LobbyWatcherThread {
     return lobbyWatcher.getGameId();
   }
 
+  /** Creates, connects, the lobby thread to the lobby. */
   public void createLobbyWatcher(final GameToLobbyConnection gameToLobbyConnection) {
     InGameLobbyWatcher.newInGameLobbyWatcher(
             serverMessenger,

@@ -13,7 +13,10 @@ public class InetExtractor {
   @VisibleForTesting
   public static final String IP_ADDRESS_KEY = "javax.websocket.endpoint.remoteAddress";
 
-  @SuppressWarnings("UnstableApiUsage")
+  /**
+   * Returns the IP address of the session from the provided 'userSession' map. It is expected that
+   * for the websocket library that we use that we will always find an IP address.
+   */
   public static InetAddress extract(final Map<String, Object> userSession) {
     // expected format '/127.0.0.1:42840' or (for test-cases) '127.0.0.1'
     final String rawIpString = String.valueOf(userSession.get(IP_ADDRESS_KEY));

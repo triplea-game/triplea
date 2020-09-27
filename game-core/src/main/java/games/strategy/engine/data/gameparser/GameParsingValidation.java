@@ -23,6 +23,10 @@ public class GameParsingValidation {
 
   private final GameData data;
 
+  /**
+   * Runs game data validation, returns an empty list if there are no validation errors otherwise
+   * returns a list of the validation errors found.
+   */
   public List<String> validate() {
     final List<String> validationErrors = new ArrayList<>();
     // validate unit attachments
