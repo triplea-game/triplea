@@ -43,11 +43,11 @@ public interface BattleState {
   }
 
   class UnitBattleFilter {
-    public static UnitBattleFilter ACTIVE =
+    public static final UnitBattleFilter ACTIVE =
         new UnitBattleFilter(UnitBattleStatus.ALIVE, UnitBattleStatus.CASUALTY);
-    public static UnitBattleFilter ALIVE = new UnitBattleFilter(UnitBattleStatus.ALIVE);
-    public static UnitBattleFilter CASUALTY = new UnitBattleFilter(UnitBattleStatus.CASUALTY);
-    public static UnitBattleFilter REMOVED_CASUALTY =
+    public static final UnitBattleFilter ALIVE = new UnitBattleFilter(UnitBattleStatus.ALIVE);
+    public static final UnitBattleFilter CASUALTY = new UnitBattleFilter(UnitBattleStatus.CASUALTY);
+    public static final UnitBattleFilter REMOVED_CASUALTY =
         new UnitBattleFilter(UnitBattleStatus.REMOVED_CASUALTY);
 
     @Getter private final EnumSet<UnitBattleStatus> filter;
