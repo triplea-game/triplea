@@ -69,7 +69,7 @@ subprojects {
         awaitilityVersion = '4.0.3'
         bcryptVersion = '0.9.0'
         caffeineVersion = '2.8.1'
-        checkstyleVersion = '8.23'
+        checkstyleVersion = '8.36.1'
         commonsCliVersion = '1.4'
         commonsCodecVersion = '1.15'
         commonsIoVersion = '2.8.0'
