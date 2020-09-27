@@ -203,13 +203,6 @@ public final class GameParser {
     // and parse all game options/properties)
     TechAbilityAttachment.setDefaultTechnologyAttachments(data);
 
-    final List<String> validationErrors = new GameParsingValidation(data).validate();
-    if (!validationErrors.isEmpty()) {
-      throw new GameParseException(
-          String.format(
-              "map name: '%s', validation failed: %s",
-              mapName, String.join("\n", validationErrors)));
-    }
     return data;
   }
 

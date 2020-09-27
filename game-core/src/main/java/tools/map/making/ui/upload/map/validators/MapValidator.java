@@ -7,10 +7,10 @@ import lombok.AllArgsConstructor;
 import org.triplea.java.function.ThrowingFunction;
 
 @AllArgsConstructor
-public class MapValidator {
+class MapValidator {
   private final ThrowingFunction<Path, List<String>, IOException> validationFunction;
 
-  public List<String> validate(Path path) throws IOException {
+  public List<String> validate(final Path path) throws IOException {
     return validationFunction.apply(path);
   }
 }

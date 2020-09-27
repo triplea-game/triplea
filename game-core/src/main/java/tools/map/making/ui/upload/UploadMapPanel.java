@@ -7,7 +7,12 @@ import javax.swing.JTextArea;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import tools.map.making.ui.upload.map.validators.ValidateMapAction;
 
+/**
+ * Panel that prompts a user through a map upload, actions begin with selecting a map to eventually
+ * a map upload.
+ */
 public class UploadMapPanel {
 
   public static JPanel build(final JFrame parentWindow) {
@@ -34,8 +39,8 @@ public class UploadMapPanel {
     selectMapButton.addActionListener(
         new MapSelectionAction(parentWindow, uploadPanelState, mapSelectionStatus));
     validateMapButton.addActionListener(new ValidateMapAction(uploadPanelState, validationStatus));
-    loginButton.addActionListener(new LoginAction(uploadPanelState, loginStatus));
-    uploadButton.addActionListener(new UploadAction());
+    loginButton.addActionListener(new LobbyLoginAction(parentWindow, uploadPanelState));
+    uploadButton.addActionListener(new UploadAction(uploadPanelState));
 
     return new JPanelBuilder()
         .borderLayout()

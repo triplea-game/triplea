@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class Validators {
+class Validators {
   public List<MapValidator> getValidators() {
     return List.of(
         hasGameXml(), //
@@ -20,15 +20,15 @@ public class Validators {
   }
 
   private MapValidator hasGameXml() {
-    return new MapValidator(path -> findXmls(path).isEmpty() ? List.of() : List.of("No Game XMLs"));
+    return new MapValidator(path -> findXmls(path).isEmpty() ? List.of("No Game XMLs") : List.of());
   }
 
-  private static Collection<Path> findXmls(Path mapPath) throws IOException {
+  private static Collection<Path> findXmls(final Path mapPath) throws IOException {
     return Files.find(
             mapPath,
             6,
             (filePath, fileAttributes) ->
-                filePath.endsWith(".xml") && fileAttributes.isRegularFile())
+                filePath.toFile().getName().endsWith(".xml") && fileAttributes.isRegularFile())
         .collect(Collectors.toList());
   }
 
