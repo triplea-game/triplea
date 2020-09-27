@@ -15,6 +15,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -139,7 +140,7 @@ class LandParatroopersTest {
     assertThat(landParatroopers.getNames(), hasSize(1));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(delegateBridge).addChange(any());
+    verify(delegateBridge).addChange(any(Change.class));
     verify(battleState).removeDependentUnits(airTransports);
   }
 }

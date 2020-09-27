@@ -10,6 +10,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
@@ -70,7 +71,7 @@ class MarkNoMovementLeftTest {
 
     markNoMovementLeft.execute(executionStack, delegateBridge);
 
-    verify(delegateBridge).addChange(any());
+    verify(delegateBridge).addChange(any(Change.class));
   }
 
   private Unit givenNonAirUnitWithMovementLeft(final BigDecimal movement) {
@@ -97,7 +98,7 @@ class MarkNoMovementLeftTest {
 
     markNoMovementLeft.execute(executionStack, delegateBridge);
 
-    verify(delegateBridge).addChange(any());
+    verify(delegateBridge).addChange(any(Change.class));
   }
 
   @Test
@@ -113,6 +114,6 @@ class MarkNoMovementLeftTest {
 
     markNoMovementLeft.execute(executionStack, delegateBridge);
 
-    verify(delegateBridge, never()).addChange(any());
+    verify(delegateBridge, never()).addChange(any(Change.class));
   }
 }
