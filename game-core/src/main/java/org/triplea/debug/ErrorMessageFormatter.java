@@ -36,7 +36,7 @@ class ErrorMessageFormatter implements Function<LoggerRecord, String> {
    */
   private static String format(final LoggerRecord logRecord) {
     if (logRecord.getLogMessage() == null) {
-      final LoggerRecord.ExceptionDetails exceptionDetails =
+      final ExceptionDetails exceptionDetails =
           logRecord.getExceptions().size() > 1
               ? logRecord.getExceptions().get(1)
               : logRecord.getExceptions().get(0);
@@ -52,7 +52,7 @@ class ErrorMessageFormatter implements Function<LoggerRecord, String> {
       if (logRecord.getExceptions().isEmpty()) {
         return logRecord.getLogMessage();
       } else {
-        final LoggerRecord.ExceptionDetails exceptionDetails =
+        final ExceptionDetails exceptionDetails =
             logRecord.getExceptions().size() > 1
                 ? logRecord.getExceptions().get(1)
                 : logRecord.getExceptions().get(0);
