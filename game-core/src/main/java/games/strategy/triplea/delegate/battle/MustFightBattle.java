@@ -448,6 +448,13 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
+  public void removeDependentUnits(final Collection<Unit> unitsWithDependents) {
+    for (final Unit unit : unitsWithDependents) {
+      dependentUnits.remove(unit);
+    }
+  }
+
+  @Override
   public Collection<Unit> getAa(final Side... sides) {
     final Collection<Unit> units = new ArrayList<>();
     for (final Side side : sides) {
@@ -1624,36 +1631,6 @@ public class MustFightBattle extends DependentBattle
     // remove any units that were in air combat (veqryn)
     unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitWasInAirBattle()));
     return unitList;
-  }
-
-  @Override
-  public void landParatroopers(
-      final IDelegateBridge bridge,
-      final Collection<Unit> airTransports,
-      final Collection<Unit> dependents) {
-    final CompositeChange change = new CompositeChange();
-    // remove dependency from paratroopers by unloading the air transports
-    for (final Unit unit : dependents) {
-      change.add(TransportTracker.unloadAirTransportChange(unit, battleSite, false));
-    }
-    bridge.addChange(change);
-    // remove bombers from dependentUnits
-    for (final Unit unit : airTransports) {
-      dependentUnits.remove(unit);
-    }
-  }
-
-  @Override
-  public void markNoMovementLeft(final IDelegateBridge bridge) {
-    if (headless) {
-      return;
-    }
-    final Collection<Unit> attackingNonAir =
-        CollectionUtils.getMatches(attackingUnits, Matches.unitIsAir().negate());
-    final Change noMovementChange = ChangeFactory.markNoMovementChange(attackingNonAir);
-    if (!noMovementChange.isEmpty()) {
-      bridge.addChange(noMovementChange);
-    }
   }
 
   @Override
