@@ -25,7 +25,6 @@ dependencies {
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
 
-//    implementation "com.sun.jersey.contribs:jersey-multipart:1.19.4"
     implementation "org.apache.httpcomponents:httpcore:4.4.13"
     implementation "org.apache.httpcomponents:httpmime:4.5.12"
 
