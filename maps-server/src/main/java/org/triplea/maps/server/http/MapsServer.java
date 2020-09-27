@@ -10,6 +10,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.dropwizard.common.ServerConfiguration;
 import org.triplea.maps.listing.MapsListingController;
 import org.triplea.maps.server.db.RowMappers;
+import org.triplea.maps.upload.MapUploadController;
 
 public class MapsServer extends Application<MapsConfig> {
 
@@ -41,6 +42,8 @@ public class MapsServer extends Application<MapsConfig> {
     RowMappers.rowMappers().forEach(jdbi::registerRowMapper);
 
     final JerseyEnvironment jerseyEnvironment = environment.jersey();
-    List.of(MapsListingController.build(jdbi)).forEach(jerseyEnvironment::register);
+    List.of( //
+            MapsListingController.build(jdbi), new MapUploadController())
+        .forEach(jerseyEnvironment::register);
   }
 }
