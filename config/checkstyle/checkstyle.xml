@@ -7,6 +7,7 @@
   <property name="charset" value="UTF-8"/>
 
   <property name="severity" value="warning"/>
+  <module name="SuppressWarningsFilter"/>
   <module name="NewlineAtEndOfFile"/>
 
   <property name="fileExtensions" value="java, properties, xml"/>
@@ -35,6 +36,7 @@
   </module>
 
   <module name="TreeWalker">
+    <module name="SuppressWarningsHolder"/>
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
@@ -226,42 +228,6 @@
       <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
       <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
     </module>
-    <module name="MethodParamPad">
-      <property name="tokens"
-               value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
-                    SUPER_CTOR_CALL, ENUM_CONSTANT_DEF, RECORD_DEF"/>
-    </module>
-    <module name="NoWhitespaceBefore">
-      <property name="tokens"
-               value="COMMA, SEMI, POST_INC, POST_DEC, DOT,
-                    LABELED_STAT, METHOD_REF"/>
-      <property name="allowLineBreaks" value="true"/>
-    </module>
-    <module name="ParenPad">
-      <property name="tokens"
-               value="ANNOTATION, ANNOTATION_FIELD_DEF, CTOR_CALL, CTOR_DEF, DOT, ENUM_CONSTANT_DEF,
-                    EXPR, LITERAL_CATCH, LITERAL_DO, LITERAL_FOR, LITERAL_IF, LITERAL_NEW,
-                    LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_WHILE, METHOD_CALL,
-                    METHOD_DEF, QUESTION, RESOURCE_SPECIFICATION, SUPER_CTOR_CALL, LAMBDA,
-                    RECORD_DEF"/>
-    </module>
-    <module name="OperatorWrap">
-      <property name="option" value="NL"/>
-      <property name="tokens"
-               value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
-                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
-    </module>
-    <module name="AnnotationLocation">
-      <property name="id" value="AnnotationLocationMostCases"/>
-      <property name="tokens"
-               value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF,
-                      RECORD_DEF, COMPACT_CTOR_DEF"/>
-    </module>
-    <module name="AnnotationLocation">
-      <property name="id" value="AnnotationLocationVariables"/>
-      <property name="tokens" value="VARIABLE_DEF"/>
-      <property name="allowSamelineMultipleAnnotations" value="true"/>
-    </module>
     <module name="NonEmptyAtclauseDescription"/>
     <module name="InvalidJavadocPosition"/>
     <module name="AtclauseOrder">
@@ -274,14 +240,13 @@
       <property name="allowMissingParamTags" value="true"/>
       <property name="allowMissingReturnTag" value="true"/>
       <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
+      <property name="tokens" value="METHOD_DEF"/>
     </module>
     <module name="MissingJavadocMethod">
       <property name="scope" value="public"/>
       <property name="minLineCount" value="10"/>
       <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF,
-                                   COMPACT_CTOR_DEF"/>
+      <property name="tokens" value="METHOD_DEF"/>
     </module>
     <module name="MethodName">
       <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
@@ -290,9 +255,6 @@
     </module>
     <module name="EmptyCatchBlock">
       <property name="exceptionVariableName" value="expected"/>
-    </module>
-    <module name="CommentsIndentation">
-      <property name="tokens" value="SINGLE_LINE_COMMENT, BLOCK_COMMENT_BEGIN"/>
     </module>
     <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
     <module name="SuppressionXpathFilter">
