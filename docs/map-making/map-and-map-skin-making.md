@@ -1,31 +1,4 @@
-<h2>Map and Map Skin Making Overview :: Quick Nav</h2>
-<ul>
-	<li>
-		<b>1.0</b> <a href="#sec_1">Introduction to TripleA Maps, and Map Skins</a>
-		<ul>
-			<li><b>1.1.1</b> <a href="#sec_1.1.1">Making Your First Map Skin in Under 5 Minutes</a></li>
-		</ul>
-	</li>
-	<li><b>2.0</b> <a href="#sec_2">The Map Creator</a></li>
-	<li><b>3.0</b> <a href="#sec_3">Creating a Custom Map Territory Border Image</a></li>
-	<li>
-		<b>4.0</b> <a href="#sec_4">Map Skin Utilities</a>
-		<ul>
-			<li><b>4.1.1</b> <a href="#sec_4.1.1">Map Properties Maker</a></li>
-			<li><b>4.1.2</b> <a href="#sec_4.1.2">Center Picker</a></li>
-			<li><b>4.1.3</b> <a href="#sec_4.1.3">Polygon Grabber</a></li>
-			<li><b>4.1.4</b> <a href="#sec_4.1.4">Auto-Placement Finder</a></li>
-			<li><b>4.1.5</b> <a href="#sec_4.1.5">Placement Picker</a></li>
-			<li><b>4.1.6</b> <a href="#sec_4.1.6">Tile Image Breaker</a></li>
-			<li><b>4.1.7</b> <a href="#sec_4.1.7">Decoration Placer</a></li>
-			<li><b>4.1.8</b> <a href="#sec_4.1.8">Relief Image Breaker</a></li>
-			<li><b>4.1.9</b> <a href="#sec_4.1.9">Image Shrinker</a></li>
-			<li><b>4.1.10</b> <a href="#sec_4.1.10">Tile Image Reconstructor</a></li>
-		</ul>
-	</li>
-	<li><b>5.0</b> <a href="#sec_5">Filling in the Other Folders and Files</a></li>
-	<li><b>10.0</b> <a href="#sec_10">Credits &amp;Acknowledgements</a></li>
-</ul>
+# Map and Map Skin Making Overview
 <hr>
 <br>
 <h2><a id="sec_1">1.0</a> Introduction to TripleA Maps, and Map Skins</h2>
