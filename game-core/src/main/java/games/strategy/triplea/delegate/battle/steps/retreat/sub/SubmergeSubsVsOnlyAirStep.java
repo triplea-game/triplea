@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.retreat.EvaderRetreat;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
@@ -43,47 +42,38 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
   }
 
   private boolean valid() {
-    return (isOnlyAirVsSubs(
-            battleState.filterUnits(ALIVE, OFFENSE), battleState.filterUnits(ALIVE, DEFENSE))
-        || isOnlyAirVsSubs(
-            battleState.filterUnits(ALIVE, DEFENSE), battleState.filterUnits(ALIVE, OFFENSE)));
+    return (sideOnlyHasAirThatCanNotTargetSubs(OFFENSE)
+        || sideOnlyHasAirThatCanNotTargetSubs(DEFENSE));
   }
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    final Collection<Unit> submergingSubs;
-    final BattleState.Side side;
-    if (isOnlyAirVsSubs(
-        battleState.filterUnits(ALIVE, OFFENSE), battleState.filterUnits(ALIVE, DEFENSE))) {
-      // submerge the defending units
-      submergingSubs =
-          CollectionUtils.getMatches(
-              battleState.filterUnits(ALIVE, DEFENSE), canNotBeTargetedByAllMatch);
-      side = DEFENSE;
-    } else if (isOnlyAirVsSubs(
-        battleState.filterUnits(ALIVE, DEFENSE), battleState.filterUnits(ALIVE, OFFENSE))) {
-      // submerge the attacking units
-      submergingSubs =
-          CollectionUtils.getMatches(
-              battleState.filterUnits(ALIVE, OFFENSE), canNotBeTargetedByAllMatch);
-      side = OFFENSE;
+    final BattleState.Side submergingSide;
+    if (sideOnlyHasAirThatCanNotTargetSubs(OFFENSE)) {
+      submergingSide = DEFENSE;
+    } else if (sideOnlyHasAirThatCanNotTargetSubs(DEFENSE)) {
+      submergingSide = OFFENSE;
     } else {
       return;
     }
+
     EvaderRetreat.submergeEvaders(
         EvaderRetreat.Parameters.builder()
             .battleState(battleState)
             .battleActions(battleActions)
-            .units(submergingSubs)
-            .side(side)
+            .units(
+                CollectionUtils.getMatches(
+                    battleState.filterUnits(ALIVE, submergingSide), canNotBeTargetedByAllMatch))
+            .side(submergingSide)
             .bridge(bridge)
             .build());
   }
 
-  private boolean isOnlyAirVsSubs(
-      final Collection<Unit> possibleAirUnits, final Collection<Unit> possibleEvadingUnits) {
-    return !possibleAirUnits.isEmpty()
-        && possibleAirUnits.stream().allMatch(Matches.unitIsAir())
-        && possibleEvadingUnits.stream().anyMatch(canNotBeTargetedByAllMatch);
+  private boolean sideOnlyHasAirThatCanNotTargetSubs(final BattleState.Side sideWithAir) {
+    return !battleState.filterUnits(ALIVE, sideWithAir).isEmpty()
+        && battleState.filterUnits(ALIVE, sideWithAir).stream().allMatch(Matches.unitIsAir())
+        && !battleState.filterUnits(ALIVE, sideWithAir.getOpposite()).isEmpty()
+        && battleState.filterUnits(ALIVE, sideWithAir.getOpposite()).stream()
+            .anyMatch(canNotBeTargetedByAllMatch);
   }
 }

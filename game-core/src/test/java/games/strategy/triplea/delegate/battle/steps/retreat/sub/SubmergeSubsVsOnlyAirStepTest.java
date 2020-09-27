@@ -9,7 +9,9 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +29,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -144,5 +147,41 @@ class SubmergeSubsVsOnlyAirStepTest {
                 .build(),
             List.of(sub),
             DEFENSE));
+  }
+
+  @Test
+  void noAttackingEvadersNoSubmerge() {
+
+    final BattleState battleStateSpy =
+        spy(
+            givenBattleStateBuilder()
+                .attackingUnits(List.of(givenAnyUnit()))
+                .defendingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
+                .build());
+
+    final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
+        new SubmergeSubsVsOnlyAirStep(battleStateSpy, battleActions);
+
+    submergeSubsVsOnlyAirStep.execute(executionStack, delegateBridge);
+
+    verify(battleStateSpy, never()).retreatUnits(any(), any());
+  }
+
+  @Test
+  void noDefendingEvadersNoSubmerge() {
+
+    final BattleState battleStateSpy =
+        spy(
+            givenBattleStateBuilder()
+                .attackingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
+                .defendingUnits(List.of(givenAnyUnit()))
+                .build());
+
+    final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
+        new SubmergeSubsVsOnlyAirStep(battleStateSpy, battleActions);
+
+    submergeSubsVsOnlyAirStep.execute(executionStack, delegateBridge);
+
+    verify(battleStateSpy, never()).retreatUnits(any(), any());
   }
 }
