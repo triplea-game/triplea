@@ -29,6 +29,7 @@ public class ErrorReportController extends HttpController {
   @Nonnull private final Function<CreateIssueParams, ErrorReportResponse> errorReportIngestion;
   @Nonnull private final Function<CanUploadRequest, CanUploadErrorReportResponse> canReportModule;
 
+  /** Factory method. */
   public static ErrorReportController build(
       final LobbyServerConfig configuration, final Jdbi jdbi) {
     final boolean isTest = configuration.getGithubApiToken().equals("test");
@@ -68,6 +69,10 @@ public class ErrorReportController extends HttpController {
     return canReportModule.apply(canUploadRequest);
   }
 
+  /**
+   * Endpoint where users can submit an error report, the server will use an API token of a generic
+   * user to in turn create a github issue using the data from the error report.
+   */
   @POST
   @Path(ErrorReportClient.ERROR_REPORT_PATH)
   @RateLimited(

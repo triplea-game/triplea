@@ -7,6 +7,10 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class BanDurationFormatter {
 
+  /**
+   * Converts parameter to a human readable value with labels. The time unit label is automatically
+   * converted to a human time scale, for example, minutes, hours, days, or permanently.
+   */
   public static String formatBanMinutes(final long banMinutes) {
     Preconditions.checkState(banMinutes >= 0);
 

@@ -897,6 +897,10 @@ public class DiceRoll implements Externalizable {
     }
   }
 
+  /**
+   * Sums up for a given collection of units with power totals and rolls, a total power and total
+   * rolls for all units.
+   */
   public static TotalPowerAndTotalRolls getTotalPowerAndRolls(
       final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap, final GameData data) {
 

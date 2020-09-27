@@ -54,6 +54,11 @@ import org.triplea.util.Tuple;
 /** Exports a {@link GameData} instance in XML format. */
 @UtilityClass
 public class GameDataExporter {
+
+  /**
+   * Converts a 'GameData' object into a 'Game' object, the latter is a POJO that models XML and is
+   * suitable to then be written to an XML string. Use this method to export live game data to XML.
+   */
   public static Game convertToXmlModel(final GameData data) {
     return Game.builder()
         .info(info(data))

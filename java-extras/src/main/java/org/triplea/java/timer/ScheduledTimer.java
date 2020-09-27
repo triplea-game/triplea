@@ -46,6 +46,10 @@ public class ScheduledTimer {
     this.periodMillis = periodMillis;
   }
 
+  /**
+   * Starts the timer and returns the started instance. The timer task will execute after the
+   * configured delay period {@code delayMillis}.
+   */
   public ScheduledTimer start() {
     running = true;
     timer.scheduleAtFixedRate(

@@ -28,6 +28,10 @@ public final class GameDataUtils {
     return dataCopy;
   }
 
+  /**
+   * Serializes a game data object but lops off the history data from it. Use this for a faster
+   * serialization that does not require the history.
+   */
   public static byte[] serializeGameDataWithoutHistory(final GameData data) {
     final History temp = data.getHistory();
     data.resetHistory();

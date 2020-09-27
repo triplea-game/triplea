@@ -34,6 +34,7 @@ public class JDialogBuilder {
   private final List<Function<JDialog, Component>> components = new ArrayList<>();
   private boolean escapeKeyCloses;
 
+  /** Constructs a JDialog. */
   public JDialog build() {
     Preconditions.checkNotNull(parent);
     Preconditions.checkNotNull(title);
