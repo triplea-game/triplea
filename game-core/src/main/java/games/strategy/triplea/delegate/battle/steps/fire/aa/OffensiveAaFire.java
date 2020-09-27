@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -30,16 +33,16 @@ public class OffensiveAaFire extends AaFireAndCasualtyStep {
 
   @Override
   GamePlayer firingPlayer() {
-    return battleState.getAttacker();
+    return battleState.getPlayer(OFFENSE);
   }
 
   @Override
   GamePlayer firedAtPlayer() {
-    return battleState.getDefender();
+    return battleState.getPlayer(DEFENSE);
   }
 
   @Override
   Collection<Unit> aaGuns() {
-    return battleState.getAa(BattleState.Side.OFFENSE);
+    return battleState.getAa(OFFENSE);
   }
 }

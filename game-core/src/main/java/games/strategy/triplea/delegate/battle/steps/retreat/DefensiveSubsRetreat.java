@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
@@ -49,9 +53,9 @@ public class DefensiveSubsRetreat implements BattleStep {
 
   private String getName() {
     if (Properties.getSubmersibleSubs(battleState.getGameData())) {
-      return battleState.getDefender().getName() + SUBS_SUBMERGE;
+      return battleState.getPlayer(DEFENSE).getName() + SUBS_SUBMERGE;
     } else {
-      return battleState.getDefender().getName() + SUBS_WITHDRAW;
+      return battleState.getPlayer(DEFENSE).getName() + SUBS_WITHDRAW;
     }
   }
 
@@ -66,7 +70,7 @@ public class DefensiveSubsRetreat implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (battleState.isOver()
+    if (battleState.getStatus().isOver()
         || isDestroyerPresent()
         || isEvaderNotPresent()
         || isRetreatNotPossible()) {
@@ -74,8 +78,7 @@ public class DefensiveSubsRetreat implements BattleStep {
     }
 
     final Collection<Unit> unitsToRetreat =
-        CollectionUtils.getMatches(
-            battleState.getUnits(BattleState.Side.DEFENSE), Matches.unitCanEvade());
+        CollectionUtils.getMatches(battleState.filterUnits(ALIVE, DEFENSE), Matches.unitCanEvade());
     if (unitsToRetreat.isEmpty()) {
       return;
     }
@@ -94,7 +97,7 @@ public class DefensiveSubsRetreat implements BattleStep {
         EvaderRetreat.Parameters.builder()
             .battleState(battleState)
             .battleActions(battleActions)
-            .side(BattleState.Side.DEFENSE)
+            .side(DEFENSE)
             .bridge(bridge)
             .units(unitsToRetreat)
             .build(),
@@ -103,15 +106,12 @@ public class DefensiveSubsRetreat implements BattleStep {
   }
 
   private boolean isEvaderNotPresent() {
-    return battleState.getUnits(BattleState.Side.DEFENSE).stream()
-        .noneMatch(Matches.unitCanEvade());
+    return battleState.filterUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitCanEvade());
   }
 
   private boolean isDestroyerPresent() {
-    return battleState.getUnits(BattleState.Side.OFFENSE).stream()
-            .anyMatch(Matches.unitIsDestroyer())
-        || battleState.getWaitingToDie(BattleState.Side.OFFENSE).stream()
-            .anyMatch(Matches.unitIsDestroyer());
+    return battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsDestroyer())
+        || battleState.filterUnits(CASUALTY, OFFENSE).stream().anyMatch(Matches.unitIsDestroyer());
   }
 
   private boolean isRetreatNotPossible() {
@@ -123,26 +123,25 @@ public class DefensiveSubsRetreat implements BattleStep {
   public Collection<Territory> getEmptyOrFriendlySeaNeighbors() {
     final Collection<Territory> possible =
         battleState.getGameData().getMap().getNeighbors(battleState.getBattleSite());
-    if (battleState.isHeadless()) {
+    if (battleState.getStatus().isHeadless()) {
       return possible;
     }
     final Collection<Unit> unitsToRetreat =
-        CollectionUtils.getMatches(
-            battleState.getUnits(BattleState.Side.DEFENSE), Matches.unitCanEvade());
+        CollectionUtils.getMatches(battleState.filterUnits(ALIVE, DEFENSE), Matches.unitCanEvade());
 
     // make sure we can move through the any canals
     final Predicate<Territory> canalMatch =
         t -> {
           final Route r = new Route(battleState.getBattleSite(), t);
           return new MoveValidator(battleState.getGameData())
-                  .validateCanal(r, unitsToRetreat, battleState.getDefender())
+                  .validateCanal(r, unitsToRetreat, battleState.getPlayer(DEFENSE))
               == null;
         };
     final Predicate<Territory> match =
         Matches.territoryIsWater()
             .and(
                 Matches.territoryHasNoEnemyUnits(
-                    battleState.getDefender(), battleState.getGameData()))
+                    battleState.getPlayer(DEFENSE), battleState.getGameData()))
             .and(canalMatch);
     return CollectionUtils.getMatches(possible, match);
   }

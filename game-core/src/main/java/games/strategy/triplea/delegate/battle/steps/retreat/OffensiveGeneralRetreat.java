@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
 
 import games.strategy.engine.data.GameData;
@@ -38,21 +41,21 @@ public class OffensiveGeneralRetreat implements BattleStep {
   private boolean isRetreatPossible() {
     return canAttackerRetreat()
         || canAttackerRetreatSeaPlanes()
-        || (battleState.isAmphibious()
+        || (battleState.getStatus().isAmphibious()
             && (canAttackerRetreatPartialAmphib() || canAttackerRetreatAmphibPlanes()));
   }
 
   private boolean canAttackerRetreat() {
     return RetreatChecks.canAttackerRetreat(
-        battleState.getUnits(BattleState.Side.DEFENSE),
+        battleState.filterUnits(ALIVE, DEFENSE),
         battleState.getGameData(),
         battleState::getAttackerRetreatTerritories,
-        battleState.isAmphibious());
+        battleState.getStatus().isAmphibious());
   }
 
   private boolean canAttackerRetreatSeaPlanes() {
     return battleState.getBattleSite().isWater()
-        && battleState.getUnits(BattleState.Side.OFFENSE).stream().anyMatch(Matches.unitIsAir());
+        && battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
   }
 
   private boolean canAttackerRetreatPartialAmphib() {
@@ -60,7 +63,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
       return false;
     }
     // Only include land units when checking for allow amphibious retreat
-    return battleState.getUnits(BattleState.Side.OFFENSE).stream()
+    return battleState.filterUnits(ALIVE, OFFENSE).stream()
         .filter(Matches.unitIsLand())
         .anyMatch(Matches.unitWasNotAmphibious());
   }
@@ -70,11 +73,11 @@ public class OffensiveGeneralRetreat implements BattleStep {
     return (Properties.getWW2V2(gameData)
             || Properties.getAttackerRetreatPlanes(gameData)
             || Properties.getPartialAmphibiousRetreat(gameData))
-        && battleState.getUnits(BattleState.Side.OFFENSE).stream().anyMatch(Matches.unitIsAir());
+        && battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
   }
 
   private String getName() {
-    return battleState.getAttacker().getName() + ATTACKER_WITHDRAW;
+    return battleState.getPlayer(OFFENSE).getName() + ATTACKER_WITHDRAW;
   }
 
   @Override
@@ -89,13 +92,13 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
   @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
   public void retreatUnits(final IDelegateBridge bridge) {
-    if (battleState.isOver()) {
+    if (battleState.getStatus().isOver()) {
       return;
     }
 
     Retreater retreater = null;
 
-    if (battleState.isAmphibious()) {
+    if (battleState.getStatus().isAmphibious()) {
       retreater = getAmphibiousRetreater();
     } else if (canAttackerRetreat()) {
       retreater = new RetreaterGeneral(battleState);
@@ -111,7 +114,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
           battleActions.queryRetreatTerritory(
               battleState,
               bridge,
-              battleState.getAttacker(),
+              battleState.getPlayer(OFFENSE),
               possibleRetreatSites,
               getQueryText(retreater.getRetreatType()));
 
@@ -134,11 +137,11 @@ public class OffensiveGeneralRetreat implements BattleStep {
     switch (retreatType) {
       case DEFAULT:
       default:
-        return battleState.getAttacker().getName() + " retreat?";
+        return battleState.getPlayer(OFFENSE).getName() + " retreat?";
       case PARTIAL_AMPHIB:
-        return battleState.getAttacker().getName() + " retreat non-amphibious units?";
+        return battleState.getPlayer(OFFENSE).getName() + " retreat non-amphibious units?";
       case PLANES:
-        return battleState.getAttacker().getName() + " retreat planes?";
+        return battleState.getPlayer(OFFENSE).getName() + " retreat planes?";
     }
   }
 
@@ -147,7 +150,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
     final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
 
     SoundUtils.playRetreatType(
-        battleState.getAttacker(), retreatUnits, retreater.getRetreatType(), bridge);
+        battleState.getPlayer(OFFENSE), retreatUnits, retreater.getRetreatType(), bridge);
 
     final Retreater.RetreatChanges retreatChanges = retreater.computeChanges(retreatTo);
     bridge.addChange(retreatChanges.getChange());
@@ -161,7 +164,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
                   .addChildToEvent(historyChild.getText(), historyChild.getUnits());
             });
 
-    if (battleState.getUnits(BattleState.Side.OFFENSE).isEmpty()) {
+    if (battleState.filterUnits(ALIVE, OFFENSE).isEmpty()) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
     } else {
       bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreatUnits);
@@ -170,12 +173,12 @@ public class OffensiveGeneralRetreat implements BattleStep {
     bridge
         .getDisplayChannelBroadcaster()
         .notifyRetreat(
-            battleState.getAttacker().getName()
+            battleState.getPlayer(OFFENSE).getName()
                 + getShortBroadcastSuffix(retreater.getRetreatType()),
-            battleState.getAttacker().getName()
+            battleState.getPlayer(OFFENSE).getName()
                 + getLongBroadcastSuffix(retreater.getRetreatType(), retreatTo),
             getName(),
-            battleState.getAttacker());
+            battleState.getPlayer(OFFENSE));
   }
 
   private String getShortBroadcastSuffix(final MustFightBattle.RetreatType retreatType) {

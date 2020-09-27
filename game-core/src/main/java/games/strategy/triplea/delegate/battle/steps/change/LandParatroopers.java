@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.change;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.LAND_PARATROOPS;
 
 import games.strategy.engine.data.Unit;
@@ -50,9 +51,9 @@ public class LandParatroopers implements BattleStep {
     private Collection<Unit> paratroopers = new ArrayList<>();
 
     private TransportsAndParatroopers() {
-      if (battleState.getBattleRoundState().isFirstRound()
+      if (battleState.getStatus().isFirstRound()
           && !battleState.getBattleSite().isWater()
-          && TechAttachment.isAirTransportable(battleState.getAttacker())) {
+          && TechAttachment.isAirTransportable(battleState.getPlayer(OFFENSE))) {
         final Collection<Unit> airTransports =
             CollectionUtils.getMatches(
                 battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport());

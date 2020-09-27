@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.change;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -22,12 +25,12 @@ public class CheckGeneralBattleEndOld extends CheckGeneralBattleEnd {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (hasSideLost(BattleState.Side.OFFENSE)) {
+    if (hasSideLost(OFFENSE)) {
       getBattleActions().endBattle(IBattle.WhoWon.DEFENDER, bridge);
 
-    } else if (hasSideLost(BattleState.Side.DEFENSE)) {
+    } else if (hasSideLost(DEFENSE)) {
       new RemoveUnprotectedUnits(getBattleState(), getBattleActions())
-          .removeUnprotectedUnits(bridge, BattleState.Side.DEFENSE);
+          .removeUnprotectedUnits(bridge, DEFENSE);
       getBattleActions().endBattle(IBattle.WhoWon.ATTACKER, bridge);
 
     } else if (isStalemate()) {

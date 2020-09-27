@@ -1,6 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.engine.data.changefactory.ChangeFactory.EMPTY_CHANGE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -21,8 +23,7 @@ class RetreaterAirAmphibious implements Retreater {
 
   @Override
   public Collection<Unit> getRetreatUnits() {
-    return CollectionUtils.getMatches(
-        battleState.getUnits(BattleState.Side.OFFENSE), Matches.unitIsAir());
+    return CollectionUtils.getMatches(battleState.filterUnits(ALIVE, OFFENSE), Matches.unitIsAir());
   }
 
   @Override
@@ -41,7 +42,7 @@ class RetreaterAirAmphibious implements Retreater {
 
     final List<RetreatHistoryChild> historyChildren = new ArrayList<>();
 
-    battleState.retreatUnits(BattleState.Side.OFFENSE, retreatingUnits);
+    battleState.retreatUnits(OFFENSE, retreatingUnits);
     final String transcriptText = MyFormatter.unitsToText(retreatingUnits) + " retreated";
     historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(retreatingUnits)));
 

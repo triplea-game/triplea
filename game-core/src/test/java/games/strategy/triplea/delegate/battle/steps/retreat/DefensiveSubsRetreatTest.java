@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
@@ -167,7 +168,7 @@ class DefensiveSubsRetreatTest {
 
       defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
-      verify(battleState).retreatUnits(BattleState.Side.DEFENSE, retreatingUnits);
+      verify(battleState).retreatUnits(DEFENSE, retreatingUnits);
     }
 
     @Test
@@ -199,7 +200,7 @@ class DefensiveSubsRetreatTest {
 
       defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
-      verify(battleState).retreatUnits(BattleState.Side.DEFENSE, retreatingUnits);
+      verify(battleState).retreatUnits(DEFENSE, retreatingUnits);
     }
   }
 
@@ -261,7 +262,7 @@ class DefensiveSubsRetreatTest {
           new DefensiveSubsRetreat(battleState, battleActions);
       defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
-      verify(battleState).retreatUnits(BattleState.Side.DEFENSE, retreatingUnits);
+      verify(battleState).retreatUnits(DEFENSE, retreatingUnits);
     }
 
     @Test
@@ -307,7 +308,7 @@ class DefensiveSubsRetreatTest {
           new DefensiveSubsRetreat(battleState, battleActions);
       defensiveSubsRetreat.execute(executionStack, delegateBridge);
 
-      verify(battleState).retreatUnits(BattleState.Side.DEFENSE, retreatingUnits);
+      verify(battleState).retreatUnits(DEFENSE, retreatingUnits);
     }
   }
 
