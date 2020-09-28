@@ -9,12 +9,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
-import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChangeMatcher;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ObjectPropertyChangeMatcher;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -71,7 +73,12 @@ class MarkNoMovementLeftTest {
 
     markNoMovementLeft.execute(executionStack, delegateBridge);
 
-    verify(delegateBridge).addChange(any(Change.class));
+    verify(delegateBridge)
+        .addChange(
+            argThat(
+                CompositeChangeMatcher.compositeChangeContains(
+                    ObjectPropertyChangeMatcher.propertyChange(
+                        "alreadyMoved", BigDecimal.ONE, BigDecimal.ZERO))));
   }
 
   private Unit givenNonAirUnitWithMovementLeft(final BigDecimal movement) {
@@ -98,7 +105,12 @@ class MarkNoMovementLeftTest {
 
     markNoMovementLeft.execute(executionStack, delegateBridge);
 
-    verify(delegateBridge).addChange(any(Change.class));
+    verify(delegateBridge)
+        .addChange(
+            argThat(
+                CompositeChangeMatcher.compositeChangeContains(
+                    ObjectPropertyChangeMatcher.propertyChange(
+                        "alreadyMoved", BigDecimal.ONE, BigDecimal.ZERO))));
   }
 
   @Test
@@ -114,6 +126,6 @@ class MarkNoMovementLeftTest {
 
     markNoMovementLeft.execute(executionStack, delegateBridge);
 
-    verify(delegateBridge, never()).addChange(any(Change.class));
+    verify(delegateBridge, never()).addChange(any());
   }
 }
