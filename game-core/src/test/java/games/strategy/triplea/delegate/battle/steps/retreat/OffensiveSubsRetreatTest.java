@@ -6,7 +6,7 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -148,7 +148,7 @@ public class OffensiveSubsRetreatTest {
                     .withTransportCasualtiesRestricted(true)
                     .withSubmersibleSubs(false)
                     .build())
-            .defendingUnits(List.of(givenUnitTransport()))
+            .defendingUnits(List.of(givenUnitSeaTransport()))
             .attackerRetreatTerritories(List.of(mock(Territory.class)))
             .build();
     final OffensiveSubsRetreat offensiveSubsRetreat =
@@ -241,7 +241,7 @@ public class OffensiveSubsRetreatTest {
                   .attacker(attacker)
                   .attackingUnits(retreatingUnits)
                   .gameData(gameData)
-                  .defendingUnits(List.of(givenUnitTransport(), givenAnyUnit()))
+                  .defendingUnits(List.of(givenUnitSeaTransport(), givenAnyUnit()))
                   .build());
 
       when(battleActions.querySubmergeTerritory(
@@ -381,7 +381,7 @@ public class OffensiveSubsRetreatTest {
                     .withTransportCasualtiesRestricted(true)
                     .withSubmersibleSubs(false)
                     .build())
-            .defendingUnits(List.of(givenUnitTransport()))
+            .defendingUnits(List.of(givenUnitSeaTransport()))
             .attackerRetreatTerritories(List.of(mock(Territory.class)))
             .build();
     final OffensiveSubsRetreat offensiveSubsRetreat =
@@ -403,7 +403,7 @@ public class OffensiveSubsRetreatTest {
                     .withTransportCasualtiesRestricted(true)
                     .withSubmersibleSubs(true)
                     .build())
-            .defendingUnits(List.of(givenUnitTransport()))
+            .defendingUnits(List.of(givenUnitSeaTransport()))
             .build();
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);

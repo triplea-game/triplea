@@ -607,6 +607,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             attackingUnits,
             defendingAa,
             defendingUnits,
+            "Hits from " + currentTypeAa + ", ",
             dice,
             bridge,
             attacker,

@@ -67,7 +67,7 @@ public class CasualtySelector {
       final boolean defending,
       final UUID battleId,
       final boolean headLess,
-      final int extraHits,
+      final int diceHitOverride,
       final boolean allowMultipleHitsPerUnit) {
     if (targetsToPickFrom.isEmpty()) {
       return new CasualtyDetails();
@@ -80,7 +80,7 @@ public class CasualtySelector {
         headLess ? Map.of() : CasualtyUtil.getDependents(targetsToPickFrom);
 
     final int hitsRemaining =
-        Properties.getTransportCasualtiesRestricted(data) ? extraHits : dice.getHits();
+        Properties.getTransportCasualtiesRestricted(data) ? diceHitOverride : dice.getHits();
 
     if (BaseEditDelegate.getEditMode(data)) {
       return tripleaPlayer.selectCasualties(
@@ -200,7 +200,7 @@ public class CasualtySelector {
           defending,
           battleId,
           headLess,
-          extraHits,
+          diceHitOverride,
           allowMultipleHitsPerUnit);
     }
     // check we have enough of each type
@@ -227,7 +227,7 @@ public class CasualtySelector {
           defending,
           battleId,
           headLess,
-          extraHits,
+          diceHitOverride,
           allowMultipleHitsPerUnit);
     }
     return casualtySelection;

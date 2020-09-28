@@ -10,11 +10,14 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,10 +40,11 @@ class DefensiveGeneralTest {
       final BattleState battleState =
           givenBattleStateBuilder()
               .defendingUnits(List.of(givenAnyUnit()))
+              .attackingUnits(List.of(givenAnyUnit()))
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);
-      assertThat(defensiveGeneral.getNames(), hasSize(2));
+      assertThat(defensiveGeneral.getNames(), hasSize(3));
     }
 
     @Test
@@ -50,10 +54,31 @@ class DefensiveGeneralTest {
       final BattleState battleState =
           givenBattleStateBuilder()
               .defendingUnits(List.of(givenUnitFirstStrike()))
+              .attackingUnits(List.of(givenAnyUnit()))
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);
       assertThat(defensiveGeneral.getNames(), is(empty()));
     }
+  }
+
+  @Test
+  void firingFilterIgnoresFirstStrikeUnits() {
+    final List<Unit> units =
+        List.of(
+                givenAnyUnit(),
+                givenUnitFirstStrike(),
+                givenAnyUnit(),
+                givenUnitFirstStrike(),
+                givenAnyUnit())
+            .stream()
+            .filter(DefensiveGeneral.FIRING_UNIT_PREDICATE)
+            .collect(Collectors.toList());
+
+    assertThat(units, hasSize(3));
+    assertThat(
+        "There should be no first strike units",
+        units.stream().allMatch(Matches.unitIsFirstStrike().negate()),
+        is(true));
   }
 }

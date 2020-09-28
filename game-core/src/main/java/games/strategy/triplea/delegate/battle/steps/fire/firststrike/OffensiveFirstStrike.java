@@ -1,12 +1,11 @@
 package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -15,9 +14,16 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import java.util.ArrayList;
+import games.strategy.triplea.delegate.battle.steps.fire.FireStepsBuilder;
+import games.strategy.triplea.delegate.battle.steps.fire.RollNormal;
+import games.strategy.triplea.delegate.battle.steps.fire.SelectNormalCasualties;
+import games.strategy.triplea.delegate.battle.steps.fire.general.FiringGroupFilterGeneral;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+/** Generates fire steps for the first strike battle phase for the offensive player */
 public class OffensiveFirstStrike implements BattleStep {
 
   private enum State {
@@ -26,7 +32,12 @@ public class OffensiveFirstStrike implements BattleStep {
     FIRST_STRIKE,
   }
 
+  @VisibleForTesting
+  static final Predicate<Unit> FIRING_UNIT_PREDICATE = Matches.unitIsFirstStrike();
+
   private static final long serialVersionUID = -2154415762808582704L;
+
+  private static final BattleState.Side side = OFFENSE;
 
   protected final BattleState battleState;
 
@@ -54,7 +65,7 @@ public class OffensiveFirstStrike implements BattleStep {
   }
 
   private State calculateState() {
-    if (battleState.filterUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitIsFirstStrike())) {
+    if (battleState.filterUnits(ALIVE, side).stream().noneMatch(Matches.unitIsFirstStrike())) {
       return State.NOT_APPLICABLE;
     }
 
@@ -64,7 +75,8 @@ public class OffensiveFirstStrike implements BattleStep {
     }
 
     final boolean canSneakAttack =
-        battleState.filterUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitIsDestroyer());
+        battleState.filterUnits(ALIVE, side.getOpposite()).stream()
+            .noneMatch(Matches.unitIsDestroyer());
     if (canSneakAttack) {
       return State.FIRST_STRIKE;
     }
@@ -73,15 +85,11 @@ public class OffensiveFirstStrike implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    final List<String> steps = new ArrayList<>();
-    if (this.state == State.NOT_APPLICABLE) {
-      return steps;
-    }
-
-    steps.add(battleState.getPlayer(OFFENSE).getName() + FIRST_STRIKE_UNITS_FIRE);
-    steps.add(battleState.getPlayer(DEFENSE).getName() + SELECT_FIRST_STRIKE_CASUALTIES);
-
-    return steps;
+    return this.state == State.NOT_APPLICABLE
+        ? List.of()
+        : getSteps().stream()
+            .flatMap(step -> step.getNames().stream())
+            .collect(Collectors.toList());
   }
 
   @Override
@@ -97,15 +105,24 @@ public class OffensiveFirstStrike implements BattleStep {
     if (this.state == State.NOT_APPLICABLE) {
       return;
     }
-    battleActions.findTargetGroupsAndFire(
-        returnFire,
-        battleState.getPlayer(DEFENSE).getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-        false,
-        battleState.getPlayer(OFFENSE),
-        Matches.unitIsFirstStrike(),
-        battleState.filterUnits(ALIVE, OFFENSE),
-        battleState.filterUnits(CASUALTY, OFFENSE),
-        battleState.filterUnits(ALIVE, DEFENSE),
-        battleState.filterUnits(CASUALTY, DEFENSE));
+    final List<BattleStep> steps = getSteps();
+
+    // steps go in reverse order on the stack
+    Collections.reverse(steps);
+    steps.forEach(stack::push);
+  }
+
+  private List<BattleStep> getSteps() {
+    return FireStepsBuilder.buildSteps(
+        FireStepsBuilder.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .firingGroupFilter(
+                FiringGroupFilterGeneral.of(side, FIRING_UNIT_PREDICATE, FIRST_STRIKE_UNITS))
+            .side(side)
+            .returnFire(returnFire)
+            .roll(new RollNormal())
+            .selectCasualties(new SelectNormalCasualties())
+            .build());
   }
 }

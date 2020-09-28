@@ -7,6 +7,7 @@ public interface BattleStepStrings {
   String SELECT_PREFIX = " select ";
   String REMOVE_PREFIX = " remove ";
   String CASUALTIES_SUFFIX = " casualties";
+  String CASUALTIES_WITHOUT_SPACE_SUFFIX = "casualties";
   String LAND_PARATROOPS = "Land Paratroopers";
   String NAVAL_BOMBARDMENT = "Naval bombardment";
   String SELECT_NAVAL_BOMBARDMENT_CASUALTIES = "Select naval bombardment casualties";
@@ -14,9 +15,13 @@ public interface BattleStepStrings {
   String SUBMERGE_SUBS_VS_AIR_ONLY = "Submerge subs against only air units";
   String AIR_ATTACK_NON_SUBS = "Air attack non subs";
   String AIR_DEFEND_NON_SUBS = "Air defend non subs";
+  String AIR_FIRE_NON_SUBS = "air vs non subs";
+  String UNITS = "units";
+  String BOMBARD = "bombard";
+  String FIRST_STRIKE_UNITS = "first strike units";
   String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
-  String FIRE = " fire";
-  String FIRST_STRIKE_UNITS_FIRE = " first strike units fire";
+  String FIRE_SUFFIX = " fire";
+  String FIRST_STRIKE_UNITS_FIRE_SUFFIX = " first strike units fire";
   String SELECT_FIRST_STRIKE_CASUALTIES = " select first strike casualties";
   String SELECT_CASUALTIES = " select casualties";
   String REMOVE_CASUALTIES = "Remove casualties";

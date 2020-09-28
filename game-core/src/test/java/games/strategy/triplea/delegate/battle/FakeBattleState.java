@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -51,10 +52,6 @@ public class FakeBattleState implements BattleState {
   final @NonNull Collection<Unit> defendingUnits;
 
   final @NonNull Collection<Unit> defendingWaitingToDie;
-
-  final @NonNull Collection<Unit> offensiveAa;
-
-  final @NonNull Collection<Unit> defendingAa;
 
   final @NonNull Collection<Unit> killed;
 
@@ -183,21 +180,8 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
-  public Collection<Unit> getAa(final Side... sides) {
-    final Collection<Unit> units = new ArrayList<>();
-    for (final Side side : sides) {
-      switch (side) {
-        case OFFENSE:
-          units.addAll(offensiveAa);
-          break;
-        case DEFENSE:
-          units.addAll(defendingAa);
-          break;
-        default:
-          break;
-      }
-    }
-    return units;
+  public List<String> getStepStrings() {
+    return List.of();
   }
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
@@ -212,13 +196,11 @@ public class FakeBattleState implements BattleState {
         .defendingWaitingToDie(List.of())
         .attacker(mock(GamePlayer.class))
         .defender(mock(GamePlayer.class))
-        .offensiveAa(List.of())
-        .defendingAa(List.of())
         .bombardingUnits(List.of())
         .dependentUnits(List.of())
         .killed(List.of())
         .retreatUnits(new ArrayList<>())
-        .gameData(mock(GameData.class))
+        .gameData(givenGameData().build())
         .amphibious(false)
         .over(false)
         .attackerRetreatTerritories(List.of());

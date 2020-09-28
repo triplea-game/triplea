@@ -8,10 +8,12 @@ import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Value;
 import org.triplea.java.ChangeOnNextMajorRelease;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
@@ -90,8 +92,6 @@ public interface BattleState {
 
   void retreatUnits(Side side, Collection<Unit> units);
 
-  Collection<Unit> getAa(Side... sides);
-
   Collection<Unit> getBombardingUnits();
 
   GamePlayer getPlayer(Side side);
@@ -107,4 +107,8 @@ public interface BattleState {
   Collection<Unit> getTransportDependents(Collection<Unit> units);
 
   Collection<IBattle> getDependentBattles();
+
+  @RemoveOnNextMajorRelease("Only used to handle step string changes")
+  @Deprecated
+  List<String> getStepStrings();
 }

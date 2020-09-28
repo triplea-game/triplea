@@ -35,8 +35,8 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomSh
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE_SUFFIX;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
@@ -187,6 +187,7 @@ class WW2V3Year41Test {
                 planes,
                 defendingAa,
                 defendingAa,
+                "",
                 roll,
                 bridge,
                 null,
@@ -242,6 +243,7 @@ class WW2V3Year41Test {
                 planes,
                 defendingAa,
                 defendingAa,
+                "",
                 roll,
                 bridge,
                 null,
@@ -300,6 +302,7 @@ class WW2V3Year41Test {
                 planes,
                 defendingAa,
                 defendingAa,
+                "",
                 roll,
                 bridge,
                 null,
@@ -986,9 +989,9 @@ class WW2V3Year41Test {
         List.of(
                 attacker + SUBS_SUBMERGE,
                 defender + SUBS_SUBMERGE,
-                attacker + FIRST_STRIKE_UNITS_FIRE,
+                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
+                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 REMOVE_CASUALTIES,
@@ -1027,12 +1030,12 @@ class WW2V3Year41Test {
     assertEquals(
         List.of(
                 defender + SUBS_SUBMERGE,
-                defender + FIRST_STRIKE_UNITS_FIRE,
+                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker + FIRST_STRIKE_UNITS_FIRE,
+                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRE,
+                defender + FIRE_SUFFIX,
                 attacker + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker + ATTACKER_WITHDRAW)
@@ -1075,12 +1078,12 @@ class WW2V3Year41Test {
     assertEquals(
         List.of(
                 attacker + SUBS_SUBMERGE,
-                attacker + FIRST_STRIKE_UNITS_FIRE,
+                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 defender + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker + FIRE,
+                attacker + FIRE_SUFFIX,
                 defender + SELECT_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
+                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker + ATTACKER_WITHDRAW)
@@ -1123,13 +1126,13 @@ class WW2V3Year41Test {
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE,
+                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                attacker + FIRE,
+                attacker + FIRE_SUFFIX,
                 defender + SELECT_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
+                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
                 attacker + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRE,
+                defender + FIRE_SUFFIX,
                 attacker + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker + ATTACKER_WITHDRAW)

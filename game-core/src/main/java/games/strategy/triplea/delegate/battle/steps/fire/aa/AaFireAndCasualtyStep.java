@@ -1,20 +1,27 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.AA_GUNS_FIRE_SUFFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_PREFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_PREFIX;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
 
-import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import java.util.ArrayList;
-import java.util.Collection;
+import games.strategy.triplea.delegate.battle.steps.fire.FireStepsBuilder;
+import games.strategy.triplea.delegate.battle.steps.fire.RollDice;
+import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.triplea.sound.SoundUtils;
 
 @AllArgsConstructor
 public abstract class AaFireAndCasualtyStep implements BattleStep {
@@ -26,25 +33,75 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    final List<String> steps = new ArrayList<>();
-    if (!valid()) {
-      return steps;
-    }
-    for (final String typeAa : UnitAttachment.getAllOfTypeAas(aaGuns())) {
-      steps.add(firingPlayer().getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
-      steps.add(firedAtPlayer().getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
-      steps.add(firedAtPlayer().getName() + REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
-    }
-    return steps;
+    return getSteps().stream()
+        .flatMap(step -> step.getNames().stream())
+        .collect(Collectors.toList());
   }
 
-  protected boolean valid() {
-    return !aaGuns().isEmpty();
+  @Override
+  public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    final List<BattleStep> steps = getSteps();
+
+    // steps go in reverse order on the stack
+    Collections.reverse(steps);
+    steps.forEach(stack::push);
   }
 
-  abstract GamePlayer firingPlayer();
+  private List<BattleStep> getSteps() {
+    return FireStepsBuilder.buildSteps(
+        FireStepsBuilder.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .firingGroupFilter(FiringGroupFilterAa.of(getSide()))
+            .side(getSide())
+            .returnFire(MustFightBattle.ReturnFire.ALL)
+            .roll(new Roll())
+            .selectCasualties(new Casualties())
+            .build());
+  }
 
-  abstract GamePlayer firedAtPlayer();
+  abstract BattleState.Side getSide();
 
-  abstract Collection<Unit> aaGuns();
+  public static class Roll implements BiFunction<IDelegateBridge, RollDice, DiceRoll> {
+
+    @Override
+    public DiceRoll apply(final IDelegateBridge bridge, final RollDice step) {
+      final DiceRoll dice =
+          DiceRoll.rollAa(
+              step.getFiringGroup().getTargetUnits(),
+              step.getFiringGroup().getFiringUnits(),
+              step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()),
+              step.getBattleState().filterUnits(ACTIVE, step.getSide()),
+              bridge,
+              step.getBattleState().getBattleSite(),
+              step.getSide() == DEFENSE);
+
+      SoundUtils.playFireBattleAa(
+          step.getBattleState().getPlayer(step.getSide()),
+          step.getFiringGroup().getGroupName(),
+          dice.getHits() > 0,
+          bridge);
+      return dice;
+    }
+  }
+
+  public static class Casualties
+      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+    @Override
+    public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
+      return AaCasualtySelector.getAaCasualties(
+          step.getSide() == OFFENSE,
+          step.getFiringGroup().getTargetUnits(),
+          step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()),
+          step.getFiringGroup().getFiringUnits(),
+          step.getBattleState().filterUnits(ACTIVE, step.getSide()),
+          "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
+          step.getFireRoundState().getDice(),
+          bridge,
+          step.getBattleState().getPlayer(step.getSide().getOpposite()),
+          step.getBattleState().getBattleId(),
+          step.getBattleState().getBattleSite(),
+          step.getBattleState().getTerritoryEffects());
+    }
+  }
 }
