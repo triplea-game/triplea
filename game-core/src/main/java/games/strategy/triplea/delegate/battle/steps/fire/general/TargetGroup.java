@@ -19,12 +19,12 @@ import org.triplea.java.collections.CollectionUtils;
 
 /** Group of firing units and their targets. */
 @Getter(AccessLevel.PACKAGE)
-public class TargetGroup {
+class TargetGroup {
 
   private final Set<UnitType> firingUnitTypes;
   private final Set<UnitType> targetUnitTypes;
 
-  public TargetGroup(final UnitType firingUnitType, final Set<UnitType> targetUnitTypes) {
+  TargetGroup(final UnitType firingUnitType, final Set<UnitType> targetUnitTypes) {
     firingUnitTypes = Sets.newHashSet(firingUnitType);
     this.targetUnitTypes = targetUnitTypes;
   }
@@ -50,7 +50,7 @@ public class TargetGroup {
         units.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
     final Set<UnitType> enemyUnitTypes =
         enemyUnits.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
-    final List<TargetGroup> targetGroups = new ArrayList<TargetGroup>();
+    final List<TargetGroup> targetGroups = new ArrayList<>();
     for (final UnitType unitType : unitTypes) {
       final Set<UnitType> targets = findTargets(unitType, unitTypes, enemyUnitTypes);
       if (targets.isEmpty()) {

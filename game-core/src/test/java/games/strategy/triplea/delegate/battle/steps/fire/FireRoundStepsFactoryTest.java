@@ -130,8 +130,6 @@ class FireRoundStepsFactoryTest {
                 .createSteps());
 
     assertThat(
-        "units should not be in the name",
-        names,
-        is(generalFightStepStrings(attacker, defender, "")));
+        "units should not be in the name", names, is(generalFightStepStrings(attacker, defender)));
   }
 }

@@ -1,16 +1,16 @@
 package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
+import static games.strategy.triplea.Constants.ALLIED_AIR_INDEPENDENT;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -44,17 +44,7 @@ class OffensiveFirstStrikeTest {
     assertThat(offensiveFirstStrike.getNames(), is(empty()));
 
     offensiveFirstStrike.execute(executionStack, delegateBridge);
-    verify(battleActions, never())
-        .findTargetGroupsAndFire(
-            any(),
-            anyString(),
-            anyBoolean(),
-            any(),
-            any(),
-            anyCollection(),
-            anyCollection(),
-            anyCollection(),
-            anyCollection());
+    verify(executionStack, never()).push(any());
   }
 
   @ParameterizedTest
@@ -62,24 +52,16 @@ class OffensiveFirstStrikeTest {
   void getStep(final List<BattleStateVariation> parameters, final Order stepOrder) {
 
     final BattleState battleState = givenBattleState(parameters);
+    when(battleState.getGameData().getProperties().get(ALLIED_AIR_INDEPENDENT, false))
+        .thenReturn(true);
 
     final OffensiveFirstStrike offensiveFirstStrike =
         new OffensiveFirstStrike(battleState, battleActions);
-    assertThat(offensiveFirstStrike.getNames(), hasSize(2));
+    assertThat(offensiveFirstStrike.getNames(), hasSize(3));
     assertThat(offensiveFirstStrike.getOrder(), is(stepOrder));
 
     offensiveFirstStrike.execute(executionStack, delegateBridge);
-    verify(battleActions)
-        .findTargetGroupsAndFire(
-            any(),
-            anyString(),
-            anyBoolean(),
-            any(),
-            any(),
-            anyCollection(),
-            anyCollection(),
-            anyCollection(),
-            anyCollection());
+    verify(executionStack, times(3)).push(any());
   }
 
   static List<Arguments> getStep() {

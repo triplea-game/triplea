@@ -7,8 +7,11 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.AIR_ATTAC
 
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Air can not attack subs unless a destroyer is present */
+@RemoveOnNextMajorRelease
+@Deprecated
 public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
   private static final long serialVersionUID = 4273449622231941896L;
 

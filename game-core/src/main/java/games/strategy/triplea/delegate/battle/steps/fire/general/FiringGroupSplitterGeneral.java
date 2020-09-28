@@ -37,7 +37,7 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>See {@link FiringGroup} for why isSuicideOnHit needs to be separated by unit type.
  */
 @Value(staticConstructor = "of")
-public class FiringGroupSplitterGeneral implements Function<BattleState, List<FiringGroup>> {
+public class FiringGroupSplitterGeneral implements Function<BattleState, Collection<FiringGroup>> {
 
   public enum Type {
     NORMAL,

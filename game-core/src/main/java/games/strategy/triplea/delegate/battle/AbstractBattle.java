@@ -12,7 +12,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.weak.WeakAi;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -343,19 +342,6 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     return player;
-  }
-
-  /**
-   * The maximum number of hits that this collection of units can sustain, taking into account units
-   * with two hits, and accounting for existing damage.
-   */
-  static int getMaxHits(final Collection<Unit> units) {
-    int count = 0;
-    for (final Unit unit : units) {
-      count += UnitAttachment.get(unit.getType()).getHitPoints();
-      count -= unit.getHits();
-    }
-    return count;
   }
 
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
