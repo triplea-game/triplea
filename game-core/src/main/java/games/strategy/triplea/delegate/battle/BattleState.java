@@ -102,6 +102,8 @@ public interface BattleState {
 
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
+  void removeDependentUnits(Collection<Unit> units);
+
   Collection<Unit> getTransportDependents(Collection<Unit> units);
 
   Collection<IBattle> getDependentBattles();

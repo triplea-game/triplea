@@ -88,6 +88,11 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
+  public void removeDependentUnits(final Collection<Unit> units) {
+    // use verify() to check if this method is called
+  }
+
+  @Override
   public Collection<IBattle> getDependentBattles() {
     return new ArrayList<>();
   }
