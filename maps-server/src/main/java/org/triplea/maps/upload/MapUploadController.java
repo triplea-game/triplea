@@ -15,14 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 // @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapUploadController {
 
-  private final Function<InputStream, UploadResult> mapUploadModule = new MapUploadModule();
+  private final Function<UploadRequestParams, UploadResult> mapUploadModule = new MapUploadModule(null);
 
   @PUT
   @Path("/maps/upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response save(final InputStream uploadedInputStream) {
-    final UploadResult result = mapUploadModule.apply(uploadedInputStream);
+//    final UploadResult result = mapUploadModule.apply(uploadedInputStream);
 
-    return Response.status(result.isSuccess() ? 200 : 400).entity(result).build();
+//    return Response.status(result.isSuccess() ? 200 : 400).entity(result).build();
+    return null;
   }
 }

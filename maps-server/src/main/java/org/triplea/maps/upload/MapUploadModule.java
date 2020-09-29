@@ -89,5 +89,6 @@ public class MapUploadModule implements Function<UploadRequestParams, UploadResu
   }
 
   private String readMapNameFromProperties(final Path file) {
+    return "";
   }
 }
