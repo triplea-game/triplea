@@ -6,6 +6,15 @@ import lombok.AllArgsConstructor;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+/**
+ * Matches all changes of a {@link CompositeChange} object
+ *
+ * <p>Each of the changes are matched against the requested matchers in the same order and will fail
+ * if the changes are not the same size or in the same order.
+ *
+ * <p>Example usage: assertThat(change, compositeChangeContains(propertyChange(property, newValue,
+ * oldValue)));
+ */
 @AllArgsConstructor
 public class CompositeChangeMatcher extends ChangeMatcher<CompositeChange> {
 
