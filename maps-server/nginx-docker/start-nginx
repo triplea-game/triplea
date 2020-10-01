@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -x
+contentFolder=$(pwd)/$(dirname $0)/content
+mkdir -p "$contentFolder"
+
+docker run \
+  -it --rm -d \
+  -p 8000:80 \
+  -v "$contentFolder:/usr/share/nginx/html" \
+  --name web \
+  nginx
+
