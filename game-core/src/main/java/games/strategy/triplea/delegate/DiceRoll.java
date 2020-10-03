@@ -1275,7 +1275,10 @@ public class DiceRoll implements Externalizable {
   }
 
   public static String getAnnotation(
-      final Collection<Unit> units, final GamePlayer player, final IBattle battle) {
+      final Collection<Unit> units,
+      final GamePlayer player,
+      final Territory territory,
+      final int battleRound) {
     final StringBuilder buffer = new StringBuilder(80);
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player
     // name via the
@@ -1285,14 +1288,11 @@ public class DiceRoll implements Externalizable {
     buffer
         .append(player.getName())
         .append(" roll dice for ")
-        .append(MyFormatter.unitsToTextNoOwner(units));
-    if (battle != null) {
-      buffer
-          .append(" in ")
-          .append(battle.getTerritory().getName())
-          .append(", round ")
-          .append((battle.getBattleRound() + 1));
-    }
+        .append(MyFormatter.unitsToTextNoOwner(units))
+        .append(" in ")
+        .append(territory.getName())
+        .append(", round ")
+        .append(battleRound + 1);
     return buffer.toString();
   }
 
