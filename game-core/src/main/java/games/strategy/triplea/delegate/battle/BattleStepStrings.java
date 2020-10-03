@@ -17,7 +17,7 @@ public interface BattleStepStrings {
   String AIR_DEFEND_NON_SUBS = "Air defend non subs";
   String AIR_FIRE_NON_SUBS = "air vs non subs";
   String UNITS = "units";
-  String BOMBARD = "bombard";
+  String BOMBARD = "naval bombardment";
   String FIRST_STRIKE_UNITS = "first strike units";
   String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
   String FIRE_SUFFIX = " fire";
