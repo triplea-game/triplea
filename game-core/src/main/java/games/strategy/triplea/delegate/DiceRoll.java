@@ -18,7 +18,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.battle.AirBattle;
-import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.power.calculator.AvailableSupportCalculator;
 import games.strategy.triplea.delegate.power.calculator.SupportBonusCalculator;
 import games.strategy.triplea.delegate.power.calculator.SupportCalculationResult;
