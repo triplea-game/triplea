@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle;
+package games.strategy.triplea.delegate.battle.steps.fire.general;
 
 import com.google.common.collect.Sets;
 import games.strategy.engine.data.Unit;
@@ -18,7 +18,7 @@ import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Group of firing units and their targets. */
-@Getter(AccessLevel.PRIVATE)
+@Getter(AccessLevel.PACKAGE)
 public class TargetGroup {
 
   private final Set<UnitType> firingUnitTypes;
