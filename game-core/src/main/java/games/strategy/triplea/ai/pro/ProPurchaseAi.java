@@ -1345,9 +1345,11 @@ class ProPurchaseAi {
           startOfTurnData,
           purchaseOptionsForTerritory,
           resourceTracker,
-          1,
+          0,
           new ArrayList<>(),
-          purchaseTerritories);
+          purchaseTerritories,
+          1,
+          maxTerritory);
       resourceTracker.clearTempPurchases();
 
       // Determine most expensive factory option (currently doesn't buy mobile factories)
