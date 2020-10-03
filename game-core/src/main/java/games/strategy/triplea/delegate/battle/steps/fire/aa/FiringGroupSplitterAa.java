@@ -11,12 +11,12 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
-import games.strategy.triplea.delegate.battle.steps.fire.FiringGroupFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -26,7 +26,7 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>The firing groups are separated by typeAa and isSuicideOnHit
  */
 @Value(staticConstructor = "of")
-public class FiringGroupFilterAa implements FiringGroupFilter {
+public class FiringGroupSplitterAa implements Function<BattleState, List<FiringGroup>> {
 
   BattleState.Side side;
 

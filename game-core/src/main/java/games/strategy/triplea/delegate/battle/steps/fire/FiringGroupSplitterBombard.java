@@ -9,6 +9,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -18,7 +19,7 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>The firing groups are separated by isSuicideOnHit
  */
 @Value(staticConstructor = "of")
-public class FiringGroupFilterBombard implements FiringGroupFilter {
+public class FiringGroupSplitterBombard implements Function<BattleState, List<FiringGroup>> {
 
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {

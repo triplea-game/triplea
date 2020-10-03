@@ -1,14 +1,14 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -19,11 +19,26 @@ import org.triplea.java.collections.CollectionUtils;
  */
 @Value
 public class FiringGroup {
+
+  private static final UnitType NON_SUICIDE_MULTIMAP_KEY = new UnitType("nonsuicide", null);
+
   String displayName;
   String groupName;
   Collection<Unit> firingUnits;
   Collection<Unit> targetUnits;
   boolean suicideOnHit;
+
+  private FiringGroup(
+      final String displayName,
+      final String groupName,
+      final Collection<Unit> firingUnits,
+      final Collection<Unit> targetUnits) {
+    this.displayName = displayName;
+    this.groupName = groupName;
+    this.firingUnits = firingUnits;
+    this.targetUnits = targetUnits;
+    this.suicideOnHit = this.firingUnits.stream().anyMatch(Matches.unitIsSuicideOnHit());
+  }
 
   public Collection<Unit> getTargetUnits() {
     return Collections.unmodifiableCollection(targetUnits);
@@ -55,89 +70,55 @@ public class FiringGroup {
    */
   public static List<FiringGroup> groupBySuicideOnHit(
       final String name, final Collection<Unit> firingUnits, final Collection<Unit> targetUnits) {
-    final List<FiringGroup> groups = new ArrayList<>();
-    final List<Collection<Unit>> separatedBySuicide = separateSuicideOnHit(firingUnits);
+    final Multimap<UnitType, Unit> separatedBySuicide = separateSuicideOnHit(firingUnits);
 
-    // ensure each firing group has a unique name by adding prefixes
-    // if the firing groups have different types of suicide units
-    if (separatedBySuicide.size() == 1) {
-      groups.add(
-          new FiringGroup(
-              name,
-              name,
-              separatedBySuicide.get(0),
-              targetUnits,
-              Matches.unitIsSuicideOnHit().test(separatedBySuicide.get(0).iterator().next())));
-
-    } else if (separatedBySuicide.size() == 2
-        && Matches.unitIsSuicideOnHit().test(separatedBySuicide.get(0).iterator().next())
-            != Matches.unitIsSuicideOnHit().test(separatedBySuicide.get(1).iterator().next())) {
-      groups.addAll(
-          generateFiringGroupsWithOneSuicideAndOneNonSuicide(
-              name, targetUnits, separatedBySuicide));
-
-    } else {
-      groups.addAll(generateFiringGroups(name, targetUnits, separatedBySuicide));
-    }
-    return groups;
+    return separatedBySuicide.asMap().values().stream()
+        .map(
+            units ->
+                new FiringGroup(
+                    generateName(name, units, separatedBySuicide), name, units, targetUnits))
+        .collect(Collectors.toList());
   }
 
   /**
    * Separate the suicide on hit units from the others and group them by their type. The suicide on
    * hit units need to fire separately so that they can be removed if they hit.
    */
-  private static List<Collection<Unit>> separateSuicideOnHit(final Collection<Unit> units) {
+  private static Multimap<UnitType, Unit> separateSuicideOnHit(final Collection<Unit> units) {
 
-    final Map<UnitType, Collection<Unit>> map = new HashMap<>();
+    final Multimap<UnitType, Unit> map = ArrayListMultimap.create();
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit())) {
       final UnitType type = unit.getType();
-      if (map.containsKey(type)) {
-        map.get(type).add(unit);
-      } else {
-        final Collection<Unit> unitList = new ArrayList<>();
-        unitList.add(unit);
-        map.put(type, unitList);
-      }
+      map.put(type, unit);
     }
 
-    final List<Collection<Unit>> result = new ArrayList<>(map.values());
     final Collection<Unit> remainingUnits =
         CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit().negate());
     if (!remainingUnits.isEmpty()) {
-      result.add(remainingUnits);
+      map.putAll(NON_SUICIDE_MULTIMAP_KEY, remainingUnits);
     }
-    return result;
+    return map;
   }
 
-  /** Handle the case where there are only two groups and one is suicide and the other is not */
-  private static List<FiringGroup> generateFiringGroupsWithOneSuicideAndOneNonSuicide(
-      final String name,
-      final Collection<Unit> targetUnits,
-      final List<Collection<Unit>> separatedBySuicide) {
-    final List<FiringGroup> groups = new ArrayList<>();
-    for (final Collection<Unit> newFiringUnits : separatedBySuicide) {
-      final boolean isSuicideOnHit =
-          Matches.unitIsSuicideOnHit().test(newFiringUnits.iterator().next());
-      final String nameWithSuffix = name + (isSuicideOnHit ? " suicide" : "");
-      groups.add(
-          new FiringGroup(nameWithSuffix, name, newFiringUnits, targetUnits, isSuicideOnHit));
-    }
-    return groups;
-  }
+  private static String generateName(
+      final String originalName,
+      final Collection<Unit> firingUnits,
+      final Multimap<UnitType, Unit> separatedBySuicide) {
 
-  private static List<FiringGroup> generateFiringGroups(
-      final String name,
-      final Collection<Unit> targetUnits,
-      final List<Collection<Unit>> separatedBySuicide) {
-    final List<FiringGroup> groups = new ArrayList<>();
-    for (final Collection<Unit> newFiringUnits : separatedBySuicide) {
-      final Unit firstUnit = newFiringUnits.iterator().next();
-      final boolean isSuicideOnHit = Matches.unitIsSuicideOnHit().test(firstUnit);
-      final String nameWithSuffix =
-          name + (isSuicideOnHit ? " suicide " + firstUnit.getType().getName() : "");
-      groups.add(
-          new FiringGroup(nameWithSuffix, name, newFiringUnits, targetUnits, isSuicideOnHit));
+    if (separatedBySuicide.keySet().size() == 1) {
+      return originalName;
+
+    } else if (separatedBySuicide.keySet().size() == 2
+        && separatedBySuicide.containsKey(NON_SUICIDE_MULTIMAP_KEY)) {
+      // special case where one firing group is suicideOnHit and the other is not
+      return firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit())
+          ? originalName + " suicide"
+          : originalName;
+
+    } else {
+      return firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit())
+          ? originalName + " suicide " + firingUnits.iterator().next().getType().getName()
+          : originalName;
     }
-    return groups;
   }
 }

@@ -12,11 +12,10 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
-import games.strategy.triplea.delegate.battle.steps.fire.FiringGroupFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Value;
@@ -29,7 +28,7 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>The firing groups are separated by canNotTarget, canNotBeTargetedBy, and isSuicideOnHit
  */
 @Value(staticConstructor = "of")
-public class FiringGroupFilterGeneral implements FiringGroupFilter {
+public class FiringGroupSplitterGeneral implements Function<BattleState, List<FiringGroup>> {
 
   BattleState.Side side;
 
@@ -40,15 +39,17 @@ public class FiringGroupFilterGeneral implements FiringGroupFilter {
 
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {
-    Collection<Unit> canFire = battleState.filterUnits(ACTIVE, side);
+    final Collection<Unit> canFire =
+        CollectionUtils.getMatches(
+            battleState.filterUnits(ACTIVE, side),
+            PredicateBuilder.of(firingUnitPredicate)
+                // Remove offense allied units if allied air can not participate
+                .andIf(
+                    side == OFFENSE
+                        && !Properties.getAlliedAirIndependent(battleState.getGameData()),
+                    Matches.unitIsOwnedBy(battleState.getPlayer(side)))
+                .build());
 
-    canFire = CollectionUtils.getMatches(canFire, firingUnitPredicate);
-
-    // Remove offense allied units if allied air can not participate
-    if (side == OFFENSE && !Properties.getAlliedAirIndependent(battleState.getGameData())) {
-      canFire =
-          CollectionUtils.getMatches(canFire, Matches.unitIsOwnedBy(battleState.getPlayer(side)));
-    }
     final Collection<Unit> enemyUnits =
         CollectionUtils.getMatches(
             battleState.filterUnits(ALIVE, side.getOpposite()),
@@ -62,7 +63,7 @@ public class FiringGroupFilterGeneral implements FiringGroupFilter {
     final List<TargetGroup> targetGroups = TargetGroup.newTargetGroups(canFire, enemyUnits);
 
     if (targetGroups.size() == 1) {
-      firingGroups.addAll(getFiringGroups(groupName, canFire, enemyUnits, targetGroups.get(0)));
+      firingGroups.addAll(buildFiringGroups(groupName, canFire, enemyUnits, targetGroups.get(0)));
     } else {
       // General firing groups don't have individual names so find commonly used groups and
       // give them unique names
@@ -78,7 +79,7 @@ public class FiringGroupFilterGeneral implements FiringGroupFilter {
     return firingGroups;
   }
 
-  private List<FiringGroup> getFiringGroups(
+  private List<FiringGroup> buildFiringGroups(
       final String name,
       final Collection<Unit> canFire,
       final Collection<Unit> enemyUnits,
@@ -113,21 +114,21 @@ public class FiringGroupFilterGeneral implements FiringGroupFilter {
 
   private void generateNamedGroups(
       final String name,
-      final List<FiringGroup> firingGroups,
-      final List<TargetGroup> airVsSubGroups,
+      final Collection<FiringGroup> firingGroups,
+      final Collection<TargetGroup> targetGroups,
       final Collection<Unit> canFire,
       final Collection<Unit> enemyUnits) {
-    if (airVsSubGroups.size() == 1) {
-      firingGroups.addAll(getFiringGroups(name, canFire, enemyUnits, airVsSubGroups.get(0)));
+
+    if (targetGroups.size() == 1) {
+      firingGroups.addAll(
+          buildFiringGroups(name, canFire, enemyUnits, targetGroups.iterator().next()));
+
     } else {
-      for (final TargetGroup airVsSubGroup : airVsSubGroups) {
-        final Optional<UnitType> unitType =
-            airVsSubGroup.getFiringUnits(canFire).stream().map(Unit::getType).findFirst();
-        if (unitType.isPresent()) {
-          firingGroups.addAll(
-              getFiringGroups(
-                  name + " " + unitType.get().getName(), canFire, enemyUnits, airVsSubGroup));
-        }
+      // use the first unitType name of each TargetGroup as a suffix for the FiringGroup name
+      for (final TargetGroup targetGroup : targetGroups) {
+        final UnitType type = targetGroup.getFiringUnits(canFire).iterator().next().getType();
+        firingGroups.addAll(
+            buildFiringGroups(name + " " + type.getName(), canFire, enemyUnits, targetGroup));
       }
     }
   }

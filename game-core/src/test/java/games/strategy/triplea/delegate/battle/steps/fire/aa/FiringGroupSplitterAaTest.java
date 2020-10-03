@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class FiringGroupFilterAaTest {
+class FiringGroupSplitterAaTest {
 
   @Mock GamePlayer attacker;
   @Mock GamePlayer defender;
@@ -48,7 +48,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -71,7 +71,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -95,7 +95,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -120,7 +120,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -149,7 +149,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit2.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -191,7 +191,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit2.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -226,7 +226,7 @@ class FiringGroupFilterAaTest {
     when(unitAttachment.getIsSuicideOnHit()).thenReturn(true);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -258,7 +258,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -283,7 +283,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit.getOwner()).thenReturn(attacker);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(OFFENSE)
+        FiringGroupSplitterAa.of(OFFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
@@ -337,7 +337,7 @@ class FiringGroupFilterAaTest {
     when(fireUnit.getOwner()).thenReturn(defender);
 
     final List<FiringGroup> firingGroups =
-        FiringGroupFilterAa.of(DEFENSE)
+        FiringGroupSplitterAa.of(DEFENSE)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(gameData)
