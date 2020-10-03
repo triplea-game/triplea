@@ -17,6 +17,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -445,7 +446,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             false,
             russians,
             bridge,
-            battle,
+            battle.getTerritory(),
             TerritoryEffectHelper.getEffects(balticSeaZone));
     assertEquals(2, roll.getHits());
     advanceToStep(bridge, "russianNonCombatMove");
@@ -864,7 +865,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             true,
             germans,
             bridge,
-            mock(IBattle.class),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(balticSeaZone));
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
@@ -933,7 +934,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             true,
             germans,
             bridge,
-            mock(IBattle.class),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(balticSeaZone));
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
@@ -992,7 +993,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             true,
             germans,
             bridge,
-            mock(IBattle.class),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(balticSeaZone));
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
@@ -1051,7 +1052,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             true,
             germans,
             bridge,
-            mock(IBattle.class),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(balticSeaZone));
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
