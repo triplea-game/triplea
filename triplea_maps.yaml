@@ -424,7 +424,7 @@
 - mapName: WW2 Path to Victory
   mapCategory: GOOD
   url: https://github.com/triplea-maps/ww2_path_to_victory/archive/master.zip
-  version: 4
+  version: 5
   img: https://raw.githubusercontent.com/triplea-maps/ww2_path_to_victory/master/map/smallMap.png
   description: |
     <br>A new World War II map, inspired by Global 1940, from the creators of G40 Balanced Mod.
