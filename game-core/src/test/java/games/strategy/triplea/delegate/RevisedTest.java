@@ -33,12 +33,14 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomSh
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_WITHOUT_SPACE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE_SUFFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE_SUFFIX;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_PREFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_PREFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -1001,9 +1003,11 @@ class RevisedTest {
     assertEquals(
         List.of(
                 attacker + FIRE_SUFFIX,
-                defender + SELECT_CASUALTIES,
+                defender + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                defender + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 defender + FIRE_SUFFIX,
-                attacker + SELECT_CASUALTIES,
+                attacker + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                attacker + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 REMOVE_CASUALTIES,
                 attacker + ATTACKER_WITHDRAW)
             .toString(),
@@ -1032,9 +1036,11 @@ class RevisedTest {
     assertEquals(
         List.of(
                 attacker + FIRE_SUFFIX,
-                defender + SELECT_CASUALTIES,
+                defender + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                defender + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 defender + FIRE_SUFFIX,
-                attacker + SELECT_CASUALTIES,
+                attacker + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                attacker + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 REMOVE_CASUALTIES,
                 attacker + ATTACKER_WITHDRAW)
             .toString(),
@@ -1062,10 +1068,12 @@ class RevisedTest {
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
+                attacker + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                defender + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                attacker + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                attacker + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker + SUBS_SUBMERGE,
@@ -1120,13 +1128,16 @@ class RevisedTest {
      */
     assertEquals(
         List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
+                attacker + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                defender + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                attacker + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                attacker + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 defender + FIRE_SUFFIX,
-                attacker + SELECT_CASUALTIES,
+                attacker + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                attacker + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 REMOVE_CASUALTIES,
                 attacker + SUBS_SUBMERGE,
                 attacker + ATTACKER_WITHDRAW,
@@ -1191,15 +1202,19 @@ class RevisedTest {
      */
     assertEquals(
         List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
+                attacker + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                defender + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                attacker + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                attacker + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker + FIRE_SUFFIX,
-                defender + SELECT_CASUALTIES,
+                defender + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                defender + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 defender + FIRE_SUFFIX,
-                attacker + SELECT_CASUALTIES,
+                attacker + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                attacker + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 REMOVE_CASUALTIES,
                 attacker + SUBS_SUBMERGE,
                 attacker + ATTACKER_WITHDRAW,
@@ -1248,13 +1263,16 @@ class RevisedTest {
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
+                attacker + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                defender + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                attacker + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                attacker + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker + FIRE_SUFFIX,
-                defender + SELECT_CASUALTIES,
+                defender + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                defender + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 REMOVE_CASUALTIES,
                 attacker + SUBS_SUBMERGE,
                 attacker + ATTACKER_WITHDRAW,
@@ -1316,15 +1334,19 @@ class RevisedTest {
      */
     assertEquals(
         List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
+                attacker + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                defender + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                attacker + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                attacker + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker + FIRE_SUFFIX,
-                defender + SELECT_CASUALTIES,
+                defender + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                defender + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 defender + FIRE_SUFFIX,
-                attacker + SELECT_CASUALTIES,
+                attacker + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                attacker + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 REMOVE_CASUALTIES,
                 attacker + SUBS_SUBMERGE,
                 attacker + ATTACKER_WITHDRAW,
@@ -1374,14 +1396,18 @@ class RevisedTest {
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE_SUFFIX,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
+                attacker + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                defender + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                defender + " " + FIRST_STRIKE_UNITS + FIRE_SUFFIX,
+                attacker + SELECT_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
+                attacker + REMOVE_PREFIX + FIRST_STRIKE_UNITS + CASUALTIES_SUFFIX,
                 attacker + FIRE_SUFFIX,
-                defender + SELECT_CASUALTIES,
+                defender + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                defender + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 defender + FIRE_SUFFIX,
-                attacker + SELECT_CASUALTIES,
+                attacker + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
+                attacker + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
                 REMOVE_CASUALTIES,
                 attacker + SUBS_SUBMERGE,
                 attacker + ATTACKER_WITHDRAW,

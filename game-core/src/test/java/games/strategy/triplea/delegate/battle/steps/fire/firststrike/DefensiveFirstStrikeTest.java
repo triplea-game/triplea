@@ -25,7 +25,6 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep.Order;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.BattleStateVariation;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -135,6 +134,6 @@ class DefensiveFirstStrikeTest {
     assertThat(
         "There should be only first strike units",
         units.stream().allMatch(Matches.unitIsFirstStrike()),
-        Matchers.is(true));
+        is(true));
   }
 }

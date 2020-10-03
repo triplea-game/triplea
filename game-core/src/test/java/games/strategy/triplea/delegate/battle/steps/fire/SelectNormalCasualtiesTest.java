@@ -8,7 +8,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
@@ -58,6 +58,8 @@ class SelectNormalCasualtiesTest {
   @Test
   void isEditMode() {
     final List<Unit> targetUnits = List.of(givenAnyUnit(), givenAnyUnit());
+    when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
+        .thenReturn(false);
     when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(true);
 
     final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits, false);
@@ -169,7 +171,7 @@ class SelectNormalCasualtiesTest {
           new SelectNormalCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
       assertThat(details.getKilled(), is(targetUnits));
-      assertThat(details.getDamaged(), hasSize(0));
+      assertThat(details.getDamaged(), is(empty()));
       assertThat(details.getAutoCalculated(), is(true));
 
       verify(selectFunction, never()).apply(any(), any(), anyCollection(), anyInt());
@@ -181,9 +183,9 @@ class SelectNormalCasualtiesTest {
 
     @Test
     void moreNonTransportsHitPointsThanHits() {
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
+      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -230,9 +232,9 @@ class SelectNormalCasualtiesTest {
 
     @Test
     void equalNonTransportsHitPointsToHits() {
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
+      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -272,9 +274,9 @@ class SelectNormalCasualtiesTest {
 
     @Test
     void lessNonTransportsHitPointsThanHits() {
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
+      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -335,9 +337,9 @@ class SelectNormalCasualtiesTest {
 
     @Test
     void lessNonTransportsHitPointsThanHitsWithAlliedTransports() {
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
+      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -411,9 +413,9 @@ class SelectNormalCasualtiesTest {
 
     @Test
     void moreHitsThanHitPoints() {
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
+      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -462,9 +464,9 @@ class SelectNormalCasualtiesTest {
 
     @Test
     void moreHitsThanHitPointsWithAlly() {
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
+      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 

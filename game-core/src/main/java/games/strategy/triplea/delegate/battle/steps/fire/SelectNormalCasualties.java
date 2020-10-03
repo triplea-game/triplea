@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Selects casualties for normal (basically, anything that isn't AA) hits */
@@ -38,46 +39,32 @@ public class SelectNormalCasualties
   @Override
   public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
 
-    if (BaseEditDelegate.getEditMode(step.getBattleState().getGameData())) {
-      final CasualtyDetails message =
-          selectFunction.apply(bridge, step, step.getFiringGroup().getTargetUnits(), 0);
-      return new CasualtyDetails(message, true);
-    }
-
-    final List<Unit> combatUnits;
-    final Collection<Unit> restrictedTransports;
-    if (Properties.getTransportCasualtiesRestricted(step.getBattleState().getGameData())) {
-      combatUnits =
-          CollectionUtils.getMatches(
-              step.getFiringGroup().getTargetUnits(),
-              Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea()));
-      restrictedTransports =
-          CollectionUtils.getMatches(
-              step.getFiringGroup().getTargetUnits(),
-              Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea()));
-    } else {
-      combatUnits = new ArrayList<>(step.getFiringGroup().getTargetUnits());
-      restrictedTransports = List.of();
-    }
-
-    final int totalHitPointsAvailable = getMaxHits(combatUnits);
+    final TargetUnits targetUnits = getTargetUnits(step);
+    final int totalHitPointsAvailable = getMaxHits(targetUnits.combatUnits);
     final int hitCount = step.getFireRoundState().getDice().getHits();
     final int hitsLeftForRestrictedTransports = hitCount - totalHitPointsAvailable;
 
-    if (totalHitPointsAvailable > hitCount) {
+    final CasualtyDetails casualtyDetails;
+    if (BaseEditDelegate.getEditMode(step.getBattleState().getGameData())) {
+      final CasualtyDetails message =
+          selectFunction.apply(bridge, step, step.getFiringGroup().getTargetUnits(), 0);
+      casualtyDetails = new CasualtyDetails(message, true);
+
+    } else if (totalHitPointsAvailable > hitCount) {
       // not all units were hit so the player needs to pick which ones are killed
-      return selectFunction.apply(
-          bridge, step, combatUnits, step.getFireRoundState().getDice().getHits());
+      casualtyDetails =
+          selectFunction.apply(
+              bridge, step, targetUnits.combatUnits, step.getFireRoundState().getDice().getHits());
 
-    } else if (totalHitPointsAvailable == hitCount || restrictedTransports.isEmpty()) {
+    } else if (totalHitPointsAvailable == hitCount || targetUnits.restrictedTransports.isEmpty()) {
       // all of the combat units were hit so kill them without asking the player
-      return new CasualtyDetails(combatUnits, List.of(), true);
+      casualtyDetails = new CasualtyDetails(targetUnits.combatUnits, List.of(), true);
 
-    } else if (hitsLeftForRestrictedTransports >= restrictedTransports.size()) {
+    } else if (hitsLeftForRestrictedTransports >= targetUnits.restrictedTransports.size()) {
       // in addition to the combat units, all of the restricted transports were hit
       // so kill them all without asking the player
-      combatUnits.addAll(restrictedTransports);
-      return new CasualtyDetails(combatUnits, List.of(), true);
+      targetUnits.combatUnits.addAll(targetUnits.restrictedTransports);
+      casualtyDetails = new CasualtyDetails(targetUnits.combatUnits, List.of(), true);
 
     } else {
       // not all restricted transports were hit so the player needs to pick which ones are killed
@@ -85,11 +72,37 @@ public class SelectNormalCasualties
           selectFunction.apply(
               bridge,
               step,
-              limitTransportsToSelect(restrictedTransports, hitsLeftForRestrictedTransports),
+              limitTransportsToSelect(
+                  targetUnits.restrictedTransports, hitsLeftForRestrictedTransports),
               hitsLeftForRestrictedTransports);
-      combatUnits.addAll(message.getKilled());
-      return new CasualtyDetails(combatUnits, List.of(), true);
+      targetUnits.combatUnits.addAll(message.getKilled());
+      casualtyDetails = new CasualtyDetails(targetUnits.combatUnits, List.of(), true);
     }
+    return casualtyDetails;
+  }
+
+  @Value(staticConstructor = "of")
+  private static class TargetUnits {
+    List<Unit> combatUnits;
+    List<Unit> restrictedTransports;
+  }
+
+  private TargetUnits getTargetUnits(final SelectCasualties step) {
+    final TargetUnits targetUnits;
+    if (Properties.getTransportCasualtiesRestricted(step.getBattleState().getGameData())) {
+      targetUnits =
+          TargetUnits.of(
+              CollectionUtils.getMatches(
+                  step.getFiringGroup().getTargetUnits(),
+                  Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea())),
+              CollectionUtils.getMatches(
+                  step.getFiringGroup().getTargetUnits(),
+                  Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea())));
+    } else {
+      targetUnits =
+          TargetUnits.of(new ArrayList<>(step.getFiringGroup().getTargetUnits()), List.of());
+    }
+    return targetUnits;
   }
 
   /**

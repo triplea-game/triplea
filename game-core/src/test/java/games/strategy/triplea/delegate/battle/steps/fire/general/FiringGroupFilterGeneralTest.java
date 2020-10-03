@@ -12,6 +12,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.lenient;
@@ -237,7 +238,7 @@ class FiringGroupFilterGeneralTest {
                     .defendingUnits(List.of(targetUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(0));
+    assertThat(firingGroups, is(empty()));
   }
 
   @Test

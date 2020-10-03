@@ -52,7 +52,6 @@ class FiringGroupTest {
                 property.setValue(suicideOnHit);
               } catch (final MutableProperty.InvalidValueException e) {
                 // should not happen
-                System.out.println(e.getMessage());
               }
             });
     return unit;

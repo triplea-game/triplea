@@ -61,7 +61,6 @@ public class FiringGroup {
     // ensure each firing group has a unique name by adding prefixes
     // if the firing groups have different types of suicide units
     if (separatedBySuicide.size() == 1) {
-
       groups.add(
           new FiringGroup(
               name,
@@ -69,26 +68,16 @@ public class FiringGroup {
               separatedBySuicide.get(0),
               targetUnits,
               Matches.unitIsSuicideOnHit().test(separatedBySuicide.get(0).iterator().next())));
+
     } else if (separatedBySuicide.size() == 2
         && Matches.unitIsSuicideOnHit().test(separatedBySuicide.get(0).iterator().next())
             != Matches.unitIsSuicideOnHit().test(separatedBySuicide.get(1).iterator().next())) {
-      for (final Collection<Unit> newFiringUnits : separatedBySuicide) {
-        final boolean isSuicideOnHit =
-            Matches.unitIsSuicideOnHit().test(newFiringUnits.iterator().next());
-        final String nameWithSuffix = name + (isSuicideOnHit ? " suicide" : "");
-        groups.add(
-            new FiringGroup(nameWithSuffix, name, newFiringUnits, targetUnits, isSuicideOnHit));
-      }
-    } else {
+      groups.addAll(
+          generateFiringGroupsWithOneSuicideAndOneNonSuicide(
+              name, targetUnits, separatedBySuicide));
 
-      for (final Collection<Unit> newFiringUnits : separatedBySuicide) {
-        final Unit firstUnit = newFiringUnits.iterator().next();
-        final boolean isSuicideOnHit = Matches.unitIsSuicideOnHit().test(firstUnit);
-        final String nameWithSuffix =
-            name + (isSuicideOnHit ? " suicide " + firstUnit.getType().getName() : "");
-        groups.add(
-            new FiringGroup(nameWithSuffix, name, newFiringUnits, targetUnits, isSuicideOnHit));
-      }
+    } else {
+      groups.addAll(generateFiringGroups(name, targetUnits, separatedBySuicide));
     }
     return groups;
   }
@@ -118,5 +107,37 @@ public class FiringGroup {
       result.add(remainingUnits);
     }
     return result;
+  }
+
+  /** Handle the case where there are only two groups and one is suicide and the other is not */
+  private static List<FiringGroup> generateFiringGroupsWithOneSuicideAndOneNonSuicide(
+      final String name,
+      final Collection<Unit> targetUnits,
+      final List<Collection<Unit>> separatedBySuicide) {
+    final List<FiringGroup> groups = new ArrayList<>();
+    for (final Collection<Unit> newFiringUnits : separatedBySuicide) {
+      final boolean isSuicideOnHit =
+          Matches.unitIsSuicideOnHit().test(newFiringUnits.iterator().next());
+      final String nameWithSuffix = name + (isSuicideOnHit ? " suicide" : "");
+      groups.add(
+          new FiringGroup(nameWithSuffix, name, newFiringUnits, targetUnits, isSuicideOnHit));
+    }
+    return groups;
+  }
+
+  private static List<FiringGroup> generateFiringGroups(
+      final String name,
+      final Collection<Unit> targetUnits,
+      final List<Collection<Unit>> separatedBySuicide) {
+    final List<FiringGroup> groups = new ArrayList<>();
+    for (final Collection<Unit> newFiringUnits : separatedBySuicide) {
+      final Unit firstUnit = newFiringUnits.iterator().next();
+      final boolean isSuicideOnHit = Matches.unitIsSuicideOnHit().test(firstUnit);
+      final String nameWithSuffix =
+          name + (isSuicideOnHit ? " suicide " + firstUnit.getType().getName() : "");
+      groups.add(
+          new FiringGroup(nameWithSuffix, name, newFiringUnits, targetUnits, isSuicideOnHit));
+    }
+    return groups;
   }
 }
