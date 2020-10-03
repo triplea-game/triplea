@@ -158,7 +158,7 @@ public class Fire implements IExecutable {
             defending,
             firingPlayer,
             bridge,
-            battle,
+            battle.getTerritory(),
             annotation,
             territoryEffects,
             allEnemyUnitsAliveOrWaitingToDie,

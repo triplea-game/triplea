@@ -602,10 +602,10 @@ public class DiceRoll implements Externalizable {
       final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final IBattle battle,
+      final Territory territory,
       final Collection<TerritoryEffect> territoryEffects) {
     return rollDice(
-        units, defending, player, bridge, battle, "", territoryEffects, List.of(), units);
+        units, defending, player, bridge, territory, "", territoryEffects, List.of(), units);
   }
 
   /**
@@ -615,7 +615,7 @@ public class DiceRoll implements Externalizable {
    * @param defending - whether units are defending or attacking
    * @param player - that will be rolling the dice
    * @param bridge - delegate bridge
-   * @param battle - which the dice are being rolled for
+   * @param territory - territory where the battle takes place
    * @param annotation - description of the battle being rolled for
    * @param territoryEffects - list of territory effects for the battle
    * @param allEnemyUnitsAliveOrWaitingToDie - all enemy units to check for support
@@ -623,11 +623,11 @@ public class DiceRoll implements Externalizable {
    * @return DiceRoll result which includes total hits and dice that were rolled
    */
   public static DiceRoll rollDice(
-      final List<Unit> units,
+      final Collection<Unit> units,
       final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final IBattle battle,
+      final Territory territory,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -639,7 +639,7 @@ public class DiceRoll implements Externalizable {
           defending,
           player,
           bridge,
-          battle,
+          territory,
           annotation,
           territoryEffects,
           allEnemyUnitsAliveOrWaitingToDie,
@@ -650,7 +650,7 @@ public class DiceRoll implements Externalizable {
         defending,
         player,
         bridge,
-        battle,
+        territory,
         annotation,
         territoryEffects,
         allEnemyUnitsAliveOrWaitingToDie,
@@ -945,7 +945,7 @@ public class DiceRoll implements Externalizable {
       final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final IBattle battle,
+      final Territory location,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -953,7 +953,6 @@ public class DiceRoll implements Externalizable {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
-    final Territory location = battle.getTerritory();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
@@ -1149,7 +1148,7 @@ public class DiceRoll implements Externalizable {
       final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final IBattle battle,
+      final Territory location,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -1158,7 +1157,6 @@ public class DiceRoll implements Externalizable {
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
     sortByStrength(units, defending);
-    final Territory location = battle.getTerritory();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
