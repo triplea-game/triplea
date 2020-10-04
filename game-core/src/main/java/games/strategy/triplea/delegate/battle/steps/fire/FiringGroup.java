@@ -37,7 +37,7 @@ public class FiringGroup {
     this.groupName = groupName;
     this.firingUnits = firingUnits;
     this.targetUnits = targetUnits;
-    this.suicideOnHit = this.firingUnits.stream().anyMatch(Matches.unitIsSuicideOnHit());
+    this.suicideOnHit = this.firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit());
   }
 
   public Collection<Unit> getTargetUnits() {
@@ -106,19 +106,20 @@ public class FiringGroup {
       final Multimap<UnitType, Unit> separatedBySuicide) {
 
     if (separatedBySuicide.keySet().size() == 1) {
+      // there is only one firing group so no need to give unique suffices
       return originalName;
 
     } else if (separatedBySuicide.keySet().size() == 2
-        && separatedBySuicide.containsKey(NON_SUICIDE_MULTIMAP_KEY)) {
-      // special case where one firing group is suicideOnHit and the other is not
-      return firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit())
-          ? originalName + " suicide"
-          : originalName;
-
-    } else {
-      return firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit())
-          ? originalName + " suicide " + firingUnits.iterator().next().getType().getName()
-          : originalName;
+        && separatedBySuicide.containsKey(NON_SUICIDE_MULTIMAP_KEY)
+        && firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit())) {
+      // there are two firing groups and one of them is non suicide. So the suicide group
+      // doesn't need to have its type name added to it.
+      return originalName + " suicide";
     }
+
+    // add a suffix to suicide groups that includes their type name to differentiate them
+    return firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit())
+        ? originalName + " suicide " + firingUnits.iterator().next().getType().getName()
+        : originalName;
   }
 }
