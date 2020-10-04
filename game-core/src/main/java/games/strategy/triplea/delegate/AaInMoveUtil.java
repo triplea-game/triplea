@@ -330,6 +330,12 @@ class AaInMoveUtil implements Serializable {
             allFriendlyUnits,
             defendingAa,
             allEnemyUnits,
+            "Select "
+                + dice.getHits()
+                + " casualties from "
+                + currentTypeAa
+                + " fire in "
+                + territory.getName(),
             dice,
             bridge,
             player,

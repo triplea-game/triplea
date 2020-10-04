@@ -37,6 +37,7 @@ public class AaCasualtySelector {
       final Collection<Unit> allFriendlyUnits,
       final Collection<Unit> defendingAa,
       final Collection<Unit> allEnemyUnits,
+      final String text,
       final DiceRoll dice,
       final IDelegateBridge bridge,
       final GamePlayer hitPlayer,
@@ -52,8 +53,6 @@ public class AaCasualtySelector {
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (BaseEditDelegate.getEditMode(data) || Properties.getChooseAaCasualties(data)) {
-      final String text =
-          "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return CasualtySelector.selectCasualties(
           hitPlayer,
           planes,

@@ -202,6 +202,7 @@ public class FireAa implements IExecutable {
         attackableUnits,
         defendingAa,
         firingUnits,
+        "Hits from " + currentTypeAa + ", ",
         dice,
         bridge,
         hitPlayer,
