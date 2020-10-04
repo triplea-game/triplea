@@ -23,7 +23,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -33,6 +32,7 @@ import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.BattleRecords;
+import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import java.io.Serializable;
@@ -1366,8 +1366,8 @@ public class BattleTracker implements Serializable {
       final List<Unit> sortedUnitsList =
           getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty()
-          && DiceRoll.getTotalPower(
-                  DiceRoll.getUnitPowerAndRollsForNormalBattles(
+          && TotalPowerAndTotalRolls.getTotalPower(
+                  TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                       sortedUnitsList,
                       defenders,
                       sortedUnitsList,

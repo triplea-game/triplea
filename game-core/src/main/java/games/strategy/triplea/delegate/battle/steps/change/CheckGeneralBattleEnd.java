@@ -7,7 +7,6 @@ import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilte
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -15,6 +14,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -71,8 +71,8 @@ public class CheckGeneralBattleEnd implements BattleStep {
   }
 
   private int getPower(final BattleState.Side side) {
-    return DiceRoll.getTotalPowerAndRolls(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+    return TotalPowerAndTotalRolls.getTotalPowerAndRolls(
+            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                 battleState.filterUnits(ALIVE, side),
                 battleState.filterUnits(ALIVE, side.getOpposite()),
                 battleState.filterUnits(ALIVE, side),
