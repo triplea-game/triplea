@@ -29,6 +29,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
+import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -772,8 +773,8 @@ class DiceRollTest {
     attackers.addAll(GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
     int attackPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+        TotalPowerAndTotalRolls.getTotalPower(
+            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                 attackers,
                 new ArrayList<>(),
                 attackers,
@@ -786,8 +787,8 @@ class DiceRollTest {
 
     attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
     attackPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+        TotalPowerAndTotalRolls.getTotalPower(
+            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                 attackers,
                 new ArrayList<>(),
                 attackers,
@@ -803,8 +804,8 @@ class DiceRollTest {
 
     attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
     attackPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+        TotalPowerAndTotalRolls.getTotalPower(
+            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                 attackers,
                 new ArrayList<>(),
                 attackers,
@@ -854,7 +855,7 @@ class DiceRollTest {
         when(unitAttachment.getOffensiveAttackAa(any())).thenReturn(index / 2);
         index--;
       }
-      DiceRoll.sortAaHighToLow(units, gameData, false, new HashMap<>());
+      TotalPowerAndTotalRolls.sortAaHighToLow(units, gameData, false, new HashMap<>());
       assertThat(units.get(0), is(unit1));
       assertThat(units.get(1), is(unit2));
       assertThat(units.get(2), is(unit3));
@@ -872,7 +873,7 @@ class DiceRollTest {
         when(unitAttachment.getAttackAa(any())).thenReturn(index / 2);
         index++;
       }
-      DiceRoll.sortAaHighToLow(units, gameData, true, new HashMap<>());
+      TotalPowerAndTotalRolls.sortAaHighToLow(units, gameData, true, new HashMap<>());
       assertThat(units.get(0), is(unit5));
       assertThat(units.get(1), is(unit3));
       assertThat(units.get(2), is(unit4));

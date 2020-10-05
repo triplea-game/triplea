@@ -10,12 +10,12 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
+import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
@@ -1436,14 +1436,14 @@ class BattleCalculatorPanel extends JPanel {
                 });
       }
       final int attackPower =
-          DiceRoll.getTotalPower(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(
+          TotalPowerAndTotalRolls.getTotalPower(
+              TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   attackers, defenders, attackers, false, data, location, territoryEffects),
               data);
       // defender is never amphibious
       final int defensePower =
-          DiceRoll.getTotalPower(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(
+          TotalPowerAndTotalRolls.getTotalPower(
+              TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   defenders, attackers, defenders, true, data, location, territoryEffects),
               data);
       attackerUnitsTotalPower.setText("Power: " + attackPower);
