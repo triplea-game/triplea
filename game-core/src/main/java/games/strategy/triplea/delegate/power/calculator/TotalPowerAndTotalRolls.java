@@ -33,7 +33,7 @@ import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
 
 @Value
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PACKAGE)
 public class TotalPowerAndTotalRolls {
   @Nonnull Integer totalPower;
   @Nonnull Integer totalRolls;
@@ -284,9 +284,8 @@ public class TotalPowerAndTotalRolls {
       final boolean defending,
       final GameData data) {
 
-    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
     if (aaUnits == null || aaUnits.isEmpty()) {
-      return unitPowerAndRolls;
+      return new HashMap<>();
     }
 
     // Get all friendly supports
@@ -296,11 +295,6 @@ public class TotalPowerAndTotalRolls {
             data,
             defending,
             true);
-    final Set<List<UnitSupportAttachment>> supportRulesFriendly =
-        friendlySupports.getSupportRules();
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = friendlySupports.getSupportLeft();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
-        friendlySupports.getSupportUnits();
 
     // Get all enemy supports
     final SupportCalculationResult enemySupports =
@@ -309,6 +303,24 @@ public class TotalPowerAndTotalRolls {
             data,
             !defending,
             false);
+
+    return getAaUnitPowerAndRollsForNormalBattles(
+        aaUnits, enemySupports, friendlySupports, defending, data);
+  }
+
+  @VisibleForTesting
+  static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
+      final Collection<Unit> aaUnits,
+      final SupportCalculationResult enemySupports,
+      final SupportCalculationResult friendlySupports,
+      final boolean defending,
+      final GameData data) {
+
+    final Set<List<UnitSupportAttachment>> supportRulesFriendly =
+        friendlySupports.getSupportRules();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = friendlySupports.getSupportLeft();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
+        friendlySupports.getSupportUnits();
 
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = enemySupports.getSupportRules();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = enemySupports.getSupportLeft();
@@ -329,6 +341,8 @@ public class TotalPowerAndTotalRolls {
     for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet()) {
       supportUnitsLeftEnemyRolls.put(usa, new IntegerMap<>(supportUnitsLeftEnemy.get(usa)));
     }
+
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
 
     // Sort units strongest to weakest to give support to the best units first
     final List<Unit> sortedAaUnits = new ArrayList<>(aaUnits);
@@ -442,9 +456,8 @@ public class TotalPowerAndTotalRolls {
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
-    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
-      return unitPowerAndRolls;
+      return new HashMap<>();
     }
 
     // Get all friendly supports
@@ -454,10 +467,6 @@ public class TotalPowerAndTotalRolls {
             data.getUnitTypeList().getSupportRules(),
             defending,
             true);
-    final Set<List<UnitSupportAttachment>> supportRulesFriendly = friendlySupport.getSupportRules();
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = friendlySupport.getSupportLeft();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
-        friendlySupport.getSupportUnits();
 
     // Get all enemy supports
     final SupportCalculationResult enemySupport =
@@ -466,6 +475,38 @@ public class TotalPowerAndTotalRolls {
             data.getUnitTypeList().getSupportRules(),
             !defending,
             false);
+
+    return getUnitPowerAndRollsForNormalBattles(
+        unitsGettingPowerFor,
+        enemySupport,
+        friendlySupport,
+        defending,
+        data,
+        Matches.territoryIsLand().test(location),
+        territoryEffects,
+        unitSupportPowerMap,
+        unitSupportRollsMap);
+  }
+
+  @VisibleForTesting
+  static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
+      final Collection<Unit> unitsGettingPowerFor,
+      final SupportCalculationResult enemySupport,
+      final SupportCalculationResult friendlySupport,
+      final boolean defending,
+      final GameData data,
+      final boolean territoryIsLand,
+      final Collection<TerritoryEffect> territoryEffects,
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
+
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
+
+    final Set<List<UnitSupportAttachment>> supportRulesFriendly = friendlySupport.getSupportRules();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = friendlySupport.getSupportLeft();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
+        friendlySupport.getSupportUnits();
+
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = enemySupport.getSupportRules();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = enemySupport.getSupportLeft();
     final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy =
@@ -518,7 +559,7 @@ public class TotalPowerAndTotalRolls {
         if (ua.getIsMarine() != 0 && unit.getWasAmphibious()) {
           strength += ua.getIsMarine();
         }
-        if (ua.getIsSea() && Matches.territoryIsLand().test(location)) {
+        if (ua.getIsSea() && territoryIsLand) {
           // Change the strength to be bombard, not attack/defense, because this is a bombarding
           // naval unit
           strength = ua.getBombard();

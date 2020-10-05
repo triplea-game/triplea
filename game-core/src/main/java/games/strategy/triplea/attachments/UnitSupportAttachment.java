@@ -26,6 +26,11 @@ import lombok.Value;
  * support other units.
  */
 public class UnitSupportAttachment extends DefaultAttachment {
+  public static final String BONUS = "bonus";
+  public static final String BONUS_TYPE = "bonusType";
+  public static final String DICE = "dice";
+  public static final String UNIT_TYPE = "unitType";
+
   private static final long serialVersionUID = -3015679930172496082L;
 
   private Set<UnitType> unitType = null;
@@ -423,7 +428,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put(
-            "unitType",
+            UNIT_TYPE,
             MutableProperty.of(
                 this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType))
         .put("offence", MutableProperty.ofReadOnly(this::getOffence))
@@ -433,7 +438,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
         .put("aaRoll", MutableProperty.ofReadOnly(this::getAaRoll))
         .put("aaStrength", MutableProperty.ofReadOnly(this::getAaStrength))
         .put(
-            "bonus",
+            BONUS,
             MutableProperty.of(this::setBonus, this::setBonus, this::getBonus, this::resetBonus))
         .put(
             "number",
@@ -442,7 +447,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
         .put("allied", MutableProperty.ofReadOnly(this::getAllied))
         .put("enemy", MutableProperty.ofReadOnly(this::getEnemy))
         .put(
-            "bonusType",
+            BONUS_TYPE,
             MutableProperty.of(
                 this::setBonusType, this::setBonusType, this::getBonusType, this::resetBonusType))
         .put(
@@ -456,7 +461,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
                 this::setImpArtTech,
                 this::getImpArtTech,
                 this::resetImpArtTech))
-        .put("dice", MutableProperty.ofString(this::setDice, this::getDice, this::resetDice))
+        .put(DICE, MutableProperty.ofString(this::setDice, this::getDice, this::resetDice))
         .put("side", MutableProperty.ofString(this::setSide, this::getSide, this::resetSide))
         .put(
             "faction",

@@ -1,32 +1,722 @@
 package games.strategy.triplea.delegate.power.calculator;
 
+import static games.strategy.triplea.Constants.RULES_ATTACHMENT_NAME;
+import static games.strategy.triplea.Constants.SUPPORT_ATTACHMENT_PREFIX;
+import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
+import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.attachments.TerritoryEffectAttachment.COMBAT_DEFENSE_EFFECT;
+import static games.strategy.triplea.attachments.TerritoryEffectAttachment.COMBAT_OFFENSE_EFFECT;
+import static games.strategy.triplea.attachments.UnitAttachment.ATTACK_AA_MAX_DIE_SIDES;
+import static games.strategy.triplea.attachments.UnitAttachment.CHOOSE_BEST_ROLL;
+import static games.strategy.triplea.attachments.UnitAttachment.MAY_OVERSTACK_AA;
+import static games.strategy.triplea.attachments.UnitAttachment.OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES;
+import static games.strategy.triplea.attachments.UnitSupportAttachment.BONUS;
+import static games.strategy.triplea.attachments.UnitSupportAttachment.BONUS_TYPE;
+import static games.strategy.triplea.attachments.UnitSupportAttachment.DICE;
+import static games.strategy.triplea.attachments.UnitSupportAttachment.UNIT_TYPE;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.GameDataTestUtil;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
+import org.triplea.util.Tuple;
 
+@ExtendWith(MockitoExtension.class)
 class TotalPowerAndTotalRollsTest {
+
+  enum BattleType {
+    NORMAL,
+    AA,
+  }
+
+  @Mock GamePlayer owner;
+
+  private Unit givenUnit(
+      final String name,
+      final BattleType type,
+      final GameData gameData,
+      final BattleState.Side side,
+      final int power,
+      final int roll)
+      throws MutableProperty.InvalidValueException {
+    return givenUnit(givenUnitType(name, gameData), type, side, power, roll);
+  }
+
+  private Unit givenUnit(
+      final UnitType unitType,
+      final BattleType type,
+      final BattleState.Side side,
+      final int power,
+      final int roll)
+      throws MutableProperty.InvalidValueException {
+    final Unit unit = unitType.create(1, owner, true).get(0);
+    if (type == BattleType.NORMAL) {
+      if (side == DEFENSE) {
+        unit.getUnitAttachment()
+            .getPropertyOrThrow(UnitAttachment.DEFENSE_STRENGTH)
+            .setValue(power);
+        unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.DEFENSE_ROLL).setValue(roll);
+      } else {
+        unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.ATTACK_STRENGTH).setValue(power);
+        unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.ATTACK_ROLL).setValue(roll);
+      }
+    } else {
+      if (side == DEFENSE) {
+        unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.ATTACK_AA).setValue(power);
+      } else {
+        unit.getUnitAttachment()
+            .getPropertyOrThrow(UnitAttachment.OFFENSIVE_ATTACK_AA)
+            .setValue(power);
+      }
+      unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.MAX_AA_ATTACKS).setValue(roll);
+    }
+    return unit;
+  }
+
+  private UnitType givenUnitType(final String name, final GameData gameData) {
+    final UnitType unitType = new UnitType(name + "Type", gameData);
+    final UnitAttachment unitAttachment =
+        new UnitAttachment(name + "Attachment", unitType, gameData);
+    unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
+    return unitType;
+  }
+
+  private UnitSupportAttachment givenUnitSupportAttachment(
+      final GameData gameData,
+      final String name,
+      final UnitType unitType,
+      final String rollType,
+      final int bonusAmount,
+      final int bonusCount)
+      throws MutableProperty.InvalidValueException {
+    return givenUnitSupportAttachment(
+        gameData, name, Set.of(unitType), rollType, bonusAmount, bonusCount);
+  }
+
+  private UnitSupportAttachment givenUnitSupportAttachment(
+      final GameData gameData,
+      final String name,
+      final Set<UnitType> unitType,
+      final String rollType,
+      final int bonusAmount,
+      final int bonusCount)
+      throws MutableProperty.InvalidValueException {
+
+    return givenUnitSupportAttachment(
+        gameData, name, unitType, rollType, bonusAmount, bonusCount, name);
+  }
+
+  private UnitSupportAttachment givenUnitSupportAttachment(
+      final GameData gameData,
+      final String name,
+      final Set<UnitType> unitType,
+      final String rollType,
+      final int bonusAmount,
+      final int bonusCount,
+      final String bonusName)
+      throws MutableProperty.InvalidValueException {
+    final UnitSupportAttachment unitSupportAttachment =
+        new UnitSupportAttachment(
+            SUPPORT_ATTACHMENT_PREFIX + name, unitType.iterator().next(), gameData);
+    unitSupportAttachment.getPropertyOrThrow(BONUS).setValue(bonusAmount);
+    unitSupportAttachment
+        .getPropertyOrThrow(BONUS_TYPE)
+        .setValue(new UnitSupportAttachment.BonusType("bonus" + bonusName, bonusCount));
+    unitSupportAttachment.getPropertyOrThrow(DICE).setValue(rollType);
+    unitSupportAttachment.getPropertyOrThrow(UNIT_TYPE).setValue(unitType);
+    return unitSupportAttachment;
+  }
+
+  @Nested
+  class GetTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack {
+
+    @Test
+    void singleAaWithOneRoll() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
+      final List<Unit> units = List.of(unit);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(2, 1, true)));
+      assertThat(sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    private Triple<Integer, Integer, Boolean> whenGetPowerHitsResult(
+        final GameData gameData,
+        final List<Unit> units,
+        final List<Die> sortedDie,
+        final int dieHit,
+        final int numValidTargets) {
+      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              units,
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData);
+
+      final List<Unit> validTargets =
+          IntStream.rangeClosed(1, numValidTargets)
+              .mapToObj(num -> mock(Unit.class))
+              .collect(Collectors.toList());
+      final int totalAttacks =
+          TotalPowerAndTotalRolls.getTotalAaAttacks(unitPowerAndRollsMap, validTargets);
+      final int[] dice = new int[totalAttacks];
+      for (int i = 0; i < totalAttacks; i++) {
+        dice[i] = dieHit;
+      }
+
+      return TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+          dice, sortedDie, false, unitPowerAndRollsMap, validTargets, gameData, true);
+    }
+
+    @Test
+    void singleAaWithOneRollNoHit() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
+      final List<Unit> units = List.of(unit);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 6, 4);
+
+      assertThat(result, is(Triple.of(2, 0, true)));
+      assertThat(sortedDie, is(List.of(new Die(6, 2, Die.DieType.MISS))));
+    }
+
+    @Test
+    void singleAaWithTwoRoll() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 2);
+      final List<Unit> units = List.of(unit);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(4, 2, true)));
+      assertThat(
+          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithSamePower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, 1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(4, 2, true)));
+      assertThat(
+          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithDifferentPower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, 1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(5, 2, false)));
+      assertThat(
+          sortedDie, is(List.of(new Die(1, 3, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithDifferentPowerAndOnlyOneHit() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, 1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 2, 4);
+
+      assertThat(result, is(Triple.of(5, 1, false)));
+      assertThat(
+          sortedDie, is(List.of(new Die(2, 3, Die.DieType.HIT), new Die(2, 2, Die.DieType.MISS))));
+    }
+
+    @Test
+    void oneAaWithInfinite() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units = List.of(givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(8, 4, true)));
+      assertThat(
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithInfiniteWithSamePower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, -1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(8, 4, true)));
+      assertThat(
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithInfiniteWithDifferentPower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, -1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(12, 4, true)));
+      assertThat(
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithInfiniteWithDifferentDice() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, -1));
+      units
+          .get(0)
+          .getUnitAttachment()
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(4);
+      units
+          .get(1)
+          .getUnitAttachment()
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(8);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(8, 4, true)));
+      assertThat(
+          "2 of 4 is better than 3 of 8 so that is used for attack",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithOneRollAndInfiniteSamePower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, -1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(8, 4, true)));
+      assertThat(
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithOneRollAndInfiniteWhereInfiniteIsHigher()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, -1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(12, 4, true)));
+      assertThat(
+          "The non infinite attack is never used",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT))));
+    }
+
+    @Test
+    void twoAaWithOneRollAndInfiniteWhereInfiniteIsLower()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 3, 1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, -1));
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(9, 4, false)));
+      assertThat(
+          "The non infinite attack is used first",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneAaWithOverStack() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units = List.of(givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 2));
+      units.get(0).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(4, 2, true)));
+      assertThat(
+          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneAaWithOverStackAndMoreRollsThanTargets() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units = List.of(givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 5));
+      units.get(0).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(10, 5, true)));
+      assertThat(
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneAaWithOverstackAndInfinite() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units = List.of(givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1));
+      units.get(0).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(8, 4, true)));
+      assertThat(
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneOverstackAndOneInfinite() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, 2));
+      units.get(1).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(12, 6, true)));
+      assertThat(
+          "Overstack adds more rolls",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneOverstackAndOneInfiniteDifferentPowers() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, 2));
+      units.get(1).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(14, 6, false)));
+      assertThat(
+          "Overstack adds more rolls at the end",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneOverstackAndOneNormal() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 2),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, 2));
+      units.get(1).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(8, 4, true)));
+      assertThat(
+          "Overstack adds more rolls",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneOverstackAndOneNormalDifferentPowers() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 2),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, 2));
+      units.get(1).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(10, 4, false)));
+      assertThat(
+          "Overstack adds more rolls at the end",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneOverstackOneInfiniteAndOneNormalSamePower()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, 2),
+              givenUnit("test3", BattleType.AA, gameData, OFFENSE, 2, 2));
+      units.get(2).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(12, 6, true)));
+      assertThat(
+          "Overstack adds more rolls",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsBest()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 3, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 4, 2),
+              givenUnit("test3", BattleType.AA, gameData, OFFENSE, 2, 2));
+      units.get(2).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(18, 6, false)));
+      assertThat(
+          "Overstack adds more rolls",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 4, Die.DieType.HIT),
+                  new Die(1, 4, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(1, 2, Die.DieType.HIT))));
+    }
+
+    @Test
+    void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsWorst()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final List<Unit> units =
+          List.of(
+              givenUnit("test", BattleType.AA, gameData, OFFENSE, 3, -1),
+              givenUnit("test2", BattleType.AA, gameData, OFFENSE, 2, 2),
+              givenUnit("test3", BattleType.AA, gameData, OFFENSE, 4, 2));
+      units.get(2).getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+      final List<Die> sortedDie = new ArrayList<>();
+
+      final Triple<Integer, Integer, Boolean> result =
+          whenGetPowerHitsResult(gameData, units, sortedDie, 1, 4);
+
+      assertThat(result, is(Triple.of(20, 6, false)));
+      assertThat(
+          "Overstack adds more rolls",
+          sortedDie,
+          is(
+              List.of(
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 3, Die.DieType.HIT),
+                  new Die(1, 4, Die.DieType.HIT),
+                  new Die(1, 4, Die.DieType.HIT))));
+    }
+  }
 
   @Nested
   @ExtendWith(MockitoExtension.class)
@@ -92,62 +782,2542 @@ class TotalPowerAndTotalRollsTest {
     }
   }
 
-  @Test
-  void testGetTotalPowerForSupportBonusTypeCount() {
-    final GameData twwGameData = TestMapGameData.TWW.getGameData();
+  @Nested
+  class GetMaxAaAttackAndDiceSides {
 
-    // Move regular units
-    final GamePlayer germans = GameDataTestUtil.germany(twwGameData);
-    final Territory berlin = territory("Berlin", twwGameData);
-    final List<Unit> attackers = new ArrayList<>();
+    @Test
+    void singleUnitWithNoCustomDiceAndNoPowerRollsMap()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
 
-    attackers.addAll(GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
-    attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
-    int attackPower =
-        TotalPowerAndTotalRolls.getTotalPower(
-            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
-                attackers,
-                new ArrayList<>(),
-                attackers,
-                false,
-                twwGameData,
-                berlin,
-                new ArrayList<>()),
-            twwGameData);
-    assertEquals(attackPower, 6, "1 artillery should provide +1 support to the infantry");
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(List.of(unit), gameData, false);
 
-    attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
-    attackPower =
-        TotalPowerAndTotalRolls.getTotalPower(
-            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
-                attackers,
-                new ArrayList<>(),
-                attackers,
-                false,
-                twwGameData,
-                berlin,
-                new ArrayList<>()),
-            twwGameData);
-    assertEquals(
-        attackPower,
-        10,
-        "2 artillery should provide +2 support to the infantry as stack count is 2");
+      assertThat(maxAttackAndDice, is(Tuple.of(2, 6)));
+    }
 
-    attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
-    attackPower =
-        TotalPowerAndTotalRolls.getTotalPower(
-            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
-                attackers,
-                new ArrayList<>(),
-                attackers,
-                false,
-                twwGameData,
-                berlin,
-                new ArrayList<>()),
-            twwGameData);
-    assertEquals(
-        attackPower,
-        13,
-        "3 artillery should provide +2 support to the infantry as can't provide more than 2");
+    @Test
+    void singleDefensiveUnitWithNoCustomDiceAndNoPowerRollsMap()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, DEFENSE, 2, 1);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(List.of(unit), gameData, true);
+
+      assertThat(maxAttackAndDice, is(Tuple.of(2, 6)));
+    }
+
+    @Test
+    void singleUnitWithCustomDiceAndNoPowerRollsMap() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
+      final UnitAttachment unitAttachment =
+          (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+      unitAttachment.getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES).setValue(8);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(List.of(unit), gameData, false);
+
+      assertThat("Dice comes from the unitAttachment", maxAttackAndDice, is(Tuple.of(2, 8)));
+    }
+
+    @Test
+    void singleDefensiveUnitWithCustomDiceAndNoPowerRollsMap()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, DEFENSE, 2, 1);
+      final UnitAttachment unitAttachment =
+          (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+      unitAttachment.getPropertyOrThrow(ATTACK_AA_MAX_DIE_SIDES).setValue(8);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(List.of(unit), gameData, true);
+
+      assertThat("Dice comes from the unitAttachment", maxAttackAndDice, is(Tuple.of(2, 8)));
+    }
+
+    @Test
+    void singleUnitWithPowerRollsMap() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+              List.of(unit),
+              gameData,
+              false,
+              Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(2).build()));
+
+      assertThat(
+          "Value from totalPowerAndTotalRolls is used", maxAttackAndDice, is(Tuple.of(3, 6)));
+    }
+
+    @Test
+    void singleDefensiveUnitWithPowerRollsMap() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, DEFENSE, 2, 1);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+              List.of(unit),
+              gameData,
+              true,
+              Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(2).build()));
+
+      assertThat(
+          "Value from totalPowerAndTotalRolls is used", maxAttackAndDice, is(Tuple.of(3, 6)));
+    }
+
+    @Test
+    void limitAttackToDiceSides() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
+      final UnitAttachment unitAttachment =
+          (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+      unitAttachment.getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES).setValue(4);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+              List.of(unit),
+              gameData,
+              false,
+              Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(6).totalRolls(2).build()));
+
+      assertThat(
+          "UnitAttachment dice sides is the max allowed", maxAttackAndDice, is(Tuple.of(4, 4)));
+    }
+
+    @Test
+    void multipleUnitsWithSameDice() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
+      final Unit unit2 = givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, 1);
+      final Unit unit3 = givenUnit("test3", BattleType.AA, gameData, OFFENSE, 4, 1);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+              List.of(unit, unit2, unit3), gameData, false);
+
+      assertThat(
+          "UnitAttachment dice sides is the max allowed", maxAttackAndDice, is(Tuple.of(4, 6)));
+    }
+
+    @Test
+    void multipleUnitsWithDifferentDice() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 2, 1);
+      unit.getType()
+          .getAttachment(UNIT_ATTACHMENT_NAME)
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(6);
+      final Unit unit2 = givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, 1);
+      unit2
+          .getType()
+          .getAttachment(UNIT_ATTACHMENT_NAME)
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(5);
+      final Unit unit3 = givenUnit("test3", BattleType.AA, gameData, OFFENSE, 4, 1);
+      unit3
+          .getType()
+          .getAttachment(UNIT_ATTACHMENT_NAME)
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(4);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+              List.of(unit, unit2, unit3), gameData, false);
+
+      assertThat("4 of 4 is better than 2 of 6 and 3 of 5", maxAttackAndDice, is(Tuple.of(4, 4)));
+    }
+
+    @Test
+    void multipleUnitsWithDifferentDice2() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 3, 1);
+      unit.getType()
+          .getAttachment(UNIT_ATTACHMENT_NAME)
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(8);
+      final Unit unit2 = givenUnit("test2", BattleType.AA, gameData, OFFENSE, 3, 1);
+      unit2
+          .getType()
+          .getAttachment(UNIT_ATTACHMENT_NAME)
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(7);
+      final Unit unit3 = givenUnit("test3", BattleType.AA, gameData, OFFENSE, 3, 1);
+      unit3
+          .getType()
+          .getAttachment(UNIT_ATTACHMENT_NAME)
+          .getPropertyOrThrow(OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES)
+          .setValue(6);
+
+      final Tuple<Integer, Integer> maxAttackAndDice =
+          TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+              List.of(unit, unit2, unit3), gameData, false);
+
+      assertThat("3 of 6 is better than 3 of 7 and 3 of 8", maxAttackAndDice, is(Tuple.of(3, 6)));
+    }
+  }
+
+  @Nested
+  class GetAaUnitPowerAndRollsForNormalBattles {
+
+    @Test
+    void attackUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()));
+    }
+
+    @Test
+    void defenseUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, DEFENSE, 1, 1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()));
+    }
+
+    @Test
+    void unitWithZeroRollsAlwaysGetsZeroPower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 0);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void unitWithZeroPowerAlwaysGetsZeroRolls() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 0, 1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void attackUnitWithOneStrengthSupportFromFriendly()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build()));
+    }
+
+    @Test
+    void attackUnitWithOneRollSupportFromFriendly() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAroll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build()));
+    }
+
+    @Test
+    void attackUnitWithOneStrengthSupportFromEnemy() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength", -1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit), enemySupport, SupportCalculationResult.EMPTY_RESULT, false, gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void attackUnitWithOneRollSupportFromEnemy() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAroll", -1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit), enemySupport, SupportCalculationResult.EMPTY_RESULT, false, gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void attackUnitWithOneSupportForBothRollAndStrength()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build()));
+    }
+
+    @Test
+    void twoAttackUnitsWithOnlyOneSupportAvailable() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          "The non supported unit should not get any bonus",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+    }
+
+    @Test
+    void threeAttackUnitsWithOneSupportAvailableThatAffectsTwo()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 2);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 2));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 2));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          "The non supported unit should not get any bonus",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  otherSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+    }
+
+    @Test
+    void attackUnitsWithMultipleSupportUnits() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.AA, OFFENSE, 1, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 2);
+      final Unit supportUnit2 = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment2 =
+          givenUnitSupportAttachment(gameData, "test2", unit.getType(), "AAstrength:AAroll", 1, 1);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment), List.of(unitSupportAttachment2)))
+              .supportUnits(
+                  Map.of(
+                      unitSupportAttachment,
+                      new IntegerMap<>(Map.of(supportUnit, 2)),
+                      unitSupportAttachment2,
+                      new IntegerMap<>(Map.of(supportUnit2, 1))))
+              .supportLeft(
+                  new IntegerMap<>(Map.of(unitSupportAttachment, 2, unitSupportAttachment2, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          "First should have both support, second should have one support, "
+              + "last should have no support",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(3).build(),
+                  otherSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+    }
+
+    @Test
+    void maxPowerIsDiceSidesAfterAllSupports() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 4, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength", 4, 1);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(6).totalRolls(1).build()));
+    }
+
+    @Test
+    void minPowerIsZeroAfterAllSupports() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 4, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength", -8, 1);
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit), enemySupport, SupportCalculationResult.EMPTY_RESULT, false, gameData);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void strongestAaGetsSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit strongUnit = givenUnit("strong", BattleType.AA, gameData, OFFENSE, 4, 1);
+      final Unit weakUnit = givenUnit("weak", BattleType.AA, gameData, OFFENSE, 2, 1);
+      final Unit lessWeakUnit = givenUnit("lessWeak", BattleType.AA, gameData, OFFENSE, 3, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(
+              gameData,
+              "test",
+              Set.of(strongUnit.getType(), weakUnit.getType(), lessWeakUnit.getType()),
+              "AAstrength:AAroll",
+              1,
+              1);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(weakUnit, strongUnit, lessWeakUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData);
+
+      assertThat(
+          result,
+          is(
+              Map.of(
+                  strongUnit,
+                  TotalPowerAndTotalRolls.builder().totalPower(5).totalRolls(2).build(),
+                  lessWeakUnit,
+                  TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(1).build(),
+                  weakUnit,
+                  TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build())));
+    }
+
+    @Test
+    void infiniteRollIgnoresSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 4, -1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(
+              gameData, "test", Set.of(unit.getType()), "AAstrength:AAroll", 2, 2);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
+              .build();
+
+      final Unit enemyUnit = mock(Unit.class);
+      final UnitSupportAttachment enemyUnitSupportAttachment =
+          givenUnitSupportAttachment(
+              gameData, "test", Set.of(unit.getType()), "AAstrength:AAroll", -1, 1);
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportUnits(
+                  Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemyUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit), enemySupport, friendlySupport, false, gameData);
+
+      assertThat(
+          "Infinite rolls isn't affected by the support",
+          result,
+          is(Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(5).totalRolls(-1).build())));
+    }
+
+    @Test
+    void minRollsIsZero() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 4, 1);
+
+      final Unit enemyUnit = mock(Unit.class);
+      final UnitSupportAttachment enemyUnitSupportAttachment =
+          givenUnitSupportAttachment(
+              gameData, "test", Set.of(unit.getType()), "AAstrength:AAroll", -2, 1);
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportUnits(
+                  Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemyUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
+              List.of(unit), enemySupport, SupportCalculationResult.EMPTY_RESULT, false, gameData);
+
+      assertThat(
+          "The support should take rolls to -1 but the min is 0",
+          result,
+          is(Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build())));
+    }
+  }
+
+  @Nested
+  @ExtendWith(MockitoExtension.class)
+  class GetUnitPowerAndRollsForNormalBattles {
+
+    @Test
+    void attackUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()));
+    }
+
+    @Test
+    void defenseUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()));
+    }
+
+    @Test
+    void attackMarineWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+      unit.getPropertyOrThrow(Unit.UNLOADED_AMPHIBIOUS).setValue(true);
+      unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.IS_MARINE).setValue(1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          "Offense adds marine bonus for amphibious assaults",
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build()));
+    }
+
+    // defenders should actually never have UNLOADED_AMPHIBIOUS set to true but this tests
+    // that even if it happens, the marine bonus is not added
+    @Test
+    void defenseMarineWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+      unit.getPropertyOrThrow(Unit.UNLOADED_AMPHIBIOUS).setValue(true);
+      unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.IS_MARINE).setValue(1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          "Defense doesn't use marine bonus",
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()));
+    }
+
+    @Test
+    void attackBombardmentWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+      unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.BOMBARD).setValue(3);
+      unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.IS_SEA).setValue(true);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          "Offense uses bombardment when it is a sea unit in a land battle",
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(1).build()));
+    }
+
+    @Test
+    void defenseBombardmentWithNoSupport() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+      unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.BOMBARD).setValue(3);
+      unit.getUnitAttachment().getPropertyOrThrow(UnitAttachment.IS_SEA).setValue(true);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          "Defense doesn't use the bombardment value",
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()));
+    }
+
+    @Test
+    void unitWithZeroRollsAlwaysGetsZeroPower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 0);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void unitWithZeroPowerAlwaysGetsZeroRolls() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 0, 1);
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void attackUnitWithOneStrengthSupportFromFriendly()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build()));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(unitSupportRollsMap, is(Map.of()));
+    }
+
+    @Test
+    void defenseUnitWithOneStrengthSupportFromFriendly()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build()));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(unitSupportRollsMap, is(Map.of()));
+    }
+
+    @Test
+    void attackUnitWithOneRollSupportFromFriendly() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build()));
+
+      assertThat(unitSupportPowerMap, is(Map.of()));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void defenseUnitWithOneRollSupportFromFriendly() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build()));
+
+      assertThat(unitSupportPowerMap, is(Map.of()));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void attackUnitWithOneStrengthSupportFromEnemy() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", -1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              enemySupport,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, -1)))));
+      assertThat(unitSupportRollsMap, is(Map.of()));
+    }
+
+    @Test
+    void defenseUnitWithOneStrengthSupportFromEnemy() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", -1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              enemySupport,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, -1)))));
+      assertThat(unitSupportRollsMap, is(Map.of()));
+    }
+
+    @Test
+    void attackUnitWithOneRollSupportFromEnemy() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", -1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              enemySupport,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+
+      assertThat(unitSupportPowerMap, is(Map.of()));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, -1)))));
+    }
+
+    @Test
+    void defenseUnitWithOneRollSupportFromEnemy() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", -1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              enemySupport,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+
+      assertThat(unitSupportPowerMap, is(Map.of()));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, -1)))));
+    }
+
+    @Test
+    void attackUnitWithOneSupportForBothRollAndStrength()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build()));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void defenseUnitWithOneSupportForBothRollAndStrength()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build()));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void twoAttackUnitsWithOnlyOneSupportAvailable() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "The non supported unit should not get any bonus",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void twoDefenseUnitsWithOnlyOneSupportAvailable() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "The non supported unit should not get any bonus",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "The support unit gave 1 bonus to the unit",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void threeAttackUnitsWithOneSupportAvailableThatAffectsTwo()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 2));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 2));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "The non supported unit should not get any bonus",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  otherSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+
+      assertThat(
+          "The support unit gave 1 bonus to both units",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)))));
+      assertThat(
+          "The support unit gave 1 bonus to both units",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)))));
+    }
+
+    @Test
+    void threeDefenseUnitsWithOneSupportThatAffectsTwo()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+
+      final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 2));
+      final IntegerMap<UnitSupportAttachment> supportLeft =
+          new IntegerMap<>(Map.of(unitSupportAttachment, 2));
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, supportUnits))
+              .supportLeft(supportLeft)
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "The non supported unit should not get any bonus",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  otherSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+
+      assertThat(
+          "The support unit gave 1 bonus to both units",
+          unitSupportPowerMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)))));
+      assertThat(
+          "The support unit gave 1 bonus to both units",
+          unitSupportRollsMap,
+          is(Map.of(supportUnit, new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)))));
+    }
+
+    @Test
+    void attackUnitsWithMultipleSupportUnits() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+      final Unit supportUnit2 = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment2 =
+          givenUnitSupportAttachment(gameData, "test2", unit.getType(), "strength:roll", 1, 1);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment), List.of(unitSupportAttachment2)))
+              .supportUnits(
+                  Map.of(
+                      unitSupportAttachment,
+                      new IntegerMap<>(Map.of(supportUnit, 2)),
+                      unitSupportAttachment2,
+                      new IntegerMap<>(Map.of(supportUnit2, 1))))
+              .supportLeft(
+                  new IntegerMap<>(Map.of(unitSupportAttachment, 2, unitSupportAttachment2, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "First should have both support, second should have one support, "
+              + "last should have no support",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(3).build(),
+                  otherSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+
+      assertThat(
+          "First support unit supported two, the second supported one",
+          unitSupportPowerMap,
+          is(
+              Map.of(
+                  supportUnit,
+                  new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)),
+                  supportUnit2,
+                  new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "First support unit supported two, the second supported one",
+          unitSupportRollsMap,
+          is(
+              Map.of(
+                  supportUnit, new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)),
+                  supportUnit2, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void defenseUnitsWithMultipleSupportUnits() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+      final Unit nonSupportedUnit = givenUnit(unitType, BattleType.NORMAL, DEFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+      final Unit supportUnit2 = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment2 =
+          givenUnitSupportAttachment(gameData, "test2", unit.getType(), "strength:roll", 1, 1);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment), List.of(unitSupportAttachment2)))
+              .supportUnits(
+                  Map.of(
+                      unitSupportAttachment,
+                      new IntegerMap<>(Map.of(supportUnit, 2)),
+                      unitSupportAttachment2,
+                      new IntegerMap<>(Map.of(supportUnit2, 1))))
+              .supportLeft(
+                  new IntegerMap<>(Map.of(unitSupportAttachment, 2, unitSupportAttachment2, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit, nonSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "First should have both support, second should have one support, "
+              + "last should have no support",
+          result,
+          is(
+              Map.of(
+                  unit, TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(3).build(),
+                  otherSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  nonSupportedUnit,
+                      TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+
+      assertThat(
+          "First support unit supported two, the second supported one",
+          unitSupportPowerMap,
+          is(
+              Map.of(
+                  supportUnit,
+                  new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)),
+                  supportUnit2,
+                  new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "First support unit supported two, the second supported one",
+          unitSupportRollsMap,
+          is(
+              Map.of(
+                  supportUnit, new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)),
+                  supportUnit2, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void offenseUnitsWithSupportThatHasTwoAttachmentsAndBonusCountOf1()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(
+              gameData, "test", Set.of(unit.getType()), "strength:roll", 1, 1, "same");
+      final Unit supportUnit2 = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment2 =
+          givenUnitSupportAttachment(
+              gameData, "test2", Set.of(unit.getType()), "strength:roll", 1, 1, "same");
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment, unitSupportAttachment2)))
+              .supportUnits(
+                  Map.of(
+                      unitSupportAttachment,
+                      new IntegerMap<>(Map.of(supportUnit, 1)),
+                      unitSupportAttachment2,
+                      new IntegerMap<>(Map.of(supportUnit2, 1))))
+              .supportLeft(
+                  new IntegerMap<>(Map.of(unitSupportAttachment, 1, unitSupportAttachment2, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "No stack on the same unit so both units get the bonus",
+          result,
+          is(
+              Map.of(
+                  unit,
+                  TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build(),
+                  otherSupportedUnit,
+                  TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build())));
+
+      assertThat(
+          "No stack on the same unit so both units get the bonus",
+          unitSupportPowerMap,
+          is(
+              Map.of(
+                  supportUnit,
+                  new IntegerMap<>(Map.of(unit, 1)),
+                  supportUnit2,
+                  new IntegerMap<>(Map.of(otherSupportedUnit, 1)))));
+      assertThat(
+          "No stack on the same unit so both units get the bonus",
+          unitSupportRollsMap,
+          is(
+              Map.of(
+                  supportUnit,
+                  new IntegerMap<>(Map.of(unit, 1)),
+                  supportUnit2,
+                  new IntegerMap<>(Map.of(otherSupportedUnit, 1)))));
+    }
+
+    @Test
+    void offenseUnitsWithSupportThatHasTwoAttachmentsAndBonusCountOf2()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final UnitType unitType = givenUnitType("test", gameData);
+      final Unit unit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+      final Unit otherSupportedUnit = givenUnit(unitType, BattleType.NORMAL, OFFENSE, 1, 1);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(
+              gameData, "test", Set.of(unit.getType()), "strength:roll", 1, 2, "same");
+      final Unit supportUnit2 = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment2 =
+          givenUnitSupportAttachment(
+              gameData, "test2", Set.of(unit.getType()), "strength:roll", 1, 2, "same");
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment, unitSupportAttachment2)))
+              .supportUnits(
+                  Map.of(
+                      unitSupportAttachment,
+                      new IntegerMap<>(Map.of(supportUnit, 1)),
+                      unitSupportAttachment2,
+                      new IntegerMap<>(Map.of(supportUnit2, 1))))
+              .supportLeft(
+                  new IntegerMap<>(Map.of(unitSupportAttachment, 1, unitSupportAttachment2, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit, otherSupportedUnit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "The first unit gets all the bonus because bonus count is 2",
+          result,
+          is(
+              Map.of(
+                  unit,
+                  TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(3).build(),
+                  otherSupportedUnit,
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build())));
+
+      assertThat(
+          "The first unit gets all the bonus because bonus count is 2",
+          unitSupportPowerMap,
+          is(
+              Map.of(
+                  supportUnit,
+                  new IntegerMap<>(Map.of(unit, 1)),
+                  supportUnit2,
+                  new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "The first unit gets all the bonus because bonus count is 2",
+          unitSupportRollsMap,
+          is(
+              Map.of(
+                  supportUnit,
+                  new IntegerMap<>(Map.of(unit, 1)),
+                  supportUnit2,
+                  new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void attackShouldNotHaveFirstTurnLimiting() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 3, 3);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "First turn limiting should not happen",
+          result,
+          is(Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(3).build())));
+
+      // since the code is never called, adding mocks to return the correct values will throw errors
+      // unless lenient() is added.  So just check that the call is never made.
+      verify(
+              gameData,
+              never()
+                  .description(
+                      "Game sequence should only be called for first turn limiting check "
+                          + "and attackers don't get limited"))
+          .getSequence();
+
+      assertThat(unitSupportPowerMap, is(Map.of()));
+      assertThat(unitSupportRollsMap, is(Map.of()));
+    }
+
+    @Test
+    void defenseWithFirstTurnLimited() throws MutableProperty.InvalidValueException {
+      final GamePlayer attacker = mock(GamePlayer.class);
+      final RulesAttachment rulesAttachment = mock(RulesAttachment.class);
+      when(rulesAttachment.getDominatingFirstRoundAttack()).thenReturn(true);
+      when(attacker.getAttachment(RULES_ATTACHMENT_NAME)).thenReturn(rulesAttachment);
+
+      final GameData gameData = givenGameData().withDiceSides(6).withRound(1, attacker).build();
+
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 3, 3);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "First turn limiting should reduce power to 1",
+          result,
+          is(Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(3).build())));
+
+      assertThat(unitSupportPowerMap, is(Map.of()));
+      assertThat(unitSupportRollsMap, is(Map.of()));
+    }
+
+    @Test
+    void defenseWithFirstTurnLimitedWithSupport() throws MutableProperty.InvalidValueException {
+      final GamePlayer attacker = mock(GamePlayer.class);
+      final RulesAttachment rulesAttachment = mock(RulesAttachment.class);
+      when(rulesAttachment.getDominatingFirstRoundAttack()).thenReturn(true);
+      when(attacker.getAttachment(RULES_ATTACHMENT_NAME)).thenReturn(rulesAttachment);
+
+      final GameData gameData = givenGameData().withDiceSides(6).withRound(1, attacker).build();
+
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 3, 3);
+
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
+              .build();
+
+      final Unit enemySupportUnit = mock(Unit.class);
+      // use a bonus of 1 for the enemy support to ensure that the value doesn't go to 0 and the
+      // support can be detected
+      final UnitSupportAttachment enemyUnitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test2", unit.getType(), "strength:roll", 1, 1);
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportUnits(
+                  Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemySupportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              enemySupport,
+              friendlySupport,
+              true,
+              gameData,
+              true,
+              List.of(),
+              unitSupportPowerMap,
+              unitSupportRollsMap);
+
+      assertThat(
+          "First turn limiting should reduce power to 1 and enemy support should increase it to 2",
+          result,
+          is(Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(5).build())));
+
+      assertThat(
+          "Enemy support unit should be the only one giving support",
+          unitSupportPowerMap,
+          is(Map.of(enemySupportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+      assertThat(
+          "Both support units give support for roll",
+          unitSupportRollsMap,
+          is(
+              Map.of(
+                  enemySupportUnit, new IntegerMap<>(Map.of(unit, 1)),
+                  supportUnit, new IntegerMap<>(Map.of(unit, 1)))));
+    }
+
+    @Test
+    void attackUnitWithTerritoryEffects() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1);
+
+      final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
+      final TerritoryEffectAttachment territoryEffectAttachment =
+          new TerritoryEffectAttachment("test", territoryEffect, gameData);
+      territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
+      territoryEffectAttachment
+          .getPropertyOrThrow(COMBAT_OFFENSE_EFFECT)
+          .setValue(new IntegerMap<>(Map.of(unit.getType(), 1)));
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(territoryEffect),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build()));
+    }
+
+    @Test
+    void defenseUnitWithTerritoryEffects() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, DEFENSE, 1, 1);
+
+      final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
+      final TerritoryEffectAttachment territoryEffectAttachment =
+          new TerritoryEffectAttachment("test", territoryEffect, gameData);
+      territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
+      territoryEffectAttachment
+          .getPropertyOrThrow(COMBAT_DEFENSE_EFFECT)
+          .setValue(new IntegerMap<>(Map.of(unit.getType(), 1)));
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              SupportCalculationResult.EMPTY_RESULT,
+              true,
+              gameData,
+              true,
+              List.of(territoryEffect),
+              Map.of(),
+              Map.of());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build()));
+    }
+
+    @Test
+    void maxPowerIsDiceSidesAfterAllSupports() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 3, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", 3, 1);
+
+      final SupportCalculationResult friendlySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
+              .build();
+
+      final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
+      final TerritoryEffectAttachment territoryEffectAttachment =
+          new TerritoryEffectAttachment("test", territoryEffect, gameData);
+      territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
+      territoryEffectAttachment
+          .getPropertyOrThrow(COMBAT_OFFENSE_EFFECT)
+          .setValue(new IntegerMap<>(Map.of(unit.getType(), 3)));
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              SupportCalculationResult.EMPTY_RESULT,
+              friendlySupport,
+              false,
+              gameData,
+              true,
+              List.of(territoryEffect),
+              new HashMap<>(),
+              new HashMap<>());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(6).totalRolls(1).build()));
+    }
+
+    @Test
+    void minPowerIsZeroAfterAllSupports() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 3, 1);
+
+      final Unit supportUnit = mock(Unit.class);
+      final UnitSupportAttachment unitSupportAttachment =
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", -3, 1);
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
+              .build();
+
+      final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
+      final TerritoryEffectAttachment territoryEffectAttachment =
+          new TerritoryEffectAttachment("test", territoryEffect, gameData);
+      territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
+      territoryEffectAttachment
+          .getPropertyOrThrow(COMBAT_OFFENSE_EFFECT)
+          .setValue(new IntegerMap<>(Map.of(unit.getType(), -3)));
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              enemySupport,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(territoryEffect),
+              new HashMap<>(),
+              new HashMap<>());
+
+      assertThat(
+          result.get(unit),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void minRollsIsZero() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 4, 1);
+
+      final Unit enemyUnit = mock(Unit.class);
+      final UnitSupportAttachment enemyUnitSupportAttachment =
+          givenUnitSupportAttachment(
+              gameData, "test", Set.of(unit.getType()), "strength:roll", -2, 1);
+
+      final SupportCalculationResult enemySupport =
+          SupportCalculationResult.builder()
+              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportUnits(
+                  Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemyUnit, 1))))
+              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
+              .build();
+
+      final Map<Unit, TotalPowerAndTotalRolls> result =
+          TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              List.of(unit),
+              enemySupport,
+              SupportCalculationResult.EMPTY_RESULT,
+              false,
+              gameData,
+              true,
+              List.of(),
+              new HashMap<>(),
+              new HashMap<>());
+
+      assertThat(
+          "The support should take rolls to -1 but the minimum is 0",
+          result,
+          is(Map.of(unit, TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build())));
+    }
+
+    @Test
+    void testGetTotalPowerForSupportBonusTypeCount() {
+      final GameData twwGameData = TestMapGameData.TWW.getGameData();
+
+      // Move regular units
+      final GamePlayer germans = GameDataTestUtil.germany(twwGameData);
+      final Territory berlin = territory("Berlin", twwGameData);
+      final List<Unit> attackers = new ArrayList<>();
+
+      attackers.addAll(GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
+      attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
+      int attackPower =
+          TotalPowerAndTotalRolls.getTotalPower(
+              TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+                  attackers,
+                  new ArrayList<>(),
+                  attackers,
+                  false,
+                  twwGameData,
+                  berlin,
+                  new ArrayList<>()),
+              twwGameData);
+      assertThat("1 artillery should provide +1 support to the infantry", attackPower, is(6));
+
+      attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
+      attackPower =
+          TotalPowerAndTotalRolls.getTotalPower(
+              TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+                  attackers,
+                  new ArrayList<>(),
+                  attackers,
+                  false,
+                  twwGameData,
+                  berlin,
+                  new ArrayList<>()),
+              twwGameData);
+      assertThat(
+          "2 artillery should provide +2 support to the infantry as stack count is 2",
+          attackPower,
+          is(10));
+
+      attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
+      attackPower =
+          TotalPowerAndTotalRolls.getTotalPower(
+              TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+                  attackers,
+                  new ArrayList<>(),
+                  attackers,
+                  false,
+                  twwGameData,
+                  berlin,
+                  new ArrayList<>()),
+              twwGameData);
+      assertThat(
+          "3 artillery should provide +2 support to the infantry as can't provide more than 2",
+          attackPower,
+          is(13));
+    }
+  }
+
+  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+  @Nested
+  class GetTotalPowerAndRolls {
+
+    @Test
+    @DisplayName("If either power or rolls is 0, then don't add the other value if it is not 0")
+    void noPowerOrRollsIsZeroTotalPowerAndRolls() {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalPowerAndRolls(
+              Map.of(
+                  mock(Unit.class),
+                  TotalPowerAndTotalRolls.builder().totalPower(10).totalRolls(0).build(),
+                  mock(Unit.class),
+                  TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(10).build()),
+              gameData),
+          is(TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()));
+    }
+
+    @Test
+    void rollOfOneJustAddsPowerAndRolls() {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalPowerAndRolls(
+              Map.of(
+                  mock(Unit.class),
+                  TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(1).build(),
+                  mock(Unit.class),
+                  TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(1).build()),
+              gameData),
+          is(TotalPowerAndTotalRolls.builder().totalPower(5).totalRolls(2).build()));
+    }
+
+    @Test
+    void rollIsMultipliedWithPower() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalPowerAndRolls(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 3, 2),
+                  TotalPowerAndTotalRolls.builder().totalPower(3).totalRolls(2).build(),
+                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 2, 2),
+                  TotalPowerAndTotalRolls.builder().totalPower(2).totalRolls(2).build()),
+              gameData),
+          is(TotalPowerAndTotalRolls.builder().totalPower(10).totalRolls(4).build()));
+    }
+
+    @Test
+    @DisplayName("If the power is more than the dice sides, then dice sides will be used")
+    void individualPowerIsLimitedToDiceSides() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalPowerAndRolls(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 8, 2),
+                  TotalPowerAndTotalRolls.builder().totalPower(8).totalRolls(2).build()),
+              gameData),
+          is(TotalPowerAndTotalRolls.builder().totalPower(12).totalRolls(2).build()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("bestRollSimulated")
+    void lhtrIsSimulatedWithALittleExtraPower(
+        final int power,
+        final int rolls,
+        final int diceSides,
+        final int expectedPower,
+        final int expectedRolls)
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData =
+          givenGameData().withDiceSides(diceSides).withLhtrHeavyBombers(true).build();
+
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalPowerAndRolls(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, power, rolls),
+                  TotalPowerAndTotalRolls.builder().totalPower(power).totalRolls(rolls).build()),
+              gameData),
+          is(
+              TotalPowerAndTotalRolls.builder()
+                  .totalPower(expectedPower)
+                  .totalRolls(expectedRolls)
+                  .build()));
+    }
+
+    List<Arguments> bestRollSimulated() {
+      // expectedPower = power + ((6 / dice) * (rolls - 1))
+      return List.of(
+          Arguments.of(3, 2, 6, 4, 2), // 3 + (6/6) * (2-1) = 4
+          Arguments.of(4, 2, 6, 5, 2), // 4 + (6/6) * (2-1) = 5
+          Arguments.of(3, 3, 6, 5, 3), // 3 + (6/6) * (3-1) = 5
+          Arguments.of(3, 2, 12, 5, 2), // 3 + (12/6) * (2-1) = 5
+          Arguments.of(3, 3, 12, 7, 3) // 3 + (12/6) * (3-1) = 7
+          );
+    }
+
+    @ParameterizedTest
+    @MethodSource("bestRollSimulated")
+    void chooseBestRollIsSimulatedWithALittleExtraPower(
+        final int power,
+        final int rolls,
+        final int diceSides,
+        final int expectedPower,
+        final int expectedRolls)
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().withDiceSides(diceSides).build();
+
+      final Unit unit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, power, rolls);
+      unit.getUnitAttachment().getPropertyOrThrow(CHOOSE_BEST_ROLL).setValue(true);
+
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalPowerAndRolls(
+              Map.of(
+                  unit,
+                  TotalPowerAndTotalRolls.builder().totalPower(power).totalRolls(rolls).build()),
+              gameData),
+          is(
+              TotalPowerAndTotalRolls.builder()
+                  .totalPower(expectedPower)
+                  .totalRolls(expectedRolls)
+                  .build()));
+    }
+  }
+
+  @Nested
+  class GetTotalAaAttacks {
+
+    @Test
+    void emptyPowerMapIsZeroAttacks() {
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(Map.of(), List.of(mock(Unit.class))), is(0));
+    }
+
+    @Test
+    void emptyUnitCollectionIsZeroAttacks() {
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  mock(Unit.class),
+                  TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(0).build()),
+              List.of()),
+          is(0));
+    }
+
+    @Test
+    void powerMapWithNoPowerOrRollsIsZeroAttacks() {
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  mock(Unit.class),
+                  TotalPowerAndTotalRolls.builder().totalPower(0).totalRolls(10).build(),
+                  mock(Unit.class),
+                  TotalPowerAndTotalRolls.builder().totalPower(10).totalRolls(0).build()),
+              List.of(mock(Unit.class))),
+          is(0));
+    }
+
+    @Test
+    void unitWithInfiniteRollsMeansAttacksEqualToTarget()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().build();
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build()),
+              List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
+          is(3));
+    }
+
+    @Test
+    void multipleUnitsWithInfiniteRollsMeansAttacksEqualToTarget()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().build();
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build(),
+                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build()),
+              List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
+          is(3));
+    }
+
+    @Test
+    void infiniteUnitAndNonInfiniteUnitMeansAttacksEqualsToTarget()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().build();
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build(),
+                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, 10),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(10).build()),
+              List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
+          is(3));
+    }
+
+    @Test
+    void rollsOfNonInfiniteUnitEqualsAttack() throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().build();
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()),
+              List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
+          is(1));
+    }
+
+    @Test
+    void rollsOfNonInfiniteUnitGreaterThanTargetCountMeansAttackEqualsTarget()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().build();
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 2),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build(),
+                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, 2),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build()),
+              List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
+          is(3));
+    }
+
+    @Test
+    void overstackUnitCanCauseAttackToGoOverTargetCount()
+        throws MutableProperty.InvalidValueException {
+      final GameData gameData = givenGameData().build();
+      final Unit overstackUnit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 3);
+      overstackUnit.getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
+
+      assertThat(
+          TotalPowerAndTotalRolls.getTotalAaAttacks(
+              Map.of(
+                  overstackUnit,
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build(),
+                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, 3),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(3).build(),
+                  givenUnit("test3", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build()),
+              List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
+          is(5));
+    }
   }
 }

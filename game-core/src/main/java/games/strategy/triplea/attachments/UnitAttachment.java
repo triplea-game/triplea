@@ -42,6 +42,22 @@ import org.triplea.util.Tuple;
 public class UnitAttachment extends DefaultAttachment {
   public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
   public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
+
+  public static final String IS_SEA = "isSea";
+  public static final String DEFENSE_STRENGTH = "defense";
+  public static final String ATTACK_STRENGTH = "attack";
+  public static final String ATTACK_ROLL = "attackRolls";
+  public static final String DEFENSE_ROLL = "defenseRolls";
+  public static final String ATTACK_AA = "attackAA";
+  public static final String OFFENSIVE_ATTACK_AA = "offensiveAttackAA";
+  public static final String MAX_AA_ATTACKS = "maxAAattacks";
+  public static final String ATTACK_AA_MAX_DIE_SIDES = "attackAAmaxDieSides";
+  public static final String OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES = "offensiveAttackAAmaxDieSides";
+  public static final String MAY_OVERSTACK_AA = "mayOverStackAA";
+  public static final String IS_MARINE = "isMarine";
+  public static final String BOMBARD = "bombard";
+  public static final String CHOOSE_BEST_ROLL = "chooseBestRoll";
+
   private static final long serialVersionUID = -2946748686268541820L;
 
   // movement related
@@ -3691,7 +3707,7 @@ public class UnitAttachment extends DefaultAttachment {
             "isAir",
             MutableProperty.of(this::setIsAir, this::setIsAir, this::getIsAir, this::resetIsAir))
         .put(
-            "isSea",
+            IS_SEA,
             MutableProperty.of(this::setIsSea, this::setIsSea, this::getIsSea, this::resetIsSea))
         .put(
             "movement",
@@ -3741,11 +3757,11 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put(
-            "attack",
+            ATTACK_STRENGTH,
             MutableProperty.of(
                 this::setAttack, this::setAttack, this::getAttack, this::resetAttack))
         .put(
-            "defense",
+            DEFENSE_STRENGTH,
             MutableProperty.of(
                 this::setDefense, this::setDefense, this::getDefense, this::resetDefense))
         .put(
@@ -3763,7 +3779,7 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getCanBombard,
                 this::resetCanBombard))
         .put(
-            "bombard",
+            BOMBARD,
             MutableProperty.ofMapper(
                 DefaultAttachment::getInt, this::setBombard, this::getBombard, () -> -1))
         .put("isSub", MutableProperty.<Boolean>ofWriteOnly(this::setIsSub, this::setIsSub))
@@ -3832,7 +3848,7 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getUnitSupportCount,
                 this::resetUnitSupportCount))
         .put(
-            "isMarine",
+            IS_MARINE,
             MutableProperty.of(
                 this::setIsMarine, this::setIsMarine, this::getIsMarine, this::resetIsMarine))
         .put(
@@ -3868,21 +3884,21 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getAttackingLimit,
                 this::resetAttackingLimit))
         .put(
-            "attackRolls",
+            ATTACK_ROLL,
             MutableProperty.of(
                 this::setAttackRolls,
                 this::setAttackRolls,
                 this::getAttackRolls,
                 this::resetAttackRolls))
         .put(
-            "defenseRolls",
+            DEFENSE_ROLL,
             MutableProperty.of(
                 this::setDefenseRolls,
                 this::setDefenseRolls,
                 this::getDefenseRolls,
                 this::resetDefenseRolls))
         .put(
-            "chooseBestRoll",
+            CHOOSE_BEST_ROLL,
             MutableProperty.of(
                 this::setChooseBestRoll,
                 this::setChooseBestRoll,
@@ -3977,32 +3993,32 @@ public class UnitAttachment extends DefaultAttachment {
             MutableProperty.of(
                 this::setIsRocket, this::setIsRocket, this::getIsRocket, this::resetIsRocket))
         .put(
-            "attackAA",
+            ATTACK_AA,
             MutableProperty.of(
                 this::setAttackAa, this::setAttackAa, this::getAttackAa, this::resetAttackAa))
         .put(
-            "offensiveAttackAA",
+            OFFENSIVE_ATTACK_AA,
             MutableProperty.of(
                 this::setOffensiveAttackAa,
                 this::setOffensiveAttackAa,
                 this::getOffensiveAttackAa,
                 this::resetOffensiveAttackAa))
         .put(
-            "attackAAmaxDieSides",
+            ATTACK_AA_MAX_DIE_SIDES,
             MutableProperty.of(
                 this::setAttackAaMaxDieSides,
                 this::setAttackAaMaxDieSides,
                 this::getAttackAaMaxDieSides,
                 this::resetAttackAaMaxDieSides))
         .put(
-            "offensiveAttackAAmaxDieSides",
+            OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES,
             MutableProperty.of(
                 this::setOffensiveAttackAaMaxDieSides,
                 this::setOffensiveAttackAaMaxDieSides,
                 this::getOffensiveAttackAaMaxDieSides,
                 this::resetOffensiveAttackAaMaxDieSides))
         .put(
-            "maxAAattacks",
+            MAX_AA_ATTACKS,
             MutableProperty.of(
                 this::setMaxAaAttacks,
                 this::setMaxAaAttacks,
@@ -4022,7 +4038,7 @@ public class UnitAttachment extends DefaultAttachment {
             MutableProperty.of(
                 this::setTargetsAa, this::setTargetsAa, this::getTargetsAa, this::resetTargetsAa))
         .put(
-            "mayOverStackAA",
+            MAY_OVERSTACK_AA,
             MutableProperty.of(
                 this::setMayOverStackAa,
                 this::setMayOverStackAa,
