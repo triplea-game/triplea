@@ -12,7 +12,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
-import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;

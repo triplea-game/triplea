@@ -21,7 +21,7 @@ import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
 public class AvailableSupportCalculator {
-  public static SupportCalculationResult getSortedAaSupport(
+  static SupportCalculationResult getSortedAaSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final GameData data,
       final boolean defence,
@@ -61,7 +61,7 @@ public class AvailableSupportCalculator {
    * @param defence are the receiving units defending?
    * @param allies are the receiving units allied to the giving units?
    */
-  public static SupportCalculationResult getSupport(
+  private static SupportCalculationResult getSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Set<UnitSupportAttachment> rules,
       final boolean defence,

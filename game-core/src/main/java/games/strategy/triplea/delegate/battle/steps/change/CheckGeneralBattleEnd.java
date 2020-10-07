@@ -14,7 +14,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
-import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;

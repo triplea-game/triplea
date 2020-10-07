@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
-public class SupportBonusCalculator {
+class SupportBonusCalculator {
   /**
    * Returns the support for this unit type, and decrements the supportLeft counters.
    *

@@ -32,7 +32,7 @@ import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.BattleRecords;
-import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import java.io.Serializable;
