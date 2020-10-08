@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.dice;
+package games.strategy.triplea.delegate.power.calculator;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
@@ -14,9 +14,6 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.power.calculator.AvailableSupportCalculator;
-import games.strategy.triplea.delegate.power.calculator.SupportBonusCalculator;
-import games.strategy.triplea.delegate.power.calculator.SupportCalculationResult;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -219,7 +216,7 @@ public class TotalPowerAndTotalRolls {
   }
 
   @VisibleForTesting
-  public static void sortAaHighToLow(
+  static void sortAaHighToLow(
       final List<Unit> units,
       final GameData data,
       final boolean defending,
@@ -594,6 +591,12 @@ public class TotalPowerAndTotalRolls {
         && isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
+  private static boolean isNegateDominatingFirstRoundAttack(final GamePlayer player) {
+    final RulesAttachment ra =
+        (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    return ra != null && ra.getNegateDominatingFirstRoundAttack();
+  }
+
   private static boolean isDominatingFirstRoundAttack(final GamePlayer player) {
     if (player == null) {
       return false;
@@ -601,12 +604,6 @@ public class TotalPowerAndTotalRolls {
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getDominatingFirstRoundAttack();
-  }
-
-  private static boolean isNegateDominatingFirstRoundAttack(final GamePlayer player) {
-    final RulesAttachment ra =
-        (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    return ra != null && ra.getNegateDominatingFirstRoundAttack();
   }
 
   public static int getTotalPower(

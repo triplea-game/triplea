@@ -15,7 +15,7 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.dice.TotalPowerAndTotalRolls;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
