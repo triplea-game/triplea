@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -354,8 +355,10 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return wasAmphibious;
   }
 
-  private void setWasAmphibious(final boolean value) {
+  @VisibleForTesting
+  public Unit setWasAmphibious(final boolean value) {
     wasAmphibious = value;
+    return this;
   }
 
   public boolean getDisabled() {

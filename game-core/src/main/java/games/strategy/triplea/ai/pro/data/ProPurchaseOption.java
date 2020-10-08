@@ -14,7 +14,6 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.power.calculator.AvailableSupportCalculator;
-import games.strategy.triplea.delegate.power.calculator.SupportCalculationResult;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -282,7 +281,7 @@ public class ProPurchaseOption {
     final List<Unit> units = new ArrayList<>(ownedLocalUnits);
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));
-    final SupportCalculationResult supportCalculationResult =
+    final AvailableSupportCalculator supportCalculationResult =
         AvailableSupportCalculator.getSupport(
             units, data.getUnitTypeList().getSupportRules(), defense, true);
 
