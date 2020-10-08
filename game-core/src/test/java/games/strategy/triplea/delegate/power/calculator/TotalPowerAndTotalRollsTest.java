@@ -127,7 +127,7 @@ class TotalPowerAndTotalRollsTest {
   class GetTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack {
 
     @Test
-    void singleAaWithOneRoll() throws MutableProperty.InvalidValueException {
+    void singleAaWithOneRoll() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -171,7 +171,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleAaWithOneRollNoHit() throws MutableProperty.InvalidValueException {
+    void singleAaWithOneRollNoHit() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -186,7 +186,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleAaWithTwoRoll() throws MutableProperty.InvalidValueException {
+    void singleAaWithTwoRoll() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
@@ -202,7 +202,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithSamePower() throws MutableProperty.InvalidValueException {
+    void twoAaWithSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -220,7 +220,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithDifferentPower() throws MutableProperty.InvalidValueException {
+    void twoAaWithDifferentPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -239,7 +239,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithDifferentPowerAndOnlyOneHit() throws MutableProperty.InvalidValueException {
+    void twoAaWithDifferentPowerAndOnlyOneHit() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -257,7 +257,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneAaWithInfinite() throws MutableProperty.InvalidValueException {
+    void oneAaWithInfinite() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
@@ -279,7 +279,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithInfiniteWithSamePower() throws MutableProperty.InvalidValueException {
+    void twoAaWithInfiniteWithSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
@@ -303,7 +303,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithInfiniteWithDifferentPower() throws MutableProperty.InvalidValueException {
+    void twoAaWithInfiniteWithDifferentPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
@@ -327,7 +327,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithInfiniteWithDifferentDice() throws MutableProperty.InvalidValueException {
+    void twoAaWithInfiniteWithDifferentDice() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment()
@@ -359,7 +359,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithOneRollAndInfiniteSamePower() throws MutableProperty.InvalidValueException {
+    void twoAaWithOneRollAndInfiniteSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -383,8 +383,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithOneRollAndInfiniteWhereInfiniteIsHigher()
-        throws MutableProperty.InvalidValueException {
+    void twoAaWithOneRollAndInfiniteWhereInfiniteIsHigher() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -409,8 +408,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void twoAaWithOneRollAndInfiniteWhereInfiniteIsLower()
-        throws MutableProperty.InvalidValueException {
+    void twoAaWithOneRollAndInfiniteWhereInfiniteIsLower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(1);
@@ -435,7 +433,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneAaWithOverStack() throws MutableProperty.InvalidValueException {
+    void oneAaWithOverStack() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
@@ -451,7 +449,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneAaWithOverStackAndMoreRollsThanTargets() throws MutableProperty.InvalidValueException {
+    void oneAaWithOverStackAndMoreRollsThanTargets() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(5).setMayOverStackAa(true);
@@ -474,7 +472,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneAaWithOverstackAndInfinite() throws MutableProperty.InvalidValueException {
+    void oneAaWithOverstackAndInfinite() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1).setMayOverStackAa(true);
@@ -496,7 +494,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneOverstackAndOneInfinite() throws MutableProperty.InvalidValueException {
+    void oneOverstackAndOneInfinite() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
@@ -523,7 +521,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneOverstackAndOneInfiniteDifferentPowers() throws MutableProperty.InvalidValueException {
+    void oneOverstackAndOneInfiniteDifferentPowers() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
@@ -550,7 +548,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneOverstackAndOneNormal() throws MutableProperty.InvalidValueException {
+    void oneOverstackAndOneNormal() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
@@ -575,7 +573,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneOverstackAndOneNormalDifferentPowers() throws MutableProperty.InvalidValueException {
+    void oneOverstackAndOneNormalDifferentPowers() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
@@ -600,8 +598,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneOverstackOneInfiniteAndOneNormalSamePower()
-        throws MutableProperty.InvalidValueException {
+    void oneOverstackOneInfiniteAndOneNormalSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
@@ -630,8 +627,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsBest()
-        throws MutableProperty.InvalidValueException {
+    void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsBest() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
@@ -660,8 +656,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsWorst()
-        throws MutableProperty.InvalidValueException {
+    void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsWorst() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
@@ -758,8 +753,7 @@ class TotalPowerAndTotalRollsTest {
   class GetMaxAaAttackAndDiceSides {
 
     @Test
-    void singleUnitWithNoCustomDiceAndNoPowerRollsMap()
-        throws MutableProperty.InvalidValueException {
+    void singleUnitWithNoCustomDiceAndNoPowerRollsMap() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -771,8 +765,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleDefensiveUnitWithNoCustomDiceAndNoPowerRollsMap()
-        throws MutableProperty.InvalidValueException {
+    void singleDefensiveUnitWithNoCustomDiceAndNoPowerRollsMap() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttackAa(2).setMaxAaAttacks(1);
@@ -784,7 +777,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleUnitWithCustomDiceAndNoPowerRollsMap() throws MutableProperty.InvalidValueException {
+    void singleUnitWithCustomDiceAndNoPowerRollsMap() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment()
@@ -799,8 +792,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleDefensiveUnitWithCustomDiceAndNoPowerRollsMap()
-        throws MutableProperty.InvalidValueException {
+    void singleDefensiveUnitWithCustomDiceAndNoPowerRollsMap() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttackAa(2).setMaxAaAttacks(1).setAttackAaMaxDieSides(8);
@@ -812,7 +804,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleUnitWithPowerRollsMap() throws MutableProperty.InvalidValueException {
+    void singleUnitWithPowerRollsMap() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -829,7 +821,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleDefensiveUnitWithPowerRollsMap() throws MutableProperty.InvalidValueException {
+    void singleDefensiveUnitWithPowerRollsMap() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttackAa(2).setMaxAaAttacks(1);
@@ -846,7 +838,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void limitAttackToDiceSides() throws MutableProperty.InvalidValueException {
+    void limitAttackToDiceSides() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment()
@@ -866,7 +858,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void multipleUnitsWithSameDice() throws MutableProperty.InvalidValueException {
+    void multipleUnitsWithSameDice() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
@@ -884,7 +876,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void multipleUnitsWithDifferentDice() throws MutableProperty.InvalidValueException {
+    void multipleUnitsWithDifferentDice() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment()
@@ -912,7 +904,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void multipleUnitsWithDifferentDice2() throws MutableProperty.InvalidValueException {
+    void multipleUnitsWithDifferentDice2() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment()
@@ -944,7 +936,7 @@ class TotalPowerAndTotalRollsTest {
   class GetAaUnitPowerAndRollsForNormalBattles {
 
     @Test
-    void attackUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+    void attackUnitWithNoSupport() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(1);
@@ -963,7 +955,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void defenseUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+    void defenseUnitWithNoSupport() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttackAa(1).setMaxAaAttacks(1);
@@ -982,7 +974,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void unitWithZeroRollsAlwaysGetsZeroPower() throws MutableProperty.InvalidValueException {
+    void unitWithZeroRollsAlwaysGetsZeroPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(0);
@@ -1001,7 +993,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void unitWithZeroPowerAlwaysGetsZeroRolls() throws MutableProperty.InvalidValueException {
+    void unitWithZeroPowerAlwaysGetsZeroRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(0).setMaxAaAttacks(1);
@@ -1503,7 +1495,7 @@ class TotalPowerAndTotalRollsTest {
   class GetUnitPowerAndRollsForNormalBattles {
 
     @Test
-    void attackUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+    void attackUnitWithNoSupport() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttack(1).setAttackRolls(1);
@@ -1526,7 +1518,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void defenseUnitWithNoSupport() throws MutableProperty.InvalidValueException {
+    void defenseUnitWithNoSupport() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setDefense(1).setDefenseRolls(1);
@@ -1601,7 +1593,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void attackBombardmentWithNoSupport() throws MutableProperty.InvalidValueException {
+    void attackBombardmentWithNoSupport() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttack(1).setAttackRolls(1).setBombard(3).setIsSea(true);
@@ -1625,7 +1617,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void defenseBombardmentWithNoSupport() throws MutableProperty.InvalidValueException {
+    void defenseBombardmentWithNoSupport() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setDefense(1).setDefenseRolls(1).setBombard(3).setIsSea(true);
@@ -1649,7 +1641,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void unitWithZeroRollsAlwaysGetsZeroPower() throws MutableProperty.InvalidValueException {
+    void unitWithZeroRollsAlwaysGetsZeroPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttack(1).setAttackRolls(0);
@@ -1672,7 +1664,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void unitWithZeroPowerAlwaysGetsZeroRolls() throws MutableProperty.InvalidValueException {
+    void unitWithZeroPowerAlwaysGetsZeroRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttack(0).setAttackRolls(1);
@@ -2723,7 +2715,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void attackShouldNotHaveFirstTurnLimiting() throws MutableProperty.InvalidValueException {
+    void attackShouldNotHaveFirstTurnLimiting() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
 
       final Unit unit = givenUnit("test", gameData);
@@ -2764,7 +2756,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void defenseWithFirstTurnLimited() throws MutableProperty.InvalidValueException {
+    void defenseWithFirstTurnLimited() {
       final GamePlayer attacker = mock(GamePlayer.class);
       final RulesAttachment rulesAttachment = mock(RulesAttachment.class);
       when(rulesAttachment.getDominatingFirstRoundAttack()).thenReturn(true);
@@ -3157,7 +3149,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void rollIsMultipliedWithPower() throws MutableProperty.InvalidValueException {
+    void rollIsMultipliedWithPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttack(3).setAttackRolls(2);
@@ -3177,7 +3169,7 @@ class TotalPowerAndTotalRollsTest {
 
     @Test
     @DisplayName("If the power is more than the dice sides, then dice sides will be used")
-    void individualPowerIsLimitedToDiceSides() throws MutableProperty.InvalidValueException {
+    void individualPowerIsLimitedToDiceSides() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setAttack(8).setAttackRolls(2);
@@ -3196,8 +3188,7 @@ class TotalPowerAndTotalRollsTest {
         final int rolls,
         final int diceSides,
         final int expectedPower,
-        final int expectedRolls)
-        throws MutableProperty.InvalidValueException {
+        final int expectedRolls) {
       final GameData gameData =
           givenGameData().withDiceSides(diceSides).withLhtrHeavyBombers(true).build();
 
@@ -3235,8 +3226,7 @@ class TotalPowerAndTotalRollsTest {
         final int rolls,
         final int diceSides,
         final int expectedPower,
-        final int expectedRolls)
-        throws MutableProperty.InvalidValueException {
+        final int expectedRolls) {
       final GameData gameData = givenGameData().withDiceSides(diceSides).build();
 
       final Unit unit = givenUnit("test", gameData);
@@ -3290,8 +3280,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void unitWithInfiniteRollsMeansAttacksEqualToTarget()
-        throws MutableProperty.InvalidValueException {
+    void unitWithInfiniteRollsMeansAttacksEqualToTarget() {
       final GameData gameData = givenGameData().build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
@@ -3303,8 +3292,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void multipleUnitsWithInfiniteRollsMeansAttacksEqualToTarget()
-        throws MutableProperty.InvalidValueException {
+    void multipleUnitsWithInfiniteRollsMeansAttacksEqualToTarget() {
       final GameData gameData = givenGameData().build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
@@ -3323,8 +3311,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void infiniteUnitAndNonInfiniteUnitMeansAttacksEqualsToTarget()
-        throws MutableProperty.InvalidValueException {
+    void infiniteUnitAndNonInfiniteUnitMeansAttacksEqualsToTarget() {
       final GameData gameData = givenGameData().build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
@@ -3343,7 +3330,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void rollsOfNonInfiniteUnitEqualsAttack() throws MutableProperty.InvalidValueException {
+    void rollsOfNonInfiniteUnitEqualsAttack() {
       final GameData gameData = givenGameData().build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(1);
@@ -3356,8 +3343,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void rollsOfNonInfiniteUnitGreaterThanTargetCountMeansAttackEqualsTarget()
-        throws MutableProperty.InvalidValueException {
+    void rollsOfNonInfiniteUnitGreaterThanTargetCountMeansAttackEqualsTarget() {
       final GameData gameData = givenGameData().build();
       final Unit unit = givenUnit("test", gameData);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(2);
@@ -3376,8 +3362,7 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void overstackUnitCanCauseAttackToGoOverTargetCount()
-        throws MutableProperty.InvalidValueException {
+    void overstackUnitCanCauseAttackToGoOverTargetCount() {
       final GameData gameData = givenGameData().build();
       final Unit overstackUnit = givenUnit("test", gameData);
       overstackUnit
@@ -3391,7 +3376,8 @@ class TotalPowerAndTotalRollsTest {
       unit2.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
 
       assertThat(
-          "Infinite gives total attacks equal to number of units (3) and the overstacked unit adds 2 more",
+          "Infinite gives total attacks equal to number of units (3)"
+              + " and the overstacked unit adds 2 more",
           TotalPowerAndTotalRolls.getTotalAaAttacks(
               Map.of(
                   overstackUnit,
