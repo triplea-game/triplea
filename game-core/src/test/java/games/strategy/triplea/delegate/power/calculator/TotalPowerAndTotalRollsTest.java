@@ -3237,7 +3237,7 @@ class TotalPowerAndTotalRollsTest {
       assertThat(
           TotalPowerAndTotalRolls.getTotalAaAttacks(
               Map.of(
-                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, -1),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build()),
               List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
           is(3));
@@ -3248,11 +3248,12 @@ class TotalPowerAndTotalRollsTest {
         throws MutableProperty.InvalidValueException {
       final GameData gameData = givenGameData().build();
       assertThat(
+          "Infinite unit means all enemies are rolled for but no overstacking",
           TotalPowerAndTotalRolls.getTotalAaAttacks(
               Map.of(
-                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, -1),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build(),
-                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  givenUnit("test2", BattleType.AA, gameData, OFFENSE, 1, -1),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build()),
               List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
           is(3));
@@ -3263,11 +3264,12 @@ class TotalPowerAndTotalRollsTest {
         throws MutableProperty.InvalidValueException {
       final GameData gameData = givenGameData().build();
       assertThat(
+          "Infinite unit means all enemies are rolled for",
           TotalPowerAndTotalRolls.getTotalAaAttacks(
               Map.of(
-                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, -1),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build(),
-                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, 10),
+                  givenUnit("test2", BattleType.AA, gameData, OFFENSE, 1, 10),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(10).build()),
               List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
           is(3));
@@ -3277,9 +3279,10 @@ class TotalPowerAndTotalRollsTest {
     void rollsOfNonInfiniteUnitEqualsAttack() throws MutableProperty.InvalidValueException {
       final GameData gameData = givenGameData().build();
       assertThat(
+          "Unit only has one roll",
           TotalPowerAndTotalRolls.getTotalAaAttacks(
               Map.of(
-                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 1),
+                  givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 1),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(1).build()),
               List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
           is(1));
@@ -3290,11 +3293,12 @@ class TotalPowerAndTotalRollsTest {
         throws MutableProperty.InvalidValueException {
       final GameData gameData = givenGameData().build();
       assertThat(
+          "There is only 3 units and no overstack so only allow 3",
           TotalPowerAndTotalRolls.getTotalAaAttacks(
               Map.of(
-                  givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 2),
+                  givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 2),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build(),
-                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, 2),
+                  givenUnit("test2", BattleType.AA, gameData, OFFENSE, 1, 2),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build()),
               List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
           is(3));
@@ -3304,17 +3308,18 @@ class TotalPowerAndTotalRollsTest {
     void overstackUnitCanCauseAttackToGoOverTargetCount()
         throws MutableProperty.InvalidValueException {
       final GameData gameData = givenGameData().build();
-      final Unit overstackUnit = givenUnit("test", BattleType.NORMAL, gameData, OFFENSE, 1, 3);
+      final Unit overstackUnit = givenUnit("test", BattleType.AA, gameData, OFFENSE, 1, 2);
       overstackUnit.getUnitAttachment().getPropertyOrThrow(MAY_OVERSTACK_AA).setValue(true);
 
       assertThat(
+          "Infinite gives total attacks equal to number of units (3) and the overstacked unit adds 2 more",
           TotalPowerAndTotalRolls.getTotalAaAttacks(
               Map.of(
                   overstackUnit,
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(2).build(),
-                  givenUnit("test2", BattleType.NORMAL, gameData, OFFENSE, 1, 3),
+                  givenUnit("test2", BattleType.AA, gameData, OFFENSE, 1, 3),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(3).build(),
-                  givenUnit("test3", BattleType.NORMAL, gameData, OFFENSE, 1, -1),
+                  givenUnit("test3", BattleType.AA, gameData, OFFENSE, 1, -1),
                   TotalPowerAndTotalRolls.builder().totalPower(1).totalRolls(-1).build()),
               List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class))),
           is(5));

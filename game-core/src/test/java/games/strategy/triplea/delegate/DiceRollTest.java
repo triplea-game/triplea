@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -25,7 +24,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
@@ -40,7 +38,6 @@ class DiceRollTest {
   @Test
   void testSimple() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final IBattle battle = mock(IBattle.class);
     final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
@@ -55,22 +52,22 @@ class DiceRollTest {
     // infantry defends
     final DiceRoll roll =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll4.getHits(), is(0));
   }
 
@@ -78,7 +75,6 @@ class DiceRollTest {
   void testSimpleLowLuck() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final IBattle battle = mock(IBattle.class);
     final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
@@ -93,29 +89,28 @@ class DiceRollTest {
     // infantry defends
     final DiceRoll roll =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, battle.getTerritory(), territoryEffects);
+            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
     assertThat(roll4.getHits(), is(0));
   }
 
   @Test
   void testArtillerySupport() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final IBattle battle = mock(IBattle.class);
     final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
@@ -131,7 +126,7 @@ class DiceRollTest {
             false,
             russians,
             bridge,
-            battle.getTerritory(),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(westRussia));
     assertThat(roll.getHits(), is(2));
   }
@@ -139,7 +134,6 @@ class DiceRollTest {
   @Test
   void testVariableArtillerySupport() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final IBattle battle = mock(IBattle.class);
     final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // Add 1 artillery
@@ -162,7 +156,7 @@ class DiceRollTest {
             false,
             russians,
             bridge,
-            battle.getTerritory(),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(westRussia));
     assertThat(roll.getHits(), is(3));
   }
@@ -171,7 +165,6 @@ class DiceRollTest {
   void testLowLuck() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final IBattle battle = mock(IBattle.class);
     final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
@@ -183,7 +176,7 @@ class DiceRollTest {
             true,
             russians,
             bridge,
-            battle.getTerritory(),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(westRussia));
     assertThat(roll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
@@ -210,15 +203,13 @@ class DiceRollTest {
         });
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
-    final IBattle battle = mock(IBattle.class);
-    when(battle.isAmphibious()).thenReturn(true);
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackers,
             false,
             americans,
             bridge,
-            battle.getTerritory(),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(algeria));
     assertThat(roll.getHits(), is(1));
   }
@@ -244,15 +235,13 @@ class DiceRollTest {
                   });
         });
     final IDelegateBridge bridge = newDelegateBridge(americans);
-    final IBattle battle = mock(IBattle.class);
-    when(battle.isAmphibious()).thenReturn(true);
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackers,
             false,
             americans,
             bridge,
-            battle.getTerritory(),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(algeria));
     assertThat(roll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
@@ -279,14 +268,13 @@ class DiceRollTest {
         });
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
-    final IBattle battle = mock(IBattle.class);
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackers,
             false,
             americans,
             bridge,
-            battle.getTerritory(),
+            mock(Territory.class),
             TerritoryEffectHelper.getEffects(algeria));
     assertThat(roll.getHits(), is(0));
   }
