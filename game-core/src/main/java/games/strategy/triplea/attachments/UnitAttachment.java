@@ -855,8 +855,10 @@ public class UnitAttachment extends DefaultAttachment {
     isSea = getBool(s);
   }
 
-  private void setIsSea(final Boolean s) {
+  @VisibleForTesting
+  public UnitAttachment setIsSea(final Boolean s) {
     isSea = s;
+    return this;
   }
 
   public boolean getIsSea() {
@@ -1277,8 +1279,10 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setIsMarine(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setIsMarine(final Integer s) {
     isMarine = s;
+    return this;
   }
 
   public int getIsMarine() {
@@ -1474,8 +1478,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @VisibleForTesting
-  public void setBombard(final int s) {
+  public UnitAttachment setBombard(final int s) {
     bombard = s;
+    return this;
   }
 
   public int getBombard() {
@@ -1510,8 +1515,10 @@ public class UnitAttachment extends DefaultAttachment {
     attack = getInt(s);
   }
 
-  private void setAttack(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setAttack(final Integer s) {
     attack = s;
+    return this;
   }
 
   int getAttack() {
@@ -1534,8 +1541,10 @@ public class UnitAttachment extends DefaultAttachment {
     attackRolls = getInt(s);
   }
 
-  private void setAttackRolls(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setAttackRolls(final Integer s) {
     attackRolls = s;
+    return this;
   }
 
   private int getAttackRolls() {
@@ -1558,8 +1567,10 @@ public class UnitAttachment extends DefaultAttachment {
     defense = getInt(s);
   }
 
-  private void setDefense(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setDefense(final Integer s) {
     defense = s;
+    return this;
   }
 
   private int getDefense() {
@@ -1586,8 +1597,10 @@ public class UnitAttachment extends DefaultAttachment {
     defenseRolls = getInt(s);
   }
 
-  private void setDefenseRolls(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setDefenseRolls(final Integer s) {
     defenseRolls = s;
+    return this;
   }
 
   private int getDefenseRolls() {
@@ -1610,8 +1623,10 @@ public class UnitAttachment extends DefaultAttachment {
     chooseBestRoll = getBool(s);
   }
 
-  private void setChooseBestRoll(final Boolean s) {
+  @VisibleForTesting
+  public UnitAttachment setChooseBestRoll(final Boolean s) {
     chooseBestRoll = s;
+    return this;
   }
 
   public boolean getChooseBestRoll() {
@@ -2151,8 +2166,10 @@ public class UnitAttachment extends DefaultAttachment {
     attackAa = getInt(s);
   }
 
-  private void setAttackAa(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setAttackAa(final Integer s) {
     attackAa = s;
+    return this;
   }
 
   private int getAttackAa() {
@@ -2180,8 +2197,10 @@ public class UnitAttachment extends DefaultAttachment {
     offensiveAttackAa = getInt(s);
   }
 
-  private void setOffensiveAttackAa(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setOffensiveAttackAa(final Integer s) {
     offensiveAttackAa = s;
+    return this;
   }
 
   private int getOffensiveAttackAa() {
@@ -2209,8 +2228,10 @@ public class UnitAttachment extends DefaultAttachment {
     attackAaMaxDieSides = getInt(s);
   }
 
-  private void setAttackAaMaxDieSides(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setAttackAaMaxDieSides(final Integer s) {
     attackAaMaxDieSides = s;
+    return this;
   }
 
   public int getAttackAaMaxDieSides() {
@@ -2228,8 +2249,10 @@ public class UnitAttachment extends DefaultAttachment {
     offensiveAttackAaMaxDieSides = getInt(s);
   }
 
-  private void setOffensiveAttackAaMaxDieSides(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setOffensiveAttackAaMaxDieSides(final Integer s) {
     offensiveAttackAaMaxDieSides = s;
+    return this;
   }
 
   public int getOffensiveAttackAaMaxDieSides() {
@@ -2252,8 +2275,10 @@ public class UnitAttachment extends DefaultAttachment {
     maxAaAttacks = getInt(s);
   }
 
-  private void setMaxAaAttacks(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setMaxAaAttacks(final Integer s) {
     maxAaAttacks = s;
+    return this;
   }
 
   public int getMaxAaAttacks() {
@@ -2289,8 +2314,10 @@ public class UnitAttachment extends DefaultAttachment {
     mayOverStackAa = getBool(s);
   }
 
-  private void setMayOverStackAa(final Boolean s) {
+  @VisibleForTesting
+  public UnitAttachment setMayOverStackAa(final Boolean s) {
     mayOverStackAa = s;
+    return this;
   }
 
   public boolean getMayOverStackAa() {
