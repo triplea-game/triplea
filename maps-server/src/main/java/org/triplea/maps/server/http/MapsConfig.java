@@ -11,4 +11,7 @@ class MapsConfig extends Configuration {
 
   @Valid @NotNull @JsonProperty @Getter
   private final DataSourceFactory database = new DataSourceFactory();
+
+  @Valid @NotNull @JsonProperty @Getter
+  private final String ;
 }

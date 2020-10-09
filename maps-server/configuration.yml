@@ -13,3 +13,6 @@ database:
   properties:
     charSet: UTF-8
   validationQuery: select 1
+
+maps:
+  staticContent
