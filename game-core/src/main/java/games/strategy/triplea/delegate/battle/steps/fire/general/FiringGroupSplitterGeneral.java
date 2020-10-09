@@ -23,9 +23,18 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
- * Create firing groups with units that match {@link #firingUnitPredicate}
+ * Create firing groups using units that match {@link #firingUnitPredicate}
  *
- * <p>The firing groups are separated by canNotTarget, canNotBeTargetedBy, and isSuicideOnHit
+ * <p>The canNotTarget and canNotBeTargetedBy attributes will define what the firing groups are. If
+ * there is a target unit that can be targeted by one unit but not by the other, then two firing
+ * groups will be created. Both will have the same target unit but the firing unit will be
+ * different.
+ *
+ * <p>If there are multiple isSuicideOnHit unit types in the same group, then there will be one
+ * firing group for each of the isSuicideOnHit unit types and one firing group for all the other
+ * unit types.
+ *
+ * <p>See {@link FiringGroup} for why isSuicideOnHit needs to be separated by unit type.
  */
 @Value(staticConstructor = "of")
 public class FiringGroupSplitterGeneral implements Function<BattleState, List<FiringGroup>> {

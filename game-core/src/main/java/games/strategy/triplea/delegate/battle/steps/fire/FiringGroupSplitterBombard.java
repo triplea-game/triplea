@@ -16,7 +16,13 @@ import org.triplea.java.collections.CollectionUtils;
 /**
  * Create naval bombardment firing groups
  *
- * <p>The firing groups are separated by isSuicideOnHit
+ * <p>All the units that can bombard are put into a firing group.
+ *
+ * <p>If there are multiple isSuicideOnHit unit types participating in the bombardment, then there
+ * will be one firing group for each of the isSuicideOnHit unit types and one firing group for all
+ * the other unit types.
+ *
+ * <p>See {@link FiringGroup} for why isSuicideOnHit needs to be separated by unit type.
  */
 @Value(staticConstructor = "of")
 public class FiringGroupSplitterBombard implements Function<BattleState, List<FiringGroup>> {

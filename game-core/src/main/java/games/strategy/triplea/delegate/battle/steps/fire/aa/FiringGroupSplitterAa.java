@@ -23,7 +23,13 @@ import org.triplea.java.collections.CollectionUtils;
 /**
  * Creates AA and Targeted Hit firing groups
  *
- * <p>The firing groups are separated by typeAa and isSuicideOnHit
+ * <p>For each unique typeAa, there will be at least one firing group.
+ *
+ * <p>If there are multiple isSuicideOnHit unit types in the same typeAa, then there will be one
+ * firing group for each of the isSuicideOnHit unit types and one firing group for all the other
+ * unit types.
+ *
+ * <p>See {@link FiringGroup} for why isSuicideOnHit needs to be separated by unit type.
  */
 @Value(staticConstructor = "of")
 public class FiringGroupSplitterAa implements Function<BattleState, List<FiringGroup>> {
@@ -32,6 +38,7 @@ public class FiringGroupSplitterAa implements Function<BattleState, List<FiringG
 
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {
+    // only defense can fire at special airborne units (old "paratroopers")
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         side == DEFENSE
             ? TechAbilityAttachment.getAirborneTargettedByAa(
@@ -50,7 +57,7 @@ public class FiringGroupSplitterAa implements Function<BattleState, List<FiringG
                 side == DEFENSE,
                 battleState.getGameData()));
 
-    final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(aaUnits);
+    final List<String> typeAas = UnitAttachment.getAllOfTypeAas(aaUnits);
 
     final Collection<Unit> validTargetUnits =
         CollectionUtils.getMatches(
@@ -58,9 +65,13 @@ public class FiringGroupSplitterAa implements Function<BattleState, List<FiringG
             Matches.unitIsNotInfrastructure().and(Matches.unitIsBeingTransported().negate()));
 
     final List<FiringGroup> firingGroups = new ArrayList<>();
-    for (final String aaType : aaTypes) {
+    // go through each of the typeAas in the game and find any units in validTargetUnits
+    // that are defined in targetsAa of the typeAa.
+    for (final String typeAa : typeAas) {
       final Collection<Unit> firingUnits =
-          CollectionUtils.getMatches(aaUnits, Matches.unitIsAaOfTypeAa(aaType));
+          CollectionUtils.getMatches(aaUnits, Matches.unitIsAaOfTypeAa(typeAa));
+
+      // grab the unit types that this typeAa can fire at
       final Set<UnitType> validTargetTypes =
           UnitAttachment.get(firingUnits.iterator().next().getType())
               .getTargetsAa(battleState.getGameData());
@@ -70,10 +81,18 @@ public class FiringGroupSplitterAa implements Function<BattleState, List<FiringG
               validTargetUnits,
               Matches.unitIsOfTypes(validTargetTypes)
                   .or(
+                      // originally, aa units could only fire at airborne targets. This
+                      // generally meant air units but certain old technologies allowed
+                      // "paratroopers" that turned a land unit into an air unit for combat
+                      // movement.
+                      // If the user has this technology and the unit is one of these "paratroopers"
+                      // then it should be available as a target for older aa units.
+                      // These "paratroopers" are not the same thing as units being carried
+                      // by "air transports".
                       Matches.unitIsAirborne()
-                          .and(Matches.unitIsOfTypes(airborneTechTargetsAllowed.get(aaType)))));
+                          .and(Matches.unitIsOfTypes(airborneTechTargetsAllowed.get(typeAa)))));
 
-      firingGroups.addAll(FiringGroup.groupBySuicideOnHit(aaType, firingUnits, targetUnits));
+      firingGroups.addAll(FiringGroup.groupBySuicideOnHit(typeAa, firingUnits, targetUnits));
     }
     return firingGroups;
   }
