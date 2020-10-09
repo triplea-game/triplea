@@ -125,11 +125,12 @@ public class UnitSupportAttachment extends DefaultAttachment {
     unitType = null;
   }
 
-  private void setFaction(final String faction) throws GameParseException {
+  @VisibleForTesting
+  public UnitSupportAttachment setFaction(final String faction) throws GameParseException {
     this.faction = faction;
     if (faction == null) {
       resetFaction();
-      return;
+      return this;
     }
     allied = false;
     enemy = false;
@@ -143,6 +144,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
             faction + " faction must be allied, or enemy" + thisErrorMsg());
       }
     }
+    return this;
   }
 
   private String getFaction() {
@@ -154,10 +156,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     enemy = false;
   }
 
-  private void setSide(final String side) throws GameParseException {
+  @VisibleForTesting
+  public UnitSupportAttachment setSide(final String side) throws GameParseException {
     if (side == null) {
       resetSide();
-      return;
+      return this;
     }
     defence = false;
     offence = false;
@@ -171,6 +174,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       }
     }
     this.side = side;
+    return this;
   }
 
   private String getSide() {
@@ -237,8 +241,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     this.number = getInt(number);
   }
 
-  private void setNumber(final int number) {
+  @VisibleForTesting
+  public UnitSupportAttachment setNumber(final int number) {
     this.number = number;
+    return this;
   }
 
   private void resetNumber() {
@@ -279,8 +285,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private void setPlayers(final List<GamePlayer> value) {
+  @VisibleForTesting
+  public UnitSupportAttachment setPlayers(final List<GamePlayer> value) {
     players = value;
+    return this;
   }
 
   public List<GamePlayer> getPlayers() {
@@ -295,8 +303,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     impArtTech = getBool(tech);
   }
 
-  private void setImpArtTech(final boolean tech) {
+  @VisibleForTesting
+  public UnitSupportAttachment setImpArtTech(final boolean tech) {
     impArtTech = tech;
+    return this;
   }
 
   private void resetImpArtTech() {

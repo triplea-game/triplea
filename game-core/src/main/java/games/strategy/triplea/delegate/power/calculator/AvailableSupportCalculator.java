@@ -150,6 +150,10 @@ public class AvailableSupportCalculator {
         .build();
   }
 
+  int getSupportLeft(final UnitSupportAttachment support) {
+    return supportLeft.getInt(support);
+  }
+
   /**
    * Gives the unit as much of the available support that is possible depending on the support
    * rules.
@@ -191,7 +195,7 @@ public class AvailableSupportCalculator {
             Arrays.asList(
                 support.getBonusType().getCount(),
                 supportLeft.getInt(support),
-                supportUnits.get(support).size())));
+                supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues())));
   }
 
   /**
