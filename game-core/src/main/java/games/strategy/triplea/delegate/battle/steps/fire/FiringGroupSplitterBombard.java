@@ -29,7 +29,6 @@ public class FiringGroupSplitterBombard implements Function<BattleState, List<Fi
 
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {
-    final Collection<Unit> canFire = battleState.getBombardingUnits();
     final Collection<Unit> enemyUnits =
         CollectionUtils.getMatches(
             battleState.filterUnits(ALIVE, OFFENSE.getOpposite()),
@@ -38,6 +37,7 @@ public class FiringGroupSplitterBombard implements Function<BattleState, List<Fi
                 battleState.getBattleSite(),
                 battleState.getGameData()));
 
-    return FiringGroup.groupBySuicideOnHit(NAVAL_BOMBARD, canFire, enemyUnits);
+    return FiringGroup.groupBySuicideOnHit(
+        NAVAL_BOMBARD, battleState.getBombardingUnits(), enemyUnits);
   }
 }
