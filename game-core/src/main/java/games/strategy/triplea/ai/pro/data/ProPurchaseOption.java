@@ -283,7 +283,7 @@ public class ProPurchaseOption {
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));
     final SupportCalculationResult supportCalculationResult =
-        AvailableSupportCalculator.getSortedSupport(
+        AvailableSupportCalculator.getSupport(
             units, data.getUnitTypeList().getSupportRules(), defense, true);
 
     final Set<List<UnitSupportAttachment>> supportsAvailable =

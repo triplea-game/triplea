@@ -291,9 +291,9 @@ public class TotalPowerAndTotalRolls {
 
     // Get all friendly supports
     final SupportCalculationResult friendlySupports =
-        AvailableSupportCalculator.getSortedAaSupport(
+        AvailableSupportCalculator.getSortedSupport(
             allFriendlyUnitsAliveOrWaitingToDie, //
-            data,
+            data.getUnitTypeList().getSupportAaRules(),
             defending,
             true);
     final Set<List<UnitSupportAttachment>> supportRulesFriendly =
@@ -304,9 +304,9 @@ public class TotalPowerAndTotalRolls {
 
     // Get all enemy supports
     final SupportCalculationResult enemySupports =
-        AvailableSupportCalculator.getSortedAaSupport(
+        AvailableSupportCalculator.getSortedSupport(
             allEnemyUnitsAliveOrWaitingToDie, //
-            data,
+            data.getUnitTypeList().getSupportAaRules(),
             !defending,
             false);
 

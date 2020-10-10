@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
@@ -14,27 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
 public class AvailableSupportCalculator {
-  static SupportCalculationResult getSortedAaSupport(
-      final Collection<Unit> unitsGivingTheSupport,
-      final GameData data,
-      final boolean defence,
-      final boolean allies) {
-    final Set<UnitSupportAttachment> rules =
-        UnitSupportAttachment.get(data).parallelStream()
-            .filter(usa -> (usa.getAaRoll() || usa.getAaStrength()))
-            .collect(Collectors.toSet());
-    return getSortedSupport(unitsGivingTheSupport, rules, defence, allies);
-  }
 
   /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
-  public static SupportCalculationResult getSortedSupport(
+  static SupportCalculationResult getSortedSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Set<UnitSupportAttachment> rules,
       final boolean defence,
@@ -61,7 +48,7 @@ public class AvailableSupportCalculator {
    * @param defence are the receiving units defending?
    * @param allies are the receiving units allied to the giving units?
    */
-  private static SupportCalculationResult getSupport(
+  public static SupportCalculationResult getSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Set<UnitSupportAttachment> rules,
       final boolean defence,
