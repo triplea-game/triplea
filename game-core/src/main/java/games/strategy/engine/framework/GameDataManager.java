@@ -95,27 +95,7 @@ public final class GameDataManager {
                 UrlConstants.DOWNLOAD_WEBSITE));
       } else if (!HeadlessGameServer.headless()
           && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
-        // we can still load it because our engine is compatible, however this save was made by a
-        // newer engine, so prompt the user to upgrade
-        final String messageString =
-            "Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
-                + "\nHowever, because the first version number is the same as your current version, we can "
-                + "still open the savegame."
-                + "\n\nThis TripleA engine is version "
-                + ClientContext.engineVersion().toString()
-                + " and you are trying to open a savegame made with version "
-                + ((Version) version).toString()
-                + "\n\nTo download the latest version of TripleA, Please visit "
-                + UrlConstants.DOWNLOAD_WEBSITE
-                + "\n\nIt is recommended that you upgrade to the latest version of TripleA before playing this "
-                + "savegame."
-                + "\n\nDo you wish to continue and open this save with your current 'old' version?";
-        final int answer =
-            JOptionPane.showConfirmDialog(
-                null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
-        if (answer != JOptionPane.YES_OPTION) {
-          throw new IOException("Loading the save game was aborted");
-        }
+        promptToLoadNewerSaveGame((Version) version);
       }
 
       final GameData data = (GameData) input.readObject();
@@ -124,6 +104,35 @@ public final class GameDataManager {
       return data;
     } catch (final ClassNotFoundException cnfe) {
       throw new IOException(cnfe.getMessage());
+    }
+  }
+
+  private static void promptToLoadNewerSaveGame(final Version version) throws IOException {
+    // we can still load it because our engine is compatible, however this save was made by a
+    // newer engine, so prompt the user to upgrade
+    // this is needed because a newer client might depend on variables that are part of the new
+    // save but will be stripped by the old client. When the old client re-saves the data, the
+    // new client will load the save game and be in odd state.
+    final String messageString =
+        "This save was made by a newer version of TripleA."
+            + "\nHowever, because the first version number is the same as your current version, "
+            + "we can still open the savegame. There is a possibility that if you save this game "
+            + "and then open it up in the version that created it, the game will be in an "
+            + "incorrect state."
+            + "\n\nThis TripleA engine is version "
+            + ClientContext.engineVersion().toString()
+            + " and you are trying to open a save game made with version "
+            + version.toString()
+            + "\n\nTo download the latest version of TripleA, Please visit "
+            + UrlConstants.DOWNLOAD_WEBSITE
+            + "\n\nIt is recommended that you upgrade to the latest version of TripleA before "
+            + "playing this save game."
+            + "\n\nDo you wish to continue and open this save with your current 'old' version?";
+    final int answer =
+        JOptionPane.showConfirmDialog(
+            null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
+    if (answer != JOptionPane.YES_OPTION) {
+      throw new IOException("Loading the save game was aborted");
     }
   }
 
