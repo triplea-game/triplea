@@ -19,6 +19,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   private final Map<String, UnitType> unitTypes = new LinkedHashMap<>();
   // Cached support rules. Marked transient as the cache does not need to be part of saved games.
   private transient @Nullable Set<UnitSupportAttachment> supportRules;
+  private transient @Nullable Set<UnitSupportAttachment> supportAaRules;
 
   public UnitTypeList(final GameData data) {
     super(data);
@@ -59,6 +60,21 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
               .collect(Collectors.toSet());
     }
     return supportRules;
+  }
+
+  /**
+   * Returns the unit support rules for the unit types. Computed once and cached afterwards.
+   *
+   * @return The unit support rules.
+   */
+  public Set<UnitSupportAttachment> getSupportAaRules() {
+    if (supportAaRules == null) {
+      supportAaRules =
+          UnitSupportAttachment.get(getData()).stream()
+              .filter(usa -> (usa.getAaRoll() || usa.getAaStrength()))
+              .collect(Collectors.toSet());
+    }
+    return supportAaRules;
   }
 
   public int size() {
