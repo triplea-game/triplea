@@ -24,6 +24,12 @@ import org.triplea.java.collections.CollectionUtils;
 @Value
 public class FiringGroup {
 
+  String displayName;
+  String groupName;
+  Collection<Unit> firingUnits;
+  Collection<Unit> targetUnits;
+  boolean suicideOnHit;
+
   @Value(staticConstructor = "of")
   private static class SuicideAndNonSuicide {
     Multimap<UnitType, Unit> suicideGroups;
@@ -39,12 +45,6 @@ public class FiringGroup {
       return suicideGroups.keySet().size() + (nonSuicideGroup.isEmpty() ? 0 : 1);
     }
   }
-
-  String displayName;
-  String groupName;
-  Collection<Unit> firingUnits;
-  Collection<Unit> targetUnits;
-  boolean suicideOnHit;
 
   private FiringGroup(
       final String displayName,
