@@ -11,6 +11,7 @@ import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnec
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
+/** Shows a pop-up for moderators confirming a player ban and for how long. */
 @Builder
 public class BanPlayerModeratorAction {
   @Nonnull private final PlayerToLobbyConnection playerToLobbyConnection;

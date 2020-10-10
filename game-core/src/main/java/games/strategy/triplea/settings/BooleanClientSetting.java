@@ -2,6 +2,11 @@ package games.strategy.triplea.settings;
 
 import org.triplea.swing.SettingPersistence;
 
+/**
+ * Specialized client setting class to return a boolean property value rather than an optional.
+ * Boolean client settings are false by default and always have either a false or a true value
+ * (never null).
+ */
 public final class BooleanClientSetting extends ClientSetting<Boolean>
     implements SettingPersistence {
 

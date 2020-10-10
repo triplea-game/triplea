@@ -9,6 +9,11 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.ToString;
 
+/**
+ * Calculates where to draw unit avatar images.The unit avatar images are for all images in a
+ * territory, a stack of units, we draw these images with an offset from one another, this
+ * calculator computes those offset values.
+ */
 @Builder
 @ToString
 public class AvatarCoordinateCalculator {
