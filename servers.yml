@@ -10,9 +10,8 @@ servers:
       Join the TripleA ranked ladder by posting here:
       https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
 
-      TOC 16 signup has started! https://forums.triplea-game.org/topic/2310/revised-tournament-of-champions-toc-16/3
-      Report any problems here:
-      https://github.com/triplea-game/triplea/issues
+      TOC 16 signup has started!
+      https://forums.triplea-game.org/topic/2310/revised-tournament-of-champions-toc-16/3      
   - version: "2.0.19800"
     inactive: true
   - version: "2.0.0"
