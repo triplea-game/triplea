@@ -76,7 +76,6 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
-import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
@@ -187,6 +186,7 @@ class WW2V3Year41Test {
                 planes,
                 defendingAa,
                 defendingAa,
+                "",
                 roll,
                 bridge,
                 null,
@@ -242,6 +242,7 @@ class WW2V3Year41Test {
                 planes,
                 defendingAa,
                 defendingAa,
+                "",
                 roll,
                 bridge,
                 null,
@@ -300,6 +301,7 @@ class WW2V3Year41Test {
                 planes,
                 defendingAa,
                 defendingAa,
+                "",
                 roll,
                 bridge,
                 null,
@@ -691,12 +693,12 @@ class WW2V3Year41Test {
     // Attacking fighter
     final DiceRoll roll1 =
         DiceRoll.rollDice(
-            germanFighter, false, germans, delegateBridge, mock(IBattle.class), territoryEffects);
+            germanFighter, false, germans, delegateBridge, mock(Territory.class), territoryEffects);
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            germanFighter, true, germans, delegateBridge, mock(IBattle.class), territoryEffects);
+            germanFighter, true, germans, delegateBridge, mock(Territory.class), territoryEffects);
     assertEquals(0, roll2.getHits());
   }
 

@@ -7,11 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
-@Builder
+@Builder(access = AccessLevel.PACKAGE)
 @Value
 public class SupportCalculationResult {
   public static final SupportCalculationResult EMPTY_RESULT =

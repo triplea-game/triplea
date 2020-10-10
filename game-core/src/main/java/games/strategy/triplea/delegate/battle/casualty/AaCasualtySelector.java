@@ -11,11 +11,11 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ public class AaCasualtySelector {
       final Collection<Unit> allFriendlyUnits,
       final Collection<Unit> defendingAa,
       final Collection<Unit> allEnemyUnits,
+      final String text,
       final DiceRoll dice,
       final IDelegateBridge bridge,
       final GamePlayer hitPlayer,
@@ -52,8 +53,6 @@ public class AaCasualtySelector {
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (BaseEditDelegate.getEditMode(data) || Properties.getChooseAaCasualties(data)) {
-      final String text =
-          "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return CasualtySelector.selectCasualties(
           hitPlayer,
           planes,
@@ -127,20 +126,21 @@ public class AaCasualtySelector {
 
     final GameData data = bridge.getData();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        DiceRoll.getAaUnitPowerAndRollsForNormalBattles(
+        TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
             defendingAa, allEnemyUnits, allFriendlyUnits, !defending, data);
 
     // if we can damage units, do it now
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final Tuple<Integer, Integer> attackThenDiceSides =
-        DiceRoll.getMaxAaAttackAndDiceSides(defendingAa, data, !defending, unitPowerAndRollsMap);
+        TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+            defendingAa, data, !defending, unitPowerAndRollsMap);
     final int highestAttack = attackThenDiceSides.getFirst();
     if (highestAttack < 1) {
       return new CasualtyDetails();
     }
     final int chosenDiceSize = attackThenDiceSides.getSecond();
     final Triple<Integer, Integer, Boolean> triple =
-        DiceRoll.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+        TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
             null, null, !defending, unitPowerAndRollsMap, planes, data, false);
     final boolean allSameAttackPower = triple.getThird();
     // multiple HP units need to be counted multiple times:
@@ -323,20 +323,22 @@ public class AaCasualtySelector {
     final int planeHitPoints =
         (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        DiceRoll.getAaUnitPowerAndRollsForNormalBattles(
+        TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
             defendingAa, allFriendlyUnits, allEnemyUnits, defending, bridge.getData());
-    if (DiceRoll.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
+    if (TotalPowerAndTotalRolls.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Triple<Integer, Integer, Boolean> triple =
-        DiceRoll.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+        TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
             null, null, !defending, unitPowerAndRollsMap, planes, bridge.getData(), false);
     final boolean allSameAttackPower = triple.getThird();
     if (!allSameAttackPower) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final int highestAttack =
-        DiceRoll.getMaxAaAttackAndDiceSides(defendingAa, bridge.getData(), !defending).getFirst();
+        TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
+                defendingAa, bridge.getData(), !defending)
+            .getFirst();
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final int hits = dice.getHits();
     final List<Unit> planesList = new ArrayList<>();

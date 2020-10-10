@@ -150,7 +150,9 @@ public class Fire implements IExecutable {
     if (headless) {
       annotation = "";
     } else {
-      annotation = DiceRoll.getAnnotation(units, firingPlayer, battle);
+      annotation =
+          DiceRoll.getAnnotation(
+              units, firingPlayer, battle.getTerritory(), battle.getBattleRound());
     }
     dice =
         DiceRoll.rollDice(
@@ -158,7 +160,7 @@ public class Fire implements IExecutable {
             defending,
             firingPlayer,
             bridge,
-            battle,
+            battle.getTerritory(),
             annotation,
             territoryEffects,
             allEnemyUnitsAliveOrWaitingToDie,

@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleStatus.ALIVE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
@@ -70,7 +73,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
@@ -106,7 +108,6 @@ public class MustFightBattle extends DependentBattle
 
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
-  @Getter(onMethod = @__({@Override}))
   private final Collection<Unit> killed = new ArrayList<>();
   // keep track of all the units that die this round to see if they change into another unit
   private final List<Unit> killedDuringCurrentRound = new ArrayList<>();
@@ -307,8 +308,8 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public BattleRound getBattleRoundState() {
-    return BattleRound.of(round, maxRounds);
+  public BattleStatus getStatus() {
+    return BattleStatus.of(round, maxRounds, isOver, isAmphibious, headless);
   }
 
   @Override
@@ -363,7 +364,31 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public Collection<Unit> getUnits(final Side... sides) {
+  public GamePlayer getPlayer(final Side side) {
+    return side == OFFENSE ? getAttacker() : getDefender();
+  }
+
+  @Override
+  public Collection<Unit> filterUnits(final UnitBattleFilter filter, final Side... sides) {
+    return filter.getFilter().stream()
+        .flatMap(status -> getUnits(status, sides).stream())
+        .collect(Collectors.toList());
+  }
+
+  private Collection<Unit> getUnits(final UnitBattleStatus status, final Side... sides) {
+    switch (status) {
+      case ALIVE:
+        return Collections.unmodifiableCollection(getUnits(sides));
+      case CASUALTY:
+        return Collections.unmodifiableCollection(getWaitingToDie(sides));
+      case REMOVED_CASUALTY:
+        return Collections.unmodifiableCollection(killed);
+      default:
+        return List.of();
+    }
+  }
+
+  private Collection<Unit> getUnits(final Side... sides) {
     final Collection<Unit> units = new ArrayList<>();
     for (final Side side : sides) {
       switch (side) {
@@ -380,8 +405,7 @@ public class MustFightBattle extends DependentBattle
     return units;
   }
 
-  @Override
-  public Collection<Unit> getWaitingToDie(final Side... sides) {
+  private Collection<Unit> getWaitingToDie(final Side... sides) {
     final Collection<Unit> waitingToDie = new ArrayList<>();
     for (final Side side : sides) {
       switch (side) {
@@ -416,11 +440,18 @@ public class MustFightBattle extends DependentBattle
 
   @Override
   public void retreatUnits(final Side side, final Collection<Unit> retreatingUnits) {
-    final Collection<Unit> units = side == Side.DEFENSE ? defendingUnits : attackingUnits;
+    final Collection<Unit> units = side == DEFENSE ? defendingUnits : attackingUnits;
     final Collection<Unit> unitsRetreated =
-        side == Side.DEFENSE ? defendingUnitsRetreated : attackingUnitsRetreated;
+        side == DEFENSE ? defendingUnitsRetreated : attackingUnitsRetreated;
     units.removeAll(retreatingUnits);
     unitsRetreated.addAll(retreatingUnits);
+  }
+
+  @Override
+  public void removeDependentUnits(final Collection<Unit> unitsWithDependents) {
+    for (final Unit unit : unitsWithDependents) {
+      dependentUnits.remove(unit);
+    }
   }
 
   @Override
@@ -456,7 +487,7 @@ public class MustFightBattle extends DependentBattle
     Collection<Unit> lost = new ArrayList<>(getDependentUnits(units));
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     // if all the amphibious attacking land units are lost, then we are no longer a naval invasion
-    if (getUnits(Side.OFFENSE).stream().noneMatch(Matches.unitWasAmphibious())) {
+    if (getUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitWasAmphibious())) {
       isAmphibious = false;
       bombardingUnits.clear();
     }
@@ -1600,36 +1631,6 @@ public class MustFightBattle extends DependentBattle
     // remove any units that were in air combat (veqryn)
     unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitWasInAirBattle()));
     return unitList;
-  }
-
-  @Override
-  public void landParatroopers(
-      final IDelegateBridge bridge,
-      final Collection<Unit> airTransports,
-      final Collection<Unit> dependents) {
-    final CompositeChange change = new CompositeChange();
-    // remove dependency from paratroopers by unloading the air transports
-    for (final Unit unit : dependents) {
-      change.add(TransportTracker.unloadAirTransportChange(unit, battleSite, false));
-    }
-    bridge.addChange(change);
-    // remove bombers from dependentUnits
-    for (final Unit unit : airTransports) {
-      dependentUnits.remove(unit);
-    }
-  }
-
-  @Override
-  public void markNoMovementLeft(final IDelegateBridge bridge) {
-    if (headless) {
-      return;
-    }
-    final Collection<Unit> attackingNonAir =
-        CollectionUtils.getMatches(attackingUnits, Matches.unitIsAir().negate());
-    final Change noMovementChange = ChangeFactory.markNoMovementChange(attackingNonAir);
-    if (!noMovementChange.isEmpty()) {
-      bridge.addChange(noMovementChange);
-    }
   }
 
   @Override

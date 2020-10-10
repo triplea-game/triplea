@@ -1,5 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 
 import games.strategy.engine.data.GameData;
@@ -41,11 +45,9 @@ public class ClearFirstStrikeCasualties implements BattleStep {
   }
 
   private State calculateOffenseState() {
-    if (battleState.getUnits(BattleState.Side.OFFENSE).stream()
-        .anyMatch(Matches.unitIsFirstStrike())) {
+    if (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsFirstStrike())) {
       final boolean canSneakAttack =
-          battleState.getUnits(BattleState.Side.DEFENSE).stream()
-              .noneMatch(Matches.unitIsDestroyer());
+          battleState.filterUnits(ALIVE, DEFENSE).stream().noneMatch(Matches.unitIsDestroyer());
       if (canSneakAttack) {
         return State.SNEAK_ATTACK;
       }
@@ -54,13 +56,12 @@ public class ClearFirstStrikeCasualties implements BattleStep {
   }
 
   private State calculateDefenseState() {
-    if (battleState.getUnits(BattleState.Side.DEFENSE).stream()
+    if (battleState.filterUnits(ALIVE, DEFENSE).stream()
         .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
       final GameData gameData = battleState.getGameData();
       // WWW2V2 always gives defending subs sneak attack
       final boolean canSneakAttack =
-          battleState.getUnits(BattleState.Side.OFFENSE).stream()
-                  .noneMatch(Matches.unitIsDestroyer())
+          battleState.filterUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitIsDestroyer())
               && (Properties.getWW2V2(gameData)
                   || Properties.getDefendingSubsSneakAttack(gameData));
       if (canSneakAttack) {
@@ -92,7 +93,8 @@ public class ClearFirstStrikeCasualties implements BattleStep {
 
     final EnumSet<BattleState.Side> sidesToClear = getSidesToClear();
     final Collection<Unit> unitsToRemove =
-        new ArrayList<>(battleState.getWaitingToDie(sidesToClear.toArray(new BattleState.Side[0])));
+        new ArrayList<>(
+            battleState.filterUnits(CASUALTY, sidesToClear.toArray(new BattleState.Side[0])));
     battleActions.remove(unitsToRemove, bridge, battleState.getBattleSite(), null);
     battleState.clearWaitingToDie(sidesToClear.toArray(new BattleState.Side[0]));
   }
@@ -103,13 +105,13 @@ public class ClearFirstStrikeCasualties implements BattleStep {
       // be able to fire back.
       // So only clear the casualties if that side doesn't have sneak attack
       if (this.offenseState == State.SNEAK_ATTACK && this.defenseState != State.SNEAK_ATTACK) {
-        return EnumSet.of(BattleState.Side.DEFENSE);
+        return EnumSet.of(DEFENSE);
       } else if (this.defenseState == State.SNEAK_ATTACK
           && this.offenseState != State.SNEAK_ATTACK) {
-        return EnumSet.of(BattleState.Side.OFFENSE);
+        return EnumSet.of(OFFENSE);
       }
     }
-    return EnumSet.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE);
+    return EnumSet.of(OFFENSE, DEFENSE);
   }
 
   private boolean offenseHasSneakAttack() {

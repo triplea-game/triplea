@@ -37,7 +37,6 @@ public interface StackTraceReportView {
         StackTraceReportModel.builder()
             .view(window)
             .stackTraceRecord(logRecord)
-            .formatter(new StackTraceErrorReportFormatter())
             .uploader(
                 ErrorReportUploadAction.builder()
                     .serviceClient(uploader)

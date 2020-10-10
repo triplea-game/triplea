@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.change;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_UNESCORTED_TRANSPORTS;
 
 import games.strategy.engine.data.Change;
@@ -33,9 +36,8 @@ public class RemoveUnprotectedUnits implements BattleStep {
   public List<String> getNames() {
     if (battleState.getBattleSite().isWater()
         && Properties.getTransportCasualtiesRestricted(battleState.getGameData())
-        && (battleState.getUnits(BattleState.Side.OFFENSE).stream()
-                .anyMatch(Matches.unitIsTransport())
-            || battleState.getUnits(BattleState.Side.DEFENSE).stream()
+        && (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsTransport())
+            || battleState.filterUnits(ALIVE, DEFENSE).stream()
                 .anyMatch(Matches.unitIsTransport()))) {
       return List.of(REMOVE_UNESCORTED_TRANSPORTS);
     }
@@ -49,8 +51,8 @@ public class RemoveUnprotectedUnits implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    removeUnprotectedUnits(bridge, BattleState.Side.DEFENSE);
-    removeUnprotectedUnits(bridge, BattleState.Side.OFFENSE);
+    removeUnprotectedUnits(bridge, DEFENSE);
+    removeUnprotectedUnits(bridge, OFFENSE);
   }
 
   @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
@@ -67,16 +69,14 @@ public class RemoveUnprotectedUnits implements BattleStep {
   }
 
   private boolean attackerHasRetreat(final BattleState.Side side) {
-    return side == BattleState.Side.OFFENSE
+    return side == OFFENSE
         && (!battleState.getAttackerRetreatTerritories().isEmpty()
-            || battleState.getUnits(BattleState.Side.OFFENSE).stream()
-                .anyMatch(Matches.unitIsAir()));
+            || battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir()));
   }
 
   private void checkUndefendedTransports(
       final IDelegateBridge bridge, final BattleState.Side side) {
-    final GamePlayer player =
-        side == BattleState.Side.OFFENSE ? battleState.getAttacker() : battleState.getDefender();
+    final GamePlayer player = battleState.getPlayer(side);
 
     final List<Unit> alliedTransports = getAlliedTransports(player);
     if (alliedTransports.isEmpty()) {
@@ -98,8 +98,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
         ChangeFactory.markNoMovementChange(
             CollectionUtils.getMatches(enemyUnits, Matches.unitIsSea()));
     bridge.addChange(change);
-    battleActions.remove(
-        alliedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
+    battleActions.remove(alliedUnits, bridge, battleState.getBattleSite(), side == DEFENSE);
   }
 
   private List<Unit> getAlliedTransports(final GamePlayer player) {
@@ -129,7 +128,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
   }
 
   private void checkUnprotectedUnits(final IDelegateBridge bridge, final BattleState.Side side) {
-    if (battleState.getUnits(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE).isEmpty()) {
+    if (battleState.filterUnits(ALIVE, OFFENSE, DEFENSE).isEmpty()) {
       return;
     }
 
@@ -142,22 +141,21 @@ public class RemoveUnprotectedUnits implements BattleStep {
     }
 
     final Collection<Unit> unprotectedUnits = getUnprotectedUnits(side);
-    battleActions.remove(
-        unprotectedUnits, bridge, battleState.getBattleSite(), side == BattleState.Side.DEFENSE);
+    battleActions.remove(unprotectedUnits, bridge, battleState.getBattleSite(), side == DEFENSE);
   }
 
   private boolean areFightingOrSupportingUnitsLeft(final BattleState.Side side) {
-    return battleState.getUnits(side).stream().anyMatch(unitIsActiveAndCanFight(side));
+    return battleState.filterUnits(ALIVE, side).stream().anyMatch(unitIsActiveAndCanFight(side));
   }
 
   private Predicate<Unit> unitIsActiveAndCanFight(final BattleState.Side side) {
     return Matches.unitIsActiveInTerritory(battleState.getBattleSite())
-        .and(Matches.unitIsSupporterOrHasCombatAbility(side == BattleState.Side.OFFENSE));
+        .and(Matches.unitIsSupporterOrHasCombatAbility(side == OFFENSE));
   }
 
   private Collection<Unit> getUnprotectedUnits(final BattleState.Side side) {
     return CollectionUtils.getMatches(
-        battleState.getUnits(side),
+        battleState.filterUnits(ALIVE, side),
         Matches.unitIsActiveInTerritory(battleState.getBattleSite())
             .and(Matches.unitIsNotInfrastructure()));
   }

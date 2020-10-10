@@ -750,7 +750,7 @@ public final class Matches {
     return obj -> UnitAttachment.get(obj).getMaxAaAttacks() == -1;
   }
 
-  static Predicate<Unit> unitMaxAaAttacksIsInfinite() {
+  public static Predicate<Unit> unitMaxAaAttacksIsInfinite() {
     return obj -> unitTypeMaxAaAttacksIsInfinite().test(obj.getType());
   }
 
@@ -758,7 +758,7 @@ public final class Matches {
     return obj -> UnitAttachment.get(obj).getMayOverStackAa();
   }
 
-  static Predicate<Unit> unitMayOverStackAa() {
+  public static Predicate<Unit> unitMayOverStackAa() {
     return obj -> unitTypeMayOverStackAa().test(obj.getType());
   }
 

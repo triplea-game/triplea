@@ -7,16 +7,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 import org.triplea.java.Interruptibles;
 
-/**
- * Performs a validation while a user is entering data into a text field. The validation result is
- * then sent to a consumer with the result of the validation. Validation is done in a background
- * thread to not interrupt user input and has a back-off so that user input is slightly buffered
- * before validation is re-executed. This can be useful for example to enable or disable a submit
- * button depending on the value of a text-field.
- */
 public class KeyTypeValidator {
-  private AtomicBoolean validationIsInFlight = new AtomicBoolean(false);
+  private final AtomicBoolean validationIsInFlight = new AtomicBoolean(false);
 
+  /**
+   * Performs a validation while a user is entering data into a text field. The validation result is
+   * then sent to a consumer with the result of the validation. Validation is done in a background
+   * thread to not interrupt user input and has a back-off so that user input is slightly buffered
+   * before validation is re-executed. This can be useful for example to enable or disable a submit
+   * button depending on the value of a text-field.
+   */
   public void attachKeyTypeValidator(
       final JTextComponent textComponent,
       final Predicate<String> dataValidation,

@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 
 @Builder
-public class SupportRuleSort implements Comparator<UnitSupportAttachment> {
+class SupportRuleSort implements Comparator<UnitSupportAttachment> {
   @Nonnull private final Boolean defense;
   @Nonnull private final Boolean friendly;
   @Nonnull private final Predicate<UnitSupportAttachment> roll;

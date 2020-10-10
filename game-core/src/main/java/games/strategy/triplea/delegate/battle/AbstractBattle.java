@@ -39,7 +39,7 @@ abstract class AbstractBattle implements IBattle {
    * In headless mode we should NOT access any Delegates. In headless mode we are just being used to
    * calculate results for an odds calculator so we can skip some steps for efficiency.
    */
-  @Getter boolean headless = false;
+  boolean headless = false;
 
   @Getter final Territory battleSite;
   final GamePlayer attacker;

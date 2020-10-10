@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -54,15 +57,15 @@ class ClearFirstStrikeCasualtiesTest {
     switch (sides.size()) {
       case 0:
       default:
-        verify(battleState, never()).getWaitingToDie(any());
+        verify(battleState, never()).filterUnits(eq(CASUALTY), any());
         verify(battleState, never()).clearWaitingToDie(any());
         break;
       case 1:
-        verify(battleState).getWaitingToDie(eq(sides.get(0)));
+        verify(battleState).filterUnits(CASUALTY, sides.get(0));
         verify(battleState).clearWaitingToDie(eq(sides.get(0)));
         break;
       case 2:
-        verify(battleState).getWaitingToDie(eq(sides.get(0)), eq(sides.get(1)));
+        verify(battleState).filterUnits(CASUALTY, sides.get(0), sides.get(1));
         verify(battleState).clearWaitingToDie(eq(sides.get(0)), eq(sides.get(1)));
         break;
     }
@@ -73,13 +76,13 @@ class ClearFirstStrikeCasualtiesTest {
         Arguments.of(
             List.of(BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -90,13 +93,13 @@ class ClearFirstStrikeCasualtiesTest {
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE, BattleStateVariation.HAS_WW2V2),
             true,
-            List.of(BattleState.Side.DEFENSE)),
+            List.of(DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -110,14 +113,14 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            List.of(BattleState.Side.DEFENSE)),
+            List.of(DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -138,7 +141,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.DEFENSE)),
+            List.of(DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -189,13 +192,13 @@ class ClearFirstStrikeCasualtiesTest {
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE, BattleStateVariation.HAS_WW2V2),
             true,
-            List.of(BattleState.Side.OFFENSE)),
+            List.of(OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -223,21 +226,21 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            List.of(BattleState.Side.OFFENSE)),
+            List.of(OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE)),
+            List.of(OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -261,7 +264,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE)),
+            List.of(OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
@@ -276,14 +279,14 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_ATTACKING_DESTROYER),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -297,14 +300,14 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_FIRST_STRIKE,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -320,7 +323,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            List.of(BattleState.Side.DEFENSE)),
+            List.of(DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -328,7 +331,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_ATTACKING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -336,7 +339,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_WW2V2),
             true,
-            List.of(BattleState.Side.OFFENSE)),
+            List.of(OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -344,7 +347,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_DEFENDING_DESTROYER,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -352,7 +355,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)),
+            List.of(OFFENSE, DEFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,
@@ -379,7 +382,7 @@ class ClearFirstStrikeCasualtiesTest {
                 BattleStateVariation.HAS_WW2V2,
                 BattleStateVariation.HAS_DEFENDING_SUBS_SNEAK_ATTACK),
             true,
-            List.of(BattleState.Side.OFFENSE)),
+            List.of(OFFENSE)),
         Arguments.of(
             List.of(
                 BattleStateVariation.HAS_ATTACKING_FIRST_STRIKE,

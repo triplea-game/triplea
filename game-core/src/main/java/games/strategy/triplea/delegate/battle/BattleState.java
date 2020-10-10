@@ -6,6 +6,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Value;
@@ -30,10 +32,39 @@ public interface BattleState {
     }
   }
 
+  enum UnitBattleStatus {
+    // units that are either undamaged or damaged
+    ALIVE,
+    // units that are dead but can still act
+    // (such as defending units that haven't had their turn to return fire)
+    CASUALTY,
+    // units that are no longer in the game
+    REMOVED_CASUALTY,
+  }
+
+  class UnitBattleFilter {
+    public static final UnitBattleFilter ACTIVE =
+        new UnitBattleFilter(UnitBattleStatus.ALIVE, UnitBattleStatus.CASUALTY);
+    public static final UnitBattleFilter ALIVE = new UnitBattleFilter(UnitBattleStatus.ALIVE);
+    public static final UnitBattleFilter CASUALTY = new UnitBattleFilter(UnitBattleStatus.CASUALTY);
+    public static final UnitBattleFilter REMOVED_CASUALTY =
+        new UnitBattleFilter(UnitBattleStatus.REMOVED_CASUALTY);
+
+    @Getter private final EnumSet<UnitBattleStatus> filter;
+
+    UnitBattleFilter(final UnitBattleStatus... status) {
+      this.filter = EnumSet.noneOf(UnitBattleStatus.class);
+      Collections.addAll(this.filter, status);
+    }
+  }
+
   @Value(staticConstructor = "of")
-  class BattleRound {
+  class BattleStatus {
     int round;
     int maxRounds;
+    boolean isOver;
+    boolean isAmphibious;
+    boolean isHeadless;
 
     public boolean isLastRound() {
       return maxRounds > 0 && maxRounds <= round;
@@ -44,7 +75,7 @@ public interface BattleState {
     }
   }
 
-  BattleRound getBattleRoundState();
+  BattleStatus getStatus();
 
   Territory getBattleSite();
 
@@ -53,9 +84,7 @@ public interface BattleState {
   @ChangeOnNextMajorRelease("Use a BattleId class instead of UUID")
   UUID getBattleId();
 
-  Collection<Unit> getUnits(Side... sides);
-
-  Collection<Unit> getWaitingToDie(Side... sides);
+  Collection<Unit> filterUnits(UnitBattleFilter status, Side... sides);
 
   void clearWaitingToDie(Side... sides);
 
@@ -65,23 +94,15 @@ public interface BattleState {
 
   Collection<Unit> getBombardingUnits();
 
-  Collection<Unit> getKilled();
-
-  GamePlayer getAttacker();
-
-  GamePlayer getDefender();
+  GamePlayer getPlayer(Side side);
 
   GameData getGameData();
-
-  boolean isAmphibious();
-
-  boolean isOver();
-
-  boolean isHeadless();
 
   Collection<Territory> getAttackerRetreatTerritories();
 
   Collection<Unit> getDependentUnits(Collection<Unit> units);
+
+  void removeDependentUnits(Collection<Unit> units);
 
   Collection<Unit> getTransportDependents(Collection<Unit> units);
 

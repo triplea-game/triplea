@@ -11,11 +11,11 @@ import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,8 +66,8 @@ public final class ProBattleUtils {
                 data)
             .reversed());
     final int attackPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+        TotalPowerAndTotalRolls.getTotalPower(
+            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                 sortedUnitsList,
                 defendingUnits,
                 sortedUnitsList,
@@ -153,8 +153,8 @@ public final class ProBattleUtils {
                 !attacking, proData.getUnitValueMap(), TerritoryEffectHelper.getEffects(t), data)
             .reversed());
     final int myPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+        TotalPowerAndTotalRolls.getTotalPower(
+            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                 sortedUnitsList,
                 enemyUnits,
                 sortedUnitsList,

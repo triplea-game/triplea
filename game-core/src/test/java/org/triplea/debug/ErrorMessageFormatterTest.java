@@ -41,7 +41,7 @@ class ErrorMessageFormatterTest {
         .when(logRecord.getExceptions())
         .thenReturn(
             List.of(
-                LoggerRecord.ExceptionDetails.builder()
+                ExceptionDetails.builder()
                     .exceptionMessage("message from exception111")
                     .exceptionClassName("NullPointerException111")
                     .build()));
@@ -59,10 +59,7 @@ class ErrorMessageFormatterTest {
     lenient()
         .when(logRecord.getExceptions())
         .thenReturn(
-            List.of(
-                LoggerRecord.ExceptionDetails.builder()
-                    .exceptionClassName("NullPointerException")
-                    .build()));
+            List.of(ExceptionDetails.builder().exceptionClassName("NullPointerException").build()));
 
     final String result = errorMessageFormatter.apply(logRecord);
 
@@ -77,7 +74,7 @@ class ErrorMessageFormatterTest {
         .when(logRecord.getExceptions())
         .thenReturn(
             List.of(
-                LoggerRecord.ExceptionDetails.builder()
+                ExceptionDetails.builder()
                     .exceptionMessage("message from exception222")
                     .exceptionClassName("NullPointerException222")
                     .build()));
@@ -100,9 +97,7 @@ class ErrorMessageFormatterTest {
         .when(logRecord.getExceptions())
         .thenReturn(
             List.of(
-                LoggerRecord.ExceptionDetails.builder()
-                    .exceptionClassName("NullPointerException4444")
-                    .build()));
+                ExceptionDetails.builder().exceptionClassName("NullPointerException4444").build()));
 
     final String result = errorMessageFormatter.apply(logRecord);
 
@@ -118,9 +113,7 @@ class ErrorMessageFormatterTest {
         .when(logRecord.getExceptions())
         .thenReturn(
             List.of(
-                LoggerRecord.ExceptionDetails.builder()
-                    .exceptionClassName("NullPointerException6")
-                    .build()));
+                ExceptionDetails.builder().exceptionClassName("NullPointerException6").build()));
 
     final String result = errorMessageFormatter.apply(logRecord);
 

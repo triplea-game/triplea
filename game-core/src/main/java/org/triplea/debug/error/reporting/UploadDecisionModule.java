@@ -4,6 +4,7 @@ import games.strategy.engine.ClientContext;
 import javax.swing.JFrame;
 import lombok.experimental.UtilityClass;
 import org.triplea.debug.LoggerRecord;
+import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
 
@@ -21,7 +22,7 @@ public class UploadDecisionModule {
 
     final var canUploadRequest =
         CanUploadRequest.builder()
-            .errorTitle(StackTraceErrorReportFormatter.createTitle(logRecord))
+            .errorTitle(ErrorReportTitleFormatter.createTitle(logRecord))
             .gameVersion(ClientContext.engineVersion().toString())
             .build();
 

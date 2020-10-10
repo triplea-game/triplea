@@ -1,12 +1,15 @@
 package games.strategy.triplea.delegate.battle.steps.change;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.LAND_PARATROOPS;
 
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
@@ -40,29 +43,30 @@ public class LandParatroopers implements BattleStep {
     final TransportsAndParatroopers transportsAndParatroopers = new TransportsAndParatroopers();
 
     if (transportsAndParatroopers.hasParatroopers()) {
-      battleActions.landParatroopers(
-          bridge, transportsAndParatroopers.airTransports, transportsAndParatroopers.paratroopers);
+      final CompositeChange change = new CompositeChange();
+      // remove dependency from paratroopers by unloading the air transports
+      for (final Unit unit : transportsAndParatroopers.paratroopers) {
+        change.add(
+            TransportTracker.unloadAirTransportChange(unit, battleState.getBattleSite(), false));
+      }
+      bridge.addChange(change);
+
+      battleState.removeDependentUnits(transportsAndParatroopers.airTransports);
     }
   }
 
   private class TransportsAndParatroopers {
-    private Collection<Unit> airTransports = new ArrayList<>();
-    private Collection<Unit> paratroopers = new ArrayList<>();
+    private final Collection<Unit> airTransports = new ArrayList<>();
+    private final Collection<Unit> paratroopers = new ArrayList<>();
 
     private TransportsAndParatroopers() {
-      if (battleState.getBattleRoundState().isFirstRound()
+      if (battleState.getStatus().isFirstRound()
           && !battleState.getBattleSite().isWater()
-          && TechAttachment.isAirTransportable(battleState.getAttacker())) {
-        final Collection<Unit> airTransports =
+          && TechAttachment.isAirTransportable(battleState.getPlayer(OFFENSE))) {
+        this.airTransports.addAll(
             CollectionUtils.getMatches(
-                battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport());
-        if (!airTransports.isEmpty()) {
-          final Collection<Unit> paratroopers = battleState.getDependentUnits(airTransports);
-          if (!paratroopers.isEmpty()) {
-            this.airTransports = airTransports;
-            this.paratroopers = paratroopers;
-          }
-        }
+                battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport()));
+        this.paratroopers.addAll(battleState.getDependentUnits(airTransports));
       }
     }
 

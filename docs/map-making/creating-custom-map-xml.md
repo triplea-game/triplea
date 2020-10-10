@@ -1,49 +1,5 @@
+## Creating Custom Maps
 
-<h2>Map XML and Custom Maps Documentation :: Quick Nav</h2>
-<ul>
-	<li>
-		<b>5.0</b> <a href="#sec_5">Creating Custom Games</a>
-		<ul>
-			<li>
-				<b>5.1</b> <a href="#sec_5.1">Map Utilities</a>
-				<ul>
-					<li><b>5.1.8</b> <a href="#sec_5.1.8">Making a Map</a></li>
-				</ul>
-			</li>
-			<li>
-				<b>5.2</b> <a href="#sec_5.2">Map Configuration</a>
-				<ul>
-					<li><b>5.2.1</b> <a href="#sec_5.2.1">Map Properties</a></li>
-					<li><b>5.2.2</b> <a href="#sec_5.2.2">Capital Cities</a></li>
-					<li><b>5.2.3</b> <a href="#sec_5.2.3">Victory Cities</a></li>
-				</ul>
-			</li>
-			<li>
-				<b>5.3</b> <a href="#sec_5.3">Customizing The XML Game File</a>
-				<ul>
-					<li><b>5.3.1</b> <a href="#sec_5.3.1">Game Information Header</a></li>
-					<li><b>5.3.2</b> <a href="#sec_5.3.2">Territories</a></li>
-					<li><b>5.3.3</b> <a href="#sec_5.3.3">Territory Connections</a></li>
-					<li><b>5.3.4</b> <a href="#sec_5.3.4">Resources</a></li>
-					<li><b>5.3.5</b> <a href="#sec_5.3.5">Players &amp; Alliances</a></li>
-					<li><b>5.3.6</b> <a href="#sec_5.3.6">Units</a></li>
-					<li><b>5.3.7</b> <a href="#sec_5.3.7">Game-play Delegates</a></li>
-					<li><b>5.3.8</b> <a href="#sec_5.3.8">Game-play Sequence &amp; Steps</a></li>
-					<li><b>5.3.9</b> <a href="#sec_5.3.9">Production Rules</a></li>
-					<li><b>5.3.10</b> <a href="#sec_5.3.10">Unit Attachment</a></li>
-					<li><b>5.3.11</b> <a href="#sec_5.3.11">Tech Attachment</a></li>
-				</ul>
-			</li>
-		</ul>
-	</li>
-	<li>
-		<b>6.0</b> <a href="#sec_6.5">Engine Code Overview</a>
-		<ul>
-			<li><b>6.5</b> <a href="#sec_6.5">Game Play Sequence</a></li>
-			<li><b>6.6</b> <a href="#sec_6.6">Delegates</a></li>
-		</ul>
-	</li>
-</ul>
 <hr>
 <h4><a id="sec_5.1.8">5.1.8</a> Making a Map</h4>
 <p>
@@ -64,7 +20,7 @@
 	XML game file for that game. For example; revised.xml has the mapName
 	field showing a value of <b>revised</b> thus the folder where TripleA will find
 	the map is also <b>revised</b><br></li>
-	<li>All map configuration files must be located inside:
+	<li>All of the following map configuration files must be located inside the directory:
 		<ul>
 			<li>centers.txt</li>
 			<li>polygons.txt</li>

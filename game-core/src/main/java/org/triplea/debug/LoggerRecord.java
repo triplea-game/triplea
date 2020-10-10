@@ -1,10 +1,6 @@
 package org.triplea.debug;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import lombok.Builder;
-import lombok.Getter;
 
 /**
  * Unified interface for data needed to upload error reports.
@@ -25,12 +21,4 @@ public interface LoggerRecord {
    * by' exception'.
    */
   List<ExceptionDetails> getExceptions();
-
-  @Builder
-  @Getter
-  class ExceptionDetails {
-    @Nonnull private final String exceptionClassName;
-    @Nullable private final String exceptionMessage;
-    @Nullable private final StackTraceElement[] stackTraceElements;
-  }
 }

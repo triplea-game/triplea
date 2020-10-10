@@ -6,6 +6,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 /** A game data change that captures a change to an object property value. */
@@ -14,7 +15,11 @@ public class ObjectPropertyChange extends Change {
 
   private final Unit object;
   @Getter private String property;
+
+  @Getter(AccessLevel.PACKAGE)
   private final Object newValue;
+
+  @Getter(AccessLevel.PACKAGE)
   private final Object oldValue;
 
   ObjectPropertyChange(final Unit object, final String property, final Object newValue) {

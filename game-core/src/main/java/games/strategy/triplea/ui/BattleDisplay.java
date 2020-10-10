@@ -13,7 +13,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -21,6 +20,7 @@ import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
@@ -882,7 +882,7 @@ public class BattleDisplay extends JPanel {
         gameData.acquireReadLock();
         try {
           unitPowerAndRollsMap =
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(
+              TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   units,
                   new ArrayList<>(enemyBattleModel.getUnits()),
                   units,
