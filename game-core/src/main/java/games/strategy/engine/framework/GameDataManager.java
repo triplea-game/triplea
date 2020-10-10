@@ -20,7 +20,9 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import javax.swing.JOptionPane;
 import org.apache.commons.io.IOUtils;
+import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
@@ -91,6 +93,29 @@ public final class GameDataManager {
                 version,
                 UrlConstants.DOWNLOAD_WEBSITE,
                 UrlConstants.DOWNLOAD_WEBSITE));
+      } else if (!HeadlessGameServer.headless()
+          && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
+        // we can still load it because our engine is compatible, however this save was made by a
+        // newer engine, so prompt the user to upgrade
+        final String messageString =
+            "Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
+                + "\nHowever, because the first version number is the same as your current version, we can "
+                + "still open the savegame."
+                + "\n\nThis TripleA engine is version "
+                + ClientContext.engineVersion().toString()
+                + " and you are trying to open a savegame made with version "
+                + ((Version) version).toString()
+                + "\n\nTo download the latest version of TripleA, Please visit "
+                + UrlConstants.DOWNLOAD_WEBSITE
+                + "\n\nIt is recommended that you upgrade to the latest version of TripleA before playing this "
+                + "savegame."
+                + "\n\nDo you wish to continue and open this save with your current 'old' version?";
+        final int answer =
+            JOptionPane.showConfirmDialog(
+                null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
+        if (answer != JOptionPane.YES_OPTION) {
+          throw new IOException("Loading the save game was aborted");
+        }
       }
 
       final GameData data = (GameData) input.readObject();
