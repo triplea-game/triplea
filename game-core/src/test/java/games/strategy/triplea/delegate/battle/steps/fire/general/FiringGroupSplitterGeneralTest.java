@@ -7,6 +7,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.AIR_FIRE_
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrike;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsSea;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
@@ -45,7 +46,8 @@ class FiringGroupSplitterGeneralTest {
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, UNITS)
+        FiringGroupSplitterGeneral.of(
+                OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, UNITS)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())
@@ -68,7 +70,7 @@ class FiringGroupSplitterGeneralTest {
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, "")
+        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())
@@ -86,13 +88,13 @@ class FiringGroupSplitterGeneralTest {
   }
 
   @Test
-  void firingUnitsAreExcludedAccordingToThePredicate() {
+  void offensiveNormalTypeExcludesFirstStrike() {
     final Unit targetUnit = givenAnyUnit();
     final Unit fireUnit = givenAnyUnit();
-    final Unit fireUnit2 = givenAnyUnit();
+    final Unit fireUnit2 = givenUnitFirstStrike();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> unit.equals(fireUnit), "")
+        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())
@@ -104,8 +106,79 @@ class FiringGroupSplitterGeneralTest {
 
     assertThat(firingGroups, hasSize(1));
     assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+  }
+
+  @Test
+  void defensiveNormalTypeExcludesFirstStrike() {
+    final Unit targetUnit = givenAnyUnit();
+    final Unit fireUnit = givenAnyUnit();
+    final Unit fireUnit2 = givenUnitFirstStrike();
+
+    final List<FiringGroup> firingGroups =
+        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.DEFENSIVE_NORMAL, "")
+            .apply(
+                givenBattleStateBuilder()
+                    .gameData(
+                        givenGameData()
+                            .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                            .withAlliedAirIndependent(true)
+                            .build())
+                    .attacker(attacker)
+                    .defender(defender)
+                    .attackingUnits(List.of(fireUnit, fireUnit2))
+                    .defendingUnits(List.of(targetUnit))
+                    .build());
+
+    assertThat(firingGroups, hasSize(1));
+    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
+  }
+
+  @Test
+  void offensiveFirstStrikeTypeExcludesNonFirstStrike() {
+    final Unit targetUnit = givenAnyUnit();
+    final Unit fireUnit = givenUnitFirstStrike();
+    final Unit fireUnit2 = givenAnyUnit();
+
+    final List<FiringGroup> firingGroups =
+        FiringGroupSplitterGeneral.of(
+                OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_FIRST_STRIKE, "")
+            .apply(
+                givenBattleStateBuilder()
+                    .gameData(givenGameData().withAlliedAirIndependent(true).build())
+                    .attacker(attacker)
+                    .defender(defender)
+                    .attackingUnits(List.of(fireUnit, fireUnit2))
+                    .defendingUnits(List.of(targetUnit))
+                    .build());
+
+    assertThat(firingGroups, hasSize(1));
+    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
+  }
+
+  @Test
+  void defensiveFirststrikeTypeExcludesNonFirstStrike() {
+    final Unit targetUnit = givenAnyUnit();
+    final Unit fireUnit = givenUnitFirstStrike();
+    final Unit fireUnit2 = givenAnyUnit();
+
+    final List<FiringGroup> firingGroups =
+        FiringGroupSplitterGeneral.of(
+                OFFENSE, FiringGroupSplitterGeneral.Type.DEFENSIVE_FIRST_STRIKE, "")
+            .apply(
+                givenBattleStateBuilder()
+                    .gameData(
+                        givenGameData()
+                            .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                            .withAlliedAirIndependent(true)
+                            .build())
+                    .attacker(attacker)
+                    .defender(defender)
+                    .attackingUnits(List.of(fireUnit, fireUnit2))
+                    .defendingUnits(List.of(targetUnit))
+                    .build());
+
+    assertThat(firingGroups, hasSize(1));
+    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
   }
 
   @Test
@@ -117,7 +190,7 @@ class FiringGroupSplitterGeneralTest {
     when(fireUnit2.getOwner()).thenReturn(mock(GamePlayer.class));
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, "")
+        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(false).build())
@@ -140,7 +213,7 @@ class FiringGroupSplitterGeneralTest {
     final Unit fireUnit2 = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(DEFENSE, unit -> true, "")
+        FiringGroupSplitterGeneral.of(DEFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().build())
@@ -179,7 +252,7 @@ class FiringGroupSplitterGeneralTest {
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, "")
+        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())
@@ -210,7 +283,7 @@ class FiringGroupSplitterGeneralTest {
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(DEFENSE, unit -> true, "")
+        FiringGroupSplitterGeneral.of(DEFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().build())
@@ -236,7 +309,7 @@ class FiringGroupSplitterGeneralTest {
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, "")
+        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())
@@ -261,7 +334,7 @@ class FiringGroupSplitterGeneralTest {
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, "")
+        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())
@@ -296,7 +369,8 @@ class FiringGroupSplitterGeneralTest {
     when(unitAttachment2.getCanNotTarget()).thenReturn(Set.of(targetUnitType));
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, UNITS)
+        FiringGroupSplitterGeneral.of(
+                OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, UNITS)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())
@@ -333,7 +407,8 @@ class FiringGroupSplitterGeneralTest {
     final Unit defendingSeaUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, unit -> true, UNITS)
+        FiringGroupSplitterGeneral.of(
+                OFFENSE, FiringGroupSplitterGeneral.Type.OFFENSIVE_NORMAL, UNITS)
             .apply(
                 givenBattleStateBuilder()
                     .gameData(givenGameData().withAlliedAirIndependent(true).build())

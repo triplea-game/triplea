@@ -23,7 +23,7 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
- * Create firing groups using units that match {@link #firingUnitPredicate}
+ * Create firing groups using units
  *
  * <p>The canNotTarget and canNotBeTargetedBy attributes will define what the firing groups are. If
  * there is a target unit that can be targeted by one unit but not by the other, then two firing
@@ -39,9 +39,16 @@ import org.triplea.java.collections.CollectionUtils;
 @Value(staticConstructor = "of")
 public class FiringGroupSplitterGeneral implements Function<BattleState, List<FiringGroup>> {
 
+  enum Type {
+    OFFENSIVE_NORMAL,
+    DEFENSIVE_NORMAL,
+    OFFENSIVE_FIRST_STRIKE,
+    DEFENSIVE_FIRST_STRIKE
+  }
+
   BattleState.Side side;
 
-  Predicate<Unit> firingUnitPredicate;
+  Type type;
 
   /** Name displayed in the Battle UI */
   String groupName;
@@ -51,7 +58,7 @@ public class FiringGroupSplitterGeneral implements Function<BattleState, List<Fi
     final Collection<Unit> canFire =
         CollectionUtils.getMatches(
             battleState.filterUnits(ACTIVE, side),
-            PredicateBuilder.of(firingUnitPredicate)
+            PredicateBuilder.of(getFiringUnitPredicate(battleState))
                 // Remove offense allied units if allied air can not participate
                 .andIf(
                     side == OFFENSE
@@ -86,6 +93,20 @@ public class FiringGroupSplitterGeneral implements Function<BattleState, List<Fi
       generateNamedGroups(groupName, firingGroups, targetGroups, canFire, enemyUnits);
     }
     return firingGroups;
+  }
+
+  private Predicate<Unit> getFiringUnitPredicate(final BattleState battleState) {
+    switch (type) {
+      case OFFENSIVE_NORMAL:
+      default:
+        return Matches.unitIsFirstStrike().negate();
+      case DEFENSIVE_NORMAL:
+        return Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()).negate();
+      case OFFENSIVE_FIRST_STRIKE:
+        return Matches.unitIsFirstStrike();
+      case DEFENSIVE_FIRST_STRIKE:
+        return Matches.unitIsFirstStrikeOnDefense(battleState.getGameData());
+    }
   }
 
   private List<FiringGroup> buildFiringGroups(
