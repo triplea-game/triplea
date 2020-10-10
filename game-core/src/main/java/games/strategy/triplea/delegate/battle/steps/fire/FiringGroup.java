@@ -7,7 +7,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Value;
@@ -60,11 +59,11 @@ public class FiringGroup {
   }
 
   public Collection<Unit> getTargetUnits() {
-    return Collections.unmodifiableCollection(targetUnits);
+    return targetUnits;
   }
 
   public Collection<Unit> getFiringUnits() {
-    return Collections.unmodifiableCollection(firingUnits);
+    return firingUnits;
   }
 
   /**
