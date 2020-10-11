@@ -47,4 +47,24 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
   abstract GamePlayer firedAtPlayer();
 
   abstract Collection<Unit> aaGuns();
+
+  public static class Casualties
+      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+    @Override
+    public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
+      return AaCasualtySelector.getAaCasualties(
+          step.getSide() == OFFENSE,
+          step.getFiringGroup().getTargetUnits(),
+          step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()),
+          step.getFiringGroup().getFiringUnits(),
+          step.getBattleState().filterUnits(ACTIVE, step.getSide()),
+          "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
+          step.getFireRoundState().getDice(),
+          bridge,
+          step.getBattleState().getPlayer(step.getSide().getOpposite()),
+          step.getBattleState().getBattleId(),
+          step.getBattleState().getBattleSite(),
+          step.getBattleState().getTerritoryEffects());
+    }
+  }
 }
