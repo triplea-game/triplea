@@ -18,6 +18,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitTypeList;
@@ -50,6 +51,14 @@ public class MockGameData {
 
   public MockGameData withDiceSides(final int diceSides) {
     when(gameData.getDiceSides()).thenReturn(diceSides);
+    return this;
+  }
+
+  public MockGameData withRound(final int round, final GamePlayer player) {
+    when(gameSequence.getRound()).thenReturn(round);
+    final GameStep gameStep = mock(GameStep.class);
+    when(gameStep.getPlayerId()).thenReturn(player);
+    when(gameSequence.getStep()).thenReturn(gameStep);
     return this;
   }
 
