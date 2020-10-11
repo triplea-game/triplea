@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.triplea.game.server.HeadlessGameServer;
@@ -98,10 +97,12 @@ public final class GameDataManager {
         return Optional.empty();
       } else if (!HeadlessGameServer.headless()
           && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
-        // we can still load it because our engine is compatible, however this save was made by a
-        // newer engine, so prompt the user to upgrade
-        promptToLoadNewerSaveGame();
-        // TODO: update prompt to load newer save game
+        // Prompt the user to upgrade
+        log.warn(
+            "This save was made by a newer version of TripleA.<br/>"
+                + "Please download the latest version of TripleA, <a href=\"{}\">{}",
+            UrlConstants.DOWNLOAD_WEBSITE,
+            UrlConstants.DOWNLOAD_WEBSITE);
         return Optional.empty();
       } else {
         final GameData data = (GameData) input.readObject();
@@ -114,26 +115,6 @@ public final class GameDataManager {
       return Optional.empty();
     } catch (final IOException e) {
       return Optional.empty();
-    }
-  }
-
-  private static void promptToLoadNewerSaveGame() throws IOException {
-    // this is needed because a newer client might depend on variables that are part of the new
-    // save but will be stripped by the old client. When the old client re-saves the data, the
-    // new client will load the save game and be in odd state.
-    final String messageString =
-        "This save was made by a newer version of TripleA."
-            + "\nPlaying newer saves with an older engine can lead to unpredictable problems. "
-            + "It is recommended that you upgrade to the latest version of TripleA before playing "
-            + "this save game. To download the latest version of TripleA, Please visit "
-            + UrlConstants.DOWNLOAD_WEBSITE
-            + ".\n"
-            + "\n\nDo you wish to continue and open this save with your current 'old' version?;";
-    final int answer =
-        JOptionPane.showConfirmDialog(
-            null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
-    if (answer != JOptionPane.YES_OPTION) {
-      throw new IOException("Loading the save game was aborted");
     }
   }
 
