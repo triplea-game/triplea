@@ -18,14 +18,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.swing.JOptionPane;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
+@Slf4j
 public final class GameDataManager {
   private static final String DELEGATE_START = "<DelegateStart>";
   private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
@@ -37,16 +40,18 @@ public final class GameDataManager {
    * Loads game data from the specified file.
    *
    * @param file The file from which the game data will be loaded.
-   * @return The loaded game data.
-   * @throws IOException If an error occurs while loading the game.
+   * @return The loaded game data or empty if there were problems.
    */
-  public static GameData loadGame(final File file) throws IOException {
+  public static Optional<GameData> loadGame(final File file) {
     checkNotNull(file);
     checkArgument(file.exists());
 
     try (InputStream fis = new FileInputStream(file);
         InputStream is = new BufferedInputStream(fis)) {
-      return loadGame(is);
+      return Optional.of(loadGame(is));
+    } catch (final IOException e) {
+      log.warn("Error loading game: {}", file.getAbsolutePath(), e);
+      return Optional.empty();
     }
   }
 

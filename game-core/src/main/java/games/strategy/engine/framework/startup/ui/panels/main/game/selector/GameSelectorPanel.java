@@ -379,8 +379,9 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                     .build()
                     .run(
                         () -> {
-                          model.load(file);
-                          setOriginalPropertiesMap(model.getGameData());
+                          if (model.load(file)) {
+                            setOriginalPropertiesMap(model.getGameData());
+                          }
                         }));
   }
 

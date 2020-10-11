@@ -115,13 +115,8 @@ public class HeadlessGameServer {
     Preconditions.checkArgument(
         file.exists(), "File must exist to load it: " + file.getAbsolutePath());
     // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      try {
-        gameSelectorModel.load(file);
-        log.info("Changed to save: " + file.getName());
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Error loading game file: " + file.getAbsolutePath(), e);
-      }
+    if (setupPanelModel.getPanel() != null && game == null && gameSelectorModel.load(file)) {
+      log.info("Changed to save: " + file.getName());
     }
   }
 
