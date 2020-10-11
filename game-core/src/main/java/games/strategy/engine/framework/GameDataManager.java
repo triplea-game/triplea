@@ -99,8 +99,9 @@ public final class GameDataManager {
           && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
         // Prompt the user to upgrade
         log.warn(
-            "This save was made by a newer version of TripleA.<br/>"
-                + "Please download the latest version of TripleA, <a href=\"{}\">{}",
+            "This save was made by a newer version of TripleA.<br>"
+                + "To load this save, download the latest version of TripleA: "
+                + "<a href=\"{}\">{}</a>",
             UrlConstants.DOWNLOAD_WEBSITE,
             UrlConstants.DOWNLOAD_WEBSITE);
         return Optional.empty();
