@@ -60,8 +60,6 @@ public final class GameDataManager {
    */
   @SuppressWarnings("deprecation")
   public static GameData loadGame(final InputStream is) throws IOException {
-    checkNotNull(is);
-
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is));
     try {
       final Object version = input.readObject();
