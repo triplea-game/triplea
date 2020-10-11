@@ -4,6 +4,11 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Enum that stores configuration values for predefined email providers. Used with PBEM when
+ * selecting an email provider. If a user is not using a predefined email provider, they need to
+ * supply the same configuration values manually.
+ */
 @AllArgsConstructor
 @Getter
 public enum EmailProviderPreset {
