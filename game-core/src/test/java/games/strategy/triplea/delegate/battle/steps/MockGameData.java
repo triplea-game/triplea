@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps;
 
+import static games.strategy.triplea.Constants.ALLIED_AIR_INDEPENDENT;
 import static games.strategy.triplea.Constants.ATTACKER_RETREAT_PLANES;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
@@ -20,6 +21,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
@@ -71,6 +73,11 @@ public class MockGameData {
   public MockGameData withWarRelationship(
       final GamePlayer player1, final GamePlayer player2, final boolean value) {
     when(relationshipTracker.isAtWar(player1, player2)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withTechnologyFrontier() {
+    when(gameData.getTechnologyFrontier()).thenReturn(mock(TechnologyFrontier.class));
     return this;
   }
 
@@ -129,6 +136,11 @@ public class MockGameData {
   public MockGameData withTerritoryHasNeighbors(
       final Territory territory, final Set<Territory> neighbors) {
     when(gameMap.getNeighbors(territory)).thenReturn(neighbors);
+    return this;
+  }
+
+  public MockGameData withAlliedAirIndependent(final boolean value) {
+    when(gameProperties.get(ALLIED_AIR_INDEPENDENT, false)).thenReturn(value);
     return this;
   }
 }

@@ -51,6 +51,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.fire.general.TargetGroup;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;

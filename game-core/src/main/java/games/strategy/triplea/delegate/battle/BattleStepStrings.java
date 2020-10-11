@@ -9,11 +9,15 @@ public interface BattleStepStrings {
   String CASUALTIES_SUFFIX = " casualties";
   String LAND_PARATROOPS = "Land Paratroopers";
   String NAVAL_BOMBARDMENT = "Naval bombardment";
+  String NAVAL_BOMBARD = "naval bombardment";
   String SELECT_NAVAL_BOMBARDMENT_CASUALTIES = "Select naval bombardment casualties";
   String REMOVE_UNESCORTED_TRANSPORTS = "Remove unescorted transports";
   String SUBMERGE_SUBS_VS_AIR_ONLY = "Submerge subs against only air units";
   String AIR_ATTACK_NON_SUBS = "Air attack non subs";
   String AIR_DEFEND_NON_SUBS = "Air defend non subs";
+  String AIR_FIRE_NON_SUBS = "air vs non subs";
+  String UNITS = "units";
+  String FIRST_STRIKE_UNITS = "first strike units";
   String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
   String FIRE = " fire";
   String FIRST_STRIKE_UNITS_FIRE = " first strike units fire";

@@ -32,6 +32,7 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleSteps.FIRE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -177,6 +178,30 @@ public class BattleStepsTest {
   public static Unit givenUnitWithTypeAa() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getTypeAa()).thenReturn("AntiAirGun");
+    return unitAndAttachment.unit;
+  }
+
+  public static Unit givenUnitIsCombatAa(
+      final Set<UnitType> aaTarget, final GamePlayer player, final BattleState.Side side) {
+    return givenUnitIsCombatAa(aaTarget, player, side, "AntiAirGun");
+  }
+
+  public static Unit givenUnitIsCombatAa(
+      final Set<UnitType> aaTarget,
+      final GamePlayer player,
+      final BattleState.Side side,
+      final String aaType) {
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getTypeAa()).thenReturn(aaType);
+    when(unitAndAttachment.unitAttachment.getTargetsAa(any())).thenReturn(aaTarget);
+    when(unitAndAttachment.unitAttachment.getIsAaForCombatOnly()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getMaxRoundsAa()).thenReturn(-1);
+    when(unitAndAttachment.unitAttachment.getMaxAaAttacks()).thenReturn(1);
+    if (side == BattleState.Side.OFFENSE) {
+      when(unitAndAttachment.unitAttachment.getOffensiveAttackAa(player)).thenReturn(1);
+    } else {
+      when(unitAndAttachment.unitAttachment.getAttackAa(player)).thenReturn(1);
+    }
     return unitAndAttachment.unit;
   }
 

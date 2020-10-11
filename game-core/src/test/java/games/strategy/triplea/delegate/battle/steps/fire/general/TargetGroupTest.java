@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle;
+package games.strategy.triplea.delegate.battle.steps.fire.general;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
