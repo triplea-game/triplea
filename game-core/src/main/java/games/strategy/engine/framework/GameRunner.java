@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
@@ -39,7 +38,6 @@ import org.triplea.util.Services;
  * GameRunner - The entrance class with the main method. In this class commonly used constants are
  * getting defined and the Game is being launched
  */
-@Log
 public final class GameRunner {
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final int PORT = 3300;
