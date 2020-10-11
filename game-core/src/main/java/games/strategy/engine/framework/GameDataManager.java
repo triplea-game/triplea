@@ -20,7 +20,9 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import javax.swing.JOptionPane;
 import org.apache.commons.io.IOUtils;
+import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
@@ -91,6 +93,11 @@ public final class GameDataManager {
                 version,
                 UrlConstants.DOWNLOAD_WEBSITE,
                 UrlConstants.DOWNLOAD_WEBSITE));
+      } else if (!HeadlessGameServer.headless()
+          && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
+        // we can still load it because our engine is compatible, however this save was made by a
+        // newer engine, so prompt the user to upgrade
+        promptToLoadNewerSaveGame();
       }
 
       final GameData data = (GameData) input.readObject();
@@ -99,6 +106,26 @@ public final class GameDataManager {
       return data;
     } catch (final ClassNotFoundException cnfe) {
       throw new IOException(cnfe.getMessage());
+    }
+  }
+
+  private static void promptToLoadNewerSaveGame() throws IOException {
+    // this is needed because a newer client might depend on variables that are part of the new
+    // save but will be stripped by the old client. When the old client re-saves the data, the
+    // new client will load the save game and be in odd state.
+    final String messageString =
+        "This save was made by a newer version of TripleA."
+            + "\nPlaying newer saves with an older engine can lead to unpredictable problems. "
+            + "It is recommended that you upgrade to the latest version of TripleA before playing "
+            + "this save game. To download the latest version of TripleA, Please visit "
+            + UrlConstants.DOWNLOAD_WEBSITE
+            + ".\n"
+            + "\n\nDo you wish to continue and open this save with your current 'old' version?;";
+    final int answer =
+        JOptionPane.showConfirmDialog(
+            null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
+    if (answer != JOptionPane.YES_OPTION) {
+      throw new IOException("Loading the save game was aborted");
     }
   }
 
