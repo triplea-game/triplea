@@ -24,7 +24,6 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Optional;
@@ -128,7 +127,7 @@ public class HeadlessGameServer {
   public synchronized void loadGameSave(final InputStream input) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
-      getGameData(input)
+      GameDataManager.loadGame(input)
           .filter(this::checkGameIsAvailableOnServer)
           .ifPresent(gameSelectorModel::setGameData);
     }
@@ -140,15 +139,6 @@ public class HeadlessGameServer {
     } else {
       log.warning("Game is not installed on this server: " + gameData.getGameName());
       return false;
-    }
-  }
-
-  public Optional<GameData> getGameData(final InputStream input) {
-    try {
-      return Optional.of(GameDataManager.loadGame(input));
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to load game", e);
-      return Optional.empty();
     }
   }
 

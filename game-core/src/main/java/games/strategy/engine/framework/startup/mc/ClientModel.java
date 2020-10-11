@@ -41,7 +41,7 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
 import java.awt.Frame;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,7 +60,6 @@ import javax.swing.SwingUtilities;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.EventThreadJOptionPane;
@@ -332,13 +331,9 @@ public class ClientModel implements IMessengerErrorListener {
 
   private void startGameInNewThread(
       final byte[] gameData, final Map<String, INode> players, final boolean gameRunning) {
-    final GameData data;
-    try {
-      // this normally takes a couple seconds, but can take up to 60 seconds for a freaking huge
-      // game
-      data = IoUtils.readFromMemory(gameData, GameDataManager::loadGame);
-    } catch (final IOException ex) {
-      log.log(Level.SEVERE, "Failed to load game", ex);
+    // this normally takes a couple seconds, but can take up to 60 seconds for a huge game
+    final GameData data = GameDataManager.loadGame(new ByteArrayInputStream(gameData)).orElse(null);
+    if (data == null) {
       return;
     }
     objectStreamFactory.setData(data);

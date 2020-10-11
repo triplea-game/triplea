@@ -48,9 +48,9 @@ public final class GameDataManager {
 
     try (InputStream fis = new FileInputStream(file);
         InputStream is = new BufferedInputStream(fis)) {
-      return Optional.of(loadGame(is));
+      return loadGame(is);
     } catch (final IOException e) {
-      log.warn("Error loading game: {}", file.getAbsolutePath(), e);
+      log.error("Input stream error", e);
       return Optional.empty();
     }
   }
@@ -60,17 +60,15 @@ public final class GameDataManager {
    *
    * @param is The stream from which the game data will be loaded. The caller is responsible for
    *     closing this stream; it will not be closed when this method returns.
-   * @return The loaded game data.
-   * @throws IOException If an error occurs while loading the game.
+   * @return The loaded game data, or an empty optional if an error occurs.
    */
   @SuppressWarnings("deprecation")
-  public static GameData loadGame(final InputStream is) throws IOException {
-    final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is));
-    try {
+  public static Optional<GameData> loadGame(final InputStream is) {
+    try (ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is))) {
       final Object version = input.readObject();
 
       if (version instanceof games.strategy.util.Version) {
-        throw new IOException(
+        log.warn(
             String.format(
                 "Incompatible engine versions. We are: %s<br>"
                     + "Trying to load incompatible save game version: %s<br>"
@@ -80,13 +78,14 @@ public final class GameDataManager {
                 ((games.strategy.util.Version) version).getExactVersion(),
                 UrlConstants.OLD_DOWNLOADS_WEBSITE,
                 UrlConstants.OLD_DOWNLOADS_WEBSITE));
-
+        return Optional.empty();
       } else if (!(version instanceof Version)) {
-        throw new IOException(
+        log.warn(
             "Incompatible engine version with save game, "
                 + "unable to determine version of the save game");
+        return Optional.empty();
       } else if (!ClientContext.engineVersion().isCompatibleWithEngineVersion((Version) version)) {
-        throw new IOException(
+        log.warn(
             String.format(
                 "Incompatible engine versions. We are: %s<br>"
                     + "Trying to load game created with: %s<br>"
@@ -96,19 +95,25 @@ public final class GameDataManager {
                 version,
                 UrlConstants.DOWNLOAD_WEBSITE,
                 UrlConstants.DOWNLOAD_WEBSITE));
+        return Optional.empty();
       } else if (!HeadlessGameServer.headless()
           && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
         // we can still load it because our engine is compatible, however this save was made by a
         // newer engine, so prompt the user to upgrade
         promptToLoadNewerSaveGame();
+        // TODO: update prompt to load newer save game
+        return Optional.empty();
+      } else {
+        final GameData data = (GameData) input.readObject();
+        data.postDeSerialize();
+        loadDelegates(input, data);
+        return Optional.of(data);
       }
-
-      final GameData data = (GameData) input.readObject();
-      data.postDeSerialize();
-      loadDelegates(input, data);
-      return data;
     } catch (final ClassNotFoundException cnfe) {
-      throw new IOException(cnfe.getMessage());
+      log.error("Error loading game data", cnfe);
+      return Optional.empty();
+    } catch (final IOException e) {
+      return Optional.empty();
     }
   }
 

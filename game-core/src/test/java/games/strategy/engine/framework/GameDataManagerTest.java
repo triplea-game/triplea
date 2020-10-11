@@ -17,7 +17,8 @@ final class GameDataManagerTest {
     void shouldPreserveGameName() throws Exception {
       final GameData data = new GameData();
       final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
-      final GameData loaded = IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
+      final GameData loaded =
+          IoUtils.readFromMemory(bytes, GameDataManager::loadGame).orElseThrow();
       assertEquals(loaded.getGameName(), data.getGameName());
     }
   }
