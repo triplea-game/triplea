@@ -7,6 +7,7 @@ public interface BattleStepStrings {
   String SELECT_PREFIX = " select ";
   String REMOVE_PREFIX = " remove ";
   String CASUALTIES_SUFFIX = " casualties";
+  String CASUALTIES_WITHOUT_SPACE_SUFFIX = "casualties";
   String LAND_PARATROOPS = "Land Paratroopers";
   String NAVAL_BOMBARDMENT = "Naval bombardment";
   String NAVAL_BOMBARD = "naval bombardment";

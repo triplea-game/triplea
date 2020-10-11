@@ -200,6 +200,11 @@ public class FakeBattleState implements BattleState {
     return units;
   }
 
+  @Override
+  public List<String> getStepStrings() {
+    return List.of();
+  }
+
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
     return FakeBattleState.builder()
         .battleRound(2)
