@@ -111,10 +111,8 @@ public final class GameDataManager {
         loadDelegates(input, data);
         return Optional.of(data);
       }
-    } catch (final ClassNotFoundException cnfe) {
-      log.error("Error loading game data", cnfe);
-      return Optional.empty();
-    } catch (final IOException e) {
+    } catch (final ClassNotFoundException | IOException e) {
+      log.error("Error loading game data", e);
       return Optional.empty();
     }
   }
