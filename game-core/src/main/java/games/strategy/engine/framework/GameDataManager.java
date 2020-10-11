@@ -97,7 +97,7 @@ public final class GameDataManager {
           && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
         // we can still load it because our engine is compatible, however this save was made by a
         // newer engine, so prompt the user to upgrade
-        promptToLoadNewerSaveGame((Version) version);
+        promptToLoadNewerSaveGame();
       }
 
       final GameData data = (GameData) input.readObject();
@@ -109,7 +109,7 @@ public final class GameDataManager {
     }
   }
 
-  private static void promptToLoadNewerSaveGame(final Version version) throws IOException {
+  private static void promptToLoadNewerSaveGame() throws IOException {
     // this is needed because a newer client might depend on variables that are part of the new
     // save but will be stripped by the old client. When the old client re-saves the data, the
     // new client will load the save game and be in odd state.
