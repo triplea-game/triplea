@@ -39,7 +39,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), false, false);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, false);
     assertThat("There is only one bonus type", tracker.supportRules.size(), is(1));
     assertThat("The rule only has one support available", tracker.getSupportLeft(rule), is(1));
   }
@@ -69,7 +69,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), false, false);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, false);
     assertThat("Offence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Defence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -99,7 +99,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), true, false);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), true, false);
     assertThat("Defence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Offence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -129,7 +129,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), false, false);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, false);
     assertThat("Enemy rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Allied rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -159,7 +159,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), false, true);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, true);
     assertThat("Allied rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Enemy rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -191,7 +191,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), false, true);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, true);
     assertThat("Rule with a supporter is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without a supporter is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -217,7 +217,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), false, true);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, true);
     assertThat(
         "Rule for improved artillery gives double the support "
             + "when the unit has improved artillery",
@@ -246,7 +246,7 @@ class AvailableSupportCalculatorTest {
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), Set.of(rule), false, true);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, true);
     assertThat(
         "Rule that doesn't use improved artillery doesn't give double the support "
             + "when the unit has improved artillery",
@@ -279,7 +279,7 @@ class AvailableSupportCalculatorTest {
 
     final AvailableSupportCalculator tracker =
         AvailableSupportCalculator.getSupport(
-            List.of(unit, unitWithoutImprovedTechnology), Set.of(rule), false, true);
+            List.of(unit, unitWithoutImprovedTechnology), List.of(rule), false, true);
     assertThat(
         "Unit with improved technology has a value of 2 while the unit without has a value of 1",
         tracker.getSupportLeft(rule),
@@ -312,7 +312,7 @@ class AvailableSupportCalculatorTest {
           .setNumber(1);
 
       final AvailableSupportCalculator tracker =
-          AvailableSupportCalculator.getSupport(List.of(supportUnit), Set.of(rule), false, false);
+          AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
 
@@ -344,7 +344,7 @@ class AvailableSupportCalculatorTest {
           .setNumber(1);
 
       final AvailableSupportCalculator tracker =
-          AvailableSupportCalculator.getSupport(List.of(supportUnit), Set.of(rule), false, false);
+          AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
 
@@ -379,7 +379,7 @@ class AvailableSupportCalculatorTest {
           .setNumber(1);
 
       final AvailableSupportCalculator tracker =
-          AvailableSupportCalculator.getSupport(List.of(supportUnit), Set.of(rule), false, false);
+          AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       // give the support to the first unit
       tracker.giveSupportToUnit(unit, (usa) -> true);
@@ -416,7 +416,7 @@ class AvailableSupportCalculatorTest {
           .setNumber(2);
 
       final AvailableSupportCalculator tracker =
-          AvailableSupportCalculator.getSupport(List.of(supportUnit), Set.of(rule), false, false);
+          AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
       assertThat(
@@ -459,7 +459,7 @@ class AvailableSupportCalculatorTest {
 
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(
-              List.of(supportUnit, supportUnit2), Set.of(rule), false, false);
+              List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
       assertThat(
@@ -503,7 +503,7 @@ class AvailableSupportCalculatorTest {
 
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(
-              List.of(supportUnit, supportUnit2), Set.of(rule), false, false);
+              List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
       assertThat(
@@ -545,7 +545,7 @@ class AvailableSupportCalculatorTest {
 
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(
-              List.of(supportUnit, supportUnit2), Set.of(rule), false, false);
+              List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
       assertThat(
@@ -600,7 +600,7 @@ class AvailableSupportCalculatorTest {
 
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(
-              List.of(supportUnit, supportUnit2), Set.of(rule, rule2), false, false);
+              List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
 
@@ -650,7 +650,7 @@ class AvailableSupportCalculatorTest {
 
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(
-              List.of(supportUnit, supportUnit2), Set.of(rule, rule2), false, false);
+              List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
 
@@ -700,7 +700,7 @@ class AvailableSupportCalculatorTest {
 
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(
-              List.of(supportUnit, supportUnit2), Set.of(rule, rule2), false, false);
+              List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
 

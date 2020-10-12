@@ -33,40 +33,27 @@ class AaDefenseStrengthTest {
     final Unit unit = unitType.create(1, player, true).get(0);
     unit.getUnitAttachment().setAttackAa(3);
 
-    final Unit supportUnit = mock(Unit.class);
+    final Unit supportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment unitSupportAttachment =
-        new UnitSupportAttachment("rule", unitType, gameData)
+        givenUnitSupportAttachment(gameData, unitType, "test")
             .setBonus(2)
-            .setBonusType("bonus")
-            .setDice("AAstrength")
+            .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
     final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.builder()
-            .supportRules(
-                Map.of(
-                    new UnitSupportAttachment.BonusType("bonus", 1),
-                    List.of(unitSupportAttachment)))
-            .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-            .build();
+        AvailableSupportCalculator.getSupport(
+            List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
-    final Unit enemySupportUnit = mock(Unit.class);
+    final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment enemyUnitSupportAttachment =
-        new UnitSupportAttachment("rule2", unitType, gameData)
+        givenUnitSupportAttachment(gameData, unitType, "test2")
             .setBonus(-1)
-            .setBonusType("bonus")
-            .setDice("AAstrength")
+            .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
     final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.builder()
-            .supportRules(
-                Map.of(
-                    new UnitSupportAttachment.BonusType("bonus", 1),
-                    List.of(enemyUnitSupportAttachment)))
-            .supportUnits(
-                Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemySupportUnit, 1))))
-            .build();
+        AvailableSupportCalculator.getSupport(
+            List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
     final AaDefenseStrength strength =
         new AaDefenseStrength(gameData, friendlySupport, enemySupport);
@@ -74,6 +61,18 @@ class AaDefenseStrengthTest {
         "Strength starts at 3, friendly adds 2, enemy removes 1: total 4",
         strength.getValue(unit),
         is(4));
+  }
+
+  UnitSupportAttachment givenUnitSupportAttachment(
+      final GameData gameData, final UnitType unitType, final String name)
+      throws GameParseException {
+    return new UnitSupportAttachment("rule" + name, unitType, gameData)
+        .setBonus(1)
+        .setBonusType("bonus" + name)
+        .setDice("AAstrength")
+        .setNumber(1)
+        .setSide("offence")
+        .setFaction("allied");
   }
 
   @Test
@@ -88,40 +87,27 @@ class AaDefenseStrengthTest {
     final Unit unit = unitType.create(1, player, true).get(0);
     unit.getUnitAttachment().setAttackAa(3);
 
-    final Unit supportUnit = mock(Unit.class);
+    final Unit supportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment unitSupportAttachment =
-        new UnitSupportAttachment("rule", unitType, gameData)
+        givenUnitSupportAttachment(gameData, unitType, "test")
             .setBonus(2)
-            .setBonusType("bonus")
-            .setDice("AAstrength")
+            .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
     final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.builder()
-            .supportRules(
-                Map.of(
-                    new UnitSupportAttachment.BonusType("bonus", 1),
-                    List.of(unitSupportAttachment)))
-            .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-            .build();
+        AvailableSupportCalculator.getSupport(
+            List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
-    final Unit enemySupportUnit = mock(Unit.class);
+    final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment enemyUnitSupportAttachment =
-        new UnitSupportAttachment("rule2", unitType, gameData)
+        givenUnitSupportAttachment(gameData, unitType, "test2")
             .setBonus(-1)
-            .setBonusType("bonus")
-            .setDice("AAstrength")
+            .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
     final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.builder()
-            .supportRules(
-                Map.of(
-                    new UnitSupportAttachment.BonusType("bonus", 1),
-                    List.of(enemyUnitSupportAttachment)))
-            .supportUnits(
-                Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemySupportUnit, 1))))
-            .build();
+        AvailableSupportCalculator.getSupport(
+            List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
     final AaDefenseStrength strength =
         new AaDefenseStrength(gameData, friendlySupport, enemySupport);

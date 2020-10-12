@@ -268,8 +268,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return this;
   }
 
-  private void setBonusType(final BonusType type) {
+  @VisibleForTesting
+  public UnitSupportAttachment setBonusType(final BonusType type) {
     bonusType = type;
+    return this;
   }
 
   private void resetBonusType() {

@@ -24,7 +24,7 @@ import org.triplea.java.collections.IntegerMap;
  * <p>Once a support is used, it will no longer be available for other units to use.
  */
 @Data
-@Builder(access = AccessLevel.PACKAGE)
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class AvailableSupportCalculator {
 
@@ -78,7 +78,7 @@ public class AvailableSupportCalculator {
    */
   public static AvailableSupportCalculator getSupport(
       final Collection<Unit> unitsGivingTheSupport,
-      final Set<UnitSupportAttachment> rules,
+      final Collection<UnitSupportAttachment> rules,
       final boolean defence,
       final boolean allies) {
     if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty()) {
