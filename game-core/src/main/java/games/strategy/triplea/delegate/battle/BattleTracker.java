@@ -32,6 +32,7 @@ import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.BattleRecords;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -1369,12 +1370,13 @@ public class BattleTracker implements Serializable {
           && TotalPowerAndTotalRolls.getTotalPower(
                   TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                       sortedUnitsList,
-                      defenders,
-                      sortedUnitsList,
-                      true,
-                      gameData,
-                      territory,
-                      TerritoryEffectHelper.getEffects(territory)),
+                      CombatValue.buildMainCombatValue(
+                          defenders,
+                          sortedUnitsList,
+                          true,
+                          gameData,
+                          territory,
+                          TerritoryEffectHelper.getEffects(territory))),
                   gameData)
               == 0) {
         battle.fight(bridge);

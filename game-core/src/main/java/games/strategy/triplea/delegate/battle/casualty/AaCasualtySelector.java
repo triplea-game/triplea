@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.battle.casualty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -15,6 +14,7 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
@@ -32,18 +32,16 @@ import org.triplea.util.Tuple;
 public class AaCasualtySelector {
   /** Choose plane casualties according to specified rules. */
   public static CasualtyDetails getAaCasualties(
-      final boolean defending,
       final Collection<Unit> planes,
-      final Collection<Unit> allFriendlyUnits,
       final Collection<Unit> defendingAa,
-      final Collection<Unit> allEnemyUnits,
+      final CombatValue planesCombatValueCalculator,
+      final CombatValue aaCombatValueCalculator,
       final String text,
       final DiceRoll dice,
       final IDelegateBridge bridge,
       final GamePlayer hitPlayer,
       final UUID battleId,
-      final Territory terr,
-      final Collection<TerritoryEffect> territoryEffects) {
+      final Territory battleSite) {
     if (planes.isEmpty()) {
       return new CasualtyDetails();
     }
@@ -56,14 +54,11 @@ public class AaCasualtySelector {
       return CasualtySelector.selectCasualties(
           hitPlayer,
           planes,
-          allFriendlyUnits,
-          allEnemyUnits,
-          terr,
-          territoryEffects,
+          planesCombatValueCalculator,
+          battleSite,
           bridge,
           text,
           dice,
-          defending,
           battleId,
           false,
           dice.getHits(),
@@ -72,49 +67,26 @@ public class AaCasualtySelector {
 
     if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
       return getLowLuckAaCasualties(
-          defending,
-          planes,
-          defendingAa,
-          allEnemyUnits,
-          allFriendlyUnits,
-          dice,
-          bridge,
-          allowMultipleHitsPerUnit);
+          planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
     }
 
     // priority goes: choose -> individually -> random
     // if none are set, we roll individually
     if (Properties.getRollAaIndividually(data)) {
       return individuallyFiredAaCasualties(
-          defending,
-          planes,
-          defendingAa,
-          allEnemyUnits,
-          allFriendlyUnits,
-          dice,
-          bridge,
-          allowMultipleHitsPerUnit);
+          planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
     }
     if (Properties.getRandomAaCasualties(data)) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     return individuallyFiredAaCasualties(
-        defending,
-        planes,
-        defendingAa,
-        allEnemyUnits,
-        allFriendlyUnits,
-        dice,
-        bridge,
-        allowMultipleHitsPerUnit);
+        planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
   }
 
   private static CasualtyDetails getLowLuckAaCasualties(
-      final boolean defending,
       final Collection<Unit> planes,
       final Collection<Unit> defendingAa,
-      final Collection<Unit> allEnemyUnits,
-      final Collection<Unit> allFriendlyUnits,
+      final CombatValue aaCombatValueCalculator,
       final DiceRoll dice,
       final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
@@ -127,13 +99,13 @@ public class AaCasualtySelector {
     final GameData data = bridge.getData();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            defendingAa, allFriendlyUnits, allEnemyUnits, !defending, data);
+            defendingAa, aaCombatValueCalculator);
 
     // if we can damage units, do it now
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final Tuple<Integer, Integer> attackThenDiceSides =
         TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
-            defendingAa, data, !defending, unitPowerAndRollsMap);
+            defendingAa, data, aaCombatValueCalculator.isDefending(), unitPowerAndRollsMap);
     final int highestAttack = attackThenDiceSides.getFirst();
     if (highestAttack < 1) {
       return new CasualtyDetails();
@@ -141,7 +113,13 @@ public class AaCasualtySelector {
     final int chosenDiceSize = attackThenDiceSides.getSecond();
     final Triple<Integer, Integer, Boolean> triple =
         TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-            null, null, !defending, unitPowerAndRollsMap, planes, data, false);
+            null,
+            null,
+            aaCombatValueCalculator.isDefending(),
+            unitPowerAndRollsMap,
+            planes,
+            data,
+            false);
     final boolean allSameAttackPower = triple.getThird();
     // multiple HP units need to be counted multiple times:
     final List<Unit> planesList = new ArrayList<>();
@@ -306,11 +284,9 @@ public class AaCasualtySelector {
 
   /** Choose plane casualties based on individual AA shots at each aircraft. */
   private static CasualtyDetails individuallyFiredAaCasualties(
-      final boolean defending,
       final Collection<Unit> planes,
       final Collection<Unit> defendingAa,
-      final Collection<Unit> allEnemyUnits,
-      final Collection<Unit> allFriendlyUnits,
+      final CombatValue aaCombatValueCalculator,
       final DiceRoll dice,
       final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
@@ -324,20 +300,26 @@ public class AaCasualtySelector {
         (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            defendingAa, allFriendlyUnits, allEnemyUnits, !defending, bridge.getData());
+            defendingAa, aaCombatValueCalculator);
     if (TotalPowerAndTotalRolls.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Triple<Integer, Integer, Boolean> triple =
         TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-            null, null, !defending, unitPowerAndRollsMap, planes, bridge.getData(), false);
+            null,
+            null,
+            aaCombatValueCalculator.isDefending(),
+            unitPowerAndRollsMap,
+            planes,
+            bridge.getData(),
+            false);
     final boolean allSameAttackPower = triple.getThird();
     if (!allSameAttackPower) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final int highestAttack =
         TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
-                defendingAa, bridge.getData(), !defending)
+                defendingAa, bridge.getData(), aaCombatValueCalculator.isDefending())
             .getFirst();
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final int hits = dice.getHits();

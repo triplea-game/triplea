@@ -2,8 +2,6 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -273,19 +271,6 @@ public class TotalPowerAndTotalRolls {
    *     actual battle.
    */
   public static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> aaUnits,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-      final boolean defending,
-      final GameData data) {
-
-    final CombatValue calculator =
-        CombatValue.buildAaCombatValue(
-            allEnemyUnitsAliveOrWaitingToDie, allFriendlyUnitsAliveOrWaitingToDie, defending, data);
-    return getAaUnitPowerAndRollsForNormalBattles(aaUnits, calculator);
-  }
-
-  public static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> aaUnits, final CombatValue calculator) {
 
     if (aaUnits == null || aaUnits.isEmpty()) {
@@ -338,28 +323,13 @@ public class TotalPowerAndTotalRolls {
   /**
    * Returns the power (strength) and rolls for each of the specified units.
    *
-   * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is
-   *     called, for the actual battle.
+   * @param units should be sorted from weakest to strongest, before the method is called, for the
+   *     actual battle.
    */
   public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> unitsGettingPowerFor,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-      final boolean defending,
-      final GameData data,
-      final Territory location,
-      final Collection<TerritoryEffect> territoryEffects) {
-
+      final Collection<Unit> units, final CombatValue calculator) {
     return getUnitPowerAndRollsForNormalBattles(
-        unitsGettingPowerFor,
-        allEnemyUnitsAliveOrWaitingToDie,
-        allFriendlyUnitsAliveOrWaitingToDie,
-        defending,
-        data,
-        location,
-        territoryEffects,
-        new HashMap<>(),
-        new HashMap<>());
+        units, calculator, new HashMap<>(), new HashMap<>());
   }
 
   /**
@@ -368,36 +338,6 @@ public class TotalPowerAndTotalRolls {
    * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is
    *     called, for the actual battle.
    */
-  public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> unitsGettingPowerFor,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-      final boolean defending,
-      final GameData data,
-      final Territory location,
-      final Collection<TerritoryEffect> territoryEffects,
-      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
-      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
-
-    final CombatValue calculator =
-        CombatValue.buildMainCombatValue(
-            allEnemyUnitsAliveOrWaitingToDie,
-            allFriendlyUnitsAliveOrWaitingToDie,
-            defending,
-            data,
-            location,
-            territoryEffects);
-
-    return getUnitPowerAndRollsForNormalBattles(
-        unitsGettingPowerFor, calculator, unitSupportPowerMap, unitSupportRollsMap);
-  }
-
-  public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> unitsGettingPowerFor, final CombatValue calculator) {
-    return getUnitPowerAndRollsForNormalBattles(
-        unitsGettingPowerFor, calculator, new HashMap<>(), new HashMap<>());
-  }
-
   public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
       final CombatValue calculator,

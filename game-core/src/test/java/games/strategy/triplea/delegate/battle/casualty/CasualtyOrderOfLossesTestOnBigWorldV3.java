@@ -8,6 +8,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestDataBigWorld1942V3;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,8 +65,9 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
         .combatModifiers(
             CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(testData.british)
-        .enemyUnits(List.of())
-        .friendlyUnits(amphibUnits)
+        .combatValue(
+            CombatValue.buildMainCombatValue(
+                List.of(), amphibUnits, false, testData.gameData, testData.france, List.of()))
         .battlesite(testData.france)
         .costs(testData.costMap)
         .data(testData.gameData)
@@ -193,8 +195,14 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .combatModifiers(
                     CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
                 .player(testData.british)
-                .enemyUnits(List.of())
-                .friendlyUnits(attackingUnits)
+                .combatValue(
+                    CombatValue.buildMainCombatValue(
+                        List.of(),
+                        attackingUnits,
+                        false,
+                        testData.gameData,
+                        testData.france,
+                        List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
                 .data(testData.gameData)
@@ -242,8 +250,14 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .combatModifiers(
                     CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
                 .player(testData.british)
-                .enemyUnits(List.of())
-                .friendlyUnits(attackingUnits)
+                .combatValue(
+                    CombatValue.buildMainCombatValue(
+                        List.of(),
+                        attackingUnits,
+                        false,
+                        testData.gameData,
+                        testData.france,
+                        List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
                 .data(testData.gameData)
@@ -262,8 +276,14 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .combatModifiers(
                     CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
                 .player(testData.british)
-                .enemyUnits(List.of())
-                .friendlyUnits(attackingUnits.subList(0, 3))
+                .combatValue(
+                    CombatValue.buildMainCombatValue(
+                        List.of(),
+                        attackingUnits.subList(0, 3),
+                        false,
+                        testData.gameData,
+                        testData.france,
+                        List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
                 .data(testData.gameData)

@@ -18,6 +18,7 @@ import games.strategy.triplea.delegate.HeavyBomberAdvance;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,8 +135,8 @@ class CasualtyOrderOfLossesTestOnGlobal {
         .combatModifiers(
             CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(BRITISH)
-        .enemyUnits(List.of())
-        .friendlyUnits(units)
+        .combatValue(
+            CombatValue.buildMainCombatValue(List.of(), units, false, data, FRANCE, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -218,8 +219,9 @@ class CasualtyOrderOfLossesTestOnGlobal {
         .combatModifiers(
             CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(BRITISH)
-        .enemyUnits(List.of())
-        .friendlyUnits(amphibUnits)
+        .combatValue(
+            CombatValue.buildMainCombatValue(
+                List.of(), amphibUnits, false, data, FRANCE, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -299,8 +301,8 @@ class CasualtyOrderOfLossesTestOnGlobal {
         .combatModifiers(
             CombatModifiers.builder().defending(true).territoryEffects(List.of()).build())
         .player(BRITISH)
-        .enemyUnits(List.of())
-        .friendlyUnits(units)
+        .combatValue(
+            CombatValue.buildMainCombatValue(List.of(), units, true, data, FRANCE, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)

@@ -12,6 +12,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -216,7 +217,9 @@ public final class ProSortMoveOptionsUtils {
             (includeUnit ? 1 : -1)
                 * TotalPowerAndTotalRolls.getTotalPower(
                     TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
-                        sortedUnits, defendingUnits, sortedUnits, false, data, t, effects),
+                        sortedUnits,
+                        CombatValue.buildMainCombatValue(
+                            defendingUnits, sortedUnits, false, data, t, effects)),
                     data);
       }
       if (powerDifference < minPower) {

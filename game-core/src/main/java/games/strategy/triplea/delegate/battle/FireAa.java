@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -130,11 +131,13 @@ public class FireAa implements IExecutable {
                       DiceRoll.rollAa(
                           validTargets,
                           firingGroup,
-                          allEnemyUnitsAliveOrWaitingToDie,
-                          allFriendlyUnitsAliveOrWaitingToDie,
                           bridge,
                           battleSite,
-                          defending);
+                          CombatValue.buildAaCombatValue(
+                              allEnemyUnitsAliveOrWaitingToDie,
+                              allFriendlyUnitsAliveOrWaitingToDie,
+                              defending,
+                              bridge.getData()));
                   if (!headless) {
                     SoundUtils.playFireBattleAa(firingPlayer, aaType, dice.getHits() > 0, bridge);
                   }
@@ -195,18 +198,26 @@ public class FireAa implements IExecutable {
                 + currentTypeAa
                 + BattleStepStrings.CASUALTIES_SUFFIX);
     return AaCasualtySelector.getAaCasualties(
-        !defending,
         validAttackingUnitsForThisRoll,
-        allEnemyUnitsAliveOrWaitingToDie,
         defendingAa,
-        allFriendlyUnitsAliveOrWaitingToDie,
+        CombatValue.buildMainCombatValue(
+            allFriendlyUnitsAliveOrWaitingToDie,
+            allEnemyUnitsAliveOrWaitingToDie,
+            !defending,
+            bridge.getData(),
+            battleSite,
+            territoryEffects),
+        CombatValue.buildAaCombatValue(
+            allEnemyUnitsAliveOrWaitingToDie,
+            allFriendlyUnitsAliveOrWaitingToDie,
+            defending,
+            bridge.getData()),
         "Hits from " + currentTypeAa + ", ",
         dice,
         bridge,
         hitPlayer,
         battleId,
-        battleSite,
-        territoryEffects);
+        battleSite);
   }
 
   private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {

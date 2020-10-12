@@ -34,8 +34,20 @@ class MainOffenseCombatValue implements CombatValue {
 
   @NonNull AvailableSupports supportFromFriends;
   @NonNull AvailableSupports supportFromEnemies;
-  @NonNull Collection<TerritoryEffect> territoryEffects;
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  Collection<TerritoryEffect> territoryEffects;
+
   boolean territoryIsLand;
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  Collection<Unit> friendUnits;
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  Collection<Unit> enemyUnits;
 
   @Override
   public RollCalculator getRoll() {

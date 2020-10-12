@@ -25,6 +25,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -52,22 +53,62 @@ class DiceRollTest {
     // infantry defends
     final DiceRoll roll =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll4.getHits(), is(0));
   }
 
@@ -89,22 +130,62 @@ class DiceRollTest {
     // infantry defends
     final DiceRoll roll =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            infantry, true, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
         DiceRoll.rollDice(
-            infantry, false, russians, bridge, mock(Territory.class), territoryEffects);
+            infantry,
+            russians,
+            bridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                infantry,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertThat(roll4.getHits(), is(0));
   }
 
@@ -123,11 +204,16 @@ class DiceRollTest {
     final DiceRoll roll =
         DiceRoll.rollDice(
             units,
-            false,
             russians,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(westRussia));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                units,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(2));
   }
 
@@ -153,11 +239,16 @@ class DiceRollTest {
     final DiceRoll roll =
         DiceRoll.rollDice(
             units,
-            false,
             russians,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(westRussia));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                units,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(3));
   }
 
@@ -173,11 +264,16 @@ class DiceRollTest {
     final DiceRoll roll =
         DiceRoll.rollDice(
             units,
-            true,
             russians,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(westRussia));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                units,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
   }
@@ -206,11 +302,16 @@ class DiceRollTest {
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackers,
-            false,
             americans,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(algeria));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                attackers,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(1));
   }
 
@@ -238,11 +339,16 @@ class DiceRollTest {
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackers,
-            false,
             americans,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(algeria));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                attackers,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
   }
@@ -271,11 +377,16 @@ class DiceRollTest {
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackers,
-            false,
             americans,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(algeria));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                attackers,
+                false,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(0));
   }
 
@@ -294,11 +405,21 @@ class DiceRollTest {
         .thenAnswer(withValues(1)); // aa misses at 1 (0 based)
     // aa hits
     final DiceRoll hit =
-        DiceRoll.rollAa(bombers, aaGunList, bombers, aaGunList, bridge, westRussia, true);
+        DiceRoll.rollAa(
+            bombers,
+            aaGunList,
+            bridge,
+            westRussia,
+            CombatValue.buildAaCombatValue(bombers, aaGunList, true, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
-        DiceRoll.rollAa(bombers, aaGunList, bombers, aaGunList, bridge, westRussia, true);
+        DiceRoll.rollAa(
+            bombers,
+            aaGunList,
+            bridge,
+            westRussia,
+            CombatValue.buildAaCombatValue(bombers, aaGunList, true, bridge.getData()));
     assertThat(miss.getHits(), is(0));
   }
 
@@ -326,11 +447,9 @@ class DiceRollTest {
                     UnitAttachment.get(aaGunList.iterator().next().getType())
                         .getTargetsAa(gameData))),
             aaGunList,
-            fighterList,
-            aaGunList,
             bridge,
             westRussia,
-            true);
+            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
@@ -341,11 +460,9 @@ class DiceRollTest {
                     UnitAttachment.get(aaGunList.iterator().next().getType())
                         .getTargetsAa(gameData))),
             aaGunList,
-            fighterList,
-            aaGunList,
             bridge,
             westRussia,
-            true);
+            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 1 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
@@ -357,11 +474,9 @@ class DiceRollTest {
                     UnitAttachment.get(aaGunList.iterator().next().getType())
                         .getTargetsAa(gameData))),
             aaGunList,
-            fighterList,
-            aaGunList,
             bridge,
             westRussia,
-            true);
+            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
     assertThat(hitNoRoll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
   }
@@ -388,11 +503,9 @@ class DiceRollTest {
                     UnitAttachment.get(aaGunList.iterator().next().getType())
                         .getTargetsAa(gameData))),
             aaGunList,
-            fighterList,
-            aaGunList,
             bridge,
             westRussia,
-            true);
+            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
   }
@@ -423,11 +536,9 @@ class DiceRollTest {
                     UnitAttachment.get(aaGunList.iterator().next().getType())
                         .getTargetsAa(gameData))),
             aaGunList,
-            fighterList,
-            aaGunList,
             bridge,
             finnland,
-            true);
+            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
@@ -438,11 +549,9 @@ class DiceRollTest {
                     UnitAttachment.get(aaGunList.iterator().next().getType())
                         .getTargetsAa(gameData))),
             aaGunList,
-            fighterList,
-            aaGunList,
             bridge,
             finnland,
-            true);
+            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 2 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
@@ -454,11 +563,9 @@ class DiceRollTest {
                     UnitAttachment.get(aaGunList.iterator().next().getType())
                         .getTargetsAa(gameData))),
             aaGunList,
-            fighterList,
-            aaGunList,
             bridge,
             finnland,
-            true);
+            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
     assertThat(hitNoRoll.getHits(), is(2));
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
   }
@@ -489,28 +596,58 @@ class DiceRollTest {
 
     // 1 AT gun
     final DiceRoll hit =
-        DiceRoll.rollAa(targets, atGuns, targets, atGuns, bridge, westernFrance, true);
+        DiceRoll.rollAa(
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(targets, atGuns, true, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     final DiceRoll miss =
-        DiceRoll.rollAa(targets, atGuns, targets, atGuns, bridge, westernFrance, true);
+        DiceRoll.rollAa(
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(targets, atGuns, true, bridge.getData()));
     assertThat(miss.getHits(), is(0));
 
     // 1 AT gun + 1 AT support (AT support is a unit that provides +2 AA strength for 3 units)
     final List<Unit> supportUnits = GameDataTestUtil.germanAtSupport(gameData).create(1, germany);
     final DiceRoll hitWithSupport =
-        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+        DiceRoll.rollAa(
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
     assertThat(hitWithSupport.getHits(), is(1));
     final DiceRoll missWithSupport =
-        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+        DiceRoll.rollAa(
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
     assertThat(missWithSupport.getHits(), is(0));
 
     // 2 AT guns + 1 AT support
     atGuns.addAll(GameDataTestUtil.germanAntiTankGun(gameData).create(1, germany));
     final DiceRoll hitWith2AtAndSupport =
-        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+        DiceRoll.rollAa(
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
     assertThat(hitWith2AtAndSupport.getHits(), is(1));
     final DiceRoll missWith2AtAndSupport =
-        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+        DiceRoll.rollAa(
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
     assertThat(missWith2AtAndSupport.getHits(), is(0));
 
     // 2 AT guns + 1 AT support + 1 enemy AT counter (AT counter is a unit that provides -10 AA
@@ -520,7 +657,12 @@ class DiceRollTest {
         GameDataTestUtil.americanAtCounter(gameData).create(1, usa);
     final DiceRoll missWith2AtAndSupportAndEnemySupport =
         DiceRoll.rollAa(
-            targets, atGuns, enemySupportUnits, supportUnits, bridge, westernFrance, true);
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(
+                enemySupportUnits, supportUnits, true, bridge.getData()));
     assertThat(missWith2AtAndSupportAndEnemySupport.getHits(), is(0));
 
     // 4 AT guns + 1 AT support + 1 enemy AT counter
@@ -528,11 +670,21 @@ class DiceRollTest {
     atGuns.addAll(GameDataTestUtil.germanAntiTankGun(gameData).create(2, germany));
     final DiceRoll hitWith4AtAndSupportAndEnemySupport =
         DiceRoll.rollAa(
-            targets, atGuns, enemySupportUnits, supportUnits, bridge, westernFrance, true);
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(
+                enemySupportUnits, supportUnits, true, bridge.getData()));
     assertThat(hitWith4AtAndSupportAndEnemySupport.getHits(), is(1));
     final DiceRoll missWith4AtAndSupportAndEnemySupport =
         DiceRoll.rollAa(
-            targets, atGuns, enemySupportUnits, supportUnits, bridge, westernFrance, true);
+            targets,
+            atGuns,
+            bridge,
+            westernFrance,
+            CombatValue.buildAaCombatValue(
+                enemySupportUnits, supportUnits, true, bridge.getData()));
     assertThat(missWith4AtAndSupportAndEnemySupport.getHits(), is(0));
 
     thenGetRandomShouldHaveBeenCalled(bridge, times(8));
@@ -558,11 +710,16 @@ class DiceRollTest {
     final DiceRoll dice =
         DiceRoll.rollDice(
             bombers,
-            false,
             british,
             testDelegateBridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(germany));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                bombers,
+                false,
+                testDelegateBridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
     assertThat(dice.getRolls(4).get(1).getType(), is(Die.DieType.HIT));
   }
@@ -587,11 +744,16 @@ class DiceRollTest {
     final DiceRoll dice =
         DiceRoll.rollDice(
             bombers,
-            true,
             british,
             testDelegateBridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(germany));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                bombers,
+                true,
+                testDelegateBridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(1).size(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));
   }
@@ -612,11 +774,16 @@ class DiceRollTest {
     final DiceRoll dice =
         DiceRoll.rollDice(
             bombers,
-            true,
             british,
             testDelegateBridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(germany));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                bombers,
+                true,
+                testDelegateBridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(germany)));
 
     assertThat(dice.getRolls(1).size(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));
@@ -642,11 +809,16 @@ class DiceRollTest {
     final DiceRoll dice =
         DiceRoll.rollDice(
             bombers,
-            false,
             british,
             testDelegateBridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(germany));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                bombers,
+                false,
+                testDelegateBridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(germany)));
 
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
     assertThat(dice.getRolls(4).get(1).getType(), is(Die.DieType.IGNORED));
@@ -673,11 +845,16 @@ class DiceRollTest {
     final DiceRoll dice =
         DiceRoll.rollDice(
             bombers,
-            false,
             british,
             testDelegateBridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(germany));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                bombers,
+                false,
+                testDelegateBridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
     assertThat(dice.getRolls(4).get(1).getType(), is(Die.DieType.IGNORED));
     assertThat(dice.getHits(), is(1));
@@ -703,11 +880,16 @@ class DiceRollTest {
     final DiceRoll dice =
         DiceRoll.rollDice(
             bombers,
-            true,
             british,
             testDelegateBridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(germany));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                bombers,
+                true,
+                testDelegateBridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(1).size(), is(2));
     assertThat(dice.getHits(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));

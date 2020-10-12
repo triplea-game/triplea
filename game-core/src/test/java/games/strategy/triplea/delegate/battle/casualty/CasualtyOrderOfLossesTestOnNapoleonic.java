@@ -12,6 +12,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,8 +94,8 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
         .combatModifiers(
             CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(BRITISH)
-        .enemyUnits(List.of())
-        .friendlyUnits(units)
+        .combatValue(
+            CombatValue.buildMainCombatValue(List.of(), units, false, data, NORMANDY, List.of()))
         .battlesite(NORMANDY)
         .costs(COST_MAP)
         .data(data)

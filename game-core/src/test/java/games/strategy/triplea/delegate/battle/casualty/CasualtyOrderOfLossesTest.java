@@ -11,8 +11,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,7 @@ import org.triplea.java.collections.IntegerMap;
 class CasualtyOrderOfLossesTest {
 
   @Mock GameData gameData;
+  @Mock UnitTypeList unitTypeList;
   @Mock GamePlayer player;
   @Mock UnitAttachment unitAttachment;
 
@@ -65,6 +68,7 @@ class CasualtyOrderOfLossesTest {
   }
 
   private CasualtyOrderOfLosses.Parameters withFakeParameters() {
+    when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     final GamePlayer player = mock(GamePlayer.class);
     when(player.getName()).thenReturn("player");
     final Territory territory = mock(Territory.class);
@@ -77,8 +81,9 @@ class CasualtyOrderOfLossesTest {
                 .territoryEffects(List.of())
                 .build())
         .player(player)
-        .enemyUnits(List.of())
-        .friendlyUnits(List.of())
+        .combatValue(
+            CombatValue.buildMainCombatValue(
+                List.of(), List.of(), false, gameData, territory, List.of()))
         .battlesite(territory)
         .costs(IntegerMap.of(Map.of()))
         .data(gameData)

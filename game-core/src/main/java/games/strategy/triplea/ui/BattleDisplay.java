@@ -20,6 +20,7 @@ import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
@@ -884,12 +885,13 @@ public class BattleDisplay extends JPanel {
           unitPowerAndRollsMap =
               TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   units,
-                  new ArrayList<>(enemyBattleModel.getUnits()),
-                  units,
-                  !attack,
-                  gameData,
-                  location,
-                  territoryEffects);
+                  CombatValue.buildMainCombatValue(
+                      new ArrayList<>(enemyBattleModel.getUnits()),
+                      units,
+                      !attack,
+                      gameData,
+                      location,
+                      territoryEffects));
         } finally {
           gameData.releaseReadLock();
         }

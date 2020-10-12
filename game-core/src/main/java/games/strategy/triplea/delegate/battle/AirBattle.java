@@ -22,6 +22,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
@@ -702,14 +703,17 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       defender,
                       defendingUnits,
-                      defendingUnits,
-                      attackingUnits,
+                      CombatValue.buildMainCombatValue(
+                          attackingUnits,
+                          defendingUnits,
+                          true,
+                          bridge.getData(),
+                          battleSite,
+                          List.of()),
                       battleSite,
-                      null,
                       bridge,
                       ATTACKERS_FIRE,
                       dice,
-                      true,
                       battleId,
                       false,
                       dice.getHits(),
@@ -764,14 +768,17 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       attacker,
                       attackingUnits,
-                      attackingUnits,
-                      defendingUnits,
+                      CombatValue.buildMainCombatValue(
+                          defendingUnits,
+                          attackingUnits,
+                          false,
+                          bridge.getData(),
+                          battleSite,
+                          List.of()),
                       battleSite,
-                      null,
                       bridge,
                       DEFENDERS_FIRE,
                       dice,
-                      false,
                       battleId,
                       false,
                       dice.getHits(),
