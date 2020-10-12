@@ -24,7 +24,7 @@ abstract class StrengthOrRollCalculator {
 
   abstract int getValue(Unit unit);
 
-  abstract Predicate<UnitSupportAttachment> getRuleFilter();
+  protected abstract Predicate<UnitSupportAttachment> getRuleFilter();
 
   protected int addSupport(final Unit unit, final AvailableSupportTracker supportTracker) {
     final IntegerMap<Unit> supportGivenToUnit = supportTracker.giveSupportToUnit(unit);

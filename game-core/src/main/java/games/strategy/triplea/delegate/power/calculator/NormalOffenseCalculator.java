@@ -23,7 +23,7 @@ import lombok.Value;
 @Builder
 @Value
 @Getter(AccessLevel.NONE)
-public class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
+class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
 
   @NonNull GameData data;
   @NonNull AvailableSupportTracker friendlySupportTracker;
@@ -69,7 +69,7 @@ public class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
     }
 
     @Override
-    Predicate<UnitSupportAttachment> getRuleFilter() {
+    protected Predicate<UnitSupportAttachment> getRuleFilter() {
       return UnitSupportAttachment::getRoll;
     }
   }
@@ -116,7 +116,7 @@ public class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
     }
 
     @Override
-    Predicate<UnitSupportAttachment> getRuleFilter() {
+    protected Predicate<UnitSupportAttachment> getRuleFilter() {
       return UnitSupportAttachment::getStrength;
     }
   }

@@ -18,7 +18,7 @@ import lombok.Value;
 @Builder
 @Value
 @Getter(AccessLevel.NONE)
-public class AaDefenseCalculator implements OffenseOrDefenseCalculator {
+class AaDefenseCalculator implements OffenseOrDefenseCalculator {
 
   @NonNull GameData data;
   @NonNull AvailableSupportTracker friendlySupportTracker;
@@ -61,7 +61,7 @@ public class AaDefenseCalculator implements OffenseOrDefenseCalculator {
     }
 
     @Override
-    Predicate<UnitSupportAttachment> getRuleFilter() {
+    protected Predicate<UnitSupportAttachment> getRuleFilter() {
       return UnitSupportAttachment::getAaRoll;
     }
   }
@@ -89,7 +89,7 @@ public class AaDefenseCalculator implements OffenseOrDefenseCalculator {
     }
 
     @Override
-    Predicate<UnitSupportAttachment> getRuleFilter() {
+    protected Predicate<UnitSupportAttachment> getRuleFilter() {
       return UnitSupportAttachment::getAaStrength;
     }
   }
