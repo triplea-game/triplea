@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.Value;
 
 /**
- * Holds the value of either a dice strength or dice roll.
+ * Holds the value of a dice roll.
  *
- * <p>Handles infinite values and correctly limits the value depending on its type.
+ * <p>Handles infinite values and correctly limits the value
  */
 @Value(staticConstructor = "of")
 @Getter(AccessLevel.NONE)
@@ -24,7 +24,7 @@ class RollValue {
     return isInfinite ? this : RollValue.of(value + extraValue, false);
   }
 
-  int minMax() {
+  int getValue() {
     // rolls don't have a maximum
     return isInfinite ? -1 : Math.max(0, value);
   }

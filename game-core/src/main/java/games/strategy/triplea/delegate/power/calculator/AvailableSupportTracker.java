@@ -27,10 +27,10 @@ import org.triplea.java.collections.IntegerMap;
 @Data
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class AvailableSupportCalculator {
+public class AvailableSupportTracker {
 
-  public static final AvailableSupportCalculator EMPTY_RESULT =
-      AvailableSupportCalculator.builder()
+  public static final AvailableSupportTracker EMPTY_RESULT =
+      AvailableSupportTracker.builder()
           .supportRules(new HashMap<>())
           .supportUnits(new HashMap<>())
           .build();
@@ -39,12 +39,12 @@ public class AvailableSupportCalculator {
   final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
 
   /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
-  static AvailableSupportCalculator getSortedSupport(
+  static AvailableSupportTracker getSortedSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Set<UnitSupportAttachment> rules,
       final boolean defence,
       final boolean allies) {
-    final AvailableSupportCalculator supportCalculationResult =
+    final AvailableSupportTracker supportCalculationResult =
         getSupport(unitsGivingTheSupport, rules, defence, allies);
 
     final SupportRuleSort supportRuleSort =
@@ -66,7 +66,7 @@ public class AvailableSupportCalculator {
    * @param defence are the receiving units defending?
    * @param allies are the receiving units allied to the giving units?
    */
-  public static AvailableSupportCalculator getSupport(
+  public static AvailableSupportTracker getSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Collection<UnitSupportAttachment> rules,
       final boolean defence,
@@ -113,7 +113,7 @@ public class AvailableSupportCalculator {
   }
 
   /** Constructs a filtered version of this */
-  AvailableSupportCalculator filter(final Predicate<UnitSupportAttachment> ruleFilter) {
+  AvailableSupportTracker filter(final Predicate<UnitSupportAttachment> ruleFilter) {
 
     final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules =
         new HashMap<>();

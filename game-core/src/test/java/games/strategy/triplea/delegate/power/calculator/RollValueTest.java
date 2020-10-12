@@ -10,18 +10,18 @@ class RollValueTest {
   @Test
   void addValue() {
     final RollValue roll = RollValue.of(1);
-    assertThat("1 + 2 = 3", roll.add(2).minMax(), is(3));
+    assertThat("1 + 2 = 3", roll.add(2).getValue(), is(3));
   }
 
   @Test
   void infiniteDoesNotAddValue() {
     final RollValue roll = RollValue.of(-1);
-    assertThat("Infinite can not be added to", roll.add(2).minMax(), is(-1));
+    assertThat("Infinite can not be added to", roll.add(2).getValue(), is(-1));
   }
 
   @Test
   void zeroIsMinimum() {
     final RollValue roll = RollValue.of(1);
-    assertThat("1 - 2 with limit of 0 = 0", roll.add(-2).minMax(), is(0));
+    assertThat("1 - 2 with limit of 0 = 0", roll.add(-2).getValue(), is(0));
   }
 }

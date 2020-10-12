@@ -1,13 +1,16 @@
 package games.strategy.triplea.delegate.power.calculator;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Value;
 
 /**
- * Holds the value of either a dice strength or dice roll.
+ * Holds the value of a dice strength
  *
- * <p>Handles infinite values and correctly limits the value depending on its type.
+ * <p>Correctly limits the value
  */
 @Value(staticConstructor = "of")
+@Getter(AccessLevel.NONE)
 class StrengthValue {
 
   int diceSides;
@@ -17,7 +20,7 @@ class StrengthValue {
     return StrengthValue.of(diceSides, value + extraValue);
   }
 
-  int minMax() {
+  int getValue() {
     return Math.min(Math.max(value, 0), diceSides);
   }
 }

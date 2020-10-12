@@ -40,8 +40,8 @@ class AaOffenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker friendlySupport =
+        AvailableSupportTracker.getSupport(
             List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
@@ -51,12 +51,12 @@ class AaOffenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker enemySupport =
+        AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final AaOffenseStrength strength =
-        new AaOffenseStrength(gameData, friendlySupport, enemySupport);
+    final AaOffenseCalculator.AaOffenseStrength strength =
+        new AaOffenseCalculator.AaOffenseStrength(gameData, friendlySupport, enemySupport);
     assertThat(
         "Strength starts at 3, friendly adds 2, enemy removes 1: total 4",
         strength.getValue(unit),
@@ -94,8 +94,8 @@ class AaOffenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker friendlySupport =
+        AvailableSupportTracker.getSupport(
             List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
@@ -105,12 +105,12 @@ class AaOffenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker enemySupport =
+        AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final AaOffenseStrength strength =
-        new AaOffenseStrength(gameData, friendlySupport, enemySupport);
+    final AaOffenseCalculator.AaOffenseStrength strength =
+        new AaOffenseCalculator.AaOffenseStrength(gameData, friendlySupport, enemySupport);
     strength.getValue(unit);
     assertThat(
         "Friendly gave 2 and enemy gave -1",

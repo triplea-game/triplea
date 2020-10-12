@@ -40,8 +40,8 @@ class NormalDefenseRollTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker friendlySupport =
+        AvailableSupportTracker.getSupport(
             List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
@@ -51,11 +51,12 @@ class NormalDefenseRollTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker enemySupport =
+        AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final NormalDefenseRoll roll = new NormalDefenseRoll(friendlySupport, enemySupport);
+    final NormalDefenseCalculator.NormalDefenseRoll roll =
+        new NormalDefenseCalculator.NormalDefenseRoll(friendlySupport, enemySupport);
     assertThat(
         "Roll starts at 3, friendly adds 2, enemy removes 1: total 4", roll.getValue(unit), is(4));
   }
@@ -91,8 +92,8 @@ class NormalDefenseRollTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker friendlySupport =
+        AvailableSupportTracker.getSupport(
             List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
@@ -102,11 +103,12 @@ class NormalDefenseRollTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker enemySupport =
+        AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final NormalDefenseRoll roll = new NormalDefenseRoll(friendlySupport, enemySupport);
+    final NormalDefenseCalculator.NormalDefenseRoll roll =
+        new NormalDefenseCalculator.NormalDefenseRoll(friendlySupport, enemySupport);
     roll.getValue(unit);
     assertThat(
         "Friendly gave 2 and enemy gave -1",

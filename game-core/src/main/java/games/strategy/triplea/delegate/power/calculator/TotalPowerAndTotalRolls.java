@@ -284,16 +284,16 @@ public class TotalPowerAndTotalRolls {
     }
 
     // Get all friendly supports
-    final AvailableSupportCalculator friendlySupportTracker =
-        AvailableSupportCalculator.getSortedSupport(
+    final AvailableSupportTracker friendlySupportTracker =
+        AvailableSupportTracker.getSortedSupport(
             allFriendlyUnitsAliveOrWaitingToDie, //
             data.getUnitTypeList().getSupportAaRules(),
             defending,
             true);
 
     // Get all enemy supports
-    final AvailableSupportCalculator enemySupportTracker =
-        AvailableSupportCalculator.getSortedSupport(
+    final AvailableSupportTracker enemySupportTracker =
+        AvailableSupportTracker.getSortedSupport(
             allEnemyUnitsAliveOrWaitingToDie, //
             data.getUnitTypeList().getSupportAaRules(),
             !defending,
@@ -306,35 +306,39 @@ public class TotalPowerAndTotalRolls {
   @VisibleForTesting
   static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> aaUnits,
-      final AvailableSupportCalculator enemySupportTracker,
-      final AvailableSupportCalculator friendlySupportTracker,
+      final AvailableSupportTracker enemySupportTracker,
+      final AvailableSupportTracker friendlySupportTracker,
       final boolean defending,
       final GameData data) {
 
-    final StrengthOrRollCalculator strengthCalculator =
+    final OffenseOrDefenseCalculator calculator =
         defending
-            ? new AaDefenseStrength(data, friendlySupportTracker, enemySupportTracker)
-            : new AaOffenseStrength(data, friendlySupportTracker, enemySupportTracker);
-    final StrengthOrRollCalculator rollCalculator =
-        defending
-            ? new AaDefenseRoll(friendlySupportTracker, enemySupportTracker)
-            : new AaOffenseRoll(friendlySupportTracker, enemySupportTracker);
+            ? AaDefenseCalculator.builder()
+                .data(data)
+                .friendlySupportTracker(friendlySupportTracker)
+                .enemySupportTracker(enemySupportTracker)
+                .build()
+            : AaOffenseCalculator.builder()
+                .data(data)
+                .friendlySupportTracker(friendlySupportTracker)
+                .enemySupportTracker(enemySupportTracker)
+                .build();
     // Sort units strongest to weakest to give support to the best units first
     final List<Unit> units = new ArrayList<>(aaUnits);
     sortAaHighToLow(units, data, defending);
 
-    return getUnitTotalPowerAndTotalRollsMap(
-        strengthCalculator, rollCalculator, units, new HashMap<>(), new HashMap<>());
+    return getUnitTotalPowerAndTotalRollsMap(calculator, units, new HashMap<>(), new HashMap<>());
   }
 
   private static Map<Unit, TotalPowerAndTotalRolls> getUnitTotalPowerAndTotalRollsMap(
-      final StrengthOrRollCalculator strengthCalculator,
-      final StrengthOrRollCalculator rollCalculator,
+      final OffenseOrDefenseCalculator calculator,
       final Collection<Unit> units,
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
+    final StrengthOrRollCalculator strengthCalculator = calculator.getStrength();
+    final StrengthOrRollCalculator rollCalculator = calculator.getRoll();
     for (final Unit unit : units) {
       int strength = strengthCalculator.getValue(unit);
       int rolls = rollCalculator.getValue(unit);
@@ -412,16 +416,16 @@ public class TotalPowerAndTotalRolls {
     }
 
     // Get all friendly supports
-    final AvailableSupportCalculator friendlySupportTracker =
-        AvailableSupportCalculator.getSortedSupport(
+    final AvailableSupportTracker friendlySupportTracker =
+        AvailableSupportTracker.getSortedSupport(
             allFriendlyUnitsAliveOrWaitingToDie,
             data.getUnitTypeList().getSupportRules(),
             defending,
             true);
 
     // Get all enemy supports
-    final AvailableSupportCalculator enemySupportTracker =
-        AvailableSupportCalculator.getSortedSupport(
+    final AvailableSupportTracker enemySupportTracker =
+        AvailableSupportTracker.getSortedSupport(
             allEnemyUnitsAliveOrWaitingToDie,
             data.getUnitTypeList().getSupportRules(),
             !defending,
@@ -442,8 +446,8 @@ public class TotalPowerAndTotalRolls {
   @VisibleForTesting
   static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> units,
-      final AvailableSupportCalculator enemySupportTracker,
-      final AvailableSupportCalculator friendlySupportTracker,
+      final AvailableSupportTracker enemySupportTracker,
+      final AvailableSupportTracker friendlySupportTracker,
       final boolean defending,
       final GameData data,
       final boolean territoryIsLand,
@@ -451,23 +455,24 @@ public class TotalPowerAndTotalRolls {
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
-    final StrengthOrRollCalculator strengthCalculator =
+    final OffenseOrDefenseCalculator calculator =
         defending
-            ? new NormalDefenseStrength(
-                data, friendlySupportTracker, enemySupportTracker, territoryEffects)
-            : new NormalOffenseStrength(
-                data,
-                friendlySupportTracker,
-                enemySupportTracker,
-                territoryEffects,
-                territoryIsLand);
-    final StrengthOrRollCalculator rollCalculator =
-        defending
-            ? new NormalDefenseRoll(friendlySupportTracker, enemySupportTracker)
-            : new NormalOffenseRoll(friendlySupportTracker, enemySupportTracker);
+            ? NormalDefenseCalculator.builder()
+                .data(data)
+                .friendlySupportTracker(friendlySupportTracker)
+                .enemySupportTracker(enemySupportTracker)
+                .territoryEffects(territoryEffects)
+                .build()
+            : NormalOffenseCalculator.builder()
+                .data(data)
+                .friendlySupportTracker(friendlySupportTracker)
+                .enemySupportTracker(enemySupportTracker)
+                .territoryEffects(territoryEffects)
+                .territoryIsLand(territoryIsLand)
+                .build();
 
     return getUnitTotalPowerAndTotalRollsMap(
-        strengthCalculator, rollCalculator, units, unitSupportPowerMap, unitSupportRollsMap);
+        calculator, units, unitSupportPowerMap, unitSupportRollsMap);
   }
 
   public static int getTotalPower(

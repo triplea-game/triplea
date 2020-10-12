@@ -46,8 +46,8 @@ class NormalDefenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker friendlySupport =
+        AvailableSupportTracker.getSupport(
             List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
@@ -57,8 +57,8 @@ class NormalDefenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker enemySupport =
+        AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
     final TerritoryEffect territoryEffect = new TerritoryEffect("territoryEffect", gameData);
@@ -67,8 +67,8 @@ class NormalDefenseStrengthTest {
     territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
     territoryEffectAttachment.setCombatDefenseEffect(new IntegerMap<>(Map.of(unit.getType(), 1)));
 
-    final NormalDefenseStrength strength =
-        new NormalDefenseStrength(
+    final NormalDefenseCalculator.NormalDefenseStrength strength =
+        new NormalDefenseCalculator.NormalDefenseStrength(
             gameData, friendlySupport, enemySupport, List.of(territoryEffect));
     assertThat(
         "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
@@ -112,8 +112,8 @@ class NormalDefenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker friendlySupport =
+        AvailableSupportTracker.getSupport(
             List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
@@ -123,8 +123,8 @@ class NormalDefenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker enemySupport =
+        AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
     final TerritoryEffect territoryEffect = new TerritoryEffect("territoryEffect", gameData);
@@ -133,8 +133,8 @@ class NormalDefenseStrengthTest {
     territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
     territoryEffectAttachment.setCombatDefenseEffect(new IntegerMap<>(Map.of(unit.getType(), 3)));
 
-    final NormalDefenseStrength strength =
-        new NormalDefenseStrength(
+    final NormalDefenseCalculator.NormalDefenseStrength strength =
+        new NormalDefenseCalculator.NormalDefenseStrength(
             gameData, friendlySupport, enemySupport, List.of(territoryEffect));
     assertThat(
         "Strength is limited to 1, friendly is not used, "
@@ -162,8 +162,8 @@ class NormalDefenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator friendlySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker friendlySupport =
+        AvailableSupportTracker.getSupport(
             List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
@@ -173,12 +173,13 @@ class NormalDefenseStrengthTest {
             .setPlayers(List.of(player))
             .setUnitType(Set.of(unitType));
 
-    final AvailableSupportCalculator enemySupport =
-        AvailableSupportCalculator.getSupport(
+    final AvailableSupportTracker enemySupport =
+        AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final NormalDefenseStrength strength =
-        new NormalDefenseStrength(gameData, friendlySupport, enemySupport, List.of());
+    final NormalDefenseCalculator.NormalDefenseStrength strength =
+        new NormalDefenseCalculator.NormalDefenseStrength(
+            gameData, friendlySupport, enemySupport, List.of());
     strength.getValue(unit);
     assertThat(
         "Friendly gave 2 and enemy gave -1",
