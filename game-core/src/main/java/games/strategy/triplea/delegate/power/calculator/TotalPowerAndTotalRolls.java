@@ -299,18 +299,6 @@ public class TotalPowerAndTotalRolls {
             !defending,
             false);
 
-    return getAaUnitPowerAndRollsForNormalBattles(
-        aaUnits, enemySupportTracker, friendlySupportTracker, defending, data);
-  }
-
-  @VisibleForTesting
-  static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> aaUnits,
-      final AvailableSupportTracker enemySupportTracker,
-      final AvailableSupportTracker friendlySupportTracker,
-      final boolean defending,
-      final GameData data) {
-
     final OffenseOrDefenseCalculator calculator =
         defending
             ? AaDefenseCalculator.builder()
@@ -323,9 +311,14 @@ public class TotalPowerAndTotalRolls {
                 .friendlySupportTracker(friendlySupportTracker)
                 .enemySupportTracker(enemySupportTracker)
                 .build();
+    return getAaUnitPowerAndRollsForNormalBattles(aaUnits, calculator);
+  }
+
+  public static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
+      final Collection<Unit> aaUnits, final OffenseOrDefenseCalculator calculator) {
     // Sort units strongest to weakest to give support to the best units first
     final List<Unit> units = new ArrayList<>(aaUnits);
-    sortAaHighToLow(units, data, defending);
+    sortAaHighToLow(units, calculator.getGameData(), calculator.isDefending());
 
     return getUnitTotalPowerAndTotalRollsMap(calculator, units, new HashMap<>(), new HashMap<>());
   }
@@ -431,30 +424,6 @@ public class TotalPowerAndTotalRolls {
             !defending,
             false);
 
-    return getUnitPowerAndRollsForNormalBattles(
-        unitsGettingPowerFor,
-        enemySupportTracker,
-        friendlySupportTracker,
-        defending,
-        data,
-        Matches.territoryIsLand().test(location),
-        territoryEffects,
-        unitSupportPowerMap,
-        unitSupportRollsMap);
-  }
-
-  @VisibleForTesting
-  static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> units,
-      final AvailableSupportTracker enemySupportTracker,
-      final AvailableSupportTracker friendlySupportTracker,
-      final boolean defending,
-      final GameData data,
-      final boolean territoryIsLand,
-      final Collection<TerritoryEffect> territoryEffects,
-      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
-      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
-
     final OffenseOrDefenseCalculator calculator =
         defending
             ? NormalDefenseCalculator.builder()
@@ -468,9 +437,23 @@ public class TotalPowerAndTotalRolls {
                 .friendlySupportTracker(friendlySupportTracker)
                 .enemySupportTracker(enemySupportTracker)
                 .territoryEffects(territoryEffects)
-                .territoryIsLand(territoryIsLand)
+                .territoryIsLand(Matches.territoryIsLand().test(location))
                 .build();
 
+    return getUnitPowerAndRollsForNormalBattles(
+        unitsGettingPowerFor, calculator, unitSupportPowerMap, unitSupportRollsMap);
+  }
+
+  public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
+      final Collection<Unit> units, final OffenseOrDefenseCalculator calculator) {
+    return getUnitTotalPowerAndTotalRollsMap(calculator, units, new HashMap<>(), new HashMap<>());
+  }
+
+  public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
+      final Collection<Unit> units,
+      final OffenseOrDefenseCalculator calculator,
+      final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
+      final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
     return getUnitTotalPowerAndTotalRollsMap(
         calculator, units, unitSupportPowerMap, unitSupportRollsMap);
   }

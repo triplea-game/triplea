@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -25,10 +26,10 @@ import lombok.Value;
 @Getter(AccessLevel.NONE)
 public class NormalDefenseCalculator implements OffenseOrDefenseCalculator {
 
-  GameData data;
-  AvailableSupportTracker friendlySupportTracker;
-  AvailableSupportTracker enemySupportTracker;
-  Collection<TerritoryEffect> territoryEffects;
+  @NonNull GameData data;
+  @NonNull AvailableSupportTracker friendlySupportTracker;
+  @NonNull AvailableSupportTracker enemySupportTracker;
+  @NonNull Collection<TerritoryEffect> territoryEffects;
 
   @Override
   public StrengthOrRollCalculator getRoll() {
@@ -39,6 +40,16 @@ public class NormalDefenseCalculator implements OffenseOrDefenseCalculator {
   public StrengthOrRollCalculator getStrength() {
     return new NormalDefenseStrength(
         data, friendlySupportTracker, enemySupportTracker, territoryEffects);
+  }
+
+  @Override
+  public boolean isDefending() {
+    return true;
+  }
+
+  @Override
+  public GameData getGameData() {
+    return data;
   }
 
   static class NormalDefenseRoll extends StrengthOrRollCalculator {
