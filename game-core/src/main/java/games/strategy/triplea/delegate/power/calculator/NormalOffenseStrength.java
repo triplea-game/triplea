@@ -7,6 +7,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * Calculates the value of a normal offensive dice roll
@@ -50,8 +51,13 @@ public class NormalOffenseStrength extends StrengthOrRollCalculator {
             .add(
                 TerritoryEffectHelper.getTerritoryCombatBonus(
                     unit.getType(), territoryEffects, false))
-            .add(addSupport(unit, friendlySupportTracker, UnitSupportAttachment::getStrength))
-            .add(addSupport(unit, enemySupportTracker, UnitSupportAttachment::getStrength));
+            .add(addSupport(unit, friendlySupportTracker))
+            .add(addSupport(unit, enemySupportTracker));
     return strengthValue.minMax();
+  }
+
+  @Override
+  Predicate<UnitSupportAttachment> getRuleFilter() {
+    return UnitSupportAttachment::getStrength;
   }
 }

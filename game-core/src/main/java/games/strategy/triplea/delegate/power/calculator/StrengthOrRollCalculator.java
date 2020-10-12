@@ -21,17 +21,16 @@ public abstract class StrengthOrRollCalculator {
   StrengthOrRollCalculator(
       final AvailableSupportCalculator friendlySupport,
       final AvailableSupportCalculator enemySupport) {
-    this.friendlySupportTracker = new AvailableSupportCalculator(friendlySupport);
-    this.enemySupportTracker = new AvailableSupportCalculator(enemySupport);
+    this.friendlySupportTracker = friendlySupport.filter(getRuleFilter());
+    this.enemySupportTracker = enemySupport.filter(getRuleFilter());
   }
 
   abstract int getValue(Unit unit);
 
-  protected int addSupport(
-      final Unit unit,
-      final AvailableSupportCalculator supportTracker,
-      final Predicate<UnitSupportAttachment> ruleFilter) {
-    final IntegerMap<Unit> supportGivenToUnit = supportTracker.giveSupportToUnit(unit, ruleFilter);
+  abstract Predicate<UnitSupportAttachment> getRuleFilter();
+
+  protected int addSupport(final Unit unit, final AvailableSupportCalculator supportTracker) {
+    final IntegerMap<Unit> supportGivenToUnit = supportTracker.giveSupportToUnit(unit);
 
     supportGivenToUnit
         .keySet()

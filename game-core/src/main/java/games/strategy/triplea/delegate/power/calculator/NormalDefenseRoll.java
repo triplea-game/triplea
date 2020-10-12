@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import java.util.function.Predicate;
 
 /**
  * Calculates the value of a normal defensive dice roll
@@ -20,8 +21,13 @@ public class NormalDefenseRoll extends StrengthOrRollCalculator {
   public int getValue(final Unit unit) {
     final RollValue rollValue =
         RollValue.of(unit.getUnitAttachment().getDefenseRolls(unit.getOwner()))
-            .add(addSupport(unit, friendlySupportTracker, UnitSupportAttachment::getRoll))
-            .add(addSupport(unit, enemySupportTracker, UnitSupportAttachment::getRoll));
+            .add(addSupport(unit, friendlySupportTracker))
+            .add(addSupport(unit, enemySupportTracker));
     return rollValue.minMax();
+  }
+
+  @Override
+  Predicate<UnitSupportAttachment> getRuleFilter() {
+    return UnitSupportAttachment::getRoll;
   }
 }

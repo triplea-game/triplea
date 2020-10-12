@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.power.calculator;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import java.util.function.Predicate;
 
 /**
  * Calculates the value of an aa/targeted offensive dice roll
@@ -27,8 +28,13 @@ public class AaOffenseStrength extends StrengthOrRollCalculator {
         StrengthValue.of(
                 gameData.getDiceSides(),
                 unit.getUnitAttachment().getOffensiveAttackAa(unit.getOwner()))
-            .add(addSupport(unit, friendlySupportTracker, UnitSupportAttachment::getAaStrength))
-            .add(addSupport(unit, enemySupportTracker, UnitSupportAttachment::getAaStrength));
+            .add(addSupport(unit, friendlySupportTracker))
+            .add(addSupport(unit, enemySupportTracker));
     return strengthValue.minMax();
+  }
+
+  @Override
+  Predicate<UnitSupportAttachment> getRuleFilter() {
+    return UnitSupportAttachment::getAaStrength;
   }
 }

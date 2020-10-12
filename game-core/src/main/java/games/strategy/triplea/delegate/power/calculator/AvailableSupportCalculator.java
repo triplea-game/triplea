@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,17 +37,6 @@ public class AvailableSupportCalculator {
 
   final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
   final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
-
-  AvailableSupportCalculator(final AvailableSupportCalculator availableSupportCalculator) {
-
-    supportRules = availableSupportCalculator.supportRules;
-
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsCopy = new HashMap<>();
-    for (final UnitSupportAttachment usa : availableSupportCalculator.supportUnits.keySet()) {
-      supportUnitsCopy.put(usa, new IntegerMap<>(availableSupportCalculator.supportUnits.get(usa)));
-    }
-    supportUnits = supportUnitsCopy;
-  }
 
   /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
   static AvailableSupportCalculator getSortedSupport(
@@ -84,12 +74,13 @@ public class AvailableSupportCalculator {
     if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty()) {
       return EMPTY_RESULT;
     }
-    final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportsAvailable =
+    final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules =
         new HashMap<>();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft = new HashMap<>();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits = new HashMap<>();
 
     for (final UnitSupportAttachment rule : rules) {
-      if (rule.getPlayers().isEmpty()) {
+      final Set<UnitType> types = rule.getUnitType();
+      if (rule.getPlayers().isEmpty() || types == null || types.isEmpty()) {
         continue;
       }
       if (!((defence && rule.getDefence()) || (!defence && rule.getOffence()))) {
@@ -114,13 +105,35 @@ public class AvailableSupportCalculator {
       final IntegerMap<Unit> unitsForRule = new IntegerMap<>();
       supporters.forEach(unit -> unitsForRule.put(unit, rule.getNumber()));
       impArtTechUnits.forEach(unit -> unitsForRule.add(unit, rule.getNumber()));
-      supportUnitsLeft.put(rule, unitsForRule);
-      supportsAvailable
-          .computeIfAbsent(rule.getBonusType(), (bonusType) -> new ArrayList<>())
-          .add(rule);
+      supportUnits.put(rule, unitsForRule);
+      supportRules.computeIfAbsent(rule.getBonusType(), (bonusType) -> new ArrayList<>()).add(rule);
     }
 
-    return builder().supportRules(supportsAvailable).supportUnits(supportUnitsLeft).build();
+    return builder().supportRules(supportRules).supportUnits(supportUnits).build();
+  }
+
+  /** Constructs a filtered version of this */
+  AvailableSupportCalculator filter(final Predicate<UnitSupportAttachment> ruleFilter) {
+
+    final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules =
+        new HashMap<>();
+    for (final Map.Entry<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> entry :
+        this.supportRules.entrySet()) {
+      final List<UnitSupportAttachment> filteredSupportRules =
+          entry.getValue().stream().filter(ruleFilter).collect(Collectors.toList());
+      if (!filteredSupportRules.isEmpty()) {
+        supportRules.put(entry.getKey(), filteredSupportRules);
+      }
+    }
+
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits = new HashMap<>();
+    for (final UnitSupportAttachment usa : this.supportUnits.keySet()) {
+      if (ruleFilter.test(usa)) {
+        supportUnits.put(usa, new IntegerMap<>(this.supportUnits.get(usa)));
+      }
+    }
+
+    return builder().supportRules(supportRules).supportUnits(supportUnits).build();
   }
 
   public int getSupportLeft(final UnitSupportAttachment support) {
@@ -134,15 +147,13 @@ public class AvailableSupportCalculator {
    * <p>Each time this is called, the amount of available support will decrease equal to the amount
    * returned.
    */
-  IntegerMap<Unit> giveSupportToUnit(
-      final Unit unit, final Predicate<UnitSupportAttachment> ruleFilter) {
+  IntegerMap<Unit> giveSupportToUnit(final Unit unit) {
     final IntegerMap<Unit> supportUsed = new IntegerMap<>();
     for (final List<UnitSupportAttachment> rulesByBonusType : supportRules.values()) {
 
       int maxPerBonusType = rulesByBonusType.get(0).getBonusType().getCount();
       for (final UnitSupportAttachment rule : rulesByBonusType) {
-        final Set<UnitType> types = rule.getUnitType();
-        if (!ruleFilter.test(rule) || types == null || !types.contains(unit.getType())) {
+        if (!rule.getUnitType().contains(unit.getType())) {
           continue;
         }
 

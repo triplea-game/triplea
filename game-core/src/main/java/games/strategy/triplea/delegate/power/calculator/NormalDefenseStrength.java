@@ -9,6 +9,7 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * Calculates the value of a normal defensive dice roll
@@ -46,13 +47,9 @@ public class NormalDefenseStrength extends StrengthOrRollCalculator {
                     unit.getType(), territoryEffects, true));
 
     if (allowFriendly) {
-      strengthValue =
-          strengthValue.add(
-              addSupport(unit, friendlySupportTracker, UnitSupportAttachment::getStrength));
+      strengthValue = strengthValue.add(addSupport(unit, friendlySupportTracker));
     }
-    strengthValue =
-        strengthValue.add(
-            addSupport(unit, enemySupportTracker, UnitSupportAttachment::getStrength));
+    strengthValue = strengthValue.add(addSupport(unit, enemySupportTracker));
     return strengthValue.minMax();
   }
 
@@ -77,5 +74,10 @@ public class NormalDefenseStrength extends StrengthOrRollCalculator {
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getDominatingFirstRoundAttack();
+  }
+
+  @Override
+  Predicate<UnitSupportAttachment> getRuleFilter() {
+    return UnitSupportAttachment::getStrength;
   }
 }

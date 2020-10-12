@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,6 +36,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("enemy")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus")
         .setNumber(1);
 
@@ -42,6 +44,102 @@ class AvailableSupportCalculatorTest {
         AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, false);
     assertThat("There is only one bonus type", tracker.supportRules.size(), is(1));
     assertThat("The rule only has one support available", tracker.getSupportLeft(rule), is(1));
+  }
+
+  @Test
+  void ruleIsIgnoredIfNoPlayers() throws GameParseException {
+    final GameData gameData = givenGameData().build();
+
+    final GamePlayer owner = mock(GamePlayer.class);
+
+    final UnitType unitType = new UnitType("unit", gameData);
+    final Unit unit = unitType.create(1, owner, true).get(0);
+
+    final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
+    rule.setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
+        .setBonusType("bonus")
+        .setNumber(1);
+
+    final UnitSupportAttachment rule2 = new UnitSupportAttachment("rule2", unitType, gameData);
+    rule2
+        .setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of())
+        .setUnitType(Set.of(mock(UnitType.class)))
+        .setBonusType("bonus2")
+        .setNumber(1);
+
+    final AvailableSupportCalculator tracker =
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    assertThat("Rule with players is added", tracker.getSupportLeft(rule), is(1));
+    assertThat("Rule without players is not added", tracker.getSupportLeft(rule2), is(0));
+  }
+
+  @Test
+  void ruleIsIgnoredIfNullUnitTypes() throws GameParseException {
+    final GameData gameData = givenGameData().build();
+
+    final GamePlayer owner = mock(GamePlayer.class);
+
+    final UnitType unitType = new UnitType("unit", gameData);
+    final Unit unit = unitType.create(1, owner, true).get(0);
+
+    final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
+    rule.setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
+        .setBonusType("bonus")
+        .setNumber(1);
+
+    final UnitSupportAttachment rule2 = new UnitSupportAttachment("rule2", unitType, gameData);
+    rule2
+        .setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of(owner))
+        .setUnitType(null)
+        .setBonusType("bonus2")
+        .setNumber(1);
+
+    final AvailableSupportCalculator tracker =
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    assertThat("Rule with unit types is added", tracker.getSupportLeft(rule), is(1));
+    assertThat("Rule without unit types is not added", tracker.getSupportLeft(rule2), is(0));
+  }
+
+  @Test
+  void ruleIsIgnoredIfEmptyUnitTypes() throws GameParseException {
+    final GameData gameData = givenGameData().build();
+
+    final GamePlayer owner = mock(GamePlayer.class);
+
+    final UnitType unitType = new UnitType("unit", gameData);
+    final Unit unit = unitType.create(1, owner, true).get(0);
+
+    final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
+    rule.setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
+        .setBonusType("bonus")
+        .setNumber(1);
+
+    final UnitSupportAttachment rule2 = new UnitSupportAttachment("rule2", unitType, gameData);
+    rule2
+        .setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of(owner))
+        .setUnitType(Set.of())
+        .setBonusType("bonus2")
+        .setNumber(1);
+
+    final AvailableSupportCalculator tracker =
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    assertThat("Rule with unit types is added", tracker.getSupportLeft(rule), is(1));
+    assertThat("Rule without unit types is not added", tracker.getSupportLeft(rule2), is(0));
   }
 
   @Test
@@ -57,6 +155,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("enemy")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus")
         .setNumber(1);
 
@@ -65,11 +164,12 @@ class AvailableSupportCalculatorTest {
         .setSide("defence")
         .setFaction("enemy")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus2")
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, false);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, false);
     assertThat("Offence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Defence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -87,6 +187,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("defence")
         .setFaction("enemy")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus")
         .setNumber(1);
 
@@ -95,11 +196,12 @@ class AvailableSupportCalculatorTest {
         .setSide("offence")
         .setFaction("enemy")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus2")
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), true, false);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), true, false);
     assertThat("Defence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Offence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -117,6 +219,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("enemy")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus")
         .setNumber(1);
 
@@ -125,11 +228,12 @@ class AvailableSupportCalculatorTest {
         .setSide("offence")
         .setFaction("allied")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus2")
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, false);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, false);
     assertThat("Enemy rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Allied rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -147,6 +251,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("allied")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus")
         .setNumber(1);
 
@@ -155,11 +260,12 @@ class AvailableSupportCalculatorTest {
         .setSide("offence")
         .setFaction("enemy")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus2")
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, true);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, true);
     assertThat("Allied rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Enemy rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -177,6 +283,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("allied")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus")
         .setNumber(1);
 
@@ -187,11 +294,12 @@ class AvailableSupportCalculatorTest {
         .setSide("offence")
         .setFaction("allied")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setBonusType("bonus2")
         .setNumber(1);
 
     final AvailableSupportCalculator tracker =
-        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule), false, true);
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, true);
     assertThat("Rule with a supporter is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without a supporter is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -212,6 +320,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("allied")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setImpArtTech(true)
         .setBonusType("bonus")
         .setNumber(1);
@@ -241,6 +350,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("allied")
         .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setImpArtTech(false)
         .setBonusType("bonus")
         .setNumber(1);
@@ -273,6 +383,7 @@ class AvailableSupportCalculatorTest {
     rule.setSide("offence")
         .setFaction("allied")
         .setPlayers(List.of(owner, ownerWithoutImprovedTechnology))
+        .setUnitType(Set.of(mock(UnitType.class)))
         .setImpArtTech(true)
         .setBonusType("bonus")
         .setNumber(1);
@@ -284,6 +395,50 @@ class AvailableSupportCalculatorTest {
         "Unit with improved technology has a value of 2 while the unit without has a value of 1",
         tracker.getSupportLeft(rule),
         is(3));
+  }
+
+  @Test
+  void ruleThatMatchesFilterIsCopiedToNewCalculator() throws GameParseException {
+    final GameData gameData = givenGameData().build();
+
+    final GamePlayer owner = mock(GamePlayer.class);
+
+    final UnitType unitType = new UnitType("unit", gameData);
+    final Unit unit = unitType.create(1, owner, true).get(0);
+
+    final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
+    rule.setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
+        .setBonusType("bonus")
+        .setDice("roll")
+        .setNumber(1);
+
+    final UnitSupportAttachment rule2 = new UnitSupportAttachment("rule2", unitType, gameData);
+    rule2
+        .setSide("offence")
+        .setFaction("enemy")
+        .setPlayers(List.of(owner))
+        .setUnitType(Set.of(mock(UnitType.class)))
+        .setBonusType("bonus2")
+        .setDice("strength")
+        .setNumber(1);
+
+    final AvailableSupportCalculator tracker =
+        AvailableSupportCalculator.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+
+    final AvailableSupportCalculator filtered = tracker.filter(UnitSupportAttachment::getRoll);
+    assertThat(
+        "The roll rule is copied to the new calculator", filtered.getSupportLeft(rule), is(1));
+    assertThat(
+        "The strength rule is not copied to the new calculator",
+        filtered.getSupportLeft(rule2),
+        is(0));
+    assertThat(
+        "Only one bonus (the roll one) is in the new calculator",
+        filtered.supportRules.keySet(),
+        hasSize(1));
   }
 
   @Nested
@@ -314,7 +469,7 @@ class AvailableSupportCalculatorTest {
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
       assertThat(
@@ -346,7 +501,7 @@ class AvailableSupportCalculatorTest {
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
       assertThat(
@@ -382,9 +537,9 @@ class AvailableSupportCalculatorTest {
           AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       // give the support to the first unit
-      tracker.giveSupportToUnit(unit, (usa) -> true);
+      tracker.giveSupportToUnit(unit);
       // attempt to give the support to the second unit
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit2, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit2);
 
       assertThat(
           "The second unit should get no support as it was all used up",
@@ -418,13 +573,13 @@ class AvailableSupportCalculatorTest {
       final AvailableSupportCalculator tracker =
           AvailableSupportCalculator.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
           "The support unit gave one support to the first",
           used,
           is(IntegerMap.of(Map.of(supportUnit, 1))));
 
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2, (usa) -> true);
+      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
       assertThat(
           "The support unit gave one support to the second",
           used2,
@@ -461,13 +616,13 @@ class AvailableSupportCalculatorTest {
           AvailableSupportCalculator.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
           "The first support unit supports the first unit",
           used,
           is(IntegerMap.of(Map.of(supportUnit, 1))));
 
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2, (usa) -> true);
+      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
       assertThat(
           "The second support unit supports the second unit",
           used2,
@@ -505,13 +660,13 @@ class AvailableSupportCalculatorTest {
           AvailableSupportCalculator.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
           "The first unit gets all the support because of the stack of 2",
           used,
           is(IntegerMap.of(Map.of(supportUnit, 1, supportUnit2, 1))));
 
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2, (usa) -> true);
+      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
       assertThat("Second unit gets nothing", used2, is(IntegerMap.of(Map.of())));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
@@ -547,13 +702,13 @@ class AvailableSupportCalculatorTest {
           AvailableSupportCalculator.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
           "The first supporter can give 2 supports and the bonus stacks up to 2 so the unit gets all of its support",
           used,
           is(IntegerMap.of(Map.of(supportUnit, 2))));
 
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2, (usa) -> true);
+      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
       assertThat(
           "The second support can give 2 supports and the bonus stacks up to 2 so the unit gets all of its support",
           used2,
@@ -602,7 +757,7 @@ class AvailableSupportCalculatorTest {
           AvailableSupportCalculator.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
 
       assertThat(
           "Both support units gave their support",
@@ -652,7 +807,7 @@ class AvailableSupportCalculatorTest {
           AvailableSupportCalculator.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
 
       assertThat(
           "Only the first gives support because the stack size is 1",
@@ -702,7 +857,7 @@ class AvailableSupportCalculatorTest {
           AvailableSupportCalculator.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit, (usa) -> true);
+      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
 
       assertThat(
           "Both support units gave their support",
