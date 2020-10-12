@@ -5,12 +5,8 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,19 +30,16 @@ public class AvailableSupportCalculator {
 
   public static final AvailableSupportCalculator EMPTY_RESULT =
       AvailableSupportCalculator.builder()
-          .supportRules(new HashSet<>())
+          .supportRules(new HashMap<>())
           .supportUnits(new HashMap<>())
-          .supportLeft(new IntegerMap<>())
           .build();
 
-  final Set<List<UnitSupportAttachment>> supportRules;
-  final IntegerMap<UnitSupportAttachment> supportLeft;
+  final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
   final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
 
   AvailableSupportCalculator(final AvailableSupportCalculator availableSupportCalculator) {
 
     supportRules = availableSupportCalculator.supportRules;
-    supportLeft = new IntegerMap<>(availableSupportCalculator.supportLeft);
 
     final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsCopy = new HashMap<>();
     for (final UnitSupportAttachment usa : availableSupportCalculator.supportUnits.keySet()) {
@@ -73,7 +66,7 @@ public class AvailableSupportCalculator {
             .build();
     supportCalculationResult
         .getSupportRules()
-        .forEach((unitSupportAttachment) -> unitSupportAttachment.sort(supportRuleSort));
+        .forEach((bonusType, unitSupportAttachment) -> unitSupportAttachment.sort(supportRuleSort));
     return supportCalculationResult;
   }
 
@@ -91,8 +84,8 @@ public class AvailableSupportCalculator {
     if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty()) {
       return EMPTY_RESULT;
     }
-    final Set<List<UnitSupportAttachment>> supportsAvailable = new HashSet<>();
-    final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<>();
+    final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportsAvailable =
+        new HashMap<>();
     final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft = new HashMap<>();
 
     for (final UnitSupportAttachment rule : rules) {
@@ -109,49 +102,29 @@ public class AvailableSupportCalculator {
           Matches.unitIsOfType((UnitType) rule.getAttachedTo())
               .and(Matches.unitOwnedBy(rule.getPlayers()));
       final List<Unit> supporters = CollectionUtils.getMatches(unitsGivingTheSupport, canSupport);
-      int numSupport = supporters.size();
-      if (numSupport <= 0) {
+      if (supporters.isEmpty()) {
         continue;
       }
-      final List<Unit> impArtTechUnits = new ArrayList<>();
-      if (rule.getImpArtTech()) {
-        impArtTechUnits.addAll(
-            CollectionUtils.getMatches(
-                supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()));
-      }
-      numSupport += impArtTechUnits.size();
-      supportLeft.put(rule, numSupport * rule.getNumber());
+      final List<Unit> impArtTechUnits =
+          rule.getImpArtTech()
+              ? CollectionUtils.getMatches(
+                  supporters, Matches.unitOwnerHasImprovedArtillerySupportTech())
+              : List.of();
+
       final IntegerMap<Unit> unitsForRule = new IntegerMap<>();
       supporters.forEach(unit -> unitsForRule.put(unit, rule.getNumber()));
       impArtTechUnits.forEach(unit -> unitsForRule.add(unit, rule.getNumber()));
       supportUnitsLeft.put(rule, unitsForRule);
-      final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
-      List<UnitSupportAttachment> ruleType = null;
-      boolean found = false;
-      final String bonusType = rule.getBonusType().getName();
-      while (iter2.hasNext()) {
-        ruleType = iter2.next();
-        if (ruleType.get(0).getBonusType().getName().equals(bonusType)) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        ruleType = new ArrayList<>();
-        supportsAvailable.add(ruleType);
-      }
-      ruleType.add(rule);
+      supportsAvailable
+          .computeIfAbsent(rule.getBonusType(), (bonusType) -> new ArrayList<>())
+          .add(rule);
     }
 
-    return builder()
-        .supportLeft(supportLeft)
-        .supportRules(supportsAvailable)
-        .supportUnits(supportUnitsLeft)
-        .build();
+    return builder().supportRules(supportsAvailable).supportUnits(supportUnitsLeft).build();
   }
 
-  int getSupportLeft(final UnitSupportAttachment support) {
-    return supportLeft.getInt(support);
+  public int getSupportLeft(final UnitSupportAttachment support) {
+    return supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues();
   }
 
   /**
@@ -164,7 +137,7 @@ public class AvailableSupportCalculator {
   IntegerMap<Unit> giveSupportToUnit(
       final Unit unit, final Predicate<UnitSupportAttachment> ruleFilter) {
     final IntegerMap<Unit> supportUsed = new IntegerMap<>();
-    for (final List<UnitSupportAttachment> rulesByBonusType : supportRules) {
+    for (final List<UnitSupportAttachment> rulesByBonusType : supportRules.values()) {
 
       int maxPerBonusType = rulesByBonusType.get(0).getBonusType().getCount();
       for (final UnitSupportAttachment rule : rulesByBonusType) {
@@ -191,11 +164,9 @@ public class AvailableSupportCalculator {
   private int getSupportAvailable(final UnitSupportAttachment support) {
     return Math.max(
         0,
-        Collections.min(
-            Arrays.asList(
-                support.getBonusType().getCount(),
-                supportLeft.getInt(support),
-                supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues())));
+        Math.min(
+            support.getBonusType().getCount(),
+            supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues()));
   }
 
   /**
@@ -205,7 +176,6 @@ public class AvailableSupportCalculator {
    * unit can give.
    */
   private Unit getNextAvailableSupporter(final UnitSupportAttachment support) {
-    supportLeft.add(support, -1);
     final Set<Unit> supporters = supportUnits.get(support).keySet();
     final Unit u = supporters.iterator().next();
     supportUnits.get(support).add(u, -1);

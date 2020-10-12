@@ -46,9 +46,11 @@ class NormalOffenseStrengthTest {
 
     final AvailableSupportCalculator friendlySupport =
         AvailableSupportCalculator.builder()
-            .supportRules(Set.of(List.of(unitSupportAttachment)))
+            .supportRules(
+                Map.of(
+                    new UnitSupportAttachment.BonusType("bonus", 1),
+                    List.of(unitSupportAttachment)))
             .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-            .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
             .build();
 
     final Unit enemySupportUnit = mock(Unit.class);
@@ -61,10 +63,12 @@ class NormalOffenseStrengthTest {
 
     final AvailableSupportCalculator enemySupport =
         AvailableSupportCalculator.builder()
-            .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+            .supportRules(
+                Map.of(
+                    new UnitSupportAttachment.BonusType("bonus", 1),
+                    List.of(enemyUnitSupportAttachment)))
             .supportUnits(
                 Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemySupportUnit, 1))))
-            .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
             .build();
 
     final TerritoryEffect territoryEffect = new TerritoryEffect("territoryEffect", gameData);
@@ -215,9 +219,11 @@ class NormalOffenseStrengthTest {
 
     final AvailableSupportCalculator friendlySupport =
         AvailableSupportCalculator.builder()
-            .supportRules(Set.of(List.of(unitSupportAttachment)))
+            .supportRules(
+                Map.of(
+                    new UnitSupportAttachment.BonusType("bonus", 1),
+                    List.of(unitSupportAttachment)))
             .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-            .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
             .build();
 
     final Unit enemySupportUnit = mock(Unit.class);
@@ -230,10 +236,12 @@ class NormalOffenseStrengthTest {
 
     final AvailableSupportCalculator enemySupport =
         AvailableSupportCalculator.builder()
-            .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+            .supportRules(
+                Map.of(
+                    new UnitSupportAttachment.BonusType("bonus", 1),
+                    List.of(enemyUnitSupportAttachment)))
             .supportUnits(
                 Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemySupportUnit, 1))))
-            .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
             .build();
 
     final NormalOffenseStrength strength =

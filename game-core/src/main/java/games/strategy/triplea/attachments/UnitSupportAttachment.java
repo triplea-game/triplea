@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 /**
@@ -61,7 +62,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
     private static final long serialVersionUID = -7445551357956238314L;
 
     @Nonnull String name;
-    @Nonnull Integer count;
+
+    @EqualsAndHashCode.Exclude @Nonnull Integer count;
 
     public int getCount() {
       return count < 0 ? Integer.MAX_VALUE : count;

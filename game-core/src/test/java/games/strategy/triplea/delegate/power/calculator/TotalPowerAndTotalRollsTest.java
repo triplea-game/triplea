@@ -1023,14 +1023,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1057,14 +1057,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAroll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1091,14 +1091,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength", -1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1125,14 +1125,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAroll", -1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1160,14 +1160,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1197,14 +1197,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1239,17 +1239,17 @@ class TotalPowerAndTotalRollsTest {
 
       final Unit supportUnit = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 2);
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 2));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 2));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1285,22 +1285,25 @@ class TotalPowerAndTotalRollsTest {
 
       final Unit supportUnit = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 2);
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "AAstrength:AAroll", 1, 1);
       final Unit supportUnit2 = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment2 =
           givenUnitSupportAttachment(gameData, "test2", unit.getType(), "AAstrength:AAroll", 1, 1);
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment), List.of(unitSupportAttachment2)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment),
+                      new UnitSupportAttachment.BonusType("bonus2", 1),
+                      List.of(unitSupportAttachment2)))
               .supportUnits(
                   Map.of(
                       unitSupportAttachment,
                       new IntegerMap<>(Map.of(supportUnit, 2)),
                       unitSupportAttachment2,
                       new IntegerMap<>(Map.of(supportUnit2, 1))))
-              .supportLeft(
-                  new IntegerMap<>(Map.of(unitSupportAttachment, 2, unitSupportAttachment2, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1336,9 +1339,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1366,9 +1371,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1406,9 +1413,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1444,9 +1453,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
               .build();
 
       final Unit enemyUnit = mock(Unit.class);
@@ -1456,10 +1467,12 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(enemyUnitSupportAttachment)))
               .supportUnits(
                   Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemyUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1485,10 +1498,12 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(enemyUnitSupportAttachment)))
               .supportUnits(
                   Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemyUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1717,14 +1732,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1765,14 +1780,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1812,14 +1827,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1859,14 +1874,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1906,14 +1921,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", -1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -1953,14 +1968,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength", -1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2000,14 +2015,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", -1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2047,14 +2062,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "roll", -1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2095,14 +2110,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2146,14 +2161,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2199,14 +2214,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2257,14 +2272,14 @@ class TotalPowerAndTotalRollsTest {
           givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 1));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 1));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2315,17 +2330,17 @@ class TotalPowerAndTotalRollsTest {
 
       final Unit supportUnit = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 2));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 2));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2378,17 +2393,17 @@ class TotalPowerAndTotalRollsTest {
 
       final Unit supportUnit = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
 
       final IntegerMap<Unit> supportUnits = new IntegerMap<>(Map.of(supportUnit, 2));
-      final IntegerMap<UnitSupportAttachment> supportLeft =
-          new IntegerMap<>(Map.of(unitSupportAttachment, 2));
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, supportUnits))
-              .supportLeft(supportLeft)
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2440,22 +2455,25 @@ class TotalPowerAndTotalRollsTest {
 
       final Unit supportUnit = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
       final Unit supportUnit2 = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment2 =
           givenUnitSupportAttachment(gameData, "test2", unit.getType(), "strength:roll", 1, 1);
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment), List.of(unitSupportAttachment2)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment),
+                      new UnitSupportAttachment.BonusType("bonus2", 1),
+                      List.of(unitSupportAttachment2)))
               .supportUnits(
                   Map.of(
                       unitSupportAttachment,
                       new IntegerMap<>(Map.of(supportUnit, 2)),
                       unitSupportAttachment2,
                       new IntegerMap<>(Map.of(supportUnit2, 1))))
-              .supportLeft(
-                  new IntegerMap<>(Map.of(unitSupportAttachment, 2, unitSupportAttachment2, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2516,22 +2534,25 @@ class TotalPowerAndTotalRollsTest {
 
       final Unit supportUnit = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 2);
+          givenUnitSupportAttachment(gameData, "test", unit.getType(), "strength:roll", 1, 1);
       final Unit supportUnit2 = mock(Unit.class);
       final UnitSupportAttachment unitSupportAttachment2 =
           givenUnitSupportAttachment(gameData, "test2", unit.getType(), "strength:roll", 1, 1);
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment), List.of(unitSupportAttachment2)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment),
+                      new UnitSupportAttachment.BonusType("bonus2", 1),
+                      List.of(unitSupportAttachment2)))
               .supportUnits(
                   Map.of(
                       unitSupportAttachment,
                       new IntegerMap<>(Map.of(supportUnit, 2)),
                       unitSupportAttachment2,
                       new IntegerMap<>(Map.of(supportUnit2, 1))))
-              .supportLeft(
-                  new IntegerMap<>(Map.of(unitSupportAttachment, 2, unitSupportAttachment2, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2600,15 +2621,16 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment, unitSupportAttachment2)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment, unitSupportAttachment2)))
               .supportUnits(
                   Map.of(
                       unitSupportAttachment,
                       new IntegerMap<>(Map.of(supportUnit, 1)),
                       unitSupportAttachment2,
                       new IntegerMap<>(Map.of(supportUnit2, 1))))
-              .supportLeft(
-                  new IntegerMap<>(Map.of(unitSupportAttachment, 1, unitSupportAttachment2, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2677,15 +2699,16 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment, unitSupportAttachment2)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment, unitSupportAttachment2)))
               .supportUnits(
                   Map.of(
                       unitSupportAttachment,
                       new IntegerMap<>(Map.of(supportUnit, 1)),
                       unitSupportAttachment2,
                       new IntegerMap<>(Map.of(supportUnit2, 1))))
-              .supportLeft(
-                  new IntegerMap<>(Map.of(unitSupportAttachment, 1, unitSupportAttachment2, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
@@ -2828,9 +2851,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
               .build();
 
       final Unit enemySupportUnit = mock(Unit.class);
@@ -2841,10 +2866,12 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(enemyUnitSupportAttachment)))
               .supportUnits(
                   Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemySupportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
               .build();
 
       final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
@@ -2960,9 +2987,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator friendlySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
               .build();
 
       final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
@@ -3002,9 +3031,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(unitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(unitSupportAttachment)))
               .supportUnits(Map.of(unitSupportAttachment, new IntegerMap<>(Map.of(supportUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(unitSupportAttachment, 1)))
               .build();
 
       final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
@@ -3045,10 +3076,12 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupportCalculator enemySupport =
           AvailableSupportCalculator.builder()
-              .supportRules(Set.of(List.of(enemyUnitSupportAttachment)))
+              .supportRules(
+                  Map.of(
+                      new UnitSupportAttachment.BonusType("bonus", 1),
+                      List.of(enemyUnitSupportAttachment)))
               .supportUnits(
                   Map.of(enemyUnitSupportAttachment, new IntegerMap<>(Map.of(enemyUnit, 1))))
-              .supportLeft(new IntegerMap<>(Map.of(enemyUnitSupportAttachment, 1)))
               .build();
 
       final Map<Unit, TotalPowerAndTotalRolls> result =

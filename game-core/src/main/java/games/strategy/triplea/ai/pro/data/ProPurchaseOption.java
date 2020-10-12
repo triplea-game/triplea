@@ -285,13 +285,10 @@ public class ProPurchaseOption {
         AvailableSupportCalculator.getSupport(
             units, data.getUnitTypeList().getSupportRules(), defense, true);
 
-    final Set<List<UnitSupportAttachment>> supportsAvailable =
-        supportCalculationResult.getSupportRules();
-    final IntegerMap<UnitSupportAttachment> supportLeft = supportCalculationResult.getSupportLeft();
-
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
-      for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
+      for (final List<UnitSupportAttachment> bonusType :
+          supportCalculationResult.getSupportRules().values()) {
         if (!bonusType.contains(usa)) {
           continue;
         }
@@ -304,7 +301,7 @@ public class ProPurchaseOption {
         int numSupportProvided = -numAddedSupport;
         final Set<Unit> supportableUnits = new HashSet<>();
         for (final UnitSupportAttachment usa2 : bonusType) {
-          numSupportProvided += supportLeft.getInt(usa2);
+          numSupportProvided += supportCalculationResult.getSupportLeft(usa2);
           supportableUnits.addAll(
               CollectionUtils.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
         }
