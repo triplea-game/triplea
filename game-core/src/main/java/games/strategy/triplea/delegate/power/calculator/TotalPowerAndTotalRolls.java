@@ -380,7 +380,7 @@ public class TotalPowerAndTotalRolls {
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
     final OffenseOrDefenseCalculator calculator =
-        OffenseOrDefenseCalculator.buildNormal(
+        OffenseOrDefenseCalculator.buildMain(
             allEnemyUnitsAliveOrWaitingToDie,
             allFriendlyUnitsAliveOrWaitingToDie,
             defending,

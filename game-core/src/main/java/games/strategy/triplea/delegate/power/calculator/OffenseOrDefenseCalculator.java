@@ -17,7 +17,7 @@ public interface OffenseOrDefenseCalculator {
 
   GameData getGameData();
 
-  static OffenseOrDefenseCalculator buildNormal(
+  static OffenseOrDefenseCalculator buildMain(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
@@ -42,13 +42,13 @@ public interface OffenseOrDefenseCalculator {
             false);
 
     return defending
-        ? NormalDefenseCalculator.builder()
+        ? MainDefenseCalculator.builder()
             .data(data)
             .friendlySupportTracker(friendlySupportTracker)
             .enemySupportTracker(enemySupportTracker)
             .territoryEffects(territoryEffects)
             .build()
-        : NormalOffenseCalculator.builder()
+        : MainOffenseCalculator.builder()
             .data(data)
             .friendlySupportTracker(friendlySupportTracker)
             .enemySupportTracker(enemySupportTracker)

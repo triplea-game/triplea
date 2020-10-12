@@ -19,7 +19,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
-class NormalDefenseRollTest {
+class MainOffenseRollTest {
 
   @Test
   void calculatesValue() throws GameParseException {
@@ -31,7 +31,7 @@ class NormalDefenseRollTest {
     final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
     final Unit unit = unitType.create(1, player, true).get(0);
-    unit.getUnitAttachment().setDefenseRolls(3);
+    unit.getUnitAttachment().setAttackRolls(3);
 
     final Unit supportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment unitSupportAttachment =
@@ -55,8 +55,8 @@ class NormalDefenseRollTest {
         AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final NormalDefenseCalculator.NormalDefenseRoll roll =
-        new NormalDefenseCalculator.NormalDefenseRoll(friendlySupport, enemySupport);
+    final MainOffenseCalculator.MainOffenseRoll roll =
+        new MainOffenseCalculator.MainOffenseRoll(friendlySupport, enemySupport);
     assertThat(
         "Roll starts at 3, friendly adds 2, enemy removes 1: total 4", roll.getValue(unit), is(4));
   }
@@ -83,7 +83,7 @@ class NormalDefenseRollTest {
     final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
     final Unit unit = unitType.create(1, player, true).get(0);
-    unit.getUnitAttachment().setDefenseRolls(3);
+    unit.getUnitAttachment().setAttackRolls(3);
 
     final Unit supportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment unitSupportAttachment =
@@ -107,8 +107,8 @@ class NormalDefenseRollTest {
         AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final NormalDefenseCalculator.NormalDefenseRoll roll =
-        new NormalDefenseCalculator.NormalDefenseRoll(friendlySupport, enemySupport);
+    final MainOffenseCalculator.MainOffenseRoll roll =
+        new MainOffenseCalculator.MainOffenseRoll(friendlySupport, enemySupport);
     roll.getValue(unit);
     assertThat(
         "Friendly gave 2 and enemy gave -1",

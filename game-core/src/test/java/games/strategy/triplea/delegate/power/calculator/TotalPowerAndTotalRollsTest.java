@@ -1448,7 +1448,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1472,7 +1472,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1496,7 +1496,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1524,7 +1524,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1548,7 +1548,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1573,7 +1573,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1597,7 +1597,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1621,7 +1621,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1658,7 +1658,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1701,7 +1701,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1743,7 +1743,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1786,7 +1786,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -1828,7 +1828,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(enemySupport)
@@ -1871,7 +1871,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(enemySupport)
@@ -1913,7 +1913,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(enemySupport)
@@ -1956,7 +1956,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(enemySupport)
@@ -1998,7 +1998,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2044,7 +2044,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2092,7 +2092,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, nonSupportedUnit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2146,7 +2146,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, nonSupportedUnit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2202,7 +2202,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, otherSupportedUnit, nonSupportedUnit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2261,7 +2261,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, otherSupportedUnit, nonSupportedUnit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2327,7 +2327,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, otherSupportedUnit, nonSupportedUnit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2403,7 +2403,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, otherSupportedUnit, nonSupportedUnit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2476,7 +2476,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, otherSupportedUnit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2551,7 +2551,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit, otherSupportedUnit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2604,7 +2604,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2651,7 +2651,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2719,7 +2719,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(enemySupport)
@@ -2764,7 +2764,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2796,7 +2796,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalDefenseCalculator.builder()
+              MainDefenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2838,7 +2838,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(friendlySupport)
                   .enemySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
@@ -2881,7 +2881,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(enemySupport)
@@ -2915,7 +2915,7 @@ class TotalPowerAndTotalRollsTest {
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
               List.of(unit),
-              NormalOffenseCalculator.builder()
+              MainOffenseCalculator.builder()
                   .data(gameData)
                   .friendlySupportTracker(AvailableSupportTracker.EMPTY_RESULT)
                   .enemySupportTracker(enemySupport)
@@ -2946,7 +2946,7 @@ class TotalPowerAndTotalRollsTest {
           TotalPowerAndTotalRolls.getTotalPower(
               TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   attackers,
-                  OffenseOrDefenseCalculator.buildNormal(
+                  OffenseOrDefenseCalculator.buildMain(
                       List.of(), attackers, false, twwGameData, berlin, List.of())),
               twwGameData);
       assertThat("1 artillery should provide +1 support to the infantry", attackPower, is(6));
@@ -2956,7 +2956,7 @@ class TotalPowerAndTotalRollsTest {
           TotalPowerAndTotalRolls.getTotalPower(
               TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   attackers,
-                  OffenseOrDefenseCalculator.buildNormal(
+                  OffenseOrDefenseCalculator.buildMain(
                       List.of(), attackers, false, twwGameData, berlin, List.of())),
               twwGameData);
       assertThat(
@@ -2969,7 +2969,7 @@ class TotalPowerAndTotalRollsTest {
           TotalPowerAndTotalRolls.getTotalPower(
               TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   attackers,
-                  OffenseOrDefenseCalculator.buildNormal(
+                  OffenseOrDefenseCalculator.buildMain(
                       List.of(), attackers, false, twwGameData, berlin, List.of())),
               twwGameData);
       assertThat(

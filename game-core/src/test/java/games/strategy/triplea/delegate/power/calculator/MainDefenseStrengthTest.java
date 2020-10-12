@@ -25,7 +25,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
-class NormalDefenseStrengthTest {
+class MainDefenseStrengthTest {
 
   @Test
   void calculatesValue() throws GameParseException {
@@ -67,8 +67,8 @@ class NormalDefenseStrengthTest {
     territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
     territoryEffectAttachment.setCombatDefenseEffect(new IntegerMap<>(Map.of(unit.getType(), 1)));
 
-    final NormalDefenseCalculator.NormalDefenseStrength strength =
-        new NormalDefenseCalculator.NormalDefenseStrength(
+    final MainDefenseCalculator.MainDefenseStrength strength =
+        new MainDefenseCalculator.MainDefenseStrength(
             gameData, friendlySupport, enemySupport, List.of(territoryEffect));
     assertThat(
         "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
@@ -133,8 +133,8 @@ class NormalDefenseStrengthTest {
     territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
     territoryEffectAttachment.setCombatDefenseEffect(new IntegerMap<>(Map.of(unit.getType(), 3)));
 
-    final NormalDefenseCalculator.NormalDefenseStrength strength =
-        new NormalDefenseCalculator.NormalDefenseStrength(
+    final MainDefenseCalculator.MainDefenseStrength strength =
+        new MainDefenseCalculator.MainDefenseStrength(
             gameData, friendlySupport, enemySupport, List.of(territoryEffect));
     assertThat(
         "Strength is limited to 1, friendly is not used, "
@@ -177,8 +177,8 @@ class NormalDefenseStrengthTest {
         AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final NormalDefenseCalculator.NormalDefenseStrength strength =
-        new NormalDefenseCalculator.NormalDefenseStrength(
+    final MainDefenseCalculator.MainDefenseStrength strength =
+        new MainDefenseCalculator.MainDefenseStrength(
             gameData, friendlySupport, enemySupport, List.of());
     strength.getValue(unit);
     assertThat(

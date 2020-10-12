@@ -23,7 +23,7 @@ import lombok.Value;
 @Builder
 @Value
 @Getter(AccessLevel.NONE)
-class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
+class MainOffenseCalculator implements OffenseOrDefenseCalculator {
 
   @NonNull GameData data;
   @NonNull AvailableSupportTracker friendlySupportTracker;
@@ -33,12 +33,12 @@ class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
 
   @Override
   public StrengthOrRollCalculator getRoll() {
-    return new NormalOffenseRoll(friendlySupportTracker, enemySupportTracker);
+    return new MainOffenseRoll(friendlySupportTracker, enemySupportTracker);
   }
 
   @Override
   public StrengthOrRollCalculator getStrength() {
-    return new NormalOffenseStrength(
+    return new MainOffenseStrength(
         data, friendlySupportTracker, enemySupportTracker, territoryEffects, territoryIsLand);
   }
 
@@ -52,9 +52,9 @@ class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
     return data;
   }
 
-  static class NormalOffenseRoll extends StrengthOrRollCalculator {
+  static class MainOffenseRoll extends StrengthOrRollCalculator {
 
-    NormalOffenseRoll(
+    MainOffenseRoll(
         final AvailableSupportTracker friendlySupport, final AvailableSupportTracker enemySupport) {
       super(friendlySupport, enemySupport);
     }
@@ -74,13 +74,13 @@ class NormalOffenseCalculator implements OffenseOrDefenseCalculator {
     }
   }
 
-  static class NormalOffenseStrength extends StrengthOrRollCalculator {
+  static class MainOffenseStrength extends StrengthOrRollCalculator {
 
     private final GameData gameData;
     private final Collection<TerritoryEffect> territoryEffects;
     private final boolean territoryIsLand;
 
-    NormalOffenseStrength(
+    MainOffenseStrength(
         final GameData gameData,
         final AvailableSupportTracker friendlySupport,
         final AvailableSupportTracker enemySupport,

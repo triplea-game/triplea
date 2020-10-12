@@ -22,7 +22,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
-class NormalOffenseStrengthTest {
+class MainOffenseStrengthTest {
 
   @Test
   void calculatesValue() throws GameParseException {
@@ -64,8 +64,8 @@ class NormalOffenseStrengthTest {
     territoryEffect.addAttachment(TERRITORYEFFECT_ATTACHMENT_NAME, territoryEffectAttachment);
     territoryEffectAttachment.setCombatOffenseEffect(new IntegerMap<>(Map.of(unit.getType(), 1)));
 
-    final NormalOffenseCalculator.NormalOffenseStrength strength =
-        new NormalOffenseCalculator.NormalOffenseStrength(
+    final MainOffenseCalculator.MainOffenseStrength strength =
+        new MainOffenseCalculator.MainOffenseStrength(
             gameData, friendlySupport, enemySupport, List.of(territoryEffect), true);
     assertThat(
         "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
@@ -97,8 +97,8 @@ class NormalOffenseStrengthTest {
     final Unit unit = unitType.create(1, player, true).get(0);
     unit.setWasAmphibious(true).getUnitAttachment().setAttack(3).setIsMarine(1);
 
-    final NormalOffenseCalculator.NormalOffenseStrength strength =
-        new NormalOffenseCalculator.NormalOffenseStrength(
+    final MainOffenseCalculator.MainOffenseStrength strength =
+        new MainOffenseCalculator.MainOffenseStrength(
             gameData,
             AvailableSupportTracker.EMPTY_RESULT,
             AvailableSupportTracker.EMPTY_RESULT,
@@ -119,8 +119,8 @@ class NormalOffenseStrengthTest {
     final Unit unit = unitType.create(1, player, true).get(0);
     unit.getUnitAttachment().setAttack(3).setIsMarine(1);
 
-    final NormalOffenseCalculator.NormalOffenseStrength strength =
-        new NormalOffenseCalculator.NormalOffenseStrength(
+    final MainOffenseCalculator.MainOffenseStrength strength =
+        new MainOffenseCalculator.MainOffenseStrength(
             gameData,
             AvailableSupportTracker.EMPTY_RESULT,
             AvailableSupportTracker.EMPTY_RESULT,
@@ -142,8 +142,8 @@ class NormalOffenseStrengthTest {
     final Unit unit = unitType.create(1, player, true).get(0);
     unit.getUnitAttachment().setAttack(3).setBombard(1).setIsSea(true);
 
-    final NormalOffenseCalculator.NormalOffenseStrength strength =
-        new NormalOffenseCalculator.NormalOffenseStrength(
+    final MainOffenseCalculator.MainOffenseStrength strength =
+        new MainOffenseCalculator.MainOffenseStrength(
             gameData,
             AvailableSupportTracker.EMPTY_RESULT,
             AvailableSupportTracker.EMPTY_RESULT,
@@ -164,8 +164,8 @@ class NormalOffenseStrengthTest {
     final Unit unit = unitType.create(1, player, true).get(0);
     unit.getUnitAttachment().setAttack(3).setBombard(1).setIsSea(true);
 
-    final NormalOffenseCalculator.NormalOffenseStrength strength =
-        new NormalOffenseCalculator.NormalOffenseStrength(
+    final MainOffenseCalculator.MainOffenseStrength strength =
+        new MainOffenseCalculator.MainOffenseStrength(
             gameData,
             AvailableSupportTracker.EMPTY_RESULT,
             AvailableSupportTracker.EMPTY_RESULT,
@@ -186,8 +186,8 @@ class NormalOffenseStrengthTest {
     final Unit unit = unitType.create(1, player, true).get(0);
     unit.getUnitAttachment().setAttack(3).setBombard(1).setIsSea(false);
 
-    final NormalOffenseCalculator.NormalOffenseStrength strength =
-        new NormalOffenseCalculator.NormalOffenseStrength(
+    final MainOffenseCalculator.MainOffenseStrength strength =
+        new MainOffenseCalculator.MainOffenseStrength(
             gameData,
             AvailableSupportTracker.EMPTY_RESULT,
             AvailableSupportTracker.EMPTY_RESULT,
@@ -230,8 +230,8 @@ class NormalOffenseStrengthTest {
         AvailableSupportTracker.getSupport(
             List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
 
-    final NormalOffenseCalculator.NormalOffenseStrength strength =
-        new NormalOffenseCalculator.NormalOffenseStrength(
+    final MainOffenseCalculator.MainOffenseStrength strength =
+        new MainOffenseCalculator.MainOffenseStrength(
             gameData, friendlySupport, enemySupport, List.of(), true);
     strength.getValue(unit);
     assertThat(
