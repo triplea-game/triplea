@@ -110,7 +110,7 @@ public interface BattleState {
 
   Collection<IBattle> getDependentBattles();
 
-  @RemoveOnNextMajorRelease("Only used to handle step string changes")
+  @RemoveOnNextMajorRelease
   @Deprecated
   List<String> getStepStrings();
 }
