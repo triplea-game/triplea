@@ -66,7 +66,7 @@ public class MarkCasualties implements BattleStep {
 
   @Override
   public Order getOrder() {
-    return Order.REMOVE_FIRE_ROUND_CASUALTIES;
+    return Order.FIRE_ROUND_REMOVE_CASUALTIES;
   }
 
   @Override

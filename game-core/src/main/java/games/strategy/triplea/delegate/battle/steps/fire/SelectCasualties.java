@@ -49,7 +49,7 @@ public class SelectCasualties implements BattleStep {
 
   @Override
   public Order getOrder() {
-    return Order.SELECT_CASUALTIES;
+    return Order.FIRE_ROUND_SELECT_CASUALTIES;
   }
 
   @Override
