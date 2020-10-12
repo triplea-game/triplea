@@ -38,20 +38,24 @@ public class RollDice implements BattleStep {
 
   private String getName() {
     return battleState.getPlayer(side).getName()
-        // displaying UNITS makes the text feel redundant so hide it if that is the group name
+        // If the firing group's name is the default "UNITS", then the displayed string will be
+        // "Germans units fire". In that case, it would be better to say "Germans fire".
+        // If the firing group's name is something else, then the displayed string will be
+        // something like "Germans submarines fire" which is ok.
         + (firingGroup.getDisplayName().equals(UNITS) ? "" : " " + firingGroup.getDisplayName())
         + FIRE_SUFFIX;
   }
 
   @Override
   public Order getOrder() {
-    return Order.ROLL_DICE;
+    return Order.FIRE_ROUND_ROLL_DICE;
   }
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
 
-    // remove any target unit that was hit by other units
+    // retain the targets that are still alive since the targets might have been shot
+    // in an earlier firing round
     firingGroup.retainAliveTargets(battleState.filterUnits(ALIVE, side.getOpposite()));
 
     final DiceRoll dice = rollDice.apply(bridge, this);

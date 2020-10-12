@@ -76,8 +76,7 @@ public interface BattleStep extends IExecutable {
     STALEMATE_BATTLE_END_CHECK,
     SUB_DEFENSIVE_RETREAT_AFTER_BATTLE,
 
-    // Fire Round steps
-    ROLL_DICE,
+    FIRE_ROUND_ROLL_DICE,
   }
 
   /** @return a list of names that will be shown in {@link games.strategy.triplea.ui.BattlePanel} */
