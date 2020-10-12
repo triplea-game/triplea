@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AA_GUNS_FIRE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_PREFIX;
@@ -7,13 +9,18 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_PR
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -48,8 +55,9 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
 
   abstract Collection<Unit> aaGuns();
 
-  public static class Casualties
+  public static class SelectAaCasualties
       implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+
     @Override
     public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
       return AaCasualtySelector.getAaCasualties(
