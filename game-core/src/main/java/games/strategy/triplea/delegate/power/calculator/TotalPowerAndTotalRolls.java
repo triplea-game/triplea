@@ -279,43 +279,18 @@ public class TotalPowerAndTotalRolls {
       final boolean defending,
       final GameData data) {
 
-    if (aaUnits == null || aaUnits.isEmpty()) {
-      return new HashMap<>();
-    }
-
-    // Get all friendly supports
-    final AvailableSupportTracker friendlySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
-            allFriendlyUnitsAliveOrWaitingToDie, //
-            data.getUnitTypeList().getSupportAaRules(),
-            defending,
-            true);
-
-    // Get all enemy supports
-    final AvailableSupportTracker enemySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
-            allEnemyUnitsAliveOrWaitingToDie, //
-            data.getUnitTypeList().getSupportAaRules(),
-            !defending,
-            false);
-
     final OffenseOrDefenseCalculator calculator =
-        defending
-            ? AaDefenseCalculator.builder()
-                .data(data)
-                .friendlySupportTracker(friendlySupportTracker)
-                .enemySupportTracker(enemySupportTracker)
-                .build()
-            : AaOffenseCalculator.builder()
-                .data(data)
-                .friendlySupportTracker(friendlySupportTracker)
-                .enemySupportTracker(enemySupportTracker)
-                .build();
+        OffenseOrDefenseCalculator.buildAa(
+            allEnemyUnitsAliveOrWaitingToDie, allFriendlyUnitsAliveOrWaitingToDie, defending, data);
     return getAaUnitPowerAndRollsForNormalBattles(aaUnits, calculator);
   }
 
   public static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> aaUnits, final OffenseOrDefenseCalculator calculator) {
+
+    if (aaUnits == null || aaUnits.isEmpty()) {
+      return new HashMap<>();
+    }
     // Sort units strongest to weakest to give support to the best units first
     final List<Unit> units = new ArrayList<>(aaUnits);
     sortAaHighToLow(units, calculator.getGameData(), calculator.isDefending());
@@ -404,58 +379,37 @@ public class TotalPowerAndTotalRolls {
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
-    if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
-      return new HashMap<>();
-    }
-
-    // Get all friendly supports
-    final AvailableSupportTracker friendlySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
-            allFriendlyUnitsAliveOrWaitingToDie,
-            data.getUnitTypeList().getSupportRules(),
-            defending,
-            true);
-
-    // Get all enemy supports
-    final AvailableSupportTracker enemySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
-            allEnemyUnitsAliveOrWaitingToDie,
-            data.getUnitTypeList().getSupportRules(),
-            !defending,
-            false);
-
     final OffenseOrDefenseCalculator calculator =
-        defending
-            ? NormalDefenseCalculator.builder()
-                .data(data)
-                .friendlySupportTracker(friendlySupportTracker)
-                .enemySupportTracker(enemySupportTracker)
-                .territoryEffects(territoryEffects)
-                .build()
-            : NormalOffenseCalculator.builder()
-                .data(data)
-                .friendlySupportTracker(friendlySupportTracker)
-                .enemySupportTracker(enemySupportTracker)
-                .territoryEffects(territoryEffects)
-                .territoryIsLand(Matches.territoryIsLand().test(location))
-                .build();
+        OffenseOrDefenseCalculator.buildNormal(
+            allEnemyUnitsAliveOrWaitingToDie,
+            allFriendlyUnitsAliveOrWaitingToDie,
+            defending,
+            data,
+            location,
+            territoryEffects);
 
     return getUnitPowerAndRollsForNormalBattles(
         unitsGettingPowerFor, calculator, unitSupportPowerMap, unitSupportRollsMap);
   }
 
   public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> units, final OffenseOrDefenseCalculator calculator) {
-    return getUnitTotalPowerAndTotalRollsMap(calculator, units, new HashMap<>(), new HashMap<>());
+      final Collection<Unit> unitsGettingPowerFor, final OffenseOrDefenseCalculator calculator) {
+    return getUnitPowerAndRollsForNormalBattles(
+        unitsGettingPowerFor, calculator, new HashMap<>(), new HashMap<>());
   }
 
   public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> units,
+      final Collection<Unit> unitsGettingPowerFor,
       final OffenseOrDefenseCalculator calculator,
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
+
+    if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
+      return new HashMap<>();
+    }
+
     return getUnitTotalPowerAndTotalRollsMap(
-        calculator, units, unitSupportPowerMap, unitSupportRollsMap);
+        calculator, unitsGettingPowerFor, unitSupportPowerMap, unitSupportRollsMap);
   }
 
   public static int getTotalPower(
