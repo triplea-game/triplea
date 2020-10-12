@@ -1,7 +1,7 @@
 # Infrastructure Project
 
 This project hosts the code and configuration that controls
-deployments. For design, conventions and a description of 
+deployments. For design, conventions and a description of
 the deployment process, please see the documentation in
  the [/docs](/docs) folder.
 

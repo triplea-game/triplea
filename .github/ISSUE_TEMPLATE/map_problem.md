@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Do not report map specific problems here. Instead search for the map 
+Do not report map specific problems here. Instead search for the map
 in the forums:
 
      https://forums.triplea-game.org/category/5/maps-mods
