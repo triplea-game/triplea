@@ -704,13 +704,15 @@ class AvailableSupportTrackerTest {
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
-          "The first supporter can give 2 supports and the bonus stacks up to 2 so the unit gets all of its support",
+          "The first supporter can give 2 supports and the bonus stacks up to 2 "
+              + "so the unit gets all of its support",
           used,
           is(IntegerMap.of(Map.of(supportUnit, 2))));
 
       final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
       assertThat(
-          "The second support can give 2 supports and the bonus stacks up to 2 so the unit gets all of its support",
+          "The second support can give 2 supports and the bonus stacks up to 2 "
+              + "so the unit gets all of its support",
           used2,
           is(IntegerMap.of(Map.of(supportUnit2, 2))));
 
