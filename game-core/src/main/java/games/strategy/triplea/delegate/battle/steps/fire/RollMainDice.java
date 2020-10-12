@@ -8,7 +8,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import java.util.function.BiFunction;
 
 /** Rolls dice for normal (basically, anything that isn't AA) dice requests */
-public class RollNormal implements BiFunction<IDelegateBridge, RollDice, DiceRoll> {
+public class RollMainDice implements BiFunction<IDelegateBridge, RollDice, DiceRoll> {
 
   @Override
   public DiceRoll apply(final IDelegateBridge bridge, final RollDice step) {
