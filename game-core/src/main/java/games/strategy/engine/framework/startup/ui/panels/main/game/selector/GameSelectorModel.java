@@ -53,6 +53,29 @@ public class GameSelectorModel extends Observable implements GameSelector {
     this.gameParser = gameParser;
   }
 
+  /**
+   * Loads game data by parsing a given file.
+   *
+   * @throws Exception If file parsing is successful and an internal {@code GameData} was set.
+   */
+  public void load(final File file) throws Exception {
+    Preconditions.checkArgument(
+        file.exists(),
+        "Programming error, expected file to have already been checked to exist: "
+            + file.getAbsolutePath());
+
+    // if the file name is xml, load it as a new game
+    if (file.getName().toLowerCase().endsWith("xml")) {
+      load(file.toURI());
+    } else {
+      // try to load it as a saved game whatever the extension
+      final GameData newData = GameDataManager.loadGame(file);
+      newData.setSaveGameFileName(file.getName());
+      this.fileName = file.getName();
+      setGameData(newData);
+    }
+  }
+
   public void load(final URI uri) {
     fileName = null;
     this.gameData = parseAndValidate(uri);
@@ -86,29 +109,6 @@ public class GameSelectorModel extends Observable implements GameSelector {
           uri,
           String.join("\n", validationErrors));
       return null;
-    }
-  }
-
-  /**
-   * Loads game data by parsing a given file.
-   *
-   * @throws Exception If file parsing is successful and an internal {@code GameData} was set.
-   */
-  public void load(final File file) throws Exception {
-    Preconditions.checkArgument(
-        file.exists(),
-        "Programming error, expected file to have already been checked to exist: "
-            + file.getAbsolutePath());
-
-    // if the file name is xml, load it as a new game
-    if (file.getName().toLowerCase().endsWith("xml")) {
-      load(file.toURI());
-    } else {
-      // try to load it as a saved game whatever the extension
-      final GameData newData = GameDataManager.loadGame(file);
-      newData.setSaveGameFileName(file.getName());
-      this.fileName = file.getName();
-      setGameData(newData);
     }
   }
 
