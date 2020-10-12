@@ -26,13 +26,13 @@ import org.triplea.java.collections.CollectionUtils;
 
 /** Selects casualties for normal (basically, anything that isn't AA) hits */
 @NoArgsConstructor
-public class SelectNormalCasualties
+public class SelectMainBattleCasualties
     implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
 
   private Select selectFunction = new Select();
 
   @VisibleForTesting
-  SelectNormalCasualties(final Select selectFunction) {
+  SelectMainBattleCasualties(final Select selectFunction) {
     this.selectFunction = selectFunction;
   }
 
