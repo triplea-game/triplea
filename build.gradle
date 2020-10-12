@@ -100,7 +100,7 @@ subprojects {
         logbackClassicVersion = '1.2.3'
         mockitoVersion = '3.5.13'
         openFeignVersion = '10.5.1'
-        postgresqlVersion = '42.2.16'
+        postgresqlVersion = '42.2.17'
         rateLimitjVersion = '0.6.0'
         snakeYamlVersion = '2.1'
         sonatypeGoodiesPrefsVersion = '2.3.1'
