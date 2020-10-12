@@ -65,19 +65,6 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * Indicates this engine version is compatible with the specified engine version.
-   *
-   * @param engineVersion The engine version to check for compatibility.
-   * @return {@code true} if this engine version is compatible with the specified engine version;
-   *     otherwise {@code false}.
-   */
-  public boolean isCompatibleWithEngineVersion(final Version engineVersion) {
-    checkNotNull(engineVersion);
-
-    return major == engineVersion.major;
-  }
-
-  /**
    * Indicates this engine version is compatible with the specified map minimum engine version.
    *
    * @param mapMinimumEngineVersion The minimum engine version required by the map.

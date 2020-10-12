@@ -83,7 +83,7 @@ public final class GameDataManager {
             "Incompatible engine version with save game, "
                 + "unable to determine version of the save game");
         return Optional.empty();
-      } else if (!ClientContext.engineVersion().isCompatibleWithEngineVersion((Version) version)) {
+      } else if (ClientContext.engineVersion().getMajor() != ((Version) version).getMajor()) {
         log.warn(
             String.format(
                 "Incompatible engine versions. We are: %s<br>"
@@ -96,7 +96,7 @@ public final class GameDataManager {
                 UrlConstants.DOWNLOAD_WEBSITE));
         return Optional.empty();
       } else if (!HeadlessGameServer.headless()
-          && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
+          && ((Version) version).getMinor() > ClientContext.engineVersion().getMinor()) {
         // Prompt the user to upgrade
         log.warn(
             "This save was made by a newer version of TripleA.<br>"
