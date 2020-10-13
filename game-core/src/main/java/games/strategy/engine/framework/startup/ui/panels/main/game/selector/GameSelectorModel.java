@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.gameparser.GameParser;
+import games.strategy.engine.data.gameparser.GameParsingValidation;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -12,17 +13,20 @@ import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 import java.util.Observable;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the game
  * selector panel on the staging screens, eg: map, round, filename.
  */
+@Slf4j
 public class GameSelectorModel extends Observable implements GameSelector {
 
   private final Function<URI, Optional<GameData>> gameParser;
@@ -49,9 +53,37 @@ public class GameSelectorModel extends Observable implements GameSelector {
     this.gameParser = gameParser;
   }
 
+  /**
+   * Loads game data by parsing a given file.
+   *
+   * @return True if successfully loaded, otherwise false.
+   */
+  public boolean load(final File file) {
+    Preconditions.checkArgument(
+        file.exists(),
+        "Programming error, expected file to have already been checked to exist: "
+            + file.getAbsolutePath());
+
+    // if the file name is xml, load it as a new game
+    if (file.getName().toLowerCase().endsWith("xml")) {
+      load(file.toURI());
+      return true;
+    } else {
+      // try to load it as a saved game whatever the extension
+      final GameData newData = GameDataManager.loadGame(file).orElse(null);
+      if (newData == null) {
+        return false;
+      }
+      newData.setSaveGameFileName(file.getName());
+      this.fileName = file.getName();
+      setGameData(newData);
+      return true;
+    }
+  }
+
   public void load(final URI uri) {
     fileName = null;
-    this.gameData = gameParser.apply(uri).orElse(null);
+    this.gameData = parseAndValidate(uri);
     if (gameData == null || gameData.getGameName() == null || uri == null) {
       ClientSetting.defaultGameName.resetValue();
       ClientSetting.defaultGameUri.resetValue();
@@ -66,26 +98,22 @@ public class GameSelectorModel extends Observable implements GameSelector {
     ClientSetting.flush();
   }
 
-  /**
-   * Loads game data by parsing a given file.
-   *
-   * @throws Exception If file parsing is successful and an internal {@code GameData} was set.
-   */
-  public void load(final File file) throws Exception {
-    Preconditions.checkArgument(
-        file.exists(),
-        "Programming error, expected file to have already been checked to exist: "
-            + file.getAbsolutePath());
+  @Nullable
+  private GameData parseAndValidate(final URI uri) {
+    final GameData gameData = gameParser.apply(uri).orElse(null);
+    if (gameData == null) {
+      return null;
+    }
+    final List<String> validationErrors = new GameParsingValidation(gameData).validate();
 
-    // if the file name is xml, load it as a new game
-    if (file.getName().toLowerCase().endsWith("xml")) {
-      load(file.toURI());
+    if (validationErrors.isEmpty()) {
+      return gameData;
     } else {
-      // try to load it as a saved game whatever the extension
-      final GameData newData = GameDataManager.loadGame(file);
-      newData.setSaveGameFileName(file.getName());
-      this.fileName = file.getName();
-      setGameData(newData);
+      log.error(
+          "Validation errors parsing map: {}, errors:\n{}",
+          uri,
+          String.join("\n", validationErrors));
+      return null;
     }
   }
 

@@ -34,7 +34,8 @@ class BattleCalculator implements IBattleCalculator {
   BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     gameData =
         Preconditions.checkNotNull(
-            dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+            dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false).orElse(null),
+            "Error cloning game data (low memory?)");
   }
 
   @Override

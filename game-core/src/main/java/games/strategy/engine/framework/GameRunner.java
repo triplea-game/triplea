@@ -1,6 +1,5 @@
 package games.strategy.engine.framework;
 
-import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
@@ -26,9 +25,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
@@ -41,7 +38,6 @@ import org.triplea.util.Services;
  * GameRunner - The entrance class with the main method. In this class commonly used constants are
  * getting defined and the Game is being launched
  */
-@Log
 public final class GameRunner {
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final int PORT = 3300;
@@ -80,7 +76,18 @@ public final class GameRunner {
   public static void showMainFrame() {
     MainFrame.show();
     ProAi.gameOverClearCache();
-    loadGameIfSpecified();
+
+    gameSelectorModel.loadDefaultGameSameThread();
+
+    final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
+    if (!saveGameFileName.isEmpty()) {
+      final File saveGameFile = new File(saveGameFileName);
+      if (saveGameFile.exists() && !gameSelectorModel.load(saveGameFile)) {
+        // abort launch if we failed to load the specified game
+        return;
+      }
+    }
+
     openMapDownloadWindowIfDownloadScheduled();
 
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
@@ -90,19 +97,6 @@ public final class GameRunner {
     } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
       setupPanelModel.showClient();
       System.clearProperty(TRIPLEA_CLIENT);
-    }
-  }
-
-  private static void loadGameIfSpecified() {
-    checkState(!SwingUtilities.isEventDispatchThread());
-    gameSelectorModel.loadDefaultGameSameThread();
-    final File saveGameFile = new File(System.getProperty(TRIPLEA_GAME, ""));
-    if (saveGameFile.exists()) {
-      try {
-        gameSelectorModel.load(saveGameFile);
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Error loading game file: " + saveGameFile.getAbsolutePath(), e);
-      }
     }
   }
 

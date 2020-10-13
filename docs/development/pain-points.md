@@ -8,8 +8,8 @@
 
 * TripleA seems simple at first, but it's very much tangled in knots in
   many places. To fix one thing, you often need to fix another, and to fix
-  that you need to fix perhaps the first thing and something else. 
-  
+  that you need to fix perhaps the first thing and something else.
+
 * Save game and/or network compatibility can be quite easy to break,
   be aware of how serialization is done for save games. Unless we are in
   a major release cycle, keeping compatibility can be really constraining.

@@ -20,7 +20,7 @@
 <!--
 Include a release note if there is a bug fix or a visible change for players.
 For format & syntax help, see:
-https://github.com/triplea-game/triplea/wiki/PR-Release-Notes
+https://github.com/triplea-game/triplea/blob/master/docs/pr-release-notes.md
 -->
 
 <!--RELEASE_NOTE--><!--END_RELEASE_NOTE-->

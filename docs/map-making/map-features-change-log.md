@@ -2,7 +2,6 @@
 
 A list of changes to map files that have occurred over time.
 Caution, this list might not be complete, please let us know if there is anything missing.
- 
 
 ## XML Changes
 
@@ -34,7 +33,6 @@ Caution, this list might not be complete, please let us know if there is anythin
 - `Attatchment` >> `Attachment`
 - `attatchTo=` >> `attachTo=`
 
-
 ```
 <property name="..." value="...">
    <number min="..." max="..."/>
@@ -51,8 +49,6 @@ Delete these tags (found under `<property>`)
 
 - `<boolean/>`
 - `<string/>`
-
-
 
 ## map.properties changes
 

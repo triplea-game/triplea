@@ -6,6 +6,7 @@ import games.strategy.engine.history.History;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Optional;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.io.IoUtils;
@@ -19,11 +20,11 @@ public final class GameDataUtils {
    * Create a deep copy of GameData without history as it can get large. <strong>You should have the
    * game data's write lock before calling this method</strong>
    */
-  public static GameData cloneGameDataWithoutHistory(
+  public static Optional<GameData> cloneGameDataWithoutHistory(
       final GameData data, final boolean copyDelegates) {
     final History temp = data.getHistory();
     data.resetHistory();
-    final GameData dataCopy = cloneGameData(data, copyDelegates);
+    final Optional<GameData> dataCopy = cloneGameData(data, copyDelegates);
     data.setHistory(temp);
     return dataCopy;
   }
@@ -46,7 +47,7 @@ public final class GameDataUtils {
     return bytes;
   }
 
-  public static GameData cloneGameData(final GameData data) {
+  public static Optional<GameData> cloneGameData(final GameData data) {
     return cloneGameData(data, false);
   }
 
@@ -54,14 +55,14 @@ public final class GameDataUtils {
    * Create a deep copy of GameData. <strong>You should have the game data's read or write lock
    * before calling this method</strong>
    */
-  public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {
+  public static Optional<GameData> cloneGameData(final GameData data, final boolean copyDelegates) {
     try {
       final byte[] bytes =
           IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, copyDelegates));
       return IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to clone game data", e);
-      return null;
+      return Optional.empty();
     }
   }
 

@@ -127,7 +127,10 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         // on it while we copy
         // it 16 times, when once is enough) don't let the data change while we make the first copy
         data.acquireWriteLock();
-        newData = GameDataUtils.cloneGameDataWithoutHistory(data, false);
+        newData = GameDataUtils.cloneGameDataWithoutHistory(data, false).orElse(null);
+        if (newData == null) {
+          return;
+        }
       } finally {
         data.releaseWriteLock();
       }

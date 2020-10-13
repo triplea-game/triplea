@@ -1,4 +1,4 @@
-## Add TripleA main repository 'upstream' as a git remote 
+## Add TripleA main repository 'upstream' as a git remote
 
 One-time, add the upstream remote
 
@@ -21,7 +21,7 @@ git checkout -b "my-feature-branch-name"
 
 ## do work
 git add <new-files>
-git commit . 
+git commit .
 ## enter in a commit message
 git push origin
 ```
