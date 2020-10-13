@@ -13,9 +13,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import java.net.URI;
 import java.util.Observer;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,18 +117,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertThat(testObj.getGameName(), is(newGameName));
     assertThat(testObj.getGameRound(), is(newGameRound));
     assertThat(testObj.getGameVersion(), is(newGameVersion));
-  }
-
-  @Test
-  void testLoadFromNewGameChooserEntry() throws Exception {
-    prepareMockGameDataExpectations();
-    testObj = new GameSelectorModel(uri -> Optional.of(mockGameData));
-
-    testObj.load(new URI("abc"));
-
-    assertThat(testObj.getFileName(), is("-"));
-    assertThat(testObj.getGameData(), sameInstance(mockGameData));
-    assertHasFakeTestData(testObj);
   }
 
   @Test
