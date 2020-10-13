@@ -7,6 +7,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -64,7 +65,8 @@ public final class GameDataManager {
   public static Optional<GameData> loadGame(final InputStream is) {
     try (ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is))) {
       final Object version = input.readObject();
-      if (isCompatibleVersion(version)) {
+
+      if (isCompatibleVersion(version) || !ClientSetting.saveGameCompatibilityCheck.getSetting()) {
         final GameData data = (GameData) input.readObject();
         data.postDeSerialize();
         loadDelegates(input, data);
