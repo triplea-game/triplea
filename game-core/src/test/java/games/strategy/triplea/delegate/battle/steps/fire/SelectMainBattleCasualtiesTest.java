@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.battle.steps.fire;
 import static games.strategy.triplea.Constants.EDIT_MODE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
@@ -44,10 +45,16 @@ class SelectMainBattleCasualtiesTest {
   @Mock IDelegateBridge delegateBridge;
   @Mock GamePlayer gamePlayer;
   BattleState battleState;
+  Unit firingUnit;
 
   @BeforeEach
   public void givenBattleState() {
     battleState = givenBattleStateBuilder().build();
+  }
+
+  @BeforeEach
+  public void givenFiringUnit() {
+    firingUnit = givenAnyUnit();
   }
 
   private DiceRoll givenDiceRollWithHits(final int hits) {
@@ -64,7 +71,8 @@ class SelectMainBattleCasualtiesTest {
         .thenReturn(false);
     when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(true);
 
-    final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+    final FiringGroup firingGroup =
+        FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
     final FireRoundState fireRoundState = new FireRoundState();
     fireRoundState.setDice(mock(DiceRoll.class));
@@ -114,7 +122,8 @@ class SelectMainBattleCasualtiesTest {
             when(unitAttachment.getHitPoints()).thenReturn(2);
           });
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(3));
@@ -160,7 +169,8 @@ class SelectMainBattleCasualtiesTest {
             when(unit.getHits()).thenReturn(1);
           });
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(3));
@@ -220,7 +230,8 @@ class SelectMainBattleCasualtiesTest {
       final List<Unit> targetUnits = new ArrayList<>(nonTransportUnits);
       targetUnits.add(givenUnitSeaTransport());
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(3));
@@ -272,7 +283,8 @@ class SelectMainBattleCasualtiesTest {
       final List<Unit> targetUnits = new ArrayList<>(nonTransportUnits);
       targetUnits.add(givenUnitSeaTransport());
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(4));
@@ -326,7 +338,8 @@ class SelectMainBattleCasualtiesTest {
       final List<Unit> targetUnits = new ArrayList<>(nonTransportUnits);
       targetUnits.addAll(transportUnits);
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(4));
@@ -405,7 +418,8 @@ class SelectMainBattleCasualtiesTest {
       targetUnits.addAll(transportUnits);
       targetUnits.addAll(transportUnitsAlly);
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(4));
@@ -471,7 +485,8 @@ class SelectMainBattleCasualtiesTest {
       final List<Unit> targetUnits = new ArrayList<>(nonTransportUnits);
       targetUnits.addAll(transportUnits);
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(10));
@@ -535,7 +550,8 @@ class SelectMainBattleCasualtiesTest {
       targetUnits.addAll(transportUnits);
       targetUnits.addAll(transportUnitsAlly);
 
-      final FiringGroup firingGroup = new FiringGroup("", "", List.of(), targetUnits);
+      final FiringGroup firingGroup =
+          FiringGroup.groupBySuicideOnHit(UNITS, List.of(firingUnit), targetUnits).get(0);
 
       final FireRoundState fireRoundState = new FireRoundState();
       fireRoundState.setDice(givenDiceRollWithHits(40));
