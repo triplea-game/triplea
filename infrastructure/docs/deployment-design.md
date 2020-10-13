@@ -7,7 +7,6 @@ Deployments are triggered as part of
 are then automatically deployed in stages to prerelease and then
 production.
 
-
 ## Deployments
 
 - Prerelease will receive the latest code after every merge.

@@ -4,6 +4,7 @@ package games.strategy.triplea.delegate.battle;
 public interface BattleStepStrings {
 
   String AA_GUNS_FIRE_SUFFIX = " fire";
+  String FIRE_SUFFIX = " fire";
   String SELECT_PREFIX = " select ";
   String REMOVE_PREFIX = " remove ";
   String CASUALTIES_SUFFIX = " casualties";

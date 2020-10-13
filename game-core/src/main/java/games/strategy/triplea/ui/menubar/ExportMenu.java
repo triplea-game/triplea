@@ -171,7 +171,10 @@ final class ExportMenu extends JMenu {
     try (PrintWriter writer =
         new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString())) {
       gameData.acquireReadLock();
-      final GameData clone = GameDataUtils.cloneGameData(gameData);
+      final GameData clone = GameDataUtils.cloneGameData(gameData).orElse(null);
+      if (clone == null) {
+        return;
+      }
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
       writer.append(ClientContext.engineVersion().toString()).println(',');
@@ -405,7 +408,10 @@ final class ExportMenu extends JMenu {
     final GameData clonedGameData;
     gameData.acquireReadLock();
     try {
-      clonedGameData = GameDataUtils.cloneGameData(gameData);
+      clonedGameData = GameDataUtils.cloneGameData(gameData).orElse(null);
+      if (clonedGameData == null) {
+        return;
+      }
     } finally {
       gameData.releaseReadLock();
     }

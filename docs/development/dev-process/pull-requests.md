@@ -25,7 +25,7 @@ to review.
 If making significant changes to the UI, create a thread in the forums
 to also get non-developer feedback and to reach a larger audience.
 
-Try to submit in chunks of under 500 lines at a time. 
+Try to submit in chunks of under 500 lines at a time.
 
 It can be really difficult to break up PRs into reviewable chunks. Use
 the `ClientSetting.isBetaFeature` flag to disable in-development

@@ -69,9 +69,9 @@ public class GameSelectorModel extends Observable implements GameSelector {
   /**
    * Loads game data by parsing a given file.
    *
-   * @throws Exception If file parsing is successful and an internal {@code GameData} was set.
+   * @return True if successfully loaded, otherwise false.
    */
-  public void load(final File file) throws Exception {
+  public boolean load(final File file) {
     Preconditions.checkArgument(
         file.exists(),
         "Programming error, expected file to have already been checked to exist: "
@@ -80,12 +80,17 @@ public class GameSelectorModel extends Observable implements GameSelector {
     // if the file name is xml, load it as a new game
     if (file.getName().toLowerCase().endsWith("xml")) {
       load(file.toURI());
+      return true;
     } else {
       // try to load it as a saved game whatever the extension
-      final GameData newData = GameDataManager.loadGame(file);
+      final GameData newData = GameDataManager.loadGame(file).orElse(null);
+      if (newData == null) {
+        return false;
+      }
       newData.setSaveGameFileName(file.getName());
       this.fileName = file.getName();
       setGameData(newData);
+      return true;
     }
   }
 

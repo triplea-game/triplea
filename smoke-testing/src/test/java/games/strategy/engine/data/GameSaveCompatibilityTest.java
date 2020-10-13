@@ -17,8 +17,8 @@ class GameSaveCompatibilityTest {
 
   @ParameterizedTest
   @MethodSource
-  void loadSaveGames(final File saveGame) throws Exception {
-    final GameData gameData = GameDataManager.loadGame(saveGame);
+  void loadSaveGames(final File saveGame) {
+    final GameData gameData = GameDataManager.loadGame(saveGame).orElseThrow();
 
     assertThat(gameData.getAttachmentOrderAndValues(), is(notNullValue()));
     assertThat(gameData.getAllianceTracker().getAlliances(), is(notNullValue()));

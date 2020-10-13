@@ -53,7 +53,6 @@ cd ./database
 * Click play online, log in without an account or use the predefined
   moderator account (user:password) "test:test"
 
-
 *Note*: integration tests will overwrite DB data, `./load_sample_data` will need to be re-run after running integ tests.
 
 Docker for Mac can be obtained at: https://store.docker.com/editions/community/docker-ce-desktop-mac
