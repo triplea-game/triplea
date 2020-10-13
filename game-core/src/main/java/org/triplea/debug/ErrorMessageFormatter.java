@@ -10,15 +10,17 @@ class ErrorMessageFormatter implements Function<LoggerRecord, String> {
 
   @Override
   public String apply(final LoggerRecord logRecord) {
-    final String baseMessage = format(logRecord);
+    final String result =
+        "<html>"
+            + format(logRecord)
+            + (logRecord.isWarning()
+                ? "<br><br>If this problem happens frequently and is something you cannot fix,<br>"
+                    + JEditorPaneWithClickableLinks.toLink(
+                        "please report it to TripleA ", UrlConstants.GITHUB_ISSUES)
+                : "")
+            + "</html>";
 
-    final String additionalMessageForWarnings =
-        logRecord.isWarning()
-            ? "<br><br>If this problem happens frequently and is something you cannot fix,<br>"
-                + JEditorPaneWithClickableLinks.toLink(
-                    "please report it to TripleA ", UrlConstants.GITHUB_ISSUES)
-            : "";
-    return "<html>" + TextUtils.textToHtml(baseMessage) + additionalMessageForWarnings + "</html>";
+    return result.replaceAll("\n", "<br/>");
   }
 
   /**

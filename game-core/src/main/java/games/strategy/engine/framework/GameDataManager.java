@@ -18,14 +18,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.swing.JOptionPane;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
+@Slf4j
 public final class GameDataManager {
   private static final String DELEGATE_START = "<DelegateStart>";
   private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
@@ -37,16 +39,18 @@ public final class GameDataManager {
    * Loads game data from the specified file.
    *
    * @param file The file from which the game data will be loaded.
-   * @return The loaded game data.
-   * @throws IOException If an error occurs while loading the game.
+   * @return The loaded game data or empty if there were problems.
    */
-  public static GameData loadGame(final File file) throws IOException {
+  public static Optional<GameData> loadGame(final File file) {
     checkNotNull(file);
     checkArgument(file.exists());
 
     try (InputStream fis = new FileInputStream(file);
         InputStream is = new BufferedInputStream(fis)) {
       return loadGame(is);
+    } catch (final IOException e) {
+      log.error("Input stream error", e);
+      return Optional.empty();
     }
   }
 
@@ -55,19 +59,15 @@ public final class GameDataManager {
    *
    * @param is The stream from which the game data will be loaded. The caller is responsible for
    *     closing this stream; it will not be closed when this method returns.
-   * @return The loaded game data.
-   * @throws IOException If an error occurs while loading the game.
+   * @return The loaded game data, or an empty optional if an error occurs.
    */
   @SuppressWarnings("deprecation")
-  public static GameData loadGame(final InputStream is) throws IOException {
-    checkNotNull(is);
-
-    final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is));
-    try {
+  public static Optional<GameData> loadGame(final InputStream is) {
+    try (ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is))) {
       final Object version = input.readObject();
 
       if (version instanceof games.strategy.util.Version) {
-        throw new IOException(
+        log.warn(
             String.format(
                 "Incompatible engine versions. We are: %s<br>"
                     + "Trying to load incompatible save game version: %s<br>"
@@ -77,13 +77,14 @@ public final class GameDataManager {
                 ((games.strategy.util.Version) version).getExactVersion(),
                 UrlConstants.OLD_DOWNLOADS_WEBSITE,
                 UrlConstants.OLD_DOWNLOADS_WEBSITE));
-
+        return Optional.empty();
       } else if (!(version instanceof Version)) {
-        throw new IOException(
+        log.warn(
             "Incompatible engine version with save game, "
                 + "unable to determine version of the save game");
-      } else if (!ClientContext.engineVersion().isCompatibleWithEngineVersion((Version) version)) {
-        throw new IOException(
+        return Optional.empty();
+      } else if (ClientContext.engineVersion().getMajor() != ((Version) version).getMajor()) {
+        log.warn(
             String.format(
                 "Incompatible engine versions. We are: %s<br>"
                     + "Trying to load game created with: %s<br>"
@@ -93,39 +94,26 @@ public final class GameDataManager {
                 version,
                 UrlConstants.DOWNLOAD_WEBSITE,
                 UrlConstants.DOWNLOAD_WEBSITE));
+        return Optional.empty();
       } else if (!HeadlessGameServer.headless()
-          && ((Version) version).isGreaterThan(ClientContext.engineVersion())) {
-        // we can still load it because our engine is compatible, however this save was made by a
-        // newer engine, so prompt the user to upgrade
-        promptToLoadNewerSaveGame();
+          && ((Version) version).getMinor() > ClientContext.engineVersion().getMinor()) {
+        // Prompt the user to upgrade
+        log.warn(
+            "This save was made by a newer version of TripleA.<br>"
+                + "To load this save, download the latest version of TripleA: "
+                + "<a href=\"{}\">{}</a>",
+            UrlConstants.DOWNLOAD_WEBSITE,
+            UrlConstants.DOWNLOAD_WEBSITE);
+        return Optional.empty();
+      } else {
+        final GameData data = (GameData) input.readObject();
+        data.postDeSerialize();
+        loadDelegates(input, data);
+        return Optional.of(data);
       }
-
-      final GameData data = (GameData) input.readObject();
-      data.postDeSerialize();
-      loadDelegates(input, data);
-      return data;
-    } catch (final ClassNotFoundException cnfe) {
-      throw new IOException(cnfe.getMessage());
-    }
-  }
-
-  private static void promptToLoadNewerSaveGame() throws IOException {
-    // this is needed because a newer client might depend on variables that are part of the new
-    // save but will be stripped by the old client. When the old client re-saves the data, the
-    // new client will load the save game and be in odd state.
-    final String messageString =
-        "This save was made by a newer version of TripleA."
-            + "\nPlaying newer saves with an older engine can lead to unpredictable problems. "
-            + "It is recommended that you upgrade to the latest version of TripleA before playing "
-            + "this save game. To download the latest version of TripleA, Please visit "
-            + UrlConstants.DOWNLOAD_WEBSITE
-            + ".\n"
-            + "\n\nDo you wish to continue and open this save with your current 'old' version?;";
-    final int answer =
-        JOptionPane.showConfirmDialog(
-            null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
-    if (answer != JOptionPane.YES_OPTION) {
-      throw new IOException("Loading the save game was aborted");
+    } catch (final ClassNotFoundException | IOException e) {
+      log.error("Error loading game data", e);
+      return Optional.empty();
     }
   }
 
