@@ -149,7 +149,7 @@ class SelectMainBattleCasualtiesTest {
     @DisplayName(
         "The units have a total of 4 hit points but have already sustained 2 hits. They "
             + "take 3 damage which kills them off.")
-    void moreHitsThanHitPoints() {
+    void moreHitsThanHitPointsRemaining() {
       final List<Unit> targetUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
       targetUnits.forEach(
