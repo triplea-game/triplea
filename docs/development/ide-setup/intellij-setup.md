@@ -1,23 +1,25 @@
 ## *IntelliJ* Setup
 
-### Plugins:
-  - *Google Java Format*
-    - *settings > Other settings > google-java-format*
-    - Check 'enable'
+Setting up *IntelliJ* is pretty simple.  There are 4 plugins to install with the associated settings, and some settings to download and import.  
+
+### Plugins: 
+  1. *Google Java Format*
+        1. *settings > Other settings > google-java-format*
+        2.  Check 'enable'
       ![Screenshot from 2019-08-08 17-35-52
       ](https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png)
-  - *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
-    - after install finish configuration in: **Other Settings > Checkstyle**
-    - select checkstyle file:
-  - *Save Actions*
-    - configure in settings to add 'final' to local variables and class variables.
-  - *Lombok*
+  2. *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
+        1. after install finish configuration in: **Other Settings > Checkstyle**
+        2. select checkstyle file:
+  3. *Save Actions*
+        1. **Settings > Other settings > Save Actions**
+        2. Select 'Activate save actions on save'
+        3. configure in settings to add 'final' to local variables and class variables. 
+  4. *Lombok*
+        1. **settings > annotation processing**
+        2. Turn on annotation processing. 
 
 ### Settings
-  - *File > Import Settings*
-  - Select file: [.ide-intellij/intellij-settings.zip
+  1. *File > Import Settings*
+  2. Select file: [.ide-intellij/intellij-settings.zip
    ](https://github.com/triplea-game/triplea/blob/master/.ide-intellij/intellij-settings.zip)
-
-### Lombok:
- - requires annotation processing to be turned on (settings > 'annotation processing')
-
