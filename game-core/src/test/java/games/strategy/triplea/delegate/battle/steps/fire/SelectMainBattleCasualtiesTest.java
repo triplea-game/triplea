@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,6 +57,7 @@ class SelectMainBattleCasualtiesTest {
   }
 
   @Test
+  @DisplayName("Edit mode always calls the select function")
   void isEditMode() {
     final List<Unit> targetUnits = List.of(givenAnyUnit(), givenAnyUnit());
     when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
@@ -84,8 +86,8 @@ class SelectMainBattleCasualtiesTest {
         new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
     assertThat(details.getKilled().toArray(), is(targetUnits.toArray()));
-    // edit mode always sets auto calculated to true
-    assertThat(details.getAutoCalculated(), is(true));
+    assertThat(
+        "edit mode always sets auto calculated to true", details.getAutoCalculated(), is(true));
 
     verify(selectFunction)
         .apply(
@@ -99,6 +101,9 @@ class SelectMainBattleCasualtiesTest {
   class TransportCasualtiesNotRestricted {
 
     @Test
+    @DisplayName(
+        "The units have a total of 4 hit points and only take 3 damage so the user needs "
+            + "to select some casualties")
     void moreHitPointsThanHits() {
       final List<Unit> targetUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -141,6 +146,9 @@ class SelectMainBattleCasualtiesTest {
     }
 
     @Test
+    @DisplayName(
+        "The units have a total of 4 hit points but have already sustained 2 hits. They "
+            + "take 3 damage which kills them off.")
     void moreHitsThanHitPoints() {
       final List<Unit> targetUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -175,14 +183,26 @@ class SelectMainBattleCasualtiesTest {
       assertThat(details.getDamaged(), is(empty()));
       assertThat(details.getAutoCalculated(), is(true));
 
-      verify(selectFunction, never()).apply(any(), any(), anyCollection(), anyInt());
+      verify(
+              selectFunction,
+              never()
+                  .description(
+                      "Enough hits were made to kill all of the units "
+                          + "so the user doesn't need to select"))
+          .apply(any(), any(), anyCollection(), anyInt());
     }
   }
 
   @Nested
+  @DisplayName(
+      "Restricted transport casualties means that transports are only allowed to be selected as "
+          + "a casualty if all other units are killed.")
   class TransportCasualtiesRestricted {
 
     @Test
+    @DisplayName(
+        "Non transports have 4 hit points and there is only 3 damages so the player "
+            + "needs to select from them, not the transport unit")
     void moreNonTransportsHitPointsThanHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
@@ -232,6 +252,9 @@ class SelectMainBattleCasualtiesTest {
     }
 
     @Test
+    @DisplayName(
+        "Non transport units have 4 hit points and take 4 damage. The player doesn't "
+            + "need to pick any casualties as they all die.  The transport units are left alone.")
     void equalNonTransportsHitPointsToHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
@@ -274,6 +297,9 @@ class SelectMainBattleCasualtiesTest {
     }
 
     @Test
+    @DisplayName(
+        "Non transports have 2 hit points but there is 4 damages. The player needs "
+            + "to select some transport casualties.")
     void lessNonTransportsHitPointsThanHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
@@ -337,6 +363,10 @@ class SelectMainBattleCasualtiesTest {
     }
 
     @Test
+    @DisplayName(
+        "Non transports have 2 hit points but there is 4 damages. The player needs "
+            + "to select some transport casualties. Some of the transports are allies so there should "
+            + "be enough from all of the allies to cover the casualties.")
     void lessNonTransportsHitPointsThanHitsWithAlliedTransports() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
@@ -413,6 +443,9 @@ class SelectMainBattleCasualtiesTest {
     }
 
     @Test
+    @DisplayName(
+        "Non transport units have 2 hit points and take 10 damage. There is only 5 "
+            + "transports so everything dies and the player doesn't need to make a choice.")
     void moreHitsThanHitPoints() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
@@ -464,6 +497,10 @@ class SelectMainBattleCasualtiesTest {
     }
 
     @Test
+    @DisplayName(
+        "Non transport units have 2 hit points and take 40 damage. There is 5 "
+            + "transports from the player and an ally so everything dies and the player doesn't "
+            + "need to make a choice.")
     void moreHitsThanHitPointsWithAlly() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
