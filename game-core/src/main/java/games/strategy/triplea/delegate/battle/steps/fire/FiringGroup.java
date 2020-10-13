@@ -46,7 +46,7 @@ public class FiringGroup {
     }
   }
 
-  private FiringGroup(
+  FiringGroup(
       final String displayName,
       final String groupName,
       final Collection<Unit> firingUnits,

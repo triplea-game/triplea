@@ -162,7 +162,7 @@ public class BattleStepsTest {
     return unitAndAttachment.unit;
   }
 
-  public static Unit givenUnitTransport() {
+  public static Unit givenUnitSeaTransport() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getTransportCapacity()).thenReturn(2);
     when(unitAndAttachment.unitAttachment.getIsSea()).thenReturn(true);
@@ -719,7 +719,7 @@ public class BattleStepsTest {
   @DisplayName("Verify unescorted attacking transports are removed if casualties are restricted")
   void unescortedAttackingTransportsAreRemovedWhenCasualtiesAreRestricted() {
     givenPlayers();
-    final Unit unit1 = givenUnitTransport();
+    final Unit unit1 = givenUnitSeaTransport();
     final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
@@ -772,7 +772,7 @@ public class BattleStepsTest {
   void unescortedDefendingTransportsAreRemovedWhenCasualtiesAreRestricted() {
     givenPlayers();
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenUnitTransport();
+    final Unit unit2 = givenUnitSeaTransport();
 
     when(gameProperties.get(DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE, false))
         .thenReturn(false);
