@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AA_GUNS_FIRE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
@@ -17,9 +17,9 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.fire.RollDice;
 import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.battle.steps.fire.RollDice;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
