@@ -12,11 +12,10 @@ them what happened (in non-technical language) and what they can do to fix the p
 Most users will assume any message they receive means they need to restart the app,
 so try to help them out as much as possible.
 
-
 ## Error Notifications and Pop-ups
 
 - Severe logging will be displayed in a swing dialog with a "report to triplea" button. Use
-this for unrecoverable and true game crashes. We'll strive to fix these. 
+this for unrecoverable and true game crashes. We'll strive to fix these.
 
 - Warning logging will only be displayed in a swing dialog. Use this to notify users
 of expected problems, like "no network available," "could not open port 3300, port is

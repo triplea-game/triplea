@@ -7,7 +7,6 @@
   - [Ansible Public Key](#ansible-public-key)
 - [Https Certificate Installation](#https-certificate-installation)
 
-
 [ansible](https://www.ansible.com) code maintains
 [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code)
 
@@ -28,7 +27,6 @@ files. For example the production inventory file will have a hostgroup called
 'production' and we we can then define a 'group_vars/production.yml' file that
 has variable values that only apply to the 'production' hosts. These variable
 values will 'override' any variable values defined in 'defaults'.
-
 
 ## Variables
 
