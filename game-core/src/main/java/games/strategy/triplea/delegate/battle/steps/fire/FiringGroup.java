@@ -37,7 +37,9 @@ public class FiringGroup {
 
     Collection<Collection<Unit>> values() {
       final Collection<Collection<Unit>> values = new ArrayList<>(suicideGroups.asMap().values());
-      values.add(nonSuicideGroup);
+      if (!nonSuicideGroup.isEmpty()) {
+        values.add(nonSuicideGroup);
+      }
       return values;
     }
 
