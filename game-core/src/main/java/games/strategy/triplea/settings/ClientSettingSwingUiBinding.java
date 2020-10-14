@@ -222,6 +222,17 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  SAVE_GAME_COMPATIBILITY_CHECK_BINDING(
+      "Check save games for compatibility",
+      SettingType.TESTING,
+      "If toggled to false, the engine will attempt to load any save game regardless"
+          + "of version.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.saveGameCompatibilityCheck);
+    }
+  },
+
   SHOW_BETA_FEATURES_BINDING(
       "Show Beta Features",
       SettingType.TESTING,
