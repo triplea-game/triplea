@@ -16,7 +16,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
@@ -371,8 +370,7 @@ final class MatchesTest {
           new UnitAttachment("infrastructure", unitType, gameData);
       unitAttachment.setIsInfrastructure(true);
       final UnitSupportAttachment unitSupportAttachment =
-          new UnitSupportAttachment(
-              Constants.SUPPORT_ATTACHMENT_PREFIX + "support", unitType, gameData);
+          new UnitSupportAttachment(SUPPORT_ATTACHMENT_PREFIX + "support", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
       unitType.addAttachment(SUPPORT_ATTACHMENT_PREFIX, unitSupportAttachment);
       final Unit unit = unitType.create(1, player, true).get(0);
