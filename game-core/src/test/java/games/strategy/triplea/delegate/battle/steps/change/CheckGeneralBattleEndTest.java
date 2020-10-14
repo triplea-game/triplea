@@ -4,7 +4,7 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsInfrastructure;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -235,8 +235,8 @@ class CheckGeneralBattleEndTest {
 
   @Test
   void stalemateRetreatPossibleIfOnlyNonCombatTransports() {
-    final Unit attackerUnit = givenUnitTransport();
-    final Unit defenderUnit = givenUnitTransport();
+    final Unit attackerUnit = givenUnitSeaTransport();
+    final Unit defenderUnit = givenUnitSeaTransport();
     when(attackerUnit.getOwner()).thenReturn(attacker);
     when(defenderUnit.getOwner()).thenReturn(defender);
 

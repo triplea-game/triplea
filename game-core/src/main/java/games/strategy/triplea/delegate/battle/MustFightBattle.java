@@ -74,6 +74,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
@@ -116,7 +117,10 @@ public class MustFightBattle extends DependentBattle
   // and resume while in
   // the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
+
+  @Getter(onMethod = @__({@Override}))
   private List<String> stepStrings;
+
   private List<Unit> defendingAa;
   private List<Unit> offensiveAa;
   private List<String> defendingAaTypes;
@@ -650,7 +654,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  void removeCasualties(
+  @Override
+  public void removeCasualties(
       final Collection<Unit> killed,
       final ReturnFire returnFire,
       final boolean defender,
