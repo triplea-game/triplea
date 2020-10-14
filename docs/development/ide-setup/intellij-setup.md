@@ -18,6 +18,8 @@ Setting up *IntelliJ* is pretty simple.  There are 4 plugins to install with the
   4. *Lombok*
         1. **settings > annotation processing**
         2. Turn on annotation processing. 
+        ![annotationprocessing2](https://user-images.githubusercontent.com/54828470/95939758-6da00a00-0da2-11eb-9c7a-823040578c4e.png)
+
 
 ### Settings
   1. *File > Import Settings*
