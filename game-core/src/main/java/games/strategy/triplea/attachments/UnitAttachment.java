@@ -1753,8 +1753,10 @@ public class UnitAttachment extends DefaultAttachment {
     isInfrastructure = getBool(s);
   }
 
-  private void setIsInfrastructure(final Boolean s) {
+  @VisibleForTesting
+  public UnitAttachment setIsInfrastructure(final Boolean s) {
     isInfrastructure = s;
+    return this;
   }
 
   public boolean getIsInfrastructure() {
@@ -2298,8 +2300,10 @@ public class UnitAttachment extends DefaultAttachment {
     maxRoundsAa = getInt(s);
   }
 
-  private void setMaxRoundsAa(final Integer s) {
+  @VisibleForTesting
+  public UnitAttachment setMaxRoundsAa(final Integer s) {
     maxRoundsAa = s;
+    return this;
   }
 
   public int getMaxRoundsAa() {
@@ -2348,8 +2352,10 @@ public class UnitAttachment extends DefaultAttachment {
     isAaForCombatOnly = getBool(s);
   }
 
-  private void setIsAaForCombatOnly(final Boolean s) {
+  @VisibleForTesting
+  public UnitAttachment setIsAaForCombatOnly(final Boolean s) {
     isAaForCombatOnly = s;
+    return this;
   }
 
   public boolean getIsAaForCombatOnly() {
@@ -2448,8 +2454,10 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setTargetsAa(final Set<UnitType> value) {
+  @VisibleForTesting
+  public UnitAttachment setTargetsAa(final Set<UnitType> value) {
     targetsAa = value;
+    return this;
   }
 
   private Set<UnitType> getTargetsAa() {
