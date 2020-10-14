@@ -378,8 +378,8 @@ class SelectMainBattleCasualtiesTest {
     @Test
     @DisplayName(
         "Non transports have 2 hit points but there is 4 damages. The player needs "
-            + "to select some transport casualties. Some of the transports are allies so there should "
-            + "be enough from all of the allies to cover the casualties.")
+            + "to select some transport casualties. Some of the transports are allies so there "
+            + "should be enough from all of the allies to cover the casualties.")
     void lessNonTransportsHitPointsThanHitsWithAlliedTransports() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
