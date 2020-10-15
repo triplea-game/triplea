@@ -1050,7 +1050,6 @@ class WW2V3Year41Test {
 
   @Test
   void testAttackDestroyerAndSubsAgainstSub() {
-    final String defender = "Germans";
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
     final GamePlayer attackerPlayer = british(gameData);
@@ -1096,7 +1095,6 @@ class WW2V3Year41Test {
 
   @Test
   void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
-    final String defender = "Germans";
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
     final GamePlayer attackerPlayer = british(gameData);

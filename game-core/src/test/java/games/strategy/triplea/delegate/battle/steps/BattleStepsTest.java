@@ -242,8 +242,7 @@ public class BattleStepsTest {
         hitPlayer.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
   }
 
-  private List<String> navalBombardmentFightStepStrings(
-      final GamePlayer firingPlayer, final GamePlayer hitPlayer) {
+  private List<String> navalBombardmentFightStepStrings() {
     return List.of(NAVAL_BOMBARDMENT, SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
   }
 
@@ -321,11 +320,7 @@ public class BattleStepsTest {
                 .battleRound(1)
                 .build());
 
-    assertThat(
-        steps,
-        is(
-            mergeSteps(
-                navalBombardmentFightStepStrings(attacker, defender), basicFightStepStrings())));
+    assertThat(steps, is(mergeSteps(navalBombardmentFightStepStrings(), basicFightStepStrings())));
     verify(battleSite, never()).getUnits();
   }
 

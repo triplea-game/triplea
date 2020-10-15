@@ -981,7 +981,6 @@ class RevisedTest {
 
   @Test
   void testLandBattleNoSneakAttack() {
-    final String defender = "Germans";
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
     final GamePlayer attackerPlayer = british(gameData);
@@ -1008,7 +1007,6 @@ class RevisedTest {
 
   @Test
   void testSeaBattleNoSneakAttack() {
-    final String defender = "Germans";
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
     final GamePlayer attackerPlayer = british(gameData);
