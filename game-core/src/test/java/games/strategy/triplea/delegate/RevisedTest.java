@@ -33,12 +33,8 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomSh
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -72,6 +68,7 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
+import games.strategy.triplea.delegate.battle.steps.BattleStepsTest;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -985,7 +982,9 @@ class RevisedTest {
   @Test
   void testLandBattleNoSneakAttack() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("Libya", gameData);
     final Territory from = territory("Anglo Egypt", gameData);
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
@@ -999,13 +998,10 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
-        List.of(
-                attacker + FIRE,
-                defender + SELECT_CASUALTIES,
-                defender + FIRE,
-                attacker + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + ATTACKER_WITHDRAW)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.generalFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW))
             .toString(),
         steps.toString());
   }
@@ -1013,7 +1009,9 @@ class RevisedTest {
   @Test
   void testSeaBattleNoSneakAttack() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
     // 1 destroyer attacks 1 destroyer
@@ -1030,13 +1028,10 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
-        List.of(
-                attacker + FIRE,
-                defender + SELECT_CASUALTIES,
-                defender + FIRE,
-                attacker + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + ATTACKER_WITHDRAW)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.generalFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW))
             .toString(),
         steps.toString());
   }
@@ -1044,7 +1039,9 @@ class RevisedTest {
   @Test
   void testAttackSubsOnSubs() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub attacks 1 sub
@@ -1061,16 +1058,15 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
-        List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + SUBS_SUBMERGE,
-                attacker + ATTACKER_WITHDRAW,
-                defender + SUBS_SUBMERGE)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(
+                    REMOVE_SNEAK_ATTACK_CASUALTIES,
+                    REMOVE_CASUALTIES,
+                    attacker + SUBS_SUBMERGE,
+                    attacker + ATTACKER_WITHDRAW,
+                    defender + SUBS_SUBMERGE))
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
@@ -1087,7 +1083,9 @@ class RevisedTest {
   @Test
   void testAttackSubsOnDestroyer() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
     // 2 sub attacks 1 sub and 1 destroyer
@@ -1119,18 +1117,16 @@ class RevisedTest {
      * going to the scrap heap.
      */
     assertEquals(
-        List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                defender + FIRE,
-                attacker + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + SUBS_SUBMERGE,
-                attacker + ATTACKER_WITHDRAW,
-                defender + SUBS_SUBMERGE)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
+                BattleStepsTest.generalFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(
+                    REMOVE_CASUALTIES,
+                    attacker + SUBS_SUBMERGE,
+                    attacker + ATTACKER_WITHDRAW,
+                    defender + SUBS_SUBMERGE))
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
@@ -1157,7 +1153,9 @@ class RevisedTest {
   @Test
   void testAttackSubsAndBattleshipOnDestroyerAndSubs() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 BB (two hp) attacks 3 subs and 1 destroyer
@@ -1190,20 +1188,17 @@ class RevisedTest {
      * going to the scrap heap.
      */
     assertEquals(
-        List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker + FIRE,
-                defender + SELECT_CASUALTIES,
-                defender + FIRE,
-                attacker + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + SUBS_SUBMERGE,
-                attacker + ATTACKER_WITHDRAW,
-                defender + SUBS_SUBMERGE)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
+                BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.generalFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(
+                    REMOVE_CASUALTIES,
+                    attacker + SUBS_SUBMERGE,
+                    attacker + ATTACKER_WITHDRAW,
+                    defender + SUBS_SUBMERGE))
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
@@ -1228,7 +1223,9 @@ class RevisedTest {
   @Test
   void testAttackDestroyerAndSubsAgainstSub() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 destroyer attack 1 sub
@@ -1247,18 +1244,16 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
-        List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker + FIRE,
-                defender + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + SUBS_SUBMERGE,
-                attacker + ATTACKER_WITHDRAW,
-                defender + SUBS_SUBMERGE)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
+                BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
+                List.of(
+                    REMOVE_CASUALTIES,
+                    attacker + SUBS_SUBMERGE,
+                    attacker + ATTACKER_WITHDRAW,
+                    defender + SUBS_SUBMERGE))
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
@@ -1283,7 +1278,9 @@ class RevisedTest {
   @Test
   void testAttackSubsAndDestroyerOnBatleshipAndSubs() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 BB (two hp) attacks 3 subs and 1 destroyer
@@ -1315,20 +1312,17 @@ class RevisedTest {
      * on the battle board until step 6, allowing them to fire back before going to the scrap heap.
      */
     assertEquals(
-        List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker + FIRE,
-                defender + SELECT_CASUALTIES,
-                defender + FIRE,
-                attacker + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + SUBS_SUBMERGE,
-                attacker + ATTACKER_WITHDRAW,
-                defender + SUBS_SUBMERGE)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
+                BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.generalFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(
+                    REMOVE_CASUALTIES,
+                    attacker + SUBS_SUBMERGE,
+                    attacker + ATTACKER_WITHDRAW,
+                    defender + SUBS_SUBMERGE))
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
@@ -1353,7 +1347,9 @@ class RevisedTest {
   @Test
   void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
+    final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 destroyer attack 1 sub and 1 destroyer
@@ -1373,19 +1369,16 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
-        List.of(
-                attacker + FIRST_STRIKE_UNITS_FIRE,
-                defender + SELECT_FIRST_STRIKE_CASUALTIES,
-                defender + FIRST_STRIKE_UNITS_FIRE,
-                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
-                attacker + FIRE,
-                defender + SELECT_CASUALTIES,
-                defender + FIRE,
-                attacker + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES,
-                attacker + SUBS_SUBMERGE,
-                attacker + ATTACKER_WITHDRAW,
-                defender + SUBS_SUBMERGE)
+        BattleStepsTest.mergeSteps(
+                BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
+                BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
+                BattleStepsTest.generalFightStepStrings(defenderPlayer, attackerPlayer),
+                List.of(
+                    REMOVE_CASUALTIES,
+                    attacker + SUBS_SUBMERGE,
+                    attacker + ATTACKER_WITHDRAW,
+                    defender + SUBS_SUBMERGE))
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables();
