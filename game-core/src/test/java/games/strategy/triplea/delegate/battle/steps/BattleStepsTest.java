@@ -247,7 +247,7 @@ public class BattleStepsTest {
     return List.of(NAVAL_BOMBARDMENT, SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
   }
 
-  private List<String> aAFightStepStrings(
+  private List<String> aaFightStepStrings(
       final String name, final GamePlayer firingPlayer, final GamePlayer hitPlayer) {
     return List.of(
         firingPlayer.getName() + " " + name + AA_GUNS_FIRE_SUFFIX,
@@ -545,7 +545,7 @@ public class BattleStepsTest {
         steps,
         is(
             mergeSteps(
-                aAFightStepStrings("AntiAirGun", attacker, defender), basicFightStepStrings())));
+                aaFightStepStrings("AntiAirGun", attacker, defender), basicFightStepStrings())));
 
     verify(battleSite, never()).getUnits();
   }
@@ -572,7 +572,7 @@ public class BattleStepsTest {
         steps,
         is(
             mergeSteps(
-                aAFightStepStrings("AntiAirGun", defender, attacker), basicFightStepStrings())));
+                aaFightStepStrings("AntiAirGun", defender, attacker), basicFightStepStrings())));
 
     verify(battleSite, never()).getUnits();
   }
@@ -600,8 +600,8 @@ public class BattleStepsTest {
         steps,
         is(
             mergeSteps(
-                aAFightStepStrings("AntiAirGun", attacker, defender),
-                aAFightStepStrings("AntiAirGun", defender, attacker),
+                aaFightStepStrings("AntiAirGun", attacker, defender),
+                aaFightStepStrings("AntiAirGun", defender, attacker),
                 basicFightStepStrings())));
 
     verify(battleSite, never()).getUnits();
