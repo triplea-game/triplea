@@ -85,16 +85,19 @@ public class GameSelectorModel extends Observable implements GameSelector {
     fileName = null;
     this.gameData = parseAndValidate(uri);
     if (gameData == null || gameData.getGameName() == null || uri == null) {
-      ClientSetting.defaultGameName.resetValue();
-      ClientSetting.defaultGameUri.resetValue();
-      this.fileName = "-";
-      this.gameName = "-";
-      this.gameRound = "-";
+      this.resetDefaultGame();
     } else {
       setGameData(gameData);
       ClientSetting.defaultGameName.setValue(gameData.getGameName());
       ClientSetting.defaultGameUri.setValue(uri.toString());
+      ClientSetting.flush();
     }
+  }
+
+  private void resetDefaultGame() {
+    setGameData(null);
+    ClientSetting.defaultGameName.resetValue();
+    ClientSetting.defaultGameUri.resetValue();
     ClientSetting.flush();
   }
 
@@ -186,10 +189,28 @@ public class GameSelectorModel extends Observable implements GameSelector {
         // can load. (ie: if a previous version of triplea was using running a game within its
         // root folder, we shouldn't open it)
         .filter(
-            defaultGame ->
-                defaultGame.contains(ClientFileSystemHelper.getUserRootFolder().toURI().toString()))
-        .filter(defaultGame -> new File(defaultGame).exists())
+            defaultGame -> {
+              String rootFolder = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
+              if (rootFolder.startsWith("file:")) {
+                // strip off this prefix so it matches better against the defaultGame string
+                rootFolder = rootFolder.substring("file:".length());
+              }
+              return defaultGame.contains(rootFolder);
+            })
+        // ensure the default game hasn't been deleted since it was last loaded
+        .filter(
+            defaultGame -> {
+              if (defaultGame.startsWith("jar:file:")) {
+                // when the game is from a zip file, it starts with jar:file: and uses a '!'
+                // to separate the local file from the zip content
+                defaultGame = defaultGame.substring("jar:file:".length(), defaultGame.indexOf('!'));
+              } else if (defaultGame.startsWith("file://")) {
+                // when the game is from a local file, it starts with file://
+                defaultGame = defaultGame.substring("file://".length());
+              }
+              return new File(defaultGame).exists();
+            })
         .map(URI::create)
-        .ifPresent(this::load);
+        .ifPresentOrElse(this::load, this::resetDefaultGame);
   }
 }
