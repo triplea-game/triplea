@@ -126,3 +126,6 @@ from the address of the host machine.
 have to be the same port on the host machine. Docker maps the host machine port to the container port.  
 1. Database (Redis/Mongo/Postgres) parameters *host* and *port* are referring to the address and port of the machine 
 the database is running on. 
+1. The *upload_path* parameter should not be used. If you set this parameter, you will need to update where inside the 
+container your volume needs to mount. Depending on where you change that location too, you might have to edit the 
+Dockerfile to create the directory. 
