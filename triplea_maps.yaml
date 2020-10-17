@@ -1240,7 +1240,7 @@
 - mapName: World War2010
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/world_war2010/master/description/TripleA_world_war_2010_mini.png
   description: |
     <br>The year is 2010.
