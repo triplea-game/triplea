@@ -42,9 +42,11 @@
 - mapName: Big World
   mapCategory: BEST
   url: https://github.com/triplea-maps/big_world/archive/master.zip
-  version: 3
+  version: 4
   description: |
-    <br>WWII style map, larger version of revised.
+    <br>WWII style map, larger version of Revised.
+    <br>
+    <br>Includes a V3 Rules variant.
 - mapName: Middle Earth
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/master.zip
