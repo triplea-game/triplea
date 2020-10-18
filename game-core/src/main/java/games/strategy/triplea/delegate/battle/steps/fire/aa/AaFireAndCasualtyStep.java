@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AA_GUNS_FIRE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
@@ -14,8 +15,11 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.fire.RollDice;
+import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,6 +58,27 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
   abstract GamePlayer firedAtPlayer();
 
   abstract Collection<Unit> aaGuns();
+
+  public static class SelectAaCasualties
+      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+
+    @Override
+    public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
+      return AaCasualtySelector.getAaCasualties(
+          step.getSide() == OFFENSE,
+          step.getFiringGroup().getTargetUnits(),
+          step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()),
+          step.getFiringGroup().getFiringUnits(),
+          step.getBattleState().filterUnits(ACTIVE, step.getSide()),
+          "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
+          step.getFireRoundState().getDice(),
+          bridge,
+          step.getBattleState().getPlayer(step.getSide().getOpposite()),
+          step.getBattleState().getBattleId(),
+          step.getBattleState().getBattleSite(),
+          step.getBattleState().getTerritoryEffects());
+    }
+  }
 
   public static class RollAaDice implements BiFunction<IDelegateBridge, RollDice, DiceRoll> {
 

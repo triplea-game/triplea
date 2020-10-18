@@ -4,7 +4,7 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsSea;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -94,7 +94,7 @@ class RemoveUnprotectedUnitsTest {
           givenBattleStateBuilder()
               .battleSite(battleSite)
               .gameData(gameData)
-              .attackingUnits(List.of(givenUnitTransport()))
+              .attackingUnits(List.of(givenUnitSeaTransport()))
               .build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
@@ -109,7 +109,7 @@ class RemoveUnprotectedUnitsTest {
           givenBattleStateBuilder()
               .battleSite(battleSite)
               .gameData(gameData)
-              .defendingUnits(List.of(givenUnitTransport()))
+              .defendingUnits(List.of(givenUnitSeaTransport()))
               .build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
@@ -152,7 +152,7 @@ class RemoveUnprotectedUnitsTest {
               .withAlliedRelationship(defender, attacker, false)
               .withAlliedRelationship(attacker, attacker, true)
               .build();
-      final Unit unit = givenUnitTransport();
+      final Unit unit = givenUnitSeaTransport();
       when(unit.getOwner()).thenReturn(attacker);
       when(battleSite.getUnits()).thenReturn(List.of(unit));
 
@@ -178,7 +178,7 @@ class RemoveUnprotectedUnitsTest {
               .withAlliedRelationship(defender, attacker, false)
               .withAlliedRelationship(attacker, attacker, true)
               .build();
-      final Unit unit = givenUnitTransport();
+      final Unit unit = givenUnitSeaTransport();
       when(unit.getOwner()).thenReturn(attacker);
       final Unit unit2 = givenUnitIsSea();
       when(unit2.getOwner()).thenReturn(attacker);
@@ -209,7 +209,7 @@ class RemoveUnprotectedUnitsTest {
               .withAlliedRelationship(attacker, attacker, true)
               .withAlliedRelationship(attacker, otherPlayer, false)
               .build();
-      final Unit unit = givenUnitTransport();
+      final Unit unit = givenUnitSeaTransport();
       when(unit.getOwner()).thenReturn(attacker);
       final Unit unit2 = givenUnitIsSea();
       when(unit2.getOwner()).thenReturn(otherPlayer);
@@ -240,7 +240,7 @@ class RemoveUnprotectedUnitsTest {
               .withWarRelationship(attacker, attacker, false)
               .withWarRelationship(attacker, defender, true)
               .build();
-      final Unit unit = givenUnitTransport();
+      final Unit unit = givenUnitSeaTransport();
       when(unit.getOwner()).thenReturn(attacker);
       final Unit unit2 = givenUnitIsSea();
       when(unit2.getOwner()).thenReturn(defender);
@@ -278,7 +278,7 @@ class RemoveUnprotectedUnitsTest {
               .withWarRelationship(defender, defender, false)
               .withWarRelationship(defender, attacker, true)
               .build();
-      final Unit unit = givenUnitTransport();
+      final Unit unit = givenUnitSeaTransport();
       when(unit.getOwner()).thenReturn(defender);
       final Unit unit2 = givenUnitIsSea();
       when(unit2.getOwner()).thenReturn(attacker);

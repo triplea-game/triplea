@@ -82,7 +82,7 @@ public class AvailableGamesFileSystemReader {
               mapDir.toPath(),
               8,
               (path, basicAttributes) ->
-                  basicAttributes.isRegularFile() && path.getFileName().endsWith(".xml"))
+                  basicAttributes.isRegularFile() && path.getFileName().toString().endsWith(".xml"))
           .map(Path::toUri)
           .collect(Collectors.toList());
     } catch (final IOException e) {

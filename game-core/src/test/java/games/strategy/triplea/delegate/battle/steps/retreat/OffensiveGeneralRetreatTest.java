@@ -5,7 +5,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitWasAmphibious;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -262,7 +262,7 @@ class OffensiveGeneralRetreatTest {
       void noIfDefenselessTransportsAndRestrictedCasualties() {
         final BattleState battleState =
             givenBattleStateBuilder()
-                .defendingUnits(List.of(givenUnitTransport()))
+                .defendingUnits(List.of(givenUnitSeaTransport()))
                 .attackerRetreatTerritories(List.of(mock(Territory.class)))
                 .gameData(givenGameData().withTransportCasualtiesRestricted(true).build())
                 .build();
@@ -648,7 +648,7 @@ class OffensiveGeneralRetreatTest {
             givenBattleStateBuilder()
                 .battleSite(battleSite)
                 .attacker(attacker)
-                .defendingUnits(List.of(givenUnitTransport()))
+                .defendingUnits(List.of(givenUnitSeaTransport()))
                 .attackerRetreatTerritories(List.of(mock(Territory.class)))
                 .gameData(
                     givenGameData()
