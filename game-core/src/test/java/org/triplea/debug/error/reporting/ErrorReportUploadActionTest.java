@@ -26,6 +26,7 @@ class ErrorReportUploadActionTest {
       ErrorReportRequest.builder()
           .title("Extums prarere in audax tornacum!")
           .body("Rector de barbatus gemna, desiderium candidatus!")
+          .gameVersion("version")
           .build();
 
   private static final ErrorReportResponse SUCCESS_RESPONSE =
