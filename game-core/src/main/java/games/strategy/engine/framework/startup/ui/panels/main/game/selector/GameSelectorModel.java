@@ -96,11 +96,11 @@ public class GameSelectorModel extends Observable implements GameSelector {
         gameData = null;
       }
     }
+    setGameData(gameData);
     this.setDefaultGame(uri, gameData);
   }
 
   private void setDefaultGame(@Nullable final URI uri, @Nullable final GameData gameData) {
-    setGameData(gameData);
     if (gameData == null || uri == null) {
       ClientSetting.defaultGameName.resetValue();
       ClientSetting.defaultGameUri.resetValue();
@@ -112,6 +112,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   }
 
   private void resetDefaultGame() {
+    setGameData(null);
     setDefaultGame(null, null);
   }
 
