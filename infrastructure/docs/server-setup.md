@@ -1,61 +1,40 @@
-# Server Setup (How To add a bot)
+# Adding a New Server
 
-- Add a [linode server](https://linode.com)
-- Create a [DNS entry](https://namecheap.com)
-- Update inventory fileto include the new server
-- Commit & submit for PR
+## Requirements
 
-One day, Travis will do a production deployment automatically
-on merge and deploy software to the new bot server and bring it up.
+- You have an account in linode
+- You have been added to the TripleA org in linode
+- You have an account on namecheap
+- You have been added to the TripleA org in namecheap
+- You have access to the administrator secrets document
 
-For now, run ansible deployment by-hand:
+## General Steps
 
-```
-cd --------/triplea/infrastructure
+1. Add a [linode server](https://linode.com)
+1. Create a [DNS entry](https://namecheap.com)
+1. Add server to inventory, commit & submit PR
 
-# create a file called 'vault_password' containing the
-# ansible vault password
+# Add a linode server
 
-ansible-vault view \
-     --vault-password-file=vault_password \
-     ansible_ssh_key.ed25519 \
-  | ssh-add -
+Login to linode and create a server.
 
-ansible-playbook \
-   --vault-password-file vault_password \
-   -i ansible/inventory/production \
-   ansible/site.yml \
-   --limit=[BOT-DNS-NAME] \
-   -t bots \
-   -v
-```
+Typical configuration:
 
-# Adding a linode
+- nanode ($5/month)
+- Ubuntu latest LTS
+- Region, somewhere in US or Europe
+- Set linode label (follow naming convention)
+- Set root password per admin secrets document 
+- Select to add a SSH key
 
-- Login to linode.
-- Select the linode size
-
-Update the following:
-
-Choose a distribution (typically latest ubuntu):
-![choose-distribution](https://user-images.githubusercontent.com/12397753/77502467-32df8000-6e18-11ea-984f-05c1561cdd4b.png)
-
-Select a region, spread these out with highest concentration in US and EU.
-Set a linode label & root password, follow naming pattern where number
-jumps and we match the name to the region:
-
-![select-region](https://user-images.githubusercontent.com/12397753/77502468-33781680-6e18-11ea-901e-904e9a2367e2.png)
-
-Last, select the common SSH key (if none is displayed, ask your fellow admins
-and add it by clicking the 'add key' button).
-
-![select-label-and-password](https://user-images.githubusercontent.com/12397753/77502470-3410ad00-6e18-11ea-85b8-7bbb7e5edd67.png)
 
 # Adding DNS Entries
 
-Create a DNS entries on [namecheap.com > account > dashboard > "manage" button > "advanced DNS"](https://ap.www.namecheap.com/Domains/DomainControlPanel/triplea-game.org/advancedns)
+Create a DNS entries on [namecheap.com > account > dashboard > "manage" button > "advanced DNS"
+](https://ap.www.namecheap.com/Domains/DomainControlPanel/triplea-game.org/advancedns)
 
-All servers will have both an 'A' (IPv4 address) and 'AAAA' (IPv6 address) record. You can get both IPv4 and IPv6 addresses from the linode dashboard.
+All servers will have both an 'A' (IPv4 address) and 'AAAA' (IPv6 address) record. 
+You can get both IPv4 and IPv6 addresses from the linode dashboard.
 
 ## Create an 'A' Record
 
@@ -70,3 +49,8 @@ This is needed for lobby server or any server that will be serving https traffic
 
 ![Screenshot from 2019-11-19 13-06-13](https://user-images.githubusercontent.com/12397753/69196411-48980e00-0ae3-11ea-9130-61e1fd5368b3.png)
 
+## Update inventory file
+
+- Add the server to [inventory configuration](/infrastructure/ansible/inventory)
+- Commit the changes and submit for a PR. After the PR is merged, travis will run a deployment
+  automatically deploying all needed configurations to the server. 
