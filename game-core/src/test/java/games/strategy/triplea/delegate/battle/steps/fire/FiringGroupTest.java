@@ -21,18 +21,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class FiringGroupTest {
 
+  private static final String GROUP_NAME = "test";
+
   @Mock GameData gameData;
   @Mock GamePlayer player;
 
   @Test
   public void onlyOneGroupIfNoSuicideOnHit() {
     final List<Unit> units =
-        List.of(
-            givenUnitWithSuicideOnHit("type1", false), givenUnitWithSuicideOnHit("type2", false));
+        List.of(givenUnit(givenUnitType("type1")), givenUnit(givenUnitType("type2")));
     final List<FiringGroup> groups =
-        FiringGroup.groupBySuicideOnHit("test", units, List.of(mock(Unit.class)));
-    assertThat("There should only be one group", groups, hasSize(1));
-    assertThat("The group name should have no prefix", groups.get(0).getDisplayName(), is("test"));
+        FiringGroup.groupBySuicideOnHit(GROUP_NAME, units, List.of(mock(Unit.class)));
+    assertThat("All non-suicide units are in a single group", groups, hasSize(1));
+    assertThat(
+        "The group name should have no prefix", groups.get(0).getDisplayName(), is(GROUP_NAME));
     assertThat(
         "The group should have all of the units",
         groups.get(0).getFiringUnits().toArray(),
@@ -40,32 +42,27 @@ class FiringGroupTest {
     assertThat("The group should not be suicide on hit", groups.get(0).isSuicideOnHit(), is(false));
   }
 
-  private Unit givenUnitWithSuicideOnHit(final String typeName, final boolean suicideOnHit) {
-    return givenUnitWithSuicideOnHit(givenUnitTypeWithSuicideOnHit(typeName, suicideOnHit));
-  }
-
-  private Unit givenUnitWithSuicideOnHit(final UnitType unitType) {
+  private Unit givenUnit(final UnitType unitType) {
     return unitType.create(1, player, true).get(0);
   }
 
-  private UnitType givenUnitTypeWithSuicideOnHit(
-      final String typeName, final boolean suicideOnHit) {
+  private UnitType givenUnitType(final String typeName) {
     final UnitType unitType = new UnitType(typeName, gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-    unitAttachment.setIsSuicideOnHit(suicideOnHit);
     return unitType;
   }
 
   @Test
   public void onlyOneGroupIfSameTypeAndSuicide() {
-    final UnitType unitType = givenUnitTypeWithSuicideOnHit("type", true);
-    final List<Unit> units =
-        List.of(givenUnitWithSuicideOnHit(unitType), givenUnitWithSuicideOnHit(unitType));
+    final UnitType unitType = givenUnitType("type");
+    ((UnitAttachment) unitType.getAttachment(UNIT_ATTACHMENT_NAME)).setIsSuicideOnHit(true);
+    final List<Unit> units = List.of(givenUnit(unitType), givenUnit(unitType));
     final List<FiringGroup> groups =
-        FiringGroup.groupBySuicideOnHit("test", units, List.of(mock(Unit.class)));
-    assertThat("There should only be one group", groups, hasSize(1));
-    assertThat("The group name should have no prefix", groups.get(0).getDisplayName(), is("test"));
+        FiringGroup.groupBySuicideOnHit(GROUP_NAME, units, List.of(mock(Unit.class)));
+    assertThat("Same unit type should create only one group", groups, hasSize(1));
+    assertThat(
+        "The group name should have no prefix", groups.get(0).getDisplayName(), is(GROUP_NAME));
     assertThat(
         "The group should have all of the units",
         groups.get(0).getFiringUnits().toArray(),
@@ -75,15 +72,16 @@ class FiringGroupTest {
 
   @Test
   public void onlyTwoGroupsIfSomeUnitsAreNotSuicideOnHitAndSomeAreOfTheSameType() {
-    final UnitType unitType = givenUnitTypeWithSuicideOnHit("type1", true);
+    final UnitType unitType = givenUnitType("type1");
+    ((UnitAttachment) unitType.getAttachment(UNIT_ATTACHMENT_NAME)).setIsSuicideOnHit(true);
     final List<Unit> units =
         List.of(
-            givenUnitWithSuicideOnHit(unitType),
-            givenUnitWithSuicideOnHit(unitType),
-            givenUnitWithSuicideOnHit("type2", false),
-            givenUnitWithSuicideOnHit("type3", false));
+            givenUnit(unitType),
+            givenUnit(unitType),
+            givenUnit(givenUnitType("type2")),
+            givenUnit(givenUnitType("type3")));
     final List<FiringGroup> groups =
-        FiringGroup.groupBySuicideOnHit("test", units, List.of(mock(Unit.class)));
+        FiringGroup.groupBySuicideOnHit(GROUP_NAME, units, List.of(mock(Unit.class)));
     assertThat("There should only be two groups", groups, hasSize(2));
     // ensure the suicide group is last
     groups.sort(Comparator.comparing(FiringGroup::getDisplayName));
@@ -91,11 +89,11 @@ class FiringGroupTest {
     assertThat(
         "The non suicide group name should have no prefix",
         groups.get(0).getDisplayName(),
-        is("test"));
+        is(GROUP_NAME));
     assertThat(
         "The suicide group name should have a prefix",
         groups.get(1).getDisplayName(),
-        is("test suicide"));
+        is(GROUP_NAME + " suicide"));
     assertThat(
         "The non suicide group should have the non suicide units",
         groups.get(0).getFiringUnits().toArray(),
@@ -114,10 +112,13 @@ class FiringGroupTest {
 
   @Test
   public void multipleGroupsIfAllSuicideButDifferentType() {
-    final List<Unit> units =
-        List.of(givenUnitWithSuicideOnHit("type1", true), givenUnitWithSuicideOnHit("type2", true));
+    final UnitType unitType1 = givenUnitType("type1");
+    ((UnitAttachment) unitType1.getAttachment(UNIT_ATTACHMENT_NAME)).setIsSuicideOnHit(true);
+    final UnitType unitType2 = givenUnitType("type2");
+    ((UnitAttachment) unitType2.getAttachment(UNIT_ATTACHMENT_NAME)).setIsSuicideOnHit(true);
+    final List<Unit> units = List.of(givenUnit(unitType1), givenUnit(unitType2));
     final List<FiringGroup> groups =
-        FiringGroup.groupBySuicideOnHit("test", units, List.of(mock(Unit.class)));
+        FiringGroup.groupBySuicideOnHit(GROUP_NAME, units, List.of(mock(Unit.class)));
     assertThat("There should be two groups", groups, hasSize(2));
     // ensure the type2 group is last
     groups.sort(Comparator.comparing(FiringGroup::getDisplayName));
@@ -128,11 +129,11 @@ class FiringGroupTest {
     assertThat(
         "Type1 group should have a unique name",
         groups.get(0).getDisplayName(),
-        is("test suicide type1"));
+        is(GROUP_NAME + " suicide type1"));
     assertThat(
         "Type2 group should have a unique name",
         groups.get(1).getDisplayName(),
-        is("test suicide type2"));
+        is(GROUP_NAME + " suicide type2"));
     assertThat(
         "Type1 units should be in a separate group",
         groups.get(0).getFiringUnits().toArray(),
@@ -145,25 +146,27 @@ class FiringGroupTest {
 
   @Test
   public void multipleGroupsIfSomeAreNotSuicideAndOthersAreSuicideButDifferentType() {
-    final UnitType unitType1 = givenUnitTypeWithSuicideOnHit("type1", true);
-    final UnitType unitType2 = givenUnitTypeWithSuicideOnHit("type2", true);
+    final UnitType unitType1 = givenUnitType("type1");
+    ((UnitAttachment) unitType1.getAttachment(UNIT_ATTACHMENT_NAME)).setIsSuicideOnHit(true);
+    final UnitType unitType2 = givenUnitType("type2");
+    ((UnitAttachment) unitType2.getAttachment(UNIT_ATTACHMENT_NAME)).setIsSuicideOnHit(true);
     final List<Unit> units =
         List.of(
-            givenUnitWithSuicideOnHit(unitType1),
-            givenUnitWithSuicideOnHit(unitType1),
-            givenUnitWithSuicideOnHit(unitType2),
-            givenUnitWithSuicideOnHit(unitType2),
-            givenUnitWithSuicideOnHit("type3", false),
-            givenUnitWithSuicideOnHit("type4", false));
+            givenUnit(unitType1),
+            givenUnit(unitType1),
+            givenUnit(unitType2),
+            givenUnit(unitType2),
+            givenUnit(givenUnitType("type3")),
+            givenUnit(givenUnitType("type4")));
     final List<FiringGroup> groups =
-        FiringGroup.groupBySuicideOnHit("test", units, List.of(mock(Unit.class)));
+        FiringGroup.groupBySuicideOnHit(GROUP_NAME, units, List.of(mock(Unit.class)));
     assertThat("There should be three groups", groups, hasSize(3));
     // ensure the order is non-suicide -> type1 -> type2
     groups.sort(Comparator.comparing(FiringGroup::getDisplayName));
 
     // first one is the non-suicide group
     assertThat(groups.get(0).isSuicideOnHit(), is(false));
-    assertThat(groups.get(0).getDisplayName(), is("test"));
+    assertThat(groups.get(0).getDisplayName(), is(GROUP_NAME));
     assertThat(
         "Non suicide group should have all non suicide units",
         groups.get(0).getFiringUnits().toArray(),
@@ -171,14 +174,14 @@ class FiringGroupTest {
 
     // the other two are suicide groups
     assertThat(groups.get(1).isSuicideOnHit(), is(true));
-    assertThat(groups.get(1).getDisplayName(), is("test suicide type1"));
+    assertThat(groups.get(1).getDisplayName(), is(GROUP_NAME + " suicide type1"));
     assertThat(
         "All type1 units are in their own group",
         groups.get(1).getFiringUnits().toArray(),
         is(units.subList(0, 2).toArray()));
 
     assertThat(groups.get(2).isSuicideOnHit(), is(true));
-    assertThat(groups.get(2).getDisplayName(), is("test suicide type2"));
+    assertThat(groups.get(2).getDisplayName(), is(GROUP_NAME + " suicide type2"));
     assertThat(
         "All type2 units are in their own group",
         groups.get(2).getFiringUnits().toArray(),
