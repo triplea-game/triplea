@@ -10,9 +10,10 @@ Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with
       ](https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png)
   1. *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
         1. after install finish configuration in: **Other Settings > Checkstyle**
-        ![checkstyle_setting](https://user-images.githubusercontent.com/54828470/96388551-339e8180-116f-11eb-9207-564c4b10b937.png)
-        1. select checkstyle file:
-  1. *Save Actions*
+        1. select checkstyle file, set checkstyle version, set to scan all sources
+      ![Screenshot from 2020-10-18 19-18-46
+      ](https://user-images.githubusercontent.com/12397753/96394543-271e2700-1177-11eb-9460-24e2e235d60d.png)
+  3. *Save Actions*
         1. **Settings > Other settings > Save Actions**
         1. Select 'Activate save actions on save'
         1. configure in settings to add 'final' to local variables and class variables. 

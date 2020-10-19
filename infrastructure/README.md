@@ -1,9 +1,8 @@
 # Infrastructure Project
 
-This project hosts the code and configuration that controls
-deployments. For design, conventions and a description of
-the deployment process, please see the documentation in
- the [/docs](/docs) folder.
+Hosts the code and configuration that controls deployments.
+
+Design and conventions is in the [/infrastructure/docs](./docs) folder.
 
 ## Local Development with Vagrant
 
@@ -12,7 +11,6 @@ virtual machines via CLI.
 
 - Use vagrant to test deployments and configuration updates.
 
-- Don't worry, the initial setup is not too bad and once done it's pretty easy.
 
 ### Installation
 
@@ -80,3 +78,4 @@ sudo -u postgres psql
 ```bash
 vagrant destroy -f
 ```
+
