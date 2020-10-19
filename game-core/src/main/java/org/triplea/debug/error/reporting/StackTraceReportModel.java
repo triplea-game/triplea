@@ -1,5 +1,6 @@
 package org.triplea.debug.error.reporting;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.UiContext;
 import java.util.Optional;
@@ -38,6 +39,7 @@ class StackTraceReportModel {
                     .orElse(null),
                 DebugUtils.getMemory(),
                 stackTraceRecord))
+        .gameVersion(ClientContext.engineVersion().toString())
         .build();
   }
 

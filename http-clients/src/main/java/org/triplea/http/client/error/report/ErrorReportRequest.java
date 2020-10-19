@@ -1,6 +1,7 @@
 package org.triplea.http.client.error.report;
 
 import com.google.common.base.Ascii;
+import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -16,17 +17,15 @@ import org.triplea.http.client.github.issues.GithubIssueClient;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorReportRequest {
-  private String title;
-  private String body;
-  @Getter private String gameVersion;
+  @Nonnull private String title;
+  @Nonnull private String body;
+  @Nonnull @Getter private String gameVersion;
 
   public String getTitle() {
-    return title == null ? null : Ascii.truncate(title, GithubIssueClient.TITLE_MAX_LENGTH, "...");
+    return Ascii.truncate(title, GithubIssueClient.TITLE_MAX_LENGTH, "...");
   }
 
   public String getBody() {
-    return body == null
-        ? null
-        : Ascii.truncate(body, GithubIssueClient.REPORT_BODY_MAX_LENGTH, "...");
+    return Ascii.truncate(body, GithubIssueClient.REPORT_BODY_MAX_LENGTH, "...");
   }
 }
