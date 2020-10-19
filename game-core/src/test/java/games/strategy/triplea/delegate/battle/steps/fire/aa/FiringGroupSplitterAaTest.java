@@ -6,7 +6,6 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsCombatAa;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsInfrastructure;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -253,31 +252,6 @@ class FiringGroupSplitterAaTest {
     final Unit targetUnit = givenAnyUnit();
     final Unit targetUnit2 = givenAnyUnit();
     when(targetUnit2.getTransportedBy()).thenReturn(mock(Unit.class));
-    final Unit fireUnit =
-        givenUnitIsCombatAa(Set.of(targetUnit.getType(), targetUnit2.getType()), attacker, OFFENSE);
-    when(fireUnit.getOwner()).thenReturn(attacker);
-
-    final List<FiringGroup> firingGroups =
-        FiringGroupSplitterAa.of(OFFENSE)
-            .apply(
-                givenBattleStateBuilder()
-                    .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
-                    .attacker(attacker)
-                    .defender(defender)
-                    .attackingUnits(List.of(fireUnit))
-                    .defendingUnits(List.of(targetUnit, targetUnit2))
-                    .build());
-
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
-  }
-
-  @Test
-  void firingGroupIgnoresInfrastructureUnits() {
-    final Unit targetUnit = givenAnyUnit();
-    final Unit targetUnit2 = givenUnitIsInfrastructure();
     final Unit fireUnit =
         givenUnitIsCombatAa(Set.of(targetUnit.getType(), targetUnit2.getType()), attacker, OFFENSE);
     when(fireUnit.getOwner()).thenReturn(attacker);

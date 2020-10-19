@@ -1021,7 +1021,7 @@ class BattleCalculatorPanel extends JPanel {
                   Matches.unitIsOwnedBy(getDefender())
                       .and(
                           Matches.unitCanBeInBattle(
-                              true, isLand(), 1, hasMaxRounds(isLand(), data), true)));
+                              true, isLand(), 1, hasMaxRounds(isLand(), data), true, List.of())));
           final List<Unit> newDefenders =
               CollectionUtils.getMatches(
                   attackingUnitsPanel.getUnits(),
@@ -1336,7 +1336,8 @@ class BattleCalculatorPanel extends JPanel {
         getAttacker(),
         CollectionUtils.getMatches(
             units,
-            Matches.unitCanBeInBattle(true, isLand(), 1, hasMaxRounds(isLand(), data), false)),
+            Matches.unitCanBeInBattle(
+                true, isLand(), 1, hasMaxRounds(isLand(), data), false, List.of())),
         isLand());
   }
 
