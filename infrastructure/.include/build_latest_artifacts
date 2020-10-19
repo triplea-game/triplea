@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# This script builds deployment artifacts from source and moves
+# those artifacts to ansible 'file' locations where they are then
+# available to ansible.
+
+VERSION="${1-}"
+
+if [ -z "$VERSION" ]; then
+  echo "Error, missing 'version' argument"
+  echo "Usage: $0 [version]"
+  exit 1
+fi
+
+function main() {
+  buildArtifacts
+}
+
+function buildArtifacts() {
+  (
+    cd ..
+    ./gradlew :lobby-server:shadowJar :game-headless:shadowJar :database:release
+  )
+  copyBuildArtifact "../database/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
+  copyBuildArtifact "../lobby-server/build/libs/triplea-lobby-server-$VERSION.jar" "ansible/roles/lobby_server/files/"
+  copyBuildArtifact "../game-headless/build/libs/triplea-game-headless-$VERSION.jar" "ansible/roles/bot/files/"
+}
+
+function copyBuildArtifact() {
+  local -r artifactSource="$1"
+  local -r artifactDestinationPath="$2"
+
+  if [ ! -f "$artifactSource" ]; then
+    echo "Error: File does not exist: $artifactSource"
+    exit 1
+  fi
+
+  mkdir -p "$artifactDestinationPath"
+  cp "$artifactSource" "$artifactDestinationPath"
+}
+
+main
+

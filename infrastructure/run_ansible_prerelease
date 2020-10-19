@@ -30,35 +30,11 @@ fi
 
 
 function main() {
-  buildArtifacts
+  .include/build_latest_artifacts "$VERSION"
   addPrivateSshKeyToAgent
   runDeployment "$@"
   runCleanup
 }
-
-function buildArtifacts() {
-  (
-    cd ..
-    ./gradlew :lobby-server:shadowJar :game-headless:shadowJar :database:release
-  )
-  copyBuildArtifact "../database/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
-  copyBuildArtifact "../lobby-server/build/libs/triplea-lobby-server-$VERSION.jar" "ansible/roles/lobby_server/files/"
-  copyBuildArtifact "../game-headless/build/libs/triplea-game-headless-$VERSION.jar" "ansible/roles/bot/files/"
-}
-
-function copyBuildArtifact() {
-  local -r artifactSource="$1"
-  local -r artifactDestinationPath="$2"
-
-  if [ ! -f "$artifactSource" ]; then
-    echo "Error: File does not exist: $artifactSource"
-    exit 1
-  fi
-
-  mkdir -p "$artifactDestinationPath"
-  cp "$artifactSource" "$artifactDestinationPath"
-}
-
 
 function addPrivateSshKeyToAgent() {
   ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
