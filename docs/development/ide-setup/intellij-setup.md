@@ -10,7 +10,9 @@ Setting up *IntelliJ* is pretty simple.  There are 4 plugins to install with the
       ](https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png)
   2. *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
         1. after install finish configuration in: **Other Settings > Checkstyle**
-        2. select checkstyle file:
+        2. select checkstyle file, set checkstyle version, set to scan all sources
+      ![Screenshot from 2020-10-18 19-18-46
+      ](https://user-images.githubusercontent.com/12397753/96394543-271e2700-1177-11eb-9460-24e2e235d60d.png)
   3. *Save Actions*
         1. **Settings > Other settings > Save Actions**
         2. Select 'Activate save actions on save'

@@ -1,8 +1,0 @@
-- hosts: setup
-  tags: setup
-  roles:
-    - system/hostname
-    - system/apt_update
-    - system/apt_common_tools
-    - system/firewall
-    - system/security

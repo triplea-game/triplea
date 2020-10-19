@@ -1,7 +1,3 @@
-[setup]
-prod2-bot01.triplea-game.org
-prod2-bot02.triplea-game.org
-
 [dropwizardHosts]
 prod2-lobby.triplea-game.org
 

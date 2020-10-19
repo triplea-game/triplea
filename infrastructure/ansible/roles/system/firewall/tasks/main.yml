@@ -1,25 +1,35 @@
+- name: Gather ufw status
+  shell: ufw status verbose
+  register: ufw_status
+  changed_when: false
+
 - name: UFW allow SSH
+  when: ufw_status.stdout is not regex("\(OpenSSH\)\s*ALLOW")
   ufw:
     rule: allow
     name: OpenSSH
 
-- name: Turn on firewall
-  ufw:
-    state: enabled
-
 - name: UFW deny incoming by default
+  when: ufw_status.stdout is not regex("deny \(incoming\)")
   ufw:
     default: deny
     direction: incoming
 
 - name: UFW allow outgoing by default
+  when: ufw_status.stdout is not regex("allow \(outgoing\)")
   ufw:
     default: allow
     direction: outgoing
 
 - name: turn on ssh rate limiting
+  when: ufw_status.stdout is not regex("22/tcp\s*LIMIT IN")
   ufw:
     rule: limit
     port: ssh
     proto: tcp
+
+- name: Turn on firewall
+  when: "ufw_status.stdout is not regex('Status: active')"
+  ufw:
+    state: enabled
 
