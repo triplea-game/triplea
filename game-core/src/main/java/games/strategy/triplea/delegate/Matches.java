@@ -653,7 +653,7 @@ public final class Matches {
   }
 
   /** Checks if the unit type can be hit with AA fire by one of the firingUnits */
-  private static Predicate<UnitType> unitTypeCanByHitByAaFire(
+  private static Predicate<UnitType> unitTypeCanBeHitByAaFire(
       final Collection<UnitType> firingUnits, final GameData gameData, final int battleRound) {
     // make sure the aa firing units are valid for combat and during this round
     final Collection<UnitType> aaFiringUnits =
@@ -2345,15 +2345,14 @@ public final class Matches {
       final boolean doNotIncludeBombardingSeaUnits,
       final Collection<UnitType> firingUnits) {
 
+    // remove infrastructure units unless it can support or fight
+    // or it is AA that can fire this round
+    // or it can be shot at by AA
     final PredicateBuilder<UnitType> canBeInBattleBuilder =
-        // remove infrastructure units
         PredicateBuilder.of(unitTypeIsInfrastructure().negate())
-            // unless it can support or fight
             .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
-            // or it is AA that can fire this round
             .or(unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)))
-            // or it can be shot at by AA
-            .or(unitTypeCanByHitByAaFire(firingUnits, player.getData(), battleRound));
+            .or(unitTypeCanBeHitByAaFire(firingUnits, player.getData(), battleRound));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {
