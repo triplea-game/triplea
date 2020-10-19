@@ -261,6 +261,8 @@ public class ClipPlayer {
                       URI.create(clip.toString()),
                       inputStream -> {
                         try {
+                          final AudioDevice audioDevice =
+                              FactoryRegistry.systemRegistry().createAudioDevice();
                           new AdvancedPlayer(inputStream, audioDevice).play();
                         } catch (final Exception e) {
                           log.log(Level.SEVERE, "Failed to play: " + clip, e);
