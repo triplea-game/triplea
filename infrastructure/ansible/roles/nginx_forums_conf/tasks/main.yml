@@ -10,6 +10,7 @@
     - /etc/nginx/sites-enabled
 
 - name: deploy nginx.conf
+  register: deploy_conf
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -21,4 +22,10 @@
       dest: /etc/nginx/nginx.conf
     - src: sites-enabled-default
       dest: /etc/nginx/sites-enabled/default
+
+- name: reload nginx conf if changed
+  when: deploy_conf.changed
+  service:
+    name: nginx
+    state: reloaded
 
