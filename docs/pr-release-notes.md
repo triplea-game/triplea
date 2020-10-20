@@ -39,7 +39,8 @@ Run this script to parse release notes from merged PRs (this script could use so
 ```
 #!/bin/bash
 
-curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed" \
+for page in $(seq 1 4); do
+curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed&page=$page" \
   | grep -Eo "merged_at\":|number\":.*|RELEASE_NOTE.*END_RELEASE_NOTE" \
   | grep -B3 "merged_at\":" \
   | grep -B1 RELEASE_NOTE  \
@@ -47,5 +48,6 @@ curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed" \
   | sed 's/RELEASE_NOTE-->//' \
   | sed 's/<!--END_RELEASE_NOTE$/|/' \
   | paste -d '' - -
+done >> release-notes
 ```
 
