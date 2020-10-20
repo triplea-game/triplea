@@ -11,13 +11,13 @@ import org.triplea.java.collections.IntegerMap;
 /** Calculates the value of the dice roll and strength. */
 abstract class StrengthOrRollCalculator {
 
-  protected final AvailableSupportTracker friendlySupportTracker;
-  protected final AvailableSupportTracker enemySupportTracker;
+  protected final AvailableSupports friendlySupportTracker;
+  protected final AvailableSupports enemySupportTracker;
   // Keep track of the units that are providing support and whom they are providing it to
   @Getter private final Map<Unit, IntegerMap<Unit>> supportGiven = new HashMap<>();
 
   StrengthOrRollCalculator(
-      final AvailableSupportTracker friendlySupport, final AvailableSupportTracker enemySupport) {
+      final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
     this.friendlySupportTracker = friendlySupport.filter(getRuleFilter());
     this.enemySupportTracker = enemySupport.filter(getRuleFilter());
   }
@@ -26,7 +26,7 @@ abstract class StrengthOrRollCalculator {
 
   protected abstract Predicate<UnitSupportAttachment> getRuleFilter();
 
-  protected int addSupport(final Unit unit, final AvailableSupportTracker supportTracker) {
+  protected int addSupport(final Unit unit, final AvailableSupports supportTracker) {
     final IntegerMap<Unit> supportGivenToUnit = supportTracker.giveSupportToUnit(unit);
 
     supportGivenToUnit

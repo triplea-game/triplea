@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
-class AvailableSupportTrackerTest {
+class AvailableSupportsTest {
 
   @Test
   void ruleIsAddedToTheSupportCalculator() throws GameParseException {
@@ -40,8 +40,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule), false, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule), false, false);
     assertThat("There is only one bonus type", tracker.supportRules.size(), is(1));
     assertThat("The rule only has one support available", tracker.getSupportLeft(rule), is(1));
   }
@@ -72,8 +72,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, false);
     assertThat("Rule with players is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without players is not added", tracker.getSupportLeft(rule2), is(0));
   }
@@ -104,8 +104,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, false);
     assertThat("Rule with unit types is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without unit types is not added", tracker.getSupportLeft(rule2), is(0));
   }
@@ -136,8 +136,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, false);
     assertThat("Rule with unit types is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without unit types is not added", tracker.getSupportLeft(rule2), is(0));
   }
@@ -168,8 +168,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, false);
     assertThat("Offence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Defence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -200,8 +200,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), true, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), true, false);
     assertThat("Defence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Offence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -232,8 +232,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, false);
     assertThat("Enemy rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Allied rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -264,8 +264,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, true);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, true);
     assertThat("Allied rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Enemy rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -298,8 +298,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus2")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, true);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, true);
     assertThat("Rule with a supporter is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without a supporter is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -325,8 +325,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule), false, true);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule), false, true);
     assertThat(
         "Rule for improved artillery gives double the support "
             + "when the unit has improved artillery",
@@ -355,8 +355,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule), false, true);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule), false, true);
     assertThat(
         "Rule that doesn't use improved artillery doesn't give double the support "
             + "when the unit has improved artillery",
@@ -388,8 +388,8 @@ class AvailableSupportTrackerTest {
         .setBonusType("bonus")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(
             List.of(unit, unitWithoutImprovedTechnology), List.of(rule), false, true);
     assertThat(
         "Unit with improved technology has a value of 2 while the unit without has a value of 1",
@@ -425,10 +425,10 @@ class AvailableSupportTrackerTest {
         .setDice("strength")
         .setNumber(1);
 
-    final AvailableSupportTracker tracker =
-        AvailableSupportTracker.getSupport(List.of(unit), List.of(rule, rule2), false, false);
+    final AvailableSupports tracker =
+        AvailableSupports.getSupport(List.of(unit), List.of(rule, rule2), false, false);
 
-    final AvailableSupportTracker filtered = tracker.filter(UnitSupportAttachment::getRoll);
+    final AvailableSupports filtered = tracker.filter(UnitSupportAttachment::getRoll);
     assertThat(
         "The roll rule is copied to the new calculator", filtered.getSupportLeft(rule), is(1));
     assertThat(
@@ -466,8 +466,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(List.of(supportUnit), List.of(rule), false, false);
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
 
@@ -498,8 +498,8 @@ class AvailableSupportTrackerTest {
           .setBonus(2)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(List.of(supportUnit), List.of(rule), false, false);
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
 
@@ -533,8 +533,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(List.of(supportUnit), List.of(rule), false, false);
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       // give the support to the first unit
       tracker.giveSupportToUnit(unit);
@@ -570,8 +570,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(2);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(List.of(supportUnit), List.of(rule), false, false);
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(List.of(supportUnit), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
@@ -612,8 +612,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
@@ -656,8 +656,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
@@ -698,8 +698,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(2);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
@@ -755,8 +755,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
@@ -805,8 +805,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
@@ -855,8 +855,8 @@ class AvailableSupportTrackerTest {
           .setBonus(1)
           .setNumber(1);
 
-      final AvailableSupportTracker tracker =
-          AvailableSupportTracker.getSupport(
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
               List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false);
 
       final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);

@@ -18,11 +18,11 @@ import lombok.Value;
 @Builder
 @Value
 @Getter(AccessLevel.NONE)
-class AaOffenseCalculator implements OffenseOrDefenseCalculator {
+class AaOffenseCombatValue implements CombatValue {
 
   @NonNull GameData data;
-  @NonNull AvailableSupportTracker friendlySupportTracker;
-  @NonNull AvailableSupportTracker enemySupportTracker;
+  @NonNull AvailableSupports friendlySupportTracker;
+  @NonNull AvailableSupports enemySupportTracker;
 
   @Override
   public StrengthOrRollCalculator getRoll() {
@@ -46,8 +46,7 @@ class AaOffenseCalculator implements OffenseOrDefenseCalculator {
 
   static class AaOffenseRoll extends StrengthOrRollCalculator {
 
-    AaOffenseRoll(
-        final AvailableSupportTracker friendlySupport, final AvailableSupportTracker enemySupport) {
+    AaOffenseRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
       super(friendlySupport, enemySupport);
     }
 
@@ -72,8 +71,8 @@ class AaOffenseCalculator implements OffenseOrDefenseCalculator {
 
     AaOffenseStrength(
         final GameData gameData,
-        final AvailableSupportTracker friendlySupport,
-        final AvailableSupportTracker enemySupport) {
+        final AvailableSupports friendlySupport,
+        final AvailableSupports enemySupport) {
       super(friendlySupport, enemySupport);
       this.gameData = gameData;
     }

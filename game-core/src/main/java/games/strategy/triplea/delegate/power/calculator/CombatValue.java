@@ -7,7 +7,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 
-public interface OffenseOrDefenseCalculator {
+public interface CombatValue {
 
   StrengthOrRollCalculator getRoll();
 
@@ -17,7 +17,7 @@ public interface OffenseOrDefenseCalculator {
 
   GameData getGameData();
 
-  static OffenseOrDefenseCalculator buildMain(
+  static CombatValue buildMain(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
@@ -26,29 +26,29 @@ public interface OffenseOrDefenseCalculator {
       final Collection<TerritoryEffect> territoryEffects) {
 
     // Get all friendly supports
-    final AvailableSupportTracker friendlySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
+    final AvailableSupports friendlySupportTracker =
+        AvailableSupports.getSortedSupport(
             allFriendlyUnitsAliveOrWaitingToDie,
             data.getUnitTypeList().getSupportRules(),
             defending,
             true);
 
     // Get all enemy supports
-    final AvailableSupportTracker enemySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
+    final AvailableSupports enemySupportTracker =
+        AvailableSupports.getSortedSupport(
             allEnemyUnitsAliveOrWaitingToDie,
             data.getUnitTypeList().getSupportRules(),
             !defending,
             false);
 
     return defending
-        ? MainDefenseCalculator.builder()
+        ? MainDefenseCombatValue.builder()
             .data(data)
             .friendlySupportTracker(friendlySupportTracker)
             .enemySupportTracker(enemySupportTracker)
             .territoryEffects(territoryEffects)
             .build()
-        : MainOffenseCalculator.builder()
+        : MainOffenseCombatValue.builder()
             .data(data)
             .friendlySupportTracker(friendlySupportTracker)
             .enemySupportTracker(enemySupportTracker)
@@ -57,35 +57,35 @@ public interface OffenseOrDefenseCalculator {
             .build();
   }
 
-  static OffenseOrDefenseCalculator buildAa(
+  static CombatValue buildAa(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
       final GameData data) {
 
     // Get all friendly supports
-    final AvailableSupportTracker friendlySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
+    final AvailableSupports friendlySupportTracker =
+        AvailableSupports.getSortedSupport(
             allFriendlyUnitsAliveOrWaitingToDie, //
             data.getUnitTypeList().getSupportAaRules(),
             defending,
             true);
 
     // Get all enemy supports
-    final AvailableSupportTracker enemySupportTracker =
-        AvailableSupportTracker.getSortedSupport(
+    final AvailableSupports enemySupportTracker =
+        AvailableSupports.getSortedSupport(
             allEnemyUnitsAliveOrWaitingToDie, //
             data.getUnitTypeList().getSupportAaRules(),
             !defending,
             false);
 
     return defending
-        ? AaDefenseCalculator.builder()
+        ? AaDefenseCombatValue.builder()
             .data(data)
             .friendlySupportTracker(friendlySupportTracker)
             .enemySupportTracker(enemySupportTracker)
             .build()
-        : AaOffenseCalculator.builder()
+        : AaOffenseCombatValue.builder()
             .data(data)
             .friendlySupportTracker(friendlySupportTracker)
             .enemySupportTracker(enemySupportTracker)

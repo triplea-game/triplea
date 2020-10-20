@@ -13,7 +13,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.power.calculator.AvailableSupportTracker;
+import games.strategy.triplea.delegate.power.calculator.AvailableSupports;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -281,14 +281,14 @@ public class ProPurchaseOption {
     final List<Unit> units = new ArrayList<>(ownedLocalUnits);
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));
-    final AvailableSupportTracker supportCalculationResult =
-        AvailableSupportTracker.getSupport(
+    final AvailableSupports availableSupports =
+        AvailableSupports.getSupport(
             units, data.getUnitTypeList().getSupportRules(), defense, true);
 
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
       for (final List<UnitSupportAttachment> bonusType :
-          supportCalculationResult.getSupportRules().values()) {
+          availableSupports.getSupportRules().values()) {
         if (!bonusType.contains(usa)) {
           continue;
         }
@@ -301,7 +301,7 @@ public class ProPurchaseOption {
         int numSupportProvided = -numAddedSupport;
         final Set<Unit> supportableUnits = new HashSet<>();
         for (final UnitSupportAttachment usa2 : bonusType) {
-          numSupportProvided += supportCalculationResult.getSupportLeft(usa2);
+          numSupportProvided += availableSupports.getSupportLeft(usa2);
           supportableUnits.addAll(
               CollectionUtils.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
         }

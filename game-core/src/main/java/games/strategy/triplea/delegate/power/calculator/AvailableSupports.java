@@ -27,10 +27,10 @@ import org.triplea.java.collections.IntegerMap;
 @Data
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class AvailableSupportTracker {
+public class AvailableSupports {
 
-  public static final AvailableSupportTracker EMPTY_RESULT =
-      AvailableSupportTracker.builder()
+  public static final AvailableSupports EMPTY_RESULT =
+      AvailableSupports.builder()
           .supportRules(new HashMap<>())
           .supportUnits(new HashMap<>())
           .build();
@@ -39,12 +39,12 @@ public class AvailableSupportTracker {
   final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
 
   /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
-  static AvailableSupportTracker getSortedSupport(
+  static AvailableSupports getSortedSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Set<UnitSupportAttachment> rules,
       final boolean defence,
       final boolean allies) {
-    final AvailableSupportTracker supportCalculationResult =
+    final AvailableSupports supportCalculationResult =
         getSupport(unitsGivingTheSupport, rules, defence, allies);
 
     final SupportRuleSort supportRuleSort =
@@ -66,7 +66,7 @@ public class AvailableSupportTracker {
    * @param defence are the receiving units defending?
    * @param allies are the receiving units allied to the giving units?
    */
-  public static AvailableSupportTracker getSupport(
+  public static AvailableSupports getSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Collection<UnitSupportAttachment> rules,
       final boolean defence,
@@ -113,7 +113,7 @@ public class AvailableSupportTracker {
   }
 
   /** Constructs a filtered version of this */
-  AvailableSupportTracker filter(final Predicate<UnitSupportAttachment> ruleFilter) {
+  AvailableSupports filter(final Predicate<UnitSupportAttachment> ruleFilter) {
 
     final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules =
         new HashMap<>();

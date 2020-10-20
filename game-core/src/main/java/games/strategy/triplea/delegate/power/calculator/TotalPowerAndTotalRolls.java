@@ -279,14 +279,14 @@ public class TotalPowerAndTotalRolls {
       final boolean defending,
       final GameData data) {
 
-    final OffenseOrDefenseCalculator calculator =
-        OffenseOrDefenseCalculator.buildAa(
+    final CombatValue calculator =
+        CombatValue.buildAa(
             allEnemyUnitsAliveOrWaitingToDie, allFriendlyUnitsAliveOrWaitingToDie, defending, data);
     return getAaUnitPowerAndRollsForNormalBattles(aaUnits, calculator);
   }
 
   public static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> aaUnits, final OffenseOrDefenseCalculator calculator) {
+      final Collection<Unit> aaUnits, final CombatValue calculator) {
 
     if (aaUnits == null || aaUnits.isEmpty()) {
       return new HashMap<>();
@@ -299,7 +299,7 @@ public class TotalPowerAndTotalRolls {
   }
 
   private static Map<Unit, TotalPowerAndTotalRolls> getUnitTotalPowerAndTotalRollsMap(
-      final OffenseOrDefenseCalculator calculator,
+      final CombatValue calculator,
       final Collection<Unit> units,
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
@@ -379,8 +379,8 @@ public class TotalPowerAndTotalRolls {
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
-    final OffenseOrDefenseCalculator calculator =
-        OffenseOrDefenseCalculator.buildMain(
+    final CombatValue calculator =
+        CombatValue.buildMain(
             allEnemyUnitsAliveOrWaitingToDie,
             allFriendlyUnitsAliveOrWaitingToDie,
             defending,
@@ -393,14 +393,14 @@ public class TotalPowerAndTotalRolls {
   }
 
   public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> unitsGettingPowerFor, final OffenseOrDefenseCalculator calculator) {
+      final Collection<Unit> unitsGettingPowerFor, final CombatValue calculator) {
     return getUnitPowerAndRollsForNormalBattles(
         unitsGettingPowerFor, calculator, new HashMap<>(), new HashMap<>());
   }
 
   public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
-      final OffenseOrDefenseCalculator calculator,
+      final CombatValue calculator,
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
