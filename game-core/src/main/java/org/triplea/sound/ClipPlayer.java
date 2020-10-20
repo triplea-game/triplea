@@ -249,8 +249,8 @@ public class ClipPlayer {
       folder += "_" + gamePlayer.getName();
     }
 
-    Optional.ofNullable(loadClipPath(folder))
-        .or(() -> Optional.ofNullable(loadClipPath(clipName)))
+    loadClipPath(folder)
+        .or(() -> loadClipPath(clipName))
         .ifPresent(
             clip ->
                 new Thread(
@@ -277,19 +277,19 @@ public class ClipPlayer {
         && hasAudio();
   }
 
-  private URL loadClipPath(final String pathName) {
+  private Optional<URL> loadClipPath(final String pathName) {
     if (!sounds.containsKey(pathName)) {
       // parse sounds for the first time
       sounds.put(pathName, parseClipPaths(pathName));
     }
     final List<URL> availableSounds = sounds.get(pathName);
     if (availableSounds == null || availableSounds.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
     // we want to pick a random sound from this folder, as users
     // don't like hearing the same ones over and over again
     Collections.shuffle(availableSounds);
-    return availableSounds.get(0);
+    return Optional.of(availableSounds.get(0));
   }
 
   /**
