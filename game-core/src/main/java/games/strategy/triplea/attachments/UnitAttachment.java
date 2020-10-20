@@ -1836,8 +1836,10 @@ public class UnitAttachment extends DefaultAttachment {
     isSuicideOnHit = getBool(s);
   }
 
-  private void setIsSuicideOnHit(final Boolean s) {
+  @VisibleForTesting
+  public UnitAttachment setIsSuicideOnHit(final Boolean s) {
     isSuicideOnHit = s;
+    return this;
   }
 
   public boolean getIsSuicideOnHit() {
