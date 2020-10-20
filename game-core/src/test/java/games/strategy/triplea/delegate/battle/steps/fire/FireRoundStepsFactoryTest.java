@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class FireRoundStepsBuilderTest {
+class FireRoundStepsFactoryTest {
 
   @Test
   @DisplayName("The display names for an entire fire round is fire, select, remove")
@@ -37,23 +37,23 @@ class FireRoundStepsBuilderTest {
     when(defender.getName()).thenReturn("defender");
     final List<String> names =
         getStepNames(
-            FireRoundStepsBuilder.buildSteps(
-                FireRoundStepsBuilder.Parameters.builder()
-                    .battleActions(mock(BattleActions.class))
-                    .returnFire(MustFightBattle.ReturnFire.ALL)
-                    .roll((arg1, arg2) -> new DiceRoll())
-                    .firingGroupSplitter(
-                        (arg1) ->
-                            FiringGroup.groupBySuicideOnHit(
-                                "army", List.of(givenAnyUnit()), List.of(mock(Unit.class))))
-                    .selectCasualties((arg1, arg2) -> new CasualtyDetails())
-                    .side(OFFENSE)
-                    .battleState(
-                        FakeBattleState.givenBattleStateBuilder()
-                            .attacker(attacker)
-                            .defender(defender)
-                            .build())
-                    .build()));
+            FireRoundStepsFactory.builder()
+                .battleActions(mock(BattleActions.class))
+                .returnFire(MustFightBattle.ReturnFire.ALL)
+                .diceRoller((arg1, arg2) -> new DiceRoll())
+                .firingGroupSplitter(
+                    (arg1) ->
+                        FiringGroup.groupBySuicideOnHit(
+                            "army", List.of(givenAnyUnit()), List.of(mock(Unit.class))))
+                .casualtySelector((arg1, arg2) -> new CasualtyDetails())
+                .side(OFFENSE)
+                .battleState(
+                    FakeBattleState.givenBattleStateBuilder()
+                        .attacker(attacker)
+                        .defender(defender)
+                        .build())
+                .build()
+                .createSteps());
 
     final List<String> expected =
         List.of(
@@ -76,28 +76,28 @@ class FireRoundStepsBuilderTest {
     when(defender.getName()).thenReturn("defender");
     final List<String> names =
         getStepNames(
-            FireRoundStepsBuilder.buildSteps(
-                FireRoundStepsBuilder.Parameters.builder()
-                    .battleActions(mock(BattleActions.class))
-                    .returnFire(MustFightBattle.ReturnFire.ALL)
-                    .roll((arg1, arg2) -> new DiceRoll())
-                    .firingGroupSplitter(
-                        (arg1) ->
-                            List.of(
-                                FiringGroup.groupBySuicideOnHit(
-                                        "army", List.of(givenAnyUnit()), List.of(mock(Unit.class)))
-                                    .get(0),
-                                FiringGroup.groupBySuicideOnHit(
-                                        "spies", List.of(givenAnyUnit()), List.of(mock(Unit.class)))
-                                    .get(0)))
-                    .selectCasualties((arg1, arg2) -> new CasualtyDetails())
-                    .side(OFFENSE)
-                    .battleState(
-                        FakeBattleState.givenBattleStateBuilder()
-                            .attacker(attacker)
-                            .defender(defender)
-                            .build())
-                    .build()));
+            FireRoundStepsFactory.builder()
+                .battleActions(mock(BattleActions.class))
+                .returnFire(MustFightBattle.ReturnFire.ALL)
+                .diceRoller((arg1, arg2) -> new DiceRoll())
+                .firingGroupSplitter(
+                    (arg1) ->
+                        List.of(
+                            FiringGroup.groupBySuicideOnHit(
+                                    "army", List.of(givenAnyUnit()), List.of(mock(Unit.class)))
+                                .get(0),
+                            FiringGroup.groupBySuicideOnHit(
+                                    "spies", List.of(givenAnyUnit()), List.of(mock(Unit.class)))
+                                .get(0)))
+                .casualtySelector((arg1, arg2) -> new CasualtyDetails())
+                .side(OFFENSE)
+                .battleState(
+                    FakeBattleState.givenBattleStateBuilder()
+                        .attacker(attacker)
+                        .defender(defender)
+                        .build())
+                .build()
+                .createSteps());
 
     final List<String> expected =
         List.of(
@@ -119,23 +119,23 @@ class FireRoundStepsBuilderTest {
     when(defender.getName()).thenReturn("defender");
     final List<String> names =
         getStepNames(
-            FireRoundStepsBuilder.buildSteps(
-                FireRoundStepsBuilder.Parameters.builder()
-                    .battleActions(mock(BattleActions.class))
-                    .returnFire(MustFightBattle.ReturnFire.ALL)
-                    .roll((arg1, arg2) -> new DiceRoll())
-                    .firingGroupSplitter(
-                        (arg1) ->
-                            FiringGroup.groupBySuicideOnHit(
-                                UNITS, List.of(givenAnyUnit()), List.of(mock(Unit.class))))
-                    .selectCasualties((arg1, arg2) -> new CasualtyDetails())
-                    .side(OFFENSE)
-                    .battleState(
-                        FakeBattleState.givenBattleStateBuilder()
-                            .attacker(attacker)
-                            .defender(defender)
-                            .build())
-                    .build()));
+            FireRoundStepsFactory.builder()
+                .battleActions(mock(BattleActions.class))
+                .returnFire(MustFightBattle.ReturnFire.ALL)
+                .diceRoller((arg1, arg2) -> new DiceRoll())
+                .firingGroupSplitter(
+                    (arg1) ->
+                        FiringGroup.groupBySuicideOnHit(
+                            UNITS, List.of(givenAnyUnit()), List.of(mock(Unit.class))))
+                .casualtySelector((arg1, arg2) -> new CasualtyDetails())
+                .side(OFFENSE)
+                .battleState(
+                    FakeBattleState.givenBattleStateBuilder()
+                        .attacker(attacker)
+                        .defender(defender)
+                        .build())
+                .build()
+                .createSteps());
 
     final List<String> expected =
         List.of(
