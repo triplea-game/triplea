@@ -249,7 +249,10 @@ public class ClipPlayer {
       folder += "_" + gamePlayer.getName();
     }
 
-    final URL clip = loadClip(folder).orElse(loadClip(clipName).orElse(null));
+    final URL clip =
+        Optional.ofNullable(loadClipPath(folder))
+            .or(() -> Optional.ofNullable(loadClipPath(clipName)))
+            .orElse(null);
     // clip may still be null, we try to load all phases/all sound, for example: clipName =
     // "phase_technology", folder =
     // "phase_technology_Japanese"
@@ -278,12 +281,6 @@ public class ClipPlayer {
         && !"true".equals(System.getenv("java.awt.headless"))
         && ClientSetting.soundEnabled.getSetting()
         && hasAudio();
-  }
-
-  private Optional<URL> loadClip(final String clipName) {
-    return (isSoundEnabled() && !isSoundClipMuted(clipName))
-        ? Optional.ofNullable(loadClipPath(clipName))
-        : Optional.empty();
   }
 
   private URL loadClipPath(final String pathName) {
