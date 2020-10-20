@@ -249,31 +249,25 @@ public class ClipPlayer {
       folder += "_" + gamePlayer.getName();
     }
 
-    final URL clip =
-        Optional.ofNullable(loadClipPath(folder))
-            .or(() -> Optional.ofNullable(loadClipPath(clipName)))
-            .orElse(null);
-    // clip may still be null, we try to load all phases/all sound, for example: clipName =
-    // "phase_technology", folder =
-    // "phase_technology_Japanese"
-
-    if (clip != null) {
-      new Thread(
-              () ->
-                  UrlStreams.openStream(
-                      URI.create(clip.toString()),
-                      inputStream -> {
-                        try {
-                          final AudioDevice audioDevice =
-                              FactoryRegistry.systemRegistry().createAudioDevice();
-                          new AdvancedPlayer(inputStream, audioDevice).play();
-                        } catch (final Exception e) {
-                          log.log(Level.SEVERE, "Failed to play: " + clip, e);
-                        }
-                        return null;
-                      }))
-          .start();
-    }
+    Optional.ofNullable(loadClipPath(folder))
+        .or(() -> Optional.ofNullable(loadClipPath(clipName)))
+        .ifPresent(
+            clip ->
+                new Thread(
+                        () ->
+                            UrlStreams.openStream(
+                                URI.create(clip.toString()),
+                                inputStream -> {
+                                  try {
+                                    final AudioDevice audioDevice =
+                                        FactoryRegistry.systemRegistry().createAudioDevice();
+                                    new AdvancedPlayer(inputStream, audioDevice).play();
+                                  } catch (final Exception e) {
+                                    log.log(Level.SEVERE, "Failed to play: " + clip, e);
+                                  }
+                                  return null;
+                                }))
+                    .start());
   }
 
   private boolean isSoundEnabled() {
