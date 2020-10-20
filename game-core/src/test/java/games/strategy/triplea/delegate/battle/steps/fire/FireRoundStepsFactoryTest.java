@@ -1,13 +1,10 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_WITHOUT_SPACE_SUFFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE_SUFFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_PREFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_PREFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.generalFightStepStrings;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.mergeSteps;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -55,12 +52,7 @@ class FireRoundStepsFactoryTest {
                 .build()
                 .createSteps());
 
-    final List<String> expected =
-        List.of(
-            "attacker army" + FIRE_SUFFIX,
-            "defender" + SELECT_PREFIX + "army" + CASUALTIES_SUFFIX,
-            "defender" + REMOVE_PREFIX + "army" + CASUALTIES_SUFFIX);
-    assertThat(names, is(expected));
+    assertThat(names, is(generalFightStepStrings(attacker, defender, "army")));
   }
 
   private List<String> getStepNames(final List<BattleStep> steps) {
@@ -99,15 +91,12 @@ class FireRoundStepsFactoryTest {
                 .build()
                 .createSteps());
 
-    final List<String> expected =
-        List.of(
-            "attacker army" + FIRE_SUFFIX,
-            "defender" + SELECT_PREFIX + "army" + CASUALTIES_SUFFIX,
-            "defender" + REMOVE_PREFIX + "army" + CASUALTIES_SUFFIX,
-            "attacker spies" + FIRE_SUFFIX,
-            "defender" + SELECT_PREFIX + "spies" + CASUALTIES_SUFFIX,
-            "defender" + REMOVE_PREFIX + "spies" + CASUALTIES_SUFFIX);
-    assertThat(names, is(expected));
+    assertThat(
+        names,
+        is(
+            mergeSteps(
+                generalFightStepStrings(attacker, defender, "army"),
+                generalFightStepStrings(attacker, defender, "spies"))));
   }
 
   @Test
@@ -137,11 +126,6 @@ class FireRoundStepsFactoryTest {
                 .build()
                 .createSteps());
 
-    final List<String> expected =
-        List.of(
-            "attacker" + FIRE_SUFFIX,
-            "defender" + SELECT_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX,
-            "defender" + REMOVE_PREFIX + CASUALTIES_WITHOUT_SPACE_SUFFIX);
-    assertThat(names, is(expected));
+    assertThat(names, is(generalFightStepStrings(attacker, defender, "")));
   }
 }
