@@ -27,7 +27,6 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import javax.annotation.Nullable;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
@@ -121,7 +120,7 @@ public class ClipPlayer {
   protected final Map<String, List<URL>> sounds = new HashMap<>();
   private final Set<String> mutedClips = new HashSet<>();
 
-  @Nullable private final AudioDevice audioDevice;
+  private final boolean systemHasAudio;
   private final ResourceLoader resourceLoader;
 
   private ClipPlayer(final ResourceLoader resourceLoader) {
@@ -129,7 +128,7 @@ public class ClipPlayer {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     final Set<String> choices = SoundPath.getAllSoundOptions();
 
-    audioDevice = createAudio();
+    systemHasAudio = checkSystemForAudio();
 
     for (final String sound : choices) {
       final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false);
@@ -139,15 +138,16 @@ public class ClipPlayer {
     }
   }
 
-  private static AudioDevice createAudio() {
+  private static boolean checkSystemForAudio() {
     try {
-      return FactoryRegistry.systemRegistry().createAudioDevice();
+      FactoryRegistry.systemRegistry().createAudioDevice();
+      return true;
     } catch (final JavaLayerException e) {
       log.log(
           Level.INFO,
           "Unable to create audio device, is there audio on the system? " + e.getMessage(),
           e);
-      return null;
+      return false;
     }
   }
 
@@ -165,7 +165,7 @@ public class ClipPlayer {
   }
 
   public static boolean hasAudio() {
-    return getInstance().audioDevice != null;
+    return getInstance().systemHasAudio;
   }
 
   boolean isSoundClipMuted(final String clipName) {
