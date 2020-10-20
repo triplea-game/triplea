@@ -53,6 +53,7 @@ class ErrorReportClientTest extends WireMockTest {
             ErrorReportRequest.builder()
                 .title("Guttuss cadunt in germanus oenipons!")
                 .body(MESSAGE_FROM_USER)
+                .gameVersion("version")
                 .build());
   }
 

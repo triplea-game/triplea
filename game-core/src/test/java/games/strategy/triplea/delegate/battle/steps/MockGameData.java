@@ -2,9 +2,11 @@ package games.strategy.triplea.delegate.battle.steps;
 
 import static games.strategy.triplea.Constants.ALLIED_AIR_INDEPENDENT;
 import static games.strategy.triplea.Constants.ATTACKER_RETREAT_PLANES;
+import static games.strategy.triplea.Constants.CAPTURE_UNITS_ON_ENTERING_TERRITORY;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
 import static games.strategy.triplea.Constants.LHTR_HEAVY_BOMBERS;
+import static games.strategy.triplea.Constants.NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE;
 import static games.strategy.triplea.Constants.PARTIAL_AMPHIBIOUS_RETREAT;
 import static games.strategy.triplea.Constants.SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
@@ -141,6 +143,16 @@ public class MockGameData {
 
   public MockGameData withAlliedAirIndependent(final boolean value) {
     when(gameProperties.get(ALLIED_AIR_INDEPENDENT, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withNavalBombardCasualtiesReturnFire(final boolean value) {
+    when(gameProperties.get(NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withCaptureUnitsOnEnteringTerritory(final boolean value) {
+    when(gameProperties.get(CAPTURE_UNITS_ON_ENTERING_TERRITORY, false)).thenReturn(value);
     return this;
   }
 }

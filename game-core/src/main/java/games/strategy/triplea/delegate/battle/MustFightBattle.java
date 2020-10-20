@@ -779,8 +779,8 @@ public class MustFightBattle extends DependentBattle
           battleId,
           battleSite,
           getBattleTitle(),
-          removeNonCombatants(attackingUnits, true, false),
-          removeNonCombatants(defendingUnits, false, false),
+          removeNonCombatants(attackingUnits, defendingUnits, true, false),
+          removeNonCombatants(defendingUnits, attackingUnits, false, false),
           killed,
           attackingWaitingToDie,
           defendingWaitingToDie,
@@ -816,8 +816,8 @@ public class MustFightBattle extends DependentBattle
         battleId,
         battleSite,
         getBattleTitle(),
-        removeNonCombatants(attackingUnits, true, false),
-        removeNonCombatants(defendingUnits, false, false),
+        removeNonCombatants(attackingUnits, defendingUnits, true, false),
+        removeNonCombatants(defendingUnits, attackingUnits, false, false),
         killed,
         attackingWaitingToDie,
         defendingWaitingToDie,
@@ -1577,8 +1577,10 @@ public class MustFightBattle extends DependentBattle
 
   @Override
   public void removeNonCombatants(final IDelegateBridge bridge) {
-    final List<Unit> notRemovedDefending = removeNonCombatants(defendingUnits, false, true);
-    final List<Unit> notRemovedAttacking = removeNonCombatants(attackingUnits, true, true);
+    final List<Unit> notRemovedDefending =
+        removeNonCombatants(defendingUnits, attackingUnits, false, true);
+    final List<Unit> notRemovedAttacking =
+        removeNonCombatants(attackingUnits, defendingUnits, true, true);
     final Collection<Unit> toRemoveDefending =
         CollectionUtils.difference(defendingUnits, notRemovedDefending);
     final Collection<Unit> toRemoveAttacking =
@@ -1606,7 +1608,10 @@ public class MustFightBattle extends DependentBattle
    *     as factories, aa guns, land units in a water battle.
    */
   private List<Unit> removeNonCombatants(
-      final Collection<Unit> units, final boolean attacking, final boolean removeForNextRound) {
+      final Collection<Unit> units,
+      final Collection<Unit> enemyUnits,
+      final boolean attacking,
+      final boolean removeForNextRound) {
     final List<Unit> unitList = new ArrayList<>(units);
     if (battleSite.isWater()) {
       unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitIsLand()));
@@ -1620,7 +1625,8 @@ public class MustFightBattle extends DependentBattle
                     attacking,
                     !battleSite.isWater(),
                     (removeForNextRound ? round + 1 : round),
-                    false)
+                    false,
+                    enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet()))
                 .negate()));
     // remove capturableOnEntering units (veqryn)
     unitList.removeAll(

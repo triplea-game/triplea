@@ -652,6 +652,23 @@ public final class Matches {
     };
   }
 
+  /** Checks if the unit type can be hit with AA fire by one of the firingUnits */
+  private static Predicate<UnitType> unitTypeCanBeHitByAaFire(
+      final Collection<UnitType> firingUnits, final GameData gameData, final int battleRound) {
+    // make sure the aa firing units are valid for combat and during this round
+    final Collection<UnitType> aaFiringUnits =
+        CollectionUtils.getMatches(
+            firingUnits,
+            unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)));
+    return unitType ->
+        aaFiringUnits.stream()
+            .anyMatch(
+                type -> {
+                  final UnitAttachment attachment = UnitAttachment.get(type);
+                  return attachment.getTargetsAa(gameData).contains(unitType);
+                });
+  }
+
   public static Predicate<Unit> unitIsAaOfTypeAa(final String typeAa) {
     return obj -> UnitAttachment.get(obj.getType()).getTypeAa().matches(typeAa);
   }
@@ -2287,7 +2304,17 @@ public final class Matches {
       final int battleRound,
       final boolean doNotIncludeBombardingSeaUnits) {
     return unitCanBeInBattle(
-        attack, isLandBattle, battleRound, true, doNotIncludeBombardingSeaUnits);
+        attack, isLandBattle, battleRound, doNotIncludeBombardingSeaUnits, List.of());
+  }
+
+  public static Predicate<Unit> unitCanBeInBattle(
+      final boolean attack,
+      final boolean isLandBattle,
+      final int battleRound,
+      final boolean doNotIncludeBombardingSeaUnits,
+      final Collection<UnitType> firingUnits) {
+    return unitCanBeInBattle(
+        attack, isLandBattle, battleRound, true, doNotIncludeBombardingSeaUnits, firingUnits);
   }
 
   public static Predicate<Unit> unitCanBeInBattle(
@@ -2295,7 +2322,8 @@ public final class Matches {
       final boolean isLandBattle,
       final int battleRound,
       final boolean includeAttackersThatCanNotMove,
-      final boolean doNotIncludeBombardingSeaUnits) {
+      final boolean doNotIncludeBombardingSeaUnits,
+      final Collection<UnitType> firingUnits) {
     return unit ->
         unitTypeCanBeInBattle(
                 attack,
@@ -2303,7 +2331,8 @@ public final class Matches {
                 unit.getOwner(),
                 battleRound,
                 includeAttackersThatCanNotMove,
-                doNotIncludeBombardingSeaUnits)
+                doNotIncludeBombardingSeaUnits,
+                firingUnits)
             .test(unit.getType());
   }
 
@@ -2313,14 +2342,17 @@ public final class Matches {
       final GamePlayer player,
       final int battleRound,
       final boolean includeAttackersThatCanNotMove,
-      final boolean doNotIncludeBombardingSeaUnits) {
+      final boolean doNotIncludeBombardingSeaUnits,
+      final Collection<UnitType> firingUnits) {
 
-    // Filter out anything like factories, or units that have no combat ability AND cannot be taken
-    // casualty
+    // remove infrastructure units unless it can support or fight
+    // or it is AA that can fire this round
+    // or it can be shot at by AA
     final PredicateBuilder<UnitType> canBeInBattleBuilder =
         PredicateBuilder.of(unitTypeIsInfrastructure().negate())
             .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
-            .or(unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)));
+            .or(unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)))
+            .or(unitTypeCanBeHitByAaFire(firingUnits, player.getData(), battleRound));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {

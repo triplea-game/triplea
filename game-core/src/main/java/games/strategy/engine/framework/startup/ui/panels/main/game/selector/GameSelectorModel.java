@@ -12,8 +12,14 @@ import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Optional;
 import java.util.function.Function;
@@ -83,19 +89,31 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   public void load(final URI uri) {
     fileName = null;
-    this.gameData = parseAndValidate(uri);
-    if (gameData == null || gameData.getGameName() == null || uri == null) {
+    GameData gameData = null;
+    if (uri != null) {
+      gameData = parseAndValidate(uri);
+      if (gameData != null && gameData.getGameName() == null) {
+        gameData = null;
+      }
+    }
+    setGameData(gameData);
+    this.setDefaultGame(uri, gameData);
+  }
+
+  private void setDefaultGame(@Nullable final URI uri, @Nullable final GameData gameData) {
+    if (gameData == null || uri == null) {
       ClientSetting.defaultGameName.resetValue();
       ClientSetting.defaultGameUri.resetValue();
-      this.fileName = "-";
-      this.gameName = "-";
-      this.gameRound = "-";
     } else {
-      setGameData(gameData);
       ClientSetting.defaultGameName.setValue(gameData.getGameName());
       ClientSetting.defaultGameUri.setValue(uri.toString());
     }
     ClientSetting.flush();
+  }
+
+  private void resetDefaultGame() {
+    setGameData(null);
+    setDefaultGame(null, null);
   }
 
   @Nullable
@@ -182,14 +200,43 @@ public class GameSelectorModel extends Observable implements GameSelector {
   public void loadDefaultGameSameThread() {
     ClientSetting.defaultGameUri
         .getValue()
+        .map(URI::create)
         // we don't want to load a game file by default that is not within the map folders we
         // can load. (ie: if a previous version of triplea was using running a game within its
         // root folder, we shouldn't open it)
         .filter(
             defaultGame ->
-                defaultGame.contains(ClientFileSystemHelper.getUserRootFolder().toURI().toString()))
-        .filter(defaultGame -> new File(defaultGame).exists())
-        .map(URI::create)
-        .ifPresent(this::load);
+                getDefaultGameRealPath(defaultGame)
+                    .startsWith(ClientFileSystemHelper.getUserRootFolder().toPath()))
+        // ensure the default game hasn't been deleted since it was last loaded
+        .filter(defaultGame -> getDefaultGameRealPath(defaultGame).toFile().exists())
+        .ifPresentOrElse(this::load, this::resetDefaultGame);
+  }
+
+  /**
+   * Determine the real path of the default game.
+   *
+   * <p>A default game from a zip file will point to the file inside of the zip file. So, this
+   * method will find the location of the zip file itself.
+   */
+  private static Path getDefaultGameRealPath(final URI defaultGame) {
+    try {
+      FileSystems.getFileSystem(defaultGame);
+    } catch (final FileSystemNotFoundException notFoundException) {
+      try {
+        FileSystems.newFileSystem(defaultGame, Map.of());
+      } catch (final IOException ioException) {
+        // just ignore this error as Path.of() will throw a better error if the file is unable to
+        // be read
+      }
+    } catch (final IllegalArgumentException illegalArgumentException) {
+      // just ignore this error as Path.of() will throw a better error if the file is unable to
+      // be read
+    }
+    final Path defaultGamePath = Path.of(defaultGame);
+    if (defaultGamePath.getFileSystem().getFileStores().iterator().next().type().equals("zipfs")) {
+      return Paths.get(defaultGamePath.getFileSystem().getFileStores().iterator().next().name());
+    }
+    return defaultGamePath;
   }
 }

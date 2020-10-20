@@ -78,9 +78,7 @@ public class FireAa implements IExecutable {
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final List<String> aaTypes) {
     this.attackableUnits =
-        CollectionUtils.getMatches(
-            attackableUnits,
-            Matches.unitIsNotInfrastructure().and(Matches.unitIsBeingTransported().negate()));
+        CollectionUtils.getMatches(attackableUnits, Matches.unitIsBeingTransported().negate());
     this.firingUnits = firingUnits;
     this.battle = battle;
     this.hitPlayer = hitPlayer;

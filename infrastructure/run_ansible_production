@@ -21,13 +21,7 @@ ansible-vault view \
     ansible_ssh_key.ed25519 \
   | ssh-add -
 
-# Run setup
-ansible-playbook \
-    "$@" \
-    -i ansible/inventory/prod2 \
- ansible/setup.yml
-
-# Run application deployment
+# Run Deployment
 ansible-playbook \
     --vault-password-file vault_password \
     "$@" \

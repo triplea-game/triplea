@@ -1,13 +1,23 @@
 - hosts: all
   tags: system
   roles:
+    - system/hostname
+    - system/apt_update
+    - system/firewall
+    - system/security
     - system/admin_user
+    - system/apt_common_tools
     - system/journald
 
 - hosts: support
   tags: support
   roles:
     - support/log_aggregation_server
+
+- hosts: forums
+  tags: forums
+  roles:
+    - nginx_forums_conf
 
 - hosts: postgresHosts
   tags: [database, flyway]
@@ -40,3 +50,4 @@
     - java
     - bot
     - support/log_aggregation_sender
+
