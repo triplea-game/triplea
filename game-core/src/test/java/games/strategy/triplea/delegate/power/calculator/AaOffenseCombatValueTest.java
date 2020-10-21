@@ -46,7 +46,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -57,7 +58,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final AaOffenseCombatValue.AaOffenseRoll roll =
           new AaOffenseCombatValue.AaOffenseRoll(friendlySupport, enemySupport);
@@ -100,7 +102,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -111,7 +114,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final AaOffenseCombatValue.AaOffenseRoll roll =
           new AaOffenseCombatValue.AaOffenseRoll(friendlySupport, enemySupport);
@@ -152,7 +156,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -163,7 +168,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final AaOffenseCombatValue.AaOffenseStrength strength =
           new AaOffenseCombatValue.AaOffenseStrength(gameData, friendlySupport, enemySupport);
@@ -206,7 +212,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -217,7 +224,8 @@ class AaOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final AaOffenseCombatValue.AaOffenseStrength strength =
           new AaOffenseCombatValue.AaOffenseStrength(gameData, friendlySupport, enemySupport);

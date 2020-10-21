@@ -49,7 +49,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -60,7 +61,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final MainOffenseCombatValue.MainOffenseRoll roll =
           new MainOffenseCombatValue.MainOffenseRoll(friendlySupport, enemySupport);
@@ -103,7 +105,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -114,7 +117,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final MainOffenseCombatValue.MainOffenseRoll roll =
           new MainOffenseCombatValue.MainOffenseRoll(friendlySupport, enemySupport);
@@ -155,7 +159,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -166,7 +171,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final TerritoryEffect territoryEffect = new TerritoryEffect("territoryEffect", gameData);
       final TerritoryEffectAttachment territoryEffectAttachment =
@@ -327,7 +333,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), Set.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
 
       final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -338,7 +345,8 @@ class MainOffenseCombatValueTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(

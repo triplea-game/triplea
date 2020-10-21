@@ -28,18 +28,20 @@ public interface CombatValue {
     // Get all friendly supports
     final AvailableSupports friendlySupportTracker =
         AvailableSupports.getSortedSupport(
-            allFriendlyUnitsAliveOrWaitingToDie,
-            data.getUnitTypeList().getSupportRules(),
-            defending,
-            true);
+            new SupportCalculator(
+                allFriendlyUnitsAliveOrWaitingToDie,
+                data.getUnitTypeList().getSupportRules(),
+                defending,
+                true));
 
     // Get all enemy supports
     final AvailableSupports enemySupportTracker =
         AvailableSupports.getSortedSupport(
-            allEnemyUnitsAliveOrWaitingToDie,
-            data.getUnitTypeList().getSupportRules(),
-            !defending,
-            false);
+            new SupportCalculator(
+                allEnemyUnitsAliveOrWaitingToDie,
+                data.getUnitTypeList().getSupportRules(),
+                !defending,
+                false));
 
     return defending
         ? MainDefenseCombatValue.builder()
@@ -66,18 +68,20 @@ public interface CombatValue {
     // Get all friendly supports
     final AvailableSupports friendlySupportTracker =
         AvailableSupports.getSortedSupport(
-            allFriendlyUnitsAliveOrWaitingToDie, //
-            data.getUnitTypeList().getSupportAaRules(),
-            defending,
-            true);
+            new SupportCalculator(
+                allFriendlyUnitsAliveOrWaitingToDie, //
+                data.getUnitTypeList().getSupportAaRules(),
+                defending,
+                true));
 
     // Get all enemy supports
     final AvailableSupports enemySupportTracker =
         AvailableSupports.getSortedSupport(
-            allEnemyUnitsAliveOrWaitingToDie, //
-            data.getUnitTypeList().getSupportAaRules(),
-            !defending,
-            false);
+            new SupportCalculator(
+                allEnemyUnitsAliveOrWaitingToDie, //
+                data.getUnitTypeList().getSupportAaRules(),
+                !defending,
+                false));
 
     return defending
         ? AaDefenseCombatValue.builder()

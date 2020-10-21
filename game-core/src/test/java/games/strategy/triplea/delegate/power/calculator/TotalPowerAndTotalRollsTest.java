@@ -992,7 +992,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1021,7 +1022,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1051,7 +1053,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1081,7 +1084,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1111,7 +1115,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1144,7 +1149,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1185,7 +1191,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1233,10 +1240,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit, supportUnit2),
-              List.of(unitSupportAttachment, unitSupportAttachment2),
-              false,
-              true);
+              new SupportCalculator(
+                  List.of(supportUnit, supportUnit2),
+                  List.of(unitSupportAttachment, unitSupportAttachment2),
+                  false,
+                  true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1274,7 +1282,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1304,7 +1313,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1339,7 +1349,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1376,7 +1387,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Unit enemyUnit = givenUnit("support", gameData);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -1386,7 +1398,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1417,7 +1430,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
@@ -1653,7 +1667,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1696,7 +1711,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1738,7 +1754,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1781,7 +1798,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1823,7 +1841,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1866,7 +1885,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1908,7 +1928,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1951,7 +1972,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -1993,7 +2015,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2039,7 +2062,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2087,7 +2111,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2141,7 +2166,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2197,7 +2223,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2256,7 +2283,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2319,10 +2347,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit, supportUnit2),
-              List.of(unitSupportAttachment, unitSupportAttachment2),
-              false,
-              true);
+              new SupportCalculator(
+                  List.of(supportUnit, supportUnit2),
+                  List.of(unitSupportAttachment, unitSupportAttachment2),
+                  false,
+                  true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2395,10 +2424,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit, supportUnit2),
-              List.of(unitSupportAttachment, unitSupportAttachment2),
-              false,
-              true);
+              new SupportCalculator(
+                  List.of(supportUnit, supportUnit2),
+                  List.of(unitSupportAttachment, unitSupportAttachment2),
+                  false,
+                  true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2468,10 +2498,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit, supportUnit2),
-              List.of(unitSupportAttachment, unitSupportAttachment2),
-              false,
-              true);
+              new SupportCalculator(
+                  List.of(supportUnit, supportUnit2),
+                  List.of(unitSupportAttachment, unitSupportAttachment2),
+                  false,
+                  true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2543,10 +2574,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit, supportUnit2),
-              List.of(unitSupportAttachment, unitSupportAttachment2),
-              false,
-              true);
+              new SupportCalculator(
+                  List.of(supportUnit, supportUnit2),
+                  List.of(unitSupportAttachment, unitSupportAttachment2),
+                  false,
+                  true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
@@ -2693,7 +2725,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final Unit enemyUnit = givenUnit("support2", gameData);
       final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -2706,7 +2739,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
       final TerritoryEffectAttachment territoryEffectAttachment =
@@ -2825,7 +2859,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
-              List.of(supportUnit), List.of(unitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
 
       final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
       final TerritoryEffectAttachment territoryEffectAttachment =
@@ -2868,7 +2903,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final TerritoryEffect territoryEffect = new TerritoryEffect("test", gameData);
       final TerritoryEffectAttachment territoryEffectAttachment =
@@ -2910,7 +2946,8 @@ class TotalPowerAndTotalRollsTest {
 
       final AvailableSupports enemySupport =
           AvailableSupports.getSupport(
-              List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true);
+              new SupportCalculator(
+                  List.of(enemyUnit), List.of(enemyUnitSupportAttachment), false, true));
 
       final Map<Unit, TotalPowerAndTotalRolls> result =
           TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
