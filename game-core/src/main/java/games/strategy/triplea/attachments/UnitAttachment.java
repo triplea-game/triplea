@@ -708,8 +708,10 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCanNotTarget(final Set<UnitType> value) {
+  @VisibleForTesting
+  public UnitAttachment setCanNotTarget(final Set<UnitType> value) {
     canNotTarget = value;
+    return this;
   }
 
   public Set<UnitType> getCanNotTarget() {
