@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import games.strategy.triplea.delegate.battle.steps.fire.general.FiringGroupSplitterGeneral;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.List;
 import java.util.Objects;
@@ -67,7 +68,8 @@ public class CheckGeneralBattleEnd implements BattleStep {
 
   protected boolean isStalemate() {
     return battleState.getStatus().isLastRound()
-        || (getPower(OFFENSE) == 0 && getPower(DEFENSE) == 0);
+        || (getPower(OFFENSE) == 0 && getPower(DEFENSE) == 0)
+        || (hasNoTargets(OFFENSE) && hasNoTargets(DEFENSE));
   }
 
   private int getPower(final BattleState.Side side) {
@@ -82,6 +84,16 @@ public class CheckGeneralBattleEnd implements BattleStep {
                 battleState.getTerritoryEffects()),
             battleState.getGameData())
         .getEffectivePower();
+  }
+
+  private boolean hasNoTargets(final BattleState.Side side) {
+    return FiringGroupSplitterGeneral.of(side, FiringGroupSplitterGeneral.Type.NORMAL, "stalemate")
+            .apply(battleState)
+            .isEmpty()
+        && FiringGroupSplitterGeneral.of(
+                side, FiringGroupSplitterGeneral.Type.FIRST_STRIKE, "stalemate")
+            .apply(battleState)
+            .isEmpty();
   }
 
   protected boolean canAttackerRetreatInStalemate() {

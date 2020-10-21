@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.change;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -27,7 +30,7 @@ public class CheckStalemateBattleEnd extends CheckGeneralBattleEnd {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (isStalemate()) {
+    if (!hasSideLost(OFFENSE) && !hasSideLost(DEFENSE) && isStalemate()) {
       getBattleActions().endBattle(IBattle.WhoWon.DRAW, bridge);
     }
   }

@@ -8,11 +8,14 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -20,6 +23,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -259,5 +263,121 @@ class CheckGeneralBattleEndTest {
     checkGeneralBattleEnd.execute(executionStack, delegateBridge);
 
     verify(battleActions, never()).endBattle(IBattle.WhoWon.DRAW, delegateBridge);
+  }
+
+  @Test
+  void nobodyWinsIfBothCanNotTargetEachOtherInGeneralCombat() {
+    final GameData gameData = givenGameData().withDiceSides(6).build();
+
+    final UnitType attackerUnitType = new UnitType("attacker", gameData);
+    final UnitAttachment attackerUnitAttachment =
+        new UnitAttachment("attacker", attackerUnitType, gameData);
+    attackerUnitAttachment.setAttack(1).setAttackRolls(1);
+    attackerUnitType.addAttachment(UNIT_ATTACHMENT_NAME, attackerUnitAttachment);
+
+    final UnitType defenderUnitType = new UnitType("defender", gameData);
+    final UnitAttachment defenderUnitAttachment =
+        new UnitAttachment("defender", defenderUnitType, gameData);
+    defenderUnitAttachment.setDefense(1).setDefenseRolls(1);
+    defenderUnitType.addAttachment(UNIT_ATTACHMENT_NAME, defenderUnitAttachment);
+
+    attackerUnitAttachment.setCanNotTarget(Set.of(defenderUnitType));
+    defenderUnitAttachment.setCanNotTarget(Set.of(attackerUnitType));
+
+    final Unit attackerUnit = attackerUnitType.create(1, attacker, true).get(0);
+    final Unit defenderUnit = defenderUnitType.create(1, defender, true).get(0);
+
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .gameData(gameData)
+            .attacker(attacker)
+            .defender(defender)
+            .attackingUnits(List.of(attackerUnit))
+            .defendingUnits(List.of(defenderUnit))
+            .build();
+
+    final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
+    checkGeneralBattleEnd.execute(executionStack, delegateBridge);
+
+    verify(battleActions, times(1).description("No one can hit each other so it is a stalemate"))
+        .endBattle(IBattle.WhoWon.DRAW, delegateBridge);
+  }
+
+  @Test
+  void battleIsNotOverIfOffenseCanStillTargetInGeneralCombat() {
+    final GameData gameData = givenGameData().withDiceSides(6).build();
+
+    final UnitType attackerUnitType = new UnitType("attacker", gameData);
+    final UnitAttachment attackerUnitAttachment =
+        new UnitAttachment("attacker", attackerUnitType, gameData);
+    attackerUnitAttachment.setAttack(1).setAttackRolls(1);
+    attackerUnitType.addAttachment(UNIT_ATTACHMENT_NAME, attackerUnitAttachment);
+
+    final UnitType defenderUnitType = new UnitType("defender", gameData);
+    final UnitAttachment defenderUnitAttachment =
+        new UnitAttachment("defender", defenderUnitType, gameData);
+    defenderUnitAttachment.setDefense(1).setDefenseRolls(1);
+    defenderUnitType.addAttachment(UNIT_ATTACHMENT_NAME, defenderUnitAttachment);
+
+    defenderUnitAttachment.setCanNotTarget(Set.of(attackerUnitType));
+
+    final Unit attackerUnit = attackerUnitType.create(1, attacker, true).get(0);
+    final Unit defenderUnit = defenderUnitType.create(1, defender, true).get(0);
+
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .gameData(gameData)
+            .attacker(attacker)
+            .defender(defender)
+            .attackingUnits(List.of(attackerUnit))
+            .defendingUnits(List.of(defenderUnit))
+            .build();
+
+    final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
+    checkGeneralBattleEnd.execute(executionStack, delegateBridge);
+
+    verify(
+            battleActions,
+            never().description("attacker can still hit the defender so no endBattle"))
+        .endBattle(any(), any());
+  }
+
+  @Test
+  void battleIsNotOverIfDefenseCanStillTargetInGeneralCombat() {
+    final GameData gameData = givenGameData().withDiceSides(6).build();
+
+    final UnitType attackerUnitType = new UnitType("attacker", gameData);
+    final UnitAttachment attackerUnitAttachment =
+        new UnitAttachment("attacker", attackerUnitType, gameData);
+    attackerUnitAttachment.setAttack(1).setAttackRolls(1);
+    attackerUnitType.addAttachment(UNIT_ATTACHMENT_NAME, attackerUnitAttachment);
+
+    final UnitType defenderUnitType = new UnitType("defender", gameData);
+    final UnitAttachment defenderUnitAttachment =
+        new UnitAttachment("defender", defenderUnitType, gameData);
+    defenderUnitAttachment.setDefense(1).setDefenseRolls(1);
+    defenderUnitType.addAttachment(UNIT_ATTACHMENT_NAME, defenderUnitAttachment);
+
+    attackerUnitAttachment.setCanNotTarget(Set.of(defenderUnitType));
+
+    final Unit attackerUnit = attackerUnitType.create(1, attacker, true).get(0);
+    final Unit defenderUnit = defenderUnitType.create(1, defender, true).get(0);
+
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .gameData(gameData)
+            .attacker(attacker)
+            .defender(defender)
+            .attackingUnits(List.of(attackerUnit))
+            .defendingUnits(List.of(defenderUnit))
+            .build();
+
+    final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
+    checkGeneralBattleEnd.execute(executionStack, delegateBridge);
+
+    verify(
+            battleActions,
+            never().description("defender can still hit the attacker so no endBattle"))
+        .endBattle(any(), any());
   }
 }
