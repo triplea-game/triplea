@@ -10,14 +10,15 @@ This document is instructions on how to build and run the Docker container of th
 
 2. Make a directory for uploaded files. Inside the upload directory, create folders category, emoji, files, profile, 
 sounds, and system.
-   ```shell script
+  ```shell script
    mkdir -p /opt/triple-forums/uploads/category
    mkdir -p /opt/triple-forums/uploads/emoji
    mkdir -p /opt/triple-forums/uploads/files
    mkdir -p /opt/triple-forums/uploads/profile
    mkdir -p /opt/triple-forums/uploads/sounds
    mkdir -p /opt/triple-forums/uploads/system
-   ```  
+  ```
+
 3. Build the Docker image using the command ```docker build -t triplea-forums:latest .```
 
 ### Running
@@ -30,7 +31,7 @@ You will need a running Mongo database locally or in a Docker container. See [Mo
 ```docker run -d --rm --name triplea-forums -v /opt/triple-forums/uploads:/usr/src/app/public/uploads -p 8080:4567 triplea-forums:latest```
 
 2. Navigate to [http://0.0.0.0:8080/](http://0.0.0.0:8080/). This is the install and configuration screen for NodeBB.
-  
+
 3. Fill out the details on the page.
 
 4. Once the configuration is complete, you will need to save the config.json file off the container to the folder you 
@@ -62,7 +63,7 @@ the list of Docker image versions on [https://hub.docker.com/_/mongo](https://hu
 #### Mac OSX and Windows
 
 This command will start the Docker container:  
-```
+```shell script
 docker run --rm --name mongodb -p 27017:27017 -d mongo:4.4
 ```
 
@@ -102,7 +103,7 @@ is written to that version.
 
 Upgrading to a newer version uses the following process:
 
-1. Change the version of the From image in the Dockerfile to the newer version of NodeBB.  
+1. Change the version of the FROM image in the Dockerfile to the newer version of NodeBB.  
 2. Update the install/package.json to use packages from the newer versions package.json source.  
 3. Replace the nodebb-plugins in the install/package.json with the current list of plugins used for TripleA Forums.  
 4. Run Docker build to create the new image.
