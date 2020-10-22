@@ -10,14 +10,13 @@ This document is instructions on how to build and run the Docker container of th
 
 2. Make a directory for uploaded files. Inside the upload directory, create folders category, emoji, files, profile, 
 sounds, and system.
-     ```shell script
-      mkdir -p /opt/triple-forums/uploads/category
-      mkdir -p /opt/triple-forums/uploads/emoji
-      mkdir -p /opt/triple-forums/uploads/files
-      mkdir -p /opt/triple-forums/uploads/profile
-      mkdir -p /opt/triple-forums/uploads/sounds
-      mkdir -p /opt/triple-forums/uploads/system
-     ```
+
+        mkdir -p /opt/triple-forums/uploads/category
+        mkdir -p /opt/triple-forums/uploads/emoji
+        mkdir -p /opt/triple-forums/uploads/files
+        mkdir -p /opt/triple-forums/uploads/profile
+        mkdir -p /opt/triple-forums/uploads/sounds
+        mkdir -p /opt/triple-forums/uploads/system
 
 3. Build the Docker image using the command ```docker build -t triplea-forums:latest .```
 
@@ -124,7 +123,8 @@ Installing or grading a plugin use the following process:
 
 NOTE: *Refer to install/package.json for the most up to date list.*
 
-```
+```json
+{
 "nodebb-plugin-2factor": "^2.7.2",
 "nodebb-plugin-cards": "0.2.2",
 "nodebb-plugin-composer-default": "6.3.25",
@@ -150,6 +150,7 @@ NOTE: *Refer to install/package.json for the most up to date list.*
 "nodebb-plugin-sso-github2": "2.0.2",
 "nodebb-plugin-sso-google": "^2.4.1",
 "nodebb-plugin-sso-twitter": "^2.5.8"
+}
 ```    
 
 #### Configuration
