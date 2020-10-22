@@ -6,19 +6,21 @@ This document is instructions on how to build and run the Docker container of th
 
 ## Building
 
-1. Make a directory on your machine for where the config file and upload folder will live. ```mkdir -p /opt/triple-forums```
+1. Build the Docker image using the command ```docker build -t triplea-forums:latest .```
 
-2. Make a directory for uploaded files. Inside the upload directory, create folders category, emoji, files, profile, 
+2. Make a directory on your machine for where the config file and upload folder will live. ```mkdir -p /opt/triple-forums```
+
+3. Make a directory for uploaded files. Inside the upload directory, create folders category, emoji, files, profile, 
 sounds, and system.
 
-        mkdir -p /opt/triple-forums/uploads/category
-        mkdir -p /opt/triple-forums/uploads/emoji
-        mkdir -p /opt/triple-forums/uploads/files
-        mkdir -p /opt/triple-forums/uploads/profile
-        mkdir -p /opt/triple-forums/uploads/sounds
-        mkdir -p /opt/triple-forums/uploads/system
-
-3. Build the Docker image using the command ```docker build -t triplea-forums:latest .```
+```shell script
+mkdir -p /opt/triple-forums/uploads/category
+mkdir -p /opt/triple-forums/uploads/emoji
+mkdir -p /opt/triple-forums/uploads/files
+mkdir -p /opt/triple-forums/uploads/profile
+mkdir -p /opt/triple-forums/uploads/sounds
+mkdir -p /opt/triple-forums/uploads/system
+```
 
 ### Running
 
