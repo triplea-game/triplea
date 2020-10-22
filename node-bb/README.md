@@ -6,17 +6,17 @@ This document is instructions on how to build and run the Docker container of th
 
 ## Building
 
-1. Make a directory on your machine for where the config file and upload folder will live. ```mkdir -p /opt/triple-forums```
+1. Make a directory on your machine for where the config file and upload folder will live. ```mkdir -p /opt/triple-forums```  
 2. Make a directory for uploaded files. Inside the upload directory, create folders category, emoji, files, profile, 
 sounds, and system.
-    ```
-    mkdir -p /opt/triple-forums/uploads/category
-    mkdir -p /opt/triple-forums/uploads/emoji
-    mkdir -p /opt/triple-forums/uploads/files
-    mkdir -p /opt/triple-forums/uploads/profile
-    mkdir -p /opt/triple-forums/uploads/sounds
-    mkdir -p /opt/triple-forums/uploads/system
-    ```
+   ```
+   mkdir -p /opt/triple-forums/uploads/category
+   mkdir -p /opt/triple-forums/uploads/emoji
+   mkdir -p /opt/triple-forums/uploads/files
+   mkdir -p /opt/triple-forums/uploads/profile
+   mkdir -p /opt/triple-forums/uploads/sounds
+   mkdir -p /opt/triple-forums/uploads/system
+   ```  
 3. Build the Docker image using the command ```docker build -t triplea-forums:latest .```
 
 ### Running
@@ -27,8 +27,8 @@ You will need a running Mongo database locally or in a Docker container. See [Mo
 
 1. Run the triplea-forums:latest image using the command 
 ```docker run -d --rm --name triplea-forums -v /opt/triple-forums/uploads:/usr/src/app/public/uploads -p 8080:4567 triplea-forums:latest```  
-2. Navigate to http://0.0.0.0:8080/. This is the install and configuration screen for NodeBB.
-3. Fill out the details on the page.
+2. Navigate to [http://0.0.0.0:8080/](http://0.0.0.0:8080/). This is the install and configuration screen for NodeBB.  
+3. Fill out the details on the page.  
 4. Once the configuration is complete, you will need to save the config.json file off the container to the folder you 
 created earlier. Run ```docker container cp triplea-forums:/usr/src/app/config.json /opt/triplea-forums```
 
@@ -56,8 +56,7 @@ the list of Docker image versions on [https://hub.docker.com/_/mongo](https://hu
 
 #### Mac OSX and Windows
 
-This command will start the Docker container:
-
+This command will start the Docker container:  
 ```
 docker run --rm --name mongodb -p 27017:27017 -d mongo:4.4
 ```
@@ -89,18 +88,18 @@ The data saved is stored in the volume path you specify with the `-v` flag. In t
 The table below lists the version of NodeBB that TripleA Forums is currently running. This document 
 is written to that version.
 
-| TripleA Forums | NodeBB Version | Package Json                                                                             |
-|----------------|----------------|------------------------------------------------------------------------------------------|
-| Current        | 1.13.3         | [package.json source](https://github.com/NodeBB/NodeBB/blob/v1.13.3/install/package.json)|
-| Future         | 1.14.3         | [package.json source](https://github.com/NodeBB/NodeBB/blob/v1.14.3/install/package.json)|
+| TripleA Forums | NodeBB Version | Package Json                                                                              |
+|----------------|----------------|-------------------------------------------------------------------------------------------|
+| Current        | 1.13.3         | [package.json source](https://github.com/NodeBB/NodeBB/blob/v1.13.3/install/package.json) |
+| Future         | 1.14.3         | [package.json source](https://github.com/NodeBB/NodeBB/blob/v1.14.3/install/package.json) |
 
 #### Upgrading To A Newer NodeBB Version
 
 Upgrading to a newer version uses the following process:
 
-1. Change the version of the From image in the Dockerfile to the newer version of NodeBB.
-2. Update the install/package.json to use packages from the newer versions package.json source.
-3. Replace the nodebb-plugins in the install/package.json with the current list of plugins used for TripleA Forums.
+1. Change the version of the From image in the Dockerfile to the newer version of NodeBB.  
+2. Update the install/package.json to use packages from the newer versions package.json source.  
+3. Replace the nodebb-plugins in the install/package.json with the current list of plugins used for TripleA Forums.  
 4. Run Docker build to create the new image.
 
 #### Plugins  
@@ -112,7 +111,7 @@ to package.json directly. For the TripleA Forums, they are installed through the
 
 Installing or grading a plugin use the following process:
 
-1. Update the install/package.json to use the newer plugin.
+1. Update the install/package.json to use the newer plugin.  
 2. Run Docker build to create the new image.
 
 ##### List of currently installed plugins  
@@ -158,7 +157,7 @@ Copy the example/config.json file to a location of your choice. Edit the file to
 **Key points of the configuration to remember**:
 
 1. The *url* parameter is referencing the address NodeBB is binding to inside the Docker container. This is different 
-from the address of the host machine.
+from the address of the host machine.  
 2. The *port* parameter is referencing the port NodeBB is listening on inside the Docker container. This does not 
 have to be the same port on the host machine. Docker maps the host machine port to the container port.  
 3. Database (Mongo) parameters *host* and *port* are referring to the address and port of the machine 
