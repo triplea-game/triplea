@@ -6,10 +6,11 @@ This document is instructions on how to build and run the Docker container of th
 
 ## Building
 
-1. Make a directory on your machine for where the config file and upload folder will live. ```mkdir -p /opt/triple-forums```  
+1. Make a directory on your machine for where the config file and upload folder will live. ```mkdir -p /opt/triple-forums```
+
 2. Make a directory for uploaded files. Inside the upload directory, create folders category, emoji, files, profile, 
 sounds, and system.
-   ```
+   ```shell script
    mkdir -p /opt/triple-forums/uploads/category
    mkdir -p /opt/triple-forums/uploads/emoji
    mkdir -p /opt/triple-forums/uploads/files
@@ -26,9 +27,12 @@ sounds, and system.
 You will need a running Mongo database locally or in a Docker container. See [MongoDB](#mongodb) for how to do this.
 
 1. Run the triplea-forums:latest image using the command 
-```docker run -d --rm --name triplea-forums -v /opt/triple-forums/uploads:/usr/src/app/public/uploads -p 8080:4567 triplea-forums:latest```  
-2. Navigate to [http://0.0.0.0:8080/](http://0.0.0.0:8080/). This is the install and configuration screen for NodeBB.  
-3. Fill out the details on the page.  
+```docker run -d --rm --name triplea-forums -v /opt/triple-forums/uploads:/usr/src/app/public/uploads -p 8080:4567 triplea-forums:latest```
+
+2. Navigate to [http://0.0.0.0:8080/](http://0.0.0.0:8080/). This is the install and configuration screen for NodeBB.
+  
+3. Fill out the details on the page.
+
 4. Once the configuration is complete, you will need to save the config.json file off the container to the folder you 
 created earlier. Run ```docker container cp triplea-forums:/usr/src/app/config.json /opt/triplea-forums```
 
@@ -36,7 +40,8 @@ created earlier. Run ```docker container cp triplea-forums:/usr/src/app/config.j
 
 1. If you did not save the config.json from before, you can make a copy of the example/config.json 
 and update it per the instructions in [Configuration](#configuration) section. 
-```cp example/config.json /opt/triplea-forums/config.json```  
+```cp example/config.json /opt/triplea-forums/config.json```
+
 2. With the config.json run the triplea-forums:latest image using the command 
 ```docker run -d --rm --name triplea-forums -v /opt/triple-forums/config.json:/usr/src/app/config.json -v /opt/triple-forums/uploads:/usr/src/app/public/uploads -p 8080:4567 triplea-forums:latest```
 
@@ -157,11 +162,14 @@ Copy the example/config.json file to a location of your choice. Edit the file to
 **Key points of the configuration to remember**:
 
 1. The *url* parameter is referencing the address NodeBB is binding to inside the Docker container. This is different 
-from the address of the host machine.  
+from the address of the host machine.
+
 2. The *port* parameter is referencing the port NodeBB is listening on inside the Docker container. This does not 
-have to be the same port on the host machine. Docker maps the host machine port to the container port.  
+have to be the same port on the host machine. Docker maps the host machine port to the container port.
+ 
 3. Database (Mongo) parameters *host* and *port* are referring to the address and port of the machine 
-Mongo is running on.  
+Mongo is running on.
+
 4. The *upload_path* parameter should not be used. If you set this parameter, you will need to update where inside the 
 container your volume needs to mount. Depending on where you change that location too, you might have to edit the 
 Dockerfile to create the directory. 
