@@ -10,14 +10,14 @@ This document is instructions on how to build and run the Docker container of th
 
 2. Make a directory for uploaded files. Inside the upload directory, create folders category, emoji, files, profile, 
 sounds, and system.
-  ```shell script
-   mkdir -p /opt/triple-forums/uploads/category
-   mkdir -p /opt/triple-forums/uploads/emoji
-   mkdir -p /opt/triple-forums/uploads/files
-   mkdir -p /opt/triple-forums/uploads/profile
-   mkdir -p /opt/triple-forums/uploads/sounds
-   mkdir -p /opt/triple-forums/uploads/system
-  ```
+     ```shell script
+      mkdir -p /opt/triple-forums/uploads/category
+      mkdir -p /opt/triple-forums/uploads/emoji
+      mkdir -p /opt/triple-forums/uploads/files
+      mkdir -p /opt/triple-forums/uploads/profile
+      mkdir -p /opt/triple-forums/uploads/sounds
+      mkdir -p /opt/triple-forums/uploads/system
+     ```
 
 3. Build the Docker image using the command ```docker build -t triplea-forums:latest .```
 
@@ -81,7 +81,7 @@ purposes if you mount a volume directory for storing the data. The below command
 
 This command will start the Docker container:
 
-```
+```shell script
 docker run --rm --name mongodb -p 27017:27017 -v /opt/triple-forums/datadir:/data/db -d mongo:4.4
 ```
 
@@ -167,7 +167,7 @@ from the address of the host machine.
 
 2. The *port* parameter is referencing the port NodeBB is listening on inside the Docker container. This does not 
 have to be the same port on the host machine. Docker maps the host machine port to the container port.
- 
+
 3. Database (Mongo) parameters *host* and *port* are referring to the address and port of the machine 
 Mongo is running on.
 
