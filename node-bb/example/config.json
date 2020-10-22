@@ -1,12 +1,14 @@
 {
-  "url": "http://0.0.0.0:4567",
-  "secret": "2684f2e0-5132-455c-a83c-00fe7059b600",
-  "database": "redis",
-  "port": "4567",
-  "redis": {
-    "host": "192.168.1.231",
-    "port": "6379",
-    "password": "",
-    "database": "0"
-  }
+    "url": "http://0.0.0.0:8080",
+    "secret": "6c5e0d10-ea73-4835-bf2b-51979001fbd8",
+    "database": "mongo",
+    "port": "8080",
+    "mongo": {
+        "host": "192.168.1.231",
+        "port": "27017",
+        "username": "",
+        "password": "",
+        "database": "nodebb",
+        "uri": ""
+    }
 }

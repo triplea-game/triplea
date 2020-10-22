@@ -23,12 +23,11 @@ sounds, and system.
 
 **First time run**
 
-You will need a running database. The database can be either Redis, Mongo, or Postgres. Make sure you have one of these
-installed on your machine or a Docker container running. 
+You will need a running Mongo database locally or in a Docker container. See [MongoDB](#mongodb) for how to do this.
 
 1. Run the triplea-forums:latest image using the command 
 ```docker run -d --rm --name triplea-forums -v /opt/triple-forums/uploads:/usr/src/app/public/uploads -p 8080:4567 triplea-forums:latest```
-1. Navigate to http://0.0.0.0:8080/. This will be the install and configuration screen for NodeBB.
+1. Navigate to http://0.0.0.0:8080/. This is the install and configuration screen for NodeBB.
 1. Fill out the details on the page.
 1. Once the configuration is complete, you will need to save the config.json file off the container to the folder you 
 created earlier. Run ```docker container cp triplea-forums:/usr/src/app/config.json /opt/triplea-forums```
@@ -44,6 +43,46 @@ and update it per the instructions in [Configuration](#configuration) section.
 ### Stopping
 
 To stop the running container, run the following: ```docker stop triplea-forums```
+
+### MongoDB  
+
+Mongo is the database that backs triplea-forums. You can install and run a local copy by following the
+instructions [here](https://docs.mongodb.com/manual/installation/) or you can run a Docker image with Mongo already
+installed.
+
+Before running the Docker image it is important to know which version of Mongo you want to run. As of this writing the 
+latest version is 4.4. In most cases running that will be fine however if you need a different version, you can find 
+the list of Docker image versions on [https://hub.docker.com/_/mongo](https://hub.docker.com/_/mongo).
+
+**Mac OSX and Windows**
+
+This command will start the Docker container:
+
+```
+docker run --rm --name mongodb -p 27017:27017 -d mongo:4.4
+```
+
+To stop the container, run ```docker stop mongodb```
+
+The data saved will persist between shutdowns because it is being saved in the VirtualBox instance running on your os.
+For more information on that, see the section Where to Store Data at 
+[https://hub.docker.com/_/mongo](https://hub.docker.com/_/mongo).
+
+**Linux and Unix**
+
+While Linux and Unix can use the same command as Mac OSX to start the container, the data stored is not in VirtualBox.
+Instead, it is stored directly on the host at `/var/lib/docker/volumes/{volume hash}/_data`. It's far easier for backup
+purposes if you mount a volume directory for storing the data. The below command uses a volume mount.
+
+This command will start the Docker container:
+
+```
+docker run --rm --name mongodb -p 27017:27017 -v /opt/triple-forums/datadir:/data/db -d mongo:4.4
+```
+
+To stop the container, run ```docker stop mongodb```
+
+The data saved is stored in the volume path you specify with the `-v` flag. In this case `/opt/triple-forums/datadir`.  
 
 ### NodeBB
 
@@ -112,8 +151,7 @@ NOTE: *Refer to install/package.json for the most up to date list.*
 #### Configuration
 
 The NodeBB configuration is a JSON file, ```config.json```, which is kept at the root of the NodeBB install.
-An example of that file can be found at ```example/config.json```. That configuration file is setup to run Redis 
-as the database. NodeBB can use Redis, MongoDB, or Postgres as a database. Information on all the configuration 
+An example of that file can be found at ```example/config.json```. Information on all the configuration 
 options for NodeBB can be found [here](https://docs.nodebb.org/configuring/config/).
 
 Copy the example/config.json file to a location of your choice. Edit the file to update the parameters for the database. 
@@ -124,8 +162,8 @@ Copy the example/config.json file to a location of your choice. Edit the file to
 from the address of the host machine.
 1. The *port* parameter is referencing the port NodeBB is listening on inside the Docker container. This does not 
 have to be the same port on the host machine. Docker maps the host machine port to the container port.  
-1. Database (Redis/Mongo/Postgres) parameters *host* and *port* are referring to the address and port of the machine 
-the database is running on. 
+1. Database (Mongo) parameters *host* and *port* are referring to the address and port of the machine 
+Mongo is running on. 
 1. The *upload_path* parameter should not be used. If you set this parameter, you will need to update where inside the 
 container your volume needs to mount. Depending on where you change that location too, you might have to edit the 
 Dockerfile to create the directory. 
