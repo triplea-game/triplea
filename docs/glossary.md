@@ -30,3 +30,11 @@
   - Defending units can only participate in this phase if `Submarines Defending May Submerge Or Retreat` property is set.
   - `Sub Retreat Before Battle` defines if this phase occurs before the First Strike Phase or at the end of the Battle Round.
 - **Submerge Subs Phase**: Another name for **Evasion Phase** and generally used when only submarines have `canEvade` and `Submersible Subs` is set.
+
+## Game Versions
+- **v1**: Classic - https://github.com/triplea-maps/world_war_ii_classic - https://axisallies.com/versions/classic/
+- **v2**: Revised - https://github.com/triplea-maps/world_war_ii_revised - https://axisallies.com/versions/revised/
+- **v3**: Anniversary Edition - https://github.com/triplea-maps/world_war_ii_v3 - https://axisallies.com/versions/anniversary/
+- **v4**: Spring 1942 - https://github.com/triplea-maps/world_war_ii_v4
+- **v5**: 1942 Second Edition - https://github.com/triplea-maps/world_war_ii_global - https://axisallies.com/versions/aa-1942/
+- **v6**: 1941 - https://github.com/triplea-maps/world_war_ii_v6_1941 - https://axisallies.com/versions/aa-1941/
