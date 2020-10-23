@@ -2181,3 +2181,10 @@
    <br>Otherwise, unit types, regions, etc. have all been preserved so that players can take advantage of their previous experience with the World War II v3 map.
    <br>Initial playtesting with human opponents suggests that the map is balanced without a bid -- but the TripleA community will be the ultimate judge.
    <br>Try it and see what you think!
+   - mapName: Aggression 1941
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/aggression_1941/archive/master.zip
+  version: 1
+  img: 
+  description: |
+   <br>A WWII scenario loosely based on 1941, inspired from AA50 Anniversary and Big World
