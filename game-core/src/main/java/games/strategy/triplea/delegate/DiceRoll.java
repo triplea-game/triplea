@@ -13,7 +13,9 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
@@ -25,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -109,55 +110,34 @@ public class DiceRoll implements Externalizable {
       final CombatValue combatValueCalculator) {
 
     final GameData data = bridge.getData();
-    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            aaUnits, combatValueCalculator);
+    final AaPowerStrengthAndRolls unitPowerAndRollsMap =
+        AaPowerStrengthAndRolls.build(aaUnits, validTargets.size(), combatValueCalculator);
 
     // Check that there are valid AA and targets to roll for
-    final int totalAaAttacks =
-        TotalPowerAndTotalRolls.getTotalAaAttacks(unitPowerAndRollsMap, validTargets);
-    if (totalAaAttacks <= 0) {
+    final int totalAaRolls = unitPowerAndRollsMap.calculateTotalRolls();
+    if (totalAaRolls <= 0) {
       return new DiceRoll(List.of(), 0, 0);
     }
 
     // Determine dice sides (doesn't handle the possibility of different dice sides within the same
     // typeAA)
-    final int diceSides =
-        TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
-                aaUnits, data, combatValueCalculator.isDefending(), unitPowerAndRollsMap)
-            .getSecond();
+    final int diceSides = unitPowerAndRollsMap.getBestDiceSides();
 
     // Roll AA dice for LL or regular
-    int hits = 0;
-    final List<Die> sortedDice = new ArrayList<>();
+    final int hits;
+    final List<Die> sortedDice;
     final String typeAa = UnitAttachment.get(aaUnits.iterator().next().getType()).getTypeAa();
-    final int totalPower =
-        TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-                null,
-                null,
-                combatValueCalculator.isDefending(),
-                unitPowerAndRollsMap,
-                validTargets,
-                data,
-                false)
-            .getFirst();
+    final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
     final GamePlayer player = aaUnits.iterator().next().getOwner();
     final String annotation = "Roll " + typeAa + " in " + location.getName();
     if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
-      hits += getAaLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
+      sortedDice = new ArrayList<>();
+      hits = getAaLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
     } else {
       final int[] dice =
-          bridge.getRandom(diceSides, totalAaAttacks, player, DiceType.COMBAT, annotation);
-      hits +=
-          TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-                  dice,
-                  sortedDice,
-                  combatValueCalculator.isDefending(),
-                  unitPowerAndRollsMap,
-                  validTargets,
-                  data,
-                  true)
-              .getSecond();
+          bridge.getRandom(diceSides, totalAaRolls, player, DiceType.COMBAT, annotation);
+      sortedDice = unitPowerAndRollsMap.getDiceHits(dice);
+      hits = (int) sortedDice.stream().filter(die -> die.getType() == DieType.HIT).count();
     }
 
     // Add dice results to history
@@ -253,10 +233,10 @@ public class DiceRoll implements Externalizable {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
-    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(units, combatValueCalculator);
+    final TotalPowerAndTotalRolls unitPowerAndRollsMap =
+        PowerStrengthAndRolls.build(units, combatValueCalculator);
 
-    final int power = TotalPowerAndTotalRolls.getTotalPower(unitPowerAndRollsMap, data);
+    final int power = unitPowerAndRollsMap.calculateTotalPower();
     if (power == 0) {
       return new DiceRoll(List.of(), 0, 0);
     }
@@ -446,12 +426,10 @@ public class DiceRoll implements Externalizable {
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
     sortByStrength(units, combatValueCalculator.isDefending());
-    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(units, combatValueCalculator);
+    final PowerStrengthAndRolls unitPowerAndRollsMap =
+        PowerStrengthAndRolls.build(units, combatValueCalculator);
 
-    final TotalPowerAndTotalRolls totalPowerAndRolls =
-        TotalPowerAndTotalRolls.getTotalPowerAndRolls(unitPowerAndRollsMap, data);
-    final int rollCount = totalPowerAndRolls.getTotalRolls();
+    final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
@@ -464,9 +442,8 @@ public class DiceRoll implements Externalizable {
     int diceIndex = 0;
     for (final Unit current : units) {
       final UnitAttachment ua = UnitAttachment.get(current.getType());
-      final TotalPowerAndTotalRolls powerAndRolls = unitPowerAndRollsMap.get(current);
-      final int strength = powerAndRolls.getTotalPower();
-      final int rolls = powerAndRolls.getTotalRolls();
+      final int strength = unitPowerAndRollsMap.getStrength(current);
+      final int rolls = unitPowerAndRollsMap.getRolls(current);
       // lhtr heavy bombers take best of n dice for both attack and defense
       if (rolls <= 0 || strength <= 0) {
         continue;
@@ -510,7 +487,7 @@ public class DiceRoll implements Externalizable {
       }
     }
 
-    final int totalPower = totalPowerAndRolls.getTotalPower();
+    final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
     final double expectedHits = ((double) totalPower) / data.getDiceSides();
     final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
     bridge

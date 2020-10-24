@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
-import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
+import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,8 +67,7 @@ public final class ProBattleUtils {
                 data)
             .reversed());
     final int attackPower =
-        TotalPowerAndTotalRolls.getTotalPower(
-            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+        PowerStrengthAndRolls.build(
                 sortedUnitsList,
                 CombatValue.buildMainCombatValue(
                     defendingUnits,
@@ -76,8 +75,8 @@ public final class ProBattleUtils {
                     false,
                     data,
                     t,
-                    TerritoryEffectHelper.getEffects(t))),
-            data);
+                    TerritoryEffectHelper.getEffects(t)))
+            .calculateTotalPower();
     final List<Unit> defendersWithHitPoints =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
     final int totalDefenderHitPoints = CasualtyUtil.getTotalHitpointsLeft(defendersWithHitPoints);
@@ -155,8 +154,7 @@ public final class ProBattleUtils {
                 !attacking, proData.getUnitValueMap(), TerritoryEffectHelper.getEffects(t), data)
             .reversed());
     final int myPower =
-        TotalPowerAndTotalRolls.getTotalPower(
-            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+        PowerStrengthAndRolls.build(
                 sortedUnitsList,
                 CombatValue.buildMainCombatValue(
                     enemyUnits,
@@ -164,8 +162,8 @@ public final class ProBattleUtils {
                     !attacking,
                     data,
                     t,
-                    TerritoryEffectHelper.getEffects(t))),
-            data);
+                    TerritoryEffectHelper.getEffects(t)))
+            .calculateTotalPower();
     return (myPower * 6.0 / data.getDiceSides());
   }
 

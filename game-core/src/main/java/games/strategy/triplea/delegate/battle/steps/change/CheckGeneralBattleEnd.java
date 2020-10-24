@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.fire.general.FiringGroupSplitterGeneral;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
-import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
+import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -69,23 +69,21 @@ public class CheckGeneralBattleEnd implements BattleStep {
 
   protected boolean isStalemate() {
     return battleState.getStatus().isLastRound()
-        || (getPower(OFFENSE) == 0 && getPower(DEFENSE) == 0)
+        || (hasNoStrengthOrRolls(OFFENSE) && hasNoStrengthOrRolls(DEFENSE))
         || (hasNoTargets(OFFENSE) && hasNoTargets(DEFENSE));
   }
 
-  private int getPower(final BattleState.Side side) {
-    return TotalPowerAndTotalRolls.getTotalPowerAndRolls(
-            TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+  private boolean hasNoStrengthOrRolls(final BattleState.Side side) {
+    return !PowerStrengthAndRolls.build(
+            battleState.filterUnits(ALIVE, side),
+            CombatValue.buildMainCombatValue(
+                battleState.filterUnits(ALIVE, side.getOpposite()),
                 battleState.filterUnits(ALIVE, side),
-                CombatValue.buildMainCombatValue(
-                    battleState.filterUnits(ALIVE, side.getOpposite()),
-                    battleState.filterUnits(ALIVE, side),
-                    side == DEFENSE,
-                    battleState.getGameData(),
-                    battleState.getBattleSite(),
-                    battleState.getTerritoryEffects())),
-            battleState.getGameData())
-        .getEffectivePower();
+                side == DEFENSE,
+                battleState.getGameData(),
+                battleState.getBattleSite(),
+                battleState.getTerritoryEffects()))
+        .hasStrengthOrRolls();
   }
 
   private boolean hasNoTargets(final BattleState.Side side) {
