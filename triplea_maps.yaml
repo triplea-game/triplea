@@ -424,7 +424,7 @@
     <br>This map is the continuation of the (deprecated) Large Middle Earth map. Currently in balance testing period.
     <br>Version 2.0.7, last update 2018.10.08. for engine 1.9.0.0.11000+
 - mapName: WW2 Path to Victory
-  mapCategory: GOOD
+  mapCategory: BEST
   url: https://github.com/triplea-maps/ww2_path_to_victory/archive/master.zip
   version: 5
   img: https://raw.githubusercontent.com/triplea-maps/ww2_path_to_victory/master/map/smallMap.png
