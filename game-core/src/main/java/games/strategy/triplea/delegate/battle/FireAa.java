@@ -197,9 +197,9 @@ public class FireAa implements IExecutable {
     return AaCasualtySelector.getAaCasualties(
         !defending,
         validAttackingUnitsForThisRoll,
-        attackableUnits,
+        allEnemyUnitsAliveOrWaitingToDie,
         defendingAa,
-        firingUnits,
+        allFriendlyUnitsAliveOrWaitingToDie,
         "Hits from " + currentTypeAa + ", ",
         dice,
         bridge,
