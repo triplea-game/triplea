@@ -87,7 +87,7 @@ subprojects {
         hamcrestOptionalVersion = '2.0.0'
         hamcrestVersion = '2.0.0.0'
         jacksonDataTypeVersion = '2.11.3'
-        jakartaMailVersion = '1.6.5'
+        jakartaMailVersion = '2.0.0'
         javaWebsocketVersion = '1.5.1'
         javaxActivationVersion = '1.1.1'
         jaxbApiVersion = '2.3.1'
