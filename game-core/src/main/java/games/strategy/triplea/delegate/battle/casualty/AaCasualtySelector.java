@@ -127,7 +127,7 @@ public class AaCasualtySelector {
     final GameData data = bridge.getData();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            defendingAa, allEnemyUnits, allFriendlyUnits, !defending, data);
+            defendingAa, allFriendlyUnits, allEnemyUnits, !defending, data);
 
     // if we can damage units, do it now
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
@@ -324,7 +324,7 @@ public class AaCasualtySelector {
         (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            defendingAa, allFriendlyUnits, allEnemyUnits, defending, bridge.getData());
+            defendingAa, allFriendlyUnits, allEnemyUnits, !defending, bridge.getData());
     if (TotalPowerAndTotalRolls.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
