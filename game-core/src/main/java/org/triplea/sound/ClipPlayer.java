@@ -249,28 +249,25 @@ public class ClipPlayer {
       folder += "_" + gamePlayer.getName();
     }
 
-    final URL clip = loadClip(folder).orElse(loadClip(clipName).orElse(null));
-    // clip may still be null, we try to load all phases/all sound, for example: clipName =
-    // "phase_technology", folder =
-    // "phase_technology_Japanese"
-
-    if (clip != null) {
-      new Thread(
-              () ->
-                  UrlStreams.openStream(
-                      URI.create(clip.toString()),
-                      inputStream -> {
-                        try {
-                          final AudioDevice audioDevice =
-                              FactoryRegistry.systemRegistry().createAudioDevice();
-                          new AdvancedPlayer(inputStream, audioDevice).play();
-                        } catch (final Exception e) {
-                          log.log(Level.SEVERE, "Failed to play: " + clip, e);
-                        }
-                        return null;
-                      }))
-          .start();
-    }
+    loadClipPath(folder)
+        .or(() -> loadClipPath(clipName))
+        .ifPresent(
+            clip ->
+                new Thread(
+                        () ->
+                            UrlStreams.openStream(
+                                URI.create(clip.toString()),
+                                inputStream -> {
+                                  try {
+                                    final AudioDevice audioDevice =
+                                        FactoryRegistry.systemRegistry().createAudioDevice();
+                                    new AdvancedPlayer(inputStream, audioDevice).play();
+                                  } catch (final Exception e) {
+                                    log.log(Level.SEVERE, "Failed to play: " + clip, e);
+                                  }
+                                  return null;
+                                }))
+                    .start());
   }
 
   private boolean isSoundEnabled() {
@@ -280,25 +277,19 @@ public class ClipPlayer {
         && hasAudio();
   }
 
-  private Optional<URL> loadClip(final String clipName) {
-    return (isSoundEnabled() && !isSoundClipMuted(clipName))
-        ? Optional.ofNullable(loadClipPath(clipName))
-        : Optional.empty();
-  }
-
-  private URL loadClipPath(final String pathName) {
+  private Optional<URL> loadClipPath(final String pathName) {
     if (!sounds.containsKey(pathName)) {
       // parse sounds for the first time
       sounds.put(pathName, parseClipPaths(pathName));
     }
     final List<URL> availableSounds = sounds.get(pathName);
     if (availableSounds == null || availableSounds.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
     // we want to pick a random sound from this folder, as users
     // don't like hearing the same ones over and over again
     Collections.shuffle(availableSounds);
-    return availableSounds.get(0);
+    return Optional.of(availableSounds.get(0));
   }
 
   /**
