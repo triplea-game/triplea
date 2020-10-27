@@ -9,9 +9,9 @@ import java.util.Collection;
 
 public interface CombatValue {
 
-  StrengthOrRollCalculator getRoll();
+  StrengthAndRollCalculator getRoll();
 
-  StrengthOrRollCalculator getStrength();
+  StrengthAndRollCalculator getStrength();
 
   boolean isDefending();
 

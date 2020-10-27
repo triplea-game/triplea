@@ -28,12 +28,12 @@ class AaOffenseCombatValue implements CombatValue {
   @NonNull AvailableSupports supportFromEnemies;
 
   @Override
-  public StrengthOrRollCalculator getRoll() {
+  public StrengthAndRollCalculator getRoll() {
     return new AaOffenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
-  public StrengthOrRollCalculator getStrength() {
+  public StrengthAndRollCalculator getStrength() {
     return new AaOffenseStrength(gameData, supportFromFriends, supportFromEnemies);
   }
 
@@ -42,7 +42,7 @@ class AaOffenseCombatValue implements CombatValue {
     return false;
   }
 
-  static class AaOffenseRoll extends StrengthOrRollCalculator {
+  static class AaOffenseRoll extends StrengthAndRollCalculator {
 
     AaOffenseRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
       super(friendlySupport, enemySupport);
@@ -62,7 +62,7 @@ class AaOffenseCombatValue implements CombatValue {
     }
   }
 
-  static class AaOffenseStrength extends StrengthOrRollCalculator {
+  static class AaOffenseStrength extends StrengthAndRollCalculator {
 
     private final GameData gameData;
 

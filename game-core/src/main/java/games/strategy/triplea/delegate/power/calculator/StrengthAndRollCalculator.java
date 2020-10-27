@@ -9,14 +9,14 @@ import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
 
 /** Calculates the value of the dice roll and strength. */
-abstract class StrengthOrRollCalculator {
+abstract class StrengthAndRollCalculator {
 
   protected final AvailableSupports friendlySupportTracker;
   protected final AvailableSupports enemySupportTracker;
   // Keep track of the units that are providing support and whom they are providing it to
   @Getter private final Map<Unit, IntegerMap<Unit>> supportGiven = new HashMap<>();
 
-  StrengthOrRollCalculator(
+  StrengthAndRollCalculator(
       final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
     this.friendlySupportTracker = friendlySupport.filter(getRuleFilter());
     this.enemySupportTracker = enemySupport.filter(getRuleFilter());

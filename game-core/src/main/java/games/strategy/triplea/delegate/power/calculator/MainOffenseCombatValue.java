@@ -35,12 +35,12 @@ class MainOffenseCombatValue implements CombatValue {
   boolean territoryIsLand;
 
   @Override
-  public StrengthOrRollCalculator getRoll() {
+  public StrengthAndRollCalculator getRoll() {
     return new MainOffenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
-  public StrengthOrRollCalculator getStrength() {
+  public StrengthAndRollCalculator getStrength() {
     return new MainOffenseStrength(
         gameData, supportFromFriends, supportFromEnemies, territoryEffects, territoryIsLand);
   }
@@ -50,7 +50,7 @@ class MainOffenseCombatValue implements CombatValue {
     return false;
   }
 
-  static class MainOffenseRoll extends StrengthOrRollCalculator {
+  static class MainOffenseRoll extends StrengthAndRollCalculator {
 
     MainOffenseRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
       super(friendlySupport, enemySupport);
@@ -70,7 +70,7 @@ class MainOffenseCombatValue implements CombatValue {
     }
   }
 
-  static class MainOffenseStrength extends StrengthOrRollCalculator {
+  static class MainOffenseStrength extends StrengthAndRollCalculator {
 
     private final GameData gameData;
     private final Collection<TerritoryEffect> territoryEffects;

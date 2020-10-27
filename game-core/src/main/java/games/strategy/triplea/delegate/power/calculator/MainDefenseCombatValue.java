@@ -35,12 +35,12 @@ class MainDefenseCombatValue implements CombatValue {
   @NonNull Collection<TerritoryEffect> territoryEffects;
 
   @Override
-  public StrengthOrRollCalculator getRoll() {
+  public StrengthAndRollCalculator getRoll() {
     return new MainDefenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
-  public StrengthOrRollCalculator getStrength() {
+  public StrengthAndRollCalculator getStrength() {
     return new MainDefenseStrength(
         gameData, supportFromFriends, supportFromEnemies, territoryEffects);
   }
@@ -50,7 +50,7 @@ class MainDefenseCombatValue implements CombatValue {
     return true;
   }
 
-  static class MainDefenseRoll extends StrengthOrRollCalculator {
+  static class MainDefenseRoll extends StrengthAndRollCalculator {
 
     MainDefenseRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
       super(friendlySupport, enemySupport);
@@ -70,7 +70,7 @@ class MainDefenseCombatValue implements CombatValue {
     }
   }
 
-  static class MainDefenseStrength extends StrengthOrRollCalculator {
+  static class MainDefenseStrength extends StrengthAndRollCalculator {
 
     private final GameData gameData;
     private final Collection<TerritoryEffect> territoryEffects;

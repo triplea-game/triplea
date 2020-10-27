@@ -305,8 +305,8 @@ public class TotalPowerAndTotalRolls {
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
-    final StrengthOrRollCalculator strengthCalculator = calculator.getStrength();
-    final StrengthOrRollCalculator rollCalculator = calculator.getRoll();
+    final StrengthAndRollCalculator strengthCalculator = calculator.getStrength();
+    final StrengthAndRollCalculator rollCalculator = calculator.getRoll();
     for (final Unit unit : units) {
       int strength = strengthCalculator.getValue(unit);
       int rolls = rollCalculator.getValue(unit);
