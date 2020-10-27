@@ -32,6 +32,7 @@ class FireRoundStepsFactoryTest {
     when(attacker.getName()).thenReturn("attacker");
     final GamePlayer defender = mock(GamePlayer.class);
     when(defender.getName()).thenReturn("defender");
+
     final List<String> names =
         getStepNames(
             FireRoundStepsFactory.builder()
@@ -66,6 +67,7 @@ class FireRoundStepsFactoryTest {
     when(attacker.getName()).thenReturn("attacker");
     final GamePlayer defender = mock(GamePlayer.class);
     when(defender.getName()).thenReturn("defender");
+
     final List<String> names =
         getStepNames(
             FireRoundStepsFactory.builder()
@@ -100,12 +102,13 @@ class FireRoundStepsFactoryTest {
   }
 
   @Test
-  @DisplayName("With the default name UNITS, the step names should be readable")
+  @DisplayName("With the default name UNITS, the step names should not include UNITS")
   void getNamesWithDefaultUnitName() {
     final GamePlayer attacker = mock(GamePlayer.class);
     when(attacker.getName()).thenReturn("attacker");
     final GamePlayer defender = mock(GamePlayer.class);
     when(defender.getName()).thenReturn("defender");
+
     final List<String> names =
         getStepNames(
             FireRoundStepsFactory.builder()
@@ -126,6 +129,9 @@ class FireRoundStepsFactoryTest {
                 .build()
                 .createSteps());
 
-    assertThat(names, is(generalFightStepStrings(attacker, defender, "")));
+    assertThat(
+        "units should not be in the name",
+        names,
+        is(generalFightStepStrings(attacker, defender, "")));
   }
 }
