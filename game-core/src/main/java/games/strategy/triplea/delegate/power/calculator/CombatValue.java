@@ -26,7 +26,7 @@ public interface CombatValue {
       final Collection<TerritoryEffect> territoryEffects) {
 
     // Get all friendly supports
-    final AvailableSupports friendlySupportTracker =
+    final AvailableSupports supportFromFriends =
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allFriendlyUnitsAliveOrWaitingToDie,
@@ -35,7 +35,7 @@ public interface CombatValue {
                 true));
 
     // Get all enemy supports
-    final AvailableSupports enemySupportTracker =
+    final AvailableSupports supportFromEnemies =
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allEnemyUnitsAliveOrWaitingToDie,
@@ -45,15 +45,15 @@ public interface CombatValue {
 
     return defending
         ? MainDefenseCombatValue.builder()
-            .data(data)
-            .friendlySupportTracker(friendlySupportTracker)
-            .enemySupportTracker(enemySupportTracker)
+            .gameData(data)
+            .supportFromFriends(supportFromFriends)
+            .supportFromEnemies(supportFromEnemies)
             .territoryEffects(territoryEffects)
             .build()
         : MainOffenseCombatValue.builder()
-            .data(data)
-            .friendlySupportTracker(friendlySupportTracker)
-            .enemySupportTracker(enemySupportTracker)
+            .gameData(data)
+            .supportFromFriends(supportFromFriends)
+            .supportFromEnemies(supportFromEnemies)
             .territoryEffects(territoryEffects)
             .territoryIsLand(Matches.territoryIsLand().test(location))
             .build();
@@ -66,7 +66,7 @@ public interface CombatValue {
       final GameData data) {
 
     // Get all friendly supports
-    final AvailableSupports friendlySupportTracker =
+    final AvailableSupports supportFromFriends =
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allFriendlyUnitsAliveOrWaitingToDie, //
@@ -75,7 +75,7 @@ public interface CombatValue {
                 true));
 
     // Get all enemy supports
-    final AvailableSupports enemySupportTracker =
+    final AvailableSupports supportFromEnemies =
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allEnemyUnitsAliveOrWaitingToDie, //
@@ -85,14 +85,14 @@ public interface CombatValue {
 
     return defending
         ? AaDefenseCombatValue.builder()
-            .data(data)
-            .friendlySupportTracker(friendlySupportTracker)
-            .enemySupportTracker(enemySupportTracker)
+            .gameData(data)
+            .supportFromFriends(supportFromFriends)
+            .supportFromEnemies(supportFromEnemies)
             .build()
         : AaOffenseCombatValue.builder()
-            .data(data)
-            .friendlySupportTracker(friendlySupportTracker)
-            .enemySupportTracker(enemySupportTracker)
+            .gameData(data)
+            .supportFromFriends(supportFromFriends)
+            .supportFromEnemies(supportFromEnemies)
             .build();
   }
 }

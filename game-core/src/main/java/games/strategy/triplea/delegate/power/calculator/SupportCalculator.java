@@ -24,7 +24,7 @@ import org.triplea.java.collections.IntegerMap;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SupportCalculator {
 
-  @Getter Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
+  Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
   Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
   boolean defence;
   boolean allies;
@@ -81,5 +81,9 @@ public class SupportCalculator {
 
   public int getSupport(final UnitSupportAttachment rule) {
     return supportUnits.getOrDefault(rule, new IntegerMap<>()).totalValues();
+  }
+
+  public Collection<List<UnitSupportAttachment>> getUnitSupportAttachments() {
+    return supportRules.values();
   }
 }

@@ -20,28 +20,26 @@ import lombok.Value;
 @Getter(AccessLevel.NONE)
 class AaDefenseCombatValue implements CombatValue {
 
-  @NonNull GameData data;
-  @NonNull AvailableSupports friendlySupportTracker;
-  @NonNull AvailableSupports enemySupportTracker;
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  GameData gameData;
+
+  @NonNull AvailableSupports supportFromFriends;
+  @NonNull AvailableSupports supportFromEnemies;
 
   @Override
   public StrengthOrRollCalculator getRoll() {
-    return new AaDefenseRoll(friendlySupportTracker, enemySupportTracker);
+    return new AaDefenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
   public StrengthOrRollCalculator getStrength() {
-    return new AaDefenseStrength(data, friendlySupportTracker, enemySupportTracker);
+    return new AaDefenseStrength(gameData, supportFromFriends, supportFromEnemies);
   }
 
   @Override
   public boolean isDefending() {
     return true;
-  }
-
-  @Override
-  public GameData getGameData() {
-    return data;
   }
 
   static class AaDefenseRoll extends StrengthOrRollCalculator {
@@ -52,11 +50,10 @@ class AaDefenseCombatValue implements CombatValue {
 
     @Override
     public int getValue(final Unit unit) {
-      final RollValue rollValue =
-          RollValue.of(unit.getUnitAttachment().getMaxAaAttacks())
-              .add(addSupport(unit, friendlySupportTracker))
-              .add(addSupport(unit, enemySupportTracker));
-      return rollValue.getValue();
+      return RollValue.of(unit.getUnitAttachment().getMaxAaAttacks())
+          .add(addSupport(unit, friendlySupportTracker))
+          .add(addSupport(unit, enemySupportTracker))
+          .getValue();
     }
 
     @Override
@@ -79,12 +76,11 @@ class AaDefenseCombatValue implements CombatValue {
 
     @Override
     public int getValue(final Unit unit) {
-      final StrengthValue strengthValue =
-          StrengthValue.of(
-                  gameData.getDiceSides(), unit.getUnitAttachment().getAttackAa(unit.getOwner()))
-              .add(addSupport(unit, friendlySupportTracker))
-              .add(addSupport(unit, enemySupportTracker));
-      return strengthValue.getValue();
+      return StrengthValue.of(
+              gameData.getDiceSides(), unit.getUnitAttachment().getAttackAa(unit.getOwner()))
+          .add(addSupport(unit, friendlySupportTracker))
+          .add(addSupport(unit, enemySupportTracker))
+          .getValue();
     }
 
     @Override

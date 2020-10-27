@@ -287,7 +287,7 @@ public class ProPurchaseOption {
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
       for (final List<UnitSupportAttachment> bonusType :
-          availableSupports.getSupportRules().values()) {
+          availableSupports.getUnitSupportAttachments()) {
         if (!bonusType.contains(usa)) {
           continue;
         }

@@ -25,31 +25,29 @@ import lombok.Value;
 @Getter(AccessLevel.NONE)
 class MainOffenseCombatValue implements CombatValue {
 
-  @NonNull GameData data;
-  @NonNull AvailableSupports friendlySupportTracker;
-  @NonNull AvailableSupports enemySupportTracker;
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  GameData gameData;
+
+  @NonNull AvailableSupports supportFromFriends;
+  @NonNull AvailableSupports supportFromEnemies;
   @NonNull Collection<TerritoryEffect> territoryEffects;
   boolean territoryIsLand;
 
   @Override
   public StrengthOrRollCalculator getRoll() {
-    return new MainOffenseRoll(friendlySupportTracker, enemySupportTracker);
+    return new MainOffenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
   public StrengthOrRollCalculator getStrength() {
     return new MainOffenseStrength(
-        data, friendlySupportTracker, enemySupportTracker, territoryEffects, territoryIsLand);
+        gameData, supportFromFriends, supportFromEnemies, territoryEffects, territoryIsLand);
   }
 
   @Override
   public boolean isDefending() {
     return false;
-  }
-
-  @Override
-  public GameData getGameData() {
-    return data;
   }
 
   static class MainOffenseRoll extends StrengthOrRollCalculator {
@@ -60,11 +58,10 @@ class MainOffenseCombatValue implements CombatValue {
 
     @Override
     public int getValue(final Unit unit) {
-      final RollValue rollValue =
-          RollValue.of(unit.getUnitAttachment().getAttackRolls(unit.getOwner()))
-              .add(addSupport(unit, friendlySupportTracker))
-              .add(addSupport(unit, enemySupportTracker));
-      return rollValue.getValue();
+      return RollValue.of(unit.getUnitAttachment().getAttackRolls(unit.getOwner()))
+          .add(addSupport(unit, friendlySupportTracker))
+          .add(addSupport(unit, enemySupportTracker))
+          .getValue();
     }
 
     @Override
