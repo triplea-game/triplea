@@ -106,6 +106,8 @@ public class MustFightBattle extends DependentBattle
 
   private static final long serialVersionUID = 5879502298361231540L;
 
+  private static final long MAX_INFINITE_ROUNDS = 10000;
+
   private final Collection<Unit> attackingWaitingToDie = new ArrayList<>();
 
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
@@ -1699,6 +1701,25 @@ public class MustFightBattle extends DependentBattle
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver) {
               round++;
+              if (round > MAX_INFINITE_ROUNDS) {
+                // the battle appears to be in an infinite loop
+                throw new IllegalStateException(
+                    "Round 10,000 reached in a battle. Something must be wrong."
+                        + " Attacking unit types: "
+                        + attackingUnits.stream()
+                            .map(Unit::getType)
+                            .collect(Collectors.toSet())
+                            .stream()
+                            .map(UnitType::getName)
+                            .collect(Collectors.joining(","))
+                        + ", Defending unit types: "
+                        + defendingUnits.stream()
+                            .map(Unit::getType)
+                            .collect(Collectors.toSet())
+                            .stream()
+                            .map(UnitType::getName)
+                            .collect(Collectors.joining(",")));
+              }
               // determine any AA
               updateOffensiveAaUnits();
               updateDefendingAaUnits();
