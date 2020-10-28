@@ -63,8 +63,8 @@ class AaDefenseCombatValue implements CombatValue {
     public StrengthValue getStrength(final Unit unit) {
       return StrengthValue.of(
               gameData.getDiceSides(), unit.getUnitAttachment().getAttackAa(unit.getOwner()))
-          .add(calculator.addSupport(unit, supportFromFriends))
-          .add(calculator.addSupport(unit, supportFromEnemies));
+          .add(calculator.giveSupport(unit, supportFromFriends))
+          .add(calculator.giveSupport(unit, supportFromEnemies));
     }
 
     @Override

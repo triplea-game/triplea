@@ -66,8 +66,8 @@ class MainOffenseCombatValue implements CombatValue {
     @Override
     public RollValue getRoll(final Unit unit) {
       return RollValue.of(unit.getUnitAttachment().getAttackRolls(unit.getOwner()))
-          .add(calculator.addSupport(unit, supportFromFriends))
-          .add(calculator.addSupport(unit, supportFromEnemies));
+          .add(calculator.giveSupport(unit, supportFromFriends))
+          .add(calculator.giveSupport(unit, supportFromEnemies));
     }
 
     @Override
@@ -115,8 +115,8 @@ class MainOffenseCombatValue implements CombatValue {
           .add(
               TerritoryEffectHelper.getTerritoryCombatBonus(
                   unit.getType(), territoryEffects, false))
-          .add(calculator.addSupport(unit, supportFromFriends))
-          .add(calculator.addSupport(unit, supportFromEnemies));
+          .add(calculator.giveSupport(unit, supportFromFriends))
+          .add(calculator.giveSupport(unit, supportFromEnemies));
     }
 
     @Override

@@ -25,8 +25,8 @@ class AaRoll implements RollCalculator {
   @Override
   public RollValue getRoll(final Unit unit) {
     return RollValue.of(unit.getUnitAttachment().getMaxAaAttacks())
-        .add(calculator.addSupport(unit, supportFromFriends))
-        .add(calculator.addSupport(unit, supportFromEnemies));
+        .add(calculator.giveSupport(unit, supportFromFriends))
+        .add(calculator.giveSupport(unit, supportFromEnemies));
   }
 
   @Override

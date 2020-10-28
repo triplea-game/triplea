@@ -66,8 +66,8 @@ class MainDefenseCombatValue implements CombatValue {
     @Override
     public RollValue getRoll(final Unit unit) {
       return RollValue.of(unit.getUnitAttachment().getDefenseRolls(unit.getOwner()))
-          .add(calculator.addSupport(unit, supportFromFriends))
-          .add(calculator.addSupport(unit, supportFromEnemies));
+          .add(calculator.giveSupport(unit, supportFromFriends))
+          .add(calculator.giveSupport(unit, supportFromEnemies));
     }
 
     @Override
@@ -111,9 +111,9 @@ class MainDefenseCombatValue implements CombatValue {
                       unit.getType(), territoryEffects, true));
 
       if (allowFriendly) {
-        strengthValue = strengthValue.add(calculator.addSupport(unit, supportFromFriends));
+        strengthValue = strengthValue.add(calculator.giveSupport(unit, supportFromFriends));
       }
-      strengthValue = strengthValue.add(calculator.addSupport(unit, supportFromEnemies));
+      strengthValue = strengthValue.add(calculator.giveSupport(unit, supportFromEnemies));
       return strengthValue;
     }
 
