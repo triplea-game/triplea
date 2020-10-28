@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Value;
 
 /**
- * Holds the value of a dice strength
+ * Holds the value of a strength
  *
  * <p>Correctly limits the value to between 0 and diceSides
  */
