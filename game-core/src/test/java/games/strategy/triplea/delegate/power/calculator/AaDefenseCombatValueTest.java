@@ -65,7 +65,7 @@ class AaDefenseCombatValueTest {
           new AaDefenseCombatValue.AaDefenseStrength(gameData, friendlySupport, enemySupport);
       assertThat(
           "Strength starts at 3, friendly adds 2, enemy removes 1: total 4",
-          strength.getValue(unit),
+          strength.getStrength(unit).getValue(),
           is(4));
     }
 
@@ -119,7 +119,7 @@ class AaDefenseCombatValueTest {
 
       final AaDefenseCombatValue.AaDefenseStrength strength =
           new AaDefenseCombatValue.AaDefenseStrength(gameData, friendlySupport, enemySupport);
-      strength.getValue(unit);
+      strength.getStrength(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",
           strength.getSupportGiven(),

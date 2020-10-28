@@ -68,7 +68,7 @@ class MainOffenseCombatValueTest {
           new MainOffenseCombatValue.MainOffenseRoll(friendlySupport, enemySupport);
       assertThat(
           "Roll starts at 3, friendly adds 2, enemy removes 1: total 4",
-          roll.getValue(unit),
+          roll.getRoll(unit).getValue(),
           is(4));
     }
 
@@ -122,7 +122,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseRoll roll =
           new MainOffenseCombatValue.MainOffenseRoll(friendlySupport, enemySupport);
-      roll.getValue(unit);
+      roll.getRoll(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",
           roll.getSupportGiven(),
@@ -185,7 +185,7 @@ class MainOffenseCombatValueTest {
               gameData, friendlySupport, enemySupport, List.of(territoryEffect), true);
       assertThat(
           "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
-          strength.getValue(unit),
+          strength.getStrength(unit).getValue(),
           is(5));
     }
 
@@ -220,7 +220,10 @@ class MainOffenseCombatValueTest {
               AvailableSupports.EMPTY_RESULT,
               List.of(),
               true);
-      assertThat("Strength starts at 3, marine adds 1: total 4", strength.getValue(unit), is(4));
+      assertThat(
+          "Strength starts at 3, marine adds 1: total 4",
+          strength.getStrength(unit).getValue(),
+          is(4));
     }
 
     @Test
@@ -243,7 +246,9 @@ class MainOffenseCombatValueTest {
               List.of(),
               true);
       assertThat(
-          "Strength starts at 3 and marine is not added: total 3", strength.getValue(unit), is(3));
+          "Strength starts at 3 and marine is not added: total 3",
+          strength.getStrength(unit).getValue(),
+          is(3));
     }
 
     @Test
@@ -265,7 +270,7 @@ class MainOffenseCombatValueTest {
               AvailableSupports.EMPTY_RESULT,
               List.of(),
               true);
-      assertThat("Bombard is 1", strength.getValue(unit), is(1));
+      assertThat("Bombard is 1", strength.getStrength(unit).getValue(), is(1));
     }
 
     @Test
@@ -287,7 +292,7 @@ class MainOffenseCombatValueTest {
               AvailableSupports.EMPTY_RESULT,
               List.of(),
               false);
-      assertThat("Regular attack is 3", strength.getValue(unit), is(3));
+      assertThat("Regular attack is 3", strength.getStrength(unit).getValue(), is(3));
     }
 
     @Test
@@ -309,7 +314,7 @@ class MainOffenseCombatValueTest {
               AvailableSupports.EMPTY_RESULT,
               List.of(),
               true);
-      assertThat("Regular attack is 3", strength.getValue(unit), is(3));
+      assertThat("Regular attack is 3", strength.getStrength(unit).getValue(), is(3));
     }
 
     @Test
@@ -351,7 +356,7 @@ class MainOffenseCombatValueTest {
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
               gameData, friendlySupport, enemySupport, List.of(), true);
-      strength.getValue(unit);
+      strength.getStrength(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",
           strength.getSupportGiven(),

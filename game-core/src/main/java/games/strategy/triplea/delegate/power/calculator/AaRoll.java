@@ -2,25 +2,35 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
-import java.util.function.Predicate;
+import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Value;
+import org.triplea.java.collections.IntegerMap;
 
 /** Calculate the roll for AA dice */
-class AaRoll extends StrengthAndRollCalculator {
+@Value
+@Getter(AccessLevel.NONE)
+class AaRoll implements RollCalculator {
 
-  AaRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
-    super(friendlySupport, enemySupport);
+  AvailableSupports supportFromFriends;
+  AvailableSupports supportFromEnemies;
+  StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+
+  AaRoll(final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
+    this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getAaRoll);
+    this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getAaRoll);
   }
 
   @Override
-  public int getValue(final Unit unit) {
+  public RollValue getRoll(final Unit unit) {
     return RollValue.of(unit.getUnitAttachment().getMaxAaAttacks())
-        .add(addSupport(unit, friendlySupportTracker))
-        .add(addSupport(unit, enemySupportTracker))
-        .getValue();
+        .add(calculator.addSupport(unit, supportFromFriends))
+        .add(calculator.addSupport(unit, supportFromEnemies));
   }
 
   @Override
-  protected Predicate<UnitSupportAttachment> getRuleFilter() {
-    return UnitSupportAttachment::getAaRoll;
+  public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
+    return calculator.getSupportGiven();
   }
 }

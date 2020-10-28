@@ -71,7 +71,7 @@ class MainDefenseCombatValueTest {
           new MainDefenseCombatValue.MainDefenseRoll(friendlySupport, enemySupport);
       assertThat(
           "Roll starts at 3, friendly adds 2, enemy removes 1: total 4",
-          roll.getValue(unit),
+          roll.getRoll(unit).getValue(),
           is(4));
     }
 
@@ -125,7 +125,7 @@ class MainDefenseCombatValueTest {
 
       final MainDefenseCombatValue.MainDefenseRoll roll =
           new MainDefenseCombatValue.MainDefenseRoll(friendlySupport, enemySupport);
-      roll.getValue(unit);
+      roll.getRoll(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",
           roll.getSupportGiven(),
@@ -188,7 +188,7 @@ class MainDefenseCombatValueTest {
               gameData, friendlySupport, enemySupport, List.of(territoryEffect));
       assertThat(
           "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
-          strength.getValue(unit),
+          strength.getStrength(unit).getValue(),
           is(5));
     }
 
@@ -257,7 +257,7 @@ class MainDefenseCombatValueTest {
       assertThat(
           "Strength is limited to 1, friendly is not used, "
               + "enemy removes 2, territory adds 3: total 1",
-          strength.getValue(unit),
+          strength.getStrength(unit).getValue(),
           is(2));
     }
 
@@ -300,7 +300,7 @@ class MainDefenseCombatValueTest {
       final MainDefenseCombatValue.MainDefenseStrength strength =
           new MainDefenseCombatValue.MainDefenseStrength(
               gameData, friendlySupport, enemySupport, List.of());
-      strength.getValue(unit);
+      strength.getStrength(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",
           strength.getSupportGiven(),

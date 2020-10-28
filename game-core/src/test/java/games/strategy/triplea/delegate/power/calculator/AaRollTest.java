@@ -59,7 +59,9 @@ class AaRollTest {
 
     final AaRoll roll = new AaRoll(friendlySupport, enemySupport);
     assertThat(
-        "Roll starts at 3, friendly adds 2, enemy removes 1: total 4", roll.getValue(unit), is(4));
+        "Roll starts at 3, friendly adds 2, enemy removes 1: total 4",
+        roll.getRoll(unit).getValue(),
+        is(4));
   }
 
   UnitSupportAttachment givenUnitSupportAttachment(
@@ -111,7 +113,7 @@ class AaRollTest {
                 List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
     final AaRoll roll = new AaRoll(friendlySupport, enemySupport);
-    roll.getValue(unit);
+    roll.getRoll(unit);
     assertThat(
         "Friendly gave 2 and enemy gave -1",
         roll.getSupportGiven(),

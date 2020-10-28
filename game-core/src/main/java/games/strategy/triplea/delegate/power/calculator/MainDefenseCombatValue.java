@@ -9,12 +9,13 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.Collection;
-import java.util.function.Predicate;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Calculates defense strength and roll for normal dice
@@ -35,12 +36,12 @@ class MainDefenseCombatValue implements CombatValue {
   @NonNull Collection<TerritoryEffect> territoryEffects;
 
   @Override
-  public StrengthAndRollCalculator getRoll() {
+  public RollCalculator getRoll() {
     return new MainDefenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
-  public StrengthAndRollCalculator getStrength() {
+  public StrengthCalculator getStrength() {
     return new MainDefenseStrength(
         gameData, supportFromFriends, supportFromEnemies, territoryEffects);
   }
@@ -50,43 +51,52 @@ class MainDefenseCombatValue implements CombatValue {
     return true;
   }
 
-  static class MainDefenseRoll extends StrengthAndRollCalculator {
+  static class MainDefenseRoll implements RollCalculator {
 
-    MainDefenseRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
-      super(friendlySupport, enemySupport);
+    AvailableSupports supportFromFriends;
+    AvailableSupports supportFromEnemies;
+    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+
+    MainDefenseRoll(
+        final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
+      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getRoll);
+      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getRoll);
     }
 
     @Override
-    public int getValue(final Unit unit) {
+    public RollValue getRoll(final Unit unit) {
       return RollValue.of(unit.getUnitAttachment().getDefenseRolls(unit.getOwner()))
-          .add(addSupport(unit, friendlySupportTracker))
-          .add(addSupport(unit, enemySupportTracker))
-          .getValue();
+          .add(calculator.addSupport(unit, supportFromFriends))
+          .add(calculator.addSupport(unit, supportFromEnemies));
     }
 
     @Override
-    protected Predicate<UnitSupportAttachment> getRuleFilter() {
-      return UnitSupportAttachment::getRoll;
+    public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
+      return calculator.getSupportGiven();
     }
   }
 
-  static class MainDefenseStrength extends StrengthAndRollCalculator {
+  static class MainDefenseStrength implements StrengthCalculator {
 
     private final GameData gameData;
     private final Collection<TerritoryEffect> territoryEffects;
+    AvailableSupports supportFromFriends;
+    AvailableSupports supportFromEnemies;
+    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
 
     MainDefenseStrength(
         final GameData gameData,
-        final AvailableSupports friendlySupport,
-        final AvailableSupports enemySupport,
+        final AvailableSupports supportFromFriends,
+        final AvailableSupports supportFromEnemies,
         final Collection<TerritoryEffect> territoryEffects) {
-      super(friendlySupport, enemySupport);
       this.gameData = gameData;
       this.territoryEffects = territoryEffects;
+      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getStrength);
+      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getStrength);
     }
 
     @Override
-    public int getValue(final Unit unit) {
+    public StrengthValue getStrength(final Unit unit) {
       int strength = unit.getUnitAttachment().getDefense(unit.getOwner());
       boolean allowFriendly = true;
       if (isFirstTurnLimitedRoll(unit.getOwner())) {
@@ -101,10 +111,10 @@ class MainDefenseCombatValue implements CombatValue {
                       unit.getType(), territoryEffects, true));
 
       if (allowFriendly) {
-        strengthValue = strengthValue.add(addSupport(unit, friendlySupportTracker));
+        strengthValue = strengthValue.add(calculator.addSupport(unit, supportFromFriends));
       }
-      strengthValue = strengthValue.add(addSupport(unit, enemySupportTracker));
-      return strengthValue.getValue();
+      strengthValue = strengthValue.add(calculator.addSupport(unit, supportFromEnemies));
+      return strengthValue;
     }
 
     private boolean isFirstTurnLimitedRoll(final GamePlayer player) {
@@ -131,8 +141,8 @@ class MainDefenseCombatValue implements CombatValue {
     }
 
     @Override
-    protected Predicate<UnitSupportAttachment> getRuleFilter() {
-      return UnitSupportAttachment::getStrength;
+    public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
+      return calculator.getSupportGiven();
     }
   }
 }

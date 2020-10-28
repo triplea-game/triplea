@@ -7,12 +7,13 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.Collection;
-import java.util.function.Predicate;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Calculates offense strength and roll for normal dice
@@ -35,12 +36,12 @@ class MainOffenseCombatValue implements CombatValue {
   boolean territoryIsLand;
 
   @Override
-  public StrengthAndRollCalculator getRoll() {
+  public RollCalculator getRoll() {
     return new MainOffenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
-  public StrengthAndRollCalculator getStrength() {
+  public StrengthCalculator getStrength() {
     return new MainOffenseStrength(
         gameData, supportFromFriends, supportFromEnemies, territoryEffects, territoryIsLand);
   }
@@ -50,46 +51,55 @@ class MainOffenseCombatValue implements CombatValue {
     return false;
   }
 
-  static class MainOffenseRoll extends StrengthAndRollCalculator {
+  static class MainOffenseRoll implements RollCalculator {
 
-    MainOffenseRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
-      super(friendlySupport, enemySupport);
+    AvailableSupports supportFromFriends;
+    AvailableSupports supportFromEnemies;
+    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+
+    MainOffenseRoll(
+        final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
+      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getRoll);
+      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getRoll);
     }
 
     @Override
-    public int getValue(final Unit unit) {
+    public RollValue getRoll(final Unit unit) {
       return RollValue.of(unit.getUnitAttachment().getAttackRolls(unit.getOwner()))
-          .add(addSupport(unit, friendlySupportTracker))
-          .add(addSupport(unit, enemySupportTracker))
-          .getValue();
+          .add(calculator.addSupport(unit, supportFromFriends))
+          .add(calculator.addSupport(unit, supportFromEnemies));
     }
 
     @Override
-    protected Predicate<UnitSupportAttachment> getRuleFilter() {
-      return UnitSupportAttachment::getRoll;
+    public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
+      return calculator.getSupportGiven();
     }
   }
 
-  static class MainOffenseStrength extends StrengthAndRollCalculator {
+  static class MainOffenseStrength implements StrengthCalculator {
 
     private final GameData gameData;
     private final Collection<TerritoryEffect> territoryEffects;
     private final boolean territoryIsLand;
+    AvailableSupports supportFromFriends;
+    AvailableSupports supportFromEnemies;
+    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
 
     MainOffenseStrength(
         final GameData gameData,
-        final AvailableSupports friendlySupport,
-        final AvailableSupports enemySupport,
+        final AvailableSupports supportFromFriends,
+        final AvailableSupports supportFromEnemies,
         final Collection<TerritoryEffect> territoryEffects,
         final boolean territoryIsLand) {
-      super(friendlySupport, enemySupport);
       this.gameData = gameData;
       this.territoryEffects = territoryEffects;
       this.territoryIsLand = territoryIsLand;
+      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getStrength);
+      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getStrength);
     }
 
     @Override
-    public int getValue(final Unit unit) {
+    public StrengthValue getStrength(final Unit unit) {
       final UnitAttachment ua = unit.getUnitAttachment();
       int strength = ua.getAttack(unit.getOwner());
       if (ua.getIsMarine() != 0 && unit.getWasAmphibious()) {
@@ -101,19 +111,17 @@ class MainOffenseCombatValue implements CombatValue {
         strength = ua.getBombard();
       }
 
-      final StrengthValue strengthValue =
-          StrengthValue.of(gameData.getDiceSides(), strength)
-              .add(
-                  TerritoryEffectHelper.getTerritoryCombatBonus(
-                      unit.getType(), territoryEffects, false))
-              .add(addSupport(unit, friendlySupportTracker))
-              .add(addSupport(unit, enemySupportTracker));
-      return strengthValue.getValue();
+      return StrengthValue.of(gameData.getDiceSides(), strength)
+          .add(
+              TerritoryEffectHelper.getTerritoryCombatBonus(
+                  unit.getType(), territoryEffects, false))
+          .add(calculator.addSupport(unit, supportFromFriends))
+          .add(calculator.addSupport(unit, supportFromEnemies));
     }
 
     @Override
-    protected Predicate<UnitSupportAttachment> getRuleFilter() {
-      return UnitSupportAttachment::getStrength;
+    public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
+      return calculator.getSupportGiven();
     }
   }
 }

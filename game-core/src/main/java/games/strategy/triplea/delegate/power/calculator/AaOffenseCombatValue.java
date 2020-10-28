@@ -3,12 +3,13 @@ package games.strategy.triplea.delegate.power.calculator;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
-import java.util.function.Predicate;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Calculates offense strength and roll for AA/Targeted dice
@@ -28,12 +29,12 @@ class AaOffenseCombatValue implements CombatValue {
   @NonNull AvailableSupports supportFromEnemies;
 
   @Override
-  public StrengthAndRollCalculator getRoll() {
+  public RollCalculator getRoll() {
     return new AaRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
-  public StrengthAndRollCalculator getStrength() {
+  public StrengthCalculator getStrength() {
     return new AaOffenseStrength(gameData, supportFromFriends, supportFromEnemies);
   }
 
@@ -42,31 +43,34 @@ class AaOffenseCombatValue implements CombatValue {
     return false;
   }
 
-  static class AaOffenseStrength extends StrengthAndRollCalculator {
+  static class AaOffenseStrength implements StrengthCalculator {
 
     private final GameData gameData;
+    AvailableSupports supportFromFriends;
+    AvailableSupports supportFromEnemies;
+    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
 
     AaOffenseStrength(
         final GameData gameData,
-        final AvailableSupports friendlySupport,
-        final AvailableSupports enemySupport) {
-      super(friendlySupport, enemySupport);
+        final AvailableSupports supportFromFriends,
+        final AvailableSupports supportFromEnemies) {
       this.gameData = gameData;
+      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getAaStrength);
+      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getAaStrength);
     }
 
     @Override
-    public int getValue(final Unit unit) {
+    public StrengthValue getStrength(final Unit unit) {
       return StrengthValue.of(
               gameData.getDiceSides(),
               unit.getUnitAttachment().getOffensiveAttackAa(unit.getOwner()))
-          .add(addSupport(unit, friendlySupportTracker))
-          .add(addSupport(unit, enemySupportTracker))
-          .getValue();
+          .add(calculator.addSupport(unit, supportFromFriends))
+          .add(calculator.addSupport(unit, supportFromEnemies));
     }
 
     @Override
-    protected Predicate<UnitSupportAttachment> getRuleFilter() {
-      return UnitSupportAttachment::getAaStrength;
+    public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
+      return calculator.getSupportGiven();
     }
   }
 }
