@@ -29,7 +29,7 @@ class AaOffenseCombatValue implements CombatValue {
 
   @Override
   public StrengthAndRollCalculator getRoll() {
-    return new AaOffenseRoll(supportFromFriends, supportFromEnemies);
+    return new AaRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
@@ -40,26 +40,6 @@ class AaOffenseCombatValue implements CombatValue {
   @Override
   public boolean isDefending() {
     return false;
-  }
-
-  static class AaOffenseRoll extends StrengthAndRollCalculator {
-
-    AaOffenseRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
-      super(friendlySupport, enemySupport);
-    }
-
-    @Override
-    public int getValue(final Unit unit) {
-      return RollValue.of(unit.getUnitAttachment().getMaxAaAttacks())
-          .add(addSupport(unit, friendlySupportTracker))
-          .add(addSupport(unit, enemySupportTracker))
-          .getValue();
-    }
-
-    @Override
-    protected Predicate<UnitSupportAttachment> getRuleFilter() {
-      return UnitSupportAttachment::getAaRoll;
-    }
   }
 
   static class AaOffenseStrength extends StrengthAndRollCalculator {
