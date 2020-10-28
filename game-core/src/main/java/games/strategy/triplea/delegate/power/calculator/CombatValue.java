@@ -17,7 +17,7 @@ public interface CombatValue {
 
   GameData getGameData();
 
-  static CombatValue buildMain(
+  static CombatValue buildMainCombatValue(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
@@ -59,7 +59,7 @@ public interface CombatValue {
             .build();
   }
 
-  static CombatValue buildAa(
+  static CombatValue buildAaCombatValue(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,

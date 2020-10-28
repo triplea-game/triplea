@@ -2983,7 +2983,7 @@ class TotalPowerAndTotalRollsTest {
           TotalPowerAndTotalRolls.getTotalPower(
               TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   attackers,
-                  CombatValue.buildMain(
+                  CombatValue.buildMainCombatValue(
                       List.of(), attackers, false, twwGameData, berlin, List.of())),
               twwGameData);
       assertThat("1 artillery should provide +1 support to the infantry", attackPower, is(6));
@@ -2993,7 +2993,7 @@ class TotalPowerAndTotalRollsTest {
           TotalPowerAndTotalRolls.getTotalPower(
               TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   attackers,
-                  CombatValue.buildMain(
+                  CombatValue.buildMainCombatValue(
                       List.of(), attackers, false, twwGameData, berlin, List.of())),
               twwGameData);
       assertThat(
@@ -3006,7 +3006,7 @@ class TotalPowerAndTotalRollsTest {
           TotalPowerAndTotalRolls.getTotalPower(
               TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                   attackers,
-                  CombatValue.buildMain(
+                  CombatValue.buildMainCombatValue(
                       List.of(), attackers, false, twwGameData, berlin, List.of())),
               twwGameData);
       assertThat(

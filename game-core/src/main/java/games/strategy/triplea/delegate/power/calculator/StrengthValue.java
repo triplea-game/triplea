@@ -7,7 +7,7 @@ import lombok.Value;
 /**
  * Holds the value of a dice strength
  *
- * <p>Correctly limits the value
+ * <p>Correctly limits the value to between 0 and diceSides
  */
 @Value(staticConstructor = "of")
 @Getter(AccessLevel.NONE)

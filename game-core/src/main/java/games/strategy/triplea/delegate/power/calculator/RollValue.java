@@ -7,7 +7,7 @@ import lombok.Value;
 /**
  * Holds the value of a dice roll.
  *
- * <p>Handles infinite values and correctly limits the value
+ * <p>Handles infinite values and correctly limits the value to above 0
  */
 @Value(staticConstructor = "of")
 @Getter(AccessLevel.NONE)

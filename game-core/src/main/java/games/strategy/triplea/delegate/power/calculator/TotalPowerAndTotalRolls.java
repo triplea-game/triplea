@@ -280,7 +280,7 @@ public class TotalPowerAndTotalRolls {
       final GameData data) {
 
     final CombatValue calculator =
-        CombatValue.buildAa(
+        CombatValue.buildAaCombatValue(
             allEnemyUnitsAliveOrWaitingToDie, allFriendlyUnitsAliveOrWaitingToDie, defending, data);
     return getAaUnitPowerAndRollsForNormalBattles(aaUnits, calculator);
   }
@@ -380,7 +380,7 @@ public class TotalPowerAndTotalRolls {
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
     final CombatValue calculator =
-        CombatValue.buildMain(
+        CombatValue.buildMainCombatValue(
             allEnemyUnitsAliveOrWaitingToDie,
             allFriendlyUnitsAliveOrWaitingToDie,
             defending,

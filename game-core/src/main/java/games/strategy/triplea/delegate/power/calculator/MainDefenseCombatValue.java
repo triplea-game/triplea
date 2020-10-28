@@ -116,18 +116,18 @@ class MainDefenseCombatValue implements CombatValue {
     }
 
     private boolean isNegateDominatingFirstRoundAttack(final GamePlayer player) {
-      final RulesAttachment ra =
+      final RulesAttachment rulesAttachment =
           (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-      return ra != null && ra.getNegateDominatingFirstRoundAttack();
+      return rulesAttachment != null && rulesAttachment.getNegateDominatingFirstRoundAttack();
     }
 
     private boolean isDominatingFirstRoundAttack(final GamePlayer player) {
       if (player == null) {
         return false;
       }
-      final RulesAttachment ra =
+      final RulesAttachment rulesAttachment =
           (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-      return ra != null && ra.getDominatingFirstRoundAttack();
+      return rulesAttachment != null && rulesAttachment.getDominatingFirstRoundAttack();
     }
 
     @Override

@@ -4,6 +4,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import java.util.function.Predicate;
 
+/** Calculate the roll for AA dice */
 class AaRoll extends StrengthAndRollCalculator {
 
   AaRoll(final AvailableSupports friendlySupport, final AvailableSupports enemySupport) {
