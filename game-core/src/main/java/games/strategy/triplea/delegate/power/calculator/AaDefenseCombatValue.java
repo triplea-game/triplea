@@ -48,7 +48,7 @@ class AaDefenseCombatValue implements CombatValue {
     private final GameData gameData;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+    UsedSupportTracker tracker = new UsedSupportTracker();
 
     AaDefenseStrength(
         final GameData gameData,
@@ -63,13 +63,13 @@ class AaDefenseCombatValue implements CombatValue {
     public StrengthValue getStrength(final Unit unit) {
       return StrengthValue.of(
               gameData.getDiceSides(), unit.getUnitAttachment().getAttackAa(unit.getOwner()))
-          .add(calculator.giveSupport(unit, supportFromFriends))
-          .add(calculator.giveSupport(unit, supportFromEnemies));
+          .add(tracker.giveSupport(unit, supportFromFriends))
+          .add(tracker.giveSupport(unit, supportFromEnemies));
     }
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return calculator.getSupportGiven();
+      return tracker.getSupportGiven();
     }
   }
 }

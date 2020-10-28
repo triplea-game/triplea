@@ -15,7 +15,7 @@ class AaRoll implements RollCalculator {
 
   AvailableSupports supportFromFriends;
   AvailableSupports supportFromEnemies;
-  StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+  UsedSupportTracker tracker = new UsedSupportTracker();
 
   AaRoll(final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
     this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getAaRoll);
@@ -25,12 +25,12 @@ class AaRoll implements RollCalculator {
   @Override
   public RollValue getRoll(final Unit unit) {
     return RollValue.of(unit.getUnitAttachment().getMaxAaAttacks())
-        .add(calculator.giveSupport(unit, supportFromFriends))
-        .add(calculator.giveSupport(unit, supportFromEnemies));
+        .add(tracker.giveSupport(unit, supportFromFriends))
+        .add(tracker.giveSupport(unit, supportFromEnemies));
   }
 
   @Override
   public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-    return calculator.getSupportGiven();
+    return tracker.getSupportGiven();
   }
 }

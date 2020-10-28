@@ -55,7 +55,7 @@ class MainOffenseCombatValue implements CombatValue {
 
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+    UsedSupportTracker tracker = new UsedSupportTracker();
 
     MainOffenseRoll(
         final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
@@ -66,13 +66,13 @@ class MainOffenseCombatValue implements CombatValue {
     @Override
     public RollValue getRoll(final Unit unit) {
       return RollValue.of(unit.getUnitAttachment().getAttackRolls(unit.getOwner()))
-          .add(calculator.giveSupport(unit, supportFromFriends))
-          .add(calculator.giveSupport(unit, supportFromEnemies));
+          .add(tracker.giveSupport(unit, supportFromFriends))
+          .add(tracker.giveSupport(unit, supportFromEnemies));
     }
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return calculator.getSupportGiven();
+      return tracker.getSupportGiven();
     }
   }
 
@@ -83,7 +83,7 @@ class MainOffenseCombatValue implements CombatValue {
     private final boolean territoryIsLand;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+    UsedSupportTracker tracker = new UsedSupportTracker();
 
     MainOffenseStrength(
         final GameData gameData,
@@ -115,13 +115,13 @@ class MainOffenseCombatValue implements CombatValue {
           .add(
               TerritoryEffectHelper.getTerritoryCombatBonus(
                   unit.getType(), territoryEffects, false))
-          .add(calculator.giveSupport(unit, supportFromFriends))
-          .add(calculator.giveSupport(unit, supportFromEnemies));
+          .add(tracker.giveSupport(unit, supportFromFriends))
+          .add(tracker.giveSupport(unit, supportFromEnemies));
     }
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return calculator.getSupportGiven();
+      return tracker.getSupportGiven();
     }
   }
 }

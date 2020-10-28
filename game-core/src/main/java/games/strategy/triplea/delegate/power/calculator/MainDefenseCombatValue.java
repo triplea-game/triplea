@@ -55,7 +55,7 @@ class MainDefenseCombatValue implements CombatValue {
 
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+    UsedSupportTracker tracker = new UsedSupportTracker();
 
     MainDefenseRoll(
         final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
@@ -66,13 +66,13 @@ class MainDefenseCombatValue implements CombatValue {
     @Override
     public RollValue getRoll(final Unit unit) {
       return RollValue.of(unit.getUnitAttachment().getDefenseRolls(unit.getOwner()))
-          .add(calculator.giveSupport(unit, supportFromFriends))
-          .add(calculator.giveSupport(unit, supportFromEnemies));
+          .add(tracker.giveSupport(unit, supportFromFriends))
+          .add(tracker.giveSupport(unit, supportFromEnemies));
     }
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return calculator.getSupportGiven();
+      return tracker.getSupportGiven();
     }
   }
 
@@ -82,7 +82,7 @@ class MainDefenseCombatValue implements CombatValue {
     private final Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-    StrengthAndRollCalculator calculator = new StrengthAndRollCalculator();
+    UsedSupportTracker tracker = new UsedSupportTracker();
 
     MainDefenseStrength(
         final GameData gameData,
@@ -111,9 +111,9 @@ class MainDefenseCombatValue implements CombatValue {
                       unit.getType(), territoryEffects, true));
 
       if (allowFriendly) {
-        strengthValue = strengthValue.add(calculator.giveSupport(unit, supportFromFriends));
+        strengthValue = strengthValue.add(tracker.giveSupport(unit, supportFromFriends));
       }
-      strengthValue = strengthValue.add(calculator.giveSupport(unit, supportFromEnemies));
+      strengthValue = strengthValue.add(tracker.giveSupport(unit, supportFromEnemies));
       return strengthValue;
     }
 
@@ -142,7 +142,7 @@ class MainDefenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return calculator.getSupportGiven();
+      return tracker.getSupportGiven();
     }
   }
 }

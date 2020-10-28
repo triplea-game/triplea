@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
-/** Calculates the value of the dice roll and strength. */
+/** Gives and records the support given to units */
 @Value
-class StrengthAndRollCalculator {
+class UsedSupportTracker {
   // Keep track of the units that are providing support and whom they are providing it to
   @Getter Map<Unit, IntegerMap<Unit>> supportGiven = new HashMap<>();
 
