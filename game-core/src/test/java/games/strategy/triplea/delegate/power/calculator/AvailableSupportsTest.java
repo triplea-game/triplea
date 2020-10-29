@@ -483,11 +483,13 @@ class AvailableSupportsTest {
           AvailableSupports.getSupport(
               new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
+      assertThat("Support unit can give one", tracker.giveSupportToUnit(unit), is(1));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
       assertThat(
-          "The support unit gave one support", used, is(IntegerMap.of(Map.of(supportUnit, 1))));
+          "The support unit gave one support",
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(supportUnit, IntegerMap.of(Map.of(unit, 1)))));
     }
 
     @Test
@@ -516,13 +518,13 @@ class AvailableSupportsTest {
           AvailableSupports.getSupport(
               new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
+      assertThat("Support unit can give 2", tracker.giveSupportToUnit(unit), is(2));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
       assertThat(
           "The support unit gave one support of 2",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 2))));
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(supportUnit, IntegerMap.of(Map.of(unit, 2)))));
     }
 
     @Test
@@ -553,14 +555,14 @@ class AvailableSupportsTest {
               new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
 
       // give the support to the first unit
-      tracker.giveSupportToUnit(unit);
+      assertThat("Support unit can give 1", tracker.giveSupportToUnit(unit), is(1));
       // attempt to give the support to the second unit
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit2);
+      assertThat("Support unit has no more to give", tracker.giveSupportToUnit(unit2), is(0));
 
       assertThat(
           "The second unit should get no support as it was all used up",
-          used,
-          is(IntegerMap.of(Map.of())));
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(supportUnit, IntegerMap.of(Map.of(unit, 1)))));
     }
 
     @Test
@@ -590,19 +592,14 @@ class AvailableSupportsTest {
           AvailableSupports.getSupport(
               new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
-      assertThat(
-          "The support unit gave one support to the first",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 1))));
-
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
-      assertThat(
-          "The support unit gave one support to the second",
-          used2,
-          is(IntegerMap.of(Map.of(supportUnit, 1))));
+      assertThat("Support can give 1", tracker.giveSupportToUnit(unit), is(1));
+      assertThat("Support can still give 1 more", tracker.giveSupportToUnit(unit2), is(1));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
+      assertThat(
+          "The support unit gave one support to both",
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(supportUnit, IntegerMap.of(Map.of(unit, 1, unit2, 1)))));
     }
 
     @Test
@@ -634,19 +631,20 @@ class AvailableSupportsTest {
               new SupportCalculator(
                   List.of(supportUnit, supportUnit2), List.of(rule), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
-      assertThat(
-          "The first support unit supports the first unit",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 1))));
-
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
-      assertThat(
-          "The second support unit supports the second unit",
-          used2,
-          is(IntegerMap.of(Map.of(supportUnit2, 1))));
+      assertThat("First support unit can support", tracker.giveSupportToUnit(unit), is(1));
+      assertThat("Second support unit can support", tracker.giveSupportToUnit(unit2), is(1));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
+      assertThat(
+          "The first support unit supports the first unit and "
+              + "the second support unit supports the second unit",
+          tracker.getUnitsGivingSupport(),
+          is(
+              Map.of(
+                  supportUnit,
+                  IntegerMap.of(Map.of(unit, 1)),
+                  supportUnit2,
+                  IntegerMap.of(Map.of(unit2, 1)))));
     }
 
     @Test
@@ -679,16 +677,20 @@ class AvailableSupportsTest {
               new SupportCalculator(
                   List.of(supportUnit, supportUnit2), List.of(rule), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
-          "The first unit gets all the support because of the stack of 2",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 1, supportUnit2, 1))));
-
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
-      assertThat("Second unit gets nothing", used2, is(IntegerMap.of(Map.of())));
+          "All support is given because of stacking", tracker.giveSupportToUnit(unit), is(2));
+      assertThat("No support left because of stacking", tracker.giveSupportToUnit(unit2), is(0));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
+      assertThat(
+          "The first unit gets all the support because of stack of 2",
+          tracker.getUnitsGivingSupport(),
+          is(
+              Map.of(
+                  supportUnit,
+                  IntegerMap.of(Map.of(unit, 1)),
+                  supportUnit2,
+                  IntegerMap.of(Map.of(unit, 1)))));
     }
 
     @Test
@@ -722,21 +724,24 @@ class AvailableSupportsTest {
               new SupportCalculator(
                   List.of(supportUnit, supportUnit2), List.of(rule), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
       assertThat(
-          "The first supporter can give 2 supports and the bonus stacks up to 2 "
-              + "so the unit gets all of its support",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 2))));
-
-      final IntegerMap<Unit> used2 = tracker.giveSupportToUnit(unit2);
+          "First support unit can fill the entire stack", tracker.giveSupportToUnit(unit), is(2));
       assertThat(
-          "The second support can give 2 supports and the bonus stacks up to 2 "
-              + "so the unit gets all of its support",
-          used2,
-          is(IntegerMap.of(Map.of(supportUnit2, 2))));
+          "Second support unit can give its support", tracker.giveSupportToUnit(unit2), is(2));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
+      assertThat(
+          "The first support unit can give 2 supports and the bonus stacks up to two "
+              + "so the first unit gets all of its support. "
+              + "The second support unit can give 2 supports and the bonus stacks up to two "
+              + "so the second unit gets all of its support.",
+          tracker.getUnitsGivingSupport(),
+          is(
+              Map.of(
+                  supportUnit,
+                  IntegerMap.of(Map.of(unit, 2)),
+                  supportUnit2,
+                  IntegerMap.of(Map.of(unit2, 2)))));
     }
 
     @Test
@@ -780,12 +785,17 @@ class AvailableSupportsTest {
               new SupportCalculator(
                   List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
+      assertThat("Both support units gave support", tracker.giveSupportToUnit(unit), is(2));
 
       assertThat(
           "Both support units gave their support",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 1, supportUnit2, 1))));
+          tracker.getUnitsGivingSupport(),
+          is(
+              Map.of(
+                  supportUnit,
+                  IntegerMap.of(Map.of(unit, 1)),
+                  supportUnit2,
+                  IntegerMap.of(Map.of(unit, 1)))));
       assertThat("First rule should have no support left", tracker.getSupportLeft(rule), is(0));
       assertThat("Second rule should have no support left", tracker.getSupportLeft(rule2), is(0));
     }
@@ -831,12 +841,13 @@ class AvailableSupportsTest {
               new SupportCalculator(
                   List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
+      assertThat(
+          "Only the first rule can give its support", tracker.giveSupportToUnit(unit), is(1));
 
       assertThat(
-          "Only the first gives support because the stack size is 1",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 1))));
+          "Only the first rule gives support because the stack size is 1",
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(supportUnit, IntegerMap.of(Map.of(unit, 1)))));
       assertThat("First rule should have no support left", tracker.getSupportLeft(rule), is(0));
       assertThat("Second rule should have support left", tracker.getSupportLeft(rule2), is(1));
     }
@@ -882,12 +893,17 @@ class AvailableSupportsTest {
               new SupportCalculator(
                   List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false));
 
-      final IntegerMap<Unit> used = tracker.giveSupportToUnit(unit);
+      assertThat("All support can be given", tracker.giveSupportToUnit(unit), is(2));
 
       assertThat(
           "Both support units gave their support",
-          used,
-          is(IntegerMap.of(Map.of(supportUnit, 1, supportUnit2, 1))));
+          tracker.getUnitsGivingSupport(),
+          is(
+              Map.of(
+                  supportUnit,
+                  IntegerMap.of(Map.of(unit, 1)),
+                  supportUnit2,
+                  IntegerMap.of(Map.of(unit, 1)))));
       assertThat("First rule should have no support left", tracker.getSupportLeft(rule), is(0));
       assertThat("Second rule should have no support left", tracker.getSupportLeft(rule2), is(0));
     }

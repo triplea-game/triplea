@@ -3,6 +3,8 @@ package games.strategy.triplea.delegate.power.calculator;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
@@ -15,7 +17,6 @@ class AaRoll implements RollCalculator {
 
   AvailableSupports supportFromFriends;
   AvailableSupports supportFromEnemies;
-  UsedSupportTracker tracker = new UsedSupportTracker();
 
   AaRoll(final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
     this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getAaRoll);
@@ -25,12 +26,23 @@ class AaRoll implements RollCalculator {
   @Override
   public RollValue getRoll(final Unit unit) {
     return RollValue.of(unit.getUnitAttachment().getMaxAaAttacks())
-        .add(tracker.giveSupport(unit, supportFromFriends))
-        .add(tracker.giveSupport(unit, supportFromEnemies));
+        .add(supportFromFriends.giveSupportToUnit(unit))
+        .add(supportFromEnemies.giveSupportToUnit(unit));
   }
 
   @Override
   public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-    return tracker.getSupportGiven();
+    return Stream.of(
+            supportFromFriends.getUnitsGivingSupport(), supportFromEnemies.getUnitsGivingSupport())
+        .flatMap(map -> map.entrySet().stream())
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (value1, value2) -> {
+                  final IntegerMap<Unit> merged = new IntegerMap<>(value1);
+                  merged.add(value2);
+                  return merged;
+                }));
   }
 }

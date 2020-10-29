@@ -10,6 +10,8 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,11 +53,11 @@ class MainDefenseCombatValue implements CombatValue {
     return true;
   }
 
+  @Value
   static class MainDefenseRoll implements RollCalculator {
 
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-    UsedSupportTracker tracker = new UsedSupportTracker();
 
     MainDefenseRoll(
         final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
@@ -66,23 +68,35 @@ class MainDefenseCombatValue implements CombatValue {
     @Override
     public RollValue getRoll(final Unit unit) {
       return RollValue.of(unit.getUnitAttachment().getDefenseRolls(unit.getOwner()))
-          .add(tracker.giveSupport(unit, supportFromFriends))
-          .add(tracker.giveSupport(unit, supportFromEnemies));
+          .add(supportFromFriends.giveSupportToUnit(unit))
+          .add(supportFromEnemies.giveSupportToUnit(unit));
     }
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return tracker.getSupportGiven();
+      return Stream.of(
+              supportFromFriends.getUnitsGivingSupport(),
+              supportFromEnemies.getUnitsGivingSupport())
+          .flatMap(map -> map.entrySet().stream())
+          .collect(
+              Collectors.toMap(
+                  Map.Entry::getKey,
+                  Map.Entry::getValue,
+                  (value1, value2) -> {
+                    final IntegerMap<Unit> merged = new IntegerMap<>(value1);
+                    merged.add(value2);
+                    return merged;
+                  }));
     }
   }
 
+  @Value
   static class MainDefenseStrength implements StrengthCalculator {
 
-    private final GameData gameData;
-    private final Collection<TerritoryEffect> territoryEffects;
+    GameData gameData;
+    Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-    UsedSupportTracker tracker = new UsedSupportTracker();
 
     MainDefenseStrength(
         final GameData gameData,
@@ -111,9 +125,9 @@ class MainDefenseCombatValue implements CombatValue {
                       unit.getType(), territoryEffects, true));
 
       if (allowFriendly) {
-        strengthValue = strengthValue.add(tracker.giveSupport(unit, supportFromFriends));
+        strengthValue = strengthValue.add(supportFromFriends.giveSupportToUnit(unit));
       }
-      strengthValue = strengthValue.add(tracker.giveSupport(unit, supportFromEnemies));
+      strengthValue = strengthValue.add(supportFromEnemies.giveSupportToUnit(unit));
       return strengthValue;
     }
 
@@ -142,7 +156,19 @@ class MainDefenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return tracker.getSupportGiven();
+      return Stream.of(
+              supportFromFriends.getUnitsGivingSupport(),
+              supportFromEnemies.getUnitsGivingSupport())
+          .flatMap(map -> map.entrySet().stream())
+          .collect(
+              Collectors.toMap(
+                  Map.Entry::getKey,
+                  Map.Entry::getValue,
+                  (value1, value2) -> {
+                    final IntegerMap<Unit> merged = new IntegerMap<>(value1);
+                    merged.add(value2);
+                    return merged;
+                  }));
     }
   }
 }

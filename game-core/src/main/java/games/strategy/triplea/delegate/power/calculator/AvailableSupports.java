@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -32,6 +33,12 @@ class AvailableSupports {
 
   final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
   final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
+
+  /**
+   * Keeps track of the units that have provided support in {@link
+   * AvailableSupports#giveSupportToUnit} and whom they are providing it to
+   */
+  @Getter private final Map<Unit, IntegerMap<Unit>> unitsGivingSupport = new HashMap<>();
 
   /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
   static AvailableSupports getSortedSupport(final SupportCalculator supportCalculator) {
@@ -92,8 +99,8 @@ class AvailableSupports {
    * <p>Each time this is called, the amount of available support will decrease equal to the amount
    * returned.
    */
-  IntegerMap<Unit> giveSupportToUnit(final Unit unit) {
-    final IntegerMap<Unit> supportUsed = new IntegerMap<>();
+  int giveSupportToUnit(final Unit unit) {
+    int amountOfSupportGiven = 0;
     for (final List<UnitSupportAttachment> rulesByBonusType : supportRules.values()) {
 
       int maxPerBonusType = rulesByBonusType.get(0).getBonusType().getCount();
@@ -105,7 +112,10 @@ class AvailableSupports {
         final int numSupportAvailableToApply = getSupportAvailable(rule);
         for (int i = 0; i < numSupportAvailableToApply; i++) {
           final Unit supporter = getNextAvailableSupporter(rule);
-          supportUsed.add(supporter, rule.getBonus());
+          amountOfSupportGiven += rule.getBonus();
+          unitsGivingSupport
+              .computeIfAbsent(supporter, (newSupport) -> new IntegerMap<>())
+              .add(unit, rule.getBonus());
         }
 
         maxPerBonusType -= numSupportAvailableToApply;
@@ -114,7 +124,7 @@ class AvailableSupports {
         }
       }
     }
-    return supportUsed;
+    return amountOfSupportGiven;
   }
 
   private int getSupportAvailable(final UnitSupportAttachment support) {
