@@ -1705,7 +1705,7 @@ public class MustFightBattle extends DependentBattle
                 // the battle appears to be in an infinite loop
                 throw new IllegalStateException(
                     "Round 10,000 reached in a battle. Something must be wrong."
-                        + " Please report this to TripleA."
+                        + " Please report this to TripleA.\n"
                         + " Attacking unit types: "
                         + attackingUnits.stream()
                             .map(Unit::getType)
