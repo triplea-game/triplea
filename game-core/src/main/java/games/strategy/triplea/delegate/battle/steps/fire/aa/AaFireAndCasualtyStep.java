@@ -17,7 +17,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.fire.RollDice;
+import games.strategy.triplea.delegate.battle.steps.fire.RollDiceStep;
 import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
@@ -80,10 +80,10 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
     }
   }
 
-  public static class RollAaDice implements BiFunction<IDelegateBridge, RollDice, DiceRoll> {
+  public static class AaDiceRoller implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> {
 
     @Override
-    public DiceRoll apply(final IDelegateBridge bridge, final RollDice step) {
+    public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
       final DiceRoll dice =
           DiceRoll.rollAa(
               step.getFiringGroup().getTargetUnits(),

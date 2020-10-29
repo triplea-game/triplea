@@ -25,7 +25,7 @@ public class FireRoundStepsFactory {
   @NonNull final Function<BattleState, Collection<FiringGroup>> firingGroupSplitter;
   @NonNull final BattleState.Side side;
   @NonNull final MustFightBattle.ReturnFire returnFire;
-  @NonNull final BiFunction<IDelegateBridge, RollDice, DiceRoll> diceRoller;
+  @NonNull final BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> diceRoller;
   @NonNull final BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> casualtySelector;
 
   public List<BattleStep> createSteps() {
@@ -37,7 +37,7 @@ public class FireRoundStepsFactory {
             firingGroup -> {
               final FireRoundState fireRoundState = new FireRoundState();
               return List.of(
-                  new RollDice(battleState, side, firingGroup, fireRoundState, diceRoller),
+                  new RollDiceStep(battleState, side, firingGroup, fireRoundState, diceRoller),
                   new SelectCasualties(
                       battleState, side, firingGroup, fireRoundState, casualtySelector),
                   new MarkCasualties(
