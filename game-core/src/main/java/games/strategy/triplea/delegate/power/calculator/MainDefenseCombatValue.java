@@ -20,7 +20,7 @@ import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
 /**
- * Calculates defense strength and roll for normal dice
+ * Calculates defense strength and roll for non-AA dice
  *
  * <p>This takes into account territory effects, friendly support, and enemy support
  */
