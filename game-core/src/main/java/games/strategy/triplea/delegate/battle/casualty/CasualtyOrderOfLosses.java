@@ -40,6 +40,7 @@ class CasualtyOrderOfLosses {
     @Nonnull Collection<Unit> targetsToPickFrom;
     @Nonnull GamePlayer player;
     @Nonnull Collection<Unit> enemyUnits;
+    @Nonnull Collection<Unit> friendlyUnits;
     @Nonnull Territory battlesite;
     @Nonnull IntegerMap<UnitType> costs;
     @Nonnull CombatModifiers combatModifiers;
@@ -107,7 +108,7 @@ class CasualtyOrderOfLosses {
         TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
             sortedUnitsList,
             new ArrayList<>(parameters.enemyUnits),
-            sortedUnitsList,
+            new ArrayList<>(parameters.friendlyUnits),
             parameters.combatModifiers.isDefending(),
             parameters.data,
             parameters.battlesite,

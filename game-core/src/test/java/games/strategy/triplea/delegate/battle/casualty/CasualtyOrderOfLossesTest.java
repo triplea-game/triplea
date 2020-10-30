@@ -78,6 +78,7 @@ class CasualtyOrderOfLossesTest {
                 .build())
         .player(player)
         .enemyUnits(List.of())
+        .friendlyUnits(List.of())
         .battlesite(territory)
         .costs(IntegerMap.of(Map.of()))
         .data(gameData)
