@@ -310,6 +310,49 @@ class DefensiveSubsRetreatTest {
 
       verify(battleState).retreatUnits(DEFENSE, retreatingUnits);
     }
+
+    @Test
+    void retreatHappensWhenDefendingIsSubmersibleAndHasRetreatTerritoriesAndIsHeadless() {
+
+      final Territory retreatTerritory = mock(Territory.class);
+      final UnitCollection retreatTerritoryCollection = mock(UnitCollection.class);
+      when(retreatTerritory.getUnitCollection()).thenReturn(retreatTerritoryCollection);
+      when(retreatTerritoryCollection.getHolder()).thenReturn(retreatTerritory);
+
+      final GameData gameData =
+          givenGameData()
+              .withSubmersibleSubs(false)
+              .withSubmarinesDefendingMaySubmergeOrRetreat(true)
+              .withTerritoryHasNeighbors(battleSite, Set.of(retreatTerritory))
+              .build();
+
+      final Unit unit = givenRealUnitCanEvade(gameData, defender);
+      final Collection<Unit> retreatingUnits = List.of(unit);
+
+      final BattleState battleState =
+          spy(
+              givenBattleStateBuilder()
+                  .defendingUnits(retreatingUnits)
+                  .defender(defender)
+                  .battleSite(battleSite)
+                  .headless(true)
+                  .gameData(gameData)
+                  .build());
+
+      when(battleActions.queryRetreatTerritory(
+              battleState,
+              delegateBridge,
+              defender,
+              List.of(retreatTerritory, battleSite),
+              "defender retreat subs?"))
+          .thenReturn(retreatTerritory);
+
+      final DefensiveSubsRetreat defensiveSubsRetreat =
+          new DefensiveSubsRetreat(battleState, battleActions);
+      defensiveSubsRetreat.execute(executionStack, delegateBridge);
+
+      verify(battleState).retreatUnits(DEFENSE, retreatingUnits);
+    }
   }
 
   @Test
