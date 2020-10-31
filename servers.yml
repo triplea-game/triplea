@@ -7,11 +7,8 @@ servers:
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
 
-      Join the TripleA ranked ladder by posting here:
-      https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
-
-      TOC 16 signup has started!
-      https://forums.triplea-game.org/topic/2310/revised-tournament-of-champions-toc-16/3
+      Some save games are getting stuck while loading from bot servers. For more info:
+      https://forums.triplea-game.org/topic/2376/bot-servers-sometimes-having-issues-loading-save-games
   - version: "2.0.19800"
     inactive: true
   - version: "2.0.0"
