@@ -35,11 +35,13 @@ class AaDefenseCombatValue implements CombatValue {
 
   @Getter(onMethod = @__({@Override}))
   @NonNull
-  Collection<Unit> friendUnits;
+  @Builder.Default
+  Collection<Unit> friendUnits = List.of();
 
   @Getter(onMethod = @__({@Override}))
   @NonNull
-  Collection<Unit> enemyUnits;
+  @Builder.Default
+  Collection<Unit> enemyUnits = List.of();
 
   @Getter(onMethod = @__({@Override}))
   Collection<TerritoryEffect> territoryEffects = List.of();

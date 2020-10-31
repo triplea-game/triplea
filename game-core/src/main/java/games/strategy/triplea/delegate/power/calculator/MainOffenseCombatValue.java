@@ -7,6 +7,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,11 +44,13 @@ class MainOffenseCombatValue implements CombatValue {
 
   @Getter(onMethod = @__({@Override}))
   @NonNull
-  Collection<Unit> friendUnits;
+  @Builder.Default
+  Collection<Unit> friendUnits = List.of();
 
   @Getter(onMethod = @__({@Override}))
   @NonNull
-  Collection<Unit> enemyUnits;
+  @Builder.Default
+  Collection<Unit> enemyUnits = List.of();
 
   @Override
   public RollCalculator getRoll() {
