@@ -1,5 +1,6 @@
 package games.strategy.triplea.attachments;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -48,8 +49,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     setCombatEffect(combatDefenseEffect, true);
   }
 
-  private void setCombatDefenseEffect(final IntegerMap<UnitType> value) {
+  @VisibleForTesting
+  public TerritoryEffectAttachment setCombatDefenseEffect(final IntegerMap<UnitType> value) {
     combatDefenseEffect = value;
+    return this;
   }
 
   private IntegerMap<UnitType> getCombatDefenseEffect() {
@@ -64,8 +67,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     setCombatEffect(combatOffenseEffect, false);
   }
 
-  private void setCombatOffenseEffect(final IntegerMap<UnitType> value) {
+  @VisibleForTesting
+  public TerritoryEffectAttachment setCombatOffenseEffect(final IntegerMap<UnitType> value) {
     combatOffenseEffect = value;
+    return this;
   }
 
   private IntegerMap<UnitType> getCombatOffenseEffect() {

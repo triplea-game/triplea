@@ -1,5 +1,6 @@
 package games.strategy.triplea.attachments;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -19,6 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 /**
@@ -60,7 +63,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
     private static final long serialVersionUID = -7445551357956238314L;
 
     @Nonnull String name;
-    @Nonnull Integer count;
+
+    @EqualsAndHashCode.Exclude @Nonnull Integer count;
 
     public int getCount() {
       return count < 0 ? Integer.MAX_VALUE : count;
@@ -114,19 +118,22 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private void setUnitType(final Set<UnitType> value) {
+  @VisibleForTesting
+  public UnitSupportAttachment setUnitType(final Set<UnitType> value) {
     unitType = value;
+    return this;
   }
 
   private void resetUnitType() {
     unitType = null;
   }
 
-  private void setFaction(final String faction) throws GameParseException {
+  @VisibleForTesting
+  public UnitSupportAttachment setFaction(final String faction) throws GameParseException {
     this.faction = faction;
     if (faction == null) {
       resetFaction();
-      return;
+      return this;
     }
     allied = false;
     enemy = false;
@@ -140,6 +147,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
             faction + " faction must be allied, or enemy" + thisErrorMsg());
       }
     }
+    return this;
   }
 
   private String getFaction() {
@@ -151,10 +159,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     enemy = false;
   }
 
-  private void setSide(final String side) throws GameParseException {
+  @VisibleForTesting
+  public UnitSupportAttachment setSide(final String side) throws GameParseException {
     if (side == null) {
       resetSide();
-      return;
+      return this;
     }
     defence = false;
     offence = false;
@@ -168,6 +177,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       }
     }
     this.side = side;
+    return this;
   }
 
   private String getSide() {
@@ -180,10 +190,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     defence = false;
   }
 
-  private void setDice(final String dice) throws GameParseException {
+  @VisibleForTesting
+  public UnitSupportAttachment setDice(final String dice) throws GameParseException {
     resetDice();
     if (dice == null) {
-      return;
+      return this;
     }
     this.dice = dice;
     for (final String element : splitOnColon(dice)) {
@@ -200,6 +211,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
             dice + " dice must be roll, strength, AAroll, or AAstrength: " + thisErrorMsg());
       }
     }
+    return this;
   }
 
   String getDice() {
@@ -218,8 +230,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     this.bonus = getInt(bonus);
   }
 
-  private void setBonus(final int bonus) {
+  @VisibleForTesting
+  public UnitSupportAttachment setBonus(final int bonus) {
     this.bonus = bonus;
+    return this;
   }
 
   private void resetBonus() {
@@ -230,15 +244,18 @@ public class UnitSupportAttachment extends DefaultAttachment {
     this.number = getInt(number);
   }
 
-  private void setNumber(final int number) {
+  @VisibleForTesting
+  public UnitSupportAttachment setNumber(final int number) {
     this.number = number;
+    return this;
   }
 
   private void resetNumber() {
     number = 0;
   }
 
-  private void setBonusType(final String type) throws GameParseException {
+  @VisibleForTesting
+  public UnitSupportAttachment setBonusType(final String type) throws GameParseException {
     final String[] s = splitOnColon(type);
     if (s.length > 2) {
       throw new GameParseException(
@@ -249,10 +266,13 @@ public class UnitSupportAttachment extends DefaultAttachment {
     } else {
       bonusType = new BonusType(s[1], getInt(s[0]));
     }
+    return this;
   }
 
-  private void setBonusType(final BonusType type) {
+  @VisibleForTesting
+  public UnitSupportAttachment setBonusType(final BonusType type) {
     bonusType = type;
+    return this;
   }
 
   private void resetBonusType() {
@@ -270,8 +290,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private void setPlayers(final List<GamePlayer> value) {
+  @VisibleForTesting
+  public UnitSupportAttachment setPlayers(final List<GamePlayer> value) {
     players = value;
+    return this;
   }
 
   public List<GamePlayer> getPlayers() {
@@ -286,14 +308,17 @@ public class UnitSupportAttachment extends DefaultAttachment {
     impArtTech = getBool(tech);
   }
 
-  private void setImpArtTech(final boolean tech) {
+  @VisibleForTesting
+  public UnitSupportAttachment setImpArtTech(final boolean tech) {
     impArtTech = tech;
+    return this;
   }
 
   private void resetImpArtTech() {
     impArtTech = false;
   }
 
+  @Nullable
   public Set<UnitType> getUnitType() {
     return unitType;
   }

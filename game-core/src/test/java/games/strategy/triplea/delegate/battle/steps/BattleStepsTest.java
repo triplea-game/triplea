@@ -92,6 +92,7 @@ public class BattleStepsTest {
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
     lenient().when(unit.getType()).thenReturn(unitType);
     lenient().when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
+    lenient().when(unit.getUnitAttachment()).thenReturn(unitAttachment);
     return new UnitAndAttachment(unit, unitAttachment);
   }
 
