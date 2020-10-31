@@ -8,10 +8,10 @@ import games.strategy.triplea.delegate.DiceRoll;
 import java.util.function.BiFunction;
 
 /** Rolls dice for normal (basically, anything that isn't AA) dice requests */
-public class RollMainDice implements BiFunction<IDelegateBridge, RollDice, DiceRoll> {
+public class MainDiceRoller implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> {
 
   @Override
-  public DiceRoll apply(final IDelegateBridge bridge, final RollDice step) {
+  public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
     return DiceRoll.rollDice(
         step.getFiringGroup().getFiringUnits(),
         step.getSide() == DEFENSE,

@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 /** Step where the dice are rolled for the firing units */
 @RequiredArgsConstructor
-public class RollDice implements BattleStep {
+public class RollDiceStep implements BattleStep {
 
   private static final long serialVersionUID = 3248059314449726590L;
 
@@ -29,7 +29,7 @@ public class RollDice implements BattleStep {
 
   private final FireRoundState fireRoundState;
 
-  private final BiFunction<IDelegateBridge, RollDice, DiceRoll> rollDice;
+  private final BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> rollDice;
 
   @Override
   public List<String> getNames() {
