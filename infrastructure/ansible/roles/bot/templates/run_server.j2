@@ -29,9 +29,10 @@ cd $(dirname $0)
 
 java -server \
     -Xmx{{ bot_max_memory }} \
+    -Xss1250K \
     -Djava.awt.headless=true \
     -jar {{ bot_jar }} \
 {% for key,value in bot_run_args.items()|sort(attribute='1') %}
-  -P{{ key }}={{ value }} \
+    -P{{ key }}={{ value }} \
 {% endfor %}
 
