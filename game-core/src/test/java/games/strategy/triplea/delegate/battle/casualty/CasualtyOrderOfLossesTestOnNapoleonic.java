@@ -94,6 +94,7 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
             CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(BRITISH)
         .enemyUnits(List.of())
+        .friendlyUnits(units)
         .battlesite(NORMANDY)
         .costs(COST_MAP)
         .data(data)

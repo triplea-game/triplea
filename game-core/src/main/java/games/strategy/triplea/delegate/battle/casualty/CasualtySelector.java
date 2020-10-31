@@ -121,6 +121,7 @@ public class CasualtySelector {
             defending,
             player,
             enemyUnits,
+            friendlyUnits,
             battlesite,
             costs,
             territoryEffects,
@@ -281,6 +282,7 @@ public class CasualtySelector {
       final boolean defending,
       final GamePlayer player,
       final Collection<Unit> enemyUnits,
+      final Collection<Unit> friendlyUnits,
       final Territory battlesite,
       final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects,
@@ -295,6 +297,7 @@ public class CasualtySelector {
                 .targetsToPickFrom(targetsToPickFrom)
                 .player(player)
                 .enemyUnits(enemyUnits)
+                .friendlyUnits(friendlyUnits)
                 .combatModifiers(
                     CombatModifiers.builder()
                         .territoryEffects(territoryEffects)
