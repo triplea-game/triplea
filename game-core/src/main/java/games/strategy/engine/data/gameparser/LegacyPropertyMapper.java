@@ -55,7 +55,9 @@ class LegacyPropertyMapper {
     return propertyName;
   }
 
-  static boolean ignoreOptionName(final String name) {
-    return name.equalsIgnoreCase("takeUnitControl") || name.equalsIgnoreCase("giveUnitControl");
+  static boolean ignoreOptionName(final String name, final String value) {
+    return name.equalsIgnoreCase("takeUnitControl")
+        || (name.equalsIgnoreCase("giveUnitControl")
+            && (value.equals("false") || value.equals("true")));
   }
 }
