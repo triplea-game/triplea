@@ -20,6 +20,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -87,7 +88,7 @@ public class DefensiveSubsRetreat implements BattleStep {
     if (Properties.getSubmersibleSubs(battleState.getGameData())) {
       retreatTerritories = List.of(battleState.getBattleSite());
     } else {
-      retreatTerritories = getEmptyOrFriendlySeaNeighbors();
+      retreatTerritories = new ArrayList<>(getEmptyOrFriendlySeaNeighbors());
       if (Properties.getSubmarinesDefendingMaySubmergeOrRetreat(battleState.getGameData())) {
         retreatTerritories.add(battleState.getBattleSite());
       }
