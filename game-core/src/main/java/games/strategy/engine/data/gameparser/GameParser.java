@@ -893,9 +893,6 @@ public final class GameParser {
       }
       // decapitalize the property name for backwards compatibility
       final String name = LegacyPropertyMapper.mapLegacyOptionName(decapitalize(option.getName()));
-      if (LegacyPropertyMapper.ignoreOptionName(name)) {
-        continue;
-      }
 
       if (name.isEmpty()) {
         throw new GameParseException(
@@ -903,6 +900,9 @@ public final class GameParser {
       }
       final String value = option.getValue();
       final String count = option.getCount();
+      if (LegacyPropertyMapper.ignoreOptionName(name, value)) {
+        continue;
+      }
       final String countAndValue = (count != null && !count.isEmpty() ? count + ":" : "") + value;
       if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
