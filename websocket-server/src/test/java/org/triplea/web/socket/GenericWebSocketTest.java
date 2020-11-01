@@ -77,7 +77,7 @@ class GenericWebSocketTest {
             Map.of(
                 InetExtractor.IP_ADDRESS_KEY,
                 "/" + ip + ":777",
-                SessionBannedCheck.BAN_CHECK_KEY,
+                GenericWebSocket.BAN_CHECK_KEY,
                 banCheck,
                 WebSocketMessagingBus.MESSAGING_BUS_KEY,
                 webSocketMessagingBus));

@@ -10,8 +10,6 @@ import org.triplea.db.dao.user.ban.UserBanDao;
 
 @AllArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
 public class SessionBannedCheck implements Predicate<Session> {
-  public static final String BAN_CHECK_KEY = "session.ban.checker";
-
   private final UserBanDao userBanDao;
 
   public static SessionBannedCheck build(final Jdbi jdbi) {
