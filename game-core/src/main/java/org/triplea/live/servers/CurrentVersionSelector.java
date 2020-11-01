@@ -15,7 +15,7 @@ class CurrentVersionSelector implements Function<LiveServers, ServerProperties> 
   private final Version currentVersion;
 
   CurrentVersionSelector() {
-    this(Preconditions.checkNotNull(Injections.instance.engineVersion()));
+    this(Preconditions.checkNotNull(Injections.getInstance().engineVersion()));
   }
 
   @Override

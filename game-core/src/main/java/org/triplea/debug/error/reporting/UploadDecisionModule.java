@@ -23,7 +23,7 @@ public class UploadDecisionModule {
     final var canUploadRequest =
         CanUploadRequest.builder()
             .errorTitle(ErrorReportTitleFormatter.createTitle(logRecord))
-            .gameVersion(Injections.instance.engineVersion().toString())
+            .gameVersion(Injections.getInstance().engineVersion().toString())
             .build();
 
     final var canUploadErrorReportResponse = uploader.canUploadErrorReport(canUploadRequest);

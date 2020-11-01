@@ -89,7 +89,7 @@ public final class GameDataManager {
                   + "Trying to load incompatible save game version: %s<br>"
                   + "To download an older version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              Injections.instance.engineVersion(),
+              Injections.getInstance().engineVersion(),
               ((games.strategy.util.Version) version).getExactVersion(),
               UrlConstants.OLD_DOWNLOADS_WEBSITE,
               UrlConstants.OLD_DOWNLOADS_WEBSITE));
@@ -99,20 +99,21 @@ public final class GameDataManager {
           "Incompatible engine version with save game, "
               + "unable to determine version of the save game");
       return false;
-    } else if (Injections.instance.engineVersion().getMajor() != ((Version) version).getMajor()) {
+    } else if (Injections.getInstance().engineVersion().getMajor()
+        != ((Version) version).getMajor()) {
       log.warn(
           String.format(
               "Incompatible engine versions. We are: %s<br>"
                   + "Trying to load game created with: %s<br>"
                   + "To download the latest version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              Injections.instance.engineVersion(),
+              Injections.getInstance().engineVersion(),
               version,
               UrlConstants.DOWNLOAD_WEBSITE,
               UrlConstants.DOWNLOAD_WEBSITE));
       return false;
     } else if (!HeadlessGameServer.headless()
-        && ((Version) version).getMinor() > Injections.instance.engineVersion().getMinor()) {
+        && ((Version) version).getMinor() > Injections.getInstance().engineVersion().getMinor()) {
       // Prompt the user to upgrade
       log.warn(
           "This save was made by a newer version of TripleA.<br>"
@@ -179,7 +180,7 @@ public final class GameDataManager {
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream);
           ObjectOutputStream outStream = new ObjectOutputStream(zippedOutStream)) {
-        outStream.writeObject(Injections.instance.engineVersion());
+        outStream.writeObject(Injections.getInstance().engineVersion());
         data.acquireReadLock();
         try {
           outStream.writeObject(data);

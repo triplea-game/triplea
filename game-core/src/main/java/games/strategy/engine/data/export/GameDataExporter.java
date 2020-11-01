@@ -64,7 +64,7 @@ public class GameDataExporter {
         .info(info(data))
         .triplea(
             Triplea.builder()
-                .minimumVersion(Injections.instance.engineVersion().toString())
+                .minimumVersion(Injections.getInstance().engineVersion().toString())
                 .build())
         .diceSides(DiceSides.builder().value(data.getDiceSides()).build())
         .map(map(data))

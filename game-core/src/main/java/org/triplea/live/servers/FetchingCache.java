@@ -37,12 +37,12 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
 
   private LiveServers buildLiverServersFromOverride(final URI overrideUri) {
     return LiveServers.builder()
-        .latestEngineVersion(Injections.instance.engineVersion())
+        .latestEngineVersion(Injections.getInstance().engineVersion())
         .servers(
             List.of(
                 ServerProperties.builder()
                     .message("Override server")
-                    .minEngineVersion(Injections.instance.engineVersion())
+                    .minEngineVersion(Injections.getInstance().engineVersion())
                     .uri(overrideUri)
                     .build()))
         .build();
