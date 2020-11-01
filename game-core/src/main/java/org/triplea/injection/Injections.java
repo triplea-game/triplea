@@ -3,7 +3,6 @@ package org.triplea.injection;
 import com.google.common.base.Preconditions;
 import lombok.Builder;
 import lombok.Getter;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.util.Version;
 
 /**
@@ -67,15 +66,10 @@ import org.triplea.util.Version;
 public final class Injections {
   @Getter private static Injections instance;
 
-  @Builder.Default
-  private final ProductVersionReader productVersionReader = new ProductVersionReader();
+  private final Version engineVersion;
 
   public static synchronized void init(final Injections injections) {
     Preconditions.checkState(getInstance() == null);
     instance = injections;
-  }
-
-  public Version getEngineVersion() {
-    return productVersionReader.getVersion();
   }
 }

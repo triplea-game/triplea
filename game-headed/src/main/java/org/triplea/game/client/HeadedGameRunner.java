@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.debug.LoggerManager;
 import org.triplea.debug.console.window.ConsoleConfiguration;
@@ -99,6 +100,6 @@ public final class HeadedGameRunner {
   }
 
   private static Injections constructInjections() {
-    return Injections.builder().build();
+    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
   }
 }

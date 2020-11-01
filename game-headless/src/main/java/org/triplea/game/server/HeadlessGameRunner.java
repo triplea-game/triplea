@@ -1,6 +1,7 @@
 package org.triplea.game.server;
 
 import java.util.logging.LogManager;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.server.debug.ChatHandler;
 import org.triplea.injection.Injections;
 
@@ -23,6 +24,6 @@ public final class HeadlessGameRunner {
   }
 
   private static Injections constructInjections() {
-    return Injections.builder().build();
+    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
   }
 }
