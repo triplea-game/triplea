@@ -1,7 +1,6 @@
 package org.triplea.injection;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import lombok.Builder;
 import lombok.Getter;
 import org.triplea.config.product.ProductVersionReader;
@@ -70,9 +69,6 @@ public final class Injections {
 
   @Builder.Default
   private final ProductVersionReader productVersionReader = new ProductVersionReader();
-
-  @Builder.Default
-  private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
   public static synchronized void init(final Injections injections) {
     Preconditions.checkState(getInstance() == null);
