@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
-import org.triplea.injection.Injections;
+import lombok.AllArgsConstructor;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
+import org.triplea.util.Version;
 
 /**
  * The client side of the peer-to-peer network game authentication protocol.
@@ -18,14 +19,12 @@ import org.triplea.swing.SwingAction;
  * the server. The client is responsible for obtaining the game password from the user and using it
  * to send a response to the server's challenge proving that the client knows the game password.
  */
+@AllArgsConstructor
 public class ClientLogin implements IConnectionLogin {
   static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
 
   private final Component parentComponent;
-
-  public ClientLogin(final Component parent) {
-    parentComponent = parent;
-  }
+  private final Version engineVersion;
 
   @Override
   public Map<String, String> getProperties(final Map<String, String> challenge) {
@@ -37,7 +36,7 @@ public class ClientLogin implements IConnectionLogin {
       addAuthenticationResponseProperties(promptForPassword(), challenge, response);
     }
 
-    response.put(ENGINE_VERSION_PROPERTY, Injections.engineVersion().toString());
+    response.put(ENGINE_VERSION_PROPERTY, engineVersion.toString());
 
     return response;
   }

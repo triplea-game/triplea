@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
+import org.triplea.util.Version;
 
 /**
  * A simple application to test connectivity to a running bot and lobby. Failure is indicted by
@@ -49,7 +50,7 @@ public final class ClientConnect {
                 .port(4000)
                 .build(),
             new GameObjectStreamFactory(null),
-            new ClientLogin(null));
+            new ClientLogin(null, new Version(2, 0, 0)));
     Thread.sleep(500L);
     log.info("Connection to bot server SUCCESSFUL, closing connection");
     messenger.shutDown();

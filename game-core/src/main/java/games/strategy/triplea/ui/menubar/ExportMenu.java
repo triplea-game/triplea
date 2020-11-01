@@ -177,7 +177,7 @@ final class ExportMenu extends JMenu {
       }
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
-      writer.append(Injections.engineVersion().toString()).println(',');
+      writer.append(Injections.getInstance().getEngineVersion().toString()).println(',');
       writer.append("Game Name: ,");
       writer.append(gameData.getGameName()).println(',');
       writer.append("Game Version: ,");

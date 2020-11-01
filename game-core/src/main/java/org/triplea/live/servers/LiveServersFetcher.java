@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.config.product.ProductVersionReader;
+import org.triplea.injection.Injections;
 import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
@@ -26,16 +28,21 @@ public class LiveServersFetcher {
   private final ThrowingSupplier<LiveServers, IOException> liveServersFetcher;
 
   public LiveServersFetcher() {
-    this(() -> new ContentDownloader(UrlConstants.LIVE_SERVERS_URI));
+    this(
+        () -> new ContentDownloader(UrlConstants.LIVE_SERVERS_URI),
+        Injections.getInstance().getEngineVersion());
   }
 
   @VisibleForTesting
-  LiveServersFetcher(final ThrowingSupplier<CloseableDownloader, IOException> networkFetcher) {
+  LiveServersFetcher(
+      final ThrowingSupplier<CloseableDownloader, IOException> networkFetcher,
+      final Version engineVersion) {
     this(
-        new CurrentVersionSelector(),
+        new CurrentVersionSelector(new ProductVersionReader().getVersion()),
         FetchingCache.builder()
             .contentDownloader(networkFetcher)
             .yamlParser(new ServerYamlParser())
+            .engineVersion(engineVersion)
             .build());
   }
 

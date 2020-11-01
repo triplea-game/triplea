@@ -6,9 +6,12 @@ import static org.hamcrest.core.IsNull.notNullValue;
 
 import games.strategy.engine.framework.GameDataManager;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.test.common.Integration;
 
 @SuppressWarnings("UnmatchedTest")
@@ -17,8 +20,13 @@ class GameSaveCompatibilityTest {
 
   @ParameterizedTest
   @MethodSource
-  void loadSaveGames(final File saveGame) {
-    final GameData gameData = GameDataManager.loadGame(saveGame).orElseThrow();
+  void loadSaveGames(final File saveGame) throws Exception {
+    final GameData gameData;
+    try (InputStream inputStream = new FileInputStream(saveGame)) {
+      gameData =
+          GameDataManager.loadGame(new ProductVersionReader().getVersion(), inputStream)
+              .orElseThrow();
+    }
 
     assertThat(gameData.getAttachmentOrderAndValues(), is(notNullValue()));
     assertThat(gameData.getAllianceTracker().getAlliances(), is(notNullValue()));

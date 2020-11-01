@@ -3,6 +3,7 @@ package org.triplea.debug.error.reporting;
 import java.awt.Component;
 import org.triplea.debug.LoggerRecord;
 import org.triplea.http.client.error.report.ErrorReportClient;
+import org.triplea.injection.Injections;
 
 /** Interface for interactions with the stack trace user-reporting window UI. */
 public interface StackTraceReportView {
@@ -44,6 +45,7 @@ public interface StackTraceReportView {
                     .failureConfirmation(ConfirmationDialogController::showFailureConfirmation)
                     .build())
             .preview(new ReportPreviewSwingView(parentWindow))
+            .engineVersion(Injections.getInstance().getEngineVersion())
             .build();
 
     window.bindActions(viewModel);

@@ -27,6 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.SwingUtilities;
+import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
@@ -113,7 +114,8 @@ public class GameData implements Serializable {
    */
   public byte[] toBytes() {
     try {
-      return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, this));
+      return IoUtils.writeToMemory(
+          os -> GameDataManager.saveGame(os, this, Injections.getInstance().getEngineVersion()));
     } catch (final IOException e) {
       throw new RuntimeException("Failed to write game data to bytes", e);
     }

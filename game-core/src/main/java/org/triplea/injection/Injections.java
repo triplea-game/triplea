@@ -1,53 +1,76 @@
 package org.triplea.injection;
 
-import games.strategy.engine.framework.map.download.DownloadCoordinator;
-import org.triplea.config.product.ProductVersionReader;
+import com.google.common.base.Preconditions;
+import lombok.Builder;
+import lombok.Getter;
 import org.triplea.util.Version;
 
 /**
- * Manages the creation of objects, similar to a dependency injection framework. Use this class to
- * manage singletons and as a factory to create objects that have shared dependencies already
- * managed by this class. Example usage:
+ * Injections is a dependency-injection like object that is initialized at a top level sub-project,
+ * early in a main method, and then can be accessed by lower sub-systems that need implementation
+ * details.
  *
- * <pre>
- * <code>
- *   // before
- *   public void clientCode(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
- *     swingStuff(sharedDependencyWiredThroughAllTheMethods);
- *     :
- *   }
- *   private void swingStuff(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
- *     int preferenceValue =
- *         new UserSetting(sharedDependencyWiredThroughAllTheMethods).getNumberPreference();
- *     :
+ * <p>For example, if we have headed and headless code that both need to show an error message, we
+ * can have the game-headed main method inject a GUI dependent strategy to do this and respectively
+ * the same for game-headless. This way we can simply access the error message strategy and use it
+ * rather than do any checks for if the current game instance is headless or not.
+ *
+ * <p>Design note, favor injecting data from 'Injections' into constructors, do not use Injections
+ * in a static way and avoid injecting the full 'Injections' object. For example:
+ *
+ * <h3>Do This </h3>
+ *
+ * <pre>{@code
+ * @AllArgsConstructor
+ * class SomeClass {
+ *   private final Consumer<String> errorMessageStrategy;
+ *
+ *   void showError() {
+ *     String error = "some error message";
+ *     injections.getErrorMessageStrategy().showErrorMessage(error);
  *   }
  *
- *   // after
- *   public void clientCode() {
- *     doSwingStuff(ClientContext.userSettings());
- *     :
+ *   static SomeClass factoryMethod() {
+ *     return new SomeClass(Injectisons.getInstance().getErrorMessageStrategy());
  *   }
+ * }
+ * }</pre>
  *
- *   private void doSwingStuff(UserSettings settings) {
- *     int preferenceValue = settings.getNumberPreference();
- *     :
+ * <h3>Do *Not* Do This </h3>
+ *
+ * <pre>{@code
+ * @AllArgsConstructor
+ * class SomeClass {
+ *   void showError() {
+ *     String error = "some error message";
+ *
+ *     // bad, this is an example of static coupling
+ *     Injections.getInstance().getErrorMessageStrategy().showErrorMessage(error);
  *   }
- * </code>
- * </pre>
+ * }
+ *
+ * }</pre>
+ *
+ * *
+ *
+ * <h3>Do *Not* Do This </h3>
+ *
+ * <pre><code>
+ *   class SomeClass {
+ *     // this is bad as any test has to new-up a full Injections object.
+ *     private final Injections injections;
+ *  }
+ *  </code></pre>
  */
+@Builder
+@Getter
 public final class Injections {
-  private static final Injections instance = new Injections();
+  @Getter private static Injections instance;
 
-  private final ProductVersionReader productVersionReader = new ProductVersionReader();
-  private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
+  private final Version engineVersion;
 
-  private Injections() {}
-
-  public static DownloadCoordinator downloadCoordinator() {
-    return instance.downloadCoordinator;
-  }
-
-  public static Version engineVersion() {
-    return instance.productVersionReader.getVersion();
+  public static synchronized void init(final Injections injections) {
+    Preconditions.checkState(getInstance() == null);
+    instance = injections;
   }
 }
