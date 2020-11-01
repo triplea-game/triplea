@@ -56,7 +56,7 @@ public abstract class DropwizardServerExtension<C extends Configuration>
   protected abstract Collection<RowMapperFactory> rowMappers();
 
   @Override
-  public void beforeAll(final ExtensionContext context) {
+  public void beforeAll(final ExtensionContext context) throws Exception {
     final DropwizardTestSupport<C> support = getSupport();
     support.before();
 
