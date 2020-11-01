@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.debug.ExceptionDetails;
 import org.triplea.debug.LoggerRecord;
-import org.triplea.injection.ClientContext;
+import org.triplea.injection.Injections;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportBodyFormatterTest {
@@ -55,7 +55,7 @@ class ErrorReportBodyFormatterTest {
     assertThat(body, containsString(SAMPLE_USER_DESCRIPTION));
     assertThat(body, containsString(SystemProperties.getOperatingSystem()));
     assertThat(body, containsString(SystemProperties.getJavaVersion()));
-    assertThat(body, containsString(ClientContext.engineVersion().toString()));
+    assertThat(body, containsString(Injections.engineVersion().toString()));
   }
 
   @Test

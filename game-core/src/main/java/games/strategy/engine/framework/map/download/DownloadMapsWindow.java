@@ -34,7 +34,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 import lombok.extern.java.Log;
-import org.triplea.injection.ClientContext;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
@@ -86,7 +86,7 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     pendingDownloads.addAll(
-        ClientContext.downloadCoordinator().getDownloads().stream()
+        Injections.downloadCoordinator().getDownloads().stream()
             .filter(download -> download.getDownloadState() != DownloadState.CANCELLED)
             .map(DownloadFile::getDownload)
             .collect(Collectors.toList()));

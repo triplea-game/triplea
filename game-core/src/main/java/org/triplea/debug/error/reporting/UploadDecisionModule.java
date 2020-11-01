@@ -6,7 +6,7 @@ import org.triplea.debug.LoggerRecord;
 import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
-import org.triplea.injection.ClientContext;
+import org.triplea.injection.Injections;
 
 /**
  * Decision module to handle the case where a user wishes to report an error to TripleA. First we
@@ -23,7 +23,7 @@ public class UploadDecisionModule {
     final var canUploadRequest =
         CanUploadRequest.builder()
             .errorTitle(ErrorReportTitleFormatter.createTitle(logRecord))
-            .gameVersion(ClientContext.engineVersion().toString())
+            .gameVersion(Injections.engineVersion().toString())
             .build();
 
     final var canUploadErrorReportResponse = uploader.canUploadErrorReport(canUploadRequest);

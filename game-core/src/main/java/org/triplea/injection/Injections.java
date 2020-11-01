@@ -35,13 +35,13 @@ import org.triplea.util.Version;
  * </code>
  * </pre>
  */
-public final class ClientContext {
-  private static final ClientContext instance = new ClientContext();
+public final class Injections {
+  private static final Injections instance = new Injections();
 
   private final ProductVersionReader productVersionReader = new ProductVersionReader();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
-  private ClientContext() {}
+  private Injections() {}
 
   public static DownloadCoordinator downloadCoordinator() {
     return instance.downloadCoordinator;

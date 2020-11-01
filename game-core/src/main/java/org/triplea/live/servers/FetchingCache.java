@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.Builder;
-import org.triplea.injection.ClientContext;
+import org.triplea.injection.Injections;
 import org.triplea.java.function.ThrowingSupplier;
 
 @Builder
@@ -37,12 +37,12 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
 
   private LiveServers buildLiverServersFromOverride(final URI overrideUri) {
     return LiveServers.builder()
-        .latestEngineVersion(ClientContext.engineVersion())
+        .latestEngineVersion(Injections.engineVersion())
         .servers(
             List.of(
                 ServerProperties.builder()
                     .message("Override server")
-                    .minEngineVersion(ClientContext.engineVersion())
+                    .minEngineVersion(Injections.engineVersion())
                     .uri(overrideUri)
                     .build()))
         .build();

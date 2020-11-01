@@ -32,7 +32,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.triplea.injection.ClientContext;
+import org.triplea.injection.Injections;
 
 /** A pbem dice roller that reads its configuration from a properties file. */
 @Builder
@@ -88,7 +88,7 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
               new BasicNameValuePair("roller", getToAddress()),
               new BasicNameValuePair("gm", getCcAddress()));
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
-      httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
+      httpPost.addHeader("User-Agent", "triplea/" + Injections.engineVersion());
       final HttpHost hostConfig =
           new HttpHost(diceRollerUri.getHost(), diceRollerUri.getPort(), diceRollerUri.getScheme());
       HttpProxy.addProxy(httpPost);

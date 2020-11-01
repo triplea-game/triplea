@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.UtilityClass;
-import org.triplea.injection.ClientContext;
+import org.triplea.injection.Injections;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.map.data.elements.AttachmentList;
 import org.triplea.map.data.elements.DiceSides;
@@ -62,7 +62,7 @@ public class GameDataExporter {
   public static Game convertToXmlModel(final GameData data) {
     return Game.builder()
         .info(info(data))
-        .triplea(Triplea.builder().minimumVersion(ClientContext.engineVersion().toString()).build())
+        .triplea(Triplea.builder().minimumVersion(Injections.engineVersion().toString()).build())
         .diceSides(DiceSides.builder().value(data.getDiceSides()).build())
         .map(map(data))
         .resourceList(resourceList(data))

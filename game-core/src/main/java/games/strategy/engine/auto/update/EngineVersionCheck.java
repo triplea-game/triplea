@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-import org.triplea.injection.ClientContext;
+import org.triplea.injection.Injections;
 import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.EventThreadJOptionPane;
 
@@ -26,7 +26,7 @@ final class EngineVersionCheck {
 
     new LiveServersFetcher()
         .latestVersion()
-        .filter(latestVersion -> latestVersion.isGreaterThan(ClientContext.engineVersion()))
+        .filter(latestVersion -> latestVersion.isGreaterThan(Injections.engineVersion()))
         .ifPresent(
             latestVersion ->
                 SwingUtilities.invokeLater(
