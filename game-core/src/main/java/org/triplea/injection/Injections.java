@@ -17,19 +17,23 @@ import org.triplea.util.Version;
  * the same for game-headless. This way we can simply access the error message strategy and use it
  * rather than do any checks for if the current game instance is headless or not.
  *
- * <p>Design note, favor injecting an 'Injections' instance into constructors, do not use Injections
- * in a static way. For example:
+ * <p>Design note, favor injecting data from 'Injections' into constructors, do not use Injections
+ * in a static way and avoid injecting the full 'Injections' object. For example:
  *
  * <h3>Do This </h3>
  *
  * <pre><code>
  * @AllArgsConstructor
  * class SomeClass {
- *   private final Injections injections;
+ *   private final Consumer<String> errorMessageStrategy;
  *
  *   void showError() {
  *     String error = "some error message";
  *     injections.getErrorMessageStrategy().showErrorMessage(error);
+ *   }
+ *
+ *   static SomeClass factoryMethod() {
+ *     return new SomeClass(Injectisons.getInstance().getErrorMessageStrategy());
  *   }
  * }
  * </code></pre>
@@ -41,10 +45,23 @@ import org.triplea.util.Version;
  *   class SomeClass {
  *     void showError() {
  *       String error = "some error message";
+ *
+ *       // bad, this is an example of static coupling
  *       Injections.getInstance().getErrorMessageStrategy().showErrorMessage(error);
  *     }
  *   }
  *   </code></pre>
+ *
+ * *
+ *
+ * <h3>Do *Not* Do This </h3>
+ *
+ * <pre><code>
+ *   class SomeClass {
+ *     // this is bad as any test has to new-up a full Injections object.
+ *     private final Injections injections;
+ *  }
+ *  </code></pre>
  */
 @Builder
 @Getter
