@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.UrlConstants;
@@ -25,6 +24,7 @@ import java.util.zip.GZIPOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
@@ -89,7 +89,7 @@ public final class GameDataManager {
                   + "Trying to load incompatible save game version: %s<br>"
                   + "To download an older version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              ClientContext.engineVersion(),
+              Injections.engineVersion(),
               ((games.strategy.util.Version) version).getExactVersion(),
               UrlConstants.OLD_DOWNLOADS_WEBSITE,
               UrlConstants.OLD_DOWNLOADS_WEBSITE));
@@ -99,20 +99,20 @@ public final class GameDataManager {
           "Incompatible engine version with save game, "
               + "unable to determine version of the save game");
       return false;
-    } else if (ClientContext.engineVersion().getMajor() != ((Version) version).getMajor()) {
+    } else if (Injections.engineVersion().getMajor() != ((Version) version).getMajor()) {
       log.warn(
           String.format(
               "Incompatible engine versions. We are: %s<br>"
                   + "Trying to load game created with: %s<br>"
                   + "To download the latest version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              ClientContext.engineVersion(),
+              Injections.engineVersion(),
               version,
               UrlConstants.DOWNLOAD_WEBSITE,
               UrlConstants.DOWNLOAD_WEBSITE));
       return false;
     } else if (!HeadlessGameServer.headless()
-        && ((Version) version).getMinor() > ClientContext.engineVersion().getMinor()) {
+        && ((Version) version).getMinor() > Injections.engineVersion().getMinor()) {
       // Prompt the user to upgrade
       log.warn(
           "This save was made by a newer version of TripleA.<br>"
@@ -179,7 +179,7 @@ public final class GameDataManager {
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream);
           ObjectOutputStream outStream = new ObjectOutputStream(zippedOutStream)) {
-        outStream.writeObject(ClientContext.engineVersion());
+        outStream.writeObject(Injections.engineVersion());
         data.acquireReadLock();
         try {
           outStream.writeObject(data);

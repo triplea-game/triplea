@@ -1,6 +1,5 @@
 package org.triplea.debug.error.reporting;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.UiContext;
 import java.util.Optional;
@@ -13,6 +12,7 @@ import org.triplea.debug.console.window.DebugUtils;
 import org.triplea.debug.error.reporting.formatting.ErrorReportBodyFormatter;
 import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.ErrorReportRequest;
+import org.triplea.injection.Injections;
 
 @Builder
 class StackTraceReportModel {
@@ -39,7 +39,7 @@ class StackTraceReportModel {
                     .orElse(null),
                 DebugUtils.getMemory(),
                 stackTraceRecord))
-        .gameVersion(ClientContext.engineVersion().toString())
+        .gameVersion(Injections.engineVersion().toString())
         .build();
   }
 

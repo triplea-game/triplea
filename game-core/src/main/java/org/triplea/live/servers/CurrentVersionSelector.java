@@ -2,11 +2,11 @@ package org.triplea.live.servers;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import games.strategy.engine.ClientContext;
 import java.util.Comparator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
 @AllArgsConstructor(onConstructor_ = @VisibleForTesting)
@@ -15,7 +15,7 @@ class CurrentVersionSelector implements Function<LiveServers, ServerProperties> 
   private final Version currentVersion;
 
   CurrentVersionSelector() {
-    this(Preconditions.checkNotNull(ClientContext.engineVersion()));
+    this(Preconditions.checkNotNull(Injections.engineVersion()));
   }
 
   @Override

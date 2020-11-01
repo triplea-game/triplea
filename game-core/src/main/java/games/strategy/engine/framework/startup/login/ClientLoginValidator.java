@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.login;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import games.strategy.engine.ClientContext;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import java.net.InetSocketAddress;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import lombok.Setter;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.Version;
 
@@ -45,7 +45,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   public Map<String, String> getChallengeProperties(final String username) {
     final Map<String, String> challenge = new HashMap<>();
 
-    challenge.put("Sever Version", ClientContext.engineVersion().toString());
+    challenge.put("Sever Version", Injections.engineVersion().toString());
 
     if (!Strings.isNullOrEmpty(password)) {
       challenge.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
@@ -72,10 +72,10 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (ClientContext.engineVersion().getMajor() != clientVersion.getMajor()) {
+    if (Injections.engineVersion().getMajor() != clientVersion.getMajor()) {
       return String.format(
           "Client is using %s but the server requires a version compatible with version %s",
-          clientVersion, ClientContext.engineVersion());
+          clientVersion, Injections.engineVersion());
     }
 
     final String remoteIp = remoteAddress.getAddress().getHostAddress();

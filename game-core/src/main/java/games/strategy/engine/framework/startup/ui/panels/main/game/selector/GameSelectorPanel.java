@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 import static org.triplea.swing.SwingComponents.DialogWithLinksParams;
 import static org.triplea.swing.SwingComponents.DialogWithLinksTypes;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
@@ -38,6 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import org.triplea.injection.Injections;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -110,7 +110,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
     add(new JLabel("Engine Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
     add(
-        new JLabel(ClientContext.engineVersion().toString()),
+        new JLabel(Injections.engineVersion().toString()),
         buildGridCell(1, row, new Insets(0, 0, 3, 0)));
     row++;
 
