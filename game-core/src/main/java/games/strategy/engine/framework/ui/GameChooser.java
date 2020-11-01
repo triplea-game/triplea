@@ -194,8 +194,14 @@ public class GameChooser extends JDialog {
                 gameUri, inputStream -> ShallowGameParser.parseShallow(inputStream).orElse(null))
             .orElse(null);
 
-    if (shallowParsedGame == null) {
-      return "Error reading file.. ";
+    if (shallowParsedGame == null
+        || shallowParsedGame.getInfo() == null
+        || shallowParsedGame.getInfo().getName() == null) {
+      return "Error reading file.. " + gameUri + ", could not parse or missing <info> tag data.";
+    }
+
+    if (shallowParsedGame.getPlayerList() == null) {
+      return "Error reading file.. " + gameUri + ", missing <playerList> tag data.";
     }
 
     final StringBuilder notes = new StringBuilder();
