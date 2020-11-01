@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemIdLoader;
-import org.triplea.injection.Injections;
 
 /** Factory class for implementations of {@link IClientMessenger}. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -27,7 +26,6 @@ public final class ClientMessengerFactory {
         props.getName(),
         SystemIdLoader.load(),
         objectStreamFactory,
-        clientLogin,
-        Injections.getInstance().getEngineVersion());
+        clientLogin);
   }
 }

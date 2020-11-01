@@ -29,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
-import org.triplea.util.Version;
 
 class RemoteMessengerTest {
   private IServerMessenger serverMessenger = mock(IServerMessenger.class);
@@ -133,9 +132,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      client =
-          new ClientMessenger(
-              "localhost", serverPort, "client", SystemId.of("system-id"), new Version(2, 0, 0));
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       unifiedMessengerHub = serverUnifiedMessenger.getHub();
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
@@ -176,9 +173,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      client =
-          new ClientMessenger(
-              "localhost", serverPort, "client", SystemId.of("system-id"), new Version(2, 0, 0));
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final RemoteMessenger serverRemoteMessenger =
           new RemoteMessenger(new UnifiedMessenger(server));
       final TestRemote testRemote = new TestRemote();
@@ -207,9 +202,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      client =
-          new ClientMessenger(
-              "localhost", serverPort, "client", SystemId.of("system-id"), new Version(2, 0, 0));
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger clientRemoteMessenger =
           new RemoteMessenger(new UnifiedMessenger(client));
@@ -234,9 +227,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      client =
-          new ClientMessenger(
-              "localhost", serverPort, "client", SystemId.of("system-id"), new Version(2, 0, 0));
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
       final RemoteMessenger clientRemoteMessenger =

@@ -24,7 +24,6 @@ import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
 import org.triplea.test.common.Integration;
-import org.triplea.util.Version;
 
 @Integration
 final class ChatIntegrationTest {
@@ -57,10 +56,8 @@ final class ChatIntegrationTest {
     messenger.setAcceptNewConnections(true);
     final int serverPort = messenger.getLocalNode().getSocketAddress().getPort();
     final SystemId systemId = SystemId.of("system-id");
-    client1Messenger =
-        new ClientMessenger("localhost", serverPort, "client1", systemId, new Version(2, 0, 0));
-    client2Messenger =
-        new ClientMessenger("localhost", serverPort, "client2", systemId, new Version(2, 0, 0));
+    client1Messenger = new ClientMessenger("localhost", serverPort, "client1", systemId);
+    client2Messenger = new ClientMessenger("localhost", serverPort, "client2", systemId);
     final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(messenger);
     remoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
     channelMessenger = new ChannelMessenger(serverUnifiedMessenger);

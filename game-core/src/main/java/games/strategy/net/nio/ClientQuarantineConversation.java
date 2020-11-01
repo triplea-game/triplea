@@ -14,7 +14,6 @@ import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.DialogBuilder;
-import org.triplea.util.Version;
 
 /** Client-side implementation of {@link QuarantineConversation}. */
 @Log
@@ -46,8 +45,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       final SocketChannel channel,
       final NioSocket socket,
       final String localName,
-      final SystemId systemId,
-      final Version engineVersion) {
+      final SystemId systemId) {
     this.login = login;
     this.localName = localName;
     this.socket = socket;

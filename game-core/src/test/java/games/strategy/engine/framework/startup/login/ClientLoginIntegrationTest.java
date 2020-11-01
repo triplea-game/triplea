@@ -80,8 +80,7 @@ final class ClientLoginIntegrationTest {
         "client",
         SystemId.of("system-id"),
         new DefaultObjectStreamFactory(),
-        connectionLogin,
-        new Version(2, 0, 0));
+        connectionLogin);
   }
 
   @Nested

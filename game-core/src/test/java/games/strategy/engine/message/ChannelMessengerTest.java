@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
 import org.triplea.swing.DialogBuilder;
-import org.triplea.util.Version;
 
 class ChannelMessengerTest {
   private IServerMessenger serverMessenger;
@@ -33,8 +32,7 @@ class ChannelMessengerTest {
     serverMessenger.setAcceptNewConnections(true);
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final SystemId systemId = SystemId.of("system-id");
-    clientMessenger =
-        new ClientMessenger("localhost", serverPort, "client1", systemId, new Version(2, 0, 0));
+    clientMessenger = new ClientMessenger("localhost", serverPort, "client1", systemId);
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
     unifiedMessengerHub = unifiedMessenger.getHub();
     serverChannelMessenger = new ChannelMessenger(unifiedMessenger);
@@ -88,7 +86,7 @@ class ChannelMessengerTest {
     // add a new client
     final SystemId systemId = SystemId.of("system-id2");
     final ClientMessenger clientMessenger2 =
-        new ClientMessenger("localhost", serverPort, "client2", systemId, new Version(2, 0, 0));
+        new ClientMessenger("localhost", serverPort, "client2", systemId);
     final ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
     ((IChannelBase) client2.getChannelBroadcaster(test)).testString("a");
     assertCallCountIs(client1Subscriber, 1);

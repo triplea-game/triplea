@@ -17,7 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
-import org.triplea.util.Version;
 
 /** Default implementation of {@link IClientMessenger}. */
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
@@ -38,13 +37,9 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
    */
   @VisibleForTesting
   public ClientMessenger(
-      final String host,
-      final int port,
-      final String name,
-      final SystemId systemId,
-      final Version engineVersion)
+      final String host, final int port, final String name, final SystemId systemId)
       throws IOException {
-    this(host, port, name, systemId, new DefaultObjectStreamFactory(), null, engineVersion);
+    this(host, port, name, systemId, new DefaultObjectStreamFactory(), null);
   }
 
   /**
@@ -57,8 +52,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
       final String name,
       final SystemId systemId,
       final IObjectStreamFactory streamFact,
-      final IConnectionLogin login,
-      final Version engineVersion)
+      final IConnectionLogin login)
       throws IOException {
     Preconditions.checkNotNull(systemId);
     socketChannel = SocketChannel.open();
@@ -87,8 +81,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     socket.setKeepAlive(true);
     nioSocket = new NioSocket(streamFact, this);
     final ClientQuarantineConversation conversation =
-        new ClientQuarantineConversation(
-            login, socketChannel, nioSocket, name, systemId, engineVersion);
+        new ClientQuarantineConversation(login, socketChannel, nioSocket, name, systemId);
 
     nioSocket.add(socketChannel, conversation);
     // allow the credentials to be shown in this thread
