@@ -1,7 +1,6 @@
 package org.triplea.live.servers;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.download.CloseableDownloader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.Builder;
+import org.triplea.injection.Injections;
 import org.triplea.java.function.ThrowingSupplier;
 
 @Builder
@@ -37,12 +37,12 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
 
   private LiveServers buildLiverServersFromOverride(final URI overrideUri) {
     return LiveServers.builder()
-        .latestEngineVersion(ClientContext.engineVersion())
+        .latestEngineVersion(Injections.engineVersion())
         .servers(
             List.of(
                 ServerProperties.builder()
                     .message("Override server")
-                    .minEngineVersion(ClientContext.engineVersion())
+                    .minEngineVersion(Injections.engineVersion())
                     .uri(overrideUri)
                     .build()))
         .build();

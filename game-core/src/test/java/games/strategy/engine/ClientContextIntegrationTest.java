@@ -10,6 +10,7 @@ import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.triplea.injection.Injections;
 import org.triplea.test.common.Integration;
 
 @Integration
@@ -17,7 +18,7 @@ class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test
   void canRetrieveCurrentEngineVersion() {
-    assertThat(ClientContext.engineVersion(), notNullValue());
+    assertThat(Injections.engineVersion(), notNullValue());
   }
 
   @Test

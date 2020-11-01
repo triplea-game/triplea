@@ -3,6 +3,7 @@
     <option name="MAIN_CLASS_NAME" value="org.triplea.game.server.HeadlessGameRunner" />
     <module name="triplea.game-headless.main" />
     <option name="PROGRAM_PARAMETERS" value="-Ptriplea.name=Bot01-testbot -Ptriplea.port=4000 -Ptriplea.lobby.uri=http://localhost:8080" />
+    <option name="VM_PARAMETERS" value="-Xss1250K" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.triplea.game.server.*" />
@@ -14,3 +15,4 @@
     </method>
   </configuration>
 </component>
+

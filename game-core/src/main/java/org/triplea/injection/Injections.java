@@ -1,7 +1,7 @@
-package games.strategy.engine;
+package org.triplea.injection;
 
 import games.strategy.engine.framework.map.download.DownloadCoordinator;
-import org.triplea.config.product.ProductConfiguration;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.util.Version;
 
 /**
@@ -35,19 +35,19 @@ import org.triplea.util.Version;
  * </code>
  * </pre>
  */
-public final class ClientContext {
-  private static final ClientContext instance = new ClientContext();
+public final class Injections {
+  private static final Injections instance = new Injections();
 
-  private final ProductConfiguration productConfiguration = new ProductConfiguration();
+  private final ProductVersionReader productVersionReader = new ProductVersionReader();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
-  private ClientContext() {}
+  private Injections() {}
 
   public static DownloadCoordinator downloadCoordinator() {
     return instance.downloadCoordinator;
   }
 
   public static Version engineVersion() {
-    return instance.productConfiguration.getVersion();
+    return instance.productVersionReader.getVersion();
   }
 }

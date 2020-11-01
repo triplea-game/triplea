@@ -1,13 +1,13 @@
 package games.strategy.engine.framework.startup.login;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientContext;
 import games.strategy.net.IConnectionLogin;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
@@ -37,7 +37,7 @@ public class ClientLogin implements IConnectionLogin {
       addAuthenticationResponseProperties(promptForPassword(), challenge, response);
     }
 
-    response.put(ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
+    response.put(ENGINE_VERSION_PROPERTY, Injections.engineVersion().toString());
 
     return response;
   }
