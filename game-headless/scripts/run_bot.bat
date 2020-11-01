@@ -69,20 +69,6 @@ REM Under normal circumstances, you will not have to change this variable.
 REM
 SET LOBBY_URI=https://lobby.triplea-game.org
 
-REM
-REM The password used to secure remote maintenance of your bot.  A lobby
-REM moderator who wishes to perform remote maintenance on your bot will be
-REM required to enter this password in order to complete any maintenance
-REM action.  If the password is an empty string, a lobby moderator will be able
-REM to perform remote maintenance on your bot without your permission.
-REM
-REM The default value is an empty password. You should change this to a
-REM non-empty string if you do not want lobby moderators to interfere with the
-REM operation of your bot.  Note that a lobby moderator that cannot perform
-REM remote maintenance of your bot may choose to boot your bot from the lobby.
-REM
-SET LOBBY_SUPPORT_PASSWORD=
-
 REM ###########################################################################
 REM VARIABLES THAT YOU MAY CUSTOMIZE END HERE
 REM
@@ -94,7 +80,6 @@ java^
  -Xmx256M^
  -Djava.awt.headless=true^
  -jar bin\triplea-game-headless-@version@-all.jar^
- -Ptriplea.lobby.game.supportPassword=%LOBBY_SUPPORT_PASSWORD%^
  -Ptriplea.lobby.uri=%LOBBY_URI%^
  -Ptriplea.map.folder="%MAPS_FOLDER%"^
  -Ptriplea.name=%BOT_NAME%^
