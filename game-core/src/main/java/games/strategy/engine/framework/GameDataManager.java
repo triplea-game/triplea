@@ -74,7 +74,7 @@ public final class GameDataManager {
       } else {
         return Optional.empty();
       }
-    } catch (final ClassNotFoundException | IOException e) {
+    } catch (final Throwable e) {
       log.error("Error loading game data", e);
       return Optional.empty();
     }
