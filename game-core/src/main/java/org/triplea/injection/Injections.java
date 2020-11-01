@@ -8,35 +8,43 @@ import org.triplea.config.product.ProductVersionReader;
 import org.triplea.util.Version;
 
 /**
- * Manages the creation of objects, similar to a dependency injection framework. Use this class to
- * manage singletons and as a factory to create objects that have shared dependencies already
- * managed by this class. Example usage:
+ * Injections is a dependency-injection like object that is initialized at a top level sub-project,
+ * early in a main method, and then can be accessed by lower sub-systems that need implementation
+ * details.
  *
- * <pre>
- * <code>
- *   // before
- *   public void clientCode(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
- *     swingStuff(sharedDependencyWiredThroughAllTheMethods);
- *     :
- *   }
- *   private void swingStuff(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
- *     int preferenceValue =
- *         new UserSetting(sharedDependencyWiredThroughAllTheMethods).getNumberPreference();
- *     :
- *   }
+ * <p>For example, if we have headed and headless code that both need to show an error message, we
+ * can have the game-headed main method inject a GUI dependent strategy to do this and respectively
+ * the same for game-headless. This way we can simply access the error message strategy and use it
+ * rather than do any checks for if the current game instance is headless or not.
  *
- *   // after
- *   public void clientCode() {
- *     doSwingStuff(ClientContext.userSettings());
- *     :
- *   }
+ * <p>Design note, favor injecting an 'Injections' instance into constructors, do not use Injections
+ * in a static way. For example:
  *
- *   private void doSwingStuff(UserSettings settings) {
- *     int preferenceValue = settings.getNumberPreference();
- *     :
+ * <h3>Do This </h3>
+ *
+ * <pre><code>
+ * @AllArgsConstructor
+ * class SomeClass {
+ *   private final Injections injections;
+ *
+ *   void showError() {
+ *     String error = "some error message";
+ *     injections.getErrorMessageStrategy().showErrorMessage(error);
  *   }
- * </code>
- * </pre>
+ * }
+ * </code></pre>
+ *
+ * <h3>Do *Not* Do This </h3>
+ *
+ * <pre><code>
+ *   @AllArgsConstructor
+ *   class SomeClass {
+ *     void showError() {
+ *       String error = "some error message";
+ *       Injections.getInstance().getErrorMessageStrategy().showErrorMessage(error);
+ *     }
+ *   }
+ *   </code></pre>
  */
 @Builder
 @Getter
