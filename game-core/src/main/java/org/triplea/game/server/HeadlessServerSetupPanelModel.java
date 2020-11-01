@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
+import org.triplea.injection.Injections;
 
 /** Setup panel model for headless server. */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
@@ -35,7 +36,8 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
     Optional.ofNullable(headlessServerSetup).ifPresent(HeadlessServerSetup::cancel);
 
-    final ClientLoginValidator loginValidator = new ClientLoginValidator();
+    final ClientLoginValidator loginValidator =
+        new ClientLoginValidator(Injections.getInstance().getEngineVersion());
     loginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
     serverModel.getMessenger().setLoginValidator(loginValidator);
     Optional.ofNullable(serverModel.getLobbyWatcherThread())

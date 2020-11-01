@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import org.triplea.debug.ExceptionDetails;
 import org.triplea.debug.LoggerRecord;
-import org.triplea.injection.Injections;
+import org.triplea.util.Version;
 
 /**
  * Based on a LogRecord, creates the body details of an error report. The body is the 'main' part of
@@ -32,7 +32,8 @@ public class ErrorReportBodyFormatter {
       @Nullable final String userDescription,
       @Nullable final String mapName,
       final String memoryStatistics,
-      final LoggerRecord logRecord) {
+      final LoggerRecord logRecord,
+      final Version engineVersion) {
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
             .map(description -> "## User Description\n" + description + "\n\n")
             .orElse("")
@@ -43,7 +44,7 @@ public class ErrorReportBodyFormatter {
             .map(msg -> "## Log Message\n" + msg + "\n\n")
             .orElse("")
         + "## TripleA Version\n"
-        + Injections.getInstance().getEngineVersion()
+        + engineVersion
         + "\n\n"
         + "## Java Version\n"
         + SystemProperties.getJavaVersion()

@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.test.common.Integration;
+import org.triplea.util.Version;
 
 @Integration
 class MessengerIntegrationTest {
@@ -36,10 +37,12 @@ class MessengerIntegrationTest {
     serverMessenger.addMessageListener(serverMessageListener);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     client1Messenger =
-        new ClientMessenger("localhost", serverPort, "client1", SystemId.of("system-id"));
+        new ClientMessenger(
+            "localhost", serverPort, "client1", SystemId.of("system-id"), new Version(2, 0, 0));
     client1Messenger.addMessageListener(client1MessageListener);
     client2Messenger =
-        new ClientMessenger("localhost", serverPort, "client2", SystemId.of("system-id"));
+        new ClientMessenger(
+            "localhost", serverPort, "client2", SystemId.of("system-id"), new Version(2, 0, 0));
     client2Messenger.addMessageListener(client2MessageListener);
     assertEquals(client1Messenger.getServerNode(), serverMessenger.getLocalNode());
     assertEquals(client2Messenger.getServerNode(), serverMessenger.getLocalNode());

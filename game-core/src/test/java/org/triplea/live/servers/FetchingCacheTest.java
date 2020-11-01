@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.function.ThrowingSupplier;
+import org.triplea.util.Version;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -45,6 +46,7 @@ class FetchingCacheTest extends AbstractClientSettingTestCase {
         FetchingCache.builder()
             .contentDownloader(closeableDownloaderFactory)
             .yamlParser(yamlParser)
+            .engineVersion(new Version(1, 0, 0))
             .build();
   }
 

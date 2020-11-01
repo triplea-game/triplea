@@ -9,7 +9,9 @@ import java.io.ObjectOutputStream;
 import java.util.Optional;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
+import org.triplea.util.Version;
 
 /** A collection of useful methods for working with instances of {@link GameData}. */
 @Log
@@ -21,10 +23,10 @@ public final class GameDataUtils {
    * game data's write lock before calling this method</strong>
    */
   public static Optional<GameData> cloneGameDataWithoutHistory(
-      final GameData data, final boolean copyDelegates) {
+      final GameData data, final boolean copyDelegates, final Version engineVersion) {
     final History temp = data.getHistory();
     data.resetHistory();
-    final Optional<GameData> dataCopy = cloneGameData(data, copyDelegates);
+    final Optional<GameData> dataCopy = cloneGameData(data, copyDelegates, engineVersion);
     data.setHistory(temp);
     return dataCopy;
   }
@@ -38,7 +40,11 @@ public final class GameDataUtils {
     data.resetHistory();
     final byte[] bytes;
     try {
-      bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, false));
+      bytes =
+          IoUtils.writeToMemory(
+              os ->
+                  GameDataManager.saveGame(
+                      os, data, false, Injections.getInstance().getEngineVersion()));
     } catch (final IOException e) {
       throw new RuntimeException("Failed to serialize GameData", e);
     } finally {
@@ -48,18 +54,21 @@ public final class GameDataUtils {
   }
 
   public static Optional<GameData> cloneGameData(final GameData data) {
-    return cloneGameData(data, false);
+    return cloneGameData(data, false, Injections.getInstance().getEngineVersion());
   }
 
   /**
    * Create a deep copy of GameData. <strong>You should have the game data's read or write lock
    * before calling this method</strong>
    */
-  public static Optional<GameData> cloneGameData(final GameData data, final boolean copyDelegates) {
+  public static Optional<GameData> cloneGameData(
+      final GameData data, final boolean copyDelegates, final Version engineVersion) {
     try {
       final byte[] bytes =
-          IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, copyDelegates));
-      return IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
+          IoUtils.writeToMemory(
+              os -> GameDataManager.saveGame(os, data, copyDelegates, engineVersion));
+      return IoUtils.readFromMemory(
+          bytes, inputStream -> GameDataManager.loadGame(engineVersion, inputStream));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to clone game data", e);
       return Optional.empty();

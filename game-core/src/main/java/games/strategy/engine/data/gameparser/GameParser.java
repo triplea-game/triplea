@@ -81,11 +81,16 @@ public final class GameParser {
   private final String mapName;
   private final XmlGameElementMapper xmlGameElementMapper;
   private final GameDataVariableParser variableParser = new GameDataVariableParser();
+  private final Version engineVersion;
 
-  private GameParser(final String mapName, final XmlGameElementMapper xmlGameElementMapper) {
+  private GameParser(
+      final String mapName,
+      final XmlGameElementMapper xmlGameElementMapper,
+      final Version engineVersion) {
     data = new GameData();
     this.mapName = mapName;
     this.xmlGameElementMapper = xmlGameElementMapper;
+    this.engineVersion = engineVersion;
   }
 
   /**
@@ -94,12 +99,15 @@ public final class GameParser {
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
   public static Optional<GameData> parse(
-      final URI mapUri, final XmlGameElementMapper xmlGameElementMapper) {
+      final URI mapUri,
+      final XmlGameElementMapper xmlGameElementMapper,
+      final Version engineVersion) {
     return UrlStreams.openStream(
         mapUri,
         inputStream -> {
           try {
-            return new GameParser(mapUri.toString(), xmlGameElementMapper).parse(inputStream);
+            return new GameParser(mapUri.toString(), xmlGameElementMapper, engineVersion)
+                .parse(inputStream);
           } catch (final EngineVersionException e) {
             log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
             return null;
@@ -216,9 +224,7 @@ public final class GameParser {
       return;
     }
     final Version mapMinimumEngineVersion = new Version(tripleA.getMinimumVersion());
-    if (!Injections.getInstance()
-        .getEngineVersion()
-        .isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
+    if (!engineVersion.isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
       throw new EngineVersionException(
           String.format(
               "Current engine version: %s, is not compatible with version: %s, required by map: %s",

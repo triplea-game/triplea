@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestDataFileReader;
 
@@ -38,7 +39,8 @@ class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
   void verifyConfiguration() {
     givenInputStreamFromFile("live.servers.yaml.examples/servers_example.yaml");
 
-    final LiveServersFetcher liveServersFetcher = new LiveServersFetcher(() -> closeableDownloader);
+    final LiveServersFetcher liveServersFetcher =
+        new LiveServersFetcher(() -> closeableDownloader, new ProductVersionReader().getVersion());
 
     assertThat(liveServersFetcher.latestVersion(), isPresent());
     assertThat(liveServersFetcher.lobbyUriForCurrentVersion(), isPresent());
@@ -55,7 +57,8 @@ class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
   void verifyCurrentConfiguration() {
     givenInputStreamFromFile("servers.yml");
 
-    final LiveServersFetcher liveServersFetcher = new LiveServersFetcher(() -> closeableDownloader);
+    final LiveServersFetcher liveServersFetcher =
+        new LiveServersFetcher(() -> closeableDownloader, new ProductVersionReader().getVersion());
 
     assertThat(liveServersFetcher.latestVersion(), isPresent());
     assertThat(liveServersFetcher.lobbyUriForCurrentVersion(), isPresent());

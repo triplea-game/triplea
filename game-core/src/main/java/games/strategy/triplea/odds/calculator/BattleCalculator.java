@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import lombok.Setter;
+import org.triplea.util.Version;
 
 class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
@@ -31,10 +32,13 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean cancelled = false;
   private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-  BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
+  BattleCalculator(
+      final GameData data, final boolean dataHasAlreadyBeenCloned, final Version engineVersion) {
     gameData =
         Preconditions.checkNotNull(
-            dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false).orElse(null),
+            dataHasAlreadyBeenCloned
+                ? data
+                : GameDataUtils.cloneGameData(data, false, engineVersion).orElse(null),
             "Error cloning game data (low memory?)");
   }
 

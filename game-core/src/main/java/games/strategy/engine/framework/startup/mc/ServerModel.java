@@ -75,6 +75,7 @@ import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
+import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -179,7 +180,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         @Override
         public byte[] getSaveGame() {
           try {
-            return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
+            return IoUtils.writeToMemory(
+                os ->
+                    GameDataManager.saveGame(
+                        os, data, Injections.getInstance().getEngineVersion()));
           } catch (final IOException e) {
             throw new IllegalStateException(e);
           }

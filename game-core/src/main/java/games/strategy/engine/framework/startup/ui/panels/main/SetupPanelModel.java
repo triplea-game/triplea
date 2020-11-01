@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
+import org.triplea.injection.Injections;
 import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.SwingComponents;
@@ -80,7 +81,8 @@ public class SetupPanelModel implements ServerSetupModel {
   public void onServerMessengerCreated(
       final ServerModel serverModel, @Nullable final GameHostingResponse gameHostingResponse) {
 
-    final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+    final ClientLoginValidator clientLoginValidator =
+        new ClientLoginValidator(Injections.getInstance().getEngineVersion());
     clientLoginValidator.setGamePassword(System.getProperty(SERVER_PASSWORD));
     clientLoginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
     serverModel.getMessenger().setLoginValidator(clientLoginValidator);

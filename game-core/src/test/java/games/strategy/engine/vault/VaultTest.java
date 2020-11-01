@@ -19,6 +19,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
+import org.triplea.util.Version;
 
 /**
  * Comment(KG): This test is broken, If you run each test individually they all work, but when
@@ -38,7 +39,8 @@ class VaultTest {
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     clientMessenger =
-        new ClientMessenger("localhost", serverPort, "client1", SystemId.of("system-id"));
+        new ClientMessenger(
+            "localhost", serverPort, "client1", SystemId.of("system-id"), new Version(2, 0, 0));
     final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
     final UnifiedMessenger clientUnifiedMessenger = new UnifiedMessenger(clientMessenger);
     serverVault = new Vault(new ChannelMessenger(serverUnifiedMessenger));

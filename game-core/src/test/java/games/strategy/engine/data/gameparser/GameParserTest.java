@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.util.Tuple;
+import org.triplea.util.Version;
 
 final class GameParserTest {
 
@@ -25,7 +26,8 @@ final class GameParserTest {
     final URI mapUri =
         GameParserTest.class.getClassLoader().getResource("v1_8_map__270BC.xml").toURI();
 
-    final GameData gameData = GameParser.parse(mapUri, new XmlGameElementMapper()).orElseThrow();
+    final GameData gameData =
+        GameParser.parse(mapUri, new XmlGameElementMapper(), new Version(2, 0, 0)).orElseThrow();
     assertNotNullGameData(gameData);
 
     verifyLegacyPropertiesAreUpdated(gameData);

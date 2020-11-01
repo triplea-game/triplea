@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
@@ -21,11 +22,13 @@ import org.triplea.util.Version;
  * client. Upon receiving the client's response, the server determines if the client knows the game
  * password and gives them access to the game if authentication is successful.
  */
+@RequiredArgsConstructor
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
 
+  private final Version engineVersion;
   @Setter private IServerMessenger serverMessenger;
-  private @Nullable String password;
+  @Nullable private String password;
 
   @VisibleForTesting
   interface ErrorMessages {
@@ -45,7 +48,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   public Map<String, String> getChallengeProperties(final String username) {
     final Map<String, String> challenge = new HashMap<>();
 
-    challenge.put("Sever Version", Injections.getInstance().getEngineVersion().toString());
+    challenge.put("Sever Version", engineVersion.toString());
 
     if (!Strings.isNullOrEmpty(password)) {
       challenge.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
@@ -72,7 +75,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (Injections.getInstance().getEngineVersion().getMajor() != clientVersion.getMajor()) {
+    if (engineVersion.getMajor() != clientVersion.getMajor()) {
       return String.format(
           "Client is using %s but the server requires a version compatible with version %s",
           clientVersion, Injections.getInstance().getEngineVersion());

@@ -9,17 +9,19 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 import lombok.Builder;
-import org.triplea.injection.Injections;
 import org.triplea.java.function.ThrowingSupplier;
+import org.triplea.util.Version;
 
 @Builder
 class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
   /** Static cache so that cached value is shared across all instances. */
   @VisibleForTesting static LiveServers liveServersCache;
 
-  private final ThrowingSupplier<CloseableDownloader, IOException> contentDownloader;
-  private final Function<InputStream, LiveServers> yamlParser;
+  @Nonnull private final ThrowingSupplier<CloseableDownloader, IOException> contentDownloader;
+  @Nonnull private final Function<InputStream, LiveServers> yamlParser;
+  @Nonnull private final Version engineVersion;
 
   @Override
   public synchronized LiveServers get() throws IOException {
@@ -37,12 +39,12 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
 
   private LiveServers buildLiverServersFromOverride(final URI overrideUri) {
     return LiveServers.builder()
-        .latestEngineVersion(Injections.getInstance().getEngineVersion())
+        .latestEngineVersion(engineVersion)
         .servers(
             List.of(
                 ServerProperties.builder()
                     .message("Override server")
-                    .minEngineVersion(Injections.getInstance().getEngineVersion())
+                    .minEngineVersion(engineVersion)
                     .uri(overrideUri)
                     .build()))
         .build();

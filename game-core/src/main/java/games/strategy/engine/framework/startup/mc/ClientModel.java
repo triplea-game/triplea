@@ -60,6 +60,7 @@ import javax.swing.SwingUtilities;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.EventThreadJOptionPane;
@@ -229,7 +230,9 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       messenger =
           ClientMessengerFactory.newClientMessenger(
-              props, objectStreamFactory, new ClientLogin(this.ui));
+              props,
+              objectStreamFactory,
+              new ClientLogin(this.ui, Injections.getInstance().getEngineVersion()));
     } catch (final CouldNotLogInException e) {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;

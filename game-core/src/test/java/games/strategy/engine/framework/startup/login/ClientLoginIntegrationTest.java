@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
 import org.triplea.test.common.Integration;
+import org.triplea.util.Version;
 
 @Integration
 final class ClientLoginIntegrationTest {
@@ -40,7 +41,8 @@ final class ClientLoginIntegrationTest {
   }
 
   private static ILoginValidator newLoginValidator(final IServerMessenger serverMessenger) {
-    final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+    final ClientLoginValidator clientLoginValidator =
+        new ClientLoginValidator(new Version(2, 0, 0));
     clientLoginValidator.setServerMessenger(serverMessenger);
     clientLoginValidator.setGamePassword(PASSWORD);
     return clientLoginValidator;
@@ -59,7 +61,7 @@ final class ClientLoginIntegrationTest {
     }
 
     TestConnectionLogin(final String password) {
-      super(null);
+      super(null, new Version(2, 0, 0));
 
       this.password = password;
     }
@@ -78,7 +80,8 @@ final class ClientLoginIntegrationTest {
         "client",
         SystemId.of("system-id"),
         new DefaultObjectStreamFactory(),
-        connectionLogin);
+        connectionLogin,
+        new Version(2, 0, 0));
   }
 
   @Nested

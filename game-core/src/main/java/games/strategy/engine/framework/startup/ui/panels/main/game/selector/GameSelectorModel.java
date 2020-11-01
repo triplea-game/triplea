@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.injection.Injections;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the game
@@ -52,7 +53,10 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
-    this(uri -> GameParser.parse(uri, new XmlGameElementMapper()));
+    this(
+        uri ->
+            GameParser.parse(
+                uri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion()));
   }
 
   GameSelectorModel(final Function<URI, Optional<GameData>> gameParser) {

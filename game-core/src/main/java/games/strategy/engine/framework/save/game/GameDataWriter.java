@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 
 /** Responsible to write game data to a file or output bytes. */
@@ -64,7 +65,7 @@ public class GameDataWriter {
     }
 
     try {
-      GameDataManager.saveGame(out, gameData);
+      GameDataManager.saveGame(out, gameData, Injections.getInstance().getEngineVersion());
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
