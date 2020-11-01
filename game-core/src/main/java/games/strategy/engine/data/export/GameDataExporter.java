@@ -62,7 +62,10 @@ public class GameDataExporter {
   public static Game convertToXmlModel(final GameData data) {
     return Game.builder()
         .info(info(data))
-        .triplea(Triplea.builder().minimumVersion(Injections.engineVersion().toString()).build())
+        .triplea(
+            Triplea.builder()
+                .minimumVersion(Injections.instance.engineVersion().toString())
+                .build())
         .diceSides(DiceSides.builder().value(data.getDiceSides()).build())
         .map(map(data))
         .resourceList(resourceList(data))

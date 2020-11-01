@@ -36,18 +36,18 @@ import org.triplea.util.Version;
  * </pre>
  */
 public final class Injections {
-  private static final Injections instance = new Injections();
+  public static final Injections instance = new Injections();
 
   private final ProductVersionReader productVersionReader = new ProductVersionReader();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
   private Injections() {}
 
-  public static DownloadCoordinator downloadCoordinator() {
-    return instance.downloadCoordinator;
+  public DownloadCoordinator downloadCoordinator() {
+    return downloadCoordinator;
   }
 
-  public static Version engineVersion() {
-    return instance.productVersionReader.getVersion();
+  public Version engineVersion() {
+    return productVersionReader.getVersion();
   }
 }

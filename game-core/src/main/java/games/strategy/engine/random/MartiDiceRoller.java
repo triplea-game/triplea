@@ -88,7 +88,7 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
               new BasicNameValuePair("roller", getToAddress()),
               new BasicNameValuePair("gm", getCcAddress()));
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
-      httpPost.addHeader("User-Agent", "triplea/" + Injections.engineVersion());
+      httpPost.addHeader("User-Agent", "triplea/" + Injections.instance.engineVersion());
       final HttpHost hostConfig =
           new HttpHost(diceRollerUri.getHost(), diceRollerUri.getPort(), diceRollerUri.getScheme());
       HttpProxy.addProxy(httpPost);

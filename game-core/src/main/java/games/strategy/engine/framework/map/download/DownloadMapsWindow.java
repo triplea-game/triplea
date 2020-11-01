@@ -86,7 +86,7 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     pendingDownloads.addAll(
-        Injections.downloadCoordinator().getDownloads().stream()
+        Injections.instance.downloadCoordinator().getDownloads().stream()
             .filter(download -> download.getDownloadState() != DownloadState.CANCELLED)
             .map(DownloadFile::getDownload)
             .collect(Collectors.toList()));

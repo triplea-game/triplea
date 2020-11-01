@@ -50,7 +50,7 @@ public class TestPostAction implements BiConsumer<String, Integer> {
               final CompletableFuture<String> future =
                   poster.postTurnSummary(
                       "Test summary from TripleA, engine version: "
-                          + Injections.engineVersion()
+                          + Injections.instance.engineVersion()
                           + ", time: "
                           + DateTimeUtil.getLocalizedTime(),
                       "Testing Forum poster",

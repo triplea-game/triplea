@@ -37,7 +37,7 @@ public class ClientLogin implements IConnectionLogin {
       addAuthenticationResponseProperties(promptForPassword(), challenge, response);
     }
 
-    response.put(ENGINE_VERSION_PROPERTY, Injections.engineVersion().toString());
+    response.put(ENGINE_VERSION_PROPERTY, Injections.instance.engineVersion().toString());
 
     return response;
   }

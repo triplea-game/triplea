@@ -216,12 +216,15 @@ public final class GameParser {
       return;
     }
     final Version mapMinimumEngineVersion = new Version(tripleA.getMinimumVersion());
-    if (!Injections.engineVersion()
+    if (!Injections.instance
+        .engineVersion()
         .isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
       throw new EngineVersionException(
           String.format(
               "Current engine version: %s, is not compatible with version: %s, required by map: %s",
-              Injections.engineVersion(), mapMinimumEngineVersion.toString(), data.getGameName()));
+              Injections.instance.engineVersion(),
+              mapMinimumEngineVersion.toString(),
+              data.getGameName()));
     }
   }
 

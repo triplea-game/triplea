@@ -18,7 +18,7 @@ class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test
   void canRetrieveCurrentEngineVersion() {
-    assertThat(Injections.engineVersion(), notNullValue());
+    assertThat(Injections.instance.engineVersion(), notNullValue());
   }
 
   @Test

@@ -22,7 +22,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
   private static final long serialVersionUID = -7288639737337542689L;
 
-  private final DownloadCoordinator downloadCoordinator = Injections.downloadCoordinator();
+  private final DownloadCoordinator downloadCoordinator = Injections.instance.downloadCoordinator();
 
   /*
    * Maintain grids that are placed east and west.

@@ -55,7 +55,7 @@ class ErrorReportBodyFormatterTest {
     assertThat(body, containsString(SAMPLE_USER_DESCRIPTION));
     assertThat(body, containsString(SystemProperties.getOperatingSystem()));
     assertThat(body, containsString(SystemProperties.getJavaVersion()));
-    assertThat(body, containsString(Injections.engineVersion().toString()));
+    assertThat(body, containsString(Injections.instance.engineVersion().toString()));
   }
 
   @Test
