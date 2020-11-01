@@ -1,7 +1,7 @@
 package org.triplea.dropwizard.common;
 
 import com.codahale.metrics.MetricRegistry;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.Authenticator;
@@ -37,7 +37,7 @@ public class AuthenticationConfiguration {
                         new CachingAuthenticator<>(
                             metrics,
                             authenticator,
-                            CacheBuilder.newBuilder()
+                            Caffeine.newBuilder()
                                 .expireAfterAccess(Duration.ofMinutes(10))
                                 .maximumSize(10000)))
                     .setAuthorizer(authorizer)
