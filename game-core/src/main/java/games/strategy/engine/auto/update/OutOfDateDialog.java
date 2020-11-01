@@ -23,7 +23,7 @@ class OutOfDateDialog {
     return "<html>"
         + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
         + "<br />Your current version: "
-        + Injections.getInstance().engineVersion()
+        + Injections.getInstance().getEngineVersion()
         + "<br />Latest version available for download: "
         + latestVersionOut
         + "<br /><br />Click to download: <a class=\"external\" href=\""

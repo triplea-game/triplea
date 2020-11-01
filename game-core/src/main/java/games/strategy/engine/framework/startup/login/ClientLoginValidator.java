@@ -45,7 +45,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   public Map<String, String> getChallengeProperties(final String username) {
     final Map<String, String> challenge = new HashMap<>();
 
-    challenge.put("Sever Version", Injections.getInstance().engineVersion().toString());
+    challenge.put("Sever Version", Injections.getInstance().getEngineVersion().toString());
 
     if (!Strings.isNullOrEmpty(password)) {
       challenge.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
@@ -72,10 +72,10 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (Injections.getInstance().engineVersion().getMajor() != clientVersion.getMajor()) {
+    if (Injections.getInstance().getEngineVersion().getMajor() != clientVersion.getMajor()) {
       return String.format(
           "Client is using %s but the server requires a version compatible with version %s",
-          clientVersion, Injections.getInstance().engineVersion());
+          clientVersion, Injections.getInstance().getEngineVersion());
     }
 
     final String remoteIp = remoteAddress.getAddress().getHostAddress();

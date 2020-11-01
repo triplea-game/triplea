@@ -39,6 +39,7 @@ import org.triplea.util.Version;
  * </pre>
  */
 @Builder
+@Getter
 public final class Injections {
   @Getter private static Injections instance;
 
@@ -53,11 +54,7 @@ public final class Injections {
     instance = injections;
   }
 
-  public DownloadCoordinator downloadCoordinator() {
-    return downloadCoordinator;
-  }
-
-  public Version engineVersion() {
+  public Version getEngineVersion() {
     return productVersionReader.getVersion();
   }
 }

@@ -27,7 +27,8 @@ final class EngineVersionCheck {
     new LiveServersFetcher()
         .latestVersion()
         .filter(
-            latestVersion -> latestVersion.isGreaterThan(Injections.getInstance().engineVersion()))
+            latestVersion ->
+                latestVersion.isGreaterThan(Injections.getInstance().getEngineVersion()))
         .ifPresent(
             latestVersion ->
                 SwingUtilities.invokeLater(

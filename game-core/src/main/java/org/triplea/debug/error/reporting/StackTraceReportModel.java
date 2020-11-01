@@ -39,7 +39,7 @@ class StackTraceReportModel {
                     .orElse(null),
                 DebugUtils.getMemory(),
                 stackTraceRecord))
-        .gameVersion(Injections.getInstance().engineVersion().toString())
+        .gameVersion(Injections.getInstance().getEngineVersion().toString())
         .build();
   }
 

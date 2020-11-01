@@ -110,7 +110,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
     add(new JLabel("Engine Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
     add(
-        new JLabel(Injections.getInstance().engineVersion().toString()),
+        new JLabel(Injections.getInstance().getEngineVersion().toString()),
         buildGridCell(1, row, new Insets(0, 0, 3, 0)));
     row++;
 
