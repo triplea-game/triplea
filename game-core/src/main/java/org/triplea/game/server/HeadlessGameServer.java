@@ -1,7 +1,6 @@
 package org.triplea.game.server;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
