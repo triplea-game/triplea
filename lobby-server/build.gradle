@@ -41,6 +41,7 @@ dependencies {
     implementation project(':dropwizard-common')
     implementation project(':http-clients')
     implementation project(':java-extras')
+    implementation project(':websocket-server')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"

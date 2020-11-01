@@ -29,7 +29,9 @@ import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
  */
 @Slf4j
 @UtilityClass
-class GenericWebSocket {
+public class GenericWebSocket {
+  public static final String BAN_CHECK_KEY = "session.ban.checker";
+
   @VisibleForTesting static final int MAX_BAD_MESSAGES = 2;
 
   private static final Gson GSON = new Gson();
@@ -47,8 +49,12 @@ class GenericWebSocket {
 
   @SuppressWarnings("unchecked")
   private static boolean isSessionBanned(final Session session) {
-    return ((Predicate<Session>) session.getUserProperties().get(SessionBannedCheck.BAN_CHECK_KEY))
-        .test(session);
+    final Object banCheckObject = session.getUserProperties().get(BAN_CHECK_KEY);
+
+    return Optional.ofNullable(banCheckObject)
+        .map(obj -> (Predicate<Session>) obj)
+        .map(check -> check.test(session))
+        .orElse(false);
   }
 
   private static void disconnectBannedSession(final Session session) {

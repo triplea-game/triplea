@@ -42,6 +42,7 @@ import org.triplea.modules.user.account.create.CreateAccountController;
 import org.triplea.modules.user.account.login.LoginController;
 import org.triplea.modules.user.account.update.UpdateAccountController;
 import org.triplea.web.socket.GameConnectionWebSocket;
+import org.triplea.web.socket.GenericWebSocket;
 import org.triplea.web.socket.PlayerConnectionWebSocket;
 import org.triplea.web.socket.SessionBannedCheck;
 import org.triplea.web.socket.WebSocketMessagingBus;
@@ -115,9 +116,9 @@ public class LobbyServer extends Application<LobbyServerConfig> {
     serverConfiguration.injectWebsocketProperties(
         GameConnectionWebSocket.class,
         Map.of(
-            WebSocketMessagingBus.MESSAGING_BUS_KEY, //
+            WebSocketMessagingBus.MESSAGING_BUS_KEY,
             gameConnectionMessagingBus,
-            SessionBannedCheck.BAN_CHECK_KEY,
+            GenericWebSocket.BAN_CHECK_KEY,
             sessionIsBannedCheck));
     final var playerConnectionMessagingBus = new WebSocketMessagingBus();
     serverConfiguration.injectWebsocketProperties(
@@ -125,7 +126,7 @@ public class LobbyServer extends Application<LobbyServerConfig> {
         Map.of(
             WebSocketMessagingBus.MESSAGING_BUS_KEY, //
             playerConnectionMessagingBus,
-            SessionBannedCheck.BAN_CHECK_KEY,
+            GenericWebSocket.BAN_CHECK_KEY,
             sessionIsBannedCheck));
 
     final var chatters = Chatters.build();

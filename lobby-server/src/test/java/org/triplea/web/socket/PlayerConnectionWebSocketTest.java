@@ -32,7 +32,7 @@ class PlayerConnectionWebSocketTest {
                 webSocketMessagingBus,
                 InetExtractor.IP_ADDRESS_KEY,
                 "/1.1.1.1:123",
-                SessionBannedCheck.BAN_CHECK_KEY,
+                GenericWebSocket.BAN_CHECK_KEY,
                 banCheck));
   }
 
