@@ -20,7 +20,7 @@ import org.triplea.util.Version;
  *
  * <h3>Do This </h3>
  *
- * <pre><code>
+ * <pre>{@code
  * @AllArgsConstructor
  * class SomeClass {
  *   private final Consumer<String> errorMessageStrategy;
@@ -34,21 +34,22 @@ import org.triplea.util.Version;
  *     return new SomeClass(Injectisons.getInstance().getErrorMessageStrategy());
  *   }
  * }
- * </code></pre>
+ * }</pre>
  *
  * <h3>Do *Not* Do This </h3>
  *
- * <pre><code>
- *   @AllArgsConstructor
- *   class SomeClass {
- *     void showError() {
- *       String error = "some error message";
+ * <pre>{@code
+ * @AllArgsConstructor
+ * class SomeClass {
+ *   void showError() {
+ *     String error = "some error message";
  *
- *       // bad, this is an example of static coupling
- *       Injections.getInstance().getErrorMessageStrategy().showErrorMessage(error);
- *     }
+ *     // bad, this is an example of static coupling
+ *     Injections.getInstance().getErrorMessageStrategy().showErrorMessage(error);
  *   }
- *   </code></pre>
+ * }
+ *
+ * }</pre>
  *
  * *
  *
