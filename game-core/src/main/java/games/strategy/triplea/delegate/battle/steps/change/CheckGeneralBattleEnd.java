@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.fire.general.FiringGroupSplitterGeneral;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.List;
 import java.util.Objects;
@@ -76,12 +77,13 @@ public class CheckGeneralBattleEnd implements BattleStep {
     return TotalPowerAndTotalRolls.getTotalPowerAndRolls(
             TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
                 battleState.filterUnits(ALIVE, side),
-                battleState.filterUnits(ALIVE, side.getOpposite()),
-                battleState.filterUnits(ALIVE, side),
-                side == DEFENSE,
-                battleState.getGameData(),
-                battleState.getBattleSite(),
-                battleState.getTerritoryEffects()),
+                CombatValue.buildMainCombatValue(
+                    battleState.filterUnits(ALIVE, side.getOpposite()),
+                    battleState.filterUnits(ALIVE, side),
+                    side == DEFENSE,
+                    battleState.getGameData(),
+                    battleState.getBattleSite(),
+                    battleState.getTerritoryEffects())),
             battleState.getGameData())
         .getEffectivePower();
   }

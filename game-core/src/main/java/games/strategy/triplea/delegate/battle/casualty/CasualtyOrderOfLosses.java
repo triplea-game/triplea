@@ -9,6 +9,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,8 +40,7 @@ class CasualtyOrderOfLosses {
   static class Parameters {
     @Nonnull Collection<Unit> targetsToPickFrom;
     @Nonnull GamePlayer player;
-    @Nonnull Collection<Unit> enemyUnits;
-    @Nonnull Collection<Unit> friendlyUnits;
+    @Nonnull CombatValue combatValue;
     @Nonnull Territory battlesite;
     @Nonnull IntegerMap<UnitType> costs;
     @Nonnull CombatModifiers combatModifiers;
@@ -106,15 +106,7 @@ class CasualtyOrderOfLosses {
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
-            sortedUnitsList,
-            new ArrayList<>(parameters.enemyUnits),
-            new ArrayList<>(parameters.friendlyUnits),
-            parameters.combatModifiers.isDefending(),
-            parameters.data,
-            parameters.battlesite,
-            parameters.combatModifiers.getTerritoryEffects(),
-            unitSupportPowerMap,
-            unitSupportRollsMap);
+            sortedUnitsList, parameters.combatValue, unitSupportPowerMap, unitSupportRollsMap);
 
     // Sort units starting with weakest for finding the worst units
     Collections.reverse(sortedUnitsList);

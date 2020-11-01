@@ -1,8 +1,11 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,6 +32,19 @@ class AaDefenseCombatValue implements CombatValue {
 
   @NonNull AvailableSupports supportFromFriends;
   @NonNull AvailableSupports supportFromEnemies;
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  @Builder.Default
+  Collection<Unit> friendUnits = List.of();
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  @Builder.Default
+  Collection<Unit> enemyUnits = List.of();
+
+  @Getter(onMethod = @__({@Override}))
+  Collection<TerritoryEffect> territoryEffects = List.of();
 
   @Override
   public RollCalculator getRoll() {

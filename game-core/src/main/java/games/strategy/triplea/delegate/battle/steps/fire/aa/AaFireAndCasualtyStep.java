@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AA_GUNS_FIRE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_PREFIX;
@@ -20,6 +20,7 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.fire.RollDiceStep;
 import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -65,18 +66,26 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
     @Override
     public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
       return AaCasualtySelector.getAaCasualties(
-          step.getSide() == OFFENSE,
           step.getFiringGroup().getTargetUnits(),
-          step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()),
           step.getFiringGroup().getFiringUnits(),
-          step.getBattleState().filterUnits(ACTIVE, step.getSide()),
+          CombatValue.buildMainCombatValue(
+              step.getBattleState().filterUnits(ALIVE, step.getSide()),
+              step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
+              step.getSide() == OFFENSE,
+              step.getBattleState().getGameData(),
+              step.getBattleState().getBattleSite(),
+              step.getBattleState().getTerritoryEffects()),
+          CombatValue.buildAaCombatValue(
+              step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
+              step.getBattleState().filterUnits(ALIVE, step.getSide()),
+              step.getSide() == DEFENSE,
+              step.getBattleState().getGameData()),
           "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
           step.getFireRoundState().getDice(),
           bridge,
           step.getBattleState().getPlayer(step.getSide().getOpposite()),
           step.getBattleState().getBattleId(),
-          step.getBattleState().getBattleSite(),
-          step.getBattleState().getTerritoryEffects());
+          step.getBattleState().getBattleSite());
     }
   }
 
@@ -88,11 +97,13 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
           DiceRoll.rollAa(
               step.getFiringGroup().getTargetUnits(),
               step.getFiringGroup().getFiringUnits(),
-              step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()),
-              step.getBattleState().filterUnits(ACTIVE, step.getSide()),
               bridge,
               step.getBattleState().getBattleSite(),
-              step.getSide() == DEFENSE);
+              CombatValue.buildAaCombatValue(
+                  step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
+                  step.getBattleState().filterUnits(ALIVE, step.getSide()),
+                  step.getSide() == DEFENSE,
+                  step.getBattleState().getGameData()));
 
       SoundUtils.playFireBattleAa(
           step.getBattleState().getPlayer(step.getSide()),

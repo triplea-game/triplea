@@ -1,12 +1,10 @@
 package games.strategy.triplea.delegate;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -15,6 +13,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
@@ -84,8 +83,13 @@ public class DiceRoll implements Externalizable {
       final IDelegateBridge bridge,
       final Territory location,
       final boolean defending) {
+
     return rollAa(
-        validTargets, aaUnits, new ArrayList<>(), new ArrayList<>(), bridge, location, defending);
+        validTargets,
+        aaUnits,
+        bridge,
+        location,
+        CombatValue.buildAaCombatValue(List.of(), List.of(), defending, bridge.getData()));
   }
 
   /**
@@ -93,30 +97,21 @@ public class DiceRoll implements Externalizable {
    *
    * @param validTargets - potential AA targets
    * @param aaUnits - AA units that could potentially be rolling
-   * @param allEnemyUnitsAliveOrWaitingToDie - all enemy units to check for support
-   * @param allFriendlyUnitsAliveOrWaitingToDie - all allied units to check for support
    * @param bridge - delegate bridge
    * @param location - battle territory
-   * @param defending - whether AA units are defending or attacking
    * @return DiceRoll result which includes total hits and dice that were rolled
    */
   public static DiceRoll rollAa(
       final Collection<Unit> validTargets,
       final Collection<Unit> aaUnits,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final IDelegateBridge bridge,
       final Territory location,
-      final boolean defending) {
+      final CombatValue combatValueCalculator) {
 
     final GameData data = bridge.getData();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            aaUnits,
-            allEnemyUnitsAliveOrWaitingToDie,
-            allFriendlyUnitsAliveOrWaitingToDie,
-            defending,
-            data);
+            aaUnits, combatValueCalculator);
 
     // Check that there are valid AA and targets to roll for
     final int totalAaAttacks =
@@ -129,7 +124,7 @@ public class DiceRoll implements Externalizable {
     // typeAA)
     final int diceSides =
         TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
-                aaUnits, data, defending, unitPowerAndRollsMap)
+                aaUnits, data, combatValueCalculator.isDefending(), unitPowerAndRollsMap)
             .getSecond();
 
     // Roll AA dice for LL or regular
@@ -138,7 +133,13 @@ public class DiceRoll implements Externalizable {
     final String typeAa = UnitAttachment.get(aaUnits.iterator().next().getType()).getTypeAa();
     final int totalPower =
         TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-                null, null, defending, unitPowerAndRollsMap, validTargets, data, false)
+                null,
+                null,
+                combatValueCalculator.isDefending(),
+                unitPowerAndRollsMap,
+                validTargets,
+                data,
+                false)
             .getFirst();
     final GamePlayer player = aaUnits.iterator().next().getOwner();
     final String annotation = "Roll " + typeAa + " in " + location.getName();
@@ -149,7 +150,13 @@ public class DiceRoll implements Externalizable {
           bridge.getRandom(diceSides, totalAaAttacks, player, DiceType.COMBAT, annotation);
       hits +=
           TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-                  dice, sortedDice, defending, unitPowerAndRollsMap, validTargets, data, true)
+                  dice,
+                  sortedDice,
+                  combatValueCalculator.isDefending(),
+                  unitPowerAndRollsMap,
+                  validTargets,
+                  data,
+                  true)
               .getSecond();
     }
 
@@ -191,65 +198,26 @@ public class DiceRoll implements Externalizable {
     return hits;
   }
 
-  @VisibleForTesting
-  static DiceRoll rollDice(
-      final List<Unit> units,
-      final boolean defending,
-      final GamePlayer player,
-      final IDelegateBridge bridge,
-      final Territory territory,
-      final Collection<TerritoryEffect> territoryEffects) {
-    return rollDice(
-        units, defending, player, bridge, territory, "", territoryEffects, List.of(), units);
-  }
-
   /**
    * Used to roll dice for attackers and defenders in battles.
    *
    * @param units - units that could potentially be rolling
-   * @param defending - whether units are defending or attacking
    * @param player - that will be rolling the dice
    * @param bridge - delegate bridge
-   * @param territory - territory where the battle takes place
    * @param annotation - description of the battle being rolled for
-   * @param territoryEffects - list of territory effects for the battle
-   * @param allEnemyUnitsAliveOrWaitingToDie - all enemy units to check for support
-   * @param allFriendlyUnitsAliveOrWaitingToDie - all allied units to check for support
    * @return DiceRoll result which includes total hits and dice that were rolled
    */
   public static DiceRoll rollDice(
       final Collection<Unit> units,
-      final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final Territory territory,
       final String annotation,
-      final Collection<TerritoryEffect> territoryEffects,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
+      final CombatValue combatValueCalculator) {
 
     if (Properties.getLowLuck(bridge.getData())) {
-      return rollDiceLowLuck(
-          units,
-          defending,
-          player,
-          bridge,
-          territory,
-          annotation,
-          territoryEffects,
-          allEnemyUnitsAliveOrWaitingToDie,
-          allFriendlyUnitsAliveOrWaitingToDie);
+      return rollDiceLowLuck(units, player, bridge, annotation, combatValueCalculator);
     }
-    return rollDiceNormal(
-        units,
-        defending,
-        player,
-        bridge,
-        territory,
-        annotation,
-        territoryEffects,
-        allEnemyUnitsAliveOrWaitingToDie,
-        allFriendlyUnitsAliveOrWaitingToDie);
+    return rollDiceNormal(units, player, bridge, annotation, combatValueCalculator);
   }
 
   /**
@@ -278,26 +246,15 @@ public class DiceRoll implements Externalizable {
   /** Roll dice for units using low luck rules. */
   private static DiceRoll rollDiceLowLuck(
       final Collection<Unit> unitsList,
-      final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final Territory location,
       final String annotation,
-      final Collection<TerritoryEffect> territoryEffects,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
+      final CombatValue combatValueCalculator) {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
-            units,
-            allEnemyUnitsAliveOrWaitingToDie,
-            allFriendlyUnitsAliveOrWaitingToDie,
-            defending,
-            data,
-            location,
-            territoryEffects);
+        TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(units, combatValueCalculator);
 
     final int power = TotalPowerAndTotalRolls.getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
@@ -481,27 +438,16 @@ public class DiceRoll implements Externalizable {
   /** Roll dice for units per normal rules. */
   private static DiceRoll rollDiceNormal(
       final Collection<Unit> unitsList,
-      final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final Territory location,
       final String annotation,
-      final Collection<TerritoryEffect> territoryEffects,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
+      final CombatValue combatValueCalculator) {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
-    sortByStrength(units, defending);
+    sortByStrength(units, combatValueCalculator.isDefending());
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
-            units,
-            allEnemyUnitsAliveOrWaitingToDie,
-            allFriendlyUnitsAliveOrWaitingToDie,
-            defending,
-            data,
-            location,
-            territoryEffects);
+        TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(units, combatValueCalculator);
 
     final TotalPowerAndTotalRolls totalPowerAndRolls =
         TotalPowerAndTotalRolls.getTotalPowerAndRolls(unitPowerAndRollsMap, data);

@@ -7,6 +7,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,8 +35,22 @@ class MainOffenseCombatValue implements CombatValue {
 
   @NonNull AvailableSupports supportFromFriends;
   @NonNull AvailableSupports supportFromEnemies;
-  @NonNull Collection<TerritoryEffect> territoryEffects;
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  Collection<TerritoryEffect> territoryEffects;
+
   boolean territoryIsLand;
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  @Builder.Default
+  Collection<Unit> friendUnits = List.of();
+
+  @Getter(onMethod = @__({@Override}))
+  @NonNull
+  @Builder.Default
+  Collection<Unit> enemyUnits = List.of();
 
   @Override
   public RollCalculator getRoll() {

@@ -15,7 +15,13 @@ public interface CombatValue {
 
   boolean isDefending();
 
+  Collection<TerritoryEffect> getTerritoryEffects();
+
   GameData getGameData();
+
+  Collection<Unit> getFriendUnits();
+
+  Collection<Unit> getEnemyUnits();
 
   static CombatValue buildMainCombatValue(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -48,12 +54,16 @@ public interface CombatValue {
             .gameData(data)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
+            .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
+            .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
             .territoryEffects(territoryEffects)
             .build()
         : MainOffenseCombatValue.builder()
             .gameData(data)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
+            .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
+            .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
             .territoryEffects(territoryEffects)
             .territoryIsLand(Matches.territoryIsLand().test(location))
             .build();
@@ -88,11 +98,15 @@ public interface CombatValue {
             .gameData(data)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
+            .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
+            .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
             .build()
         : AaOffenseCombatValue.builder()
             .gameData(data)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
+            .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
+            .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
             .build();
   }
 }
