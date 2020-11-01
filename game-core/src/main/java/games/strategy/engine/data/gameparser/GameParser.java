@@ -2,7 +2,6 @@ package games.strategy.engine.data.gameparser;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.EngineVersionException;
@@ -54,6 +53,7 @@ import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
+import org.triplea.injection.ClientContext;
 import org.triplea.java.UrlStreams;
 import org.triplea.map.data.elements.AttachmentList;
 import org.triplea.map.data.elements.DiceSides;

@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.SystemProperties;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.debug.ExceptionDetails;
 import org.triplea.debug.LoggerRecord;
+import org.triplea.injection.ClientContext;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportBodyFormatterTest {

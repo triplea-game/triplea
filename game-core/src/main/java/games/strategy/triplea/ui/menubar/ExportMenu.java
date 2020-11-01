@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
 import com.google.common.collect.Iterables;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
@@ -53,6 +52,7 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.java.Log;
+import org.triplea.injection.ClientContext;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.JMenuItemBuilder;

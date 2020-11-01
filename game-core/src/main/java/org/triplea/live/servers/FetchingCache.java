@@ -1,7 +1,6 @@
 package org.triplea.live.servers;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.download.CloseableDownloader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.Builder;
+import org.triplea.injection.ClientContext;
 import org.triplea.java.function.ThrowingSupplier;
 
 @Builder

@@ -1,6 +1,5 @@
 package games.strategy.engine.auto.update;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -13,6 +12,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.injection.ClientContext;
 import org.triplea.util.Version;
 
 @UtilityClass

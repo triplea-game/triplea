@@ -1,7 +1,6 @@
 package games.strategy.engine.data.export;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -33,6 +32,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.UtilityClass;
+import org.triplea.injection.ClientContext;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.map.data.elements.AttachmentList;
 import org.triplea.map.data.elements.DiceSides;

@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.UrlConstants;
@@ -25,6 +24,7 @@ import java.util.zip.GZIPOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.injection.ClientContext;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */

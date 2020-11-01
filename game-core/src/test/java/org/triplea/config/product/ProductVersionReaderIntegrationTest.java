@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
 
 @Integration
-final class ProductConfigurationIntegrationTest {
-  private final ProductConfiguration productConfiguration = new ProductConfiguration();
+final class ProductVersionReaderIntegrationTest {
+  private final ProductVersionReader productVersionReader = new ProductVersionReader();
 
   @Test
   void shouldReadPropertiesFromResource() {
-    assertThat(productConfiguration.getVersion().toString(), matchesPattern("\\d+\\.\\d+\\.\\d+"));
+    assertThat(productVersionReader.getVersion().toString(), matchesPattern("\\d+\\.\\d+\\.\\d+"));
   }
 }

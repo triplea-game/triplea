@@ -1,12 +1,12 @@
 package org.triplea.debug.error.reporting;
 
-import games.strategy.engine.ClientContext;
 import javax.swing.JFrame;
 import lombok.experimental.UtilityClass;
 import org.triplea.debug.LoggerRecord;
 import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
+import org.triplea.injection.ClientContext;
 
 /**
  * Decision module to handle the case where a user wishes to report an error to TripleA. First we

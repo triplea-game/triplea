@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
@@ -35,6 +34,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 import lombok.extern.java.Log;
+import org.triplea.injection.ClientContext;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
