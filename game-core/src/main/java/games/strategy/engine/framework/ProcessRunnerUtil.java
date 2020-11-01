@@ -28,6 +28,11 @@ final class ProcessRunnerUtil {
             .map(s -> s.substring(4))
             .findFirst();
     maxMemory.ifPresent(max -> commands.add("-Xmx" + max));
+    final Optional<String> maxStackSize =
+        ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+            .filter(s -> s.toLowerCase().startsWith("-xss"))
+            .findFirst();
+    maxStackSize.ifPresent(commands::add);
     if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
