@@ -305,9 +305,6 @@ public class HeadlessGameServer {
             + LOBBY_URI
             + "=<LOBBY_URI>\n"
             + "   "
-            + LOBBY_GAME_SUPPORT_PASSWORD
-            + "=<password for remote actions, such as remote stop game>\n"
-            + "   "
             + MAP_FOLDER
             + "=<MAP_FOLDER>"
             + "\n");
