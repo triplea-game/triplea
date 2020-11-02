@@ -9,10 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nullable;
-import javax.websocket.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,9 +28,9 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatM
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
-import org.triplea.web.socket.InetExtractor;
 import org.triplea.web.socket.WebSocketMessageContext;
 import org.triplea.web.socket.WebSocketMessagingBus;
+import org.triplea.web.socket.WebSocketSession;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerConnectedListenerTest {
@@ -50,7 +48,7 @@ class PlayerConnectedListenerTest {
 
   private PlayerConnectedListener playerConnectedListener;
 
-  @Mock private Session session;
+  @Mock private WebSocketSession session;
   @Mock private WebSocketMessageContext<ConnectToChatMessage> context;
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
   private PlayerApiKeyLookupRecord apiKeyLookupRecord;
@@ -119,8 +117,7 @@ class PlayerConnectedListenerTest {
   void playerConnectsForFirstTime() {
     givenApiKeyLookupResult(apiKeyLookupRecord);
 
-    when(session.getUserProperties())
-        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, chatterSession.getIp()));
+    when(session.getRemoteAddress()).thenReturn(chatterSession.getIp());
     when(chatters.isPlayerConnected(chatterSession.getChatParticipant().getUserName()))
         .thenReturn(false);
 
@@ -140,8 +137,7 @@ class PlayerConnectedListenerTest {
   void playerConnectsForSecondTime() {
     givenApiKeyLookupResult(apiKeyLookupRecord);
 
-    when(session.getUserProperties())
-        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, chatterSession.getIp()));
+    when(session.getRemoteAddress()).thenReturn(chatterSession.getIp());
     when(chatters.isPlayerConnected(chatterSession.getChatParticipant().getUserName()))
         .thenReturn(true);
 

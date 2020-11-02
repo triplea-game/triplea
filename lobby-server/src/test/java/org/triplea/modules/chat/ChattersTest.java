@@ -17,7 +17,6 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import javax.websocket.CloseReason;
-import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,7 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.web.socket.MessageBroadcaster;
+import org.triplea.web.socket.WebSocketSession;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -41,8 +41,8 @@ class ChattersTest {
 
   private Chatters chatters = new Chatters();
 
-  @Mock private Session session;
-  @Mock private Session session2;
+  @Mock private WebSocketSession session;
+  @Mock private WebSocketSession session2;
   @Mock private MessageBroadcaster messageBroadcaster;
 
   @Test
@@ -155,7 +155,7 @@ class ChattersTest {
     }
   }
 
-  private ChatterSession buildChatterSession(final Session session) {
+  private ChatterSession buildChatterSession(final WebSocketSession session) {
     return ChatterSession.builder()
         .session(session)
         .chatParticipant(CHAT_PARTICIPANT)

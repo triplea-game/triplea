@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,13 +19,14 @@ import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessagingBus;
+import org.triplea.web.socket.WebSocketSession;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerLeftListenerTest {
   @Mock private Chatters chatters;
   @InjectMocks private PlayerLeftListener playerLeftListener;
 
-  @Mock private Session session;
+  @Mock private WebSocketSession session;
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
 
   private ArgumentCaptor<PlayerLeftMessage> messageCaptor =

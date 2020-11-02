@@ -1,7 +1,6 @@
 package org.triplea.web.socket;
 
 import javax.annotation.Nonnull;
-import javax.websocket.Session;
 import lombok.Builder;
 import lombok.Getter;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
@@ -10,7 +9,7 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 @Getter
 public class WebSocketMessageContext<T extends WebSocketMessage> {
   @Nonnull WebSocketMessagingBus messagingBus;
-  @Nonnull Session senderSession;
+  @Nonnull WebSocketSession senderSession;
   @Nonnull T message;
 
   public <X extends WebSocketMessage> void sendResponse(final X responseMessage) {

@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -29,7 +28,7 @@ public class WebSocketMessagingBus {
   @Nonnull private final MessageSender messageSender;
   @Nonnull private final SessionSet sessionSet;
 
-  private final List<BiConsumer<WebSocketMessagingBus, Session>> sessionClosedListeners =
+  private final List<BiConsumer<WebSocketMessagingBus, WebSocketSession>> sessionClosedListeners =
       new ArrayList<>();
 
   @Value
@@ -47,7 +46,7 @@ public class WebSocketMessagingBus {
   }
 
   public <X extends WebSocketMessage> void sendResponse(
-      final Session session, final X responseMessage) {
+      final WebSocketSession session, final X responseMessage) {
     messageSender.accept(session, responseMessage.toEnvelope());
   }
 
@@ -62,7 +61,7 @@ public class WebSocketMessagingBus {
 
   @SuppressWarnings("unchecked")
   <T extends WebSocketMessage> void onMessage(
-      final Session session, final MessageEnvelope envelope) {
+      final WebSocketSession session, final MessageEnvelope envelope) {
     determineMatchingMessageType(envelope)
         .ifPresent(
             messageType -> {
@@ -101,20 +100,20 @@ public class WebSocketMessagingBus {
   }
 
   public void addSessionDisconnectListener(
-      final BiConsumer<WebSocketMessagingBus, Session> listener) {
+      final BiConsumer<WebSocketMessagingBus, WebSocketSession> listener) {
     sessionClosedListeners.add(listener);
   }
 
-  void onClose(final Session session) {
+  void onClose(final WebSocketSession session) {
     sessionSet.remove(session);
     sessionClosedListeners.forEach(listener -> listener.accept(this, session));
   }
 
-  void onOpen(final Session session) {
+  void onOpen(final WebSocketSession session) {
     sessionSet.put(session);
   }
 
-  void onError(final Session session, final Throwable throwable) {
+  void onError(final WebSocketSession session, final Throwable throwable) {
     final String errorId = UUID.randomUUID().toString();
     log.error(
         "Error-id processing websocket message, returning an error message to user. "

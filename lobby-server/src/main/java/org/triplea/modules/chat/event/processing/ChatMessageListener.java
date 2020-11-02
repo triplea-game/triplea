@@ -15,7 +15,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessag
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
-import org.triplea.web.socket.InetExtractor;
 import org.triplea.web.socket.WebSocketMessageContext;
 
 @Builder
@@ -34,8 +33,7 @@ public class ChatMessageListener implements Consumer<WebSocketMessageContext<Cha
 
   @Override
   public void accept(final WebSocketMessageContext<ChatSentMessage> messageContext) {
-    final InetAddress chatterIp =
-        InetExtractor.extract(messageContext.getSenderSession().getUserProperties());
+    final InetAddress chatterIp = messageContext.getSenderSession().getRemoteAddress();
 
     chatters
         .lookupPlayerBySession(messageContext.getSenderSession())
