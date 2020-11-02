@@ -1,4 +1,4 @@
-latest: 2.5.22285
+latest: 2.5.22294
 servers:
   - version: "2.0.20057"
     lobby_uri: https://prod2-lobby.triplea-game.org
