@@ -213,14 +213,11 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   @SuppressWarnings("ReturnValueIgnored")
   private static boolean gameUriExistsOnFileSystem(final String gameUri) {
-    try {
-      Path.of(URI.create(gameUri));
-    } catch (final IllegalArgumentException ignored) {
-      // thrown if the URI is invalid (EG: missing URI scheme)
+    final URI uri = URI.create(gameUri);
+    if (uri.getScheme() == null) {
       return false;
     }
-
-    final Path realPath = getDefaultGameRealPath(URI.create(gameUri));
+    final Path realPath = getDefaultGameRealPath(uri);
 
     // starts with check is because we don't want to load a game file by default that is not within
     // the map folders. (ie: if a previous version of triplea was using running a game within its
