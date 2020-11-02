@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -204,17 +205,29 @@ public class GameSelectorModel extends Observable implements GameSelector {
   public void loadDefaultGameSameThread() {
     ClientSetting.defaultGameUri
         .getValue()
+        .filter(Predicate.not(String::isBlank))
+        .filter(GameSelectorModel::gameUriExistsOnFileSystem)
         .map(URI::create)
-        // we don't want to load a game file by default that is not within the map folders we
-        // can load. (ie: if a previous version of triplea was using running a game within its
-        // root folder, we shouldn't open it)
-        .filter(
-            defaultGame ->
-                getDefaultGameRealPath(defaultGame)
-                    .startsWith(ClientFileSystemHelper.getUserRootFolder().toPath()))
-        // ensure the default game hasn't been deleted since it was last loaded
-        .filter(defaultGame -> getDefaultGameRealPath(defaultGame).toFile().exists())
         .ifPresentOrElse(this::load, this::resetDefaultGame);
+  }
+
+  @SuppressWarnings("ReturnValueIgnored")
+  private static boolean gameUriExistsOnFileSystem(final String gameUri) {
+    try {
+      Path.of(URI.create(gameUri));
+    } catch (final IllegalArgumentException ignored) {
+      // thrown if the URI is invalid (EG: missing URI scheme)
+      return false;
+    }
+
+    final Path realPath = getDefaultGameRealPath(URI.create(gameUri));
+
+    // starts with check is because we don't want to load a game file by default that is not within
+    // the map folders. (ie: if a previous version of triplea was using running a game within its
+    // root folder, we shouldn't open it)
+
+    return realPath.startsWith(ClientFileSystemHelper.getUserRootFolder().toPath())
+        && realPath.toFile().exists();
   }
 
   /**
