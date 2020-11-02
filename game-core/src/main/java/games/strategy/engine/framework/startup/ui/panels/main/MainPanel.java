@@ -35,7 +35,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  */
 public class MainPanel extends JPanel {
   private static final long serialVersionUID = -5548760379892913464L;
-  private static final Dimension initialSize = new Dimension(800, 620);
+  private static final Dimension initialSize = new Dimension(900, 780);
 
   private final JButton playButton =
       new JButtonBuilder()
