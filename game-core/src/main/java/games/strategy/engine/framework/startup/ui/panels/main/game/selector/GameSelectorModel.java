@@ -237,6 +237,9 @@ public class GameSelectorModel extends Observable implements GameSelector {
    * method will find the location of the zip file itself.
    */
   private static Path getDefaultGameRealPath(final URI defaultGame) {
+    // The file system of the URI needs to be created before Path.of can be called.
+    // So, first see if the file system is already created and if that throws
+    // FileSystemNotFoundException, then try and create it.
     try {
       FileSystems.getFileSystem(defaultGame);
     } catch (final FileSystemNotFoundException notFoundException) {
