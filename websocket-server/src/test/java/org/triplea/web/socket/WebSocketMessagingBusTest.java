@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import javax.websocket.Session;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +36,7 @@ class WebSocketMessagingBusTest {
   @Mock private Consumer<WebSocketMessageContext<BooleanMessage>> booleanMessageListener;
   @Mock private Consumer<WebSocketMessageContext<BooleanMessage>> booleanMessageListenerSecond;
   @Mock private Consumer<WebSocketMessageContext<StringMessage>> stringMessageListener;
-  @Mock private Session session;
+  @Mock private WebSocketSession session;
 
   private static class StringMessage implements WebSocketMessage {
     private static final MessageType<StringMessage> TYPE = MessageType.of(StringMessage.class);
@@ -128,7 +127,7 @@ class WebSocketMessagingBusTest {
     @Mock private SessionSet sessionSet;
     @InjectMocks private WebSocketMessagingBus webSocketMessagingBus;
 
-    @Mock private Session session;
+    @Mock private WebSocketSession session;
 
     @Test
     @DisplayName("Send response should forward to message sender implementation")
@@ -145,7 +144,7 @@ class WebSocketMessagingBusTest {
         "Broadcast should forward all sessions from session set "
             + "and the broadcasted message to broadcaster")
     void broadcast() {
-      final Collection<Session> sessions = List.of(session);
+      final Collection<WebSocketSession> sessions = List.of(session);
       when(sessionSet.getSessions()).thenReturn(sessions);
       final var booleanMessage = new BooleanMessage(true);
 
@@ -162,8 +161,8 @@ class WebSocketMessagingBusTest {
     @Mock private SessionSet sessionSet;
     @InjectMocks private WebSocketMessagingBus webSocketMessagingBus;
 
-    @Mock private BiConsumer<WebSocketMessagingBus, Session> disconnectListener;
-    @Mock private Session session;
+    @Mock private BiConsumer<WebSocketMessagingBus, WebSocketSession> disconnectListener;
+    @Mock private WebSocketSession session;
 
     @Test
     void invokeSessionDisconnectedListener() {
@@ -189,7 +188,7 @@ class WebSocketMessagingBusTest {
     @Mock private SessionSet sessionSet;
     @InjectMocks private WebSocketMessagingBus webSocketMessagingBus;
 
-    @Mock private Session session;
+    @Mock private WebSocketSession session;
 
     @Test
     void onOpenAddsToSessionSet() {
@@ -206,7 +205,7 @@ class WebSocketMessagingBusTest {
     @Mock private SessionSet sessionSet;
     @InjectMocks private WebSocketMessagingBus webSocketMessagingBus;
 
-    @Mock private Session session;
+    @Mock private WebSocketSession session;
 
     @Test
     void onOpenAddsToSessionSet() {

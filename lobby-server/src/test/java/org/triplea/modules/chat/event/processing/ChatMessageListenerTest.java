@@ -10,9 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.Optional;
-import javax.websocket.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +29,8 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMe
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
-import org.triplea.web.socket.InetExtractor;
 import org.triplea.web.socket.WebSocketMessageContext;
+import org.triplea.web.socket.WebSocketSession;
 
 @ExtendWith(MockitoExtension.class)
 class ChatMessageListenerTest {
@@ -41,7 +39,7 @@ class ChatMessageListenerTest {
   @Mock private LobbyChatHistoryDao lobbyChatHistoryDao;
   @InjectMocks private ChatMessageListener chatMessageListener;
 
-  @Mock private Session session;
+  @Mock private WebSocketSession session;
   @Mock private WebSocketMessageContext<ChatSentMessage> messageContext;
 
   private ArgumentCaptor<ChatReceivedMessage> messageCaptor =
@@ -68,8 +66,7 @@ class ChatMessageListenerTest {
   @DisplayName("If a player is not in the chatter session, then we do not relay their message")
   void ifPlayerSessionDoesNotExistThenDoNotRelayTheirMessage() {
     when(messageContext.getSenderSession()).thenReturn(session);
-    when(session.getUserProperties())
-        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, chatterSession.getIp()));
+    when(session.getRemoteAddress()).thenReturn(chatterSession.getIp());
     when(chatters.lookupPlayerBySession(session)).thenReturn(Optional.empty());
 
     chatMessageListener.accept(messageContext);
@@ -84,8 +81,7 @@ class ChatMessageListenerTest {
     when(messageContext.getSenderSession()).thenReturn(session);
     when(messageContext.getMessage()).thenReturn(new ChatSentMessage("message"));
     when(chatters.lookupPlayerBySession(session)).thenReturn(Optional.of(chatterSession));
-    when(session.getUserProperties())
-        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, chatterSession.getIp()));
+    when(session.getRemoteAddress()).thenReturn(chatterSession.getIp());
     when(chatters.getPlayerMuteExpiration(chatterSession.getIp())).thenReturn(Optional.empty());
 
     chatMessageListener.accept(messageContext);
@@ -103,8 +99,7 @@ class ChatMessageListenerTest {
   void mutedPlayerMessagesAreNotSent() {
     when(messageContext.getSenderSession()).thenReturn(session);
     when(chatters.lookupPlayerBySession(session)).thenReturn(Optional.of(chatterSession));
-    when(session.getUserProperties())
-        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, chatterSession.getIp()));
+    when(session.getRemoteAddress()).thenReturn(chatterSession.getIp());
     when(chatters.getPlayerMuteExpiration(chatterSession.getIp()))
         .thenReturn(Optional.of(Instant.now().plusSeconds(60)));
 

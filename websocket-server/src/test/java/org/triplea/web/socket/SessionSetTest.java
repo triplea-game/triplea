@@ -10,11 +10,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Collection;
-import java.util.Map;
-import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,11 +27,11 @@ class SessionSetTest {
 
   private SessionSet sessionSet = new SessionSet();
 
-  @Mock private Session session;
-  @Mock private Session session0;
-  @Mock private Session session1;
-  @Mock private Session session2;
-  @Mock private Session session3;
+  @Mock private WebSocketSession session;
+  @Mock private WebSocketSession session0;
+  @Mock private WebSocketSession session1;
+  @Mock private WebSocketSession session2;
+  @Mock private WebSocketSession session3;
 
   @Nested
   class Put {
@@ -117,7 +114,7 @@ class SessionSetTest {
     @Test
     @DisplayName("No sessions to match, expect no sessions to be returned")
     void noSessions() {
-      final Collection<Session> matches = sessionSet.getSessionsByIp(IP_0);
+      final Collection<WebSocketSession> matches = sessionSet.getSessionsByIp(IP_0);
 
       assertThat("session set contains no sessions to match", matches, is(empty()));
     }
@@ -127,7 +124,7 @@ class SessionSetTest {
     void noMatchingSessions() {
       givenSessionIsOpenAndHasIp(session, IP_1);
 
-      final Collection<Session> matches = sessionSet.getSessionsByIp(IP_0);
+      final Collection<WebSocketSession> matches = sessionSet.getSessionsByIp(IP_0);
 
       assertThat("IP_1 is in the set, but IP_0 is not", matches, is(empty()));
     }
@@ -138,7 +135,7 @@ class SessionSetTest {
       when(session.isOpen()).thenReturn(false);
       sessionSet.put(session);
 
-      final Collection<Session> matches = sessionSet.getSessionsByIp(IP_0);
+      final Collection<WebSocketSession> matches = sessionSet.getSessionsByIp(IP_0);
 
       assertThat("IP_0 matches, but the session is closed", matches, is(empty()));
     }
@@ -153,7 +150,7 @@ class SessionSetTest {
       givenSessionIsOpenAndHasIp(session2, IP_1);
       givenSessionIsClosedAndHasIp(session3, IP_1);
 
-      final Collection<Session> matches = sessionSet.getSessionsByIp(IP_0);
+      final var matches = sessionSet.getSessionsByIp(IP_0);
 
       assertThat("Two open sessions match IP_0", matches, hasSize(2));
       assertThat(matches, hasItems(session, session0));
@@ -170,7 +167,7 @@ class SessionSetTest {
 
     @Test
     @DisplayName("Session is already closed")
-    void sessionAlreadyClosed() throws IOException {
+    void sessionAlreadyClosed() {
       givenSessionIsClosedAndHasIp(session, IP_0);
       sessionSet.closeSessionsByIp(IP_0);
       verify(session, never()).close();
@@ -178,7 +175,7 @@ class SessionSetTest {
 
     @Test
     @DisplayName("Multiple matching sessions, expect open sessions to be closed")
-    void multipleSessionsToClose() throws IOException {
+    void multipleSessionsToClose() {
       givenSessionIsClosedAndHasIp(session, IP_0);
       givenSessionIsOpenAndHasIp(session0, IP_0);
       givenSessionIsOpenAndHasIp(session1, IP_0);
@@ -198,21 +195,20 @@ class SessionSetTest {
     }
   }
 
-  private void givenSessionIsOpenAndHasIp(final Session session, final InetAddress ip) {
+  private void givenSessionIsOpenAndHasIp(final WebSocketSession session, final InetAddress ip) {
     givenSessionWithIp(session, ip, true);
   }
 
-  private void givenSessionIsClosedAndHasIp(final Session session, final InetAddress ip) {
+  private void givenSessionIsClosedAndHasIp(final WebSocketSession session, final InetAddress ip) {
     givenSessionWithIp(session, ip, false);
   }
 
   private void givenSessionWithIp(
-      final Session session, final InetAddress ip, final boolean isOpen) {
+      final WebSocketSession session, final InetAddress ip, final boolean isOpen) {
     when(session.isOpen()).thenReturn(isOpen);
 
     if (isOpen) {
-      when(session.getUserProperties())
-          .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "/" + ip.getHostAddress() + ":555"));
+      when(session.getRemoteAddress()).thenReturn(ip);
     }
 
     sessionSet.put(session);

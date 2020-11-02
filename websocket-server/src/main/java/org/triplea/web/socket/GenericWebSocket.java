@@ -1,22 +1,25 @@
 package org.triplea.web.socket;
 
-import static org.triplea.web.socket.WebSocketMessagingBus.MESSAGING_BUS_KEY;
-
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ascii;
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
-import lombok.experimental.UtilityClass;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
@@ -28,59 +31,76 @@ import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
  * grouped by the "types" of connections that are created to them (eg: players or games)
  */
 @Slf4j
-@UtilityClass
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class GenericWebSocket {
-  public static final String BAN_CHECK_KEY = "session.ban.checker";
-
   @VisibleForTesting static final int MAX_BAD_MESSAGES = 2;
 
   private static final Gson GSON = new Gson();
-
   private static final Cache<InetAddress, AtomicInteger> badMessageCache =
       Caffeine.newBuilder().expireAfterWrite(Duration.ofSeconds(30)).build();
+  private static final Map<Class<?>, GenericWebSocket> websockets = new HashMap<>();
 
-  static void onOpen(final Session session) {
+  @Nonnull private final WebSocketMessagingBus webSocketMessagingBus;
+  @Nullable private final Predicate<InetAddress> banCheck;
+  @Nonnull private final MessageSender messageSender;
+
+  public static void init(
+      final Class<?> websocketClass,
+      final WebSocketMessagingBus webSocketMessagingBus,
+      @Nullable final Predicate<InetAddress> banCheck) {
+
+    final var genericWebsocket =
+        new GenericWebSocket(webSocketMessagingBus, banCheck, new MessageSender());
+    websockets.put(websocketClass, genericWebsocket);
+  }
+
+  public static GenericWebSocket getInstance(final Class<?> websocketClass) {
+    return Preconditions.checkNotNull(
+        websockets.get(websocketClass),
+        "Error, unable to find generic websocket for: "
+            + websocketClass
+            + ", did you run GenericWebSocket.init("
+            + websocketClass
+            + ", ...) ?");
+  }
+
+  void onOpen(final Session session) {
+    onOpen(WebSocketSession.fromSession(session));
+  }
+
+  void onOpen(final WebSocketSession session) {
     if (isSessionBanned(session)) {
       disconnectBannedSession(session);
     } else {
-      ((WebSocketMessagingBus) session.getUserProperties().get(MESSAGING_BUS_KEY)).onOpen(session);
+      webSocketMessagingBus.onOpen(session);
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private static boolean isSessionBanned(final Session session) {
-    final Object banCheckObject = session.getUserProperties().get(BAN_CHECK_KEY);
-
-    return Optional.ofNullable(banCheckObject)
-        .map(obj -> (Predicate<Session>) obj)
-        .map(check -> check.test(session))
+  private boolean isSessionBanned(final WebSocketSession session) {
+    return Optional.ofNullable(banCheck)
+        .map(check -> check.test(session.getRemoteAddress()))
         .orElse(false);
   }
 
-  private static void disconnectBannedSession(final Session session) {
-    try {
-      session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "You have been banned"));
-    } catch (final IOException e) {
-      log.warn("IOException while closing new session of banned user", e);
-    }
+  private static void disconnectBannedSession(final WebSocketSession session) {
+    session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "You have been banned"));
   }
 
-  static void onMessage(final Session session, final String message) {
-    onMessage(session, message, badMessageCache, new MessageSender());
+  public void onMessage(final Session session, final String message) {
+    onMessage(WebSocketSession.fromSession(session), message, badMessageCache);
+  }
+
+  public void onMessage(final WebSocketSession session, final String message) {
+    onMessage(session, message, badMessageCache);
   }
 
   @VisibleForTesting
-  static void onMessage(
-      final Session session,
+  public void onMessage(
+      final WebSocketSession session,
       final String message,
-      final Cache<InetAddress, AtomicInteger> badMessageCache,
-      final MessageSender messageSender) {
-
-    readJsonMessage(session, message, badMessageCache, messageSender)
-        .ifPresent(
-            envelope ->
-                ((WebSocketMessagingBus) session.getUserProperties().get(MESSAGING_BUS_KEY))
-                    .onMessage(session, envelope));
+      final Cache<InetAddress, AtomicInteger> badMessageCache) {
+    readJsonMessage(session, message, badMessageCache)
+        .ifPresent(envelope -> webSocketMessagingBus.onMessage(session, envelope));
   }
 
   /**
@@ -89,11 +109,10 @@ public class GenericWebSocket {
    * MessageEnvelope} and return that. If the message is badly formatted, we'll send back an error
    * message response to the session, increment the bad message count and return an empty.
    */
-  private static Optional<MessageEnvelope> readJsonMessage(
-      final Session session,
+  private Optional<MessageEnvelope> readJsonMessage(
+      final WebSocketSession session,
       final String message,
-      final Cache<InetAddress, AtomicInteger> badMessageCache,
-      final MessageSender messageSender) {
+      final Cache<InetAddress, AtomicInteger> badMessageCache) {
 
     if (burnMessagesFromThisSession(session, badMessageCache)) {
       // Burn the message -> no-op
@@ -104,7 +123,7 @@ public class GenericWebSocket {
     try {
       return Optional.of(GSON.fromJson(message, MessageEnvelope.class));
     } catch (final JsonSyntaxException e) {
-      final InetAddress inetAddress = InetExtractor.extract(session.getUserProperties());
+      final InetAddress inetAddress = session.getRemoteAddress();
       incrementBadMessageCount(session, badMessageCache);
       logBadMessage(inetAddress, message);
       respondWithServerError(messageSender, session);
@@ -113,8 +132,8 @@ public class GenericWebSocket {
   }
 
   private static boolean burnMessagesFromThisSession(
-      final Session session, final Cache<InetAddress, AtomicInteger> badMessageCache) {
-    final InetAddress inetAddress = InetExtractor.extract(session.getUserProperties());
+      final WebSocketSession session, final Cache<InetAddress, AtomicInteger> badMessageCache) {
+    final InetAddress inetAddress = session.getRemoteAddress();
 
     final int badMessageCount =
         Optional.ofNullable(badMessageCache.getIfPresent(inetAddress))
@@ -125,11 +144,10 @@ public class GenericWebSocket {
   }
 
   private static void incrementBadMessageCount(
-      final Session session, final Cache<InetAddress, AtomicInteger> badMessageCache) {
+      final WebSocketSession session, final Cache<InetAddress, AtomicInteger> badMessageCache) {
     badMessageCache
         .asMap()
-        .computeIfAbsent(
-            InetExtractor.extract(session.getUserProperties()), inet -> new AtomicInteger(0))
+        .computeIfAbsent(session.getRemoteAddress(), inet -> new AtomicInteger(0))
         .incrementAndGet();
   }
 
@@ -141,19 +159,26 @@ public class GenericWebSocket {
   }
 
   private static void respondWithServerError(
-      final MessageSender messageSender, final Session session) {
+      final MessageSender messageSender, final WebSocketSession session) {
     messageSender.accept(
         session,
         new ServerErrorMessage("Server is unable to process request, error reading message")
             .toEnvelope());
   }
 
-  static void onClose(final Session session, final CloseReason closeReason) {
-    ((WebSocketMessagingBus) session.getUserProperties().get(MESSAGING_BUS_KEY)).onClose(session);
+  void onClose(final Session session, final CloseReason closeReason) {
+    onClose(WebSocketSession.fromSession(session), closeReason);
   }
 
-  static void onError(final Session session, final Throwable throwable) {
-    ((WebSocketMessagingBus) session.getUserProperties().get(MESSAGING_BUS_KEY))
-        .onError(session, throwable);
+  void onClose(final WebSocketSession session, final CloseReason closeReason) {
+    webSocketMessagingBus.onClose(session);
+  }
+
+  public void onError(final Session session, final Throwable throwable) {
+    onError(WebSocketSession.fromSession(session), throwable);
+  }
+
+  void onError(final WebSocketSession session, final Throwable throwable) {
+    webSocketMessagingBus.onError(session, throwable);
   }
 }

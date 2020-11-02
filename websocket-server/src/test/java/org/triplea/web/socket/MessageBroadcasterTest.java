@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
-import javax.websocket.Session;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,12 +16,12 @@ import org.triplea.http.client.web.socket.MessageEnvelope;
 @ExtendWith(MockitoExtension.class)
 class MessageBroadcasterTest {
 
-  @Mock private Session session0;
-  @Mock private Session session1;
-  @Mock private Session session2;
+  @Mock private WebSocketSession session0;
+  @Mock private WebSocketSession session1;
+  @Mock private WebSocketSession session2;
   @Mock private MessageEnvelope messageEnvelope;
 
-  @Mock private BiConsumer<Session, MessageEnvelope> singleMessageSender;
+  @Mock private BiConsumer<WebSocketSession, MessageEnvelope> singleMessageSender;
   @InjectMocks private MessageBroadcaster messageBroadcaster;
 
   @Test

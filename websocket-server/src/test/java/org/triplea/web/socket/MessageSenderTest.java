@@ -1,14 +1,12 @@
 package org.triplea.web.socket;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
-import java.util.concurrent.Future;
-import javax.websocket.RemoteEndpoint;
-import javax.websocket.Session;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,9 +24,7 @@ class MessageSenderTest {
 
   private static final String SERVER_MESSAGE_JSON = new Gson().toJson(MESSAGE_ENVELOPE);
 
-  @Mock private Session session;
-  @Mock private RemoteEndpoint.Async asyncRemote;
-  @Mock private Future<Void> future;
+  @Mock private WebSocketSession session;
 
   @AllArgsConstructor
   private static class StringMessage implements WebSocketMessage {
@@ -48,17 +44,15 @@ class MessageSenderTest {
     new MessageSender().accept(session, MESSAGE_ENVELOPE);
 
     verify(session, timeout(500)).isOpen();
-    verify(session, never()).getAsyncRemote();
+    verify(session, never()).sendText(any());
   }
 
   @Test
-  void sendMessage() throws Exception {
+  void sendMessage() {
     when(session.isOpen()).thenReturn(true);
-    when(session.getAsyncRemote()).thenReturn(asyncRemote);
-    when(asyncRemote.sendText(SERVER_MESSAGE_JSON)).thenReturn(future);
 
     new MessageSender().accept(session, MESSAGE_ENVELOPE);
 
-    verify(future, timeout(500)).get();
+    verify(session, timeout(1000)).sendText(SERVER_MESSAGE_JSON);
   }
 }

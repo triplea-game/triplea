@@ -14,16 +14,15 @@ import com.google.gson.Gson;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
-import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.IpAddressParser;
@@ -35,52 +34,46 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUp
 @ExtendWith(MockitoExtension.class)
 class GenericWebSocketTest {
 
-  @Mock private Session session;
+  @Mock private WebSocketSession session;
 
   @Mock private MessageSender messageSender;
 
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
 
-  @Mock private Predicate<Session> banCheck;
+  @Mock private Predicate<InetAddress> banCheck;
 
-  private Cache<InetAddress, AtomicInteger> cache =
+  @InjectMocks private GenericWebSocket genericWebSocket;
+
+  private final Cache<InetAddress, AtomicInteger> cache =
       Caffeine.newBuilder().expireAfterWrite(Duration.ofSeconds(60)).build();
 
-  private ArgumentCaptor<MessageEnvelope> messageCaptor =
+  private final ArgumentCaptor<MessageEnvelope> messageCaptor =
       ArgumentCaptor.forClass(MessageEnvelope.class);
 
   @Test
-  void verifyBannedSessionsAreDisconnected() throws Exception {
-    givenOnOpenSessionWithIp("1.1.1.1");
-    when(banCheck.test(session)).thenReturn(true);
+  void verifyBannedSessionsAreDisconnected() {
+    givenIpInSession("1.1.1.1");
+    when(banCheck.test(IpAddressParser.fromString("1.1.1.1"))).thenReturn(true);
 
-    GenericWebSocket.onOpen(session);
+    genericWebSocket.onOpen(session);
 
     verify(webSocketMessagingBus, never()).onOpen(any());
     verify(session).close(any());
   }
 
   @Test
-  void verifyNotBannedSessionsAreSentToMessagingBux() throws Exception {
+  void verifyNotBannedSessionsAreSentToMessagingBux() {
     givenOnOpenSessionWithIp("1.1.1.1");
-    when(banCheck.test(session)).thenReturn(false);
+    when(banCheck.test(IpAddressParser.fromString("1.1.1.1"))).thenReturn(false);
 
-    GenericWebSocket.onOpen(session);
+    genericWebSocket.onOpen(session);
 
     verify(webSocketMessagingBus).onOpen(session);
     verify(session, never()).close(any());
   }
 
   void givenOnOpenSessionWithIp(final String ip) {
-    when(session.getUserProperties())
-        .thenReturn(
-            Map.of(
-                InetExtractor.IP_ADDRESS_KEY,
-                "/" + ip + ":777",
-                GenericWebSocket.BAN_CHECK_KEY,
-                banCheck,
-                WebSocketMessagingBus.MESSAGING_BUS_KEY,
-                webSocketMessagingBus));
+    when(session.getRemoteAddress()).thenReturn(IpAddressParser.fromString(ip));
   }
 
   @Test
@@ -89,7 +82,7 @@ class GenericWebSocketTest {
   void invalidMessageButNotBurned() {
     givenIpInSession("1.1.1.1");
 
-    GenericWebSocket.onMessage(session, "message", cache, messageSender);
+    genericWebSocket.onMessage(session, "message", cache);
 
     verify(messageSender).accept(eq(session), messageCaptor.capture());
     assertThat(
@@ -107,7 +100,7 @@ class GenericWebSocketTest {
     givenIpInSession("1.1.1.1");
     givenIpHasBadMessageCount("1.1.1.1", 1);
 
-    GenericWebSocket.onMessage(session, "message", cache, messageSender);
+    genericWebSocket.onMessage(session, "message", cache);
 
     assertThat(
         "Verify cache has been incremented",
@@ -116,13 +109,7 @@ class GenericWebSocketTest {
   }
 
   private void givenIpInSession(final String ip) {
-    when(session.getUserProperties())
-        .thenReturn(
-            Map.of(
-                InetExtractor.IP_ADDRESS_KEY,
-                "/" + ip + ":54321",
-                WebSocketMessagingBus.MESSAGING_BUS_KEY,
-                webSocketMessagingBus));
+    when(session.getRemoteAddress()).thenReturn(IpAddressParser.fromString(ip));
   }
 
   @DisplayName("If a session has hit max bad messages, we ignore all messages from that session")
@@ -132,7 +119,7 @@ class GenericWebSocketTest {
     givenIpInSession("1.1.1.1");
     givenIpHasBadMessageCount("1.1.1.1", GenericWebSocket.MAX_BAD_MESSAGES + 1);
 
-    GenericWebSocket.onMessage(session, message, cache, messageSender);
+    genericWebSocket.onMessage(session, message, cache);
 
     verify(webSocketMessagingBus, never()).onMessage(any(), any());
   }
@@ -158,7 +145,7 @@ class GenericWebSocketTest {
 
     final var messageEnvelope = new PlayerStatusUpdateSentMessage("status").toEnvelope();
 
-    GenericWebSocket.onMessage(session, new Gson().toJson(messageEnvelope), cache, messageSender);
+    genericWebSocket.onMessage(session, new Gson().toJson(messageEnvelope));
 
     verify(webSocketMessagingBus).onMessage(session, messageEnvelope);
   }
