@@ -108,7 +108,7 @@ subprojects {
         wireMockJunit5Version = '1.3.1'
         wireMockVersion = '2.21.0'
         xchartVersion = '3.6.5'
-        xmlUnitCore = '2.7.0'
+        xmlUnitCore = '2.8.0'
         xmlUnitMatchers = '2.8.0'
     }
 
