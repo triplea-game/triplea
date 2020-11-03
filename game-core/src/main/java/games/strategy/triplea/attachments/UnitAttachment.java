@@ -336,7 +336,8 @@ public class UnitAttachment extends DefaultAttachment {
     airDefense = getInt(value);
   }
 
-  private void setAirDefense(final Integer value) {
+  @VisibleForTesting
+  public void setAirDefense(final Integer value) {
     airDefense = value;
   }
 
@@ -362,7 +363,8 @@ public class UnitAttachment extends DefaultAttachment {
     airAttack = getInt(value);
   }
 
-  private void setAirAttack(final Integer value) {
+  @VisibleForTesting
+  public void setAirAttack(final Integer value) {
     airAttack = value;
   }
 

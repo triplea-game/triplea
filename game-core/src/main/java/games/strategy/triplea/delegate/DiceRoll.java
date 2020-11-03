@@ -12,7 +12,6 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
@@ -299,15 +298,18 @@ public class DiceRoll implements Externalizable {
 
   public static DiceRoll airBattle(
       final Collection<Unit> unitsList,
-      final boolean defending,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final String annotation) {
+      final String annotation,
+      final CombatValue combatValueCalculator) {
+
+    final TotalPowerAndTotalRolls unitPowerAndRollsMap =
+        PowerStrengthAndRolls.build(unitsList, combatValueCalculator);
 
     final GameData data = bridge.getData();
     final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     final List<Unit> units = new ArrayList<>(unitsList);
-    final int rollCount = AirBattle.getAirBattleRolls(unitsList, defending);
+    final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
@@ -316,33 +318,7 @@ public class DiceRoll implements Externalizable {
     int hitCount = 0;
 
     // bonus is normally 1 for most games
-    final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
-    int totalPower = 0;
-    // We iterate through the units to find the total strength of the units
-    for (final Unit current : units) {
-      final UnitAttachment ua = UnitAttachment.get(current.getType());
-      final int rolls = AirBattle.getAirBattleRolls(current, defending);
-      int unitStrength =
-          Math.min(
-              data.getDiceSides(),
-              Math.max(
-                  0,
-                  (defending
-                      ? ua.getAirDefense(current.getOwner())
-                      : ua.getAirAttack(current.getOwner()))));
-      if (rolls == 1) {
-        totalPower += unitStrength;
-      } else {
-        if (lhtrBombers || ua.getChooseBestRoll()) {
-          // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead,
-          // we will just add +1 onto the power to simulate the gains of having the best die picked.
-          unitStrength += extraRollBonus * (rolls - 1);
-          totalPower += Math.min(unitStrength, data.getDiceSides());
-        } else {
-          totalPower += rolls * unitStrength;
-        }
-      }
-    }
+    final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
 
     if (Properties.getLowLuck(data)) {
       // Get number of hits
@@ -364,15 +340,8 @@ public class DiceRoll implements Externalizable {
       int diceIndex = 0;
       for (final Unit current : units) {
         final UnitAttachment ua = UnitAttachment.get(current.getType());
-        final int strength =
-            Math.min(
-                data.getDiceSides(),
-                Math.max(
-                    0,
-                    (defending
-                        ? ua.getAirDefense(current.getOwner())
-                        : ua.getAirAttack(current.getOwner()))));
-        final int rolls = AirBattle.getAirBattleRolls(current, defending);
+        final int strength = unitPowerAndRollsMap.getStrength(current);
+        final int rolls = unitPowerAndRollsMap.getRolls(current);
         // lhtr heavy bombers take best of n dice for both attack and defense
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
           int minIndex = 0;

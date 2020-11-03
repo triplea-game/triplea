@@ -141,4 +141,11 @@ public interface CombatValue {
         .territoryEffects(territoryEffects)
         .build();
   }
+
+  static CombatValue buildAirBattleCombatValue(final boolean defending, final GameData gameData) {
+
+    return defending
+        ? AirBattleDefenseCombatValue.builder().gameData(gameData).build()
+        : AirBattleOffenseCombatValue.builder().gameData(gameData).build();
+  }
 }
