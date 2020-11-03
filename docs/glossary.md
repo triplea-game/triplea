@@ -14,8 +14,7 @@
 ## Battle Terms:
 - **Roll**: How many dice can the unit roll.
 - **Strength**: The number on the dice that determines whether a hit was made. Any number less than or equal to the number is a hit.
-- **Power**: A calculation using the roll and strength that is used for low luck battles.
-- **Attack**: Generally used to reference Strength (such as attackAA, offensiveAttackAA, and attack). But sometimes used to reference Roll (such as maxAAattacks).
+- **Power**: A calculation using the roll and strength that is used for low luck battles and AI calculations. It is usually Strength multiplied by Roll.
 - **Battle Round**: A battle round includes both sides firing at each other. A battle can consist of multiple rounds. During and at the end of each round, casualties are removed from the game and can not participate anymore.
 - **Battle Phase**: A battle phase is subpart of a battle round where specific rules are in play that determine what the units can do. Some phases allow the units to retreat. Other phases allow the units to fire at each other.
 - **General Combat Phase**: This phase is the default phase for units to fire. The attacker fires first and then the defender retaliates. Any casualties that the attacker hits can retaliate. At the end of the phase, all casualties are removed from the game or transformed into other units which do not participate in the battle.
