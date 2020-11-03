@@ -36,9 +36,7 @@ class MainOffenseCombatValue implements CombatValue {
   @NonNull AvailableSupports supportFromFriends;
   @NonNull AvailableSupports supportFromEnemies;
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  Collection<TerritoryEffect> territoryEffects;
+  @NonNull Collection<TerritoryEffect> territoryEffects;
 
   boolean territoryIsLand;
 
@@ -71,6 +69,31 @@ class MainOffenseCombatValue implements CombatValue {
   @Override
   public boolean isDefending() {
     return false;
+  }
+
+  @Override
+  public CombatValue buildWithNoUnitSupports() {
+    return MainOffenseCombatValue.builder()
+        .gameData(gameData)
+        .supportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .friendUnits(List.of())
+        .enemyUnits(List.of())
+        .territoryEffects(territoryEffects)
+        .territoryIsLand(territoryIsLand)
+        .build();
+  }
+
+  @Override
+  public CombatValue buildOppositeCombatValue() {
+    return MainDefenseCombatValue.builder()
+        .gameData(gameData)
+        .supportFromFriends(supportFromEnemies)
+        .supportFromEnemies(supportFromFriends)
+        .friendUnits(enemyUnits)
+        .enemyUnits(friendUnits)
+        .territoryEffects(territoryEffects)
+        .build();
   }
 
   @Value

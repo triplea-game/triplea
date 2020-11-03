@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.UnitPowerStrengthAndRolls;
@@ -44,7 +43,6 @@ class CasualtyOrderOfLosses {
     @Nonnull CombatValue combatValue;
     @Nonnull Territory battlesite;
     @Nonnull IntegerMap<UnitType> costs;
-    @Nonnull CombatModifiers combatModifiers;
     @Nonnull GameData data;
   }
 
@@ -87,20 +85,20 @@ class CasualtyOrderOfLosses {
     final List<Unit> sortedUnitsList = new ArrayList<>(parameters.targetsToPickFrom);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-                parameters.combatModifiers.isDefending(),
                 parameters.costs,
-                parameters.combatModifiers.getTerritoryEffects(),
                 parameters.data,
+                PowerStrengthAndRolls.build(
+                    sortedUnitsList, parameters.combatValue.buildWithNoUnitSupports()),
                 true,
                 false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(
-            parameters.combatModifiers.isDefending(),
             parameters.costs,
-            parameters.combatModifiers.getTerritoryEffects(),
             parameters.data,
+            PowerStrengthAndRolls.build(
+                sortedUnitsList, parameters.combatValue.buildWithNoUnitSupports()),
             true,
             true);
     final PowerStrengthAndRolls unitPowerAndRolls =
@@ -269,7 +267,7 @@ class CasualtyOrderOfLosses {
         + "|"
         + parameters.battlesite.getName()
         + "|"
-        + parameters.combatModifiers.isDefending()
+        + parameters.combatValue.isDefending()
         + "|"
         + Objects.hashCode(targetTypes);
   }

@@ -9,18 +9,20 @@ import lombok.Value;
 
 /** Stores and computes an individual unit's power, strength and roll */
 @Value
+@Getter(AccessLevel.PACKAGE)
 @Builder(access = AccessLevel.PACKAGE, toBuilder = true)
 public class UnitPowerStrengthAndRolls {
-  @Nonnull Integer strength;
-  @Nonnull Integer rolls;
+  @Getter(AccessLevel.PUBLIC)
+  @Nonnull
+  Integer strength;
 
-  @Getter(AccessLevel.PACKAGE)
-  @NonNull
-  Integer diceSides;
+  @Getter(AccessLevel.PUBLIC)
+  @Nonnull
+  Integer rolls;
 
-  @Getter(AccessLevel.PACKAGE)
-  @NonNull
-  Boolean chooseBestRoll;
+  @NonNull Integer diceSides;
+
+  @NonNull Boolean chooseBestRoll;
 
   public UnitPowerStrengthAndRolls subtractStrength(final int strengthToSubtract) {
     final int newStrength = Math.max(0, strength - strengthToSubtract);

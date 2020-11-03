@@ -1,21 +1,17 @@
 package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
 // TODO: make the Comparator be serializable. To get there all class members need to be serializable
@@ -25,43 +21,41 @@ import org.triplea.java.collections.IntegerMap;
  * A comparator that sorts units in order from most likely to least likely to be chosen as a battle
  * loss.
  */
+@Value
 public class UnitBattleComparator implements Comparator<Unit> {
-  private final boolean defending;
-  private final IntegerMap<UnitType> costs;
-  private final boolean bonus;
-  private final boolean ignorePrimaryPower;
-  private final Collection<TerritoryEffect> territoryEffects;
-  private final Collection<UnitType> multiHitpointCanRepair = new HashSet<>();
+  IntegerMap<UnitType> costs;
+  boolean bonus;
+  boolean ignorePrimaryPower;
+  Collection<UnitType> multiHitpointCanRepair = new HashSet<>();
+  TotalPowerAndTotalRolls totalPowerAndTotalRolls;
+  TotalPowerAndTotalRolls reversedTotalPowerAndTotalRolls;
 
   public UnitBattleComparator(
-      final boolean defending,
       final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects,
-      final GameData data) {
-    this(defending, costs, territoryEffects, data, false, false);
+      final GameData data,
+      final TotalPowerAndTotalRolls totalPowerAndTotalRolls) {
+    this(costs, data, totalPowerAndTotalRolls, false, false);
   }
 
   public UnitBattleComparator(
-      final boolean defending,
       final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects,
       final GameData data,
+      final TotalPowerAndTotalRolls totalPowerAndTotalRolls,
       final boolean bonus) {
-    this(defending, costs, territoryEffects, data, bonus, false);
+    this(costs, data, totalPowerAndTotalRolls, bonus, false);
   }
 
   public UnitBattleComparator(
-      final boolean defending,
       final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects,
       final GameData data,
+      final TotalPowerAndTotalRolls totalPowerAndTotalRolls,
       final boolean bonus,
       final boolean ignorePrimaryPower) {
-    this.defending = defending;
     this.costs = costs;
+    this.totalPowerAndTotalRolls = totalPowerAndTotalRolls;
+    this.reversedTotalPowerAndTotalRolls = totalPowerAndTotalRolls.buildOpposite();
     this.bonus = bonus;
     this.ignorePrimaryPower = ignorePrimaryPower;
-    this.territoryEffects = territoryEffects;
     if (Properties.getBattleshipsRepairAtEndOfRound(data)
         || Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
       for (final UnitType ut : data.getUnitTypeList()) {
@@ -108,10 +102,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final boolean multiHpCanRepair1 = multiHitpointCanRepair.contains(u1.getType());
     final boolean multiHpCanRepair2 = multiHitpointCanRepair.contains(u2.getType());
     if (!ignorePrimaryPower) {
-      final var combatModifiers =
-          CombatModifiers.builder().defending(defending).territoryEffects(territoryEffects).build();
-      int power1 = 8 * getUnitPowerForSorting(u1, combatModifiers);
-      int power2 = 8 * getUnitPowerForSorting(u2, combatModifiers);
+      int power1 = 8 * totalPowerAndTotalRolls.calculatePower(u1);
+      int power2 = 8 * totalPowerAndTotalRolls.calculatePower(u2);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1 += 4;
@@ -146,13 +138,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
     }
     {
-      final var combatModifiers =
-          CombatModifiers.builder()
-              .defending(!defending)
-              .territoryEffects(territoryEffects)
-              .build();
-      int power1reverse = 8 * getUnitPowerForSorting(u1, combatModifiers);
-      int power2reverse = 8 * getUnitPowerForSorting(u2, combatModifiers);
+      int power1reverse = 8 * reversedTotalPowerAndTotalRolls.calculatePower(u1);
+      int power2reverse = 8 * reversedTotalPowerAndTotalRolls.calculatePower(u2);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1reverse += 4;
@@ -200,54 +187,5 @@ public class UnitBattleComparator implements Comparator<Unit> {
       return -1;
     }
     return ua1.getMovement(u1.getOwner()) - ua2.getMovement(u2.getOwner());
-  }
-
-  @Builder
-  @Getter
-  public static class CombatModifiers {
-    @Builder.Default private final Collection<TerritoryEffect> territoryEffects = List.of();
-    private final boolean defending;
-  }
-
-  /**
-   * This returns the exact Power that a unit has according to what DiceRoll.rollDiceLowLuck() would
-   * give it. As such, it needs to exactly match DiceRoll, otherwise this method will become
-   * useless. It does NOT take into account SUPPORT. It DOES take into account ROLLS.
-   */
-  private int getUnitPowerForSorting(final Unit unit, final CombatModifiers combatModifiers) {
-    final GameData data = unit.getData();
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-
-    final GamePlayer owner = unit.getOwner();
-    final int rolls =
-        combatModifiers.defending ? ua.getDefenseRolls(owner) : ua.getAttackRolls(owner);
-    int strengthWithoutSupport = 0;
-    // Find the strength the unit has without support
-    // lhtr heavy bombers take best of n dice for both attack and defense
-    if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-      strengthWithoutSupport =
-          combatModifiers.defending ? ua.getDefense(owner) : ua.getAttack(owner);
-      strengthWithoutSupport +=
-          TerritoryEffectHelper.getTerritoryCombatBonus(
-              unit.getType(), combatModifiers.territoryEffects, combatModifiers.defending);
-      // just add one like LL if we are LHTR bombers
-      strengthWithoutSupport =
-          Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
-    } else {
-      for (int i = 0; i < rolls; i++) {
-        final int tempStrength =
-            combatModifiers.defending ? ua.getDefense(owner) : ua.getAttack(owner);
-        strengthWithoutSupport +=
-            TerritoryEffectHelper.getTerritoryCombatBonus(
-                unit.getType(), combatModifiers.territoryEffects, combatModifiers.defending);
-        strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());
-      }
-    }
-
-    if (unit.getWasAmphibious()) {
-      strengthWithoutSupport += ua.getIsMarine();
-    }
-    return strengthWithoutSupport;
   }
 }

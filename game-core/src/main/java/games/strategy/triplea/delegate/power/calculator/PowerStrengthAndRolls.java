@@ -124,4 +124,15 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   public int getRolls(final Unit unit) {
     return totalStrengthAndTotalRollsByUnit.get(unit).getRolls();
   }
+
+  @Override
+  public int calculatePower(final Unit unit) {
+    return totalStrengthAndTotalRollsByUnit.get(unit).calculatePower();
+  }
+
+  @Override
+  public TotalPowerAndTotalRolls buildOpposite() {
+    return PowerStrengthAndRolls.build(
+        totalStrengthAndTotalRollsByUnit.keySet(), calculator.buildOppositeCombatValue());
+  }
 }

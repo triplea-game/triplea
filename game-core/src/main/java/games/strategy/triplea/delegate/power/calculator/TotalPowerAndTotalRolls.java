@@ -12,4 +12,8 @@ public interface TotalPowerAndTotalRolls {
   int getStrength(Unit unit);
 
   int getRolls(Unit unit);
+
+  int calculatePower(Unit unit);
+
+  TotalPowerAndTotalRolls buildOpposite();
 }

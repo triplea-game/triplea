@@ -308,6 +308,19 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     return totalStrengthAndTotalRollsByUnit.get(unit).getRolls();
   }
 
+  @Override
+  public int calculatePower(final Unit unit) {
+    return totalStrengthAndTotalRollsByUnit.get(unit).calculatePower();
+  }
+
+  @Override
+  public TotalPowerAndTotalRolls buildOpposite() {
+    return AaPowerStrengthAndRolls.build(
+        totalStrengthAndTotalRollsByUnit.keySet(),
+        targetCount,
+        calculator.buildOppositeCombatValue());
+  }
+
   public boolean isSameStrength() {
     return this.activeStrengthAndRolls.stream()
             .map(UnitPowerStrengthAndRolls::getStrength)
