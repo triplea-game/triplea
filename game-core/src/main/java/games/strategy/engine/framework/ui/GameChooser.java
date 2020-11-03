@@ -22,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
 import org.triplea.map.data.elements.PropertyList;
 import org.triplea.map.data.elements.ShallowParsedGame;
@@ -38,7 +37,6 @@ import org.triplea.util.LocalizeHtml;
  * A modal dialog that prompts the user to select a game (map) from the list of installed games
  * (maps).
  */
-@Log
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
