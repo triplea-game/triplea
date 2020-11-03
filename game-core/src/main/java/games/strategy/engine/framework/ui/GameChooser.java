@@ -42,12 +42,12 @@ import org.triplea.util.LocalizeHtml;
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
-  private String chosen;
+  private DefaultGameChooserEntry chosen;
 
   private GameChooser(
       final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
     super(owner, "Select a Game", true);
-    final JList<String> gameList = new JList<>(gameChooserModel);
+    final JList<DefaultGameChooserEntry> gameList = new JList<>(gameChooserModel);
     if (gameName == null || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
     } else {
@@ -99,11 +99,7 @@ public class GameChooser extends JDialog {
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
 
-    notesPanel.setText(
-        gameChooserModel
-            .lookupGameUriByName(gameList.getSelectedValue())
-            .map(GameChooser::buildGameNotesText)
-            .orElse("Map not found.."));
+    notesPanel.setText(GameChooser.buildGameNotesText(gameList.getSelectedValue().getUri()));
 
     final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -138,10 +134,7 @@ public class GameChooser extends JDialog {
         e -> {
           if (!e.getValueIsAdjusting()) {
             notesPanel.setText(
-                gameChooserModel
-                    .lookupGameUriByName(gameList.getSelectedValue())
-                    .map(GameChooser::buildGameNotesText)
-                    .orElse("Map not found.."));
+                GameChooser.buildGameNotesText(gameList.getSelectedValue().getUri()));
             // scroll to the top of the notes screen
             SwingUtilities.invokeLater(
                 () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
@@ -161,8 +154,7 @@ public class GameChooser extends JDialog {
   }
 
   /**
-   * Displays the Game Chooser dialog and returns the game selected by the user or {@code null} if
-   * no game was selected.
+   * Displays the Game Chooser dialog and returns the game selected by the user or an empty option
    */
   public static Optional<URI> chooseGame(
       final Frame parent, final GameChooserModel gameChooserModel, final String defaultGameName) {
@@ -172,16 +164,7 @@ public class GameChooser extends JDialog {
     chooser.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     chooser.setVisible(true); // Blocking and waits for user action
 
-    return Optional.ofNullable(chooser.chosen)
-        .map(
-            uri ->
-                gameChooserModel
-                    .lookupGameUriByName(uri)
-                    .orElseGet(
-                        () -> {
-                          log.severe("Unable to load game (was it deleted on disk?): " + uri);
-                          return null;
-                        }));
+    return Optional.ofNullable(chooser.chosen).map(DefaultGameChooserEntry::getUri);
   }
 
   private static String buildGameNotesText(final URI gameUri) {

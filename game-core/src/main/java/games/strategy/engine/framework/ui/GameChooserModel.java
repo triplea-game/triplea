@@ -10,7 +10,7 @@ import lombok.extern.java.Log;
 
 /** The model for a {@link GameChooser} dialog. */
 @Log
-public final class GameChooserModel extends DefaultListModel<String> {
+public final class GameChooserModel extends DefaultListModel<DefaultGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
   private final AvailableGamesList availableGamesList;
 
@@ -25,17 +25,20 @@ public final class GameChooserModel extends DefaultListModel<String> {
 
   public GameChooserModel(final AvailableGamesList availableGamesList) {
     this.availableGamesList = availableGamesList;
-    availableGamesList.getSortedGameList().forEach(this::addElement);
+    availableGamesList.getSortedGameEntries().forEach(this::addElement);
   }
 
   @Override
-  public String get(final int i) {
+  public DefaultGameChooserEntry get(final int i) {
     return super.get(i);
   }
 
   /** Searches for a GameChooserEntry whose gameName matches the input parameter. */
-  public Optional<String> findByName(final String name) {
-    return IntStream.range(0, size()).mapToObj(this::get).filter(name::equals).findAny();
+  public Optional<DefaultGameChooserEntry> findByName(final String name) {
+    return IntStream.range(0, size())
+        .mapToObj(this::get)
+        .filter(entry -> entry.getGameName().equals(name))
+        .findAny();
   }
 
   Optional<URI> lookupGameUriByName(final String selectedValue) {
