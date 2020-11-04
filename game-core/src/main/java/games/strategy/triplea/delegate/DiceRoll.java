@@ -361,7 +361,7 @@ public class DiceRoll implements Externalizable {
         }
         totalStrength += strength;
       }
-      totalPower += Math.min(Math.max(totalStrength, 0), data.getDiceSides());
+      totalPower += Math.max(totalStrength, 0);
     }
 
     if (Properties.getLowLuck(data)) {
