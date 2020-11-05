@@ -213,14 +213,11 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   @SuppressWarnings("ReturnValueIgnored")
   private static boolean gameUriExistsOnFileSystem(final String gameUri) {
-    try {
-      Path.of(URI.create(gameUri));
-    } catch (final IllegalArgumentException ignored) {
-      // thrown if the URI is invalid (EG: missing URI scheme)
+    final URI uri = URI.create(gameUri);
+    if (uri.getScheme() == null) {
       return false;
     }
-
-    final Path realPath = getDefaultGameRealPath(URI.create(gameUri));
+    final Path realPath = getDefaultGameRealPath(uri);
 
     // starts with check is because we don't want to load a game file by default that is not within
     // the map folders. (ie: if a previous version of triplea was using running a game within its
@@ -237,6 +234,9 @@ public class GameSelectorModel extends Observable implements GameSelector {
    * method will find the location of the zip file itself.
    */
   private static Path getDefaultGameRealPath(final URI defaultGame) {
+    // The file system of the URI needs to be created before Path.of can be called.
+    // So, first see if the file system is already created and if that throws
+    // FileSystemNotFoundException, then try and create it.
     try {
       FileSystems.getFileSystem(defaultGame);
     } catch (final FileSystemNotFoundException notFoundException) {
