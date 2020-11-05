@@ -2,7 +2,6 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Properties;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -59,8 +58,6 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   }
 
   private void addUnits(final Collection<Unit> units) {
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(gameData);
-
     final StrengthCalculator strengthCalculator = calculator.getStrength();
     final RollCalculator rollCalculator = calculator.getRoll();
     final PowerCalculator powerCalculator = calculator.getPower();
