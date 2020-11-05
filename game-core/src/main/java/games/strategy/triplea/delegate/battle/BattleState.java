@@ -92,8 +92,6 @@ public interface BattleState {
 
   void retreatUnits(Side side, Collection<Unit> units);
 
-  Collection<Unit> getAa(Side... sides);
-
   Collection<Unit> getBombardingUnits();
 
   GamePlayer getPlayer(Side side);

@@ -223,7 +223,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
         steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
-        steps.add(REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
+        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
       }
     }
     steps.add(RAID);
@@ -642,7 +642,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleId,
-            REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
+            NOTIFY_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
             dice,
             attacker,
             new ArrayList<>(casualties.getKilled()),

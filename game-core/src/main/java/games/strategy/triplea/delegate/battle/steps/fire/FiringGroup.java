@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Value;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -58,6 +59,21 @@ public class FiringGroup {
     this.firingUnits = firingUnits;
     this.targetUnits = targetUnits;
     this.suicideOnHit = this.firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit());
+  }
+
+  // This converts firing groups from old saves
+  @RemoveOnNextMajorRelease
+  @Deprecated
+  public FiringGroup(
+      final String displayName,
+      final Collection<Unit> firingUnits,
+      final Collection<Unit> targetUnits,
+      final boolean suicideOnHit) {
+    this.displayName = displayName;
+    this.groupName = displayName;
+    this.firingUnits = firingUnits;
+    this.targetUnits = targetUnits;
+    this.suicideOnHit = suicideOnHit;
   }
 
   public Collection<Unit> getTargetUnits() {

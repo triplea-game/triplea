@@ -53,10 +53,6 @@ public class FakeBattleState implements BattleState {
 
   final @NonNull Collection<Unit> defendingWaitingToDie;
 
-  final @NonNull Collection<Unit> offensiveAa;
-
-  final @NonNull Collection<Unit> defendingAa;
-
   final @NonNull Collection<Unit> killed;
 
   final @NonNull Collection<Unit> retreatUnits;
@@ -184,24 +180,6 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
-  public Collection<Unit> getAa(final Side... sides) {
-    final Collection<Unit> units = new ArrayList<>();
-    for (final Side side : sides) {
-      switch (side) {
-        case OFFENSE:
-          units.addAll(offensiveAa);
-          break;
-        case DEFENSE:
-          units.addAll(defendingAa);
-          break;
-        default:
-          break;
-      }
-    }
-    return units;
-  }
-
-  @Override
   public List<String> getStepStrings() {
     return List.of();
   }
@@ -218,8 +196,6 @@ public class FakeBattleState implements BattleState {
         .defendingWaitingToDie(List.of())
         .attacker(mock(GamePlayer.class))
         .defender(mock(GamePlayer.class))
-        .offensiveAa(List.of())
-        .defendingAa(List.of())
         .bombardingUnits(List.of())
         .dependentUnits(List.of())
         .killed(List.of())

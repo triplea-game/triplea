@@ -37,10 +37,11 @@ class DefensiveGeneralTest {
       final BattleState battleState =
           givenBattleStateBuilder()
               .defendingUnits(List.of(givenAnyUnit()))
+              .attackingUnits(List.of(givenAnyUnit()))
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);
-      assertThat(defensiveGeneral.getNames(), hasSize(2));
+      assertThat(defensiveGeneral.getNames(), hasSize(3));
     }
 
     @Test
@@ -50,6 +51,7 @@ class DefensiveGeneralTest {
       final BattleState battleState =
           givenBattleStateBuilder()
               .defendingUnits(List.of(givenUnitFirstStrike()))
+              .attackingUnits(List.of(givenAnyUnit()))
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);

@@ -8,16 +8,9 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.Collection;
-import java.util.function.Predicate;
 
 /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
-
-  void fireOffensiveAaGuns();
-
-  void fireDefensiveAaGuns();
-
-  void fireNavalBombardment(IDelegateBridge bridge);
 
   void removeNonCombatants(IDelegateBridge bridge);
 
@@ -27,17 +20,6 @@ public interface BattleActions {
       Collection<Unit> killed, ReturnFire returnFire, boolean defender, IDelegateBridge bridge);
 
   void endBattle(IBattle.WhoWon whoWon, IDelegateBridge bridge);
-
-  void findTargetGroupsAndFire(
-      ReturnFire returnFire,
-      String stepName,
-      boolean defending,
-      GamePlayer firingPlayer,
-      Predicate<Unit> firingUnitPredicate,
-      Collection<Unit> firingUnits,
-      Collection<Unit> firingUnitsWaitingToDie,
-      Collection<Unit> enemyUnits,
-      Collection<Unit> enemyUnitsWaitingToDie);
 
   void remove(
       Collection<Unit> killedUnits,

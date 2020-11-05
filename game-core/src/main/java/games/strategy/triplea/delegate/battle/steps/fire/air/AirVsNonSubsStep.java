@@ -8,8 +8,11 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.util.Collection;
 import lombok.AllArgsConstructor;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Air can not attack subs unless a destroyer is present */
+@RemoveOnNextMajorRelease
+@Deprecated
 @AllArgsConstructor
 public abstract class AirVsNonSubsStep implements BattleStep {
   private static final long serialVersionUID = 4641526323094044712L;
