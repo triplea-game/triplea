@@ -1420,7 +1420,6 @@ class BattleCalculatorPanel extends JPanel {
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data).reversed());
-      final Territory location = findPotentialBattleSite();
       if (isAmphibiousBattle()) {
         attackers.stream()
             .filter(Matches.unitIsLand())
