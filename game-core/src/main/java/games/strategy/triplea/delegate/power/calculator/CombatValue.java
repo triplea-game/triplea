@@ -14,9 +14,16 @@ public interface CombatValue {
 
   StrengthCalculator getStrength();
 
+  default PowerCalculator getPower() {
+    return new PowerCalculator(
+        getGameData(), getStrength(), getRoll(), this::chooseBestRoll, this::getDiceSides);
+  }
+
   int getDiceSides(Unit unit);
 
   boolean isDefending();
+
+  boolean chooseBestRoll(Unit unit);
 
   GameData getGameData();
 

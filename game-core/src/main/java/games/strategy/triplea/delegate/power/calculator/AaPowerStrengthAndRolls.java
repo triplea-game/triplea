@@ -121,6 +121,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   private void addUnits(final Collection<Unit> units) {
     final StrengthCalculator strengthCalculator = calculator.getStrength();
     final RollCalculator rollCalculator = calculator.getRoll();
+    final PowerCalculator powerCalculator = calculator.getPower();
     for (final Unit unit : units) {
       int strength = strengthCalculator.getStrength(unit).getValue();
       int rolls = rollCalculator.getRoll(unit).getValue();
@@ -133,9 +134,10 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
           UnitPowerStrengthAndRolls.builder()
               .strength(strength)
               .rolls(rolls)
+              .power(powerCalculator.getValue(unit))
+              .powerCalculator(powerCalculator)
               .diceSides(calculator.getDiceSides(unit))
-              // AA units never choose best roll
-              .chooseBestRoll(false)
+              .chooseBestRoll(calculator.chooseBestRoll(unit))
               .build());
     }
   }
@@ -206,10 +208,10 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
       if (totalBasicRolls + roll >= targetCount) {
         final int weakestBasicAaRolls = targetCount - totalBasicRolls;
         totalBasicRolls += weakestBasicAaRolls;
+        final UnitPowerStrengthAndRolls originalUnitData =
+            totalStrengthAndTotalRollsByUnit.get(unit);
         final UnitPowerStrengthAndRolls weakestBasicUnitData =
-            totalStrengthAndTotalRollsByUnit.get(unit).toBuilder()
-                .rolls(weakestBasicAaRolls)
-                .build();
+            originalUnitData.updateRolls(weakestBasicAaRolls);
         activeStrengthAndRolls.add(weakestBasicUnitData);
         // update the weakest rolling basic unit with the actual number of rolls it has
         totalStrengthAndTotalRollsByUnit.put(unit, weakestBasicUnitData);
@@ -225,10 +227,10 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
       final List<UnitPowerStrengthAndRolls> infinitePowerStrengthAndRolls = new ArrayList<>();
       bestInfiniteUnit.ifPresent(
           unit -> {
+            final UnitPowerStrengthAndRolls originalUnitData =
+                totalStrengthAndTotalRollsByUnit.get(unit);
             final UnitPowerStrengthAndRolls infiniteUnitData =
-                totalStrengthAndTotalRollsByUnit.get(unit).toBuilder()
-                    .rolls(targetCount - totalBasicRollsFinal)
-                    .build();
+                originalUnitData.updateRolls(targetCount - totalBasicRollsFinal);
             infinitePowerStrengthAndRolls.add(infiniteUnitData);
             // update the infinite unit with the actual number of rolls that it has
             totalStrengthAndTotalRollsByUnit.put(unit, infiniteUnitData);
@@ -251,7 +253,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
         continue;
       }
       totalStrengthAndTotalRollsByUnit.put(
-          mapEntry.getKey(), mapEntry.getValue().toBuilder().rolls(0).strength(0).build());
+          mapEntry.getKey(), mapEntry.getValue().toBuilder().rolls(0).strength(0).power(0).build());
     }
 
     return activeStrengthAndRolls;
@@ -283,9 +285,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
 
   @Override
   public int calculateTotalPower() {
-    return this.activeStrengthAndRolls.stream()
-        .mapToInt(UnitPowerStrengthAndRolls::calculatePower)
-        .sum();
+    return this.activeStrengthAndRolls.stream().mapToInt(UnitPowerStrengthAndRolls::getPower).sum();
   }
 
   @Override
@@ -309,16 +309,8 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   }
 
   @Override
-  public int calculatePower(final Unit unit) {
-    return totalStrengthAndTotalRollsByUnit.get(unit).calculatePower();
-  }
-
-  @Override
-  public TotalPowerAndTotalRolls buildOpposite() {
-    return AaPowerStrengthAndRolls.build(
-        totalStrengthAndTotalRollsByUnit.keySet(),
-        targetCount,
-        calculator.buildOppositeCombatValue());
+  public int getPower(final Unit unit) {
+    return totalStrengthAndTotalRollsByUnit.get(unit).getPower();
   }
 
   public boolean isSameStrength() {

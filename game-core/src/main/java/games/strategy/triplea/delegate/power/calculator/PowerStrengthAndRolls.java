@@ -63,6 +63,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
 
     final StrengthCalculator strengthCalculator = calculator.getStrength();
     final RollCalculator rollCalculator = calculator.getRoll();
+    final PowerCalculator powerCalculator = calculator.getPower();
     for (final Unit unit : units) {
       int strength = strengthCalculator.getStrength(unit).getValue();
       int rolls = rollCalculator.getRoll(unit).getValue();
@@ -75,8 +76,10 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
           UnitPowerStrengthAndRolls.builder()
               .strength(strength)
               .rolls(rolls)
+              .power(powerCalculator.getValue(unit))
+              .powerCalculator(powerCalculator)
               .diceSides(calculator.getDiceSides(unit))
-              .chooseBestRoll(lhtrBombers || unit.getUnitAttachment().getChooseBestRoll())
+              .chooseBestRoll(calculator.chooseBestRoll(unit))
               .build());
     }
 
@@ -99,7 +102,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   @Override
   public int calculateTotalPower() {
     return totalStrengthAndTotalRollsByUnit.values().stream()
-        .mapToInt(UnitPowerStrengthAndRolls::calculatePower)
+        .mapToInt(UnitPowerStrengthAndRolls::getPower)
         .sum();
   }
 
@@ -126,13 +129,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   }
 
   @Override
-  public int calculatePower(final Unit unit) {
-    return totalStrengthAndTotalRollsByUnit.get(unit).calculatePower();
-  }
-
-  @Override
-  public TotalPowerAndTotalRolls buildOpposite() {
-    return PowerStrengthAndRolls.build(
-        totalStrengthAndTotalRollsByUnit.keySet(), calculator.buildOppositeCombatValue());
+  public int getPower(final Unit unit) {
+    return totalStrengthAndTotalRollsByUnit.get(unit).getPower();
   }
 }

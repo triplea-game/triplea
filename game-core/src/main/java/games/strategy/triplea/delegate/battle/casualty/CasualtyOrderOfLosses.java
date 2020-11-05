@@ -87,8 +87,7 @@ class CasualtyOrderOfLosses {
         new UnitBattleComparator(
                 parameters.costs,
                 parameters.data,
-                PowerStrengthAndRolls.build(
-                    sortedUnitsList, parameters.combatValue.buildWithNoUnitSupports()),
+                parameters.combatValue.buildWithNoUnitSupports(),
                 true,
                 false)
             .reversed());
@@ -97,8 +96,7 @@ class CasualtyOrderOfLosses {
         new UnitBattleComparator(
             parameters.costs,
             parameters.data,
-            PowerStrengthAndRolls.build(
-                sortedUnitsList, parameters.combatValue.buildWithNoUnitSupports()),
+            parameters.combatValue.buildWithNoUnitSupports(),
             true,
             true);
     final PowerStrengthAndRolls unitPowerAndRolls =
@@ -128,7 +126,7 @@ class CasualtyOrderOfLosses {
         }
         unitTypes.add(u.getType());
         // Find unit power
-        int power = originalUnitPowerAndRollsMap.get(u).calculatePower();
+        int power = originalUnitPowerAndRollsMap.get(u).getPower();
         // Add any support power that it provides to other units
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {
@@ -149,13 +147,13 @@ class CasualtyOrderOfLosses {
               continue;
             }
             // Find supported unit power with support
-            final int powerWithSupport = strengthAndRolls.calculatePower();
+            final int powerWithSupport = strengthAndRolls.getPower();
             // Find supported unit power without support
 
             final int powerWithoutSupport =
                 strengthAndRolls
                     .subtractStrength(unitSupportPowerMapForUnit.getInt(supportedUnit))
-                    .calculatePower();
+                    .getPower();
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -171,12 +169,12 @@ class CasualtyOrderOfLosses {
               continue;
             }
             // Find supported unit power with support
-            final int powerWithSupport = strengthAndRolls.calculatePower();
+            final int powerWithSupport = strengthAndRolls.getPower();
             // Find supported unit power without support
             final int powerWithoutSupport =
                 strengthAndRolls
                     .subtractRolls(unitSupportRollsMap.get(u).getInt(supportedUnit))
-                    .calculatePower();
+                    .getPower();
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;

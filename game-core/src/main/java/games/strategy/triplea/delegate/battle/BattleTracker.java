@@ -1401,10 +1401,8 @@ public class BattleTracker implements Serializable {
         new UnitBattleComparator(
                 TuvUtils.getCostsForTuv(bridge.getGamePlayer(), gameData),
                 gameData,
-                PowerStrengthAndRolls.build(
-                    sortedUnitsList,
-                    CombatValue.buildNoSupportCombatValue(
-                        true, gameData, TerritoryEffectHelper.getEffects(territory))))
+                CombatValue.buildNoSupportCombatValue(
+                    true, gameData, TerritoryEffectHelper.getEffects(territory)))
             .reversed());
     return sortedUnitsList;
   }

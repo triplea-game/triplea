@@ -1421,11 +1421,7 @@ class BattleCalculatorPanel extends JPanel {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(
           new UnitBattleComparator(
-                  costs,
-                  data,
-                  PowerStrengthAndRolls.build(
-                      attackers,
-                      CombatValue.buildNoSupportCombatValue(false, data, territoryEffects)))
+                  costs, data, CombatValue.buildNoSupportCombatValue(false, data, territoryEffects))
               .reversed());
       final Territory location = findPotentialBattleSite();
       if (isAmphibiousBattle()) {

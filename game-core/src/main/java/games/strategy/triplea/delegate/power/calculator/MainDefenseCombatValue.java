@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -68,6 +69,11 @@ class MainDefenseCombatValue implements CombatValue {
   @Override
   public boolean isDefending() {
     return true;
+  }
+
+  @Override
+  public boolean chooseBestRoll(final Unit unit) {
+    return Properties.getLhtrHeavyBombers(gameData) || unit.getUnitAttachment().getChooseBestRoll();
   }
 
   @Override

@@ -64,6 +64,11 @@ class AaDefenseCombatValue implements CombatValue {
   }
 
   @Override
+  public boolean chooseBestRoll(final Unit unit) {
+    return false;
+  }
+
+  @Override
   public CombatValue buildWithNoUnitSupports() {
     return AaDefenseCombatValue.builder()
         .gameData(gameData)

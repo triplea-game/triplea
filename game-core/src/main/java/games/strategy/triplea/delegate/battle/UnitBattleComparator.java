@@ -7,10 +7,12 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
@@ -22,38 +24,39 @@ import org.triplea.java.collections.IntegerMap;
  * loss.
  */
 @Value
+@Getter(AccessLevel.NONE)
 public class UnitBattleComparator implements Comparator<Unit> {
   IntegerMap<UnitType> costs;
   boolean bonus;
   boolean ignorePrimaryPower;
   Collection<UnitType> multiHitpointCanRepair = new HashSet<>();
-  TotalPowerAndTotalRolls totalPowerAndTotalRolls;
-  TotalPowerAndTotalRolls reversedTotalPowerAndTotalRolls;
+  CombatValue combatValueCalculator;
+  CombatValue reversedCombatValueCalculator;
 
   public UnitBattleComparator(
       final IntegerMap<UnitType> costs,
       final GameData data,
-      final TotalPowerAndTotalRolls totalPowerAndTotalRolls) {
-    this(costs, data, totalPowerAndTotalRolls, false, false);
+      final CombatValue combatValueCalculator) {
+    this(costs, data, combatValueCalculator, false, false);
   }
 
   public UnitBattleComparator(
       final IntegerMap<UnitType> costs,
       final GameData data,
-      final TotalPowerAndTotalRolls totalPowerAndTotalRolls,
+      final CombatValue combatValueCalculator,
       final boolean bonus) {
-    this(costs, data, totalPowerAndTotalRolls, bonus, false);
+    this(costs, data, combatValueCalculator, bonus, false);
   }
 
   public UnitBattleComparator(
       final IntegerMap<UnitType> costs,
       final GameData data,
-      final TotalPowerAndTotalRolls totalPowerAndTotalRolls,
+      final CombatValue combatValueCalculator,
       final boolean bonus,
       final boolean ignorePrimaryPower) {
     this.costs = costs;
-    this.totalPowerAndTotalRolls = totalPowerAndTotalRolls;
-    this.reversedTotalPowerAndTotalRolls = totalPowerAndTotalRolls.buildOpposite();
+    this.combatValueCalculator = combatValueCalculator;
+    this.reversedCombatValueCalculator = combatValueCalculator.buildOppositeCombatValue();
     this.bonus = bonus;
     this.ignorePrimaryPower = ignorePrimaryPower;
     if (Properties.getBattleshipsRepairAtEndOfRound(data)
@@ -102,8 +105,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final boolean multiHpCanRepair1 = multiHitpointCanRepair.contains(u1.getType());
     final boolean multiHpCanRepair2 = multiHitpointCanRepair.contains(u2.getType());
     if (!ignorePrimaryPower) {
-      int power1 = 8 * totalPowerAndTotalRolls.calculatePower(u1);
-      int power2 = 8 * totalPowerAndTotalRolls.calculatePower(u2);
+      int power1 = 8 * combatValueCalculator.getPower().getValue(u1);
+      int power2 = 8 * combatValueCalculator.getPower().getValue(u2);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1 += 4;
@@ -138,8 +141,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
     }
     {
-      int power1reverse = 8 * reversedTotalPowerAndTotalRolls.calculatePower(u1);
-      int power2reverse = 8 * reversedTotalPowerAndTotalRolls.calculatePower(u2);
+      int power1reverse = 8 * reversedCombatValueCalculator.getPower().getValue(u1);
+      int power2reverse = 8 * reversedCombatValueCalculator.getPower().getValue(u2);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1reverse += 4;

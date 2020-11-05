@@ -204,9 +204,7 @@ public final class ProSortMoveOptionsUtils {
           new UnitBattleComparator(
               proData.getUnitValueMap(),
               data,
-              PowerStrengthAndRolls.build(
-                  attackMap.get(t).getUnits(),
-                  CombatValue.buildNoSupportCombatValue(false, data, effects)));
+              CombatValue.buildNoSupportCombatValue(false, data, effects));
 
       final List<Unit> defendingUnits =
           t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
