@@ -61,8 +61,13 @@ class AaDefenseCombatValueTest {
               new SupportCalculator(
                   List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
-      final AaDefenseCombatValue.AaDefenseStrength strength =
-          new AaDefenseCombatValue.AaDefenseStrength(gameData, friendlySupport, enemySupport);
+      final StrengthCalculator strength =
+          AaDefenseCombatValue.builder()
+              .gameData(gameData)
+              .supportFromFriends(friendlySupport)
+              .supportFromEnemies(enemySupport)
+              .build()
+              .getStrength();
       assertThat(
           "Strength starts at 3, friendly adds 2, enemy removes 1: total 4",
           strength.getStrength(unit).getValue(),
@@ -117,8 +122,13 @@ class AaDefenseCombatValueTest {
               new SupportCalculator(
                   List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
 
-      final AaDefenseCombatValue.AaDefenseStrength strength =
-          new AaDefenseCombatValue.AaDefenseStrength(gameData, friendlySupport, enemySupport);
+      final StrengthCalculator strength =
+          AaDefenseCombatValue.builder()
+              .gameData(gameData)
+              .supportFromFriends(friendlySupport)
+              .supportFromEnemies(enemySupport)
+              .build()
+              .getStrength();
       strength.getStrength(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",

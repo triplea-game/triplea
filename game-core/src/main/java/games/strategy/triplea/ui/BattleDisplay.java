@@ -21,6 +21,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
@@ -875,15 +876,15 @@ public class BattleDisplay extends JPanel {
       }
       final List<Unit> units = new ArrayList<>(this.units);
       DiceRoll.sortByStrength(units, !attack);
-      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap;
+      final TotalPowerAndTotalRolls unitPowerAndRollsMap;
       final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
       if (isAirPreBattleOrPreRaid) {
-        unitPowerAndRollsMap = Map.of();
+        unitPowerAndRollsMap = null;
       } else {
         gameData.acquireReadLock();
         try {
           unitPowerAndRollsMap =
-              TotalPowerAndTotalRolls.getUnitPowerAndRollsForNormalBattles(
+              PowerStrengthAndRolls.build(
                   units,
                   CombatValue.buildMainCombatValue(
                       new ArrayList<>(enemyBattleModel.getUnits()),
@@ -912,7 +913,7 @@ public class BattleDisplay extends JPanel {
             }
           } else {
             // normal battle
-            strength = unitPowerAndRollsMap.get(current).getTotalPower();
+            strength = unitPowerAndRollsMap.getStrength(current);
           }
           strength = Math.min(Math.max(strength, 0), diceSides);
           shift[strength]++;

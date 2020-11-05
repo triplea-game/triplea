@@ -63,6 +63,11 @@ class MainDefenseCombatValue implements CombatValue {
   }
 
   @Override
+  public int getDiceSides(final Unit unit) {
+    return gameData.getDiceSides();
+  }
+
+  @Override
   public boolean isDefending() {
     return true;
   }

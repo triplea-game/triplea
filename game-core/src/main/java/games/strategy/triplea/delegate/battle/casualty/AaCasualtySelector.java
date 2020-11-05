@@ -14,18 +14,16 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
-import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
-import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
 
 @UtilityClass
@@ -96,31 +94,17 @@ public class AaCasualtySelector {
       return new CasualtyDetails();
     }
 
-    final GameData data = bridge.getData();
-    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            defendingAa, aaCombatValueCalculator);
+    final AaPowerStrengthAndRolls unitPowerAndRollsMap =
+        AaPowerStrengthAndRolls.build(defendingAa, planes.size(), aaCombatValueCalculator);
 
     // if we can damage units, do it now
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-    final Tuple<Integer, Integer> attackThenDiceSides =
-        TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
-            defendingAa, data, aaCombatValueCalculator.isDefending(), unitPowerAndRollsMap);
-    final int highestAttack = attackThenDiceSides.getFirst();
+    final int highestAttack = unitPowerAndRollsMap.getBestStrength();
     if (highestAttack < 1) {
       return new CasualtyDetails();
     }
-    final int chosenDiceSize = attackThenDiceSides.getSecond();
-    final Triple<Integer, Integer, Boolean> triple =
-        TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-            null,
-            null,
-            aaCombatValueCalculator.isDefending(),
-            unitPowerAndRollsMap,
-            planes,
-            data,
-            false);
-    final boolean allSameAttackPower = triple.getThird();
+    final int chosenDiceSize = unitPowerAndRollsMap.getBestDiceSides();
+    final boolean allSameAttackPower = unitPowerAndRollsMap.isSameStrength();
     // multiple HP units need to be counted multiple times:
     final List<Unit> planesList = new ArrayList<>();
     for (final Unit plane : planes) {
@@ -298,29 +282,16 @@ public class AaCasualtySelector {
     // means planes.size()
     final int planeHitPoints =
         (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
-    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
-        TotalPowerAndTotalRolls.getAaUnitPowerAndRollsForNormalBattles(
-            defendingAa, aaCombatValueCalculator);
-    if (TotalPowerAndTotalRolls.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
+    final AaPowerStrengthAndRolls unitPowerAndRollsMap =
+        AaPowerStrengthAndRolls.build(defendingAa, planes.size(), aaCombatValueCalculator);
+    if (unitPowerAndRollsMap.calculateTotalRolls() != planeHitPoints) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
-    final Triple<Integer, Integer, Boolean> triple =
-        TotalPowerAndTotalRolls.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-            null,
-            null,
-            aaCombatValueCalculator.isDefending(),
-            unitPowerAndRollsMap,
-            planes,
-            bridge.getData(),
-            false);
-    final boolean allSameAttackPower = triple.getThird();
+    final boolean allSameAttackPower = unitPowerAndRollsMap.isSameStrength();
     if (!allSameAttackPower) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
-    final int highestAttack =
-        TotalPowerAndTotalRolls.getMaxAaAttackAndDiceSides(
-                defendingAa, bridge.getData(), aaCombatValueCalculator.isDefending())
-            .getFirst();
+    final int highestAttack = unitPowerAndRollsMap.getBestStrength();
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final int hits = dice.getHits();
     final List<Unit> planesList = new ArrayList<>();

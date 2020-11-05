@@ -13,6 +13,8 @@ public interface CombatValue {
 
   StrengthCalculator getStrength();
 
+  int getDiceSides(Unit unit);
+
   boolean isDefending();
 
   Collection<TerritoryEffect> getTerritoryEffects();

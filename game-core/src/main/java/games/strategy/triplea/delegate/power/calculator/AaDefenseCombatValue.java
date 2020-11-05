@@ -53,7 +53,13 @@ class AaDefenseCombatValue implements CombatValue {
 
   @Override
   public StrengthCalculator getStrength() {
-    return new AaDefenseStrength(gameData, supportFromFriends, supportFromEnemies);
+    return new AaDefenseStrength(this, supportFromFriends, supportFromEnemies);
+  }
+
+  @Override
+  public int getDiceSides(final Unit unit) {
+    final int diceSides = unit.getUnitAttachment().getAttackAaMaxDieSides();
+    return diceSides < 1 ? gameData.getDiceSides() : diceSides;
   }
 
   @Override
@@ -64,15 +70,15 @@ class AaDefenseCombatValue implements CombatValue {
   @Value
   static class AaDefenseStrength implements StrengthCalculator {
 
-    GameData gameData;
+    AaDefenseCombatValue calculator;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
 
     AaDefenseStrength(
-        final GameData gameData,
+        final AaDefenseCombatValue calculator,
         final AvailableSupports supportFromFriends,
         final AvailableSupports supportFromEnemies) {
-      this.gameData = gameData;
+      this.calculator = calculator;
       this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getAaStrength);
       this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getAaStrength);
     }
@@ -80,7 +86,8 @@ class AaDefenseCombatValue implements CombatValue {
     @Override
     public StrengthValue getStrength(final Unit unit) {
       return StrengthValue.of(
-              gameData.getDiceSides(), unit.getUnitAttachment().getAttackAa(unit.getOwner()))
+              this.calculator.getDiceSides(unit),
+              unit.getUnitAttachment().getAttackAa(unit.getOwner()))
           .add(supportFromFriends.giveSupportToUnit(unit))
           .add(supportFromEnemies.giveSupportToUnit(unit));
     }
