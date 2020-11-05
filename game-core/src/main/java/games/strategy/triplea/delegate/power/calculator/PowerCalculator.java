@@ -28,7 +28,10 @@ public class PowerCalculator {
   }
 
   int getValue(
-      final boolean chooseBestRoll, final int diceSides, int unitStrength, final int unitRolls) {
+      final boolean chooseBestRoll,
+      final int diceSides,
+      final int unitStrength,
+      final int unitRolls) {
     if (unitStrength <= 0 || unitRolls <= 0) {
       return 0;
     }
@@ -42,8 +45,7 @@ public class PowerCalculator {
       if (chooseBestRoll) {
         // chooseBestRoll doesn't really make sense in LL. So instead,
         // we will just add +1 onto the power to simulate the gains of having the best die picked.
-        unitStrength += extraRollBonus * (unitRolls - 1);
-        totalPower += Math.min(unitStrength, diceSides);
+        totalPower += Math.min(unitStrength + extraRollBonus * (unitRolls - 1), diceSides);
       } else {
         totalPower += unitRolls * unitStrength;
       }
