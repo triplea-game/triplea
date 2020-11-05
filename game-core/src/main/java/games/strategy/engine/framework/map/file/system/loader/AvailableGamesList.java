@@ -24,6 +24,10 @@ public class AvailableGamesList {
         .collect(Collectors.toList());
   }
 
+  public List<DefaultGameChooserEntry> getSortedGameEntries() {
+    return availableGames.stream().sorted().collect(Collectors.toList());
+  }
+
   public boolean hasGame(final String gameName) {
     return findGameUriByName(gameName).isPresent();
   }
