@@ -86,8 +86,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -115,8 +114,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -156,8 +154,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -203,8 +200,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -250,8 +246,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -297,8 +292,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -346,8 +340,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -399,8 +392,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,
@@ -447,8 +439,7 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, false, data, territory("Germany", data), List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
                 "",
                 roll,

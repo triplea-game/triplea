@@ -182,7 +182,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData, friendlySupport, enemySupport, List.of(territoryEffect), true);
+              gameData, friendlySupport, enemySupport, List.of(territoryEffect));
       assertThat(
           "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
           strength.getStrength(unit).getValue(),
@@ -215,11 +215,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData,
-              AvailableSupports.EMPTY_RESULT,
-              AvailableSupports.EMPTY_RESULT,
-              List.of(),
-              true);
+              gameData, AvailableSupports.EMPTY_RESULT, AvailableSupports.EMPTY_RESULT, List.of());
       assertThat(
           "Strength starts at 3, marine adds 1: total 4",
           strength.getStrength(unit).getValue(),
@@ -240,81 +236,11 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData,
-              AvailableSupports.EMPTY_RESULT,
-              AvailableSupports.EMPTY_RESULT,
-              List.of(),
-              true);
+              gameData, AvailableSupports.EMPTY_RESULT, AvailableSupports.EMPTY_RESULT, List.of());
       assertThat(
           "Strength starts at 3 and marine is not added: total 3",
           strength.getStrength(unit).getValue(),
           is(3));
-    }
-
-    @Test
-    void bombardUsedIfLandBattleAndSeaUnit() {
-      final GamePlayer player = mock(GamePlayer.class);
-
-      final GameData gameData = givenGameData().withDiceSides(6).build();
-
-      final UnitType unitType = new UnitType("test", gameData);
-      final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
-      unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
-      unit.getUnitAttachment().setAttack(3).setBombard(1).setIsSea(true);
-
-      final MainOffenseCombatValue.MainOffenseStrength strength =
-          new MainOffenseCombatValue.MainOffenseStrength(
-              gameData,
-              AvailableSupports.EMPTY_RESULT,
-              AvailableSupports.EMPTY_RESULT,
-              List.of(),
-              true);
-      assertThat("Bombard is 1", strength.getStrength(unit).getValue(), is(1));
-    }
-
-    @Test
-    void bombardNotUsedIfNotLandBattle() {
-      final GamePlayer player = mock(GamePlayer.class);
-
-      final GameData gameData = givenGameData().withDiceSides(6).build();
-
-      final UnitType unitType = new UnitType("test", gameData);
-      final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
-      unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
-      unit.getUnitAttachment().setAttack(3).setBombard(1).setIsSea(true);
-
-      final MainOffenseCombatValue.MainOffenseStrength strength =
-          new MainOffenseCombatValue.MainOffenseStrength(
-              gameData,
-              AvailableSupports.EMPTY_RESULT,
-              AvailableSupports.EMPTY_RESULT,
-              List.of(),
-              false);
-      assertThat("Regular attack is 3", strength.getStrength(unit).getValue(), is(3));
-    }
-
-    @Test
-    void bombardNotUsedIfNotSeaUnitOnLandBattle() {
-      final GamePlayer player = mock(GamePlayer.class);
-
-      final GameData gameData = givenGameData().withDiceSides(6).build();
-
-      final UnitType unitType = new UnitType("test", gameData);
-      final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
-      unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
-      unit.getUnitAttachment().setAttack(3).setBombard(1).setIsSea(false);
-
-      final MainOffenseCombatValue.MainOffenseStrength strength =
-          new MainOffenseCombatValue.MainOffenseStrength(
-              gameData,
-              AvailableSupports.EMPTY_RESULT,
-              AvailableSupports.EMPTY_RESULT,
-              List.of(),
-              true);
-      assertThat("Regular attack is 3", strength.getStrength(unit).getValue(), is(3));
     }
 
     @Test
@@ -355,7 +281,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData, friendlySupport, enemySupport, List.of(), true);
+              gameData, friendlySupport, enemySupport, List.of());
       strength.getStrength(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",

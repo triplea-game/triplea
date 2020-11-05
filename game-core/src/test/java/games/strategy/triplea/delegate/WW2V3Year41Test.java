@@ -47,7 +47,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -180,13 +179,7 @@ class WW2V3Year41Test {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa,
-                    planes,
-                    false,
-                    gameData,
-                    territory("Germany", gameData),
-                    List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, gameData, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
                 "",
                 roll,
@@ -239,13 +232,7 @@ class WW2V3Year41Test {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa,
-                    planes,
-                    false,
-                    gameData,
-                    territory("Germany", gameData),
-                    List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, gameData, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
                 "",
                 roll,
@@ -301,13 +288,7 @@ class WW2V3Year41Test {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa,
-                    planes,
-                    false,
-                    gameData,
-                    territory("Germany", gameData),
-                    List.of()),
+                CombatValue.buildMainCombatValue(defendingAa, planes, false, gameData, List.of()),
                 CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
                 "",
                 roll,
@@ -705,12 +686,7 @@ class WW2V3Year41Test {
             delegateBridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                germanFighter,
-                false,
-                delegateBridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), germanFighter, false, delegateBridge.getData(), territoryEffects));
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
@@ -720,12 +696,7 @@ class WW2V3Year41Test {
             delegateBridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                germanFighter,
-                true,
-                delegateBridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), germanFighter, true, delegateBridge.getData(), territoryEffects));
     assertEquals(0, roll2.getHits());
   }
 

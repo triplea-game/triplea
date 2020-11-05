@@ -67,7 +67,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
         .player(testData.british)
         .combatValue(
             CombatValue.buildMainCombatValue(
-                List.of(), amphibUnits, false, testData.gameData, testData.france, List.of()))
+                List.of(), amphibUnits, false, testData.gameData, List.of()))
         .battlesite(testData.france)
         .costs(testData.costMap)
         .data(testData.gameData)
@@ -197,12 +197,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .player(testData.british)
                 .combatValue(
                     CombatValue.buildMainCombatValue(
-                        List.of(),
-                        attackingUnits,
-                        false,
-                        testData.gameData,
-                        testData.france,
-                        List.of()))
+                        List.of(), attackingUnits, false, testData.gameData, List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
                 .data(testData.gameData)
@@ -252,12 +247,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .player(testData.british)
                 .combatValue(
                     CombatValue.buildMainCombatValue(
-                        List.of(),
-                        attackingUnits,
-                        false,
-                        testData.gameData,
-                        testData.france,
-                        List.of()))
+                        List.of(), attackingUnits, false, testData.gameData, List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
                 .data(testData.gameData)
@@ -282,7 +272,6 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                         attackingUnits.subList(0, 3),
                         false,
                         testData.gameData,
-                        testData.france,
                         List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
