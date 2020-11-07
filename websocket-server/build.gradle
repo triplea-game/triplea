@@ -1,9 +1,9 @@
 dependencies {
     errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-
     implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
+    implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     implementation project(':http-clients')
     implementation project(':java-extras')
     testImplementation project(":test-common")

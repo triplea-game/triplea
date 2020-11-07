@@ -21,6 +21,7 @@ import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.java_websocket.WebSocket;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
 
@@ -44,6 +45,12 @@ public class GenericWebSocket {
   @Nullable private final Predicate<InetAddress> banCheck;
   @Nonnull private final MessageSender messageSender;
 
+  public GenericWebSocket(
+      @Nonnull final WebSocketMessagingBus webSocketMessagingBus,
+      @Nullable final Predicate<InetAddress> banCheck) {
+    this(webSocketMessagingBus, banCheck, new MessageSender());
+  }
+
   public static void init(
       final Class<?> websocketClass,
       final WebSocketMessagingBus webSocketMessagingBus,
@@ -64,8 +71,12 @@ public class GenericWebSocket {
             + ", ...) ?");
   }
 
+  void onOpen(final WebSocket webSocket) {
+    onOpen(WebSocketSessionAdapter.fromWebSocket(webSocket));
+  }
+
   void onOpen(final Session session) {
-    onOpen(WebSocketSession.fromSession(session));
+    onOpen(WebSocketSessionAdapter.fromSession(session));
   }
 
   void onOpen(final WebSocketSession session) {
@@ -86,8 +97,12 @@ public class GenericWebSocket {
     session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "You have been banned"));
   }
 
+  public void onMessage(final WebSocket webSocket, final String message) {
+    onMessage(WebSocketSessionAdapter.fromWebSocket(webSocket), message, badMessageCache);
+  }
+
   public void onMessage(final Session session, final String message) {
-    onMessage(WebSocketSession.fromSession(session), message, badMessageCache);
+    onMessage(WebSocketSessionAdapter.fromSession(session), message, badMessageCache);
   }
 
   public void onMessage(final WebSocketSession session, final String message) {
@@ -95,7 +110,7 @@ public class GenericWebSocket {
   }
 
   @VisibleForTesting
-  public void onMessage(
+  void onMessage(
       final WebSocketSession session,
       final String message,
       final Cache<InetAddress, AtomicInteger> badMessageCache) {
@@ -166,16 +181,24 @@ public class GenericWebSocket {
             .toEnvelope());
   }
 
+  void onClose(final WebSocket webSocket, final CloseReason closeReason) {
+    onClose(WebSocketSessionAdapter.fromWebSocket(webSocket), closeReason);
+  }
+
   void onClose(final Session session, final CloseReason closeReason) {
-    onClose(WebSocketSession.fromSession(session), closeReason);
+    onClose(WebSocketSessionAdapter.fromSession(session), closeReason);
   }
 
   void onClose(final WebSocketSession session, final CloseReason closeReason) {
     webSocketMessagingBus.onClose(session);
   }
 
+  public void onError(final WebSocket webSocket, final Throwable throwable) {
+    onError(WebSocketSessionAdapter.fromWebSocket(webSocket), throwable);
+  }
+
   public void onError(final Session session, final Throwable throwable) {
-    onError(WebSocketSession.fromSession(session), throwable);
+    onError(WebSocketSessionAdapter.fromSession(session), throwable);
   }
 
   void onError(final WebSocketSession session, final Throwable throwable) {

@@ -81,6 +81,7 @@ subprojects {
         errorProneVersion = '2.3.4'
         feignCoreVersion = '10.2.3'
         feignGsonVersion = '10.2.0'
+        javaWebSocketVersion = '1.5.1'
         gsonVersion = '2.8.6'
         guavaVersion = '30.0-jre'
         hamcrestJsonVersion = '0.2'

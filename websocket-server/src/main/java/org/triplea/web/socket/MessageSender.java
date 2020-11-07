@@ -6,7 +6,7 @@ import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.java.Interruptibles;
 
 /** Sends a server message (encoded as a JSON string) to a specific connected websocket sessions. */
-class MessageSender implements BiConsumer<WebSocketSession, MessageEnvelope> {
+public class MessageSender implements BiConsumer<WebSocketSession, MessageEnvelope> {
   private static final Gson GSON = new Gson();
 
   @Override
