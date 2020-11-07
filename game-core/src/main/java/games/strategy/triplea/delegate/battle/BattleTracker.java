@@ -1374,7 +1374,6 @@ public class BattleTracker implements Serializable {
                           sortedUnitsList,
                           true,
                           gameData,
-                          territory,
                           TerritoryEffectHelper.getEffects(territory)))
                   .calculateTotalPower()
               == 0) {

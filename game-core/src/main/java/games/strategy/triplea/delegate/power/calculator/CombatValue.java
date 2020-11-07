@@ -1,10 +1,8 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,7 +38,6 @@ public interface CombatValue {
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
       final GameData gameData,
-      final Territory location,
       final Collection<TerritoryEffect> territoryEffects) {
 
     // Get all friendly supports
@@ -77,7 +74,6 @@ public interface CombatValue {
             .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
             .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
             .territoryEffects(territoryEffects)
-            .territoryIsLand(Matches.territoryIsLand().test(location))
             .build();
   }
 
@@ -145,5 +141,39 @@ public interface CombatValue {
             .territoryEffects(territoryEffects)
             .territoryIsLand(false)
             .build();
+  }
+
+  static CombatValue buildBombardmentCombatValue(
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
+      final GameData gameData,
+      final Collection<TerritoryEffect> territoryEffects) {
+
+    // Get all friendly supports
+    final AvailableSupports supportFromFriends =
+        AvailableSupports.getSortedSupport(
+            new SupportCalculator(
+                allFriendlyUnitsAliveOrWaitingToDie,
+                gameData.getUnitTypeList().getSupportRules(),
+                false,
+                true));
+
+    // Get all enemy supports
+    final AvailableSupports supportFromEnemies =
+        AvailableSupports.getSortedSupport(
+            new SupportCalculator(
+                allEnemyUnitsAliveOrWaitingToDie,
+                gameData.getUnitTypeList().getSupportRules(),
+                true,
+                false));
+
+    return BombardmentCombatValue.builder()
+        .gameData(gameData)
+        .supportFromFriends(supportFromFriends)
+        .supportFromEnemies(supportFromEnemies)
+        .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
+        .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
+        .territoryEffects(territoryEffects)
+        .build();
   }
 }

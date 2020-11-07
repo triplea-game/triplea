@@ -76,8 +76,7 @@ class CasualtyOrderOfLossesTest {
         .targetsToPickFrom(List.of())
         .player(player)
         .combatValue(
-            CombatValue.buildMainCombatValue(
-                List.of(), List.of(), false, gameData, territory, List.of()))
+            CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()))
         .battlesite(territory)
         .costs(IntegerMap.of(Map.of()))
         .data(gameData)

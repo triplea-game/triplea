@@ -158,7 +158,6 @@ public class SelectMainBattleCasualties
               step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
               step.getSide().getOpposite() == DEFENSE,
               step.getBattleState().getGameData(),
-              step.getBattleState().getBattleSite(),
               step.getBattleState().getTerritoryEffects()),
           step.getBattleState().getBattleSite(),
           bridge,

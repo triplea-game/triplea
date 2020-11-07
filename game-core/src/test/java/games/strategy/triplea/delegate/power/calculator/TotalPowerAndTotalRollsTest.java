@@ -1068,7 +1068,6 @@ class TotalPowerAndTotalRollsTest {
                   .supportFromFriends(AvailableSupports.EMPTY_RESULT)
                   .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .territoryEffects(List.of())
-                  .territoryIsLand(true)
                   .build());
 
       assertThat(result.getStrength(unit), is(0));
@@ -1088,7 +1087,6 @@ class TotalPowerAndTotalRollsTest {
                   .supportFromFriends(AvailableSupports.EMPTY_RESULT)
                   .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .territoryEffects(List.of())
-                  .territoryIsLand(true)
                   .build());
       assertThat(result.getRolls(unit), is(0));
     }
@@ -1132,7 +1130,6 @@ class TotalPowerAndTotalRollsTest {
                   .supportFromFriends(friendlySupport)
                   .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .territoryEffects(List.of())
-                  .territoryIsLand(true)
                   .build());
 
       assertThat("First should have both support", result.getStrength(unit), is(3));

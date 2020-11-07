@@ -333,7 +333,6 @@ class AaInMoveUtil implements Serializable {
                 allFriendlyUnits,
                 false,
                 bridge.getData(),
-                territory,
                 TerritoryEffectHelper.getEffects(territory)),
             CombatValue.buildAaCombatValue(allFriendlyUnits, allEnemyUnits, true, bridge.getData()),
             "Select "

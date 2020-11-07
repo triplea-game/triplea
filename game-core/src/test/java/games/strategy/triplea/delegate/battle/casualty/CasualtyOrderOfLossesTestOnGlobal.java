@@ -132,8 +132,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
         .player(BRITISH)
-        .combatValue(
-            CombatValue.buildMainCombatValue(List.of(), units, false, data, FRANCE, List.of()))
+        .combatValue(CombatValue.buildMainCombatValue(List.of(), units, false, data, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -215,8 +214,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
         .targetsToPickFrom(amphibUnits)
         .player(BRITISH)
         .combatValue(
-            CombatValue.buildMainCombatValue(
-                List.of(), amphibUnits, false, data, FRANCE, List.of()))
+            CombatValue.buildMainCombatValue(List.of(), amphibUnits, false, data, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -294,8 +292,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
         .player(BRITISH)
-        .combatValue(
-            CombatValue.buildMainCombatValue(List.of(), units, true, data, FRANCE, List.of()))
+        .combatValue(CombatValue.buildMainCombatValue(List.of(), units, true, data, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)

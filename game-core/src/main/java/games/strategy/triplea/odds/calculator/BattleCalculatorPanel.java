@@ -1423,7 +1423,6 @@ class BattleCalculatorPanel extends JPanel {
           new UnitBattleComparator(
                   costs, data, CombatValue.buildNoSupportCombatValue(false, data, territoryEffects))
               .reversed());
-      final Territory location = findPotentialBattleSite();
       if (isAmphibiousBattle()) {
         attackers.stream()
             .filter(Matches.unitIsLand())
@@ -1444,14 +1443,14 @@ class BattleCalculatorPanel extends JPanel {
           PowerStrengthAndRolls.build(
                   attackers,
                   CombatValue.buildMainCombatValue(
-                      defenders, attackers, false, data, location, territoryEffects))
+                      defenders, attackers, false, data, territoryEffects))
               .calculateTotalPower();
       // defender is never amphibious
       final int defensePower =
           PowerStrengthAndRolls.build(
                   defenders,
                   CombatValue.buildMainCombatValue(
-                      attackers, defenders, true, data, location, territoryEffects))
+                      attackers, defenders, true, data, territoryEffects))
               .calculateTotalPower();
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);
