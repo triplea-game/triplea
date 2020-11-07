@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Properties;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,12 @@ import lombok.NonNull;
 import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
-/** Calculates offense strength and roll for Air Battle dice */
+/**
+ * Calculates defense strength and roll for Air Battle dice
+ *
+ * <p>Air Battles don't have support and are not affected by territory. The unit's defense strength
+ * is determined by the airDefense attribute.
+ */
 @Builder
 @Value
 @Getter(AccessLevel.NONE)
@@ -34,11 +39,6 @@ class AirBattleDefenseCombatValue implements CombatValue {
   @Builder.Default
   Collection<Unit> enemyUnits = List.of();
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  @Builder.Default
-  Collection<TerritoryEffect> territoryEffects = List.of();
-
   @Override
   public RollCalculator getRoll() {
     return new AirBattleDefenseRoll();
@@ -57,6 +57,21 @@ class AirBattleDefenseCombatValue implements CombatValue {
   @Override
   public int getDiceSides(final Unit unit) {
     return gameData.getDiceSides();
+  }
+
+  @Override
+  public boolean chooseBestRoll(final Unit unit) {
+    return Properties.getLhtrHeavyBombers(gameData) || unit.getUnitAttachment().getChooseBestRoll();
+  }
+
+  @Override
+  public CombatValue buildWithNoUnitSupports() {
+    return AirBattleDefenseCombatValue.builder().gameData(gameData).build();
+  }
+
+  @Override
+  public CombatValue buildOppositeCombatValue() {
+    return AirBattleOffenseCombatValue.builder().gameData(gameData).build();
   }
 
   @Value
