@@ -76,7 +76,7 @@
     enabled: yes
 
 - name: restart service if new jar file deployed
-  when: (deploy_jar_file.changed) or (deploy_config_file.changed)
+  when: (lobby_restart_on_new_deployment) and ((deploy_jar_file.changed) or (deploy_config_file.changed))
   service:
     name: lobby_server
     state: restarted

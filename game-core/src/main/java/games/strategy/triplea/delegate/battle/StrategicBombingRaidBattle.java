@@ -32,6 +32,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
@@ -222,7 +223,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
         steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
-        steps.add(REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
+        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
       }
     }
     steps.add(RAID);
@@ -587,33 +588,40 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       return CasualtySelector.selectCasualties(
           attacker,
           validAttackingUnitsForThisRoll,
-          attackingUnits,
-          defendingUnits,
+          CombatValue.buildMainCombatValue(
+              defendingUnits,
+              attackingUnits,
+              false,
+              bridge.getData(),
+              battleSite,
+              territoryEffects),
           battleSite,
-          territoryEffects,
           bridge,
-          text, /* dice */
-          null,
-          /* defending */ false,
-          battleId, /* head-less */
-          false,
+          text,
+          null, /* dice */
+          battleId,
+          false, /* head-less */
           0,
           allowMultipleHitsPerUnit);
     }
     final CasualtyDetails casualties =
         AaCasualtySelector.getAaCasualties(
-            false,
             validAttackingUnitsForThisRoll,
-            attackingUnits,
             defendingAa,
-            defendingUnits,
+            CombatValue.buildMainCombatValue(
+                defendingUnits,
+                attackingUnits,
+                false,
+                bridge.getData(),
+                battleSite,
+                territoryEffects),
+            CombatValue.buildAaCombatValue(attackingUnits, defendingUnits, true, bridge.getData()),
             "Hits from " + currentTypeAa + ", ",
             dice,
             bridge,
             attacker,
             battleId,
-            battleSite,
-            territoryEffects);
+            battleSite);
     final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
     if (casualties.size() != totalExpectingHits) {
       throw new IllegalStateException(
@@ -634,7 +642,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleId,
-            REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
+            NOTIFY_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
             dice,
             attacker,
             new ArrayList<>(casualties.getKilled()),

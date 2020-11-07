@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
@@ -86,7 +85,7 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     pendingDownloads.addAll(
-        ClientContext.downloadCoordinator().getDownloads().stream()
+        DownloadCoordinator.instance.getDownloads().stream()
             .filter(download -> download.getDownloadState() != DownloadState.CANCELLED)
             .map(DownloadFile::getDownload)
             .collect(Collectors.toList()));

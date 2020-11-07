@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -325,11 +326,16 @@ class AaInMoveUtil implements Serializable {
       final String currentTypeAa) {
     final CasualtyDetails casualties =
         AaCasualtySelector.getAaCasualties(
-            false,
             validTargetedUnitsForThisRoll,
-            allFriendlyUnits,
             defendingAa,
-            allEnemyUnits,
+            CombatValue.buildMainCombatValue(
+                allEnemyUnits,
+                allFriendlyUnits,
+                false,
+                bridge.getData(),
+                territory,
+                TerritoryEffectHelper.getEffects(territory)),
+            CombatValue.buildAaCombatValue(allFriendlyUnits, allEnemyUnits, true, bridge.getData()),
             "Select "
                 + dice.getHits()
                 + " casualties from "
@@ -340,8 +346,7 @@ class AaInMoveUtil implements Serializable {
             bridge,
             player,
             null,
-            territory,
-            TerritoryEffectHelper.getEffects(territory));
+            territory);
     bridge
         .getRemotePlayer(player)
         .reportMessage(

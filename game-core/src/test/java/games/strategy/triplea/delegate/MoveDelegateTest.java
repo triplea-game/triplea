@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -443,11 +444,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final DiceRoll roll =
         DiceRoll.rollDice(
             attackList,
-            false,
             russians,
             bridge,
-            battle.getTerritory(),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                attackList,
+                false,
+                bridge.getData(),
+                battle.getTerritory(),
+                TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(2, roll.getHits());
     advanceToStep(bridge, "russianNonCombatMove");
     // Test the move
@@ -862,11 +868,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final DiceRoll roll =
         DiceRoll.rollDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                defendList,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
@@ -931,11 +942,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final DiceRoll roll =
         DiceRoll.rollDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                defendList,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
@@ -990,11 +1006,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final DiceRoll roll =
         DiceRoll.rollDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                defendList,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();
@@ -1049,11 +1070,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final DiceRoll roll =
         DiceRoll.rollDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(Territory.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                defendList,
+                true,
+                bridge.getData(),
+                mock(Territory.class),
+                TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();

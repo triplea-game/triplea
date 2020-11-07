@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,13 +23,14 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapSent
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessageContext;
+import org.triplea.web.socket.WebSocketSession;
 
 @ExtendWith(MockitoExtension.class)
 class SlapListenerTest {
   @Mock private Chatters chatters;
   @InjectMocks private SlapListener slapListener;
 
-  @Mock private Session session;
+  @Mock private WebSocketSession session;
   @Mock private WebSocketMessageContext<PlayerSlapSentMessage> messageContext;
 
   private ArgumentCaptor<PlayerSlapReceivedMessage> messageCaptor =
@@ -65,7 +65,8 @@ class SlapListenerTest {
     verifyMessageContents(messageCaptor.getValue());
   }
 
-  private void givenChatterSession(final Session session, final ChatParticipant chatParticipant) {
+  private void givenChatterSession(
+      final WebSocketSession session, final ChatParticipant chatParticipant) {
     when(chatters.lookupPlayerBySession(session))
         .thenReturn(
             Optional.of(

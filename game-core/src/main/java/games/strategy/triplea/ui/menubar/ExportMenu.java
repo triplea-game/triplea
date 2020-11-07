@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
 import com.google.common.collect.Iterables;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
@@ -53,6 +52,7 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.JMenuItemBuilder;
@@ -177,7 +177,7 @@ final class ExportMenu extends JMenu {
       }
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
-      writer.append(ClientContext.engineVersion().toString()).println(',');
+      writer.append(Injections.getInstance().getEngineVersion().toString()).println(',');
       writer.append("Game Name: ,");
       writer.append(gameData.getGameName()).println(',');
       writer.append("Game Version: ,");

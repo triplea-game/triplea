@@ -21,7 +21,6 @@ class MapZipReaderUtil {
 
   /**
    * Finds all game XMLs in a zip file. More specifically, given a zip file, finds all '*.xml' files
-   * that have a 'games/' folder on the zip file path.
    */
   List<URI> findGameXmlFilesInZip(final File zip) {
     final List<URI> zipFiles = new ArrayList<>();

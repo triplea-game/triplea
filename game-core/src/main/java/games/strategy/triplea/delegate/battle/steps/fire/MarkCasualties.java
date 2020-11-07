@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate.battle.steps.fire;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_WITHOUT_SPACE_SUFFIX;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_PREFIX;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.NOTIFY_PREFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_NAVAL_BOMBARDMENT_CASUALTIES;
@@ -57,7 +57,7 @@ public class MarkCasualties implements BattleStep {
 
   private String getName() {
     return battleState.getPlayer(side.getOpposite()).getName()
-        + REMOVE_PREFIX
+        + NOTIFY_PREFIX
         // displaying UNITS makes the text feel redundant so hide it if that is the group name
         + (firingGroup.getDisplayName().equals(UNITS)
             ? CASUALTIES_WITHOUT_SPACE_SUFFIX

@@ -17,8 +17,6 @@ import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveGeneral
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
-import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
-import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsStep;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.ClearFirstStrikeCasualties;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
@@ -68,7 +66,6 @@ public interface BattleStep extends IExecutable {
     GENERAL_DEFENSIVE,
     GENERAL_REMOVE_CASUALTIES,
     SUICIDE_REMOVE_CASUALTIES,
-
     REMOVE_UNPROTECTED_UNITS_GENERAL,
     GENERAL_BATTLE_END_CHECK,
     SUB_OFFENSIVE_RETREAT_AFTER_BATTLE,
@@ -93,8 +90,6 @@ public interface BattleStep extends IExecutable {
         new DefensiveAaFire(battleState, battleActions),
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
         new RemoveUnprotectedUnits(battleState, battleActions),
-        new AirAttackVsNonSubsStep(battleState),
-        new AirDefendVsNonSubsStep(battleState),
         new NavalBombardment(battleState, battleActions),
         new LandParatroopers(battleState, battleActions),
         new OffensiveSubsRetreat(battleState, battleActions),

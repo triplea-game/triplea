@@ -2,7 +2,6 @@ package games.strategy.engine.auto.update;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
-import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import java.time.LocalDate;
@@ -12,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.EventThreadJOptionPane;
 
@@ -26,7 +26,9 @@ final class EngineVersionCheck {
 
     new LiveServersFetcher()
         .latestVersion()
-        .filter(latestVersion -> latestVersion.isGreaterThan(ClientContext.engineVersion()))
+        .filter(
+            latestVersion ->
+                latestVersion.isGreaterThan(Injections.getInstance().getEngineVersion()))
         .ifPresent(
             latestVersion ->
                 SwingUtilities.invokeLater(

@@ -81,6 +81,7 @@ import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
@@ -171,25 +172,28 @@ class WW2V3Year41Test {
                     UnitAttachment.get(defendingAa.iterator().next().getType())
                         .getTargetsAa(gameData))),
             defendingAa,
-            planes,
-            territory("Germany", gameData).getUnits(),
             bridge,
             territory("Germany", gameData),
-            true);
+            CombatValue.buildAaCombatValue(
+                planes, territory("Germany", gameData).getUnits(), true, bridge.getData()));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
-                false,
-                planes,
                 planes,
                 defendingAa,
-                defendingAa,
+                CombatValue.buildMainCombatValue(
+                    defendingAa,
+                    planes,
+                    false,
+                    gameData,
+                    territory("Germany", gameData),
+                    List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
                 "",
                 roll,
                 bridge,
                 null,
                 null,
-                territory("Germany", gameData),
-                null)
+                territory("Germany", gameData))
             .getKilled();
     assertEquals(2, casualties.size());
     // should be 1 fighter and 1 bomber
@@ -225,27 +229,30 @@ class WW2V3Year41Test {
                     UnitAttachment.get(defendingAa.iterator().next().getType())
                         .getTargetsAa(gameData))),
             defendingAa,
-            planes,
-            territory("Germany", gameData).getUnits(),
             bridge,
             territory("Germany", gameData),
-            true);
+            CombatValue.buildAaCombatValue(
+                planes, territory("Germany", gameData).getUnits(), true, bridge.getData()));
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
-                false,
-                planes,
                 planes,
                 defendingAa,
-                defendingAa,
+                CombatValue.buildMainCombatValue(
+                    defendingAa,
+                    planes,
+                    false,
+                    gameData,
+                    territory("Germany", gameData),
+                    List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
                 "",
                 roll,
                 bridge,
                 null,
                 null,
-                territory("Germany", gameData),
-                null)
+                territory("Germany", gameData))
             .getKilled();
     assertEquals(3, casualties.size());
     // should be 1 fighter and 2 bombers
@@ -283,28 +290,31 @@ class WW2V3Year41Test {
                     UnitAttachment.get(defendingAa.iterator().next().getType())
                         .getTargetsAa(gameData))),
             defendingAa,
-            planes,
-            territory("Germany", gameData).getUnits(),
             bridge,
             territory("Germany", gameData),
-            true);
+            CombatValue.buildAaCombatValue(
+                planes, territory("Germany", gameData).getUnits(), true, bridge.getData()));
     assertEquals(2, roll.getHits());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
-                false,
-                planes,
                 planes,
                 defendingAa,
-                defendingAa,
+                CombatValue.buildMainCombatValue(
+                    defendingAa,
+                    planes,
+                    false,
+                    gameData,
+                    territory("Germany", gameData),
+                    List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
                 "",
                 roll,
                 bridge,
                 null,
                 null,
-                territory("Germany", gameData),
-                null)
+                territory("Germany", gameData))
             .getKilled();
     assertEquals(2, casualties.size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(3));
@@ -690,12 +700,32 @@ class WW2V3Year41Test {
     // Attacking fighter
     final DiceRoll roll1 =
         DiceRoll.rollDice(
-            germanFighter, false, germans, delegateBridge, mock(Territory.class), territoryEffects);
+            germanFighter,
+            germans,
+            delegateBridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                germanFighter,
+                false,
+                delegateBridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            germanFighter, true, germans, delegateBridge, mock(Territory.class), territoryEffects);
+            germanFighter,
+            germans,
+            delegateBridge,
+            "",
+            CombatValue.buildMainCombatValue(
+                List.of(),
+                germanFighter,
+                true,
+                delegateBridge.getData(),
+                mock(Territory.class),
+                territoryEffects));
     assertEquals(0, roll2.getHits());
   }
 

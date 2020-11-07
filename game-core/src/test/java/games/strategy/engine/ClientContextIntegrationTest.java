@@ -16,11 +16,6 @@ import org.triplea.test.common.Integration;
 class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test
-  void canRetrieveCurrentEngineVersion() {
-    assertThat(ClientContext.engineVersion(), notNullValue());
-  }
-
-  @Test
   void downloadListOfAvailableMaps() {
     final List<DownloadFileDescription> list = MapListingFetcher.getMapDownloadList();
 

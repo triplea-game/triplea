@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.collect.Maps;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
   private static final long serialVersionUID = -7288639737337542689L;
 
-  private final DownloadCoordinator downloadCoordinator = ClientContext.downloadCoordinator();
+  private final DownloadCoordinator downloadCoordinator = DownloadCoordinator.instance;
 
   /*
    * Maintain grids that are placed east and west.

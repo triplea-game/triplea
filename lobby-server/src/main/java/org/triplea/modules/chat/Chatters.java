@@ -1,7 +1,6 @@
 package org.triplea.modules.chat;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.time.Clock;
 import java.time.Instant;
@@ -14,19 +13,17 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.websocket.CloseReason;
-import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
 import org.triplea.web.socket.MessageBroadcaster;
+import org.triplea.web.socket.WebSocketSession;
 
 /** Keeps the current list of ChatParticipants and maps them to their websocket session. */
-@Slf4j
 @AllArgsConstructor
 public class Chatters {
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
@@ -38,7 +35,7 @@ public class Chatters {
     return new Chatters();
   }
 
-  public Optional<ChatterSession> lookupPlayerBySession(final Session senderSession) {
+  public Optional<ChatterSession> lookupPlayerBySession(final WebSocketSession senderSession) {
     return Optional.ofNullable(participants.get(senderSession.getId()));
   }
 
@@ -60,7 +57,7 @@ public class Chatters {
         .collect(Collectors.toList());
   }
 
-  public Optional<UserName> playerLeft(final Session session) {
+  public Optional<UserName> playerLeft(final WebSocketSession session) {
     return Optional.ofNullable(participants.remove(session.getId()))
         .map(ChatterSession::getChatParticipant)
         .map(ChatParticipant::getUserName);
@@ -73,10 +70,10 @@ public class Chatters {
         .anyMatch(userName::equals);
   }
 
-  public Collection<Session> fetchOpenSessions() {
+  public Collection<WebSocketSession> fetchOpenSessions() {
     return participants.values().stream()
         .map(ChatterSession::getSession)
-        .filter(Session::isOpen)
+        .filter(WebSocketSession::isOpen)
         .collect(Collectors.toSet());
   }
 
@@ -90,7 +87,7 @@ public class Chatters {
    *     in chat).
    */
   public boolean disconnectPlayerByName(final UserName userName, final String disconnectMessage) {
-    final Set<Session> sessions =
+    final Set<WebSocketSession> sessions =
         participants.values().stream()
             .filter(
                 chatterSession ->
@@ -103,21 +100,12 @@ public class Chatters {
   }
 
   private void disconnectSession(
-      final Collection<Session> sessions, final String disconnectMessage) {
+      final Collection<WebSocketSession> sessions, final String disconnectMessage) {
     // Do session disconnects as its own step to avoid concurrent modification.
     sessions.forEach(
-        session -> {
-          try {
+        session ->
             session.close(
-                new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, disconnectMessage));
-          } catch (final IOException e) {
-            log.warn(
-                "While closing session, "
-                    + "session close threw an exception, session is left open? {}",
-                session.isOpen(),
-                e);
-          }
-        });
+                new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, disconnectMessage)));
   }
 
   /**
@@ -130,7 +118,7 @@ public class Chatters {
    *     in chat).
    */
   public boolean disconnectIp(final InetAddress ip, final String disconnectMessage) {
-    final Set<Session> sessions =
+    final Set<WebSocketSession> sessions =
         participants.values().stream()
             .filter(chatterSession -> chatterSession.getIp().equals(ip))
             .map(ChatterSession::getSession)

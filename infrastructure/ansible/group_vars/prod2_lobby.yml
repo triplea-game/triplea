@@ -1,3 +1,4 @@
-version: "2.1.20777"
+version: "2.4.22192"
 journalctl_applications: ["lobby_server"]
+lobby_restart_on_new_deployment: false
 

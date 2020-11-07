@@ -20,9 +20,11 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.debug.LoggerManager;
 import org.triplea.debug.console.window.ConsoleConfiguration;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
@@ -85,6 +87,8 @@ public final class HeadedGameRunner {
         !GraphicsEnvironment.isHeadless(),
         "UI client launcher invoked from headless environment. This is currently "
             + "prohibited by design to avoid UI rendering errors in the headless environment.");
+    Injections.init(constructInjections());
+
     initializeClientSettingAndLogging();
     initializeLookAndFeel();
 
@@ -93,5 +97,9 @@ public final class HeadedGameRunner {
     SwingUtilities.invokeLater(ErrorMessage::initialize);
     GameRunner.start();
     AvailableGamesFileSystemReader.refreshMapFileCache();
+  }
+
+  private static Injections constructInjections() {
+    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
   }
 }

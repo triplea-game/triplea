@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GamePlayer;
@@ -13,6 +13,7 @@ import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -152,14 +153,17 @@ public class SelectMainBattleCasualties
       return CasualtySelector.selectCasualties(
           step.getBattleState().getPlayer(step.getSide().getOpposite()),
           targetsToPickFrom,
-          step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()),
-          step.getBattleState().filterUnits(ACTIVE, step.getSide()),
+          CombatValue.buildMainCombatValue(
+              step.getBattleState().filterUnits(ALIVE, step.getSide()),
+              step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
+              step.getSide().getOpposite() == DEFENSE,
+              step.getBattleState().getGameData(),
+              step.getBattleState().getBattleSite(),
+              step.getBattleState().getTerritoryEffects()),
           step.getBattleState().getBattleSite(),
-          step.getBattleState().getTerritoryEffects(),
           bridge,
           "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
           step.getFireRoundState().getDice(),
-          step.getSide().getOpposite() == DEFENSE,
           step.getBattleState().getBattleId(),
           step.getBattleState().getStatus().isHeadless(),
           diceHitOverride,

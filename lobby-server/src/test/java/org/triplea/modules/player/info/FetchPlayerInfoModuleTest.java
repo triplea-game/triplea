@@ -18,7 +18,6 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import javax.websocket.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +43,7 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
+import org.triplea.web.socket.WebSocketSession;
 
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {
@@ -110,7 +110,7 @@ class FetchPlayerInfoModuleTest {
                     .status("AFK")
                     .playerChatId("player-chat-id")
                     .build())
-            .session(mock(Session.class))
+            .session(mock(WebSocketSession.class))
             .build();
   }
 

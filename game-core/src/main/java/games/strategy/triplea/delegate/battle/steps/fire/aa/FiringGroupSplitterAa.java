@@ -32,7 +32,7 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>See {@link FiringGroup} for why isSuicideOnHit needs to be separated by unit type.
  */
 @Value(staticConstructor = "of")
-public class FiringGroupSplitterAa implements Function<BattleState, List<FiringGroup>> {
+public class FiringGroupSplitterAa implements Function<BattleState, Collection<FiringGroup>> {
 
   BattleState.Side side;
 
@@ -62,7 +62,7 @@ public class FiringGroupSplitterAa implements Function<BattleState, List<FiringG
     final Collection<Unit> validTargetUnits =
         CollectionUtils.getMatches(
             battleState.filterUnits(ALIVE, side.getOpposite()),
-            Matches.unitIsNotInfrastructure().and(Matches.unitIsBeingTransported().negate()));
+            Matches.unitIsBeingTransported().negate());
 
     final List<FiringGroup> firingGroups = new ArrayList<>();
     // go through each of the typeAas in the game and find any units in validTargetUnits

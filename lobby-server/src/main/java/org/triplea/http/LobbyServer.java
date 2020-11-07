@@ -7,7 +7,6 @@ import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.List;
-import java.util.Map;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.JdbiDatabase;
 import org.triplea.dropwizard.common.AuthenticationConfiguration;
@@ -42,6 +41,7 @@ import org.triplea.modules.user.account.create.CreateAccountController;
 import org.triplea.modules.user.account.login.LoginController;
 import org.triplea.modules.user.account.update.UpdateAccountController;
 import org.triplea.web.socket.GameConnectionWebSocket;
+import org.triplea.web.socket.GenericWebSocket;
 import org.triplea.web.socket.PlayerConnectionWebSocket;
 import org.triplea.web.socket.SessionBannedCheck;
 import org.triplea.web.socket.WebSocketMessagingBus;
@@ -112,21 +112,13 @@ public class LobbyServer extends Application<LobbyServerConfig> {
 
     final var sessionIsBannedCheck = SessionBannedCheck.build(jdbi);
     final var gameConnectionMessagingBus = new WebSocketMessagingBus();
-    serverConfiguration.injectWebsocketProperties(
-        GameConnectionWebSocket.class,
-        Map.of(
-            WebSocketMessagingBus.MESSAGING_BUS_KEY, //
-            gameConnectionMessagingBus,
-            SessionBannedCheck.BAN_CHECK_KEY,
-            sessionIsBannedCheck));
+
+    GenericWebSocket.init(
+        GameConnectionWebSocket.class, gameConnectionMessagingBus, sessionIsBannedCheck);
+
     final var playerConnectionMessagingBus = new WebSocketMessagingBus();
-    serverConfiguration.injectWebsocketProperties(
-        PlayerConnectionWebSocket.class,
-        Map.of(
-            WebSocketMessagingBus.MESSAGING_BUS_KEY, //
-            playerConnectionMessagingBus,
-            SessionBannedCheck.BAN_CHECK_KEY,
-            sessionIsBannedCheck));
+    GenericWebSocket.init(
+        PlayerConnectionWebSocket.class, playerConnectionMessagingBus, sessionIsBannedCheck);
 
     final var chatters = Chatters.build();
     ChatMessagingService.build(chatters, jdbi).configure(playerConnectionMessagingBus);

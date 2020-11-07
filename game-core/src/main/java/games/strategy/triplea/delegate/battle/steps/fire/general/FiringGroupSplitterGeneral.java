@@ -37,13 +37,11 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>See {@link FiringGroup} for why isSuicideOnHit needs to be separated by unit type.
  */
 @Value(staticConstructor = "of")
-public class FiringGroupSplitterGeneral implements Function<BattleState, List<FiringGroup>> {
+public class FiringGroupSplitterGeneral implements Function<BattleState, Collection<FiringGroup>> {
 
-  enum Type {
-    OFFENSIVE_NORMAL,
-    DEFENSIVE_NORMAL,
-    OFFENSIVE_FIRST_STRIKE,
-    DEFENSIVE_FIRST_STRIKE
+  public enum Type {
+    NORMAL,
+    FIRST_STRIKE
   }
 
   BattleState.Side side;
@@ -96,17 +94,11 @@ public class FiringGroupSplitterGeneral implements Function<BattleState, List<Fi
   }
 
   private Predicate<Unit> getFiringUnitPredicate(final BattleState battleState) {
-    switch (type) {
-      case OFFENSIVE_NORMAL:
-      default:
-        return Matches.unitIsFirstStrike().negate();
-      case DEFENSIVE_NORMAL:
-        return Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()).negate();
-      case OFFENSIVE_FIRST_STRIKE:
-        return Matches.unitIsFirstStrike();
-      case DEFENSIVE_FIRST_STRIKE:
-        return Matches.unitIsFirstStrikeOnDefense(battleState.getGameData());
-    }
+    final Predicate<Unit> predicate =
+        (side == OFFENSE)
+            ? Matches.unitIsFirstStrike()
+            : Matches.unitIsFirstStrikeOnDefense(battleState.getGameData());
+    return type == Type.NORMAL ? predicate.negate() : predicate;
   }
 
   private List<FiringGroup> buildFiringGroups(

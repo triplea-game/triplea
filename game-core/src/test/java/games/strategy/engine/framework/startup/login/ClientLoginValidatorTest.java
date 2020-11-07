@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.util.Version;
 
 final class ClientLoginValidatorTest {
   private static final String PASSWORD = "password";
@@ -18,7 +19,8 @@ final class ClientLoginValidatorTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class AuthenticateTest {
-    private final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+    private final ClientLoginValidator clientLoginValidator =
+        new ClientLoginValidator(new Version(2, 0, 0));
 
     @BeforeEach
     void givenPasswordSet() {

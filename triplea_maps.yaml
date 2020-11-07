@@ -424,7 +424,7 @@
     <br>This map is the continuation of the (deprecated) Large Middle Earth map. Currently in balance testing period.
     <br>Version 2.0.7, last update 2018.10.08. for engine 1.9.0.0.11000+
 - mapName: WW2 Path to Victory
-  mapCategory: GOOD
+  mapCategory: BEST
   url: https://github.com/triplea-maps/ww2_path_to_victory/archive/master.zip
   version: 5
   img: https://raw.githubusercontent.com/triplea-maps/ww2_path_to_victory/master/map/smallMap.png
@@ -2181,3 +2181,10 @@
    <br>Otherwise, unit types, regions, etc. have all been preserved so that players can take advantage of their previous experience with the World War II v3 map.
    <br>Initial playtesting with human opponents suggests that the map is balanced without a bid -- but the TripleA community will be the ultimate judge.
    <br>Try it and see what you think!
+- mapName: Aggression 1941
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/aggression_1941/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/main/aggression_1941%20-%20Kopya.png
+  description: |
+   <br>A WWII scenario loosely based on 1941, inspired from AA50 Anniversary and Big World

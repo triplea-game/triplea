@@ -8,6 +8,7 @@ import games.strategy.triplea.delegate.TestDelegate;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Map;
+import org.triplea.util.Version;
 
 /** The available maps for use during testing. */
 public enum TestMapGameData {
@@ -70,7 +71,8 @@ public enum TestMapGameData {
             mapUri,
             new XmlGameElementMapper(
                 Map.of("TestDelegate", TestDelegate::new),
-                Map.of("TestAttachment", TestAttachment::new)))
+                Map.of("TestAttachment", TestAttachment::new)),
+            new Version(2, 0, 0))
         .orElseThrow(() -> new IllegalStateException("Error parsing: " + mapUri));
   }
 }

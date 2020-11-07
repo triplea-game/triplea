@@ -2,7 +2,6 @@ package games.strategy.engine.data.gameparser;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.EngineVersionException;
@@ -54,6 +53,7 @@ import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
+import org.triplea.injection.Injections;
 import org.triplea.java.UrlStreams;
 import org.triplea.map.data.elements.AttachmentList;
 import org.triplea.map.data.elements.DiceSides;
@@ -81,11 +81,16 @@ public final class GameParser {
   private final String mapName;
   private final XmlGameElementMapper xmlGameElementMapper;
   private final GameDataVariableParser variableParser = new GameDataVariableParser();
+  private final Version engineVersion;
 
-  private GameParser(final String mapName, final XmlGameElementMapper xmlGameElementMapper) {
+  private GameParser(
+      final String mapName,
+      final XmlGameElementMapper xmlGameElementMapper,
+      final Version engineVersion) {
     data = new GameData();
     this.mapName = mapName;
     this.xmlGameElementMapper = xmlGameElementMapper;
+    this.engineVersion = engineVersion;
   }
 
   /**
@@ -94,16 +99,19 @@ public final class GameParser {
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
   public static Optional<GameData> parse(
-      final URI mapUri, final XmlGameElementMapper xmlGameElementMapper) {
+      final URI mapUri,
+      final XmlGameElementMapper xmlGameElementMapper,
+      final Version engineVersion) {
     return UrlStreams.openStream(
         mapUri,
         inputStream -> {
           try {
-            return new GameParser(mapUri.toString(), xmlGameElementMapper).parse(inputStream);
+            return new GameParser(mapUri.toString(), xmlGameElementMapper, engineVersion)
+                .parse(inputStream);
           } catch (final EngineVersionException e) {
             log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
             return null;
-          } catch (final GameParseException | XmlParsingException e) {
+          } catch (final Exception e) {
             log.log(Level.SEVERE, "Could not parse:" + mapUri + ", " + e.getMessage(), e);
             return null;
           }
@@ -216,12 +224,11 @@ public final class GameParser {
       return;
     }
     final Version mapMinimumEngineVersion = new Version(tripleA.getMinimumVersion());
-    if (!ClientContext.engineVersion()
-        .isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
+    if (!engineVersion.isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
       throw new EngineVersionException(
           String.format(
               "Current engine version: %s, is not compatible with version: %s, required by map: %s",
-              ClientContext.engineVersion(),
+              Injections.getInstance().getEngineVersion(),
               mapMinimumEngineVersion.toString(),
               data.getGameName()));
     }
@@ -895,9 +902,6 @@ public final class GameParser {
       }
       // decapitalize the property name for backwards compatibility
       final String name = LegacyPropertyMapper.mapLegacyOptionName(decapitalize(option.getName()));
-      if (LegacyPropertyMapper.ignoreOptionName(name)) {
-        continue;
-      }
 
       if (name.isEmpty()) {
         throw new GameParseException(
@@ -905,6 +909,9 @@ public final class GameParser {
       }
       final String value = option.getValue();
       final String count = option.getCount();
+      if (LegacyPropertyMapper.ignoreOptionName(name, value)) {
+        continue;
+      }
       final String countAndValue = (count != null && !count.isEmpty() ? count + ":" : "") + value;
       if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable

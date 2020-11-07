@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.SaveGameParameter;
 import java.awt.Graphics;
@@ -16,6 +15,7 @@ import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.java.DateTimeUtil;
 
 @Log
@@ -50,7 +50,7 @@ public class TestPostAction implements BiConsumer<String, Integer> {
               final CompletableFuture<String> future =
                   poster.postTurnSummary(
                       "Test summary from TripleA, engine version: "
-                          + ClientContext.engineVersion()
+                          + Injections.getInstance().getEngineVersion()
                           + ", time: "
                           + DateTimeUtil.getLocalizedTime(),
                       "Testing Forum poster",

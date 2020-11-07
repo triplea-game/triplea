@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.battle.casualty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -17,6 +16,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
@@ -57,14 +57,11 @@ public class CasualtySelector {
   public static CasualtyDetails selectCasualties(
       final GamePlayer player,
       final Collection<Unit> targetsToPickFrom,
-      final Collection<Unit> friendlyUnits,
-      final Collection<Unit> enemyUnits,
+      final CombatValue combatValue,
       final Territory battlesite,
-      final Collection<TerritoryEffect> territoryEffects,
       final IDelegateBridge bridge,
       final String text,
       final DiceRoll dice,
-      final boolean defending,
       final UUID battleId,
       final boolean headLess,
       final int extraHits,
@@ -90,8 +87,8 @@ public class CasualtySelector {
           text,
           dice,
           player,
-          friendlyUnits,
-          enemyUnits,
+          combatValue.getFriendUnits(),
+          combatValue.getEnemyUnits(),
           false,
           List.of(),
           new CasualtyDetails(),
@@ -118,12 +115,10 @@ public class CasualtySelector {
         getDefaultCasualties(
             targetsToPickFrom,
             hitsRemaining,
-            defending,
             player,
-            enemyUnits,
+            combatValue,
             battlesite,
             costs,
-            territoryEffects,
             data,
             allowMultipleHitsPerUnit);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
@@ -147,8 +142,8 @@ public class CasualtySelector {
                 text,
                 dice,
                 player,
-                friendlyUnits,
-                enemyUnits,
+                combatValue.getFriendUnits(),
+                combatValue.getEnemyUnits(),
                 false,
                 List.of(),
                 defaultCasualties,
@@ -190,14 +185,11 @@ public class CasualtySelector {
       return selectCasualties(
           player,
           sortedTargetsToPickFrom,
-          friendlyUnits,
-          enemyUnits,
+          combatValue,
           battlesite,
-          territoryEffects,
           bridge,
           text,
           dice,
-          defending,
           battleId,
           headLess,
           extraHits,
@@ -217,14 +209,11 @@ public class CasualtySelector {
       return selectCasualties(
           player,
           sortedTargetsToPickFrom,
-          friendlyUnits,
-          enemyUnits,
+          combatValue,
           battlesite,
-          territoryEffects,
           bridge,
           text,
           dice,
-          defending,
           battleId,
           headLess,
           extraHits,
@@ -278,12 +267,10 @@ public class CasualtySelector {
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(
       final Collection<Unit> targetsToPickFrom,
       final int hits,
-      final boolean defending,
       final GamePlayer player,
-      final Collection<Unit> enemyUnits,
+      final CombatValue combatValue,
       final Territory battlesite,
       final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects,
       final GameData data,
       final boolean allowMultipleHitsPerUnit) {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
@@ -294,11 +281,11 @@ public class CasualtySelector {
             CasualtyOrderOfLosses.Parameters.builder()
                 .targetsToPickFrom(targetsToPickFrom)
                 .player(player)
-                .enemyUnits(enemyUnits)
+                .combatValue(combatValue)
                 .combatModifiers(
                     CombatModifiers.builder()
-                        .territoryEffects(territoryEffects)
-                        .defending(defending)
+                        .territoryEffects(combatValue.getTerritoryEffects())
+                        .defending(combatValue.isDefending())
                         .build())
                 .battlesite(battlesite)
                 .costs(costs)

@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.UrlConstants;
@@ -25,6 +24,7 @@ import java.util.zip.GZIPOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
@@ -55,18 +55,25 @@ public final class GameDataManager {
     }
   }
 
+  public static Optional<GameData> loadGame(final InputStream is) {
+    return loadGame(Injections.getInstance().getEngineVersion(), is);
+  }
+
   /**
    * Loads game data from the specified stream.
    *
+   * @param ourVersion The version of the currently running game engine. Used to determine if the
+   *     game read from input stream is compatible.
    * @param is The stream from which the game data will be loaded. The caller is responsible for
    *     closing this stream; it will not be closed when this method returns.
    * @return The loaded game data, or an empty optional if an error occurs.
    */
-  public static Optional<GameData> loadGame(final InputStream is) {
+  public static Optional<GameData> loadGame(final Version ourVersion, final InputStream is) {
     try (ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is))) {
       final Object version = input.readObject();
 
-      if (isCompatibleVersion(version) || !ClientSetting.saveGameCompatibilityCheck.getSetting()) {
+      if (isCompatibleVersion(ourVersion, version)
+          || !ClientSetting.saveGameCompatibilityCheck.getSetting()) {
         final GameData data = (GameData) input.readObject();
         data.postDeSerialize();
         loadDelegates(input, data);
@@ -74,14 +81,14 @@ public final class GameDataManager {
       } else {
         return Optional.empty();
       }
-    } catch (final ClassNotFoundException | IOException e) {
+    } catch (final Throwable e) {
       log.error("Error loading game data", e);
       return Optional.empty();
     }
   }
 
   @SuppressWarnings("deprecation")
-  private static boolean isCompatibleVersion(final Object version) {
+  private static boolean isCompatibleVersion(final Version ourVersion, final Object version) {
     if (version instanceof games.strategy.util.Version) {
       log.warn(
           String.format(
@@ -89,7 +96,7 @@ public final class GameDataManager {
                   + "Trying to load incompatible save game version: %s<br>"
                   + "To download an older version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              ClientContext.engineVersion(),
+              Injections.getInstance().getEngineVersion(),
               ((games.strategy.util.Version) version).getExactVersion(),
               UrlConstants.OLD_DOWNLOADS_WEBSITE,
               UrlConstants.OLD_DOWNLOADS_WEBSITE));
@@ -99,20 +106,20 @@ public final class GameDataManager {
           "Incompatible engine version with save game, "
               + "unable to determine version of the save game");
       return false;
-    } else if (ClientContext.engineVersion().getMajor() != ((Version) version).getMajor()) {
+    } else if (ourVersion.getMajor() != ((Version) version).getMajor()) {
       log.warn(
           String.format(
               "Incompatible engine versions. We are: %s<br>"
                   + "Trying to load game created with: %s<br>"
                   + "To download the latest version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              ClientContext.engineVersion(),
+              Injections.getInstance().getEngineVersion(),
               version,
               UrlConstants.DOWNLOAD_WEBSITE,
               UrlConstants.DOWNLOAD_WEBSITE));
       return false;
     } else if (!HeadlessGameServer.headless()
-        && ((Version) version).getMinor() > ClientContext.engineVersion().getMinor()) {
+        && ((Version) version).getMinor() > ourVersion.getMinor()) {
       // Prompt the user to upgrade
       log.warn(
           "This save was made by a newer version of TripleA.<br>"
@@ -161,14 +168,20 @@ public final class GameDataManager {
    * @param gameData The game data to save.
    * @throws IOException If an error occurs while saving the game.
    */
-  public static void saveGame(final OutputStream os, final GameData gameData) throws IOException {
+  public static void saveGame(
+      final OutputStream os, final GameData gameData, final Version engineVersion)
+      throws IOException {
     checkNotNull(os);
     checkNotNull(gameData);
 
-    saveGame(os, gameData, true);
+    saveGame(os, gameData, true, engineVersion);
   }
 
-  static void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo)
+  static void saveGame(
+      final OutputStream sink,
+      final GameData data,
+      final boolean saveDelegateInfo,
+      final Version engineVersion)
       throws IOException {
     final File tempFile =
         File.createTempFile(
@@ -179,7 +192,7 @@ public final class GameDataManager {
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream);
           ObjectOutputStream outStream = new ObjectOutputStream(zippedOutStream)) {
-        outStream.writeObject(ClientContext.engineVersion());
+        outStream.writeObject(engineVersion);
         data.acquireReadLock();
         try {
           outStream.writeObject(data);

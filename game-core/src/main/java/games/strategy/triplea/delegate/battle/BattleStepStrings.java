@@ -5,8 +5,9 @@ public interface BattleStepStrings {
 
   String AA_GUNS_FIRE_SUFFIX = " fire";
   String FIRE_SUFFIX = " fire";
+  String FIRST_STRIKE_UNITS_FIRE_SUFFIX = " first strike units fire";
   String SELECT_PREFIX = " select ";
-  String REMOVE_PREFIX = " remove ";
+  String NOTIFY_PREFIX = " notify ";
   String CASUALTIES_SUFFIX = " casualties";
   String CASUALTIES_WITHOUT_SPACE_SUFFIX = "casualties";
   String LAND_PARATROOPS = "Land Paratroopers";
@@ -21,8 +22,6 @@ public interface BattleStepStrings {
   String UNITS = "units";
   String FIRST_STRIKE_UNITS = "first strike units";
   String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
-  String FIRE = " fire";
-  String FIRST_STRIKE_UNITS_FIRE = " first strike units fire";
   String SELECT_FIRST_STRIKE_CASUALTIES = " select first strike casualties";
   String SELECT_CASUALTIES = " select casualties";
   String REMOVE_CASUALTIES = "Remove casualties";
