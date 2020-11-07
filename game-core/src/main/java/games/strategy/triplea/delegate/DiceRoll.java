@@ -322,8 +322,7 @@ public class DiceRoll implements Externalizable {
     for (final Unit current : units) {
       final UnitAttachment ua = UnitAttachment.get(current.getType());
       final int rolls = AirBattle.getAirBattleRolls(current, defending);
-      int totalStrength = 0;
-      final int strength =
+      int unitStrength =
           Math.min(
               data.getDiceSides(),
               Math.max(
@@ -331,17 +330,18 @@ public class DiceRoll implements Externalizable {
                   (defending
                       ? ua.getAirDefense(current.getOwner())
                       : ua.getAirAttack(current.getOwner()))));
-      for (int i = 0; i < rolls; i++) {
-        // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we
-        // will just add +1
-        // onto the power to simulate the gains of having the best die picked.
-        if (i > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-          totalStrength += extraRollBonus;
-          continue;
+      if (rolls == 1) {
+        totalPower += unitStrength;
+      } else {
+        if (lhtrBombers || ua.getChooseBestRoll()) {
+          // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead,
+          // we will just add +1 onto the power to simulate the gains of having the best die picked.
+          unitStrength += extraRollBonus * (rolls - 1);
+          totalPower += Math.min(unitStrength, data.getDiceSides());
+        } else {
+          totalPower += rolls * unitStrength;
         }
-        totalStrength += strength;
       }
-      totalPower += Math.min(Math.max(totalStrength, 0), data.getDiceSides());
     }
 
     if (Properties.getLowLuck(data)) {
