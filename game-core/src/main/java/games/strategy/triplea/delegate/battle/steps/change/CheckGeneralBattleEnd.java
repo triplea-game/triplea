@@ -81,7 +81,6 @@ public class CheckGeneralBattleEnd implements BattleStep {
                 battleState.filterUnits(ALIVE, side),
                 side == DEFENSE,
                 battleState.getGameData(),
-                battleState.getBattleSite(),
                 battleState.getTerritoryEffects()))
         .hasStrengthOrRolls();
   }

@@ -76,7 +76,6 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
               step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
               step.getSide() == OFFENSE,
               step.getBattleState().getGameData(),
-              step.getBattleState().getBattleSite(),
               step.getBattleState().getTerritoryEffects()),
           CombatValue.buildAaCombatValue(
               step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),

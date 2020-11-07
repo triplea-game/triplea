@@ -1,20 +1,26 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.triplea.sound.SoundPath;
@@ -80,8 +86,8 @@ public class NavalBombardment implements BattleStep {
             Properties.getNavalBombardCasualtiesReturnFire(battleState.getGameData())
                 ? MustFightBattle.ReturnFire.ALL
                 : MustFightBattle.ReturnFire.NONE)
-        .diceRoller(new MainDiceRoller())
-        .casualtySelector(new SelectMainBattleCasualties())
+        .diceRoller(new BombardmentDiceRoller())
+        .casualtySelector(new BombardmentCasualtySelector())
         .build()
         .createSteps();
   }
@@ -90,5 +96,51 @@ public class NavalBombardment implements BattleStep {
     return battleState.getStatus().isFirstRound()
         && !battleState.getBombardingUnits().isEmpty()
         && !battleState.getBattleSite().isWater();
+  }
+
+  public static class BombardmentDiceRoller
+      implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> {
+
+    @Override
+    public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
+      return DiceRoll.rollDice(
+          step.getFiringGroup().getFiringUnits(),
+          step.getBattleState().getPlayer(step.getSide()),
+          bridge,
+          DiceRoll.getAnnotation(
+              step.getFiringGroup().getFiringUnits(),
+              step.getBattleState().getPlayer(step.getSide()),
+              step.getBattleState().getBattleSite(),
+              step.getBattleState().getStatus().getRound()),
+          CombatValue.buildBombardmentCombatValue(
+              step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
+              step.getBattleState().filterUnits(ALIVE, step.getSide()),
+              step.getBattleState().getGameData(),
+              step.getBattleState().getTerritoryEffects()));
+    }
+  }
+
+  public static class BombardmentCasualtySelector
+      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+
+    @Override
+    public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
+      return CasualtySelector.selectCasualties(
+          step.getBattleState().getPlayer(step.getSide().getOpposite()),
+          step.getFiringGroup().getTargetUnits(),
+          CombatValue.buildBombardmentCombatValue(
+              step.getBattleState().filterUnits(ALIVE, step.getSide()),
+              step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
+              step.getBattleState().getGameData(),
+              step.getBattleState().getTerritoryEffects()),
+          step.getBattleState().getBattleSite(),
+          bridge,
+          "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
+          step.getFireRoundState().getDice(),
+          step.getBattleState().getBattleId(),
+          step.getBattleState().getStatus().isHeadless(),
+          step.getFireRoundState().getDice().getHits(),
+          true);
+    }
   }
 }

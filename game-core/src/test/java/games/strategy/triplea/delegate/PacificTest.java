@@ -7,7 +7,6 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBrid
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
@@ -113,12 +112,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantryUs,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantryUs, true, bridge.getData(), territoryEffects));
     assertEquals(1, roll.getHits());
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
@@ -129,12 +123,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                marineUs,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), marineUs, true, bridge.getData(), territoryEffects));
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
@@ -146,12 +135,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantryChina,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantryChina, true, bridge.getData(), territoryEffects));
     assertEquals(1, roll.getHits());
   }
 
@@ -180,12 +164,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantryUs,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantryUs, true, bridge.getData(), territoryEffects));
     assertEquals(0, roll.getHits());
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
@@ -196,12 +175,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                marineUs,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), marineUs, true, bridge.getData(), territoryEffects));
     assertEquals(0, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
@@ -213,12 +187,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantryChina,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantryChina, true, bridge.getData(), territoryEffects));
     assertEquals(1, roll.getHits());
     // Defending US infantry
     roll =
@@ -228,12 +197,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantryUs,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantryUs, true, bridge.getData(), territoryEffects));
     assertEquals(1, roll.getHits());
     // Defending US marines
     roll =
@@ -243,12 +207,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                marineUs,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), marineUs, true, bridge.getData(), territoryEffects));
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
@@ -259,12 +218,7 @@ class PacificTest extends AbstractDelegateTestCase {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantryChina,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantryChina, true, bridge.getData(), territoryEffects));
     assertEquals(1, roll.getHits());
   }
 
