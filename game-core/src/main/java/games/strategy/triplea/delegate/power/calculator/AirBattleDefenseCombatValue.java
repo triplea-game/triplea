@@ -6,8 +6,6 @@ import games.strategy.triplea.Properties;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,22 +20,14 @@ import org.triplea.java.collections.IntegerMap;
  */
 @Builder
 @Value
-@Getter(AccessLevel.NONE)
+@Getter(onMethod_ = @Override)
 class AirBattleDefenseCombatValue implements CombatValue {
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  GameData gameData;
+  @NonNull GameData gameData;
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  @Builder.Default
-  Collection<Unit> friendUnits = List.of();
+  @NonNull @Builder.Default Collection<Unit> friendUnits = List.of();
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  @Builder.Default
-  Collection<Unit> enemyUnits = List.of();
+  @NonNull @Builder.Default Collection<Unit> enemyUnits = List.of();
 
   @Override
   public RollCalculator getRoll() {
@@ -75,7 +65,6 @@ class AirBattleDefenseCombatValue implements CombatValue {
   }
 
   @Value
-  @AllArgsConstructor
   static class AirBattleDefenseRoll implements RollCalculator {
 
     @Override
@@ -90,7 +79,6 @@ class AirBattleDefenseCombatValue implements CombatValue {
   }
 
   @Value
-  @AllArgsConstructor
   static class AirBattleDefenseStrength implements StrengthCalculator {
 
     int diceSides;
