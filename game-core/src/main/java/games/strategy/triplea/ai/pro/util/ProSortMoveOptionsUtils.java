@@ -201,7 +201,10 @@ public final class ProSortMoveOptionsUtils {
     for (final Territory t : territories) {
       final Collection<TerritoryEffect> effects = TerritoryEffectHelper.getEffects(t);
       final UnitBattleComparator comparator =
-          new UnitBattleComparator(false, proData.getUnitValueMap(), effects, data);
+          new UnitBattleComparator(
+              proData.getUnitValueMap(),
+              data,
+              CombatValue.buildMainCombatValue(List.of(), List.of(), false, data, effects));
 
       final List<Unit> defendingUnits =
           t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));

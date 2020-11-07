@@ -11,11 +11,16 @@ public interface CombatValue {
 
   StrengthCalculator getStrength();
 
+  default PowerCalculator getPower() {
+    return new PowerCalculator(
+        getGameData(), getStrength(), getRoll(), this::chooseBestRoll, this::getDiceSides);
+  }
+
   int getDiceSides(Unit unit);
 
   boolean isDefending();
 
-  Collection<TerritoryEffect> getTerritoryEffects();
+  boolean chooseBestRoll(Unit unit);
 
   GameData getGameData();
 
@@ -23,11 +28,15 @@ public interface CombatValue {
 
   Collection<Unit> getEnemyUnits();
 
+  CombatValue buildWithNoUnitSupports();
+
+  CombatValue buildOppositeCombatValue();
+
   static CombatValue buildMainCombatValue(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
-      final GameData data,
+      final GameData gameData,
       final Collection<TerritoryEffect> territoryEffects) {
 
     // Get all friendly supports
@@ -35,7 +44,7 @@ public interface CombatValue {
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allFriendlyUnitsAliveOrWaitingToDie,
-                data.getUnitTypeList().getSupportRules(),
+                gameData.getUnitTypeList().getSupportRules(),
                 defending,
                 true));
 
@@ -44,13 +53,13 @@ public interface CombatValue {
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allEnemyUnitsAliveOrWaitingToDie,
-                data.getUnitTypeList().getSupportRules(),
+                gameData.getUnitTypeList().getSupportRules(),
                 !defending,
                 false));
 
     return defending
         ? MainDefenseCombatValue.builder()
-            .gameData(data)
+            .gameData(gameData)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
             .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
@@ -58,7 +67,7 @@ public interface CombatValue {
             .territoryEffects(territoryEffects)
             .build()
         : MainOffenseCombatValue.builder()
-            .gameData(data)
+            .gameData(gameData)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
             .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
@@ -71,14 +80,14 @@ public interface CombatValue {
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
-      final GameData data) {
+      final GameData gameData) {
 
     // Get all friendly supports
     final AvailableSupports supportFromFriends =
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allFriendlyUnitsAliveOrWaitingToDie, //
-                data.getUnitTypeList().getSupportAaRules(),
+                gameData.getUnitTypeList().getSupportAaRules(),
                 defending,
                 true));
 
@@ -87,20 +96,20 @@ public interface CombatValue {
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allEnemyUnitsAliveOrWaitingToDie, //
-                data.getUnitTypeList().getSupportAaRules(),
+                gameData.getUnitTypeList().getSupportAaRules(),
                 !defending,
                 false));
 
     return defending
         ? AaDefenseCombatValue.builder()
-            .gameData(data)
+            .gameData(gameData)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
             .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
             .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
             .build()
         : AaOffenseCombatValue.builder()
-            .gameData(data)
+            .gameData(gameData)
             .supportFromFriends(supportFromFriends)
             .supportFromEnemies(supportFromEnemies)
             .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
@@ -111,7 +120,7 @@ public interface CombatValue {
   static CombatValue buildBombardmentCombatValue(
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-      final GameData data,
+      final GameData gameData,
       final Collection<TerritoryEffect> territoryEffects) {
 
     // Get all friendly supports
@@ -119,7 +128,7 @@ public interface CombatValue {
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allFriendlyUnitsAliveOrWaitingToDie,
-                data.getUnitTypeList().getSupportRules(),
+                gameData.getUnitTypeList().getSupportRules(),
                 false,
                 true));
 
@@ -128,12 +137,12 @@ public interface CombatValue {
         AvailableSupports.getSortedSupport(
             new SupportCalculator(
                 allEnemyUnitsAliveOrWaitingToDie,
-                data.getUnitTypeList().getSupportRules(),
+                gameData.getUnitTypeList().getSupportRules(),
                 true,
                 false));
 
     return BombardmentCombatValue.builder()
-        .gameData(data)
+        .gameData(gameData)
         .supportFromFriends(supportFromFriends)
         .supportFromEnemies(supportFromEnemies)
         .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)

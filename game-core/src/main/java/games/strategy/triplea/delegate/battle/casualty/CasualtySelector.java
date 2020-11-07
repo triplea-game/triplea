@@ -13,7 +13,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
@@ -282,11 +281,6 @@ public class CasualtySelector {
                 .targetsToPickFrom(targetsToPickFrom)
                 .player(player)
                 .combatValue(combatValue)
-                .combatModifiers(
-                    CombatModifiers.builder()
-                        .territoryEffects(combatValue.getTerritoryEffects())
-                        .defending(combatValue.isDefending())
-                        .build())
                 .battlesite(battlesite)
                 .costs(costs)
                 .data(data)
