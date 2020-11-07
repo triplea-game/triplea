@@ -97,7 +97,6 @@ class MainDefenseCombatValue implements CombatValue {
         .friendUnits(enemyUnits)
         .enemyUnits(friendUnits)
         .territoryEffects(territoryEffects)
-        .territoryIsLand(false)
         .build();
   }
 

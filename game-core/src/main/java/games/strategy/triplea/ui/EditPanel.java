@@ -687,7 +687,8 @@ class EditPanel extends ActionPanel {
                 new UnitBattleComparator(
                         TuvUtils.getCostsForTuv(player, getData()),
                         getData(),
-                        CombatValue.buildNoSupportCombatValue(false, getData(), List.of()),
+                        CombatValue.buildMainCombatValue(
+                            List.of(), List.of(), false, getData(), List.of()),
                         true)
                     .reversed());
             // unit mapped to <max, min, current>
@@ -764,7 +765,8 @@ class EditPanel extends ActionPanel {
                 new UnitBattleComparator(
                         TuvUtils.getCostsForTuv(player, getData()),
                         getData(),
-                        CombatValue.buildNoSupportCombatValue(false, getData(), List.of()),
+                        CombatValue.buildMainCombatValue(
+                            List.of(), List.of(), false, getData(), List.of()),
                         true)
                     .reversed());
             // unit mapped to <max, min, current>

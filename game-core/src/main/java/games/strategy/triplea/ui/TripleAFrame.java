@@ -1422,8 +1422,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 new UnitBattleComparator(
                         TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
                         data,
-                        CombatValue.buildNoSupportCombatValue(
-                            false, data, TerritoryEffectHelper.getEffects(entry.getKey())),
+                        CombatValue.buildMainCombatValue(
+                            List.of(),
+                            List.of(),
+                            false,
+                            data,
+                            TerritoryEffectHelper.getEffects(entry.getKey())),
                         true)
                     .reversed());
             possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);

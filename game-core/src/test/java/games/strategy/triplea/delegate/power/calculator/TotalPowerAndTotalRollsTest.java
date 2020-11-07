@@ -1245,7 +1245,8 @@ class TotalPowerAndTotalRollsTest {
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
-              List.of(unit), CombatValue.buildNoSupportCombatValue(false, gameData, List.of()));
+              List.of(unit),
+              CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));
@@ -1277,7 +1278,8 @@ class TotalPowerAndTotalRollsTest {
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
-              List.of(unit), CombatValue.buildNoSupportCombatValue(false, gameData, List.of()));
+              List.of(unit),
+              CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));

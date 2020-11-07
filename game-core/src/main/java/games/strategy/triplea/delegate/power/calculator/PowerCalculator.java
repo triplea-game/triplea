@@ -8,6 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
 
+/**
+ * Calculates the power of a unit
+ *
+ * <p>The power is defined as rolls * strength unless `chooseBestRoll` or `LHTR Bombers` are
+ * enabled. If those are enabled, then it is strength + (rolls - 1) * (diceSides / 6)
+ */
 @Value
 @Getter(AccessLevel.NONE)
 @AllArgsConstructor
@@ -27,6 +33,13 @@ public class PowerCalculator {
         rollCalculator.getRoll(unit).getValue());
   }
 
+  /**
+   * Allows calculations where the strength and/or rolls is different from what the unit actually
+   * has.
+   *
+   * <p>Useful for AA power calculations since AA units can fire less rolls than they have
+   * available.
+   */
   int getValue(
       final boolean chooseBestRoll,
       final int diceSides,

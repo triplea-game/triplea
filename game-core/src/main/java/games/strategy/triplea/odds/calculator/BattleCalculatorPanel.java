@@ -1421,7 +1421,10 @@ class BattleCalculatorPanel extends JPanel {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(
           new UnitBattleComparator(
-                  costs, data, CombatValue.buildNoSupportCombatValue(false, data, territoryEffects))
+                  costs,
+                  data,
+                  CombatValue.buildMainCombatValue(
+                      List.of(), List.of(), false, data, territoryEffects))
               .reversed());
       if (isAmphibiousBattle()) {
         attackers.stream()

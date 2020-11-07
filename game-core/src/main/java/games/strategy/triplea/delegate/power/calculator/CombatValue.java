@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
-import java.util.List;
 
 public interface CombatValue {
 
@@ -115,31 +114,6 @@ public interface CombatValue {
             .supportFromEnemies(supportFromEnemies)
             .friendUnits(allFriendlyUnitsAliveOrWaitingToDie)
             .enemyUnits(allEnemyUnitsAliveOrWaitingToDie)
-            .build();
-  }
-
-  static CombatValue buildNoSupportCombatValue(
-      final boolean defending,
-      final GameData gameData,
-      final Collection<TerritoryEffect> territoryEffects) {
-
-    return defending
-        ? MainDefenseCombatValue.builder()
-            .gameData(gameData)
-            .supportFromFriends(AvailableSupports.EMPTY_RESULT)
-            .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
-            .friendUnits(List.of())
-            .enemyUnits(List.of())
-            .territoryEffects(territoryEffects)
-            .build()
-        : MainOffenseCombatValue.builder()
-            .gameData(gameData)
-            .supportFromFriends(AvailableSupports.EMPTY_RESULT)
-            .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
-            .friendUnits(List.of())
-            .enemyUnits(List.of())
-            .territoryEffects(territoryEffects)
-            .territoryIsLand(false)
             .build();
   }
 
