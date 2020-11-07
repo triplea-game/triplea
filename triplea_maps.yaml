@@ -2188,7 +2188,7 @@
   img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/main/aggression_1941%20-%20Kopya.png
   description: |
    <br>A WWII scenario loosely based on 1941, inspired from AA50 Anniversary and Big World
-  - mapName: WW Terminus v2
+- mapName: WW Terminus v2
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww_terminus_v2/archive/master.zip
   version: 1
