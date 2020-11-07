@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.UnitPowerStrengthAndRolls;
@@ -44,7 +43,6 @@ class CasualtyOrderOfLosses {
     @Nonnull CombatValue combatValue;
     @Nonnull Territory battlesite;
     @Nonnull IntegerMap<UnitType> costs;
-    @Nonnull CombatModifiers combatModifiers;
     @Nonnull GameData data;
   }
 
@@ -87,20 +85,18 @@ class CasualtyOrderOfLosses {
     final List<Unit> sortedUnitsList = new ArrayList<>(parameters.targetsToPickFrom);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-                parameters.combatModifiers.isDefending(),
                 parameters.costs,
-                parameters.combatModifiers.getTerritoryEffects(),
                 parameters.data,
+                parameters.combatValue.buildWithNoUnitSupports(),
                 true,
                 false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(
-            parameters.combatModifiers.isDefending(),
             parameters.costs,
-            parameters.combatModifiers.getTerritoryEffects(),
             parameters.data,
+            parameters.combatValue.buildWithNoUnitSupports(),
             true,
             true);
     final PowerStrengthAndRolls unitPowerAndRolls =
@@ -130,7 +126,7 @@ class CasualtyOrderOfLosses {
         }
         unitTypes.add(u.getType());
         // Find unit power
-        int power = originalUnitPowerAndRollsMap.get(u).calculatePower();
+        int power = originalUnitPowerAndRollsMap.get(u).getPower();
         // Add any support power that it provides to other units
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {
@@ -151,13 +147,13 @@ class CasualtyOrderOfLosses {
               continue;
             }
             // Find supported unit power with support
-            final int powerWithSupport = strengthAndRolls.calculatePower();
+            final int powerWithSupport = strengthAndRolls.getPower();
             // Find supported unit power without support
 
             final int powerWithoutSupport =
                 strengthAndRolls
                     .subtractStrength(unitSupportPowerMapForUnit.getInt(supportedUnit))
-                    .calculatePower();
+                    .getPower();
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -173,12 +169,12 @@ class CasualtyOrderOfLosses {
               continue;
             }
             // Find supported unit power with support
-            final int powerWithSupport = strengthAndRolls.calculatePower();
+            final int powerWithSupport = strengthAndRolls.getPower();
             // Find supported unit power without support
             final int powerWithoutSupport =
                 strengthAndRolls
                     .subtractRolls(unitSupportRollsMap.get(u).getInt(supportedUnit))
-                    .calculatePower();
+                    .getPower();
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -269,7 +265,7 @@ class CasualtyOrderOfLosses {
         + "|"
         + parameters.battlesite.getName()
         + "|"
-        + parameters.combatModifiers.isDefending()
+        + parameters.combatValue.isDefending()
         + "|"
         + Objects.hashCode(targetTypes);
   }

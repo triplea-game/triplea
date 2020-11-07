@@ -862,6 +862,10 @@ class TotalPowerAndTotalRollsTest {
       final StrengthCalculator strengthCalculator = mock(StrengthCalculator.class);
       when(strengthCalculator.getStrength(unit)).thenReturn(StrengthValue.of(6, 3));
       when(combatValue.getStrength()).thenReturn(strengthCalculator);
+      final PowerCalculator powerCalculator =
+          new PowerCalculator(
+              gameData, strengthCalculator, rollCalculator, (unit1) -> true, (unit1) -> 6);
+      when(combatValue.getPower()).thenReturn(powerCalculator);
       when(combatValue.getDiceSides(unit)).thenReturn(6);
       when(combatValue.getGameData()).thenReturn(gameData);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
@@ -1228,7 +1232,7 @@ class TotalPowerAndTotalRollsTest {
     @ParameterizedTest
     @MethodSource("bestRollSimulated")
     void lhtrIsSimulatedWithALittleExtraPower(
-        final int power,
+        final int strength,
         final int rolls,
         final int diceSides,
         final int expectedPower,
@@ -1237,11 +1241,12 @@ class TotalPowerAndTotalRollsTest {
           givenGameData().withDiceSides(diceSides).withLhtrHeavyBombers(true).build();
 
       final Unit unit = givenUnit("test", gameData);
-      unit.getUnitAttachment().setOffensiveAttackAa(power).setMaxAaAttacks(rolls);
+      unit.getUnitAttachment().setAttack(strength).setAttackRolls(rolls);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
-              List.of(unit), CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              List.of(unit),
+              CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));
@@ -1261,7 +1266,7 @@ class TotalPowerAndTotalRollsTest {
     @ParameterizedTest
     @MethodSource("bestRollSimulated")
     void chooseBestRollIsSimulatedWithALittleExtraPower(
-        final int power,
+        final int strength,
         final int rolls,
         final int diceSides,
         final int expectedPower,
@@ -1269,14 +1274,12 @@ class TotalPowerAndTotalRollsTest {
       final GameData gameData = givenGameData().withDiceSides(diceSides).build();
 
       final Unit unit = givenUnit("test", gameData);
-      unit.getUnitAttachment()
-          .setOffensiveAttackAa(power)
-          .setMaxAaAttacks(rolls)
-          .setChooseBestRoll(true);
+      unit.getUnitAttachment().setAttack(strength).setAttackRolls(rolls).setChooseBestRoll(true);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
-              List.of(unit), CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              List.of(unit),
+              CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));

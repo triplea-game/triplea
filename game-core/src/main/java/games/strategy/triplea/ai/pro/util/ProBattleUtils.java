@@ -61,10 +61,10 @@ public final class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<>(attackingUnits);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-                false, //
                 proData.getUnitValueMap(),
-                TerritoryEffectHelper.getEffects(t),
-                data)
+                data,
+                CombatValue.buildMainCombatValue(
+                    List.of(), List.of(), false, data, TerritoryEffectHelper.getEffects(t)))
             .reversed());
     final int attackPower =
         PowerStrengthAndRolls.build(
@@ -150,7 +150,10 @@ public final class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-                !attacking, proData.getUnitValueMap(), TerritoryEffectHelper.getEffects(t), data)
+                proData.getUnitValueMap(),
+                data,
+                CombatValue.buildMainCombatValue(
+                    List.of(), List.of(), !attacking, data, TerritoryEffectHelper.getEffects(t)))
             .reversed());
     final int myPower =
         PowerStrengthAndRolls.build(
