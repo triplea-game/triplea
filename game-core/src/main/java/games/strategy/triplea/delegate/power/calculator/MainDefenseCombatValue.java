@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -37,9 +38,7 @@ class MainDefenseCombatValue implements CombatValue {
   @NonNull AvailableSupports supportFromFriends;
   @NonNull AvailableSupports supportFromEnemies;
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  Collection<TerritoryEffect> territoryEffects;
+  @NonNull Collection<TerritoryEffect> territoryEffects;
 
   @Getter(onMethod = @__({@Override}))
   @NonNull
@@ -70,6 +69,35 @@ class MainDefenseCombatValue implements CombatValue {
   @Override
   public boolean isDefending() {
     return true;
+  }
+
+  @Override
+  public boolean chooseBestRoll(final Unit unit) {
+    return Properties.getLhtrHeavyBombers(gameData) || unit.getUnitAttachment().getChooseBestRoll();
+  }
+
+  @Override
+  public CombatValue buildWithNoUnitSupports() {
+    return MainDefenseCombatValue.builder()
+        .gameData(gameData)
+        .supportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .friendUnits(List.of())
+        .enemyUnits(List.of())
+        .territoryEffects(territoryEffects)
+        .build();
+  }
+
+  @Override
+  public CombatValue buildOppositeCombatValue() {
+    return MainOffenseCombatValue.builder()
+        .gameData(gameData)
+        .supportFromFriends(supportFromEnemies)
+        .supportFromEnemies(supportFromFriends)
+        .friendUnits(enemyUnits)
+        .enemyUnits(friendUnits)
+        .territoryEffects(territoryEffects)
+        .build();
   }
 
   @Value

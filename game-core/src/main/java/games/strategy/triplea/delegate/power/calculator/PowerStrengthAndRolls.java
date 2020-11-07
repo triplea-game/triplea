@@ -2,7 +2,6 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Properties;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -59,10 +58,9 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   }
 
   private void addUnits(final Collection<Unit> units) {
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(gameData);
-
     final StrengthCalculator strengthCalculator = calculator.getStrength();
     final RollCalculator rollCalculator = calculator.getRoll();
+    final PowerCalculator powerCalculator = calculator.getPower();
     for (final Unit unit : units) {
       int strength = strengthCalculator.getStrength(unit).getValue();
       int rolls = rollCalculator.getRoll(unit).getValue();
@@ -75,8 +73,10 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
           UnitPowerStrengthAndRolls.builder()
               .strength(strength)
               .rolls(rolls)
+              .power(powerCalculator.getValue(unit))
+              .powerCalculator(powerCalculator)
               .diceSides(calculator.getDiceSides(unit))
-              .chooseBestRoll(lhtrBombers || unit.getUnitAttachment().getChooseBestRoll())
+              .chooseBestRoll(calculator.chooseBestRoll(unit))
               .build());
     }
 
@@ -99,7 +99,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   @Override
   public int calculateTotalPower() {
     return totalStrengthAndTotalRollsByUnit.values().stream()
-        .mapToInt(UnitPowerStrengthAndRolls::calculatePower)
+        .mapToInt(UnitPowerStrengthAndRolls::getPower)
         .sum();
   }
 
@@ -123,5 +123,10 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   @Override
   public int getRolls(final Unit unit) {
     return totalStrengthAndTotalRollsByUnit.get(unit).getRolls();
+  }
+
+  @Override
+  public int getPower(final Unit unit) {
+    return totalStrengthAndTotalRollsByUnit.get(unit).getPower();
   }
 }
