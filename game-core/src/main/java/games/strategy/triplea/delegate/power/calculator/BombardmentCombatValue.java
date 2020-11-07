@@ -27,7 +27,7 @@ import org.triplea.java.collections.IntegerMap;
 @Builder
 @Value
 @Getter(AccessLevel.NONE)
-class MainOffenseCombatValue implements CombatValue {
+public class BombardmentCombatValue implements CombatValue {
 
   @Getter(onMethod = @__({@Override}))
   @NonNull
@@ -52,12 +52,12 @@ class MainOffenseCombatValue implements CombatValue {
 
   @Override
   public RollCalculator getRoll() {
-    return new MainOffenseRoll(supportFromFriends, supportFromEnemies);
+    return new MainOffenseCombatValue.MainOffenseRoll(supportFromFriends, supportFromEnemies);
   }
 
   @Override
   public StrengthCalculator getStrength() {
-    return new MainOffenseStrength(
+    return new BombardmentStrength(
         gameData, supportFromFriends, supportFromEnemies, territoryEffects);
   }
 
@@ -72,51 +72,14 @@ class MainOffenseCombatValue implements CombatValue {
   }
 
   @Value
-  static class MainOffenseRoll implements RollCalculator {
-
-    AvailableSupports supportFromFriends;
-    AvailableSupports supportFromEnemies;
-
-    MainOffenseRoll(
-        final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
-      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getRoll);
-      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getRoll);
-    }
-
-    @Override
-    public RollValue getRoll(final Unit unit) {
-      return RollValue.of(unit.getUnitAttachment().getAttackRolls(unit.getOwner()))
-          .add(supportFromFriends.giveSupportToUnit(unit))
-          .add(supportFromEnemies.giveSupportToUnit(unit));
-    }
-
-    @Override
-    public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return Stream.of(
-              supportFromFriends.getUnitsGivingSupport(),
-              supportFromEnemies.getUnitsGivingSupport())
-          .flatMap(map -> map.entrySet().stream())
-          .collect(
-              Collectors.toMap(
-                  Map.Entry::getKey,
-                  Map.Entry::getValue,
-                  (value1, value2) -> {
-                    final IntegerMap<Unit> merged = new IntegerMap<>(value1);
-                    merged.add(value2);
-                    return merged;
-                  }));
-    }
-  }
-
-  @Value
-  static class MainOffenseStrength implements StrengthCalculator {
+  static class BombardmentStrength implements StrengthCalculator {
 
     GameData gameData;
     Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
 
-    MainOffenseStrength(
+    BombardmentStrength(
         final GameData gameData,
         final AvailableSupports supportFromFriends,
         final AvailableSupports supportFromEnemies,
@@ -130,10 +93,7 @@ class MainOffenseCombatValue implements CombatValue {
     @Override
     public StrengthValue getStrength(final Unit unit) {
       final UnitAttachment ua = unit.getUnitAttachment();
-      int strength = ua.getAttack(unit.getOwner());
-      if (ua.getIsMarine() != 0 && unit.getWasAmphibious()) {
-        strength += ua.getIsMarine();
-      }
+      final int strength = ua.getBombard();
 
       return StrengthValue.of(gameData.getDiceSides(), strength)
           .add(

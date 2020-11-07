@@ -891,7 +891,6 @@ public class BattleDisplay extends JPanel {
                       units,
                       !attack,
                       gameData,
-                      location,
                       territoryEffects));
         } finally {
           gameData.releaseReadLock();

@@ -135,8 +135,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
         .combatModifiers(
             CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(BRITISH)
-        .combatValue(
-            CombatValue.buildMainCombatValue(List.of(), units, false, data, FRANCE, List.of()))
+        .combatValue(CombatValue.buildMainCombatValue(List.of(), units, false, data, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -220,8 +219,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
             CombatModifiers.builder().defending(false).territoryEffects(List.of()).build())
         .player(BRITISH)
         .combatValue(
-            CombatValue.buildMainCombatValue(
-                List.of(), amphibUnits, false, data, FRANCE, List.of()))
+            CombatValue.buildMainCombatValue(List.of(), amphibUnits, false, data, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -301,8 +299,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
         .combatModifiers(
             CombatModifiers.builder().defending(true).territoryEffects(List.of()).build())
         .player(BRITISH)
-        .combatValue(
-            CombatValue.buildMainCombatValue(List.of(), units, true, data, FRANCE, List.of()))
+        .combatValue(CombatValue.buildMainCombatValue(List.of(), units, true, data, List.of()))
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)

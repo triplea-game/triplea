@@ -9,7 +9,6 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
@@ -58,12 +57,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, true, bridge.getData(), territoryEffects));
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
@@ -73,12 +67,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, true, bridge.getData(), territoryEffects));
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
@@ -88,12 +77,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                false,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, false, bridge.getData(), territoryEffects));
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
@@ -103,12 +87,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                false,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, false, bridge.getData(), territoryEffects));
     assertThat(roll4.getHits(), is(0));
   }
 
@@ -135,12 +114,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, true, bridge.getData(), territoryEffects));
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
@@ -150,12 +124,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                true,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, true, bridge.getData(), territoryEffects));
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
@@ -165,12 +134,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                false,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, false, bridge.getData(), territoryEffects));
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
@@ -180,12 +144,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(),
-                infantry,
-                false,
-                bridge.getData(),
-                mock(Territory.class),
-                territoryEffects));
+                List.of(), infantry, false, bridge.getData(), territoryEffects));
     assertThat(roll4.getHits(), is(0));
   }
 
@@ -212,7 +171,6 @@ class DiceRollTest {
                 units,
                 false,
                 bridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(2));
   }
@@ -247,7 +205,6 @@ class DiceRollTest {
                 units,
                 false,
                 bridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(3));
   }
@@ -272,7 +229,6 @@ class DiceRollTest {
                 units,
                 true,
                 bridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
@@ -310,7 +266,6 @@ class DiceRollTest {
                 attackers,
                 false,
                 bridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(1));
   }
@@ -347,7 +302,6 @@ class DiceRollTest {
                 attackers,
                 false,
                 bridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
@@ -385,7 +339,6 @@ class DiceRollTest {
                 attackers,
                 false,
                 bridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(0));
   }
@@ -718,7 +671,6 @@ class DiceRollTest {
                 bombers,
                 false,
                 testDelegateBridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
     assertThat(dice.getRolls(4).get(1).getType(), is(Die.DieType.HIT));
@@ -752,7 +704,6 @@ class DiceRollTest {
                 bombers,
                 true,
                 testDelegateBridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(1).size(), is(1));
     assertThat(dice.getRolls(1).get(0).getType(), is(Die.DieType.HIT));
@@ -782,7 +733,6 @@ class DiceRollTest {
                 bombers,
                 true,
                 testDelegateBridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(germany)));
 
     assertThat(dice.getRolls(1).size(), is(1));
@@ -817,7 +767,6 @@ class DiceRollTest {
                 bombers,
                 false,
                 testDelegateBridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(germany)));
 
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
@@ -853,7 +802,6 @@ class DiceRollTest {
                 bombers,
                 false,
                 testDelegateBridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
     assertThat(dice.getRolls(4).get(1).getType(), is(Die.DieType.IGNORED));
@@ -888,7 +836,6 @@ class DiceRollTest {
                 bombers,
                 true,
                 testDelegateBridge.getData(),
-                mock(Territory.class),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(1).size(), is(2));
     assertThat(dice.getHits(), is(1));

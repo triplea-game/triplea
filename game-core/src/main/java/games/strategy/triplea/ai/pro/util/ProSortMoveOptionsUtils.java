@@ -218,7 +218,7 @@ public final class ProSortMoveOptionsUtils {
                 * PowerStrengthAndRolls.build(
                         sortedUnits,
                         CombatValue.buildMainCombatValue(
-                            defendingUnits, sortedUnits, false, data, t, effects))
+                            defendingUnits, sortedUnits, false, data, effects))
                     .calculateTotalPower();
       }
       if (powerDifference < minPower) {

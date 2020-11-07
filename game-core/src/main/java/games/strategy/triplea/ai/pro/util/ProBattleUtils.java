@@ -74,7 +74,6 @@ public final class ProBattleUtils {
                     sortedUnitsList,
                     false,
                     data,
-                    t,
                     TerritoryEffectHelper.getEffects(t)))
             .calculateTotalPower();
     final List<Unit> defendersWithHitPoints =
@@ -161,7 +160,6 @@ public final class ProBattleUtils {
                     sortedUnitsList,
                     !attacking,
                     data,
-                    t,
                     TerritoryEffectHelper.getEffects(t)))
             .calculateTotalPower();
     return (myPower * 6.0 / data.getDiceSides());

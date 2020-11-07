@@ -27,7 +27,6 @@ public class MainDiceRoller implements BiFunction<IDelegateBridge, RollDiceStep,
             step.getBattleState().filterUnits(ALIVE, step.getSide()),
             step.getSide() == DEFENSE,
             step.getBattleState().getGameData(),
-            step.getBattleState().getBattleSite(),
             step.getBattleState().getTerritoryEffects()));
   }
 }

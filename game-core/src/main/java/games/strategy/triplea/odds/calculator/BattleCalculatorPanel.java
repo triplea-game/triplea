@@ -1420,7 +1420,6 @@ class BattleCalculatorPanel extends JPanel {
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data).reversed());
-      final Territory location = findPotentialBattleSite();
       if (isAmphibiousBattle()) {
         attackers.stream()
             .filter(Matches.unitIsLand())
@@ -1441,14 +1440,14 @@ class BattleCalculatorPanel extends JPanel {
           PowerStrengthAndRolls.build(
                   attackers,
                   CombatValue.buildMainCombatValue(
-                      defenders, attackers, false, data, location, territoryEffects))
+                      defenders, attackers, false, data, territoryEffects))
               .calculateTotalPower();
       // defender is never amphibious
       final int defensePower =
           PowerStrengthAndRolls.build(
                   defenders,
                   CombatValue.buildMainCombatValue(
-                      attackers, defenders, true, data, location, territoryEffects))
+                      attackers, defenders, true, data, territoryEffects))
               .calculateTotalPower();
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);
