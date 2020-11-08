@@ -37,6 +37,7 @@ dependencies {
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "at.favre.lib:bcrypt:$bcryptVersion"
+    implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     implementation project(':domain-data')
     implementation project(':dropwizard-common')
     implementation project(':http-clients')
