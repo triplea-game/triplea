@@ -53,7 +53,7 @@ public class DefensiveSubsRetreat implements BattleStep {
   }
 
   private String getName() {
-    if (Properties.getSubmersibleSubs(battleState.getGameData())) {
+    if (Properties.getSubmersibleSubs(battleState.getGameData().getProperties())) {
       return battleState.getPlayer(DEFENSE).getName() + SUBS_SUBMERGE;
     } else {
       return battleState.getPlayer(DEFENSE).getName() + SUBS_WITHDRAW;
@@ -62,7 +62,7 @@ public class DefensiveSubsRetreat implements BattleStep {
 
   @Override
   public Order getOrder() {
-    if (Properties.getSubRetreatBeforeBattle(battleState.getGameData())) {
+    if (Properties.getSubRetreatBeforeBattle(battleState.getGameData().getProperties())) {
       return SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE;
     } else {
       return SUB_DEFENSIVE_RETREAT_AFTER_BATTLE;
@@ -85,11 +85,12 @@ public class DefensiveSubsRetreat implements BattleStep {
     }
 
     final Collection<Territory> retreatTerritories;
-    if (Properties.getSubmersibleSubs(battleState.getGameData())) {
+    if (Properties.getSubmersibleSubs(battleState.getGameData().getProperties())) {
       retreatTerritories = List.of(battleState.getBattleSite());
     } else {
       retreatTerritories = new ArrayList<>(getEmptyOrFriendlySeaNeighbors());
-      if (Properties.getSubmarinesDefendingMaySubmergeOrRetreat(battleState.getGameData())) {
+      if (Properties.getSubmarinesDefendingMaySubmergeOrRetreat(
+          battleState.getGameData().getProperties())) {
         retreatTerritories.add(battleState.getBattleSite());
       }
     }
@@ -116,8 +117,9 @@ public class DefensiveSubsRetreat implements BattleStep {
   }
 
   private boolean isRetreatNotPossible() {
-    return !(Properties.getSubmersibleSubs(battleState.getGameData())
-            || Properties.getSubmarinesDefendingMaySubmergeOrRetreat(battleState.getGameData()))
+    return !(Properties.getSubmersibleSubs(battleState.getGameData().getProperties())
+            || Properties.getSubmarinesDefendingMaySubmergeOrRetreat(
+                battleState.getGameData().getProperties()))
         && getEmptyOrFriendlySeaNeighbors().isEmpty();
   }
 

@@ -48,7 +48,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final StringBuilder endTurnReport = new StringBuilder();
 
     // do national objectives
-    if (Properties.getNationalObjectives(getData())) {
+    if (Properties.getNationalObjectives(getData().getProperties())) {
       final String nationalObjectivesText = determineNationalObjectives(bridge);
       if (!nationalObjectivesText.isBlank()) {
         endTurnReport.append(nationalObjectivesText).append("<br />");
@@ -236,7 +236,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     }
     final Resource pus = new Resource(Constants.PUS, data);
     if (resourceTotalsMap.containsKey(pus)) {
-      resourceTotalsMap.put(pus, resourceTotalsMap.getInt(pus) * Properties.getPuMultiplier(data));
+      resourceTotalsMap.put(
+          pus, resourceTotalsMap.getInt(pus) * Properties.getPuMultiplier(data.getProperties()));
     }
     return resourceTotalsMap;
   }
@@ -254,7 +255,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
 
     // Find triggers value
     final IntegerMap<Resource> resources;
-    final boolean useTriggers = Properties.getTriggers(data);
+    final boolean useTriggers = Properties.getTriggers(data.getProperties());
     if (useTriggers && !triggers.isEmpty()) {
       final Set<TriggerAttachment> toFireTestedAndSatisfied =
           new HashSet<>(
@@ -272,7 +273,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       if (uses == 0 || !rule.isSatisfied(testedConditions)) {
         continue;
       }
-      pus += (rule.getObjectiveValue() * rule.getEachMultiple() * Properties.getPuMultiplier(data));
+      pus +=
+          (rule.getObjectiveValue()
+              * rule.getEachMultiple()
+              * Properties.getPuMultiplier(data.getProperties()));
     }
     resources.add(data.getResourceList().getResource(Constants.PUS), pus);
 
@@ -292,7 +296,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
 
     // Execute triggers
     final StringBuilder endTurnReport = new StringBuilder();
-    final boolean useTriggers = Properties.getTriggers(data);
+    final boolean useTriggers = Properties.getTriggers(data.getProperties());
     if (useTriggers && !triggers.isEmpty()) {
       final Set<TriggerAttachment> toFireTestedAndSatisfied =
           new HashSet<>(
@@ -314,7 +318,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         continue;
       }
       int toAdd = rule.getObjectiveValue();
-      toAdd *= Properties.getPuMultiplier(data);
+      toAdd *= Properties.getPuMultiplier(data.getProperties());
       toAdd *= rule.getEachMultiple();
       int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
       if (total < 0) {
@@ -357,7 +361,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // First figure out all the conditions that will be tested, so we can test them all at the same
     // time.
     final Set<ICondition> allConditionsNeeded = new HashSet<>();
-    final boolean useTriggers = Properties.getTriggers(data);
+    final boolean useTriggers = Properties.getTriggers(data.getProperties());
     if (useTriggers) {
 
       // Add conditions required for triggers

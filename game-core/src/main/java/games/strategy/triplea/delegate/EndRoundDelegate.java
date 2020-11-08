@@ -46,7 +46,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     String victoryMessage;
     final GameData data = getData();
-    if (Properties.getPacificTheater(getData())) {
+    if (Properties.getPacificTheater(getData().getProperties())) {
       final GamePlayer japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
       final PlayerAttachment pa = PlayerAttachment.get(japanese);
       if (pa != null && pa.getVps() >= 22) {
@@ -60,19 +60,20 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       }
     }
     // Check for Winning conditions
-    if (Properties.getTotalVictory(getData())) { // Check for Win by Victory Cities
+    if (Properties.getTotalVictory(getData().getProperties())) { // Check for Win by Victory Cities
       victoryMessage = " achieve TOTAL VICTORY with ";
       checkVictoryCities(bridge, victoryMessage, " Total Victory VCs");
     }
-    if (Properties.getHonorableSurrender(getData())) {
+    if (Properties.getHonorableSurrender(getData().getProperties())) {
       victoryMessage = " achieve an HONORABLE VICTORY with ";
       checkVictoryCities(bridge, victoryMessage, " Honorable Victory VCs");
     }
-    if (Properties.getProjectionOfPower(getData())) {
+    if (Properties.getProjectionOfPower(getData().getProperties())) {
       victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
       checkVictoryCities(bridge, victoryMessage, " Projection of Power VCs");
     }
-    if (Properties.getEconomicVictory(getData())) { // Check for regular economic victory
+    if (Properties.getEconomicVictory(
+        getData().getProperties())) { // Check for regular economic victory
       for (final String allianceName : data.getAllianceTracker().getAlliances()) {
         final int victoryAmount = getEconomicVictoryAmount(data, allianceName);
         final Set<GamePlayer> teamMembers =
@@ -92,7 +93,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       }
     }
     // now check for generic trigger based victories
-    if (Properties.getTriggeredVictory(getData())) {
+    if (Properties.getTriggeredVictory(getData().getProperties())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out
       // as a composite match
       // OR.
@@ -125,7 +126,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // signalGameOver itself
       }
     }
-    if (Properties.getWW2V2(getData()) || Properties.getWW2V3(getData())) {
+    if (Properties.getWW2V2(getData().getProperties())
+        || Properties.getWW2V3(getData().getProperties())) {
       return;
     }
     final PlayerList playerList = data.getPlayerList();
@@ -192,7 +194,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public void end() {
     super.end();
     final GameData data = getData();
-    if (Properties.getTriggers(data)) {
+    if (Properties.getTriggers(data.getProperties())) {
       final CompositeChange change = new CompositeChange();
       for (final GamePlayer player : data.getPlayerList().getPlayers()) {
         change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player));

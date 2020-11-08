@@ -123,7 +123,7 @@ class ProductionRepairPanel extends JPanel {
       final Collection<GamePlayer> allowedPlayersToRepair,
       final GameData data,
       final Map<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       return;
     }
     this.data.acquireReadLock();

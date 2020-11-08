@@ -60,19 +60,19 @@ public class DefensiveFirstStrike implements BattleStep {
 
   private State calculateState() {
     if (battleState.filterUnits(ALIVE, side).stream()
-        .noneMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
+        .noneMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData().getProperties()))) {
       return State.NOT_APPLICABLE;
     }
 
     // ww2v2 rules require subs to always fire in a sub phase
-    if (Properties.getWW2V2(battleState.getGameData())) {
+    if (Properties.getWW2V2(battleState.getGameData().getProperties())) {
       return State.FIRST_STRIKE;
     }
 
     final boolean canSneakAttack =
         battleState.filterUnits(ALIVE, side.getOpposite()).stream()
                 .noneMatch(Matches.unitIsDestroyer())
-            && Properties.getDefendingSubsSneakAttack(battleState.getGameData());
+            && Properties.getDefendingSubsSneakAttack(battleState.getGameData().getProperties());
     if (canSneakAttack) {
       return State.FIRST_STRIKE;
     }

@@ -86,7 +86,7 @@ class ProPurchaseAi {
             data.getMap().getTerritories(),
             ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
     if (player.getRepairFrontier() != null
-        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       ProLogger.debug("Factories can be damaged");
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
       for (final Territory fixTerr : rfactories) {
@@ -884,7 +884,10 @@ class ProPurchaseAi {
           final Set<Territory> nearbyLandTerritories =
               data.getMap()
                   .getNeighbors(
-                      t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
+                      t,
+                      9,
+                      ProMatches.territoryCanPotentiallyMoveLandUnits(
+                          player, data.getProperties()));
           final int numNearbyEnemyTerritories =
               CollectionUtils.countMatches(
                   nearbyLandTerritories,
@@ -1025,7 +1028,7 @@ class ProPurchaseAi {
               .getNeighbors(
                   placeTerritory.getTerritory(),
                   9,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
+                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
       final List<Territory> enemyLandTerritories =
           CollectionUtils.getMatches(
               landTerritories, Matches.isTerritoryOwnedBy(ProUtils.getEnemyPlayers(player)));
@@ -1540,7 +1543,7 @@ class ProPurchaseAi {
                 initialDefendingUnits,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
         boolean hasOnlyRetreatingSubs =
-            Properties.getSubRetreatBeforeBattle(data)
+            Properties.getSubRetreatBeforeBattle(data.getProperties())
                 && !initialDefendingUnits.isEmpty()
                 && initialDefendingUnits.stream().allMatch(Matches.unitCanEvade())
                 && enemyAttackOptions.getMax(t).getMaxUnits().stream()
@@ -1648,7 +1651,7 @@ class ProPurchaseAi {
                     defendingUnits,
                     enemyAttackOptions.getMax(t).getMaxBombardUnits());
             hasOnlyRetreatingSubs =
-                Properties.getSubRetreatBeforeBattle(data)
+                Properties.getSubRetreatBeforeBattle(data.getProperties())
                     && !defendingUnits.isEmpty()
                     && defendingUnits.stream().allMatch(Matches.unitCanEvade())
                     && enemyAttackOptions.getMax(t).getMaxUnits().stream()

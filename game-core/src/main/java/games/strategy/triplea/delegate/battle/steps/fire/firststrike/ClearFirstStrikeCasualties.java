@@ -57,13 +57,13 @@ public class ClearFirstStrikeCasualties implements BattleStep {
 
   private State calculateDefenseState() {
     if (battleState.filterUnits(ALIVE, DEFENSE).stream()
-        .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData()))) {
+        .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData().getProperties()))) {
       final GameData gameData = battleState.getGameData();
       // WWW2V2 always gives defending subs sneak attack
       final boolean canSneakAttack =
           battleState.filterUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitIsDestroyer())
-              && (Properties.getWW2V2(gameData)
-                  || Properties.getDefendingSubsSneakAttack(gameData));
+              && (Properties.getWW2V2(gameData.getProperties())
+                  || Properties.getDefendingSubsSneakAttack(gameData.getProperties()));
       if (canSneakAttack) {
         return State.SNEAK_ATTACK;
       }
@@ -100,7 +100,7 @@ public class ClearFirstStrikeCasualties implements BattleStep {
   }
 
   private EnumSet<BattleState.Side> getSidesToClear() {
-    if (Properties.getWW2V2(battleState.getGameData())) {
+    if (Properties.getWW2V2(battleState.getGameData().getProperties())) {
       // WWW2V2 subs always fire in a surprise attack phase even if their casualties will
       // be able to fire back.
       // So only clear the casualties if that side doesn't have sneak attack

@@ -49,7 +49,7 @@ public class OffensiveSubsRetreat implements BattleStep {
   }
 
   private String getName() {
-    if (Properties.getSubmersibleSubs(battleState.getGameData())) {
+    if (Properties.getSubmersibleSubs(battleState.getGameData().getProperties())) {
       return battleState.getPlayer(OFFENSE).getName() + SUBS_SUBMERGE;
     } else {
       return battleState.getPlayer(OFFENSE).getName() + SUBS_WITHDRAW;
@@ -58,7 +58,7 @@ public class OffensiveSubsRetreat implements BattleStep {
 
   @Override
   public Order getOrder() {
-    if (Properties.getSubRetreatBeforeBattle(battleState.getGameData())) {
+    if (Properties.getSubRetreatBeforeBattle(battleState.getGameData().getProperties())) {
       return SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE;
     } else {
       return SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
@@ -89,7 +89,7 @@ public class OffensiveSubsRetreat implements BattleStep {
             .bridge(bridge)
             .units(unitsToRetreat)
             .build(),
-        Properties.getSubmersibleSubs(battleState.getGameData())
+        Properties.getSubmersibleSubs(battleState.getGameData().getProperties())
             ? List.of(battleState.getBattleSite())
             : battleState.getAttackerRetreatTerritories(),
         getName());
@@ -104,7 +104,7 @@ public class OffensiveSubsRetreat implements BattleStep {
   }
 
   private boolean isRetreatNotPossible() {
-    return !Properties.getSubmersibleSubs(battleState.getGameData())
+    return !Properties.getSubmersibleSubs(battleState.getGameData().getProperties())
         && !RetreatChecks.canAttackerRetreat(
             battleState.filterUnits(ALIVE, DEFENSE),
             battleState.getGameData(),

@@ -280,7 +280,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           for (final Unit u : listedBombardUnits) {
             final IBattle battle = selectBombardingBattle(u, t, battles);
             if (battle != null) {
-              if (Properties.getShoreBombardPerGroundUnitRestricted(getData())
+              if (Properties.getShoreBombardPerGroundUnitRestricted(getData().getProperties())
                   && battle.getAttackingUnits().stream().filter(Matches.unitWasAmphibious()).count()
                       <= battle.getBombardingUnits().size()) {
                 battles.remove(battle);
@@ -348,7 +348,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final IBattle battle : battles) {
       // If Restricted & # of bombarding units => landing units, don't add territory to list to
       // bombard
-      if (!Properties.getShoreBombardPerGroundUnitRestricted(getData())
+      if (!Properties.getShoreBombardPerGroundUnitRestricted(getData().getProperties())
           || (battle.getBombardingUnits().size()
               < battle.getAttackingUnits().stream().filter(Matches.unitWasAmphibious()).count())) {
         territories.add(battle.getTerritory());
@@ -405,7 +405,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final BattleTracker battleTracker, final IDelegateBridge bridge) {
     final GamePlayer player = bridge.getGamePlayer();
     final GameData data = bridge.getData();
-    final boolean ignoreTransports = Properties.getIgnoreTransportInMovement(data);
+    final boolean ignoreTransports = Properties.getIgnoreTransportInMovement(data.getProperties());
     final Predicate<Unit> seaTransports =
         Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea());
     final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
@@ -517,7 +517,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
         final Player remotePlayer = bridge.getRemotePlayer();
-        if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data)) {
+        if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data.getProperties())) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
@@ -607,7 +607,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private static void setupTerritoriesAbandonedToTheEnemy(
       final BattleTracker battleTracker, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data)) {
+    if (!Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data.getProperties())) {
       return;
     }
     final GamePlayer player = bridge.getGamePlayer();
@@ -686,13 +686,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private void doScrambling() {
     final GameData data = getData();
-    if (!Properties.getScrambleRulesInEffect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
     final BattleListing pendingBattleSites = battleTracker.getPendingBattleSites();
     final Set<Territory> territoriesWithBattles =
         pendingBattleSites.getNormalBattlesIncludingAirBattles();
-    if (Properties.getCanScrambleIntoAirBattles(data)) {
+    if (Properties.getCanScrambleIntoAirBattles(data.getProperties())) {
       territoriesWithBattles.addAll(
           pendingBattleSites.getStrategicBombingRaidsIncludingAirBattles());
     }
@@ -972,10 +972,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // return scrambled units to their original territories, or let them move 1 or x to a new
     // territory.
     final GameData data = getData();
-    if (!Properties.getScrambleRulesInEffect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
-    final boolean mustReturnToBase = Properties.getScrambledUnitsReturnToBase(data);
+    final boolean mustReturnToBase = Properties.getScrambledUnitsReturnToBase(data.getProperties());
     for (final Territory t : data.getMap().getTerritories()) {
       int carrierCostOfCurrentTerr = 0;
       final Collection<Unit> wasScrambled =
@@ -1034,7 +1034,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private static void resetMaxScrambleCount(final IDelegateBridge bridge) {
     // reset the tripleaUnit property for all airbases that were used
     final GameData data = bridge.getData();
-    if (!Properties.getScrambleRulesInEffect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
     final CompositeChange change = new CompositeChange();
@@ -1058,7 +1058,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private void airBattleCleanup() {
     final GameData data = getData();
-    if (!Properties.getRaidsMayBePreceededByAirBattles(data)) {
+    if (!Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())) {
       return;
     }
     final CompositeChange change = new CompositeChange();
@@ -1078,7 +1078,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Territory, Collection<Unit>> defendingAirThatCanNotLand =
         battleTracker.getDefendingAirThatCanNotLand();
     final boolean isWW2v2orIsSurvivingAirMoveToLand =
-        Properties.getWW2V2(data) || Properties.getSurvivingAirMoveToLand(data);
+        Properties.getWW2V2(data.getProperties())
+            || Properties.getSurvivingAirMoveToLand(data.getProperties());
     final Predicate<Unit> alliedDefendingAir =
         Matches.unitIsAir().and(Matches.unitWasScrambled().negate());
     for (final Entry<Territory, Collection<Unit>> entry : defendingAirThatCanNotLand.entrySet()) {
@@ -1256,7 +1257,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    */
   private void doKamikazeSuicideAttacks() {
     final GameData data = getData();
-    if (!Properties.getUseKamikazeSuicideAttacks(data)) {
+    if (!Properties.getUseKamikazeSuicideAttacks(data.getProperties())) {
       return;
     }
     // the current player is not the one who is doing these attacks, it is the all the enemies of
@@ -1274,7 +1275,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .and(Matches.unitIsNotTransportButCouldBeCombatTransport())
             .and(Matches.unitCanEvade().negate());
     final boolean onlyWhereThereAreBattlesOrAmphibious =
-        Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data);
+        Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data.getProperties());
     final Collection<Territory> pendingBattles = battleTracker.getPendingBattleSites(false);
     // create a list of all kamikaze zones, listed by enemy
     final Map<GamePlayer, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<>();
@@ -1284,7 +1285,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       final GamePlayer owner =
-          !Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)
+          !Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data.getProperties())
               ? ta.getOriginalOwner()
               : t.getOwner();
       if (owner == null) {
@@ -1433,7 +1434,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final CompositeChange change = new CompositeChange();
     int hits = 0;
     int[] rolls = null;
-    if (Properties.getLowLuck(data)) {
+    if (Properties.getLowLuck(data.getProperties())) {
       int power = 0;
       for (final Entry<Resource, Integer> entry : numberOfAttacks.entrySet()) {
         final Resource r = entry.getKey();
@@ -1557,7 +1558,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       return List.of(currentTerr);
     }
     final boolean areNeutralsPassableByAir =
-        (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
+        (Properties.getNeutralFlyoverAllowed(data.getProperties())
+            && !Properties.getNeutralsImpassable(data.getProperties()));
     final Set<Territory> canNotLand = new HashSet<>();
     canNotLand.addAll(battleTracker.getPendingBattleSites(false));
     canNotLand.addAll(

@@ -64,7 +64,7 @@ public class OffensiveFirstStrike implements BattleStep {
     }
 
     // ww2v2 rules require subs to always fire in a sub phase
-    if (Properties.getWW2V2(battleState.getGameData())) {
+    if (Properties.getWW2V2(battleState.getGameData().getProperties())) {
       return State.FIRST_STRIKE;
     }
 

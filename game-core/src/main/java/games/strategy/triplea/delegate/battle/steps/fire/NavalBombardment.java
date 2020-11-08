@@ -83,7 +83,8 @@ public class NavalBombardment implements BattleStep {
         .firingGroupSplitter(FiringGroupSplitterBombard.of())
         .side(side)
         .returnFire(
-            Properties.getNavalBombardCasualtiesReturnFire(battleState.getGameData())
+            Properties.getNavalBombardCasualtiesReturnFire(
+                    battleState.getGameData().getProperties())
                 ? MustFightBattle.ReturnFire.ALL
                 : MustFightBattle.ReturnFire.NONE)
         .diceRoller(new BombardmentDiceRoller())

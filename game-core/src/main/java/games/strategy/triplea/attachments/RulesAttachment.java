@@ -968,7 +968,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean relationshipExistsLongEnough(
       final Relationship relationship, final int relationshipsExistence) {
     int roundCurrentRelationshipWasCreated = relationship.getRoundCreated();
-    roundCurrentRelationshipWasCreated += Properties.getRelationshipsLastExtraRounds(getData());
+    roundCurrentRelationshipWasCreated +=
+        Properties.getRelationshipsLastExtraRounds(getData().getProperties());
     return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated
         >= relationshipsExistence;
   }

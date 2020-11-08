@@ -134,7 +134,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     if (!Matches.unitCanBeDamaged().test(this)) {
       return 0;
     }
-    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData().getProperties())
         ? Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(t) - getUnitDamage())
         : Integer.MAX_VALUE;
   }
@@ -149,7 +149,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     }
     final UnitAttachment ua = UnitAttachment.get(getType());
     final int territoryUnitProduction = TerritoryAttachment.getUnitProduction(t);
-    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData().getProperties())) {
       if (ua.getMaxDamage() <= 0) {
         // factories may or may not have max damage set, so we must still determine here
         // assume that if maxDamage <= 0, then the max damage must be based on the territory value

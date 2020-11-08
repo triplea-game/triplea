@@ -129,7 +129,8 @@ public class DiceRoll implements Externalizable {
     final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
     final GamePlayer player = aaUnits.iterator().next().getOwner();
     final String annotation = "Roll " + typeAa + " in " + location.getName();
-    if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
+    if (Properties.getLowLuck(data.getProperties())
+        || Properties.getLowLuckAaOnly(data.getProperties())) {
       sortedDice = new ArrayList<>();
       hits = getAaLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
     } else {
@@ -193,7 +194,7 @@ public class DiceRoll implements Externalizable {
       final String annotation,
       final CombatValue combatValueCalculator) {
 
-    if (Properties.getLowLuck(bridge.getData())) {
+    if (Properties.getLowLuck(bridge.getData().getProperties())) {
       return rollDiceLowLuck(units, player, bridge, annotation, combatValueCalculator);
     }
     return rollDiceNormal(units, player, bridge, annotation, combatValueCalculator);
@@ -307,7 +308,7 @@ public class DiceRoll implements Externalizable {
         PowerStrengthAndRolls.build(unitsList, combatValueCalculator);
 
     final GameData data = bridge.getData();
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data.getProperties());
     final List<Unit> units = new ArrayList<>(unitsList);
     final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
     if (rollCount == 0) {
@@ -320,7 +321,7 @@ public class DiceRoll implements Externalizable {
     // bonus is normally 1 for most games
     final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
 
-    if (Properties.getLowLuck(data)) {
+    if (Properties.getLowLuck(data.getProperties())) {
       // Get number of hits
       hitCount = totalPower / data.getDiceSides();
       random = new int[0];
@@ -405,7 +406,7 @@ public class DiceRoll implements Externalizable {
 
     final int[] random =
         bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data.getProperties());
     final List<Die> dice = new ArrayList<>();
     int hitCount = 0;
     int diceIndex = 0;

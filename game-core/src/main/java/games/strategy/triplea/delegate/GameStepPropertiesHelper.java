@@ -153,8 +153,9 @@ public final class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final boolean repairAtStartAndOnlyOwn =
-          Properties.getBattleshipsRepairAtBeginningOfRound(data);
-      final boolean repairAtEndAndAll = Properties.getBattleshipsRepairAtEndOfRound(data);
+          Properties.getBattleshipsRepairAtBeginningOfRound(data.getProperties());
+      final boolean repairAtEndAndAll =
+          Properties.getBattleshipsRepairAtEndOfRound(data.getProperties());
       // if both are off, we do no repairing, no matter what
       if (!repairAtStartAndOnlyOwn && !repairAtEndAndAll) {
         return false;

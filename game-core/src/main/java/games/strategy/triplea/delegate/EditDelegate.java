@@ -115,7 +115,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
             + MyFormatter.unitsToTextNoOwner(units),
         units);
     bridge.addChange(ChangeFactory.addUnits(territory, units));
-    if (Properties.getUnitsMayGiveBonusMovement(getData())
+    if (Properties.getUnitsMayGiveBonusMovement(getData().getProperties())
         && GameStepPropertiesHelper.isGiveBonusMovement(data)) {
       bridge.addChange(MoveDelegate.giveBonusMovementToUnits(player, data, territory));
     }

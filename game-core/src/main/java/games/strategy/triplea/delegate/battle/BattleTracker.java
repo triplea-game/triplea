@@ -305,7 +305,7 @@ public class BattleTracker implements Serializable {
       // create only either an air battle OR a bombing battle.
       // (the air battle will create a bombing battle when done, if needed)
       if (!airBattleCompleted
-          && Properties.getRaidsMayBePreceededByAirBattles(data)
+          && Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
               route.getEnd(), gamePlayer, data, true)) {
         addAirBattle(route, units, gamePlayer, data, BattleType.AIR_RAID);
@@ -317,7 +317,7 @@ public class BattleTracker implements Serializable {
     } else {
       // create both an air battle and a normal battle
       if (!airBattleCompleted
-          && Properties.getBattlesMayBePreceededByAirBattles(data)
+          && Properties.getBattlesMayBePreceededByAirBattles(data.getProperties())
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
               route.getEnd(), gamePlayer, data, false)) {
         addAirBattle(
@@ -424,7 +424,7 @@ public class BattleTracker implements Serializable {
     }
     final boolean canConquerMiddleSteps =
         presentFromStartTilEnd.stream().anyMatch(Matches.unitIsNotAir());
-    final boolean scramblingEnabled = Properties.getScrambleRulesInEffect(data);
+    final boolean scramblingEnabled = Properties.getScrambleRulesInEffect(data.getProperties());
     final var passableLandAndNotRestricted =
         Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(gamePlayer)
             .or(
@@ -569,12 +569,12 @@ public class BattleTracker implements Serializable {
       final Predicate<Unit> transportsCanNotControl =
           Matches.unitIsTransportAndNotDestroyer()
               .and(Matches.unitIsTransportButNotCombatTransport());
-      if (!Properties.getTransportControlSeaZone(data)) {
+      if (!Properties.getTransportControlSeaZone(data.getProperties())) {
         totalMatches -= CollectionUtils.countMatches(arrivedUnits, transportsCanNotControl);
       }
       // TODO check if istrn and NOT isDD
       // If subs are restricted from controlling sea zones, subtract them
-      if (Properties.getSubControlSeaZoneRestricted(data)) {
+      if (Properties.getSubControlSeaZoneRestricted(data.getProperties())) {
         totalMatches -=
             CollectionUtils.countMatches(arrivedUnits, Matches.unitCanBeMovedThroughByEnemies());
       }
@@ -631,9 +631,9 @@ public class BattleTracker implements Serializable {
     // if neutral, we may charge money to enter
     if (territory.getOwner().isNull()
         && !territory.isWater()
-        && Properties.getNeutralCharge(data) >= 0) {
+        && Properties.getNeutralCharge(data.getProperties()) >= 0) {
       final Resource pus = data.getResourceList().getResource(Constants.PUS);
-      final int puChargeIdeal = -Properties.getNeutralCharge(data);
+      final int puChargeIdeal = -Properties.getNeutralCharge(data.getProperties());
       final int puChargeReal =
           Math.min(0, Math.max(puChargeIdeal, -gamePlayer.getResources().getQuantity(pus)));
       final Change neutralFee = ChangeFactory.changeResourcesChange(gamePlayer, pus, puChargeReal);
@@ -908,7 +908,7 @@ public class BattleTracker implements Serializable {
       final UndoableMove changeTracker) {
     final GameData data = bridge.getData();
     // destroy any units that should be destroyed on capture
-    if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
+    if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data.getProperties())) {
       final Predicate<Unit> enemyToBeDestroyed =
           Matches.enemyUnit(gamePlayer, data)
               .and(Matches.unitDestroyedWhenCapturedByOrFrom(gamePlayer));
@@ -927,13 +927,13 @@ public class BattleTracker implements Serializable {
     }
     // destroy any capture on entering units, IF the property to destroy them instead of capture is
     // turned on
-    if (Properties.getOnEnteringUnitsDestroyedInsteadOfCaptured(data)) {
+    if (Properties.getOnEnteringUnitsDestroyedInsteadOfCaptured(data.getProperties())) {
       final Collection<Unit> destroyed =
           territory
               .getUnitCollection()
               .getMatches(
                   Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
-                      gamePlayer, territory, data));
+                      gamePlayer, territory, data.getProperties()));
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
         bridge
@@ -968,10 +968,11 @@ public class BattleTracker implements Serializable {
         Matches.enemyUnit(gamePlayer, data).and(Matches.unitIsInfrastructure());
     final Predicate<Unit> willBeCaptured =
         enemyNonCom.or(
-            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(gamePlayer, territory, data));
+            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
+                gamePlayer, territory, data.getProperties()));
     final Collection<Unit> nonCom = territory.getUnitCollection().getMatches(willBeCaptured);
     // change any units that change unit types on capture
-    if (Properties.getUnitsCanBeChangedOnCapture(data)) {
+    if (Properties.getUnitsCanBeChangedOnCapture(data.getProperties())) {
       final Collection<Unit> toReplace =
           CollectionUtils.getMatches(
               nonCom, Matches.unitWhenCapturedChangesIntoDifferentUnitType());

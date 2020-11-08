@@ -370,7 +370,7 @@ public class ProTerritoryManager {
       final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> moveMap) {
     final GameData data = proData.getData();
 
-    if (!Properties.getScrambleRulesInEffect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
 
@@ -903,7 +903,7 @@ public class ProTerritoryManager {
                       myLandUnit,
                       range,
                       ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(
-                          player, data, myLandUnit));
+                          player, data.getProperties(), myLandUnit));
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
@@ -1072,7 +1072,7 @@ public class ProTerritoryManager {
                       myUnitTerritory,
                       myAirUnit,
                       range,
-                      ProMatches.territoryCanPotentiallyMoveAirUnits(player, data));
+                      ProMatches.territoryCanPotentiallyMoveAirUnits(player, data.getProperties()));
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
@@ -1176,7 +1176,7 @@ public class ProTerritoryManager {
               .and(moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
         unloadAmphibTerritoryMatch =
-            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)
+            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
                 .and(moveAmphibToTerritoryMatch);
       }
 

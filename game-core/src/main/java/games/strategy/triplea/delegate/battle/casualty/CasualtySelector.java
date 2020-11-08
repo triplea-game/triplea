@@ -76,7 +76,9 @@ public class CasualtySelector {
         headLess ? Map.of() : CasualtyUtil.getDependents(targetsToPickFrom);
 
     final int hitsRemaining =
-        Properties.getTransportCasualtiesRestricted(data) ? extraHits : dice.getHits();
+        Properties.getTransportCasualtiesRestricted(data.getProperties())
+            ? extraHits
+            : dice.getHits();
 
     if (BaseEditDelegate.getEditMode(data)) {
       return tripleaPlayer.selectCasualties(
@@ -151,7 +153,7 @@ public class CasualtySelector {
                 allowMultipleHitsPerUnit);
     final List<Unit> killed = casualtySelection.getKilled();
     // if partial retreat is possible, kill amphibious units first
-    if (Properties.getPartialAmphibiousRetreat(data)) {
+    if (Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       killAmphibiousFirst(killed, sortedTargetsToPickFrom);
     }
     final List<Unit> damaged = casualtySelection.getDamaged();

@@ -726,7 +726,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     sb.append(br);
     if (!t.isWater()
         && unitProduction > 0
-        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+            getData().getProperties())) {
       sb.append("Base Unit Production: ");
       sb.append(unitProduction);
       sb.append(br);

@@ -219,9 +219,9 @@ class AaInMoveUtil implements Serializable {
 
   Collection<Territory> getTerritoriesWhereAaWillFire(
       final Route route, final Collection<Unit> units) {
-    final boolean alwaysOnAa = Properties.getAlwaysOnAa(getData());
+    final boolean alwaysOnAa = Properties.getAlwaysOnAa(getData().getProperties());
     // Just the attacked territory will have AA firing
-    if (!alwaysOnAa && Properties.getAaTerritoryRestricted(getData())) {
+    if (!alwaysOnAa && Properties.getAaTerritoryRestricted(getData().getProperties())) {
       return List.of();
     }
     final GameData data = getData();
@@ -252,7 +252,7 @@ class AaInMoveUtil implements Serializable {
         territoriesWhereAaWillFire.add(current);
       }
     }
-    if (Properties.getForceAaAttacksForLastStepOfFlyOver(data)) {
+    if (Properties.getForceAaAttacksForLastStepOfFlyOver(data.getProperties())) {
       if (route.getEnd().getUnitCollection().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }

@@ -48,7 +48,8 @@ public class AaCasualtySelector {
         !defendingAa.isEmpty()
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (BaseEditDelegate.getEditMode(data) || Properties.getChooseAaCasualties(data)) {
+    if (BaseEditDelegate.getEditMode(data)
+        || Properties.getChooseAaCasualties(data.getProperties())) {
       return CasualtySelector.selectCasualties(
           hitPlayer,
           planes,
@@ -63,18 +64,19 @@ public class AaCasualtySelector {
           allowMultipleHitsPerUnit);
     }
 
-    if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
+    if (Properties.getLowLuck(data.getProperties())
+        || Properties.getLowLuckAaOnly(data.getProperties())) {
       return getLowLuckAaCasualties(
           planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
     }
 
     // priority goes: choose -> individually -> random
     // if none are set, we roll individually
-    if (Properties.getRollAaIndividually(data)) {
+    if (Properties.getRollAaIndividually(data.getProperties())) {
       return individuallyFiredAaCasualties(
           planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
     }
-    if (Properties.getRandomAaCasualties(data)) {
+    if (Properties.getRandomAaCasualties(data.getProperties())) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     return individuallyFiredAaCasualties(

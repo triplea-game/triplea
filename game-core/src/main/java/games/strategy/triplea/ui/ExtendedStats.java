@@ -67,7 +67,7 @@ public class ExtendedStats extends StatPanel {
       this.statsExtended = statsExtended.toArray(new IStat[0]);
     }
     // add tech related stuff
-    if (Properties.getTechDevelopment(data)) {
+    if (Properties.getTechDevelopment(data.getProperties())) {
       // add tech tokens
       if (data.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
         final List<IStat> statsExtended = new ArrayList<>(List.of(this.statsExtended));

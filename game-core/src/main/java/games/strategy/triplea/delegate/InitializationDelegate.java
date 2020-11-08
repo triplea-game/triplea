@@ -169,7 +169,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!Properties.getDisabledPlayersAssetsDeleted(data)) {
+    if (!Properties.getDisabledPlayersAssetsDeleted(data.getProperties())) {
       return;
     }
     for (final GamePlayer player : data.getPlayerList().getPlayers()) {
@@ -235,8 +235,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initDestroyerArtillery(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean addArtilleryAndDestroyers = Properties.getUseDestroyersAndArtillery(data);
-    if (!Properties.getWW2V2(data) && addArtilleryAndDestroyers) {
+    final boolean addArtilleryAndDestroyers =
+        Properties.getUseDestroyersAndArtillery(data.getProperties());
+    if (!Properties.getWW2V2(data.getProperties()) && addArtilleryAndDestroyers) {
       final CompositeChange change = new CompositeChange();
       final ProductionRule artillery =
           data.getProductionRuleList().getProductionRule("buyArtillery");
@@ -277,7 +278,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initShipyards(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean useShipyards = Properties.getUseShipyards(data);
+    final boolean useShipyards = Properties.getUseShipyards(data.getProperties());
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
       final ProductionFrontier frontierShipyards =
@@ -309,7 +310,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initTwoHitBattleship(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean userEnabled = Properties.getTwoHitBattleships(data);
+    final boolean userEnabled = Properties.getTwoHitBattleships(data.getProperties());
     final UnitType battleShipUnit =
         data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
     if (battleShipUnit == null) {

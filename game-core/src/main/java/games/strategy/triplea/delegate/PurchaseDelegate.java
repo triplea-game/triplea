@@ -57,7 +57,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
     super.start();
     final GameData data = getData();
     if (needToInitialize) {
-      if (Properties.getTriggers(data)) {
+      if (Properties.getTriggers(data.getProperties())) {
         // First set up a match for what we want to have fire as a default in this delegate. List
         // out as a composite
         // match OR.
@@ -261,7 +261,8 @@ public class PurchaseDelegate extends BaseTripleADelegate
     if (!canAfford(costs, player)) {
       return NOT_ENOUGH_RESOURCES;
     }
-    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+        getData().getProperties())) {
       return null;
     }
     // Get the map of the factories that were repaired and how much for each
