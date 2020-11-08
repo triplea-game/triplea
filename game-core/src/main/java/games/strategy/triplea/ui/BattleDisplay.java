@@ -10,7 +10,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -878,43 +877,30 @@ public class BattleDisplay extends JPanel {
       DiceRoll.sortByStrength(units, !attack);
       final TotalPowerAndTotalRolls unitPowerAndRollsMap;
       final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
-      if (isAirPreBattleOrPreRaid) {
-        unitPowerAndRollsMap = null;
-      } else {
-        gameData.acquireReadLock();
-        try {
-          unitPowerAndRollsMap =
-              PowerStrengthAndRolls.build(
+      gameData.acquireReadLock();
+      try {
+        final CombatValue combatValue;
+        if (isAirPreBattleOrPreRaid) {
+          combatValue = CombatValue.buildAirBattleCombatValue(!attack, gameData);
+        } else {
+          combatValue =
+              CombatValue.buildMainCombatValue(
+                  new ArrayList<>(enemyBattleModel.getUnits()),
                   units,
-                  CombatValue.buildMainCombatValue(
-                      new ArrayList<>(enemyBattleModel.getUnits()),
-                      units,
-                      !attack,
-                      gameData,
-                      territoryEffects));
-        } finally {
-          gameData.releaseReadLock();
+                  !attack,
+                  gameData,
+                  territoryEffects);
         }
+        unitPowerAndRollsMap = PowerStrengthAndRolls.build(units, combatValue);
+      } finally {
+        gameData.releaseReadLock();
       }
-      final int diceSides = gameData.getDiceSides();
       final Collection<UnitCategory> unitCategories =
           UnitSeparator.categorize(units, null, false, false, false);
       for (final UnitCategory category : unitCategories) {
-        int strength;
-        final UnitAttachment attachment = UnitAttachment.get(category.getType());
         final int[] shift = new int[gameData.getDiceSides() + 1];
         for (final Unit current : category.getUnits()) {
-          if (isAirPreBattleOrPreRaid) {
-            if (attack) {
-              strength = attachment.getAirAttack(category.getOwner());
-            } else {
-              strength = attachment.getAirDefense(category.getOwner());
-            }
-          } else {
-            // normal battle
-            strength = unitPowerAndRollsMap.getStrength(current);
-          }
-          strength = Math.min(Math.max(strength, 0), diceSides);
+          final int strength = unitPowerAndRollsMap.getStrength(current);
           shift[strength]++;
         }
         for (int i = 0; i <= gameData.getDiceSides(); i++) {

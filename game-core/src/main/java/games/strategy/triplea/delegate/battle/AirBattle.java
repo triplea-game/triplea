@@ -690,7 +690,12 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               dice =
-                  DiceRoll.airBattle(attackingUnits, false, attacker, bridge, "Attackers Fire, ");
+                  DiceRoll.airBattle(
+                      attackingUnits,
+                      attacker,
+                      bridge,
+                      "Attackers Fire, ",
+                      CombatValue.buildAirBattleCombatValue(false, bridge.getData()));
             }
           };
       final IExecutable calculateCasualties =
@@ -750,7 +755,13 @@ public class AirBattle extends AbstractBattle {
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              dice = DiceRoll.airBattle(defendingUnits, true, defender, bridge, "Defenders Fire, ");
+              dice =
+                  DiceRoll.airBattle(
+                      defendingUnits,
+                      defender,
+                      bridge,
+                      "Defenders Fire, ",
+                      CombatValue.buildAirBattleCombatValue(true, bridge.getData()));
             }
           };
       final IExecutable calculateCasualties =
@@ -791,14 +802,6 @@ public class AirBattle extends AbstractBattle {
       stack.push(calculateCasualties);
       stack.push(roll);
     }
-  }
-
-  private static Predicate<Unit> unitHasAirDefenseGreaterThanZero() {
-    return u -> UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0;
-  }
-
-  private static Predicate<Unit> unitHasAirAttackGreaterThanZero() {
-    return u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0;
   }
 
   static Predicate<Unit> attackingGroundSeaBattleEscorts() {
@@ -864,31 +867,6 @@ public class AirBattle extends AbstractBattle {
     return territory.getUnitCollection().anyMatch(defendingAirMatch)
         || data.getMap().getNeighbors(territory, maxScrambleDistance).stream()
             .anyMatch(Matches.territoryHasUnitsThatMatch(defendingAirMatch));
-  }
-
-  public static int getAirBattleRolls(final Collection<Unit> units, final boolean defending) {
-    int rolls = 0;
-    for (final Unit u : units) {
-      rolls += getAirBattleRolls(u, defending);
-    }
-    return rolls;
-  }
-
-  public static int getAirBattleRolls(final Unit unit, final boolean defending) {
-    if (defending) {
-      if (!unitHasAirDefenseGreaterThanZero().test(unit)) {
-        return 0;
-      }
-    } else {
-      if (!unitHasAirAttackGreaterThanZero().test(unit)) {
-        return 0;
-      }
-    }
-    return Math.max(
-        0,
-        (defending
-            ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner())
-            : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
   }
 
   private void remove(
