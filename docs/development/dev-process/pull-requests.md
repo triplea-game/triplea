@@ -1,11 +1,11 @@
 ## PR workflow
 
-* Before creating a PR, do a self-review of the code that it looks good
-* Ensure that your commit message is descriptive. Remember the commit
-message is for future developers and maintainers, any text in the PR
-is one-time and is for reviewers for the benefit of doing review. The
-commit message should describe roughly what changes and most importantly
-why it was changed.
+* Before creating a PR, do a self-review of the code and ensure that it looks good.  
+* Ensure that your commit message is descriptive. Remember, the commit
+message is for future developers and maintainers.  Any text in the PR
+is one-time and is for reviewers for the benefit of doing their review. The
+commit message should describe roughly what changes you made and, more importantly,
+why you made those changes.
 * Favor prefixing the title of the commit message with one of these keywords:
   * Fix
   * Update
@@ -33,7 +33,7 @@ code.
 
 Add comments to your own PR to indicate where more work will be done.
 
-Be open to suggestion and remember we are stretched thing and will likely
+Be open to suggestions and remember, we are stretched thin and will likely
 review too quickly. We'll try to make it clear when something *has* to change,
 otherwise everything is all just a suggestion.
 
