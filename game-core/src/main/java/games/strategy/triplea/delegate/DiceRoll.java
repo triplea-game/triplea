@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -90,7 +91,12 @@ public class DiceRoll implements Externalizable {
         aaUnits,
         bridge,
         location,
-        CombatValue.buildAaCombatValue(List.of(), List.of(), side, bridge.getData()));
+        CombatValueBuilder.aaCombatValue()
+            .enemyUnits(List.of())
+            .friendlyUnits(List.of())
+            .side(side)
+            .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+            .build());
   }
 
   /**

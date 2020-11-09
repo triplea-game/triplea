@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
@@ -40,7 +39,6 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   @Getter int bestDiceSides;
 
   CombatValue calculator;
-  GameData gameData;
 
   Map<Unit, UnitPowerStrengthAndRolls> totalStrengthAndTotalRollsByUnit = new HashMap<>();
 
@@ -57,17 +55,13 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   List<UnitPowerStrengthAndRolls> activeStrengthAndRolls;
 
   private AaPowerStrengthAndRolls(
-      final GameData gameData,
-      final Collection<Unit> units,
-      final int targetCount,
-      final CombatValue calculator) {
-    this.gameData = gameData;
+      final Collection<Unit> units, final int targetCount, final CombatValue calculator) {
     this.calculator = calculator;
     this.targetCount = targetCount;
     addUnits(units);
 
     int highestStrength = 0;
-    int chosenDiceSides = gameData.getDiceSides();
+    int chosenDiceSides = 100;
     for (final Map.Entry<Unit, UnitPowerStrengthAndRolls> unitStrengthAndRolls :
         totalStrengthAndTotalRollsByUnit.entrySet()) {
       final Unit u = unitStrengthAndRolls.getKey();
@@ -91,21 +85,20 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
       final Collection<Unit> aaUnits, final int targetCount, final CombatValue calculator) {
 
     if (aaUnits == null || aaUnits.isEmpty()) {
-      return new AaPowerStrengthAndRolls(
-          calculator.getGameData(), List.of(), targetCount, calculator);
+      return new AaPowerStrengthAndRolls(List.of(), targetCount, calculator);
     }
     // First, sort units strongest to weakest without support so that later, the support is given
     // to the best units first
     return new AaPowerStrengthAndRolls(
-        calculator.getGameData(),
         aaUnits.stream()
             .sorted(
                 sortAaHighToLow(
-                    CombatValue.buildAaCombatValue(
-                        List.of(),
-                        List.of(),
-                        calculator.getBattleSide(),
-                        calculator.getGameData())))
+                    CombatValueBuilder.aaCombatValue()
+                        .enemyUnits(List.of())
+                        .friendlyUnits(List.of())
+                        .side(calculator.getBattleSide())
+                        .supportAttachments(List.of())
+                        .build()))
             .collect(Collectors.toList()),
         targetCount,
         calculator);

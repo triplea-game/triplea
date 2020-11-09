@@ -59,7 +59,7 @@ import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.data.TechRoll;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
@@ -1427,12 +1427,16 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 new UnitBattleComparator(
                         TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
                         data,
-                        CombatValue.buildMainCombatValue(
-                            List.of(),
-                            List.of(),
-                            BattleState.Side.OFFENSE,
-                            data,
-                            TerritoryEffectHelper.getEffects(entry.getKey())),
+                        CombatValueBuilder.mainCombatValue()
+                            .enemyUnits(List.of())
+                            .friendlyUnits(List.of())
+                            .side(BattleState.Side.OFFENSE)
+                            .gameSequence(data.getSequence())
+                            .supportAttachments(data.getUnitTypeList().getSupportRules())
+                            .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                            .gameDiceSides(data.getDiceSides())
+                            .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
+                            .build(),
                         true)
                     .reversed());
             possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);

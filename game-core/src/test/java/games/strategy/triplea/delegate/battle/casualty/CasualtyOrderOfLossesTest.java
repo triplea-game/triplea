@@ -9,12 +9,13 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +69,6 @@ class CasualtyOrderOfLossesTest {
   }
 
   private CasualtyOrderOfLosses.Parameters withFakeParameters() {
-    when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     final GamePlayer player = mock(GamePlayer.class);
     when(player.getName()).thenReturn("player");
     final Territory territory = mock(Territory.class);
@@ -77,8 +77,16 @@ class CasualtyOrderOfLossesTest {
         .targetsToPickFrom(List.of())
         .player(player)
         .combatValue(
-            CombatValue.buildMainCombatValue(
-                List.of(), List.of(), BattleState.Side.OFFENSE, gameData, List.of()))
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(List.of())
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(mock(GameSequence.class))
+                .supportAttachments(List.of())
+                .lhtrHeavyBombers(false)
+                .gameDiceSides(gameData.getDiceSides())
+                .territoryEffects(List.of())
+                .build())
         .battlesite(territory)
         .costs(IntegerMap.of(Map.of()))
         .data(gameData)

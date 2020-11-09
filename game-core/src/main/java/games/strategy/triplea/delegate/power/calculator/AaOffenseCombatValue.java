@@ -1,8 +1,6 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
@@ -26,37 +24,35 @@ import org.triplea.java.collections.IntegerMap;
 @Getter(AccessLevel.NONE)
 class AaOffenseCombatValue implements CombatValue {
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  GameData gameData;
+  @NonNull AvailableSupports strengthSupportFromFriends;
+  @NonNull AvailableSupports strengthSupportFromEnemies;
+  @NonNull AvailableSupports rollSupportFromFriends;
+  @NonNull AvailableSupports rollSupportFromEnemies;
 
-  @NonNull AvailableSupports supportFromFriends;
-  @NonNull AvailableSupports supportFromEnemies;
-
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   @NonNull
   @Builder.Default
   Collection<Unit> friendUnits = List.of();
 
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   @NonNull
   @Builder.Default
   Collection<Unit> enemyUnits = List.of();
 
   @Override
   public RollCalculator getRoll() {
-    return new AaRoll(supportFromFriends, supportFromEnemies);
+    return new AaRoll(rollSupportFromFriends.copy(), rollSupportFromEnemies.copy());
   }
 
   @Override
   public StrengthCalculator getStrength() {
-    return new AaOffenseStrength(this, supportFromFriends, supportFromEnemies);
+    return new AaOffenseStrength(
+        this, strengthSupportFromFriends.copy(), strengthSupportFromEnemies.copy());
   }
 
   @Override
   public int getDiceSides(final Unit unit) {
-    final int diceSides = unit.getUnitAttachment().getOffensiveAttackAaMaxDieSides();
-    return diceSides < 1 ? gameData.getDiceSides() : diceSides;
+    return unit.getUnitAttachment().getOffensiveAttackAaMaxDieSides();
   }
 
   @Override
@@ -72,9 +68,10 @@ class AaOffenseCombatValue implements CombatValue {
   @Override
   public CombatValue buildWithNoUnitSupports() {
     return AaOffenseCombatValue.builder()
-        .gameData(gameData)
-        .supportFromFriends(AvailableSupports.EMPTY_RESULT)
-        .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
         .friendUnits(List.of())
         .enemyUnits(List.of())
         .build();
@@ -83,9 +80,10 @@ class AaOffenseCombatValue implements CombatValue {
   @Override
   public CombatValue buildOppositeCombatValue() {
     return AaDefenseCombatValue.builder()
-        .gameData(gameData)
-        .supportFromFriends(supportFromEnemies)
-        .supportFromEnemies(supportFromFriends)
+        .rollSupportFromFriends(rollSupportFromEnemies)
+        .rollSupportFromEnemies(rollSupportFromFriends)
+        .strengthSupportFromFriends(strengthSupportFromEnemies)
+        .strengthSupportFromEnemies(strengthSupportFromFriends)
         .friendUnits(enemyUnits)
         .enemyUnits(friendUnits)
         .build();
@@ -97,15 +95,6 @@ class AaOffenseCombatValue implements CombatValue {
     AaOffenseCombatValue calculator;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-
-    AaOffenseStrength(
-        final AaOffenseCombatValue calculator,
-        final AvailableSupports supportFromFriends,
-        final AvailableSupports supportFromEnemies) {
-      this.calculator = calculator;
-      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getAaStrength);
-      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getAaStrength);
-    }
 
     @Override
     public StrengthValue getStrength(final Unit unit) {

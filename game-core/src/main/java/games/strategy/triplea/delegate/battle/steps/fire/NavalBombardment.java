@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -113,11 +113,17 @@ public class NavalBombardment implements BattleStep {
               step.getBattleState().getPlayer(step.getSide()),
               step.getBattleState().getBattleSite(),
               step.getBattleState().getStatus().getRound()),
-          CombatValue.buildBombardmentCombatValue(
-              step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
-              step.getBattleState().filterUnits(ALIVE, step.getSide()),
-              step.getBattleState().getGameData(),
-              step.getBattleState().getTerritoryEffects()));
+          CombatValueBuilder.navalBombardmentCombatValue()
+              .enemyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()))
+              .friendlyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide()))
+              .supportAttachments(
+                  step.getBattleState().getGameData().getUnitTypeList().getSupportRules())
+              .lhtrHeavyBombers(
+                  Properties.getLhtrHeavyBombers(
+                      step.getBattleState().getGameData().getProperties()))
+              .gameDiceSides(step.getBattleState().getGameData().getDiceSides())
+              .territoryEffects(step.getBattleState().getTerritoryEffects())
+              .build());
     }
   }
 
@@ -129,11 +135,17 @@ public class NavalBombardment implements BattleStep {
       return CasualtySelector.selectCasualties(
           step.getBattleState().getPlayer(step.getSide().getOpposite()),
           step.getFiringGroup().getTargetUnits(),
-          CombatValue.buildBombardmentCombatValue(
-              step.getBattleState().filterUnits(ALIVE, step.getSide()),
-              step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
-              step.getBattleState().getGameData(),
-              step.getBattleState().getTerritoryEffects()),
+          CombatValueBuilder.navalBombardmentCombatValue()
+              .enemyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide()))
+              .friendlyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()))
+              .supportAttachments(
+                  step.getBattleState().getGameData().getUnitTypeList().getSupportRules())
+              .lhtrHeavyBombers(
+                  Properties.getLhtrHeavyBombers(
+                      step.getBattleState().getGameData().getProperties()))
+              .gameDiceSides(step.getBattleState().getGameData().getDiceSides())
+              .territoryEffects(step.getBattleState().getTerritoryEffects())
+              .build(),
           step.getBattleState().getBattleSite(),
           bridge,
           "Hits from " + step.getFiringGroup().getDisplayName() + ", ",

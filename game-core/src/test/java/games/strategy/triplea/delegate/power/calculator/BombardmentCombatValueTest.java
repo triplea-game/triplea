@@ -79,7 +79,7 @@ class BombardmentCombatValueTest {
 
       final BombardmentCombatValue.BombardmentStrength strength =
           new BombardmentCombatValue.BombardmentStrength(
-              gameData, friendlySupport, enemySupport, List.of(territoryEffect));
+              6, List.of(territoryEffect), friendlySupport, enemySupport);
       assertThat(
           "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
           strength.getStrength(unit).getValue(),

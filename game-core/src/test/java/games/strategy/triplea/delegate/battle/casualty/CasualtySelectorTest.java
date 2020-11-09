@@ -21,12 +21,13 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -87,9 +88,22 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -116,9 +130,22 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -151,18 +178,32 @@ class CasualtySelectorTest {
             defendingAa,
             bridge,
             territory("Germany", data),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", data).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", data).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -200,19 +241,33 @@ class CasualtySelectorTest {
             defendingAa,
             bridge,
             territory("Germany", data),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", data).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", data).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -251,18 +306,32 @@ class CasualtySelectorTest {
             defendingAa,
             bridge,
             territory("Germany", data),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", data).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", data).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -301,18 +370,32 @@ class CasualtySelectorTest {
             defendingAa,
             bridge,
             territory("Germany", data),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", data).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", data).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -351,20 +434,34 @@ class CasualtySelectorTest {
             defendingAa,
             bridge,
             territory("Germany", data),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", data).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", data).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -407,20 +504,34 @@ class CasualtySelectorTest {
             defendingAa,
             bridge,
             territory("Germany", data),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", data).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", data).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -458,20 +569,34 @@ class CasualtySelectorTest {
             defendingAa,
             bridge,
             territory("Germany", data),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", data).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", data).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(data.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,

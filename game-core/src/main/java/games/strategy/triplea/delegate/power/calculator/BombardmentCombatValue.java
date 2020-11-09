@@ -1,11 +1,8 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
@@ -31,39 +28,45 @@ import org.triplea.java.collections.IntegerMap;
 @Getter(AccessLevel.NONE)
 public class BombardmentCombatValue implements CombatValue {
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  GameData gameData;
+  @NonNull Integer gameDiceSides;
 
-  @NonNull AvailableSupports supportFromFriends;
-  @NonNull AvailableSupports supportFromEnemies;
+  @NonNull Boolean lhtrHeavyBombers;
+
+  @NonNull AvailableSupports strengthSupportFromFriends;
+  @NonNull AvailableSupports strengthSupportFromEnemies;
+  @NonNull AvailableSupports rollSupportFromFriends;
+  @NonNull AvailableSupports rollSupportFromEnemies;
 
   @NonNull Collection<TerritoryEffect> territoryEffects;
 
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   @NonNull
   @Builder.Default
   Collection<Unit> friendUnits = List.of();
 
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   @NonNull
   @Builder.Default
   Collection<Unit> enemyUnits = List.of();
 
   @Override
   public RollCalculator getRoll() {
-    return new MainOffenseCombatValue.MainOffenseRoll(supportFromFriends, supportFromEnemies);
+    return new MainOffenseCombatValue.MainOffenseRoll(
+        rollSupportFromFriends.copy(), rollSupportFromEnemies.copy());
   }
 
   @Override
   public StrengthCalculator getStrength() {
     return new BombardmentStrength(
-        gameData, supportFromFriends, supportFromEnemies, territoryEffects);
+        gameDiceSides,
+        territoryEffects,
+        strengthSupportFromFriends.copy(),
+        strengthSupportFromEnemies.copy());
   }
 
   @Override
   public int getDiceSides(final Unit unit) {
-    return gameData.getDiceSides();
+    return gameDiceSides;
   }
 
   @Override
@@ -73,16 +76,18 @@ public class BombardmentCombatValue implements CombatValue {
 
   @Override
   public boolean chooseBestRoll(final Unit unit) {
-    return Properties.getLhtrHeavyBombers(gameData.getProperties())
-        || unit.getUnitAttachment().getChooseBestRoll();
+    return lhtrHeavyBombers || unit.getUnitAttachment().getChooseBestRoll();
   }
 
   @Override
   public CombatValue buildWithNoUnitSupports() {
     return BombardmentCombatValue.builder()
-        .gameData(gameData)
-        .supportFromFriends(AvailableSupports.EMPTY_RESULT)
-        .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .gameDiceSides(gameDiceSides)
+        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
         .friendUnits(List.of())
         .enemyUnits(List.of())
         .territoryEffects(territoryEffects)
@@ -92,9 +97,12 @@ public class BombardmentCombatValue implements CombatValue {
   @Override
   public CombatValue buildOppositeCombatValue() {
     return BombardmentCombatValue.builder()
-        .gameData(gameData)
-        .supportFromFriends(supportFromEnemies)
-        .supportFromEnemies(supportFromFriends)
+        .gameDiceSides(gameDiceSides)
+        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .rollSupportFromFriends(rollSupportFromEnemies)
+        .rollSupportFromEnemies(rollSupportFromFriends)
+        .strengthSupportFromFriends(rollSupportFromEnemies)
+        .strengthSupportFromEnemies(rollSupportFromFriends)
         .friendUnits(enemyUnits)
         .enemyUnits(friendUnits)
         .territoryEffects(territoryEffects)
@@ -104,28 +112,17 @@ public class BombardmentCombatValue implements CombatValue {
   @Value
   static class BombardmentStrength implements StrengthCalculator {
 
-    GameData gameData;
+    int gameDiceSides;
     Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-
-    BombardmentStrength(
-        final GameData gameData,
-        final AvailableSupports supportFromFriends,
-        final AvailableSupports supportFromEnemies,
-        final Collection<TerritoryEffect> territoryEffects) {
-      this.gameData = gameData;
-      this.territoryEffects = territoryEffects;
-      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getStrength);
-      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getStrength);
-    }
 
     @Override
     public StrengthValue getStrength(final Unit unit) {
       final UnitAttachment ua = unit.getUnitAttachment();
       final int strength = ua.getBombard();
 
-      return StrengthValue.of(gameData.getDiceSides(), strength)
+      return StrengthValue.of(gameDiceSides, strength)
           .add(
               TerritoryEffectHelper.getTerritoryCombatBonus(
                   unit.getType(), territoryEffects, false))

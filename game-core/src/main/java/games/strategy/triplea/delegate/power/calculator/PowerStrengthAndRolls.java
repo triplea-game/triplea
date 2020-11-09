@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import org.triplea.java.collections.IntegerMap;
 public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
 
   CombatValue calculator;
-  GameData gameData;
 
   @Getter(AccessLevel.PUBLIC)
   Map<Unit, UnitPowerStrengthAndRolls> totalStrengthAndTotalRollsByUnit = new HashMap<>();
@@ -34,9 +32,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   @Getter(AccessLevel.PUBLIC)
   Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
 
-  private PowerStrengthAndRolls(
-      final GameData gameData, final Collection<Unit> units, final CombatValue calculator) {
-    this.gameData = gameData;
+  private PowerStrengthAndRolls(final Collection<Unit> units, final CombatValue calculator) {
     this.calculator = calculator;
     addUnits(units);
   }
@@ -51,10 +47,10 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
       final Collection<Unit> unitsGettingPowerFor, final CombatValue calculator) {
 
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
-      return new PowerStrengthAndRolls(calculator.getGameData(), List.of(), calculator);
+      return new PowerStrengthAndRolls(List.of(), calculator);
     }
 
-    return new PowerStrengthAndRolls(calculator.getGameData(), unitsGettingPowerFor, calculator);
+    return new PowerStrengthAndRolls(unitsGettingPowerFor, calculator);
   }
 
   private void addUnits(final Collection<Unit> units) {
