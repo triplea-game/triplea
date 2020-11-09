@@ -1010,8 +1010,8 @@ class DiceRollTest {
                 .gameDiceSides(testDelegateBridge.getData().getDiceSides())
                 .territoryEffects(TerritoryEffectHelper.getEffects(germany))
                 .build());
-    assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
-    assertThat(dice.getRolls(4).get(1).getType(), is(Die.DieType.IGNORED));
+    assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.IGNORED));
+    assertThat(dice.getRolls(4).get(1).getType(), is(Die.DieType.HIT));
     assertThat(dice.getHits(), is(1));
   }
 

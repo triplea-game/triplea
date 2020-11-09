@@ -259,6 +259,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
    * @param dice Rolled Dice numbers from bridge with size equal to getTotalRolls
    * @return A list of Dice
    */
+  @Override
   public List<Die> getDiceHits(final int[] dice) {
     final Deque<Integer> diceQueue =
         IntStream.of(dice).boxed().collect(Collectors.toCollection(ArrayDeque::new));
@@ -267,14 +268,15 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
         .flatMap(
             unitPowerStrengthAndRolls -> {
               final int strength = unitPowerStrengthAndRolls.getStrength();
-              final int diceValue = diceQueue.removeFirst();
               return IntStream.range(0, unitPowerStrengthAndRolls.getRolls())
                   .mapToObj(
-                      rollNumber ->
-                          new Die(
-                              diceValue,
-                              strength,
-                              diceValue < strength ? Die.DieType.HIT : Die.DieType.MISS));
+                      rollNumber -> {
+                        final int diceValue = diceQueue.removeFirst();
+                        return new Die(
+                            diceValue,
+                            strength,
+                            diceValue < strength ? Die.DieType.HIT : Die.DieType.MISS);
+                      });
             })
         .collect(Collectors.toList());
   }
