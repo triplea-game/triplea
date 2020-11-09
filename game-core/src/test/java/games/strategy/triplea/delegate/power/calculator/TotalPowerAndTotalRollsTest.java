@@ -15,6 +15,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.List;
@@ -780,7 +781,8 @@ class TotalPowerAndTotalRollsTest {
           units.stream()
               .sorted(
                   AaPowerStrengthAndRolls.sortAaHighToLow(
-                      CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData)))
+                      CombatValue.buildAaCombatValue(
+                          List.of(), List.of(), BattleState.Side.OFFENSE, gameData)))
               .collect(Collectors.toList());
       assertThat(sortedUnits.get(0), is(unit1));
       assertThat(sortedUnits.get(1), is(unit2));
@@ -803,7 +805,8 @@ class TotalPowerAndTotalRollsTest {
           units.stream()
               .sorted(
                   AaPowerStrengthAndRolls.sortAaHighToLow(
-                      CombatValue.buildAaCombatValue(List.of(), List.of(), true, gameData)))
+                      CombatValue.buildAaCombatValue(
+                          List.of(), List.of(), BattleState.Side.DEFENSE, gameData)))
               .collect(Collectors.toList());
       assertThat(sortedUnits.get(0), is(unit5));
       assertThat(sortedUnits.get(1), is(unit3));
@@ -829,7 +832,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit),
               1,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getBestDiceSides(), is(8));
     }
@@ -844,7 +848,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit),
               1,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), true, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.DEFENSE, gameData));
 
       assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getBestDiceSides(), is(8));
     }
@@ -868,6 +873,7 @@ class TotalPowerAndTotalRollsTest {
       when(combatValue.getPower()).thenReturn(powerCalculator);
       when(combatValue.getDiceSides(unit)).thenReturn(6);
       when(combatValue.getGameData()).thenReturn(gameData);
+      when(combatValue.getBattleSide()).thenReturn(BattleState.Side.OFFENSE);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
           AaPowerStrengthAndRolls.build(List.of(unit), 1, combatValue);
 
@@ -889,7 +895,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit, unit2, unit3),
               1,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(
           "All have the same dice sides, so take the best strength",
@@ -922,7 +929,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit, unit2, unit3),
               1,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(
           "4 of 4 is better than 2 of 6 and 3 of 5", aaPowerAndRolls.getBestStrength(), is(4));
@@ -955,7 +963,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit, unit2, unit3),
               1,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(
           "3 of 6 is better than 3 of 7 and 3 of 8", aaPowerAndRolls.getBestStrength(), is(3));
@@ -1025,7 +1034,10 @@ class TotalPowerAndTotalRollsTest {
       final AvailableSupports friendlySupport =
           AvailableSupports.getSupport(
               new SupportCalculator(
-                  List.of(supportUnit), List.of(unitSupportAttachment), false, true));
+                  List.of(supportUnit),
+                  List.of(unitSupportAttachment),
+                  BattleState.Side.OFFENSE,
+                  true));
 
       final AaPowerStrengthAndRolls result =
           AaPowerStrengthAndRolls.build(
@@ -1119,7 +1131,7 @@ class TotalPowerAndTotalRollsTest {
               new SupportCalculator(
                   List.of(supportUnit, supportUnit2),
                   List.of(unitSupportAttachment, unitSupportAttachment2),
-                  false,
+                  BattleState.Side.OFFENSE,
                   true));
 
       final PowerStrengthAndRolls result =
@@ -1174,7 +1186,8 @@ class TotalPowerAndTotalRollsTest {
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
               List.of(unit, unit2),
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(0));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(0));
@@ -1191,7 +1204,8 @@ class TotalPowerAndTotalRollsTest {
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
               List.of(unit, unit2),
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(5));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(2));
@@ -1208,7 +1222,8 @@ class TotalPowerAndTotalRollsTest {
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
               List.of(unit, unit2),
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(10));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(4));
@@ -1223,7 +1238,9 @@ class TotalPowerAndTotalRollsTest {
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
-              List.of(unit), CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              List.of(unit),
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(12));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(2));
@@ -1246,7 +1263,8 @@ class TotalPowerAndTotalRollsTest {
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
               List.of(unit),
-              CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()));
+              CombatValue.buildMainCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData, List.of()));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));
@@ -1279,7 +1297,8 @@ class TotalPowerAndTotalRollsTest {
       final PowerStrengthAndRolls powerStrengthAndRolls =
           PowerStrengthAndRolls.build(
               List.of(unit),
-              CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()));
+              CombatValue.buildMainCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData, List.of()));
 
       assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
       assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));
@@ -1299,7 +1318,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit),
               0,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat("No targets so no rolls", totalPowerAndTotalRolls.calculateTotalRolls(), is(0));
     }
@@ -1316,7 +1336,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit, unit2),
               1,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(
           "Both units had either zero rolls or zero strength so no total rolls",
@@ -1333,7 +1354,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit),
               3,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
       assertThat(
           "Infinite unit gets one roll for each target",
           totalPowerAndTotalRolls.calculateTotalRolls(),
@@ -1351,7 +1373,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit, unit2),
               3,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
       assertThat(
           "Infinite unit gets one roll for each target but no overstacking",
           totalPowerAndTotalRolls.calculateTotalRolls(),
@@ -1369,7 +1392,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit, unit2),
               3,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
       assertThat(
           "Non infinite and an infinite unit still just hit all the targets once",
           totalPowerAndTotalRolls.calculateTotalRolls(),
@@ -1385,7 +1409,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit),
               3,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
       assertThat("Unit only has one roll", totalPowerAndTotalRolls.calculateTotalRolls(), is(1));
     }
 
@@ -1400,7 +1425,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(unit, unit2),
               3,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
       assertThat(
           "There is only 3 units targets and the units have no overstack so only allow 3",
           totalPowerAndTotalRolls.calculateTotalRolls(),
@@ -1424,7 +1450,8 @@ class TotalPowerAndTotalRollsTest {
           AaPowerStrengthAndRolls.build(
               List.of(overstackUnit, unit, unit2),
               3,
-              CombatValue.buildAaCombatValue(List.of(), List.of(), false, gameData));
+              CombatValue.buildAaCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, gameData));
 
       assertThat(
           "Infinite gives total attacks equal to number of units (3)"

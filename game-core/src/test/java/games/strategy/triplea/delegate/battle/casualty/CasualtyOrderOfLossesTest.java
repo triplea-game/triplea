@@ -13,6 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,8 @@ class CasualtyOrderOfLossesTest {
         .targetsToPickFrom(List.of())
         .player(player)
         .combatValue(
-            CombatValue.buildMainCombatValue(List.of(), List.of(), false, gameData, List.of()))
+            CombatValue.buildMainCombatValue(
+                List.of(), List.of(), BattleState.Side.OFFENSE, gameData, List.of()))
         .battlesite(territory)
         .costs(IntegerMap.of(Map.of()))
         .data(gameData)

@@ -7,6 +7,7 @@ import static org.hamcrest.core.Is.is;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestDataBigWorld1942V3;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
         .player(testData.british)
         .combatValue(
             CombatValue.buildMainCombatValue(
-                List.of(), amphibUnits, false, testData.gameData, List.of()))
+                List.of(), amphibUnits, BattleState.Side.OFFENSE, testData.gameData, List.of()))
         .battlesite(testData.france)
         .costs(testData.costMap)
         .data(testData.gameData)
@@ -192,7 +193,11 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .player(testData.british)
                 .combatValue(
                     CombatValue.buildMainCombatValue(
-                        List.of(), attackingUnits, false, testData.gameData, List.of()))
+                        List.of(),
+                        attackingUnits,
+                        BattleState.Side.OFFENSE,
+                        testData.gameData,
+                        List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
                 .data(testData.gameData)
@@ -240,7 +245,11 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .player(testData.british)
                 .combatValue(
                     CombatValue.buildMainCombatValue(
-                        List.of(), attackingUnits, false, testData.gameData, List.of()))
+                        List.of(),
+                        attackingUnits,
+                        BattleState.Side.OFFENSE,
+                        testData.gameData,
+                        List.of()))
                 .battlesite(testData.france)
                 .costs(testData.costMap)
                 .data(testData.gameData)
@@ -261,7 +270,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                     CombatValue.buildMainCombatValue(
                         List.of(),
                         attackingUnits.subList(0, 3),
-                        false,
+                        BattleState.Side.OFFENSE,
                         testData.gameData,
                         List.of()))
                 .battlesite(testData.france)

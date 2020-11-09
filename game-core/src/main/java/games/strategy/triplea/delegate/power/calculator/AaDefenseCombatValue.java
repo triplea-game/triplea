@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.power.calculator;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,8 @@ class AaDefenseCombatValue implements CombatValue {
   }
 
   @Override
-  public boolean isDefending() {
-    return true;
+  public BattleState.Side getBattleSide() {
+    return BattleState.Side.DEFENSE;
   }
 
   @Override

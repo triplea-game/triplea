@@ -24,6 +24,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -86,8 +87,9 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -114,8 +116,9 @@ class CasualtySelectorTest {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -149,13 +152,17 @@ class CasualtySelectorTest {
             bridge,
             territory("Germany", data),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", data).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", data).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -194,14 +201,18 @@ class CasualtySelectorTest {
             bridge,
             territory("Germany", data),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", data).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", data).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -241,13 +252,17 @@ class CasualtySelectorTest {
             bridge,
             territory("Germany", data),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", data).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", data).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -287,13 +302,17 @@ class CasualtySelectorTest {
             bridge,
             territory("Germany", data),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", data).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", data).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -333,15 +352,19 @@ class CasualtySelectorTest {
             bridge,
             territory("Germany", data),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", data).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", data).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -385,15 +408,19 @@ class CasualtySelectorTest {
             bridge,
             territory("Germany", data),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", data).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", data).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,
@@ -432,15 +459,19 @@ class CasualtySelectorTest {
             bridge,
             territory("Germany", data),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", data).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", data).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, data, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, data),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, data, List.of()),
+                CombatValue.buildAaCombatValue(planes, defendingAa, BattleState.Side.DEFENSE, data),
                 "",
                 roll,
                 bridge,

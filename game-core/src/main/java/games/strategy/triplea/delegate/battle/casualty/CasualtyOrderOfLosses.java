@@ -265,7 +265,7 @@ class CasualtyOrderOfLosses {
         + "|"
         + parameters.battlesite.getName()
         + "|"
-        + parameters.combatValue.isDefending()
+        + parameters.combatValue.getBattleSide()
         + "|"
         + Objects.hashCode(targetTypes);
   }

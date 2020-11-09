@@ -13,6 +13,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
@@ -1424,7 +1425,7 @@ class BattleCalculatorPanel extends JPanel {
                   costs,
                   data,
                   CombatValue.buildMainCombatValue(
-                      List.of(), List.of(), false, data, territoryEffects))
+                      List.of(), List.of(), BattleState.Side.OFFENSE, data, territoryEffects))
               .reversed());
       if (isAmphibiousBattle()) {
         attackers.stream()
@@ -1446,14 +1447,14 @@ class BattleCalculatorPanel extends JPanel {
           PowerStrengthAndRolls.build(
                   attackers,
                   CombatValue.buildMainCombatValue(
-                      defenders, attackers, false, data, territoryEffects))
+                      defenders, attackers, BattleState.Side.OFFENSE, data, territoryEffects))
               .calculateTotalPower();
       // defender is never amphibious
       final int defensePower =
           PowerStrengthAndRolls.build(
                   defenders,
                   CombatValue.buildMainCombatValue(
-                      attackers, defenders, true, data, territoryEffects))
+                      attackers, defenders, BattleState.Side.DEFENSE, data, territoryEffects))
               .calculateTotalPower();
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);

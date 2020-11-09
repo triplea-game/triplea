@@ -1372,7 +1372,7 @@ public class BattleTracker implements Serializable {
                       CombatValue.buildMainCombatValue(
                           defenders,
                           sortedUnitsList,
-                          true,
+                          BattleState.Side.DEFENSE,
                           gameData,
                           TerritoryEffectHelper.getEffects(territory)))
                   .calculateTotalPower()
@@ -1403,7 +1403,7 @@ public class BattleTracker implements Serializable {
                 CombatValue.buildMainCombatValue(
                     List.of(),
                     List.of(),
-                    true,
+                    BattleState.Side.DEFENSE,
                     gameData,
                     TerritoryEffectHelper.getEffects(territory)))
             .reversed());
