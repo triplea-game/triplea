@@ -60,7 +60,8 @@ public class FiringGroupSplitterGeneral implements Function<BattleState, Collect
                 // Remove offense allied units if allied air can not participate
                 .andIf(
                     side == OFFENSE
-                        && !Properties.getAlliedAirIndependent(battleState.getGameData()),
+                        && !Properties.getAlliedAirIndependent(
+                            battleState.getGameData().getProperties()),
                     Matches.unitIsOwnedBy(battleState.getPlayer(side)))
                 .build());
 
@@ -97,7 +98,7 @@ public class FiringGroupSplitterGeneral implements Function<BattleState, Collect
     final Predicate<Unit> predicate =
         (side == OFFENSE)
             ? Matches.unitIsFirstStrike()
-            : Matches.unitIsFirstStrikeOnDefense(battleState.getGameData());
+            : Matches.unitIsFirstStrikeOnDefense(battleState.getGameData().getProperties());
     return type == Type.NORMAL ? predicate.negate() : predicate;
   }
 

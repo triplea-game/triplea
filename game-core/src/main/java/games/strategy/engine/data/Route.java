@@ -400,7 +400,7 @@ public class Route implements Serializable, Iterable<Territory> {
       final GameData data,
       final boolean ignoreFlat) {
 
-    if (!Properties.getUseFuelCost(data)) {
+    if (!Properties.getUseFuelCost(data.getProperties())) {
       return Tuple.of(new ResourceCollection(data), new HashSet<>());
     }
 

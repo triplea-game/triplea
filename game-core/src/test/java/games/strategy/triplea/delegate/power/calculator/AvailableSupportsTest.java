@@ -14,6 +14,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +43,7 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule), false, false));
+            new SupportCalculator(List.of(unit), List.of(rule), BattleState.Side.OFFENSE, false));
     assertThat("There is only one bonus type", tracker.supportRules.size(), is(1));
     assertThat("The rule only has one support available", tracker.getSupportLeft(rule), is(1));
   }
@@ -75,7 +76,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, false));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false));
     assertThat("Rule with players is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without players is not added", tracker.getSupportLeft(rule2), is(0));
   }
@@ -108,7 +110,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, false));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false));
     assertThat("Rule with unit types is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without unit types is not added", tracker.getSupportLeft(rule2), is(0));
   }
@@ -141,7 +144,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, false));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false));
     assertThat("Rule with unit types is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without unit types is not added", tracker.getSupportLeft(rule2), is(0));
   }
@@ -174,7 +178,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, false));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false));
     assertThat("Offence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Defence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -207,7 +212,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), true, false));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.DEFENSE, false));
     assertThat("Defence rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Offence rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -240,7 +246,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, false));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false));
     assertThat("Enemy rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Allied rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -273,7 +280,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, true));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, true));
     assertThat("Allied rule has support", tracker.getSupportLeft(rule), is(1));
     assertThat("Enemy rule is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -308,7 +316,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, true));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, true));
     assertThat("Rule with a supporter is added", tracker.getSupportLeft(rule), is(1));
     assertThat("Rule without a supporter is ignored", tracker.getSupportLeft(rule2), is(0));
   }
@@ -336,7 +345,7 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule), false, true));
+            new SupportCalculator(List.of(unit), List.of(rule), BattleState.Side.OFFENSE, true));
     assertThat(
         "Rule for improved artillery gives double the support "
             + "when the unit has improved artillery",
@@ -367,7 +376,7 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule), false, true));
+            new SupportCalculator(List.of(unit), List.of(rule), BattleState.Side.OFFENSE, true));
     assertThat(
         "Rule that doesn't use improved artillery doesn't give double the support "
             + "when the unit has improved artillery",
@@ -402,7 +411,10 @@ class AvailableSupportsTest {
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
             new SupportCalculator(
-                List.of(unit, unitWithoutImprovedTechnology), List.of(rule), false, true));
+                List.of(unit, unitWithoutImprovedTechnology),
+                List.of(rule),
+                BattleState.Side.OFFENSE,
+                true));
     assertThat(
         "Unit with improved technology has a value of 2 while the unit without has a value of 1",
         tracker.getSupportLeft(rule),
@@ -439,7 +451,8 @@ class AvailableSupportsTest {
 
     final AvailableSupports tracker =
         AvailableSupports.getSupport(
-            new SupportCalculator(List.of(unit), List.of(rule, rule2), false, false));
+            new SupportCalculator(
+                List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false));
 
     final AvailableSupports filtered = tracker.filter(UnitSupportAttachment::getRoll);
     assertThat(
@@ -481,7 +494,8 @@ class AvailableSupportsTest {
 
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
-              new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(rule), BattleState.Side.OFFENSE, false));
 
       assertThat("Support unit can give one", tracker.giveSupportToUnit(unit), is(1));
 
@@ -516,7 +530,8 @@ class AvailableSupportsTest {
 
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
-              new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(rule), BattleState.Side.OFFENSE, false));
 
       assertThat("Support unit can give 2", tracker.giveSupportToUnit(unit), is(2));
 
@@ -552,7 +567,8 @@ class AvailableSupportsTest {
 
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
-              new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(rule), BattleState.Side.OFFENSE, false));
 
       // give the support to the first unit
       assertThat("Support unit can give 1", tracker.giveSupportToUnit(unit), is(1));
@@ -590,7 +606,8 @@ class AvailableSupportsTest {
 
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
-              new SupportCalculator(List.of(supportUnit), List.of(rule), false, false));
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(rule), BattleState.Side.OFFENSE, false));
 
       assertThat("Support can give 1", tracker.giveSupportToUnit(unit), is(1));
       assertThat("Support can still give 1 more", tracker.giveSupportToUnit(unit2), is(1));
@@ -629,7 +646,10 @@ class AvailableSupportsTest {
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
               new SupportCalculator(
-                  List.of(supportUnit, supportUnit2), List.of(rule), false, false));
+                  List.of(supportUnit, supportUnit2),
+                  List.of(rule),
+                  BattleState.Side.OFFENSE,
+                  false));
 
       assertThat("First support unit can support", tracker.giveSupportToUnit(unit), is(1));
       assertThat("Second support unit can support", tracker.giveSupportToUnit(unit2), is(1));
@@ -675,7 +695,10 @@ class AvailableSupportsTest {
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
               new SupportCalculator(
-                  List.of(supportUnit, supportUnit2), List.of(rule), false, false));
+                  List.of(supportUnit, supportUnit2),
+                  List.of(rule),
+                  BattleState.Side.OFFENSE,
+                  false));
 
       assertThat(
           "All support is given because of stacking", tracker.giveSupportToUnit(unit), is(2));
@@ -722,7 +745,10 @@ class AvailableSupportsTest {
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
               new SupportCalculator(
-                  List.of(supportUnit, supportUnit2), List.of(rule), false, false));
+                  List.of(supportUnit, supportUnit2),
+                  List.of(rule),
+                  BattleState.Side.OFFENSE,
+                  false));
 
       assertThat(
           "First support unit can fill the entire stack", tracker.giveSupportToUnit(unit), is(2));
@@ -783,7 +809,10 @@ class AvailableSupportsTest {
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
               new SupportCalculator(
-                  List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false));
+                  List.of(supportUnit, supportUnit2),
+                  List.of(rule, rule2),
+                  BattleState.Side.OFFENSE,
+                  false));
 
       assertThat("Both support units gave support", tracker.giveSupportToUnit(unit), is(2));
 
@@ -839,7 +868,10 @@ class AvailableSupportsTest {
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
               new SupportCalculator(
-                  List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false));
+                  List.of(supportUnit, supportUnit2),
+                  List.of(rule, rule2),
+                  BattleState.Side.OFFENSE,
+                  false));
 
       assertThat(
           "Only the first rule can give its support", tracker.giveSupportToUnit(unit), is(1));
@@ -891,7 +923,10 @@ class AvailableSupportsTest {
       final AvailableSupports tracker =
           AvailableSupports.getSupport(
               new SupportCalculator(
-                  List.of(supportUnit, supportUnit2), List.of(rule, rule2), false, false));
+                  List.of(supportUnit, supportUnit2),
+                  List.of(rule, rule2),
+                  BattleState.Side.OFFENSE,
+                  false));
 
       assertThat("All support can be given", tracker.giveSupportToUnit(unit), is(2));
 

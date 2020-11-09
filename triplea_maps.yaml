@@ -50,7 +50,7 @@
 - mapName: Middle Earth
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/master.zip
-  version: 1
+  version: 2
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empires
@@ -677,7 +677,7 @@
 - mapName: Red Sun Over China
   mapCategory: GOOD
   url: https://github.com/triplea-maps/red_sun_over_china/archive/master.zip
-  version: 5
+  version: 6
   img: https://raw.githubusercontent.com/triplea-maps/red_sun_over_china/master/description/TripleA_red_sun_over_china_mini.png
   description: |
     <br>Red Sun Over China

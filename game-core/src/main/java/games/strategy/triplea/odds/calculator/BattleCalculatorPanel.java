@@ -13,6 +13,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
@@ -160,7 +161,7 @@ class BattleCalculatorPanel extends JPanel {
     numRuns.setMax(20000);
 
     final int simulationCount =
-        Properties.getLowLuck(data)
+        Properties.getLowLuck(data.getProperties())
             ? ClientSetting.battleCalcSimulationCountLowLuck.getValueOrThrow()
             : ClientSetting.battleCalcSimulationCountDice.getValueOrThrow();
     numRuns.setValue(simulationCount);
@@ -1208,7 +1209,7 @@ class BattleCalculatorPanel extends JPanel {
                   attacking.removeAll(bombarding);
                   final int numLandUnits =
                       CollectionUtils.countMatches(attacking, Matches.unitIsLand());
-                  if (Properties.getShoreBombardPerGroundUnitRestricted(data)
+                  if (Properties.getShoreBombardPerGroundUnitRestricted(data.getProperties())
                       && numLandUnits < bombarding.size()) {
                     BattleDelegate.sortUnitsToBombard(bombarding);
                     // Create new list as needs to be serializable which subList isn't
@@ -1424,7 +1425,7 @@ class BattleCalculatorPanel extends JPanel {
                   costs,
                   data,
                   CombatValue.buildMainCombatValue(
-                      List.of(), List.of(), false, data, territoryEffects))
+                      List.of(), List.of(), BattleState.Side.OFFENSE, data, territoryEffects))
               .reversed());
       if (isAmphibiousBattle()) {
         attackers.stream()
@@ -1446,14 +1447,14 @@ class BattleCalculatorPanel extends JPanel {
           PowerStrengthAndRolls.build(
                   attackers,
                   CombatValue.buildMainCombatValue(
-                      defenders, attackers, false, data, territoryEffects))
+                      defenders, attackers, BattleState.Side.OFFENSE, data, territoryEffects))
               .calculateTotalPower();
       // defender is never amphibious
       final int defensePower =
           PowerStrengthAndRolls.build(
                   defenders,
                   CombatValue.buildMainCombatValue(
-                      attackers, defenders, true, data, territoryEffects))
+                      attackers, defenders, BattleState.Side.DEFENSE, data, territoryEffects))
               .calculateTotalPower();
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);
@@ -1499,8 +1500,8 @@ class BattleCalculatorPanel extends JPanel {
     data.acquireReadLock();
     try {
       return isLand
-          ? Properties.getLandBattleRounds(data) > 0
-          : Properties.getSeaBattleRounds(data) > 0;
+          ? Properties.getLandBattleRounds(data.getProperties()) > 0
+          : Properties.getSeaBattleRounds(data.getProperties()) > 0;
     } finally {
       data.releaseReadLock();
     }

@@ -145,7 +145,7 @@ public class ProTerritory {
 
   public Collection<Unit> getAllDefendersForCarrierCalcs(
       final GameData data, final GamePlayer player) {
-    if (Properties.getProduceNewFightersOnOldCarriers(data)) {
+    if (Properties.getProduceNewFightersOnOldCarriers(data.getProperties())) {
       return getAllDefenders();
     }
 

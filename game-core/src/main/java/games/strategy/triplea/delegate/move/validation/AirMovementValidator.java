@@ -56,7 +56,7 @@ public final class AirMovementValidator {
         || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
             .test(route.getEnd())
         // if kamikaze - we do not do any validation at all, cus they can all die and we don't care
-        || Properties.getKamikazeAirplanes(data)) {
+        || Properties.getKamikazeAirplanes(data.getProperties())) {
       return result;
     }
     // Find which aircraft cannot find friendly land to land on
@@ -141,16 +141,18 @@ public final class AirMovementValidator {
                 Matches.airCanFlyOver(player, data, areNeutralsPassableByAir(data))));
     // we only want to consider
     landingSpots.removeAll(
-        CollectionUtils.getMatches(landingSpots, Matches.seaCanMoveOver(player, data).negate()));
+        CollectionUtils.getMatches(
+            landingSpots, Matches.seaCanMoveOver(player, data.getProperties()).negate()));
     // places we can move carriers to
-    landingSpots.sort(getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data)));
+    landingSpots.sort(
+        getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data.getProperties())));
     final Collection<Territory> potentialCarrierOrigins = new LinkedHashSet<>(landingSpots);
     potentialCarrierOrigins.addAll(
         data.getMap()
             .getNeighbors(
                 new HashSet<>(landingSpots),
                 maxMovementLeftForAllOwnedCarriers,
-                Matches.seaCanMoveOver(player, data)));
+                Matches.seaCanMoveOver(player, data.getProperties())));
     potentialCarrierOrigins.remove(routeEnd);
     potentialCarrierOrigins.removeAll(
         CollectionUtils.getMatches(
@@ -208,8 +210,8 @@ public final class AirMovementValidator {
             .and(Matches.isUnitAllied(player, data))
             .and(Matches.unitIsCarrier());
     final boolean landAirOnNewCarriers =
-        Properties.getLhtrCarrierProductionRules(data)
-            || Properties.getLandExistingFightersOnNewCarriers(data);
+        Properties.getLhtrCarrierProductionRules(data.getProperties())
+            || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
     final List<Unit> carriersInProductionQueue =
         GameStepPropertiesHelper.getCombinedTurns(data, player).stream()
             .map(GamePlayer::getUnitCollection)
@@ -437,7 +439,7 @@ public final class AirMovementValidator {
                 .getRouteForUnits(
                     carrierSpot,
                     landingSpot,
-                    Matches.seaCanMoveOver(player, data),
+                    Matches.seaCanMoveOver(player, data.getProperties()),
                     ownedCarriersInCarrierSpot,
                     player);
         if (toLandingSpot == null) {
@@ -842,7 +844,8 @@ public final class AirMovementValidator {
   }
 
   private static boolean areNeutralsPassableByAir(final GameData data) {
-    return Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data);
+    return Properties.getNeutralFlyoverAllowed(data.getProperties())
+        && !Properties.getNeutralsImpassable(data.getProperties());
   }
 
   private static int getNeutralCharge(final GameData data, final Route route) {
@@ -850,6 +853,6 @@ public final class AirMovementValidator {
   }
 
   private static int getNeutralCharge(final GameData data, final int numberOfTerritories) {
-    return numberOfTerritories * Properties.getNeutralCharge(data);
+    return numberOfTerritories * Properties.getNeutralCharge(data.getProperties());
   }
 }

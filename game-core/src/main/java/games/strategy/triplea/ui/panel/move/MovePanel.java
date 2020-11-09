@@ -279,7 +279,8 @@ public class MovePanel extends AbstractMovePanel {
             mouseLastUpdatePoint = mouseDetails.getMapPoint();
             final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
             // Load Bombers with paratroops
-            if ((!nonCombat || Properties.getParatroopersCanMoveDuringNonCombat(getData()))
+            if ((!nonCombat
+                    || Properties.getParatroopersCanMoveDuringNonCombat(getData().getProperties()))
                 && TechAttachment.isAirTransportable(getCurrentPlayer())
                 && selectedUnits.stream()
                     .anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
@@ -618,7 +619,7 @@ public class MovePanel extends AbstractMovePanel {
           if (!ClientSetting.showBetaFeatures.getValueOrThrow() || !willStartBattle(territory)) {
             return true;
           }
-          if (!Properties.getScrambleRulesInEffect(getData())) {
+          if (!Properties.getScrambleRulesInEffect(getData().getProperties())) {
             return true;
           }
           final var scrambleLogic = new ScrambleLogic(getData(), getCurrentPlayer(), territory);
@@ -1001,7 +1002,7 @@ public class MovePanel extends AbstractMovePanel {
      * if you do not have selection of zero-movement units enabled,
      * this will restrict selection to units with 1 or more movement
      */
-    if (!Properties.getSelectableZeroMovementUnits(getData())) {
+    if (!Properties.getSelectableZeroMovementUnits(getData().getProperties())) {
       movableBuilder.and(Matches.unitCanMove());
     }
     if (!nonCombat) {

@@ -12,6 +12,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -121,7 +122,7 @@ class AaInMoveUtil implements Serializable {
                         currentPossibleAa,
                         AaInMoveUtil.this.bridge,
                         territory,
-                        true));
+                        BattleState.Side.DEFENSE));
               }
             }
           };
@@ -219,9 +220,9 @@ class AaInMoveUtil implements Serializable {
 
   Collection<Territory> getTerritoriesWhereAaWillFire(
       final Route route, final Collection<Unit> units) {
-    final boolean alwaysOnAa = Properties.getAlwaysOnAa(getData());
+    final boolean alwaysOnAa = Properties.getAlwaysOnAa(getData().getProperties());
     // Just the attacked territory will have AA firing
-    if (!alwaysOnAa && Properties.getAaTerritoryRestricted(getData())) {
+    if (!alwaysOnAa && Properties.getAaTerritoryRestricted(getData().getProperties())) {
       return List.of();
     }
     final GameData data = getData();
@@ -252,7 +253,7 @@ class AaInMoveUtil implements Serializable {
         territoriesWhereAaWillFire.add(current);
       }
     }
-    if (Properties.getForceAaAttacksForLastStepOfFlyOver(data)) {
+    if (Properties.getForceAaAttacksForLastStepOfFlyOver(data.getProperties())) {
       if (route.getEnd().getUnitCollection().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }
@@ -331,10 +332,11 @@ class AaInMoveUtil implements Serializable {
             CombatValue.buildMainCombatValue(
                 allEnemyUnits,
                 allFriendlyUnits,
-                false,
+                BattleState.Side.OFFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(territory)),
-            CombatValue.buildAaCombatValue(allFriendlyUnits, allEnemyUnits, true, bridge.getData()),
+            CombatValue.buildAaCombatValue(
+                allFriendlyUnits, allEnemyUnits, BattleState.Side.DEFENSE, bridge.getData()),
             "Select "
                 + dice.getHits()
                 + " casualties from "

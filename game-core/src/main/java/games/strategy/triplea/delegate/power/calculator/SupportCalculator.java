@@ -4,6 +4,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,19 +27,19 @@ public class SupportCalculator {
 
   Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
   Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
-  boolean defence;
+  BattleState.Side side;
   boolean allies;
 
   /**
-   * @param defence are the receiving units defending?
+   * @param side are the receiving units defending?
    * @param allies are the receiving units allied to the giving units?
    */
   public SupportCalculator(
       final Collection<Unit> unitsGivingTheSupport,
       final Collection<UnitSupportAttachment> rules,
-      final boolean defence,
+      final BattleState.Side side,
       final boolean allies) {
-    this.defence = defence;
+    this.side = side;
     this.allies = allies;
     supportRules = new HashMap<>();
     supportUnits = new HashMap<>();
@@ -52,7 +53,8 @@ public class SupportCalculator {
       if (rule.getPlayers().isEmpty() || types == null || types.isEmpty()) {
         continue;
       }
-      if (!((defence && rule.getDefence()) || (!defence && rule.getOffence()))) {
+      if (!((side == BattleState.Side.DEFENSE && rule.getDefence())
+          || (side == BattleState.Side.OFFENSE && rule.getOffence()))) {
         continue;
       }
       if (!((allies && rule.getAllied()) || (!allies && rule.getEnemy()))) {

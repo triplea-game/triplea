@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -25,7 +24,7 @@ public class MainDiceRoller implements BiFunction<IDelegateBridge, RollDiceStep,
         CombatValue.buildMainCombatValue(
             step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
             step.getBattleState().filterUnits(ALIVE, step.getSide()),
-            step.getSide() == DEFENSE,
+            step.getSide(),
             step.getBattleState().getGameData(),
             step.getBattleState().getTerritoryEffects()));
   }

@@ -9,6 +9,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -67,13 +68,14 @@ class MainDefenseCombatValue implements CombatValue {
   }
 
   @Override
-  public boolean isDefending() {
-    return true;
+  public BattleState.Side getBattleSide() {
+    return BattleState.Side.DEFENSE;
   }
 
   @Override
   public boolean chooseBestRoll(final Unit unit) {
-    return Properties.getLhtrHeavyBombers(gameData) || unit.getUnitAttachment().getChooseBestRoll();
+    return Properties.getLhtrHeavyBombers(gameData.getProperties())
+        || unit.getUnitAttachment().getChooseBestRoll();
   }
 
   @Override

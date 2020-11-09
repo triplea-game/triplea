@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -90,7 +89,8 @@ public class SelectMainBattleCasualties
 
   private TargetUnits getTargetUnits(final SelectCasualties step) {
     final TargetUnits targetUnits;
-    if (Properties.getTransportCasualtiesRestricted(step.getBattleState().getGameData())) {
+    if (Properties.getTransportCasualtiesRestricted(
+        step.getBattleState().getGameData().getProperties())) {
       targetUnits =
           TargetUnits.of(
               CollectionUtils.getMatches(
@@ -156,7 +156,7 @@ public class SelectMainBattleCasualties
           CombatValue.buildMainCombatValue(
               step.getBattleState().filterUnits(ALIVE, step.getSide()),
               step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
-              step.getSide().getOpposite() == DEFENSE,
+              step.getSide().getOpposite(),
               step.getBattleState().getGameData(),
               step.getBattleState().getTerritoryEffects()),
           step.getBattleState().getBattleSite(),

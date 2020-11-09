@@ -38,7 +38,7 @@ final class ProTechAi {
   private ProTechAi() {}
 
   static void tech(final ITechDelegate techDelegate, final GameData data, final GamePlayer player) {
-    if (!Properties.getWW2V3TechModel(data)) {
+    if (!Properties.getWW2V3TechModel(data.getProperties())) {
       return;
     }
     final Territory myCapitol =
@@ -387,7 +387,7 @@ final class ProTechAi {
         Matches.unitIsOwnedBy(enemyPlayer).and(Matches.unitCanBlitz()).and(Matches.unitCanMove());
     final Predicate<Territory> validBlitzRoute =
         Matches.territoryHasNoEnemyUnits(enemyPlayer, data)
-            .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data));
+            .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data.getProperties()));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
         findAttackers(
@@ -565,7 +565,7 @@ final class ProTechAi {
         PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
             .and(Matches.alliedUnit(player, data).negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
-            .andIf(Properties.getIgnoreTransportInMovement(data), transport)
+            .andIf(Properties.getIgnoreTransportInMovement(data.getProperties()), transport)
             .build();
     final Predicate<Territory> routeCond =
         Matches.territoryHasUnitsThatMatch(unitCond).negate().and(Matches.territoryIsWater());
@@ -593,7 +593,7 @@ final class ProTechAi {
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {
       if (Matches.isTerritoryAllied(player, data).test(t)
-          && Matches.territoryIsNotImpassableToLandUnits(player, data).test(t)) {
+          && Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties()).test(t)) {
         territories.add(t);
       }
     }
@@ -607,7 +607,7 @@ final class ProTechAi {
     final Predicate<Territory> endCond =
         PredicateBuilder.of(Matches.territoryIsImpassable().negate())
             .andIf(
-                Properties.getNeutralsImpassable(data),
+                Properties.getNeutralsImpassable(data.getProperties()),
                 Matches.territoryIsNeutralButNotWater().negate())
             .build();
     return findFrontier(territory, endCond, Matches.always(), data);

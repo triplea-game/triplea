@@ -241,7 +241,8 @@ public class TransportTracker {
     // See if transport has unloaded anywhere yet
     final GameData data = transport.getData();
     for (final Unit unit : unloaded) {
-      if (Properties.getWW2V2(data) || Properties.getTransportUnloadRestricted(data)) {
+      if (Properties.getWW2V2(data.getProperties())
+          || Properties.getTransportUnloadRestricted(data.getProperties())) {
         // cannot unload to two different territories
         if (!unit.getUnloadedTo().equals(territory)) {
           return true;
@@ -281,7 +282,8 @@ public class TransportTracker {
   /** For ww2v3+ and LHTR, if a transport has been in combat then it can't load in NCM. */
   public static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
     final GameData data = transport.getData();
-    return (Properties.getWW2V3(data) || Properties.getLhtrCarrierProductionRules(data))
+    return (Properties.getWW2V3(data.getProperties())
+            || Properties.getLhtrCarrierProductionRules(data.getProperties()))
         && GameStepPropertiesHelper.isNonCombatMove(data, true)
         && transport.getWasInCombat();
   }
@@ -297,7 +299,7 @@ public class TransportTracker {
     // carrier unit
     final Collection<Unit> carriers =
         CollectionUtils.getMatches(attackingUnits, Matches.unitIsCarrier());
-    if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data)) {
+    if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data.getProperties())) {
       final Predicate<Unit> alliedFighters =
           Matches.isUnitAllied(attacker, data)
               .and(Matches.unitIsOwnedBy(attacker).negate())

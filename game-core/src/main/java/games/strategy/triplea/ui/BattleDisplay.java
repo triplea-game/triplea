@@ -10,12 +10,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -143,19 +143,17 @@ public class BattleDisplay extends JPanel {
     defenderModel =
         new BattleModel(
             defendingUnits,
-            false,
+            BattleState.Side.DEFENSE,
             battleType,
             gameData,
-            battleLocation,
             territoryEffects,
             uiContext);
     attackerModel =
         new BattleModel(
             attackingUnits,
-            true,
+            BattleState.Side.OFFENSE,
             battleType,
             gameData,
-            battleLocation,
             territoryEffects,
             uiContext);
     defenderModel.setEnemyBattleModel(attackerModel);
@@ -801,28 +799,25 @@ public class BattleDisplay extends JPanel {
     private final UiContext uiContext;
     private final GameData gameData;
     // is the player the aggressor?
-    private final boolean attack;
+    private final BattleState.Side side;
     private final Collection<Unit> units;
-    private final Territory location;
     private final BattleType battleType;
     private final Collection<TerritoryEffect> territoryEffects;
     private BattleModel enemyBattleModel = null;
 
     BattleModel(
         final Collection<Unit> units,
-        final boolean attack,
+        final BattleState.Side side,
         final BattleType battleType,
         final GameData data,
-        final Territory battleLocation,
         final Collection<TerritoryEffect> territoryEffects,
         final UiContext uiContext) {
       super(new Object[0][0], varDiceArray(data));
       this.uiContext = uiContext;
       gameData = data;
-      this.attack = attack;
+      this.side = side;
       // were going to modify the units
       this.units = new ArrayList<>(units);
-      location = battleLocation;
       this.battleType = battleType;
       this.territoryEffects = territoryEffects;
     }
@@ -875,46 +870,33 @@ public class BattleDisplay extends JPanel {
         columns.add(i, new ArrayList<>());
       }
       final List<Unit> units = new ArrayList<>(this.units);
-      DiceRoll.sortByStrength(units, !attack);
+      DiceRoll.sortByStrength(units, side);
       final TotalPowerAndTotalRolls unitPowerAndRollsMap;
       final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
-      if (isAirPreBattleOrPreRaid) {
-        unitPowerAndRollsMap = null;
-      } else {
-        gameData.acquireReadLock();
-        try {
-          unitPowerAndRollsMap =
-              PowerStrengthAndRolls.build(
+      gameData.acquireReadLock();
+      try {
+        final CombatValue combatValue;
+        if (isAirPreBattleOrPreRaid) {
+          combatValue = CombatValue.buildAirBattleCombatValue(side, gameData);
+        } else {
+          combatValue =
+              CombatValue.buildMainCombatValue(
+                  new ArrayList<>(enemyBattleModel.getUnits()),
                   units,
-                  CombatValue.buildMainCombatValue(
-                      new ArrayList<>(enemyBattleModel.getUnits()),
-                      units,
-                      !attack,
-                      gameData,
-                      territoryEffects));
-        } finally {
-          gameData.releaseReadLock();
+                  side,
+                  gameData,
+                  territoryEffects);
         }
+        unitPowerAndRollsMap = PowerStrengthAndRolls.build(units, combatValue);
+      } finally {
+        gameData.releaseReadLock();
       }
-      final int diceSides = gameData.getDiceSides();
       final Collection<UnitCategory> unitCategories =
           UnitSeparator.categorize(units, null, false, false, false);
       for (final UnitCategory category : unitCategories) {
-        int strength;
-        final UnitAttachment attachment = UnitAttachment.get(category.getType());
         final int[] shift = new int[gameData.getDiceSides() + 1];
         for (final Unit current : category.getUnits()) {
-          if (isAirPreBattleOrPreRaid) {
-            if (attack) {
-              strength = attachment.getAirAttack(category.getOwner());
-            } else {
-              strength = attachment.getAirDefense(category.getOwner());
-            }
-          } else {
-            // normal battle
-            strength = unitPowerAndRollsMap.getStrength(current);
-          }
-          strength = Math.min(Math.max(strength, 0), diceSides);
+          final int strength = unitPowerAndRollsMap.getStrength(current);
           shift[strength]++;
         }
         for (int i = 0; i <= gameData.getDiceSides(); i++) {

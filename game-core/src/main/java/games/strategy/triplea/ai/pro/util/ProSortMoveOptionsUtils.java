@@ -11,6 +11,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
@@ -204,7 +205,8 @@ public final class ProSortMoveOptionsUtils {
           new UnitBattleComparator(
               proData.getUnitValueMap(),
               data,
-              CombatValue.buildMainCombatValue(List.of(), List.of(), false, data, effects));
+              CombatValue.buildMainCombatValue(
+                  List.of(), List.of(), BattleState.Side.OFFENSE, data, effects));
 
       final List<Unit> defendingUnits =
           t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
@@ -221,7 +223,7 @@ public final class ProSortMoveOptionsUtils {
                 * PowerStrengthAndRolls.build(
                         sortedUnits,
                         CombatValue.buildMainCombatValue(
-                            defendingUnits, sortedUnits, false, data, effects))
+                            defendingUnits, sortedUnits, BattleState.Side.OFFENSE, data, effects))
                     .calculateTotalPower();
       }
       if (powerDifference < minPower) {

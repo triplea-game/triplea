@@ -59,8 +59,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     this.reversedCombatValueCalculator = combatValueCalculator.buildOppositeCombatValue();
     this.bonus = bonus;
     this.ignorePrimaryPower = ignorePrimaryPower;
-    if (Properties.getBattleshipsRepairAtEndOfRound(data)
-        || Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
+    if (Properties.getBattleshipsRepairAtEndOfRound(data.getProperties())
+        || Properties.getBattleshipsRepairAtBeginningOfRound(data.getProperties())) {
       for (final UnitType ut : data.getUnitTypeList()) {
         if (Matches.unitTypeHasMoreThanOneHitPointTotal().test(ut)) {
           multiHitpointCanRepair.add(ut);

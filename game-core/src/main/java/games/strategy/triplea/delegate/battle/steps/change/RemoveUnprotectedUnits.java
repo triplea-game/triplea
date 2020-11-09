@@ -35,7 +35,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
   @Override
   public List<String> getNames() {
     if (battleState.getBattleSite().isWater()
-        && Properties.getTransportCasualtiesRestricted(battleState.getGameData())
+        && Properties.getTransportCasualtiesRestricted(battleState.getGameData().getProperties())
         && (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsTransport())
             || battleState.filterUnits(ALIVE, DEFENSE).stream()
                 .anyMatch(Matches.unitIsTransport()))) {
@@ -57,7 +57,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
 
   @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
   public void removeUnprotectedUnits(final IDelegateBridge bridge, final BattleState.Side side) {
-    if (!Properties.getTransportCasualtiesRestricted(battleState.getGameData())) {
+    if (!Properties.getTransportCasualtiesRestricted(battleState.getGameData().getProperties())) {
       return;
     }
     // if we are the attacker, we can retreat instead of dying

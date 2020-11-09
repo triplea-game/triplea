@@ -71,6 +71,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
@@ -174,13 +175,18 @@ class WW2V3Year41Test {
             bridge,
             territory("Germany", gameData),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", gameData).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", gameData).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, gameData, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, gameData, List.of()),
+                CombatValue.buildAaCombatValue(
+                    planes, defendingAa, BattleState.Side.DEFENSE, gameData),
                 "",
                 roll,
                 bridge,
@@ -225,15 +231,20 @@ class WW2V3Year41Test {
             bridge,
             territory("Germany", gameData),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", gameData).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", gameData).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, gameData, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, gameData, List.of()),
+                CombatValue.buildAaCombatValue(
+                    planes, defendingAa, BattleState.Side.DEFENSE, gameData),
                 "",
                 roll,
                 bridge,
@@ -280,7 +291,10 @@ class WW2V3Year41Test {
             bridge,
             territory("Germany", gameData),
             CombatValue.buildAaCombatValue(
-                planes, territory("Germany", gameData).getUnits(), true, bridge.getData()));
+                planes,
+                territory("Germany", gameData).getUnits(),
+                BattleState.Side.DEFENSE,
+                bridge.getData()));
     assertEquals(2, roll.getHits());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
@@ -288,8 +302,10 @@ class WW2V3Year41Test {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(defendingAa, planes, false, gameData, List.of()),
-                CombatValue.buildAaCombatValue(planes, defendingAa, true, gameData),
+                CombatValue.buildMainCombatValue(
+                    defendingAa, planes, BattleState.Side.OFFENSE, gameData, List.of()),
+                CombatValue.buildAaCombatValue(
+                    planes, defendingAa, BattleState.Side.DEFENSE, gameData),
                 "",
                 roll,
                 bridge,
@@ -686,7 +702,11 @@ class WW2V3Year41Test {
             delegateBridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), germanFighter, false, delegateBridge.getData(), territoryEffects));
+                List.of(),
+                germanFighter,
+                BattleState.Side.OFFENSE,
+                delegateBridge.getData(),
+                territoryEffects));
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
@@ -696,7 +716,11 @@ class WW2V3Year41Test {
             delegateBridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), germanFighter, true, delegateBridge.getData(), territoryEffects));
+                List.of(),
+                germanFighter,
+                BattleState.Side.DEFENSE,
+                delegateBridge.getData(),
+                territoryEffects));
     assertEquals(0, roll2.getHits());
   }
 

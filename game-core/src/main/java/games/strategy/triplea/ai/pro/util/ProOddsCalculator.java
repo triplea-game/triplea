@@ -167,7 +167,7 @@ public class ProOddsCalculator {
       final Collection<Unit> defendingUnits,
       final boolean checkSubmerge) {
     return checkSubmerge
-        && Properties.getSubRetreatBeforeBattle(data)
+        && Properties.getSubRetreatBeforeBattle(data.getProperties())
         && defendingUnits.stream().allMatch(Matches.unitCanEvade())
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
   }

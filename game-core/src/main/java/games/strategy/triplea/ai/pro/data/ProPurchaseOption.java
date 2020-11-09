@@ -13,6 +13,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.SupportCalculator;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -215,7 +216,7 @@ public class ProPurchaseOption {
     if (isAir
         && (carrierCost <= 0
             || carrierCost > unusedCarrierCapacity
-            || !Properties.getProduceFightersOnCarriers(data))) {
+            || !Properties.getProduceFightersOnCarriers(data.getProperties()))) {
       return 0;
     }
     final double supportAttackFactor =
@@ -282,7 +283,11 @@ public class ProPurchaseOption {
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));
     final SupportCalculator availableSupports =
-        new SupportCalculator(units, data.getUnitTypeList().getSupportRules(), defense, true);
+        new SupportCalculator(
+            units,
+            data.getUnitTypeList().getSupportRules(),
+            defense ? BattleState.Side.DEFENSE : BattleState.Side.OFFENSE,
+            true);
 
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {

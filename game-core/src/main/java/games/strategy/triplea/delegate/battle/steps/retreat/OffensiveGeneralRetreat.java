@@ -59,7 +59,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
   }
 
   private boolean canAttackerRetreatPartialAmphib() {
-    if (!Properties.getPartialAmphibiousRetreat(battleState.getGameData())) {
+    if (!Properties.getPartialAmphibiousRetreat(battleState.getGameData().getProperties())) {
       return false;
     }
     // Only include land units when checking for allow amphibious retreat
@@ -70,9 +70,9 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
   private boolean canAttackerRetreatAmphibPlanes() {
     final GameData gameData = battleState.getGameData();
-    return (Properties.getWW2V2(gameData)
-            || Properties.getAttackerRetreatPlanes(gameData)
-            || Properties.getPartialAmphibiousRetreat(gameData))
+    return (Properties.getWW2V2(gameData.getProperties())
+            || Properties.getAttackerRetreatPlanes(gameData.getProperties())
+            || Properties.getPartialAmphibiousRetreat(gameData.getProperties()))
         && battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
   }
 

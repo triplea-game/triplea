@@ -13,6 +13,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
@@ -64,7 +65,11 @@ public final class ProBattleUtils {
                 proData.getUnitValueMap(),
                 data,
                 CombatValue.buildMainCombatValue(
-                    List.of(), List.of(), false, data, TerritoryEffectHelper.getEffects(t)))
+                    List.of(),
+                    List.of(),
+                    BattleState.Side.OFFENSE,
+                    data,
+                    TerritoryEffectHelper.getEffects(t)))
             .reversed());
     final int attackPower =
         PowerStrengthAndRolls.build(
@@ -72,7 +77,7 @@ public final class ProBattleUtils {
                 CombatValue.buildMainCombatValue(
                     defendingUnits,
                     sortedUnitsList,
-                    false,
+                    BattleState.Side.OFFENSE,
                     data,
                     TerritoryEffectHelper.getEffects(t)))
             .calculateTotalPower();
@@ -126,7 +131,7 @@ public final class ProBattleUtils {
     List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(
             myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
-    if (Properties.getTransportCasualtiesRestricted(data)) {
+    if (Properties.getTransportCasualtiesRestricted(data.getProperties())) {
       unitsThatCanFight =
           CollectionUtils.getMatches(
               unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
@@ -153,7 +158,11 @@ public final class ProBattleUtils {
                 proData.getUnitValueMap(),
                 data,
                 CombatValue.buildMainCombatValue(
-                    List.of(), List.of(), !attacking, data, TerritoryEffectHelper.getEffects(t)))
+                    List.of(),
+                    List.of(),
+                    attacking ? BattleState.Side.OFFENSE : BattleState.Side.DEFENSE,
+                    data,
+                    TerritoryEffectHelper.getEffects(t)))
             .reversed());
     final int myPower =
         PowerStrengthAndRolls.build(
@@ -161,7 +170,7 @@ public final class ProBattleUtils {
                 CombatValue.buildMainCombatValue(
                     enemyUnits,
                     sortedUnitsList,
-                    !attacking,
+                    attacking ? BattleState.Side.OFFENSE : BattleState.Side.DEFENSE,
                     data,
                     TerritoryEffectHelper.getEffects(t)))
             .calculateTotalPower();

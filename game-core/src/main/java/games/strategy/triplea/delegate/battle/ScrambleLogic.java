@@ -49,7 +49,7 @@ public class ScrambleLogic {
       final GamePlayer player,
       final Set<Territory> territoriesWithBattles,
       final BattleTracker battleTracker) {
-    if (!Properties.getScrambleRulesInEffect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       throw new IllegalStateException("Scrambling not supported");
     }
     this.data = data;
@@ -69,7 +69,9 @@ public class ScrambleLogic {
                         .and(Matches.unitIsEnemyOf(data, player))
                         .and(Matches.unitIsNotDisabled())))
             .and(Matches.territoryHasUnitsThatMatch(airbaseThatCanScramblePredicate))
-            .andIf(Properties.getScrambleFromIslandOnly(data), Matches.territoryIsIsland())
+            .andIf(
+                Properties.getScrambleFromIslandOnly(data.getProperties()),
+                Matches.territoryIsIsland())
             .build();
     this.maxScrambleDistance = computeMaxScrambleDistance(data);
   }
@@ -118,8 +120,9 @@ public class ScrambleLogic {
     // first, figure out all the territories where scrambling units could scramble to
     // then ask the defending player if they wish to scramble units there, and actually move the
     // units there
-    final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
-    final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
+    final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data.getProperties());
+    final boolean toAnyAmphibious =
+        Properties.getScrambleToAnyAmphibiousAssault(data.getProperties());
 
     final Collection<Territory> territoriesWithBattlesWater =
         CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater());

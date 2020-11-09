@@ -396,7 +396,7 @@ public abstract class AbstractProAi extends AbstractAi {
         final double strengthDifference =
             ProBattleUtils.estimateStrengthDifference(proData, battleSite, attackers, defenders);
         int minStrengthDifference = 60;
-        if (!Properties.getLowLuck(data)) {
+        if (!Properties.getLowLuck(data.getProperties())) {
           minStrengthDifference = 55;
         }
         if (strengthDifference > minStrengthDifference) {

@@ -52,9 +52,9 @@ class TechPanel extends ActionPanel {
           "Roll Tech...",
           e -> {
             TechAdvance advance = null;
-            if (Properties.getWW2V2(getData())
-                || (Properties.getSelectableTechRoll(getData())
-                    && !Properties.getWW2V3TechModel(getData()))) {
+            if (Properties.getWW2V2(getData().getProperties())
+                || (Properties.getSelectableTechRoll(getData().getProperties())
+                    && !Properties.getWW2V3TechModel(getData().getProperties()))) {
               final List<TechAdvance> available = getAvailableTechs();
               if (available.isEmpty()) {
                 JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
@@ -230,7 +230,7 @@ class TechPanel extends ActionPanel {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " Tech Roll");
           add(actionLabel);
-          if (Properties.getWW2V3TechModel(getData())) {
+          if (Properties.getWW2V3TechModel(getData().getProperties())) {
             add(new JButton(getTechTokenAction));
             add(new JButton(justRollTech));
           } else {

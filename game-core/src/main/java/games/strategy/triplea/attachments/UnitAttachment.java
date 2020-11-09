@@ -336,7 +336,8 @@ public class UnitAttachment extends DefaultAttachment {
     airDefense = getInt(value);
   }
 
-  private void setAirDefense(final Integer value) {
+  @VisibleForTesting
+  public void setAirDefense(final Integer value) {
     airDefense = value;
   }
 
@@ -362,7 +363,8 @@ public class UnitAttachment extends DefaultAttachment {
     airAttack = getInt(value);
   }
 
-  private void setAirAttack(final Integer value) {
+  @VisibleForTesting
+  public void setAirAttack(final Integer value) {
     airAttack = value;
   }
 
@@ -680,7 +682,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanMoveThroughEnemies() {
-    return canMoveThroughEnemies || (isSub && Properties.getSubmersibleSubs(getData()));
+    return canMoveThroughEnemies
+        || (isSub && Properties.getSubmersibleSubs(getData().getProperties()));
   }
 
   private void setCanBeMovedThroughByEnemies(final Boolean s) {
@@ -688,7 +691,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBeMovedThroughByEnemies() {
-    return canBeMovedThroughByEnemies || (isSub && Properties.getIgnoreSubInMovement(getData()));
+    return canBeMovedThroughByEnemies
+        || (isSub && Properties.getIgnoreSubInMovement(getData().getProperties()));
   }
 
   private void setCanNotTarget(final String value) throws GameParseException {
@@ -751,7 +755,7 @@ public class UnitAttachment extends DefaultAttachment {
   public Set<UnitType> getCanNotBeTargetedBy() {
     if (canNotBeTargetedBy == null) {
       canNotBeTargetedBy =
-          Properties.getAirAttackSubRestricted(getData())
+          Properties.getAirAttackSubRestricted(getData().getProperties())
               ? new HashSet<>(
                   CollectionUtils.getMatches(
                       getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()))
@@ -1585,7 +1589,7 @@ public class UnitAttachment extends DefaultAttachment {
             + TechAbilityAttachment.getDefenseBonus(
                 (UnitType) this.getAttachedTo(), player, getData());
     if (defenseValue > 0 && getIsFirstStrike() && TechTracker.hasSuperSubs(player)) {
-      final int bonus = Properties.getSuperSubDefenseBonus(getData());
+      final int bonus = Properties.getSuperSubDefenseBonus(getData().getProperties());
       defenseValue += bonus;
     }
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
@@ -1831,7 +1835,8 @@ public class UnitAttachment extends DefaultAttachment {
   public boolean getIsSuicideOnDefense() {
     return isSuicideOnDefense
         // Global property controlled whether isSuicide units would suicide on defense
-        || (isSuicide && !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(getData()));
+        || (isSuicide
+            && !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(getData().getProperties()));
   }
 
   private void setIsSuicideOnHit(final String s) {
@@ -2720,9 +2725,9 @@ public class UnitAttachment extends DefaultAttachment {
     // under certain rules (classic rules) there can only be 1 aa gun in a territory.
     if (max == Integer.MAX_VALUE
         && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())
-        && !(Properties.getWW2V2(data)
-            || Properties.getWW2V3(data)
-            || Properties.getMultipleAaPerTerritory(data))) {
+        && !(Properties.getWW2V2(data.getProperties())
+            || Properties.getWW2V3(data.getProperties())
+            || Properties.getMultipleAaPerTerritory(data.getProperties()))) {
       max = 1;
     }
     final Predicate<Unit> stackingMatch;
@@ -2805,7 +2810,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (isSea
         && transportCapacity != -1
-        && Properties.getTransportCasualtiesRestricted(data)
+        && Properties.getTransportCasualtiesRestricted(data.getProperties())
         && (attack > 0 || defense > 0)
         && !isCombatTransport) {
       throw new GameParseException(
@@ -3282,7 +3287,7 @@ public class UnitAttachment extends DefaultAttachment {
       sb.append("Can Rocket Attack, ");
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
-          && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
+          && Properties.getUseBombingMaxDiceSidesAndBonus(getData().getProperties())) {
         sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1)
             .append("-")
             .append(
@@ -3305,7 +3310,8 @@ public class UnitAttachment extends DefaultAttachment {
 
     // TODO: Rework damaged description
     if (getCanBeDamaged()
-        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+            getData().getProperties())) {
       final StringBuilder sb = new StringBuilder();
       sb.append("Can be Damaged by Raids, ");
       if (getMaxOperationalDamage() > -1) {
@@ -3326,10 +3332,10 @@ public class UnitAttachment extends DefaultAttachment {
       tuples.add(Tuple.of("Can be Damaged by Raids", ""));
     }
 
-    if (getIsAirBase() && Properties.getScrambleRulesInEffect(getData())) {
+    if (getIsAirBase() && Properties.getScrambleRulesInEffect(getData().getProperties())) {
       tuples.add(Tuple.of("Allows Scrambling", ""));
     }
-    if (getCanScramble() && Properties.getScrambleRulesInEffect(getData())) {
+    if (getCanScramble() && Properties.getScrambleRulesInEffect(getData().getProperties())) {
       tuples.add(
           Tuple.of(
               "Scramble Range",
@@ -3400,7 +3406,7 @@ public class UnitAttachment extends DefaultAttachment {
       final StringBuilder sb = new StringBuilder();
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
-          && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
+          && Properties.getUseBombingMaxDiceSidesAndBonus(getData().getProperties())) {
         sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1)
             .append("-")
             .append(
@@ -3462,7 +3468,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsSuicideOnHit()) {
       tuples.add(Tuple.of("Suicide on Hit Unit", ""));
     }
-    if (getIsAir() && (getIsKamikaze() || Properties.getKamikazeAirplanes(getData()))) {
+    if (getIsAir()
+        && (getIsKamikaze() || Properties.getKamikazeAirplanes(getData().getProperties()))) {
       tuples.add(Tuple.of("Is Kamikaze", "Can use all Movement to Attack Target"));
     }
 
@@ -3510,9 +3517,9 @@ public class UnitAttachment extends DefaultAttachment {
 
     if (getRepairsUnits() != null
         && !getRepairsUnits().isEmpty()
-        && Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
-        && (Properties.getBattleshipsRepairAtBeginningOfRound(getData())
-            || Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
+        && Properties.getTwoHitPointUnitsRequireRepairFacilities(getData().getProperties())
+        && (Properties.getBattleshipsRepairAtBeginningOfRound(getData().getProperties())
+            || Properties.getBattleshipsRepairAtEndOfRound(getData().getProperties()))) {
       if (getRepairsUnits().size() <= 4) {
         tuples.add(
             Tuple.of(
@@ -3525,7 +3532,7 @@ public class UnitAttachment extends DefaultAttachment {
 
     if (getGivesMovement() != null
         && getGivesMovement().totalValues() > 0
-        && Properties.getUnitsMayGiveBonusMovement(getData())) {
+        && Properties.getUnitsMayGiveBonusMovement(getData().getProperties())) {
       if (getGivesMovement().size() <= 4) {
         tuples.add(
             Tuple.of(
@@ -3553,7 +3560,7 @@ public class UnitAttachment extends DefaultAttachment {
 
     if (getRequiresUnits() != null
         && !getRequiresUnits().isEmpty()
-        && Properties.getUnitPlacementRestrictions(getData())) {
+        && Properties.getUnitPlacementRestrictions(getData().getProperties())) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnits()) {
         totalUnitsListed.addAll(List.of(list));
@@ -3578,7 +3585,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
 
     if (getUnitPlacementRestrictions() != null
-        && Properties.getUnitPlacementRestrictions(getData())) {
+        && Properties.getUnitPlacementRestrictions(getData().getProperties())) {
       if (getUnitPlacementRestrictions().length > 4) {
         tuples.add(Tuple.of("Has Placement Restrictions", ""));
       } else {
@@ -3587,7 +3594,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
     if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0
-        && Properties.getUnitPlacementRestrictions(getData())) {
+        && Properties.getUnitPlacementRestrictions(getData().getProperties())) {
       tuples.add(
           Tuple.of(
               "Must be Placed in Territory with Value of at Least",
@@ -3601,9 +3608,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (getMovementLimit() != null) {
       if (getMovementLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
-          && !(Properties.getWW2V2(getData())
-              || Properties.getWW2V3(getData())
-              || Properties.getMultipleAaPerTerritory(getData()))) {
+          && !(Properties.getWW2V2(getData().getProperties())
+              || Properties.getWW2V3(getData().getProperties())
+              || Properties.getMultipleAaPerTerritory(getData().getProperties()))) {
         tuples.add(
             Tuple.of("Max " + getMovementLimit().getSecond() + " Units Moving per Territory", "1"));
       } else if (getMovementLimit().getFirst() < 10000) {
@@ -3617,9 +3624,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (getAttackingLimit() != null) {
       if (getAttackingLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
-          && !(Properties.getWW2V2(getData())
-              || Properties.getWW2V3(getData())
-              || Properties.getMultipleAaPerTerritory(getData()))) {
+          && !(Properties.getWW2V2(getData().getProperties())
+              || Properties.getWW2V3(getData().getProperties())
+              || Properties.getMultipleAaPerTerritory(getData().getProperties()))) {
         tuples.add(
             Tuple.of(
                 "Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory", "1"));
@@ -3634,9 +3641,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (getPlacementLimit() != null) {
       if (getPlacementLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
-          && !(Properties.getWW2V2(getData())
-              || Properties.getWW2V3(getData())
-              || Properties.getMultipleAaPerTerritory(getData()))) {
+          && !(Properties.getWW2V2(getData().getProperties())
+              || Properties.getWW2V3(getData().getProperties())
+              || Properties.getMultipleAaPerTerritory(getData().getProperties()))) {
         tuples.add(
             Tuple.of(
                 "Max " + getPlacementLimit().getSecond() + " Units Placed per Territory", "1"));
@@ -3717,11 +3724,11 @@ public class UnitAttachment extends DefaultAttachment {
   private String getAaKey() {
     if (getIsAaForCombatOnly()
         && getIsAaForFlyOverOnly()
-        && !Properties.getAaTerritoryRestricted(getData())) {
+        && !Properties.getAaTerritoryRestricted(getData().getProperties())) {
       return " for Combat & Move Through";
     } else if (getIsAaForBombingThisUnitOnly()
         && getIsAaForFlyOverOnly()
-        && !Properties.getAaTerritoryRestricted(getData())) {
+        && !Properties.getAaTerritoryRestricted(getData().getProperties())) {
       return " for Raids & Move Through";
     } else if (getIsAaForCombatOnly()) {
       return " for Combat";

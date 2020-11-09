@@ -35,7 +35,7 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
     final Territory terr = data.getMap().getTerritory(location);
     final TerritoryAttachment ta = TerritoryAttachment.get(terr);
     GamePlayer owner;
-    if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)) {
+    if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data.getProperties())) {
       owner = terr.getOwner();
       if (owner == null) {
         owner = GamePlayer.NULL_PLAYERID;

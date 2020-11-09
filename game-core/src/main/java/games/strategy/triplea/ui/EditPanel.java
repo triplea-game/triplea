@@ -18,6 +18,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
@@ -688,7 +689,7 @@ class EditPanel extends ActionPanel {
                         TuvUtils.getCostsForTuv(player, getData()),
                         getData(),
                         CombatValue.buildMainCombatValue(
-                            List.of(), List.of(), false, getData(), List.of()),
+                            List.of(), List.of(), BattleState.Side.OFFENSE, getData(), List.of()),
                         true)
                     .reversed());
             // unit mapped to <max, min, current>
@@ -766,7 +767,7 @@ class EditPanel extends ActionPanel {
                         TuvUtils.getCostsForTuv(player, getData()),
                         getData(),
                         CombatValue.buildMainCombatValue(
-                            List.of(), List.of(), false, getData(), List.of()),
+                            List.of(), List.of(), BattleState.Side.OFFENSE, getData(), List.of()),
                         true)
                     .reversed());
             // unit mapped to <max, min, current>
@@ -910,7 +911,7 @@ class EditPanel extends ActionPanel {
     add(new JButton(delUnitsAction));
     add(new JButton(changeTerritoryOwnerAction));
     add(new JButton(changePUsAction));
-    if (Properties.getTechDevelopment(getData())) {
+    if (Properties.getTechDevelopment(getData().getProperties())) {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
     }
@@ -920,7 +921,7 @@ class EditPanel extends ActionPanel {
       if (allUnitTypes.stream().anyMatch(Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
       }
-      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
           && allUnitTypes.stream().anyMatch(Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }
