@@ -72,7 +72,8 @@ public class BombardmentCombatValue implements CombatValue {
 
   @Override
   public boolean chooseBestRoll(final Unit unit) {
-    return Properties.getLhtrHeavyBombers(gameData) || unit.getUnitAttachment().getChooseBestRoll();
+    return Properties.getLhtrHeavyBombers(gameData.getProperties())
+        || unit.getUnitAttachment().getChooseBestRoll();
   }
 
   @Override

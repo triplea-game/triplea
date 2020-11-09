@@ -35,7 +35,7 @@ public class FiringGroupSplitterBombard implements Function<BattleState, Collect
             Matches.unitIsNotInfrastructureAndNotCapturedOnEntering(
                 battleState.getPlayer(OFFENSE),
                 battleState.getBattleSite(),
-                battleState.getGameData()));
+                battleState.getGameData().getProperties()));
 
     return FiringGroup.groupBySuicideOnHit(
         NAVAL_BOMBARD, battleState.getBombardingUnits(), enemyUnits);

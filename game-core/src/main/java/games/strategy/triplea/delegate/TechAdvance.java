@@ -140,8 +140,8 @@ public abstract class TechAdvance extends NamedAttachable {
   /** For the game parser only. */
   public static void createDefaultTechAdvances(final GameData data) {
     final TechnologyFrontier tf = data.getTechnologyFrontier();
-    final boolean ww2v2 = Properties.getWW2V2(data);
-    final boolean ww2v3 = Properties.getWW2V3(data);
+    final boolean ww2v2 = Properties.getWW2V2(data.getProperties());
+    final boolean ww2v3 = Properties.getWW2V3(data.getProperties());
     if (ww2v2) {
       createWW2V2Advances(tf);
     } else if (ww2v3) {

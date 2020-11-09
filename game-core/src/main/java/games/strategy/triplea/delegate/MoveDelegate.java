@@ -91,7 +91,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
               .and(TriggerAttachment.placeMatch());
       final Predicate<TriggerAttachment> moveCombatDelegateAllTriggerMatch =
           moveCombatDelegateBeforeBonusTriggerMatch.or(moveCombatDelegateAfterBonusTriggerMatch);
-      if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
+      if (GameStepPropertiesHelper.isCombatMove(data)
+          && Properties.getTriggers(data.getProperties())) {
         final Set<TriggerAttachment> toFirePossible =
             TriggerAttachment.collectForAllTriggersMatching(
                 Set.of(player), moveCombatDelegateAllTriggerMatch);
@@ -153,7 +154,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
       // placing triggered units at beginning of combat move, but after bonuses and repairing, etc,
       // have been done.
-      if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
+      if (GameStepPropertiesHelper.isCombatMove(data)
+          && Properties.getTriggers(data.getProperties())) {
         final Set<TriggerAttachment> toFireAfterBonus =
             TriggerAttachment.collectForAllTriggersMatching(
                 Set.of(player), moveCombatDelegateAfterBonusTriggerMatch);
@@ -189,7 +191,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       addedHistoryEvent = true;
     }
     Change changeBonus = null;
-    if (Properties.getUnitsMayGiveBonusMovement(getData())) {
+    if (Properties.getUnitsMayGiveBonusMovement(getData().getProperties())) {
       changeBonus = giveBonusMovement(bridge, player);
     }
     if (changeBonus != null && !changeBonus.isEmpty()) {
@@ -436,14 +438,14 @@ public class MoveDelegate extends AbstractMoveDelegate {
   static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final GamePlayer player) {
     final GameData data = bridge.getData();
     final boolean repairOnlyOwn =
-        Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
+        Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData().getProperties());
     final Predicate<Unit> damagedUnits =
         Matches.unitHasMoreThanOneHitPointTotal().and(Matches.unitHasTakenSomeDamage());
     final Predicate<Unit> damagedUnitsOwned = damagedUnits.and(Matches.unitIsOwnedBy(player));
     final Map<Territory, Set<Unit>> damagedMap = new HashMap<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final Set<Unit> damaged;
-      if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
+      if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data.getProperties())) {
         damaged =
             new HashSet<>(
                 current
@@ -560,7 +562,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   /** This has to be the exact same as Matches.UnitCanBeRepairedByFacilitiesInItsTerritory() */
   private static int getLargestRepairRateForThisUnit(
       final Unit unitToBeRepaired, final Territory territoryUnitIsIn, final GameData data) {
-    if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
+    if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data.getProperties())) {
       return 1;
     }
     final GamePlayer owner = unitToBeRepaired.getOwner();
@@ -633,7 +635,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
     }
     boolean isKamikaze = false;
-    final boolean getKamikazeAir = Properties.getKamikazeAirplanes(data);
+    final boolean getKamikazeAir = Properties.getKamikazeAirplanes(data.getProperties());
     Collection<Unit> kamikazeUnits = new ArrayList<>();
 
     // confirm kamikaze moves, and remove them from unresolved units
@@ -694,8 +696,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
   private void removeAirThatCantLand() {
     final GameData data = getData();
     final boolean lhtrCarrierProd =
-        Properties.getLhtrCarrierProductionRules(data)
-            || Properties.getLandExistingFightersOnNewCarriers(data);
+        Properties.getLhtrCarrierProductionRules(data.getProperties())
+            || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
     boolean hasProducedCarriers = false;
     for (final GamePlayer p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
       if (p.getUnitCollection().anyMatch(Matches.unitIsCarrier())) {

@@ -173,7 +173,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       final GamePlayer player,
       final Map<ICondition, Boolean> testedConditions,
       final GameData data) {
-    if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
+    if (!Properties.getUsePolitics(data.getProperties()) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }
     return CollectionUtils.getMatches(

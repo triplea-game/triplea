@@ -160,7 +160,7 @@ class BattleCalculatorPanel extends JPanel {
     numRuns.setMax(20000);
 
     final int simulationCount =
-        Properties.getLowLuck(data)
+        Properties.getLowLuck(data.getProperties())
             ? ClientSetting.battleCalcSimulationCountLowLuck.getValueOrThrow()
             : ClientSetting.battleCalcSimulationCountDice.getValueOrThrow();
     numRuns.setValue(simulationCount);
@@ -1208,7 +1208,7 @@ class BattleCalculatorPanel extends JPanel {
                   attacking.removeAll(bombarding);
                   final int numLandUnits =
                       CollectionUtils.countMatches(attacking, Matches.unitIsLand());
-                  if (Properties.getShoreBombardPerGroundUnitRestricted(data)
+                  if (Properties.getShoreBombardPerGroundUnitRestricted(data.getProperties())
                       && numLandUnits < bombarding.size()) {
                     BattleDelegate.sortUnitsToBombard(bombarding);
                     // Create new list as needs to be serializable which subList isn't
@@ -1499,8 +1499,8 @@ class BattleCalculatorPanel extends JPanel {
     data.acquireReadLock();
     try {
       return isLand
-          ? Properties.getLandBattleRounds(data) > 0
-          : Properties.getSeaBattleRounds(data) > 0;
+          ? Properties.getLandBattleRounds(data.getProperties()) > 0
+          : Properties.getSeaBattleRounds(data.getProperties()) > 0;
     } finally {
       data.releaseReadLock();
     }

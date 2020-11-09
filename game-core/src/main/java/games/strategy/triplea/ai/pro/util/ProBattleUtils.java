@@ -126,7 +126,7 @@ public final class ProBattleUtils {
     List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(
             myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
-    if (Properties.getTransportCasualtiesRestricted(data)) {
+    if (Properties.getTransportCasualtiesRestricted(data.getProperties())) {
       unitsThatCanFight =
           CollectionUtils.getMatches(
               unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());

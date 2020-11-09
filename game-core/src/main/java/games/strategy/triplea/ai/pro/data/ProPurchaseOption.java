@@ -215,7 +215,7 @@ public class ProPurchaseOption {
     if (isAir
         && (carrierCost <= 0
             || carrierCost > unusedCarrierCapacity
-            || !Properties.getProduceFightersOnCarriers(data))) {
+            || !Properties.getProduceFightersOnCarriers(data.getProperties()))) {
       return 0;
     }
     final double supportAttackFactor =

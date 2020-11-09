@@ -226,7 +226,7 @@ public class UnitsDrawer extends AbstractDrawable {
     }
     displayHitDamage(bounds, graphics);
     // Display Factory Damage
-    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
         && Matches.unitTypeCanBeDamaged().test(type)) {
       displayFactoryDamage(bounds, graphics);
     }

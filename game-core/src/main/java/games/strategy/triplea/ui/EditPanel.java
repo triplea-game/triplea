@@ -910,7 +910,7 @@ class EditPanel extends ActionPanel {
     add(new JButton(delUnitsAction));
     add(new JButton(changeTerritoryOwnerAction));
     add(new JButton(changePUsAction));
-    if (Properties.getTechDevelopment(getData())) {
+    if (Properties.getTechDevelopment(getData().getProperties())) {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
     }
@@ -920,7 +920,7 @@ class EditPanel extends ActionPanel {
       if (allUnitTypes.stream().anyMatch(Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
       }
-      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
           && allUnitTypes.stream().anyMatch(Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }

@@ -186,7 +186,7 @@ public class MovePerformer implements Serializable {
                       Matches.unitCanBeDamaged().and(Matches.unitIsBeingTransported().negate()));
               final boolean canCreateAirBattle =
                   !enemyTargetsTotal.isEmpty()
-                      && Properties.getRaidsMayBePreceededByAirBattles(data)
+                      && Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
                       && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
                           route.getEnd(), gamePlayer, data, true);
               final Predicate<Unit> allBombingRaid =
@@ -220,7 +220,8 @@ public class MovePerformer implements Serializable {
                   // determine which unit to bomb
                   final Unit target;
                   if (enemyTargets.size() > 1
-                      && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+                      && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+                          data.getProperties())
                       && !canCreateAirBattle) {
                     target =
                         getRemotePlayer()
@@ -253,7 +254,7 @@ public class MovePerformer implements Serializable {
                 }
               }
               // Ignore Trn on Trn forces.
-              if (Properties.getIgnoreTransportInMovement(bridge.getData())) {
+              if (Properties.getIgnoreTransportInMovement(bridge.getData().getProperties())) {
                 final boolean allOwnedTransports =
                     !arrived.isEmpty()
                         && arrived.stream()
@@ -381,7 +382,7 @@ public class MovePerformer implements Serializable {
       }
     }
     if (routeEnd != null
-        && Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
+        && Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
         && GameStepPropertiesHelper.isNonCombatMove(data, false)
         && routeEnd
             .getUnitCollection()

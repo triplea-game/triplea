@@ -29,7 +29,7 @@ public class RetreatChecks {
 
   public static boolean onlyDefenselessTransportsLeft(
       final @NonNull Collection<Unit> units, final @NonNull GameData gameData) {
-    return Properties.getTransportCasualtiesRestricted(gameData)
+    return Properties.getTransportCasualtiesRestricted(gameData.getProperties())
         && !units.isEmpty()
         && units.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }

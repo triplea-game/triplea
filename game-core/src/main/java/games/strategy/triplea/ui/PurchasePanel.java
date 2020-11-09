@@ -147,7 +147,8 @@ public class PurchasePanel extends ActionPanel {
     }
     // give a warning if the
     // player tries to produce too much
-    if (Properties.getWW2V2(getData()) || Properties.getPlacementRestrictedByFactory(getData())) {
+    if (Properties.getWW2V2(getData().getProperties())
+        || Properties.getPlacementRestrictedByFactory(getData().getProperties())) {
       getData().acquireReadLock();
       int totalProd = 0;
       try {

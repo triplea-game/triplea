@@ -90,7 +90,8 @@ public class SelectMainBattleCasualties
 
   private TargetUnits getTargetUnits(final SelectCasualties step) {
     final TargetUnits targetUnits;
-    if (Properties.getTransportCasualtiesRestricted(step.getBattleState().getGameData())) {
+    if (Properties.getTransportCasualtiesRestricted(
+        step.getBattleState().getGameData().getProperties())) {
       targetUnits =
           TargetUnits.of(
               CollectionUtils.getMatches(

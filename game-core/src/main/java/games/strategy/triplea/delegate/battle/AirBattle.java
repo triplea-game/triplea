@@ -70,7 +70,7 @@ public class AirBattle extends AbstractBattle {
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, battleType, data);
     isAmphibious = false;
-    maxRounds = Properties.getAirBattleRounds(data);
+    maxRounds = Properties.getAirBattleRounds(data.getProperties());
     updateDefendingUnits();
   }
 
@@ -150,13 +150,13 @@ public class AirBattle extends AbstractBattle {
   protected boolean canAttackerRetreat() {
     return !shouldEndBattleDueToMaxRounds()
         && shouldFightAirBattle()
-        && Properties.getAirBattleAttackersCanRetreat(gameData);
+        && Properties.getAirBattleAttackersCanRetreat(gameData.getProperties());
   }
 
   protected boolean canDefenderRetreat() {
     return !shouldEndBattleDueToMaxRounds()
         && shouldFightAirBattle()
-        && Properties.getAirBattleDefendersCanRetreat(gameData);
+        && Properties.getAirBattleDefendersCanRetreat(gameData.getProperties());
   }
 
   List<IExecutable> getBattleExecutables(final boolean firstRun) {
@@ -358,7 +358,8 @@ public class AirBattle extends AbstractBattle {
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1
-                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData)) {
+                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+                    gameData.getProperties())) {
               while (target == null) {
                 target =
                     getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, List.of(unit));
@@ -616,7 +617,7 @@ public class AirBattle extends AbstractBattle {
         // if normal battle, we may choose to withdraw some air units (keep them grounded for both
         // Air battle and the
         // subsequent normal battle) instead of launching
-        if (Properties.getAirBattleDefendersCanRetreat(gameData)) {
+        if (Properties.getAirBattleDefendersCanRetreat(gameData.getProperties())) {
           interceptors =
               getRemote(defender, bridge)
                   .selectUnitsQuery(
@@ -813,7 +814,9 @@ public class AirBattle extends AbstractBattle {
     return PredicateBuilder.of(Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().negate())
-        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
+        .andIf(
+            !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
+            Matches.unitWasScrambled().negate())
         .build();
   }
 
@@ -828,7 +831,8 @@ public class AirBattle extends AbstractBattle {
             .and(Matches.unitIsEnemyOf(data, attacker))
             .and(Matches.unitWasInAirBattle().negate())
             .andIf(
-                !Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
+                !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
+                Matches.unitWasScrambled().negate())
             .build();
     final Predicate<Unit> airbasesCanIntercept =
         Matches.unitIsEnemyOf(data, attacker)
@@ -847,7 +851,8 @@ public class AirBattle extends AbstractBattle {
       final GamePlayer attacker,
       final GameData data,
       final boolean bombing) {
-    final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
+    final boolean canScrambleToAirBattle =
+        Properties.getCanScrambleIntoAirBattles(data.getProperties());
     final Predicate<Unit> defendingAirMatch =
         bombing
             ? defendingBombingRaidInterceptors(territory, attacker, data)

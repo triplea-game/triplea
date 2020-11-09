@@ -994,8 +994,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     sb.append("</ul></html>");
     final boolean lhtrProd =
-        Properties.getLhtrCarrierProductionRules(data)
-            || Properties.getLandExistingFightersOnNewCarriers(data);
+        Properties.getLhtrCarrierProductionRules(data.getProperties())
+            || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
     final int carrierCount =
         GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer).stream()
             .map(GamePlayer::getUnitCollection)
@@ -1130,11 +1130,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public boolean getStrategicBombingRaid(final Territory location) {
     messageAndDialogThreadPool.waitForAll();
     final String message =
-        (Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb")
+        (Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
+                ? "Bomb/Escort"
+                : "Bomb")
             + " in "
             + location.getName();
     final String bomb =
-        (Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb");
+        (Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
+            ? "Bomb/Escort"
+            : "Bomb");
     final String normal = "Attack";
     final String[] choices = {bomb, normal};
     int choice = -1;

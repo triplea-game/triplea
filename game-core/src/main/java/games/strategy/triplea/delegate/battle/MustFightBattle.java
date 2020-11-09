@@ -152,8 +152,8 @@ public class MustFightBattle extends DependentBattle
         this.battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));
     maxRounds =
         battleSite.isWater()
-            ? Properties.getSeaBattleRounds(data)
-            : Properties.getLandBattleRounds(data);
+            ? Properties.getSeaBattleRounds(data.getProperties())
+            : Properties.getLandBattleRounds(data.getProperties());
   }
 
   void resetDefendingUnits(final GamePlayer attacker, final GameData data) {
@@ -220,7 +220,9 @@ public class MustFightBattle extends DependentBattle
     // Filter out allied units if WW2V2
     final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(attacker);
     final Collection<Unit> attackingUnits =
-        Properties.getWW2V2(gameData) ? CollectionUtils.getMatches(units, ownedBy) : units;
+        Properties.getWW2V2(gameData.getProperties())
+            ? CollectionUtils.getMatches(units, ownedBy)
+            : units;
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     this.attackingFrom.add(attackingFrom);
     this.attackingUnits.addAll(attackingUnits);
@@ -236,7 +238,7 @@ public class MustFightBattle extends DependentBattle
     }
     final Map<Unit, Collection<Unit>> dependencies =
         new HashMap<>(TransportTracker.transporting(units));
-    if (!Properties.getAlliedAirIndependent(gameData)) {
+    if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
       dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, gameData, attacker));
       for (final Unit carrier : dependencies.keySet()) {
         final UnitAttachment ua = UnitAttachment.get(carrier.getType());
@@ -922,7 +924,7 @@ public class MustFightBattle extends DependentBattle
     // If attacker is all planes, just return collection of current territory
     if (headless
         || (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir()))
-        || Properties.getRetreatingUnitsRemainInPlace(gameData)) {
+        || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
       return Set.of(battleSite);
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat
@@ -935,7 +937,7 @@ public class MustFightBattle extends DependentBattle
             .and(Matches.unitIsSubmerged().negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
             .andIf(
-                Properties.getIgnoreTransportInMovement(gameData),
+                Properties.getIgnoreTransportInMovement(gameData.getProperties()),
                 Matches.unitIsNotTransportButCouldBeCombatTransport())
             .build();
     Collection<Territory> possible =
@@ -944,7 +946,8 @@ public class MustFightBattle extends DependentBattle
             Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
-    if (Properties.getWW2V2(gameData) || Properties.getWW2V3(gameData)) {
+    if (Properties.getWW2V2(gameData.getProperties())
+        || Properties.getWW2V3(gameData.getProperties())) {
       possible =
           CollectionUtils.getMatches(
               possible,
@@ -1396,7 +1399,8 @@ public class MustFightBattle extends DependentBattle
     unitList.removeAll(
         CollectionUtils.getMatches(
             unitList,
-            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(attacker, battleSite, gameData)));
+            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
+                attacker, battleSite, gameData.getProperties())));
     // remove any allied air units that are stuck on damaged carriers (veqryn)
     unitList.removeAll(
         CollectionUtils.getMatches(
@@ -1466,7 +1470,7 @@ public class MustFightBattle extends DependentBattle
     endBattle(bridge);
     whoWon = WhoWon.DEFENDER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, defender.getName() + " win");
-    if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData)) {
+    if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData.getProperties())) {
       if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).size()
           == 0) {
         final List<Unit> allyOfAttackerUnits =

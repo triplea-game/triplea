@@ -894,7 +894,7 @@ public class ProCombatMoveAi {
                       Matches.unitCanProduceUnitsAndCanBeDamaged()
                           .and(Matches.unitIsLegalBombingTargetBy(unit)));
           final boolean canCreateAirBattle =
-              Properties.getRaidsMayBePreceededByAirBattles(data)
+              Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
           if (canBeBombedByThisUnit
               && !canCreateAirBattle
@@ -1483,7 +1483,7 @@ public class ProCombatMoveAi {
 
     // If transports can take casualties try placing in naval battles first
     final List<Unit> alreadyAttackedWithTransports = new ArrayList<>();
-    if (!Properties.getTransportCasualtiesRestricted(data)) {
+    if (!Properties.getTransportCasualtiesRestricted(data.getProperties())) {
 
       // Loop through all my transports and see which territories they can attack from current list
       final Map<Unit, Set<Territory>> transportAttackOptions = new HashMap<>();
