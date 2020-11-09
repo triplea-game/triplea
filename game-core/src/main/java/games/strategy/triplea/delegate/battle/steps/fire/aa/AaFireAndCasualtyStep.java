@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -74,13 +72,13 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
           CombatValue.buildMainCombatValue(
               step.getBattleState().filterUnits(ALIVE, step.getSide()),
               step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
-              step.getSide() == OFFENSE,
+              step.getSide().getOpposite(),
               step.getBattleState().getGameData(),
               step.getBattleState().getTerritoryEffects()),
           CombatValue.buildAaCombatValue(
               step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
               step.getBattleState().filterUnits(ALIVE, step.getSide()),
-              step.getSide() == DEFENSE,
+              step.getSide(),
               step.getBattleState().getGameData()),
           "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
           step.getFireRoundState().getDice(),
@@ -104,7 +102,7 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
               CombatValue.buildAaCombatValue(
                   step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()),
                   step.getBattleState().filterUnits(ALIVE, step.getSide()),
-                  step.getSide() == DEFENSE,
+                  step.getSide(),
                   step.getBattleState().getGameData()));
 
       SoundUtils.playFireBattleAa(

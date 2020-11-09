@@ -13,6 +13,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +44,10 @@ class AaRollTest {
     final AvailableSupports friendlySupport =
         AvailableSupports.getSupport(
             new SupportCalculator(
-                List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
+                List.of(supportUnit),
+                Set.of(unitSupportAttachment),
+                BattleState.Side.OFFENSE,
+                true));
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -55,7 +59,10 @@ class AaRollTest {
     final AvailableSupports enemySupport =
         AvailableSupports.getSupport(
             new SupportCalculator(
-                List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
+                List.of(enemySupportUnit),
+                Set.of(enemyUnitSupportAttachment),
+                BattleState.Side.OFFENSE,
+                true));
 
     final AaRoll roll = new AaRoll(friendlySupport, enemySupport);
     assertThat(
@@ -98,7 +105,10 @@ class AaRollTest {
     final AvailableSupports friendlySupport =
         AvailableSupports.getSupport(
             new SupportCalculator(
-                List.of(supportUnit), Set.of(unitSupportAttachment), false, true));
+                List.of(supportUnit),
+                Set.of(unitSupportAttachment),
+                BattleState.Side.OFFENSE,
+                true));
 
     final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
     final UnitSupportAttachment enemyUnitSupportAttachment =
@@ -110,7 +120,10 @@ class AaRollTest {
     final AvailableSupports enemySupport =
         AvailableSupports.getSupport(
             new SupportCalculator(
-                List.of(enemySupportUnit), Set.of(enemyUnitSupportAttachment), false, true));
+                List.of(enemySupportUnit),
+                Set.of(enemyUnitSupportAttachment),
+                BattleState.Side.OFFENSE,
+                true));
 
     final AaRoll roll = new AaRoll(friendlySupport, enemySupport);
     roll.getRoll(unit);

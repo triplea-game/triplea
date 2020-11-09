@@ -23,6 +23,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -57,7 +58,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, true, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.DEFENSE, bridge.getData(), territoryEffects));
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
@@ -67,7 +68,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, true, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.DEFENSE, bridge.getData(), territoryEffects));
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
@@ -77,7 +78,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, false, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.OFFENSE, bridge.getData(), territoryEffects));
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
@@ -87,7 +88,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, false, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.OFFENSE, bridge.getData(), territoryEffects));
     assertThat(roll4.getHits(), is(0));
   }
 
@@ -114,7 +115,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, true, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.DEFENSE, bridge.getData(), territoryEffects));
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
@@ -124,7 +125,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, true, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.DEFENSE, bridge.getData(), territoryEffects));
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
@@ -134,7 +135,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, false, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.OFFENSE, bridge.getData(), territoryEffects));
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
@@ -144,7 +145,7 @@ class DiceRollTest {
             bridge,
             "",
             CombatValue.buildMainCombatValue(
-                List.of(), infantry, false, bridge.getData(), territoryEffects));
+                List.of(), infantry, BattleState.Side.OFFENSE, bridge.getData(), territoryEffects));
     assertThat(roll4.getHits(), is(0));
   }
 
@@ -169,7 +170,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 units,
-                false,
+                BattleState.Side.OFFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(2));
@@ -203,7 +204,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 units,
-                false,
+                BattleState.Side.OFFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(3));
@@ -227,7 +228,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 units,
-                true,
+                BattleState.Side.DEFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(westRussia)));
     assertThat(roll.getHits(), is(1));
@@ -264,7 +265,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 attackers,
-                false,
+                BattleState.Side.OFFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(1));
@@ -300,7 +301,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 attackers,
-                false,
+                BattleState.Side.OFFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(1));
@@ -337,7 +338,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 attackers,
-                false,
+                BattleState.Side.OFFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(algeria)));
     assertThat(roll.getHits(), is(0));
@@ -363,7 +364,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             westRussia,
-            CombatValue.buildAaCombatValue(bombers, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                bombers, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
@@ -372,7 +374,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             westRussia,
-            CombatValue.buildAaCombatValue(bombers, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                bombers, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(miss.getHits(), is(0));
   }
 
@@ -402,7 +405,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             westRussia,
-            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                fighterList, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
@@ -415,7 +419,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             westRussia,
-            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                fighterList, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 1 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
@@ -429,7 +434,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             westRussia,
-            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                fighterList, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hitNoRoll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
   }
@@ -458,7 +464,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             westRussia,
-            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                fighterList, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
   }
@@ -491,7 +498,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             finnland,
-            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                fighterList, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
@@ -504,7 +512,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             finnland,
-            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                fighterList, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 2 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
@@ -518,7 +527,8 @@ class DiceRollTest {
             aaGunList,
             bridge,
             finnland,
-            CombatValue.buildAaCombatValue(fighterList, aaGunList, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                fighterList, aaGunList, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hitNoRoll.getHits(), is(2));
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
   }
@@ -554,7 +564,8 @@ class DiceRollTest {
             atGuns,
             bridge,
             westernFrance,
-            CombatValue.buildAaCombatValue(targets, atGuns, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                targets, atGuns, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hit.getHits(), is(1));
     final DiceRoll miss =
         DiceRoll.rollAa(
@@ -562,7 +573,8 @@ class DiceRollTest {
             atGuns,
             bridge,
             westernFrance,
-            CombatValue.buildAaCombatValue(targets, atGuns, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                targets, atGuns, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(miss.getHits(), is(0));
 
     // 1 AT gun + 1 AT support (AT support is a unit that provides +2 AA strength for 3 units)
@@ -573,7 +585,8 @@ class DiceRollTest {
             atGuns,
             bridge,
             westernFrance,
-            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                targets, supportUnits, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hitWithSupport.getHits(), is(1));
     final DiceRoll missWithSupport =
         DiceRoll.rollAa(
@@ -581,7 +594,8 @@ class DiceRollTest {
             atGuns,
             bridge,
             westernFrance,
-            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                targets, supportUnits, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(missWithSupport.getHits(), is(0));
 
     // 2 AT guns + 1 AT support
@@ -592,7 +606,8 @@ class DiceRollTest {
             atGuns,
             bridge,
             westernFrance,
-            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                targets, supportUnits, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hitWith2AtAndSupport.getHits(), is(1));
     final DiceRoll missWith2AtAndSupport =
         DiceRoll.rollAa(
@@ -600,7 +615,8 @@ class DiceRollTest {
             atGuns,
             bridge,
             westernFrance,
-            CombatValue.buildAaCombatValue(targets, supportUnits, true, bridge.getData()));
+            CombatValue.buildAaCombatValue(
+                targets, supportUnits, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(missWith2AtAndSupport.getHits(), is(0));
 
     // 2 AT guns + 1 AT support + 1 enemy AT counter (AT counter is a unit that provides -10 AA
@@ -615,7 +631,7 @@ class DiceRollTest {
             bridge,
             westernFrance,
             CombatValue.buildAaCombatValue(
-                enemySupportUnits, supportUnits, true, bridge.getData()));
+                enemySupportUnits, supportUnits, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(missWith2AtAndSupportAndEnemySupport.getHits(), is(0));
 
     // 4 AT guns + 1 AT support + 1 enemy AT counter
@@ -628,7 +644,7 @@ class DiceRollTest {
             bridge,
             westernFrance,
             CombatValue.buildAaCombatValue(
-                enemySupportUnits, supportUnits, true, bridge.getData()));
+                enemySupportUnits, supportUnits, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(hitWith4AtAndSupportAndEnemySupport.getHits(), is(1));
     final DiceRoll missWith4AtAndSupportAndEnemySupport =
         DiceRoll.rollAa(
@@ -637,7 +653,7 @@ class DiceRollTest {
             bridge,
             westernFrance,
             CombatValue.buildAaCombatValue(
-                enemySupportUnits, supportUnits, true, bridge.getData()));
+                enemySupportUnits, supportUnits, BattleState.Side.DEFENSE, bridge.getData()));
     assertThat(missWith4AtAndSupportAndEnemySupport.getHits(), is(0));
 
     thenGetRandomShouldHaveBeenCalled(bridge, times(8));
@@ -669,7 +685,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 bombers,
-                false,
+                BattleState.Side.OFFENSE,
                 testDelegateBridge.getData(),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
@@ -702,7 +718,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 bombers,
-                true,
+                BattleState.Side.DEFENSE,
                 testDelegateBridge.getData(),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(1).size(), is(1));
@@ -731,7 +747,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 bombers,
-                true,
+                BattleState.Side.DEFENSE,
                 testDelegateBridge.getData(),
                 TerritoryEffectHelper.getEffects(germany)));
 
@@ -765,7 +781,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 bombers,
-                false,
+                BattleState.Side.OFFENSE,
                 testDelegateBridge.getData(),
                 TerritoryEffectHelper.getEffects(germany)));
 
@@ -800,7 +816,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 bombers,
-                false,
+                BattleState.Side.OFFENSE,
                 testDelegateBridge.getData(),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(4).get(0).getType(), is(Die.DieType.HIT));
@@ -834,7 +850,7 @@ class DiceRollTest {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 bombers,
-                true,
+                BattleState.Side.DEFENSE,
                 testDelegateBridge.getData(),
                 TerritoryEffectHelper.getEffects(germany)));
     assertThat(dice.getRolls(1).size(), is(2));

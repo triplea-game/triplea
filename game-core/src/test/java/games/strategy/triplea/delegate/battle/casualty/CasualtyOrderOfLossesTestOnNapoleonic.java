@@ -11,6 +11,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
@@ -91,7 +92,9 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
         .player(BRITISH)
-        .combatValue(CombatValue.buildMainCombatValue(List.of(), units, false, data, List.of()))
+        .combatValue(
+            CombatValue.buildMainCombatValue(
+                List.of(), units, BattleState.Side.OFFENSE, data, List.of()))
         .battlesite(NORMANDY)
         .costs(COST_MAP)
         .data(data)

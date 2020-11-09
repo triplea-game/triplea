@@ -696,7 +696,8 @@ public class AirBattle extends AbstractBattle {
                       attacker,
                       bridge,
                       "Attackers Fire, ",
-                      CombatValue.buildAirBattleCombatValue(false, bridge.getData()));
+                      CombatValue.buildAirBattleCombatValue(
+                          BattleState.Side.OFFENSE, bridge.getData()));
             }
           };
       final IExecutable calculateCasualties =
@@ -710,7 +711,11 @@ public class AirBattle extends AbstractBattle {
                       defender,
                       defendingUnits,
                       CombatValue.buildMainCombatValue(
-                          attackingUnits, defendingUnits, true, bridge.getData(), List.of()),
+                          attackingUnits,
+                          defendingUnits,
+                          BattleState.Side.DEFENSE,
+                          bridge.getData(),
+                          List.of()),
                       battleSite,
                       bridge,
                       ATTACKERS_FIRE,
@@ -762,7 +767,8 @@ public class AirBattle extends AbstractBattle {
                       defender,
                       bridge,
                       "Defenders Fire, ",
-                      CombatValue.buildAirBattleCombatValue(true, bridge.getData()));
+                      CombatValue.buildAirBattleCombatValue(
+                          BattleState.Side.DEFENSE, bridge.getData()));
             }
           };
       final IExecutable calculateCasualties =
@@ -776,7 +782,11 @@ public class AirBattle extends AbstractBattle {
                       attacker,
                       attackingUnits,
                       CombatValue.buildMainCombatValue(
-                          defendingUnits, attackingUnits, false, bridge.getData(), List.of()),
+                          defendingUnits,
+                          attackingUnits,
+                          BattleState.Side.OFFENSE,
+                          bridge.getData(),
+                          List.of()),
                       battleSite,
                       bridge,
                       DEFENDERS_FIRE,

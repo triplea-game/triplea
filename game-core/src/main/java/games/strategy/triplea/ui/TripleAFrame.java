@@ -52,6 +52,7 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
@@ -1429,7 +1430,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                         CombatValue.buildMainCombatValue(
                             List.of(),
                             List.of(),
-                            false,
+                            BattleState.Side.OFFENSE,
                             data,
                             TerritoryEffectHelper.getEffects(entry.getKey())),
                         true)

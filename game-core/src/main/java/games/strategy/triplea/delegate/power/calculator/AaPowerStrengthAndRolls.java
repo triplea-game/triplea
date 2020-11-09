@@ -102,7 +102,10 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
             .sorted(
                 sortAaHighToLow(
                     CombatValue.buildAaCombatValue(
-                        List.of(), List.of(), calculator.isDefending(), calculator.getGameData())))
+                        List.of(),
+                        List.of(),
+                        calculator.getBattleSide(),
+                        calculator.getGameData())))
             .collect(Collectors.toList()),
         targetCount,
         calculator);

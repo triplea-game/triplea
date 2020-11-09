@@ -12,6 +12,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
@@ -82,14 +83,14 @@ public class DiceRoll implements Externalizable {
       final Collection<Unit> aaUnits,
       final IDelegateBridge bridge,
       final Territory location,
-      final boolean defending) {
+      final BattleState.Side side) {
 
     return rollAa(
         validTargets,
         aaUnits,
         bridge,
         location,
-        CombatValue.buildAaCombatValue(List.of(), List.of(), defending, bridge.getData()));
+        CombatValue.buildAaCombatValue(List.of(), List.of(), side, bridge.getData()));
   }
 
   /**
@@ -271,17 +272,17 @@ public class DiceRoll implements Externalizable {
   /**
    * Sorts the specified collection of units in ascending order of their attack or defense strength.
    *
-   * @param defending {@code true} if the units should be sorted by their defense strength;
-   *     otherwise the units will be sorted by their attack strength.
+   * @param side {@code DEFENSE} if the units should be sorted by their defense strength; otherwise
+   *     the units will be sorted by their attack strength.
    */
-  public static void sortByStrength(final List<Unit> units, final boolean defending) {
+  public static void sortByStrength(final List<Unit> units, final BattleState.Side side) {
     // Pre-compute unit strength information to speed up the sort.
     final Table<UnitType, GamePlayer, Integer> strengthTable = HashBasedTable.create();
     for (final Unit unit : units) {
       final UnitType type = unit.getType();
       final GamePlayer owner = unit.getOwner();
       if (!strengthTable.contains(type, owner)) {
-        if (defending) {
+        if (side == BattleState.Side.DEFENSE) {
           strengthTable.put(type, owner, UnitAttachment.get(type).getDefense(owner));
         } else {
           strengthTable.put(type, owner, UnitAttachment.get(type).getAttack(owner));
@@ -395,7 +396,7 @@ public class DiceRoll implements Externalizable {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
-    sortByStrength(units, combatValueCalculator.isDefending());
+    sortByStrength(units, combatValueCalculator.getBattleSide());
     final PowerStrengthAndRolls unitPowerAndRollsMap =
         PowerStrengthAndRolls.build(units, combatValueCalculator);
 

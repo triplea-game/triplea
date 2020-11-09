@@ -46,7 +46,7 @@ class AvailableSupports {
 
     final SupportRuleSort supportRuleSort =
         SupportRuleSort.builder()
-            .defense(supportCalculator.isDefence())
+            .side(supportCalculator.getSide())
             .friendly(supportCalculator.isAllies())
             .roll(UnitSupportAttachment::getRoll)
             .strength(UnitSupportAttachment::getStrength)

@@ -485,7 +485,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                           currentPossibleAa,
                           bridge,
                           battleSite,
-                          true);
+                          BattleState.Side.DEFENSE);
                   if (currentTypeAa.equals("AA")) {
                     if (dice.getHits() > 0) {
                       bridge
@@ -591,7 +591,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           attacker,
           validAttackingUnitsForThisRoll,
           CombatValue.buildMainCombatValue(
-              defendingUnits, attackingUnits, false, bridge.getData(), territoryEffects),
+              defendingUnits,
+              attackingUnits,
+              BattleState.Side.OFFENSE,
+              bridge.getData(),
+              territoryEffects),
           battleSite,
           bridge,
           text,
@@ -606,8 +610,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             validAttackingUnitsForThisRoll,
             defendingAa,
             CombatValue.buildMainCombatValue(
-                defendingUnits, attackingUnits, false, bridge.getData(), territoryEffects),
-            CombatValue.buildAaCombatValue(attackingUnits, defendingUnits, true, bridge.getData()),
+                defendingUnits,
+                attackingUnits,
+                BattleState.Side.OFFENSE,
+                bridge.getData(),
+                territoryEffects),
+            CombatValue.buildAaCombatValue(
+                attackingUnits, defendingUnits, BattleState.Side.DEFENSE, bridge.getData()),
             "Hits from " + currentTypeAa + ", ",
             dice,
             bridge,

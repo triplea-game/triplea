@@ -449,7 +449,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 attackList,
-                false,
+                BattleState.Side.OFFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(2, roll.getHits());
@@ -872,7 +872,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 defendList,
-                true,
+                BattleState.Side.DEFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(0, roll.getHits());
@@ -945,7 +945,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 defendList,
-                true,
+                BattleState.Side.DEFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(1, roll.getHits());
@@ -1008,7 +1008,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 defendList,
-                true,
+                BattleState.Side.DEFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(0, roll.getHits());
@@ -1071,7 +1071,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             CombatValue.buildMainCombatValue(
                 List.of(),
                 defendList,
-                true,
+                BattleState.Side.DEFENSE,
                 bridge.getData(),
                 TerritoryEffectHelper.getEffects(balticSeaZone)));
     assertEquals(1, roll.getHits());

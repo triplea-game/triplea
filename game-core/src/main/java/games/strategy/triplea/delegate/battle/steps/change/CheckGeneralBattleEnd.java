@@ -79,7 +79,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
             CombatValue.buildMainCombatValue(
                 battleState.filterUnits(ALIVE, side.getOpposite()),
                 battleState.filterUnits(ALIVE, side),
-                side == DEFENSE,
+                side,
                 battleState.getGameData(),
                 battleState.getTerritoryEffects()))
         .hasStrengthOrRolls();

@@ -7,6 +7,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,8 @@ class MainOffenseCombatValue implements CombatValue {
   }
 
   @Override
-  public boolean isDefending() {
-    return false;
+  public BattleState.Side getBattleSide() {
+    return BattleState.Side.OFFENSE;
   }
 
   @Override
