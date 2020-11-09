@@ -699,7 +699,8 @@ class EditPanel extends ActionPanel {
                             .gameDiceSides(getData().getDiceSides())
                             .territoryEffects(List.of())
                             .build(),
-                        true)
+                        true,
+                        false)
                     .reversed());
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
@@ -786,7 +787,8 @@ class EditPanel extends ActionPanel {
                             .gameDiceSides(getData().getDiceSides())
                             .territoryEffects(List.of())
                             .build(),
-                        true)
+                        true,
+                        false)
                     .reversed());
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();

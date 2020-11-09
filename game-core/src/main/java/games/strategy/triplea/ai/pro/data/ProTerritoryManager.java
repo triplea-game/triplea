@@ -392,8 +392,7 @@ public class ProTerritoryManager {
               .sorted(
                   Comparator.<Unit>comparingDouble(
                           unit ->
-                              ProBattleUtils.estimateStrength(
-                                  proData, to, List.of(unit), List.of(), false))
+                              ProBattleUtils.estimateStrength(to, List.of(unit), List.of(), false))
                       .reversed())
               .limit(maxCanScramble)
               .forEachOrdered(addTo::add);

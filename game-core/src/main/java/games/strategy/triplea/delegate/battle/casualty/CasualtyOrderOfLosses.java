@@ -100,7 +100,7 @@ class CasualtyOrderOfLosses {
             true,
             true);
     final PowerStrengthAndRolls unitPowerAndRolls =
-        PowerStrengthAndRolls.build(sortedUnitsList, parameters.combatValue);
+        PowerStrengthAndRolls.buildWithPreSortedUnits(sortedUnitsList, parameters.combatValue);
 
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap =
         unitPowerAndRolls.getUnitSupportPowerMap();

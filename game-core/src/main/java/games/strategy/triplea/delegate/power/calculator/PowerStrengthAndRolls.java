@@ -47,10 +47,26 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
   }
 
   /**
-   * Returns the power (strength) and rolls for each of the specified units.
+   * Builds a PowerStrengthAndRolls that calculates the power, strength, and roll for each unit
    *
-   * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is
+   * @param unitsGettingPowerFor should be sorted from strongest to weakest, before the method is
    *     called, for the actual battle.
+   */
+  public static PowerStrengthAndRolls buildWithPreSortedUnits(
+      final Collection<Unit> unitsGettingPowerFor, final CombatValue calculator) {
+
+    if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
+      return new PowerStrengthAndRolls(List.of(), calculator);
+    }
+
+    return new PowerStrengthAndRolls(unitsGettingPowerFor, calculator);
+  }
+
+  /**
+   * Builds a PowerStrengthAndRolls that calculates the power, strength, and roll for each unit
+   *
+   * @param unitsGettingPowerFor does not need to be sorted
+   * @param calculator calculates the value of offense or defense
    */
   public static PowerStrengthAndRolls build(
       final Collection<Unit> unitsGettingPowerFor, final CombatValue calculator) {
@@ -59,7 +75,13 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
       return new PowerStrengthAndRolls(List.of(), calculator);
     }
 
-    return new PowerStrengthAndRolls(unitsGettingPowerFor, calculator);
+    // First, sort units strongest to weakest without support so that later, the support is given
+    // to the best units first
+    return new PowerStrengthAndRolls(
+        unitsGettingPowerFor.stream()
+            .sorted(calculator.unitComparator())
+            .collect(Collectors.toList()),
+        calculator);
   }
 
   private void addUnits(final Collection<Unit> units) {
