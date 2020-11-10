@@ -213,7 +213,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData, friendlySupport, enemySupport, List.of(territoryEffect));
+              6, List.of(territoryEffect), friendlySupport, enemySupport);
       assertThat(
           "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
           strength.getStrength(unit).getValue(),
@@ -246,7 +246,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData, AvailableSupports.EMPTY_RESULT, AvailableSupports.EMPTY_RESULT, List.of());
+              6, List.of(), AvailableSupports.EMPTY_RESULT, AvailableSupports.EMPTY_RESULT);
       assertThat(
           "Strength starts at 3, marine adds 1: total 4",
           strength.getStrength(unit).getValue(),
@@ -267,7 +267,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData, AvailableSupports.EMPTY_RESULT, AvailableSupports.EMPTY_RESULT, List.of());
+              6, List.of(), AvailableSupports.EMPTY_RESULT, AvailableSupports.EMPTY_RESULT);
       assertThat(
           "Strength starts at 3 and marine is not added: total 3",
           strength.getStrength(unit).getValue(),
@@ -318,7 +318,7 @@ class MainOffenseCombatValueTest {
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
           new MainOffenseCombatValue.MainOffenseStrength(
-              gameData, friendlySupport, enemySupport, List.of());
+              6, List.of(), friendlySupport, enemySupport);
       strength.getStrength(unit);
       assertThat(
           "Friendly gave 2 and enemy gave -1",

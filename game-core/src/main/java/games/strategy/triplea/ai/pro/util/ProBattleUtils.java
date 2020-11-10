@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,22 +64,30 @@ public final class ProBattleUtils {
         new UnitBattleComparator(
                 proData.getUnitValueMap(),
                 data,
-                CombatValue.buildMainCombatValue(
-                    List.of(),
-                    List.of(),
-                    BattleState.Side.OFFENSE,
-                    data,
-                    TerritoryEffectHelper.getEffects(t)))
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(List.of())
+                    .friendlyUnits(List.of())
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(TerritoryEffectHelper.getEffects(t))
+                    .build())
             .reversed());
     final int attackPower =
         PowerStrengthAndRolls.build(
                 sortedUnitsList,
-                CombatValue.buildMainCombatValue(
-                    defendingUnits,
-                    sortedUnitsList,
-                    BattleState.Side.OFFENSE,
-                    data,
-                    TerritoryEffectHelper.getEffects(t)))
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingUnits)
+                    .friendlyUnits(sortedUnitsList)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(TerritoryEffectHelper.getEffects(t))
+                    .build())
             .calculateTotalPower();
     final List<Unit> defendersWithHitPoints =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
@@ -157,22 +165,30 @@ public final class ProBattleUtils {
         new UnitBattleComparator(
                 proData.getUnitValueMap(),
                 data,
-                CombatValue.buildMainCombatValue(
-                    List.of(),
-                    List.of(),
-                    attacking ? BattleState.Side.OFFENSE : BattleState.Side.DEFENSE,
-                    data,
-                    TerritoryEffectHelper.getEffects(t)))
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(List.of())
+                    .friendlyUnits(List.of())
+                    .side(attacking ? BattleState.Side.OFFENSE : BattleState.Side.DEFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(TerritoryEffectHelper.getEffects(t))
+                    .build())
             .reversed());
     final int myPower =
         PowerStrengthAndRolls.build(
                 sortedUnitsList,
-                CombatValue.buildMainCombatValue(
-                    enemyUnits,
-                    sortedUnitsList,
-                    attacking ? BattleState.Side.OFFENSE : BattleState.Side.DEFENSE,
-                    data,
-                    TerritoryEffectHelper.getEffects(t)))
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(enemyUnits)
+                    .friendlyUnits(sortedUnitsList)
+                    .side(attacking ? BattleState.Side.OFFENSE : BattleState.Side.DEFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(TerritoryEffectHelper.getEffects(t))
+                    .build())
             .calculateTotalPower();
     return (myPower * 6.0 / data.getDiceSides());
   }

@@ -42,14 +42,15 @@ class AaPowerStrengthAndRollsTest {
   class GetRolls {
 
     private AaPowerStrengthAndRolls givenAaPowerStrengthAndRolls(
-        final GameData gameData, final List<Unit> units, final int numValidTargets) {
+        final List<Unit> units, final int numValidTargets) {
       return AaPowerStrengthAndRolls.build(
           units,
           numValidTargets,
           AaOffenseCombatValue.builder()
-              .gameData(gameData)
-              .supportFromFriends(AvailableSupports.EMPTY_RESULT)
-              .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
+              .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+              .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+              .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+              .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
               .build());
     }
 
@@ -60,7 +61,7 @@ class AaPowerStrengthAndRollsTest {
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
       final List<Unit> units = List.of(unit);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 2);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 2);
 
       assertThat("Unit has 1 roll and there are is least 1 target", result.getRolls(unit), is(1));
     }
@@ -72,7 +73,7 @@ class AaPowerStrengthAndRollsTest {
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(3);
       final List<Unit> units = List.of(unit);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 2);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 2);
 
       assertThat("Unit has 3 rolls but only 2 targets", result.getRolls(unit), is(2));
     }
@@ -87,7 +88,7 @@ class AaPowerStrengthAndRollsTest {
 
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat("Unit1 has 1 roll and there is 4 targets", result.getRolls(unit1), is(1));
       assertThat("Unit2 has 1 roll and there is 4 targets", result.getRolls(unit2), is(1));
@@ -103,7 +104,7 @@ class AaPowerStrengthAndRollsTest {
 
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 3);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 3);
 
       assertThat(
           "Unit2 has higher strength so can use both its rolls", result.getRolls(unit2), is(2));
@@ -122,7 +123,7 @@ class AaPowerStrengthAndRollsTest {
 
       final List<Unit> units = List.of(unit1, unit2, unit3);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 3);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 3);
 
       assertThat(
           "Unit2 has higher strength so can use both its rolls", result.getRolls(unit2), is(2));
@@ -137,7 +138,7 @@ class AaPowerStrengthAndRollsTest {
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat("Infinite unit can roll for all targets", result.getRolls(unit), is(4));
     }
@@ -151,7 +152,7 @@ class AaPowerStrengthAndRollsTest {
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit2 is stronger so it rolls for all the targets", result.getRolls(unit2), is(4));
@@ -160,7 +161,7 @@ class AaPowerStrengthAndRollsTest {
 
     @Test
     void twoAaWithInfiniteWithDifferentDice() {
-      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final GameData gameData = givenGameData().build();
       final Unit unit1 = givenUnit("test", gameData);
       unit1
           .getUnitAttachment()
@@ -175,7 +176,7 @@ class AaPowerStrengthAndRollsTest {
           .setOffensiveAttackAaMaxDieSides(8);
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "2 of 4 is better than 3 of 8 so unit1 rolls for all targets",
@@ -193,7 +194,7 @@ class AaPowerStrengthAndRollsTest {
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit1 is equal power to the infinite unit2 so it doesn't roll",
@@ -211,7 +212,7 @@ class AaPowerStrengthAndRollsTest {
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit1 is weaker than the infinite unit2 so it doesn't roll",
@@ -229,7 +230,7 @@ class AaPowerStrengthAndRollsTest {
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit1 is stronger than the infinite unit2 so it rolls once",
@@ -246,7 +247,7 @@ class AaPowerStrengthAndRollsTest {
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(5).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Overstack always uses all of its rolls even if there are not enough targets",
@@ -261,7 +262,7 @@ class AaPowerStrengthAndRollsTest {
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 2);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 2);
 
       assertThat(
           "Overstack makes no sense on an infinite unit so it only rolls for all the targets",
@@ -278,7 +279,7 @@ class AaPowerStrengthAndRollsTest {
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit1 is infinite so it rolls for all the targets", result.getRolls(unit1), is(4));
@@ -294,7 +295,7 @@ class AaPowerStrengthAndRollsTest {
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit1, unit2);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat("Unit1 has two rolls and there are 4 targets", result.getRolls(unit1), is(2));
       assertThat("Unit2 is overstack so it just uses all its rolls", result.getRolls(unit2), is(2));
@@ -311,7 +312,7 @@ class AaPowerStrengthAndRollsTest {
       unit3.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit1, unit2, unit3);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit1 is infinite and equal strength as the non-infinite so it rolls for all targets",
@@ -335,7 +336,7 @@ class AaPowerStrengthAndRollsTest {
       unit3.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit1, unit2, unit3);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit1 is infinite and weaker than the non infinite, so it only rolls for 2 targets",
@@ -359,7 +360,7 @@ class AaPowerStrengthAndRollsTest {
       unit3.getUnitAttachment().setOffensiveAttackAa(4).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit1, unit2, unit3);
 
-      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(gameData, units, 4);
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
       assertThat(
           "Unit1 is infinite and stronger than the non infinite, so it rolls for all targets",

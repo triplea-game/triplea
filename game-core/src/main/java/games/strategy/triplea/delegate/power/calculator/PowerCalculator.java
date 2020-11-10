@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import java.util.function.Function;
 import lombok.AccessLevel;
@@ -19,7 +18,6 @@ import lombok.Value;
 @AllArgsConstructor
 public class PowerCalculator {
 
-  GameData gameData;
   StrengthCalculator strengthCalculator;
   RollCalculator rollCalculator;
   Function<Unit, Boolean> chooseBestRoll;

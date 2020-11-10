@@ -64,6 +64,11 @@ class AvailableSupports {
         .build();
   }
 
+  /** Constructs a copied version of this */
+  AvailableSupports copy() {
+    return filter(support -> true);
+  }
+
   /** Constructs a filtered version of this */
   AvailableSupports filter(final Predicate<UnitSupportAttachment> ruleFilter) {
 

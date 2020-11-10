@@ -1,13 +1,11 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
-import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
@@ -32,39 +30,47 @@ import org.triplea.java.collections.IntegerMap;
 @Getter(AccessLevel.NONE)
 class MainDefenseCombatValue implements CombatValue {
 
-  @Getter(onMethod = @__({@Override}))
-  @NonNull
-  GameData gameData;
+  @NonNull GameSequence gameSequence;
 
-  @NonNull AvailableSupports supportFromFriends;
-  @NonNull AvailableSupports supportFromEnemies;
+  @NonNull Integer gameDiceSides;
+
+  @NonNull Boolean lhtrHeavyBombers;
+
+  @NonNull AvailableSupports strengthSupportFromFriends;
+  @NonNull AvailableSupports strengthSupportFromEnemies;
+  @NonNull AvailableSupports rollSupportFromFriends;
+  @NonNull AvailableSupports rollSupportFromEnemies;
 
   @NonNull Collection<TerritoryEffect> territoryEffects;
 
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   @NonNull
   @Builder.Default
   Collection<Unit> friendUnits = List.of();
 
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   @NonNull
   @Builder.Default
   Collection<Unit> enemyUnits = List.of();
 
   @Override
   public RollCalculator getRoll() {
-    return new MainDefenseRoll(supportFromFriends, supportFromEnemies);
+    return new MainDefenseRoll(rollSupportFromFriends.copy(), rollSupportFromEnemies.copy());
   }
 
   @Override
   public StrengthCalculator getStrength() {
     return new MainDefenseStrength(
-        gameData, supportFromFriends, supportFromEnemies, territoryEffects);
+        gameSequence,
+        gameDiceSides,
+        territoryEffects,
+        strengthSupportFromFriends.copy(),
+        strengthSupportFromEnemies.copy());
   }
 
   @Override
   public int getDiceSides(final Unit unit) {
-    return gameData.getDiceSides();
+    return gameDiceSides;
   }
 
   @Override
@@ -74,16 +80,19 @@ class MainDefenseCombatValue implements CombatValue {
 
   @Override
   public boolean chooseBestRoll(final Unit unit) {
-    return Properties.getLhtrHeavyBombers(gameData.getProperties())
-        || unit.getUnitAttachment().getChooseBestRoll();
+    return lhtrHeavyBombers || unit.getUnitAttachment().getChooseBestRoll();
   }
 
   @Override
   public CombatValue buildWithNoUnitSupports() {
     return MainDefenseCombatValue.builder()
-        .gameData(gameData)
-        .supportFromFriends(AvailableSupports.EMPTY_RESULT)
-        .supportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .gameSequence(gameSequence)
+        .gameDiceSides(gameDiceSides)
+        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
         .friendUnits(List.of())
         .enemyUnits(List.of())
         .territoryEffects(territoryEffects)
@@ -93,9 +102,13 @@ class MainDefenseCombatValue implements CombatValue {
   @Override
   public CombatValue buildOppositeCombatValue() {
     return MainOffenseCombatValue.builder()
-        .gameData(gameData)
-        .supportFromFriends(supportFromEnemies)
-        .supportFromEnemies(supportFromFriends)
+        .gameSequence(gameSequence)
+        .gameDiceSides(gameDiceSides)
+        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .rollSupportFromFriends(rollSupportFromEnemies)
+        .rollSupportFromEnemies(rollSupportFromFriends)
+        .strengthSupportFromFriends(strengthSupportFromEnemies)
+        .strengthSupportFromEnemies(strengthSupportFromFriends)
         .friendUnits(enemyUnits)
         .enemyUnits(friendUnits)
         .territoryEffects(territoryEffects)
@@ -107,12 +120,6 @@ class MainDefenseCombatValue implements CombatValue {
 
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-
-    MainDefenseRoll(
-        final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
-      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getRoll);
-      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getRoll);
-    }
 
     @Override
     public RollValue getRoll(final Unit unit) {
@@ -142,21 +149,11 @@ class MainDefenseCombatValue implements CombatValue {
   @Value
   static class MainDefenseStrength implements StrengthCalculator {
 
-    GameData gameData;
+    GameSequence gameSequence;
+    int gameDiceSides;
     Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
-
-    MainDefenseStrength(
-        final GameData gameData,
-        final AvailableSupports supportFromFriends,
-        final AvailableSupports supportFromEnemies,
-        final Collection<TerritoryEffect> territoryEffects) {
-      this.gameData = gameData;
-      this.territoryEffects = territoryEffects;
-      this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getStrength);
-      this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getStrength);
-    }
 
     @Override
     public StrengthValue getStrength(final Unit unit) {
@@ -168,7 +165,7 @@ class MainDefenseCombatValue implements CombatValue {
         allowFriendly = false;
       }
       StrengthValue strengthValue =
-          StrengthValue.of(gameData.getDiceSides(), strength)
+          StrengthValue.of(gameDiceSides, strength)
               .add(
                   TerritoryEffectHelper.getTerritoryCombatBonus(
                       unit.getType(), territoryEffects, true));
@@ -183,9 +180,9 @@ class MainDefenseCombatValue implements CombatValue {
     private boolean isFirstTurnLimitedRoll(final GamePlayer player) {
       // If player is null, Round > 1, or player has negate rule set: return false
       return !player.isNull()
-          && gameData.getSequence().getRound() == 1
+          && gameSequence.getRound() == 1
           && !isNegateDominatingFirstRoundAttack(player)
-          && isDominatingFirstRoundAttack(gameData.getSequence().getStep().getPlayerId());
+          && isDominatingFirstRoundAttack(gameSequence.getStep().getPlayerId());
     }
 
     private boolean isNegateDominatingFirstRoundAttack(final GamePlayer player) {

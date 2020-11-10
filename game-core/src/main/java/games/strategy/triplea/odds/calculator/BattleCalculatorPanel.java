@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
@@ -1424,8 +1424,16 @@ class BattleCalculatorPanel extends JPanel {
           new UnitBattleComparator(
                   costs,
                   data,
-                  CombatValue.buildMainCombatValue(
-                      List.of(), List.of(), BattleState.Side.OFFENSE, data, territoryEffects))
+                  CombatValueBuilder.mainCombatValue()
+                      .enemyUnits(List.of())
+                      .friendlyUnits(List.of())
+                      .side(BattleState.Side.OFFENSE)
+                      .gameSequence(data.getSequence())
+                      .supportAttachments(data.getUnitTypeList().getSupportRules())
+                      .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                      .gameDiceSides(data.getDiceSides())
+                      .territoryEffects(territoryEffects)
+                      .build())
               .reversed());
       if (isAmphibiousBattle()) {
         attackers.stream()
@@ -1446,15 +1454,31 @@ class BattleCalculatorPanel extends JPanel {
       final int attackPower =
           PowerStrengthAndRolls.build(
                   attackers,
-                  CombatValue.buildMainCombatValue(
-                      defenders, attackers, BattleState.Side.OFFENSE, data, territoryEffects))
+                  CombatValueBuilder.mainCombatValue()
+                      .enemyUnits(defenders)
+                      .friendlyUnits(attackers)
+                      .side(BattleState.Side.OFFENSE)
+                      .gameSequence(data.getSequence())
+                      .supportAttachments(data.getUnitTypeList().getSupportRules())
+                      .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                      .gameDiceSides(data.getDiceSides())
+                      .territoryEffects(territoryEffects)
+                      .build())
               .calculateTotalPower();
       // defender is never amphibious
       final int defensePower =
           PowerStrengthAndRolls.build(
                   defenders,
-                  CombatValue.buildMainCombatValue(
-                      attackers, defenders, BattleState.Side.DEFENSE, data, territoryEffects))
+                  CombatValueBuilder.mainCombatValue()
+                      .enemyUnits(attackers)
+                      .friendlyUnits(defenders)
+                      .side(BattleState.Side.DEFENSE)
+                      .gameSequence(data.getSequence())
+                      .supportAttachments(data.getUnitTypeList().getSupportRules())
+                      .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                      .gameDiceSides(data.getDiceSides())
+                      .territoryEffects(territoryEffects)
+                      .build())
               .calculateTotalPower();
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);

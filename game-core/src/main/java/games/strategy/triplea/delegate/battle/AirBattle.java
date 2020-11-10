@@ -22,7 +22,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
@@ -696,8 +696,12 @@ public class AirBattle extends AbstractBattle {
                       attacker,
                       bridge,
                       "Attackers Fire, ",
-                      CombatValue.buildAirBattleCombatValue(
-                          BattleState.Side.OFFENSE, bridge.getData()));
+                      CombatValueBuilder.airBattleCombatValue()
+                          .side(BattleState.Side.OFFENSE)
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .build());
             }
           };
       final IExecutable calculateCasualties =
@@ -710,12 +714,17 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       defender,
                       defendingUnits,
-                      CombatValue.buildMainCombatValue(
-                          attackingUnits,
-                          defendingUnits,
-                          BattleState.Side.DEFENSE,
-                          bridge.getData(),
-                          List.of()),
+                      CombatValueBuilder.mainCombatValue()
+                          .enemyUnits(attackingUnits)
+                          .friendlyUnits(defendingUnits)
+                          .side(BattleState.Side.DEFENSE)
+                          .gameSequence(bridge.getData().getSequence())
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .territoryEffects(List.of())
+                          .build(),
                       battleSite,
                       bridge,
                       ATTACKERS_FIRE,
@@ -767,8 +776,12 @@ public class AirBattle extends AbstractBattle {
                       defender,
                       bridge,
                       "Defenders Fire, ",
-                      CombatValue.buildAirBattleCombatValue(
-                          BattleState.Side.DEFENSE, bridge.getData()));
+                      CombatValueBuilder.airBattleCombatValue()
+                          .side(BattleState.Side.DEFENSE)
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .build());
             }
           };
       final IExecutable calculateCasualties =
@@ -781,12 +794,17 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       attacker,
                       attackingUnits,
-                      CombatValue.buildMainCombatValue(
-                          defendingUnits,
-                          attackingUnits,
-                          BattleState.Side.OFFENSE,
-                          bridge.getData(),
-                          List.of()),
+                      CombatValueBuilder.mainCombatValue()
+                          .enemyUnits(defendingUnits)
+                          .friendlyUnits(attackingUnits)
+                          .side(BattleState.Side.OFFENSE)
+                          .gameSequence(bridge.getData().getSequence())
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .territoryEffects(List.of())
+                          .build(),
                       battleSite,
                       bridge,
                       DEFENDERS_FIRE,
