@@ -241,6 +241,13 @@ class CasualtyOrderOfLosses {
     return sortedWellEnoughUnitsList;
   }
 
+  List<Unit> sortUnitsForCasualtiesWithSupportNew(final Parameters parameters) {
+
+    // parameters.targetsToPickFrom;
+
+    return List.of();
+  }
+
   @Value
   static class AmphibType {
     UnitType type;

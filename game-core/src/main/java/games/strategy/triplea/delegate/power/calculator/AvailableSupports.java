@@ -28,11 +28,11 @@ class AvailableSupports {
   static final AvailableSupports EMPTY_RESULT =
       AvailableSupports.builder()
           .supportRules(new HashMap<>())
-          .supportUnits(new HashMap<>())
+          .supportRulesToUnitsGivingSupport(new HashMap<>())
           .build();
 
   final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
-  final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
+  final Map<UnitSupportAttachment, IntegerMap<Unit>> supportRulesToUnitsGivingSupport;
 
   /**
    * Keeps track of the units that have provided support in {@link
@@ -60,7 +60,7 @@ class AvailableSupports {
   static AvailableSupports getSupport(final SupportCalculator supportCalculator) {
     return builder()
         .supportRules(supportCalculator.getSupportRules())
-        .supportUnits(supportCalculator.getSupportUnits())
+        .supportRulesToUnitsGivingSupport(supportCalculator.getSupportRulesToUnitsGivingSupport())
         .build();
   }
 
@@ -84,17 +84,20 @@ class AvailableSupports {
     }
 
     final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits = new HashMap<>();
-    for (final UnitSupportAttachment usa : this.supportUnits.keySet()) {
+    for (final UnitSupportAttachment usa : this.supportRulesToUnitsGivingSupport.keySet()) {
       if (ruleFilter.test(usa)) {
-        supportUnits.put(usa, new IntegerMap<>(this.supportUnits.get(usa)));
+        supportUnits.put(usa, new IntegerMap<>(this.supportRulesToUnitsGivingSupport.get(usa)));
       }
     }
 
-    return builder().supportRules(supportRules).supportUnits(supportUnits).build();
+    return builder()
+        .supportRules(supportRules)
+        .supportRulesToUnitsGivingSupport(supportUnits)
+        .build();
   }
 
   int getSupportLeft(final UnitSupportAttachment support) {
-    return supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues();
+    return supportRulesToUnitsGivingSupport.getOrDefault(support, new IntegerMap<>()).totalValues();
   }
 
   /**
@@ -137,7 +140,9 @@ class AvailableSupports {
         0,
         Math.min(
             support.getBonusType().getCount(),
-            supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues()));
+            supportRulesToUnitsGivingSupport
+                .getOrDefault(support, new IntegerMap<>())
+                .totalValues()));
   }
 
   /**
@@ -147,11 +152,11 @@ class AvailableSupports {
    * unit can give.
    */
   private Unit getNextAvailableSupporter(final UnitSupportAttachment support) {
-    final Set<Unit> supporters = supportUnits.get(support).keySet();
+    final Set<Unit> supporters = supportRulesToUnitsGivingSupport.get(support).keySet();
     final Unit u = supporters.iterator().next();
-    supportUnits.get(support).add(u, -1);
-    if (supportUnits.get(support).getInt(u) <= 0) {
-      supportUnits.get(support).removeKey(u);
+    supportRulesToUnitsGivingSupport.get(support).add(u, -1);
+    if (supportRulesToUnitsGivingSupport.get(support).getInt(u) <= 0) {
+      supportRulesToUnitsGivingSupport.get(support).removeKey(u);
     }
     return u;
   }

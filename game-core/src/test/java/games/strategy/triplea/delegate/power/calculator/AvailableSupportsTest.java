@@ -547,5 +547,56 @@ class AvailableSupportsTest {
       assertThat("First rule should have no support left", tracker.getSupportLeft(rule), is(0));
       assertThat("Second rule should have no support left", tracker.getSupportLeft(rule2), is(0));
     }
+
+    @Test
+    void supporterHasTwoRulesToGiveSupportToSameUnit() throws GameParseException {
+      final GameData gameData = givenGameData().build();
+
+      final GamePlayer owner = mock(GamePlayer.class);
+
+      final UnitType unitType = new UnitType("unit", gameData);
+      final Unit unit = unitType.create(1, owner, true).get(0);
+
+      final UnitType supportUnitType = new UnitType("support", gameData);
+      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+
+      final UnitSupportAttachment rule =
+          new UnitSupportAttachment("rule", supportUnitType, gameData);
+      rule.setSide("offence")
+          .setFaction("enemy")
+          .setPlayers(List.of(owner))
+          .setBonusType("bonus")
+          .setUnitType(Set.of(unitType))
+          .setBonus(1)
+          .setNumber(1);
+
+      final UnitSupportAttachment rule2 =
+          new UnitSupportAttachment("rule2", supportUnitType, gameData);
+      rule2
+          .setSide("offence")
+          .setFaction("enemy")
+          .setPlayers(List.of(owner))
+          .setBonusType("bonus2")
+          .setUnitType(Set.of(unitType))
+          .setBonus(2)
+          .setNumber(1);
+
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
+              new SupportCalculator(
+                  List.of(supportUnit), List.of(rule, rule2), BattleState.Side.OFFENSE, false));
+
+      assertThat(
+          "Support can give 1 from one rule and 2 from another rule",
+          tracker.giveSupportToUnit(unit),
+          is(3));
+
+      assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
+      assertThat("All the support was used for the rule2", tracker.getSupportLeft(rule2), is(0));
+      assertThat(
+          "The support unit gave one support to both",
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(supportUnit, IntegerMap.of(Map.of(unit, 3)))));
+    }
   }
 }

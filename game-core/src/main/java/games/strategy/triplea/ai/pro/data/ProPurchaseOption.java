@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.SupportCalculator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -291,7 +292,7 @@ public class ProPurchaseOption {
 
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
-      for (final List<UnitSupportAttachment> bonusType :
+      for (final Collection<UnitSupportAttachment> bonusType :
           availableSupports.getUnitSupportAttachments()) {
         if (!bonusType.contains(usa)) {
           continue;

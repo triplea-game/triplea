@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -36,7 +35,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   private static final long serialVersionUID = -3015679930172496082L;
 
-  private Set<UnitType> unitType = null;
+  private Set<UnitType> unitType = new HashSet<>();
   private boolean offence = false;
   private boolean defence = false;
   private boolean roll = false;
@@ -105,7 +104,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   private void setUnitType(final String names) throws GameParseException {
     if (names == null) {
-      unitType = null;
+      unitType = new HashSet<>();
       return;
     }
     unitType = new HashSet<>();
@@ -125,7 +124,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void resetUnitType() {
-    unitType = null;
+    unitType = new HashSet<>();
   }
 
   @VisibleForTesting
@@ -318,8 +317,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     impArtTech = false;
   }
 
-  @Nullable
   public Set<UnitType> getUnitType() {
+    if (unitType == null) {
+      // old save games can have a null unitType
+      return new HashSet<>();
+    }
     return unitType;
   }
 
@@ -397,10 +399,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private static Set<UnitType> getTargets(final GameData data) {
-    Set<UnitType> types = null;
+    final Set<UnitType> types = new HashSet<>();
     for (final UnitSupportAttachment rule : get(data)) {
       if (rule.getBonusType().isOldArtilleryRule()) {
-        types = rule.getUnitType();
+        types.addAll(rule.getUnitType());
         if (rule.getName().startsWith(Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST)) {
           // remove it because it is a "first", which is just a temporary one made to hold target
           // info. what a hack.
