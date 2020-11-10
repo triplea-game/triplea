@@ -25,10 +25,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateSentMessage;
+import org.triplea.java.IpAddressParser;
 
 @SuppressWarnings({"SameParameterValue", "InnerClassMayBeStatic"})
 @ExtendWith(MockitoExtension.class)
@@ -127,8 +126,7 @@ class GenericWebSocketTest {
   @SuppressWarnings("unused")
   private static List<String> atMaxBadMessagesWillBurnMessages() {
     return List.of(
-        "invalid json message",
-        new Gson().toJson(new PlayerStatusUpdateSentMessage("valid json").toEnvelope()));
+        "invalid json message", new Gson().toJson(new ExampleMessage("valid json").toEnvelope()));
   }
 
   private void givenIpHasBadMessageCount(final String ip, final int count) {
@@ -143,7 +141,7 @@ class GenericWebSocketTest {
     //noinspection ConstantConditions
     assertThat("Verify test assumptions", 1 < GenericWebSocket.MAX_BAD_MESSAGES, is(true));
 
-    final var messageEnvelope = new PlayerStatusUpdateSentMessage("status").toEnvelope();
+    final var messageEnvelope = new ExampleMessage("status").toEnvelope();
 
     genericWebSocket.onMessage(session, new Gson().toJson(messageEnvelope));
 

@@ -1,0 +1,4 @@
+dependencies {
+    implementation project(":http-clients")
+    implementation "io.github.openfeign:feign-core:$feignCoreVersion"
+}

@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.triplea.http.client.IpAddressParser;
+import org.triplea.java.IpAddressParser;
 
 /** Class to hold information about a packet destination or source. */
 @ToString

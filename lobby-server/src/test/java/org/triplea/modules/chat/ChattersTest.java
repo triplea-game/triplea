@@ -25,8 +25,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.java.IpAddressParser;
 import org.triplea.web.socket.MessageBroadcaster;
 import org.triplea.web.socket.WebSocketSession;
 

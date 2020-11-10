@@ -14,13 +14,13 @@ import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
+import org.triplea.java.IpAddressParser;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessagingBus;
 

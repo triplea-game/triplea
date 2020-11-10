@@ -40,8 +40,11 @@ dependencies {
     implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     implementation project(':domain-data')
     implementation project(':dropwizard-common')
+    implementation project(':github-client')
     implementation project(':http-clients')
     implementation project(':java-extras')
+    implementation project(':lobby-client')
+    implementation project(':websocket-client')
     implementation project(':websocket-server')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"

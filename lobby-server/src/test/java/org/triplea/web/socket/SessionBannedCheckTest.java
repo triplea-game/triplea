@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.user.ban.UserBanDao;
-import org.triplea.http.client.IpAddressParser;
+import org.triplea.java.IpAddressParser;
 
 @ExtendWith(MockitoExtension.class)
 class SessionBannedCheckTest {
