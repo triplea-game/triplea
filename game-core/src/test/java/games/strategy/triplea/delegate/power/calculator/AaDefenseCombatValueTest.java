@@ -70,9 +70,10 @@ class AaDefenseCombatValueTest {
 
       final StrengthCalculator strength =
           AaDefenseCombatValue.builder()
-              .gameData(gameData)
-              .supportFromFriends(friendlySupport)
-              .supportFromEnemies(enemySupport)
+              .strengthSupportFromFriends(friendlySupport)
+              .strengthSupportFromEnemies(enemySupport)
+              .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+              .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
               .build()
               .getStrength();
       assertThat(
@@ -149,9 +150,10 @@ class AaDefenseCombatValueTest {
 
       final StrengthCalculator strength =
           AaDefenseCombatValue.builder()
-              .gameData(gameData)
-              .supportFromFriends(friendlySupport)
-              .supportFromEnemies(enemySupport)
+              .strengthSupportFromFriends(friendlySupport)
+              .strengthSupportFromEnemies(enemySupport)
+              .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+              .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
               .build()
               .getStrength();
       strength.getStrength(unit);

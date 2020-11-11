@@ -21,13 +21,14 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -446,12 +447,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             russians,
             bridge,
             "",
-            CombatValue.buildMainCombatValue(
-                List.of(),
-                attackList,
-                BattleState.Side.OFFENSE,
-                bridge.getData(),
-                TerritoryEffectHelper.getEffects(balticSeaZone)));
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(attackList)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(2, roll.getHits());
     advanceToStep(bridge, "russianNonCombatMove");
     // Test the move
@@ -869,12 +874,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             germans,
             bridge,
             "",
-            CombatValue.buildMainCombatValue(
-                List.of(),
-                defendList,
-                BattleState.Side.DEFENSE,
-                bridge.getData(),
-                TerritoryEffectHelper.getEffects(balticSeaZone)));
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
@@ -942,12 +951,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             germans,
             bridge,
             "",
-            CombatValue.buildMainCombatValue(
-                List.of(),
-                defendList,
-                BattleState.Side.DEFENSE,
-                bridge.getData(),
-                TerritoryEffectHelper.getEffects(balticSeaZone)));
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
@@ -1005,12 +1018,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             germans,
             bridge,
             "",
-            CombatValue.buildMainCombatValue(
-                List.of(),
-                defendList,
-                BattleState.Side.DEFENSE,
-                bridge.getData(),
-                TerritoryEffectHelper.getEffects(balticSeaZone)));
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();
@@ -1068,12 +1085,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             germans,
             bridge,
             "",
-            CombatValue.buildMainCombatValue(
-                List.of(),
-                defendList,
-                BattleState.Side.DEFENSE,
-                bridge.getData(),
-                TerritoryEffectHelper.getEffects(balticSeaZone)));
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();

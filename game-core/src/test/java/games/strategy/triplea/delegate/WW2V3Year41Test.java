@@ -67,6 +67,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -81,7 +82,7 @@ import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
@@ -174,19 +175,32 @@ class WW2V3Year41Test {
             defendingAa,
             bridge,
             territory("Germany", gameData),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", gameData).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", gameData).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, gameData, List.of()),
-                CombatValue.buildAaCombatValue(
-                    planes, defendingAa, BattleState.Side.DEFENSE, gameData),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(gameData.getSequence())
+                    .supportAttachments(gameData.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                    .gameDiceSides(gameData.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(gameData.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -230,21 +244,34 @@ class WW2V3Year41Test {
             defendingAa,
             bridge,
             territory("Germany", gameData),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", gameData).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", gameData).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, gameData, List.of()),
-                CombatValue.buildAaCombatValue(
-                    planes, defendingAa, BattleState.Side.DEFENSE, gameData),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(gameData.getSequence())
+                    .supportAttachments(gameData.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                    .gameDiceSides(gameData.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(gameData.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -290,11 +317,12 @@ class WW2V3Year41Test {
             defendingAa,
             bridge,
             territory("Germany", gameData),
-            CombatValue.buildAaCombatValue(
-                planes,
-                territory("Germany", gameData).getUnits(),
-                BattleState.Side.DEFENSE,
-                bridge.getData()));
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(planes)
+                .friendlyUnits(territory("Germany", gameData).getUnits())
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build());
     assertEquals(2, roll.getHits());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
@@ -302,10 +330,22 @@ class WW2V3Year41Test {
         AaCasualtySelector.getAaCasualties(
                 planes,
                 defendingAa,
-                CombatValue.buildMainCombatValue(
-                    defendingAa, planes, BattleState.Side.OFFENSE, gameData, List.of()),
-                CombatValue.buildAaCombatValue(
-                    planes, defendingAa, BattleState.Side.DEFENSE, gameData),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingAa)
+                    .friendlyUnits(planes)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(gameData.getSequence())
+                    .supportAttachments(gameData.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                    .gameDiceSides(gameData.getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                CombatValueBuilder.aaCombatValue()
+                    .enemyUnits(planes)
+                    .friendlyUnits(defendingAa)
+                    .side(BattleState.Side.DEFENSE)
+                    .supportAttachments(gameData.getUnitTypeList().getSupportAaRules())
+                    .build(),
                 "",
                 roll,
                 bridge,
@@ -701,12 +741,17 @@ class WW2V3Year41Test {
             germans,
             delegateBridge,
             "",
-            CombatValue.buildMainCombatValue(
-                List.of(),
-                germanFighter,
-                BattleState.Side.OFFENSE,
-                delegateBridge.getData(),
-                territoryEffects));
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(germanFighter)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(delegateBridge.getData().getSequence())
+                .supportAttachments(delegateBridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(
+                    Properties.getLhtrHeavyBombers(delegateBridge.getData().getProperties()))
+                .gameDiceSides(delegateBridge.getData().getDiceSides())
+                .territoryEffects(territoryEffects)
+                .build());
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
@@ -715,12 +760,17 @@ class WW2V3Year41Test {
             germans,
             delegateBridge,
             "",
-            CombatValue.buildMainCombatValue(
-                List.of(),
-                germanFighter,
-                BattleState.Side.DEFENSE,
-                delegateBridge.getData(),
-                territoryEffects));
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(germanFighter)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(delegateBridge.getData().getSequence())
+                .supportAttachments(delegateBridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(
+                    Properties.getLhtrHeavyBombers(delegateBridge.getData().getProperties()))
+                .gameDiceSides(delegateBridge.getData().getDiceSides())
+                .territoryEffects(territoryEffects)
+                .build());
     assertEquals(0, roll2.getHits());
   }
 

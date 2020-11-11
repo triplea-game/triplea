@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -329,14 +329,22 @@ class AaInMoveUtil implements Serializable {
         AaCasualtySelector.getAaCasualties(
             validTargetedUnitsForThisRoll,
             defendingAa,
-            CombatValue.buildMainCombatValue(
-                allEnemyUnits,
-                allFriendlyUnits,
-                BattleState.Side.OFFENSE,
-                bridge.getData(),
-                TerritoryEffectHelper.getEffects(territory)),
-            CombatValue.buildAaCombatValue(
-                allFriendlyUnits, allEnemyUnits, BattleState.Side.DEFENSE, bridge.getData()),
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(allEnemyUnits)
+                .friendlyUnits(allFriendlyUnits)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(territory))
+                .build(),
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(allFriendlyUnits)
+                .friendlyUnits(allEnemyUnits)
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build(),
             "Select "
                 + dice.getHits()
                 + " casualties from "

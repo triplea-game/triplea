@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attachments.UnitSupportAttachment;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,11 +16,6 @@ class AaRoll implements RollCalculator {
 
   AvailableSupports supportFromFriends;
   AvailableSupports supportFromEnemies;
-
-  AaRoll(final AvailableSupports supportFromFriends, final AvailableSupports supportFromEnemies) {
-    this.supportFromFriends = supportFromFriends.filter(UnitSupportAttachment::getAaRoll);
-    this.supportFromEnemies = supportFromEnemies.filter(UnitSupportAttachment::getAaRoll);
-  }
 
   @Override
   public RollValue getRoll(final Unit unit) {

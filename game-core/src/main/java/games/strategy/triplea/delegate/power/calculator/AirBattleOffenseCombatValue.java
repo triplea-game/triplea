@@ -1,8 +1,6 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
@@ -21,14 +19,21 @@ import org.triplea.java.collections.IntegerMap;
  */
 @Builder
 @Value
-@Getter(onMethod_ = @Override)
 class AirBattleOffenseCombatValue implements CombatValue {
 
-  @NonNull GameData gameData;
+  @NonNull Integer gameDiceSides;
 
-  @NonNull @Builder.Default Collection<Unit> friendUnits = List.of();
+  @NonNull Boolean lhtrHeavyBombers;
 
-  @NonNull @Builder.Default Collection<Unit> enemyUnits = List.of();
+  @Getter(onMethod_ = @Override)
+  @NonNull
+  @Builder.Default
+  Collection<Unit> friendUnits = List.of();
+
+  @Getter(onMethod_ = @Override)
+  @NonNull
+  @Builder.Default
+  Collection<Unit> enemyUnits = List.of();
 
   @Override
   public RollCalculator getRoll() {
@@ -37,7 +42,7 @@ class AirBattleOffenseCombatValue implements CombatValue {
 
   @Override
   public StrengthCalculator getStrength() {
-    return new AirBattleOffenseStrength(gameData.getDiceSides());
+    return new AirBattleOffenseStrength(gameDiceSides);
   }
 
   @Override
@@ -47,23 +52,28 @@ class AirBattleOffenseCombatValue implements CombatValue {
 
   @Override
   public int getDiceSides(final Unit unit) {
-    return gameData.getDiceSides();
+    return gameDiceSides;
   }
 
   @Override
   public boolean chooseBestRoll(final Unit unit) {
-    return Properties.getLhtrHeavyBombers(gameData.getProperties())
-        || unit.getUnitAttachment().getChooseBestRoll();
+    return lhtrHeavyBombers || unit.getUnitAttachment().getChooseBestRoll();
   }
 
   @Override
   public CombatValue buildWithNoUnitSupports() {
-    return AirBattleOffenseCombatValue.builder().gameData(gameData).build();
+    return AirBattleOffenseCombatValue.builder()
+        .gameDiceSides(gameDiceSides)
+        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .build();
   }
 
   @Override
   public CombatValue buildOppositeCombatValue() {
-    return AirBattleDefenseCombatValue.builder().gameData(gameData).build();
+    return AirBattleDefenseCombatValue.builder()
+        .gameDiceSides(gameDiceSides)
+        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .build();
   }
 
   @Value

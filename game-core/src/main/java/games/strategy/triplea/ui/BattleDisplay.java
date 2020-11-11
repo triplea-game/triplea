@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -21,6 +22,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.settings.ClientSetting;
@@ -877,15 +879,24 @@ public class BattleDisplay extends JPanel {
       try {
         final CombatValue combatValue;
         if (isAirPreBattleOrPreRaid) {
-          combatValue = CombatValue.buildAirBattleCombatValue(side, gameData);
+          combatValue =
+              CombatValueBuilder.airBattleCombatValue()
+                  .side(BattleState.Side.DEFENSE)
+                  .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                  .gameDiceSides(gameData.getDiceSides())
+                  .build();
         } else {
           combatValue =
-              CombatValue.buildMainCombatValue(
-                  new ArrayList<>(enemyBattleModel.getUnits()),
-                  units,
-                  side,
-                  gameData,
-                  territoryEffects);
+              CombatValueBuilder.mainCombatValue()
+                  .enemyUnits(new ArrayList<>(enemyBattleModel.getUnits()))
+                  .friendlyUnits(units)
+                  .side(side)
+                  .gameSequence(gameData.getSequence())
+                  .supportAttachments(gameData.getUnitTypeList().getSupportRules())
+                  .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                  .gameDiceSides(gameData.getDiceSides())
+                  .territoryEffects(territoryEffects)
+                  .build();
         }
         unitPowerAndRollsMap = PowerStrengthAndRolls.build(units, combatValue);
       } finally {

@@ -22,7 +22,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
@@ -688,8 +688,17 @@ class EditPanel extends ActionPanel {
                 new UnitBattleComparator(
                         TuvUtils.getCostsForTuv(player, getData()),
                         getData(),
-                        CombatValue.buildMainCombatValue(
-                            List.of(), List.of(), BattleState.Side.OFFENSE, getData(), List.of()),
+                        CombatValueBuilder.mainCombatValue()
+                            .enemyUnits(List.of())
+                            .friendlyUnits(List.of())
+                            .side(BattleState.Side.OFFENSE)
+                            .gameSequence(getData().getSequence())
+                            .supportAttachments(getData().getUnitTypeList().getSupportRules())
+                            .lhtrHeavyBombers(
+                                Properties.getLhtrHeavyBombers(getData().getProperties()))
+                            .gameDiceSides(getData().getDiceSides())
+                            .territoryEffects(List.of())
+                            .build(),
                         true)
                     .reversed());
             // unit mapped to <max, min, current>
@@ -766,8 +775,17 @@ class EditPanel extends ActionPanel {
                 new UnitBattleComparator(
                         TuvUtils.getCostsForTuv(player, getData()),
                         getData(),
-                        CombatValue.buildMainCombatValue(
-                            List.of(), List.of(), BattleState.Side.OFFENSE, getData(), List.of()),
+                        CombatValueBuilder.mainCombatValue()
+                            .enemyUnits(List.of())
+                            .friendlyUnits(List.of())
+                            .side(BattleState.Side.OFFENSE)
+                            .gameSequence(getData().getSequence())
+                            .supportAttachments(getData().getUnitTypeList().getSupportRules())
+                            .lhtrHeavyBombers(
+                                Properties.getLhtrHeavyBombers(getData().getProperties()))
+                            .gameDiceSides(getData().getDiceSides())
+                            .territoryEffects(List.of())
+                            .build(),
                         true)
                     .reversed());
             // unit mapped to <max, min, current>

@@ -6,6 +6,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -13,7 +14,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -205,8 +206,16 @@ public final class ProSortMoveOptionsUtils {
           new UnitBattleComparator(
               proData.getUnitValueMap(),
               data,
-              CombatValue.buildMainCombatValue(
-                  List.of(), List.of(), BattleState.Side.OFFENSE, data, effects));
+              CombatValueBuilder.mainCombatValue()
+                  .enemyUnits(List.of())
+                  .friendlyUnits(List.of())
+                  .side(BattleState.Side.OFFENSE)
+                  .gameSequence(data.getSequence())
+                  .supportAttachments(data.getUnitTypeList().getSupportRules())
+                  .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                  .gameDiceSides(data.getDiceSides())
+                  .territoryEffects(effects)
+                  .build());
 
       final List<Unit> defendingUnits =
           t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
@@ -222,8 +231,16 @@ public final class ProSortMoveOptionsUtils {
             (includeUnit ? 1 : -1)
                 * PowerStrengthAndRolls.build(
                         sortedUnits,
-                        CombatValue.buildMainCombatValue(
-                            defendingUnits, sortedUnits, BattleState.Side.OFFENSE, data, effects))
+                        CombatValueBuilder.mainCombatValue()
+                            .enemyUnits(defendingUnits)
+                            .friendlyUnits(sortedUnits)
+                            .side(BattleState.Side.OFFENSE)
+                            .gameSequence(data.getSequence())
+                            .supportAttachments(data.getUnitTypeList().getSupportRules())
+                            .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                            .gameDiceSides(data.getDiceSides())
+                            .territoryEffects(effects)
+                            .build())
                     .calculateTotalPower();
       }
       if (powerDifference < minPower) {

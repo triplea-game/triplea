@@ -32,7 +32,7 @@ import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.BattleRecords;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -1359,23 +1359,27 @@ public class BattleTracker implements Serializable {
    * block amphibious assaults later
    */
   public void fightDefenselessBattles(final IDelegateBridge bridge) {
-    final GameData gameData = bridge.getData();
     // Here and below parameter "false" to getPendingBattleSites & getPendingBattle denote non-SBR
     // battles
     for (final Territory territory : getPendingBattleSites(false)) {
       final IBattle battle = getPendingBattle(territory, BattleType.NORMAL);
       final Collection<Unit> defenders = battle.getDefendingUnits();
       final List<Unit> sortedUnitsList =
-          getSortedDefendingUnits(bridge, gameData, territory, defenders);
+          getSortedDefendingUnits(bridge, bridge.getData(), territory, defenders);
       if (getDependentOn(battle).isEmpty()
           && PowerStrengthAndRolls.build(
                       sortedUnitsList,
-                      CombatValue.buildMainCombatValue(
-                          defenders,
-                          sortedUnitsList,
-                          BattleState.Side.DEFENSE,
-                          gameData,
-                          TerritoryEffectHelper.getEffects(territory)))
+                      CombatValueBuilder.mainCombatValue()
+                          .enemyUnits(defenders)
+                          .friendlyUnits(sortedUnitsList)
+                          .side(BattleState.Side.DEFENSE)
+                          .gameSequence(bridge.getData().getSequence())
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .territoryEffects(TerritoryEffectHelper.getEffects(territory))
+                          .build())
                   .calculateTotalPower()
               == 0) {
         battle.fight(bridge);
@@ -1401,12 +1405,16 @@ public class BattleTracker implements Serializable {
         new UnitBattleComparator(
                 TuvUtils.getCostsForTuv(bridge.getGamePlayer(), gameData),
                 gameData,
-                CombatValue.buildMainCombatValue(
-                    List.of(),
-                    List.of(),
-                    BattleState.Side.DEFENSE,
-                    gameData,
-                    TerritoryEffectHelper.getEffects(territory)))
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(List.of())
+                    .friendlyUnits(List.of())
+                    .side(BattleState.Side.DEFENSE)
+                    .gameSequence(gameData.getSequence())
+                    .supportAttachments(gameData.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                    .gameDiceSides(gameData.getDiceSides())
+                    .territoryEffects(TerritoryEffectHelper.getEffects(territory))
+                    .build())
             .reversed());
     return sortedUnitsList;
   }

@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilte
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
@@ -15,7 +16,7 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.fire.general.FiringGroupSplitterGeneral;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.List;
 import java.util.Objects;
@@ -76,12 +77,17 @@ public class CheckGeneralBattleEnd implements BattleStep {
   private boolean hasNoStrengthOrRolls(final BattleState.Side side) {
     return !PowerStrengthAndRolls.build(
             battleState.filterUnits(ALIVE, side),
-            CombatValue.buildMainCombatValue(
-                battleState.filterUnits(ALIVE, side.getOpposite()),
-                battleState.filterUnits(ALIVE, side),
-                side,
-                battleState.getGameData(),
-                battleState.getTerritoryEffects()))
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(battleState.filterUnits(ALIVE, side.getOpposite()))
+                .friendlyUnits(battleState.filterUnits(ALIVE, side))
+                .side(side)
+                .gameSequence(battleState.getGameData().getSequence())
+                .supportAttachments(battleState.getGameData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(
+                    Properties.getLhtrHeavyBombers(battleState.getGameData().getProperties()))
+                .gameDiceSides(battleState.getGameData().getDiceSides())
+                .territoryEffects(battleState.getTerritoryEffects())
+                .build())
         .hasStrengthOrRolls();
   }
 

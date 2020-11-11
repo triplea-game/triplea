@@ -32,7 +32,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
@@ -590,12 +590,16 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       return CasualtySelector.selectCasualties(
           attacker,
           validAttackingUnitsForThisRoll,
-          CombatValue.buildMainCombatValue(
-              defendingUnits,
-              attackingUnits,
-              BattleState.Side.OFFENSE,
-              bridge.getData(),
-              territoryEffects),
+          CombatValueBuilder.mainCombatValue()
+              .enemyUnits(defendingUnits)
+              .friendlyUnits(attackingUnits)
+              .side(BattleState.Side.OFFENSE)
+              .gameSequence(bridge.getData().getSequence())
+              .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+              .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+              .gameDiceSides(bridge.getData().getDiceSides())
+              .territoryEffects(territoryEffects)
+              .build(),
           battleSite,
           bridge,
           text,
@@ -609,14 +613,22 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         AaCasualtySelector.getAaCasualties(
             validAttackingUnitsForThisRoll,
             defendingAa,
-            CombatValue.buildMainCombatValue(
-                defendingUnits,
-                attackingUnits,
-                BattleState.Side.OFFENSE,
-                bridge.getData(),
-                territoryEffects),
-            CombatValue.buildAaCombatValue(
-                attackingUnits, defendingUnits, BattleState.Side.DEFENSE, bridge.getData()),
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(defendingUnits)
+                .friendlyUnits(attackingUnits)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(territoryEffects)
+                .build(),
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(attackingUnits)
+                .friendlyUnits(defendingUnits)
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build(),
             "Hits from " + currentTypeAa + ", ",
             dice,
             bridge,

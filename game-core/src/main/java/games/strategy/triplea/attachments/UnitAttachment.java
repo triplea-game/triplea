@@ -2246,10 +2246,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttackAaMaxDieSides() {
-    if (attackAaMaxDieSides < 0) {
-      return getData().getDiceSides();
-    }
-    return attackAaMaxDieSides;
+    return attackAaMaxDieSides > 0 ? attackAaMaxDieSides : getData().getDiceSides();
   }
 
   private void resetAttackAaMaxDieSides() {
@@ -2267,10 +2264,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getOffensiveAttackAaMaxDieSides() {
-    if (offensiveAttackAaMaxDieSides < 0) {
-      return getData().getDiceSides();
-    }
-    return offensiveAttackAaMaxDieSides;
+    return offensiveAttackAaMaxDieSides > 0
+        ? offensiveAttackAaMaxDieSides
+        : getData().getDiceSides();
   }
 
   private void resetOffensiveAttackAaMaxDieSides() {
