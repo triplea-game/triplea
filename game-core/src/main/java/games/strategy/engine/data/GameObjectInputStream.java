@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -45,8 +46,14 @@ public class GameObjectInputStream extends ObjectInputStream {
       if (local != null) {
         return local;
       }
-      getData().getUnits().put(unit);
-      return unit;
+      final Unit newLocal;
+      if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
+        newLocal = new Unit(unit.getId(), unit.getType(), unit.getOwner(), unit.getData());
+      } else {
+        newLocal = unit;
+      }
+      dataSource.getData().getUnits().put(newLocal);
+      return newLocal;
     } finally {
       dataSource.getData().releaseReadLock();
     }
