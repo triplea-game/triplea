@@ -10,6 +10,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Die;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,21 +39,21 @@ class AaPowerStrengthAndRollsTest {
     return unitType;
   }
 
+  private AaPowerStrengthAndRolls givenAaPowerStrengthAndRolls(
+      final List<Unit> units, final int numValidTargets) {
+    return AaPowerStrengthAndRolls.build(
+        units,
+        numValidTargets,
+        AaOffenseCombatValue.builder()
+            .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+            .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+            .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+            .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+            .build());
+  }
+
   @Nested
   class GetRolls {
-
-    private AaPowerStrengthAndRolls givenAaPowerStrengthAndRolls(
-        final List<Unit> units, final int numValidTargets) {
-      return AaPowerStrengthAndRolls.build(
-          units,
-          numValidTargets,
-          AaOffenseCombatValue.builder()
-              .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
-              .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
-              .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
-              .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
-              .build());
-    }
 
     @Test
     void singleAa() {
@@ -371,6 +372,39 @@ class AaPowerStrengthAndRollsTest {
           result.getRolls(unit2),
           is(0));
       assertThat("Unit3 is overstack so it just uses all its rolls", result.getRolls(unit3), is(2));
+    }
+  }
+
+  @Nested
+  class GetDiceHits {
+    @Test
+    void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsBest() {
+      final GameData gameData = givenGameData().withDiceSides(6).build();
+      final Unit unit1 = givenUnit("test", gameData);
+      unit1.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
+      final Unit unit2 = givenUnit("test2", gameData);
+      unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(2);
+      final Unit unit3 = givenUnit("test3", gameData);
+      unit3.getUnitAttachment().setOffensiveAttackAa(4).setMaxAaAttacks(2).setMayOverStackAa(true);
+      final List<Unit> units = List.of(unit1, unit2, unit3);
+
+      final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
+      final int[] dice = {0, 5, 1, 4, 2, 4};
+      final List<Die> diceHits = result.getDiceHits(dice);
+
+      assertThat(
+          "Normal unit rolls twice but only hits on the 0, not the 5. Infinite unit rolls "
+              + "twice (because only 2 more targets) but only hits on the 1, not the 4. Overstack "
+              + "unit rolls twice but only hits on the 2, not the 4.",
+          diceHits,
+          is(
+              List.of(
+                  new Die(0, 3, Die.DieType.HIT),
+                  new Die(5, 3, Die.DieType.MISS),
+                  new Die(1, 2, Die.DieType.HIT),
+                  new Die(4, 2, Die.DieType.MISS),
+                  new Die(2, 4, Die.DieType.HIT),
+                  new Die(4, 4, Die.DieType.MISS))));
     }
   }
 }

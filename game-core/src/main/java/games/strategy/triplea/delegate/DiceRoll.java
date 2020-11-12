@@ -315,8 +315,6 @@ public class DiceRoll implements Externalizable {
         PowerStrengthAndRolls.build(unitsList, combatValueCalculator);
 
     final GameData data = bridge.getData();
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data.getProperties());
-    final List<Unit> units = new ArrayList<>(unitsList);
     final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
@@ -345,44 +343,8 @@ public class DiceRoll implements Externalizable {
     } else {
       random =
           bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
-      int diceIndex = 0;
-      for (final Unit current : units) {
-        final UnitAttachment ua = UnitAttachment.get(current.getType());
-        final int strength = unitPowerAndRollsMap.getStrength(current);
-        final int rolls = unitPowerAndRollsMap.getRolls(current);
-        // lhtr heavy bombers take best of n dice for both attack and defense
-        if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-          int minIndex = 0;
-          int min = data.getDiceSides();
-          for (int i = 0; i < rolls; i++) {
-            if (random[diceIndex + i] < min) {
-              min = random[diceIndex + i];
-              minIndex = i;
-            }
-          }
-          final boolean hit = strength > random[diceIndex + minIndex];
-          dice.add(
-              new Die(random[diceIndex + minIndex], strength, hit ? DieType.HIT : DieType.MISS));
-          for (int i = 0; i < rolls; i++) {
-            if (i != minIndex) {
-              dice.add(new Die(random[diceIndex + i], strength, DieType.IGNORED));
-            }
-          }
-          if (hit) {
-            hitCount++;
-          }
-          diceIndex += rolls;
-        } else {
-          for (int i = 0; i < rolls; i++) {
-            final boolean hit = strength > random[diceIndex];
-            dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
-            if (hit) {
-              hitCount++;
-            }
-            diceIndex++;
-          }
-        }
-      }
+      dice.addAll(unitPowerAndRollsMap.getDiceHits(random));
+      hitCount = (int) dice.stream().filter(die -> die.getType() == DieType.HIT).count();
     }
     final double expectedHits = ((double) totalPower) / data.getDiceSides();
     final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
@@ -413,56 +375,8 @@ public class DiceRoll implements Externalizable {
 
     final int[] random =
         bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data.getProperties());
-    final List<Die> dice = new ArrayList<>();
-    int hitCount = 0;
-    int diceIndex = 0;
-    for (final Unit current : units) {
-      final UnitAttachment ua = UnitAttachment.get(current.getType());
-      final int strength = unitPowerAndRollsMap.getStrength(current);
-      final int rolls = unitPowerAndRollsMap.getRolls(current);
-      // lhtr heavy bombers take best of n dice for both attack and defense
-      if (rolls <= 0 || strength <= 0) {
-        continue;
-      }
-      if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-        int smallestDieIndex = 0;
-        int smallestDie = data.getDiceSides();
-        for (int i = 0; i < rolls; i++) {
-          if (random[diceIndex + i] < smallestDie) {
-            smallestDie = random[diceIndex + i];
-            smallestDieIndex = i;
-          }
-        }
-        // Zero based
-        final boolean hit = strength > random[diceIndex + smallestDieIndex];
-        dice.add(
-            new Die(
-                random[diceIndex + smallestDieIndex], strength, hit ? DieType.HIT : DieType.MISS));
-        for (int i = 0; i < rolls; i++) {
-          if (i != smallestDieIndex) {
-            dice.add(new Die(random[diceIndex + i], strength, DieType.IGNORED));
-          }
-        }
-        if (hit) {
-          hitCount++;
-        }
-        diceIndex += rolls;
-      } else {
-        for (int i = 0; i < rolls; i++) {
-          if (diceIndex >= random.length) {
-            break;
-          }
-          // Zero based
-          final boolean hit = strength > random[diceIndex];
-          dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
-          if (hit) {
-            hitCount++;
-          }
-          diceIndex++;
-        }
-      }
-    }
+    final List<Die> dice = new ArrayList<>(unitPowerAndRollsMap.getDiceHits(random));
+    final int hitCount = (int) dice.stream().filter(die -> die.getType() == DieType.HIT).count();
 
     final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
     final double expectedHits = ((double) totalPower) / data.getDiceSides();
