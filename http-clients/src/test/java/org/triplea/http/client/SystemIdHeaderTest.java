@@ -2,9 +2,9 @@ package org.triplea.http.client;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 import java.util.Map;
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,7 +18,7 @@ class SystemIdHeaderTest {
   void headerHasExpectedKey() {
     final Map<String, Object> headers = SystemIdHeader.headers(() -> SystemId.of(SYSTEM_ID));
 
-    assertThat(headers.keySet(), hasItem(SystemIdHeader.SYSTEM_ID_HEADER));
+    assertThat(headers.keySet(), IsCollectionContaining.hasItem(SystemIdHeader.SYSTEM_ID_HEADER));
   }
 
   @Test

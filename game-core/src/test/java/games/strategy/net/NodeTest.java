@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import java.net.InetSocketAddress;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.IpAddressParser;
+import org.triplea.java.IpAddressParser;
 
 class NodeTest {
 

@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.IpAddressParser;
+import org.triplea.java.IpAddressParser;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.web.socket.WebSocketSession;
 

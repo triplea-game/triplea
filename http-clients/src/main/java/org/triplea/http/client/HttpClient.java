@@ -20,7 +20,6 @@ import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 
 /**
  * Builds http feign clients, each feign interface class should have a static {@code newClient}
@@ -76,9 +75,7 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
               protected void log(
                   final String configKey, final String format, final Object... args) {
                 final String logMessage = String.format(format, args);
-                if (!logMessage.contains(LobbyWatcherClient.KEEP_ALIVE_PATH)) {
-                  log.trace(configKey + ": " + logMessage);
-                }
+                log.trace(configKey + ": " + logMessage);
               }
             })
         .logLevel(Logger.Level.BASIC)

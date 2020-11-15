@@ -1,0 +1,13 @@
+dependencies {
+    implementation "io.github.openfeign:feign-core:$feignCoreVersion"
+    implementation project(":domain-data")
+    implementation project(":dropwizard-common")
+    implementation project(":http-clients")
+    implementation project(":java-extras")
+    implementation project(":websocket-client")
+    testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"
+    testImplementation "com.github.tomakehurst:wiremock:$wireMockVersion"
+    testImplementation "com.google.code.gson:gson:$gsonVersion"
+    testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
+    testImplementation project(":test-common")
+}

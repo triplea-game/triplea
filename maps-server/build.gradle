@@ -26,6 +26,7 @@ dependencies {
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation project(':dropwizard-common')
     implementation project(':http-clients')
+    implementation project(':maps-server-client')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"

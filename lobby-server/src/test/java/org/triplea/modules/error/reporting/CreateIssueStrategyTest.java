@@ -41,7 +41,7 @@ class CreateIssueStrategyTest {
             .errorReportingDao(errorReportingDao)
             .build();
 
-    when(githubIssueClient.newIssue(ERROR_REPORT_REQUEST)).thenReturn(createIssueResponse);
+    when(githubIssueClient.newIssue(any())).thenReturn(createIssueResponse);
     when(responseAdapter.apply(createIssueResponse)).thenReturn(errorReportResponse);
 
     final ErrorReportResponse response =

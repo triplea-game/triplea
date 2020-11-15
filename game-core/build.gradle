@@ -19,8 +19,11 @@ dependencies {
     implementation project(":domain-data")
     implementation project(":http-clients")
     implementation project(":java-extras")
+    implementation project(":lobby-client")
     implementation project(":map-data")
+    implementation project(":maps-server-client")
     implementation project(":swing-lib")
+    implementation project(":websocket-client")
     implementation project(":xml-reader")
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"

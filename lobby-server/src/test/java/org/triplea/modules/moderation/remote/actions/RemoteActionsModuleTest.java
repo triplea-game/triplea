@@ -16,8 +16,8 @@ import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao.AuditAction;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao.AuditArgs;
 import org.triplea.db.dao.user.ban.UserBanDao;
-import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
+import org.triplea.java.IpAddressParser;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
 @ExtendWith(MockitoExtension.class)
