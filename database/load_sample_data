@@ -1,4 +1,9 @@
 #!/bin/bash
 
-echo "Loading sample data"
-psql -h localhost -U lobby_user lobby_db < "$(dirname "$0")/sql/sample_data/lobby_db_sample_data.sql"
+bold="\e[1m"
+bold_green="${bold}\e[32m"
+normal="\e[0m"
+
+echo -e "[${bold_green}Inserting sample data${normal}]"
+psql -h localhost -U lobby_user lobby_db \
+    < "$(dirname "$0")/sql/sample_data/lobby_db_sample_data.sql"

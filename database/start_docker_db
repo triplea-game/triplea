@@ -12,7 +12,7 @@ function main() {
   runDocker
   waitForDatabaseToStart
 
-  echo "Deploying schema to lobby_db"
+  echo -e "[${bold_green}Deploying schemas - running flyway${normal}]"
   pwd
   "$(dirname "$0")/../gradlew" flywayMigrateAll
 
