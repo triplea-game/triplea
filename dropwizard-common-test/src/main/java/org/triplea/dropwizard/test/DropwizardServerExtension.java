@@ -21,9 +21,17 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 /**
  * Extension to start a dropwizard server. This extension can read the 'configuration.yml' of the
- * server which allows access to database connectivity parameters. Tests extended with this class
- * will have "URI" objects injected (taking the value of the server URI that has been started) and
- * any potential JDBI created DAO objects will also be injected as well.
+ * server which allows access to database connectivity parameters. Tests can have several objects
+ * injected into them by declaring those objects as constructor or test method parameters. Those
+ * objects are:
+ *
+ * <ul>
+ *   <li>URI - server URI of the running test server
+ *   <li>JDBI - jdbi instance
+ *   <li>JDBI on-demand class - any class (DAO classes) that can be instantiated via
+ *       Jdbi.onDemand(Class)
+ *   <li>Server Configuration - the configuration class of the dropwizard server
+ * </ul>
  *
  * @param <C> Server configuration type.
  */
@@ -90,7 +98,11 @@ public abstract class DropwizardServerExtension<C extends Configuration>
     } catch (final IllegalArgumentException ignored) {
       // ignore
     }
-    return parameterContext.getParameter().getType().equals(URI.class);
+    return parameterContext.getParameter().getType().equals(URI.class)
+        || parameterContext
+            .getParameter()
+            .getType()
+            .equals(getSupport().getConfiguration().getClass());
   }
 
   @Override
@@ -99,8 +111,13 @@ public abstract class DropwizardServerExtension<C extends Configuration>
       throws ParameterResolutionException {
     if (parameterContext.getParameter().getType().equals(URI.class)) {
       return Preconditions.checkNotNull(serverUri);
+    } else if (parameterContext
+        .getParameter()
+        .getType()
+        .equals(getSupport().getConfiguration().getClass())) {
+      return getSupport().getConfiguration();
+    } else {
+      return jdbi.onDemand(parameterContext.getParameter().getType());
     }
-
-    return jdbi.onDemand(parameterContext.getParameter().getType());
   }
 }
