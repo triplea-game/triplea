@@ -2185,7 +2185,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/aggression_1941/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/main/picture.png
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/master/description/picture.png
   description: |
    <br>A WWII scenario loosely based on 1941, inspired of AA50 Anniversary and Big World.
    <br>WARNING! The balance hasn't extensively tested yet. Still progressing...
