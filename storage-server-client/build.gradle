@@ -1,0 +1,4 @@
+dependencies {
+    testImplementation "com.github.tomakehurst:wiremock:$wireMockVersion"
+    testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
+}
