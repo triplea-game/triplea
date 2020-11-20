@@ -47,7 +47,7 @@ public class GameObjectInputStream extends ObjectInputStream {
         return local;
       }
       final Unit newLocal;
-      if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
+      if (ClientSetting.showSerializeFeatures.getValueOrThrow()) {
         newLocal = new Unit(unit.getId(), unit.getType(), unit.getOwner(), unit.getData());
       } else {
         newLocal = unit;
