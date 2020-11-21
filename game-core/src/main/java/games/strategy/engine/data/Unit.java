@@ -105,6 +105,13 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     setOwner(owner);
   }
 
+  public Unit(final UUID uuid, final UnitType type, final GamePlayer owner, final GameData data) {
+    super(data);
+    this.id = uuid;
+    this.type = checkNotNull(type);
+    setOwner(owner);
+  }
+
   public UnitAttachment getUnitAttachment() {
     return (UnitAttachment) type.getAttachment("unitAttachment");
   }
