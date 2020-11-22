@@ -13,6 +13,8 @@ public interface TotalPowerAndTotalRolls {
 
   List<Die> getDiceHits(int[] dice);
 
+  int getDiceSides();
+
   int getStrength(Unit unit);
 
   int getRolls(Unit unit);

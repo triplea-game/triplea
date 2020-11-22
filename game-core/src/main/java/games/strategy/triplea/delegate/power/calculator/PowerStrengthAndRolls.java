@@ -30,6 +30,9 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
 
   CombatValue calculator;
 
+  @Getter(onMethod_ = @Override)
+  int diceSides;
+
   @Getter(AccessLevel.PUBLIC)
   Map<Unit, UnitPowerStrengthAndRolls> totalStrengthAndTotalRollsByUnit = new HashMap<>();
 
@@ -43,6 +46,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
 
   private PowerStrengthAndRolls(final Collection<Unit> units, final CombatValue calculator) {
     this.calculator = calculator;
+    this.diceSides = units.isEmpty() ? 0 : calculator.getDiceSides(units.iterator().next());
     addUnits(units);
   }
 

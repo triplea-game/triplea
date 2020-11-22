@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -14,6 +13,7 @@ import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -110,74 +110,26 @@ public class DiceRoll implements Externalizable {
       final Territory location,
       final CombatValue combatValueCalculator) {
 
-    final GameData data = bridge.getData();
+    final String typeAa = UnitAttachment.get(aaUnits.iterator().next().getType()).getTypeAa();
+    final GamePlayer player = aaUnits.iterator().next().getOwner();
+    final String annotation =
+        player.getName() + " roll " + typeAa + " dice in " + location.getName();
+
     final AaPowerStrengthAndRolls unitPowerAndRollsMap =
         AaPowerStrengthAndRolls.build(aaUnits, validTargets.size(), combatValueCalculator);
 
-    // Check that there are valid AA and targets to roll for
-    final int totalAaRolls = unitPowerAndRollsMap.calculateTotalRolls();
-    if (totalAaRolls <= 0) {
-      return new DiceRoll(List.of(), 0, 0);
-    }
-
-    // Determine dice sides (doesn't handle the possibility of different dice sides within the same
-    // typeAA)
-    final int diceSides = unitPowerAndRollsMap.getBestDiceSides();
-
-    // Roll AA dice for LL or regular
-    final int hits;
-    final List<Die> sortedDice;
-    final String typeAa = UnitAttachment.get(aaUnits.iterator().next().getType()).getTypeAa();
-    final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
-    final GamePlayer player = aaUnits.iterator().next().getOwner();
-    final String annotation = "Roll " + typeAa + " in " + location.getName();
-    if (Properties.getLowLuck(data.getProperties())
-        || Properties.getLowLuckAaOnly(data.getProperties())) {
-      sortedDice = new ArrayList<>();
-      hits = getAaLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
+    final DiceRoll diceRoll;
+    if (Properties.getLowLuck(bridge.getData().getProperties())
+        || Properties.getLowLuckAaOnly(bridge.getData().getProperties())) {
+      diceRoll = rollDiceLowLuck(unitPowerAndRollsMap, player, bridge, annotation);
     } else {
-      final int[] dice =
-          bridge.getRandom(diceSides, totalAaRolls, player, DiceType.COMBAT, annotation);
-      sortedDice = unitPowerAndRollsMap.getDiceHits(dice);
-      hits = (int) sortedDice.stream().filter(die -> die.getType() == DieType.HIT).count();
+      diceRoll = rollDiceNormal(unitPowerAndRollsMap, player, bridge, annotation);
     }
 
-    // Add dice results to history
-    final double expectedHits = ((double) totalPower) / diceSides;
-    final DiceRoll roll = new DiceRoll(sortedDice, hits, expectedHits);
-    final String historyMessage =
-        player.getName()
-            + " roll "
-            + typeAa
-            + " dice in "
-            + location
-            + " : "
-            + MyFormatter.asDice(roll);
-    bridge.getHistoryWriter().addChildToEvent(historyMessage, roll);
-
-    return roll;
-  }
-
-  private static int getAaLowLuckHits(
-      final IDelegateBridge bridge,
-      final List<Die> sortedDice,
-      final int totalPower,
-      final int chosenDiceSize,
-      final GamePlayer playerRolling,
-      final String annotation) {
-    int hits = totalPower / chosenDiceSize;
-    final int hitsFractional = totalPower % chosenDiceSize;
-    if (hitsFractional > 0) {
-      final int[] dice =
-          bridge.getRandom(chosenDiceSize, 1, playerRolling, DiceType.COMBAT, annotation);
-      final boolean hit = hitsFractional > dice[0];
-      if (hit) {
-        hits++;
-      }
-      final Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
-      sortedDice.add(die);
-    }
-    return hits;
+    bridge
+        .getHistoryWriter()
+        .addChildToEvent(annotation + " : " + MyFormatter.asDice(diceRoll), diceRoll);
+    return diceRoll;
   }
 
   /**
@@ -219,37 +171,40 @@ public class DiceRoll implements Externalizable {
       final String annotation,
       final CombatValue combatValueCalculator) {
 
+    final DiceRoll diceRoll;
+    final PowerStrengthAndRolls unitPowerAndRollsMap =
+        PowerStrengthAndRolls.build(units, combatValueCalculator);
     if (Properties.getLowLuck(bridge.getData().getProperties())) {
-      return rollDiceLowLuck(units, player, bridge, annotation, combatValueCalculator);
+      diceRoll = rollDiceLowLuck(unitPowerAndRollsMap, player, bridge, annotation);
+    } else {
+      diceRoll = rollDiceNormal(unitPowerAndRollsMap, player, bridge, annotation);
     }
-    return rollDiceNormal(units, player, bridge, annotation, combatValueCalculator);
+
+    bridge
+        .getHistoryWriter()
+        .addChildToEvent(annotation + " : " + MyFormatter.asDice(diceRoll), diceRoll);
+    return diceRoll;
   }
 
   /** Roll dice for units using low luck rules. */
   private static DiceRoll rollDiceLowLuck(
-      final Collection<Unit> unitsList,
+      final TotalPowerAndTotalRolls unitPowerAndRollsMap,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final String annotation,
-      final CombatValue combatValueCalculator) {
+      final String annotation) {
 
-    final GameData data = bridge.getData();
-
-    final int power =
-        PowerStrengthAndRolls.build(unitsList, combatValueCalculator).calculateTotalPower();
+    final int power = unitPowerAndRollsMap.calculateTotalPower();
     if (power == 0) {
       return new DiceRoll(List.of(), 0, 0);
     }
 
     // Roll dice for the fractional part of the dice
-    int hitCount = power / data.getDiceSides();
+    final int diceSides = unitPowerAndRollsMap.getDiceSides();
+    int hitCount = power / diceSides;
     final List<Die> dice = new ArrayList<>();
-    final int rollFor = power % data.getDiceSides();
-    final int[] random;
-    if (rollFor == 0) {
-      random = new int[0];
-    } else {
-      random = bridge.getRandom(data.getDiceSides(), 1, player, DiceType.COMBAT, annotation);
+    final int rollFor = power % diceSides;
+    if (rollFor > 0) {
+      final int[] random = bridge.getRandom(diceSides, 1, player, DiceType.COMBAT, annotation);
       // Zero based
       final boolean hit = rollFor > random[0];
       if (hit) {
@@ -259,45 +214,33 @@ public class DiceRoll implements Externalizable {
     }
 
     // Create DiceRoll object
-    final double expectedHits = ((double) power) / data.getDiceSides();
-    final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
-    bridge
-        .getHistoryWriter()
-        .addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    final double expectedHits = ((double) power) / diceSides;
 
-    return diceRoll;
+    return new DiceRoll(dice, hitCount, expectedHits);
   }
 
   /** Roll dice for units per normal rules. */
   private static DiceRoll rollDiceNormal(
-      final Collection<Unit> unitsList,
+      final TotalPowerAndTotalRolls unitPowerAndRollsMap,
       final GamePlayer player,
       final IDelegateBridge bridge,
-      final String annotation,
-      final CombatValue combatValueCalculator) {
-
-    final GameData data = bridge.getData();
-    final PowerStrengthAndRolls unitPowerAndRollsMap =
-        PowerStrengthAndRolls.build(unitsList, combatValueCalculator);
+      final String annotation) {
 
     final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
 
+    final int diceSides = unitPowerAndRollsMap.getDiceSides();
     final int[] random =
-        bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
-    final List<Die> dice = new ArrayList<>(unitPowerAndRollsMap.getDiceHits(random));
+        bridge.getRandom(diceSides, rollCount, player, DiceType.COMBAT, annotation);
+    final List<Die> dice = unitPowerAndRollsMap.getDiceHits(random);
     final int hitCount = (int) dice.stream().filter(die -> die.getType() == DieType.HIT).count();
 
     final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
-    final double expectedHits = ((double) totalPower) / data.getDiceSides();
-    final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
-    bridge
-        .getHistoryWriter()
-        .addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    final double expectedHits = ((double) totalPower) / diceSides;
 
-    return diceRoll;
+    return new DiceRoll(dice, hitCount, expectedHits);
   }
 
   /**

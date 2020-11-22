@@ -822,7 +822,7 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getBestDiceSides(), is(8));
+      assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getDiceSides(), is(8));
     }
 
     @Test
@@ -842,7 +842,7 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getBestDiceSides(), is(8));
+      assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getDiceSides(), is(8));
     }
 
     @Test
@@ -889,7 +889,7 @@ class TotalPowerAndTotalRollsTest {
 
       assertThat(
           "Unit has a max die side of 4 so that will be used",
-          totalPowerAndTotalRolls.getBestDiceSides(),
+          totalPowerAndTotalRolls.getDiceSides(),
           is(4));
       assertThat(
           "Unit gets 2 support so its best strength is 4",
@@ -958,8 +958,7 @@ class TotalPowerAndTotalRollsTest {
 
       assertThat(
           "4 of 4 is better than 2 of 6 and 3 of 5", aaPowerAndRolls.getBestStrength(), is(4));
-      assertThat(
-          "4 of 4 is better than 2 of 6 and 3 of 5", aaPowerAndRolls.getBestDiceSides(), is(4));
+      assertThat("4 of 4 is better than 2 of 6 and 3 of 5", aaPowerAndRolls.getDiceSides(), is(4));
     }
 
     @Test
@@ -996,8 +995,7 @@ class TotalPowerAndTotalRollsTest {
 
       assertThat(
           "3 of 6 is better than 3 of 7 and 3 of 8", aaPowerAndRolls.getBestStrength(), is(3));
-      assertThat(
-          "3 of 6 is better than 3 of 7 and 3 of 8", aaPowerAndRolls.getBestDiceSides(), is(6));
+      assertThat("3 of 6 is better than 3 of 7 and 3 of 8", aaPowerAndRolls.getDiceSides(), is(6));
     }
   }
 
