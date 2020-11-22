@@ -14,6 +14,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.dice.calculator.RolledDice;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ class TotalPowerAndTotalRollsTest {
         dice[i] = dieHit;
       }
 
-      sortedDie.addAll(unitPowerAndRollsMap.getDiceHits(dice));
+      sortedDie.addAll(RolledDice.getDiceHits(dice, unitPowerAndRollsMap.getActiveUnits()));
       return unitPowerAndRollsMap;
     }
 

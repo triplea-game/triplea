@@ -19,8 +19,14 @@ public class UnitPowerStrengthAndRolls {
   @NonNull StrengthAndRolls strengthAndRolls;
 
   @NonNull PowerCalculator powerCalculator;
-  @NonNull Boolean chooseBestRoll;
-  @NonNull Integer diceSides;
+
+  @Getter(AccessLevel.PUBLIC)
+  @NonNull
+  Boolean chooseBestRoll;
+
+  @Getter(AccessLevel.PUBLIC)
+  @NonNull
+  Integer diceSides;
 
   @Value(staticConstructor = "of")
   static class StrengthAndRolls {

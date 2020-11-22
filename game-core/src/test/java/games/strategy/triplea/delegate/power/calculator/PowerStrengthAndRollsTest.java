@@ -13,6 +13,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.delegate.dice.calculator.RolledDice;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -73,7 +74,7 @@ class PowerStrengthAndRollsTest {
 
       final PowerStrengthAndRolls result = givenPowerStrengthAndRolls(units);
       final int[] dice = {0, 5, 2};
-      final List<Die> diceHits = result.getDiceHits(dice);
+      final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
       assertThat(
           "Unit3 rolls first and hits with 0, unit2 rolls second and misses with 5, unit1 rolls"
@@ -99,7 +100,7 @@ class PowerStrengthAndRollsTest {
 
       final PowerStrengthAndRolls result = givenPowerStrengthAndRolls(units);
       final int[] dice = {0, 5, 2, 1, 4, 3};
-      final List<Die> diceHits = result.getDiceHits(dice);
+      final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
       assertThat(
           "Unit3 rolls first twice, unit2 rolls second twice, and unit 3 rolls last twice",
@@ -127,7 +128,7 @@ class PowerStrengthAndRollsTest {
 
       final PowerStrengthAndRolls result = givenPowerStrengthAndRolls(units);
       final int[] dice = {0, 5, 2, 1, 4, 3};
-      final List<Die> diceHits = result.getDiceHits(dice);
+      final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
       assertThat(
           "Unit3 rolls first twice, unit2 rolls second twice, and unit 3 rolls last twice. "

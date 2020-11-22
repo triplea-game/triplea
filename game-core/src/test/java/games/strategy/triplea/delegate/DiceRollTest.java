@@ -26,6 +26,8 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
+import games.strategy.triplea.delegate.dice.roller.RollAaDice;
+import games.strategy.triplea.delegate.dice.roller.RollBattleDice;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
@@ -53,7 +55,7 @@ class DiceRollTest {
         .thenAnswer(withValues(1)); // infantry attack does not hit at 1 (0 based)
     // infantry defends
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -71,7 +73,7 @@ class DiceRollTest {
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -89,7 +91,7 @@ class DiceRollTest {
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -107,7 +109,7 @@ class DiceRollTest {
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -142,7 +144,7 @@ class DiceRollTest {
         .thenAnswer(withValues(1)); // infantry attack does not hit at 1 (0 based)
     // infantry defends
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -160,7 +162,7 @@ class DiceRollTest {
     assertThat(roll.getHits(), is(1));
     // infantry
     final DiceRoll roll2 =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -178,7 +180,7 @@ class DiceRollTest {
     assertThat(roll2.getHits(), is(0));
     // infantry attacks
     final DiceRoll roll3 =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -196,7 +198,7 @@ class DiceRollTest {
     assertThat(roll3.getHits(), is(1));
     // infantry attack
     final DiceRoll roll4 =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             infantry,
             russians,
             bridge,
@@ -227,7 +229,7 @@ class DiceRollTest {
     // artillery supported infantry and art attack at 1 (0 based)
     whenGetRandom(bridge).thenAnswer(withValues(1, 1));
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             units,
             russians,
             bridge,
@@ -265,7 +267,7 @@ class DiceRollTest {
     // artillery supported infantry and art attack at 1 (0 based)
     whenGetRandom(bridge).thenAnswer(withValues(1, 1, 1));
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             units,
             russians,
             bridge,
@@ -293,7 +295,7 @@ class DiceRollTest {
     final List<Unit> units = infantryType.create(3, russians);
     // 3 infantry on defense should produce exactly one hit, without rolling the dice
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             units,
             russians,
             bridge,
@@ -334,7 +336,7 @@ class DiceRollTest {
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             attackers,
             americans,
             bridge,
@@ -374,7 +376,7 @@ class DiceRollTest {
         });
     final IDelegateBridge bridge = newDelegateBridge(americans);
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             attackers,
             americans,
             bridge,
@@ -415,7 +417,7 @@ class DiceRollTest {
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             attackers,
             americans,
             bridge,
@@ -448,7 +450,7 @@ class DiceRollTest {
         .thenAnswer(withValues(1)); // aa misses at 1 (0 based)
     // aa hits
     final DiceRoll hit =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             bombers,
             aaGunList,
             bridge,
@@ -462,7 +464,7 @@ class DiceRollTest {
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             bombers,
             aaGunList,
             bridge,
@@ -493,7 +495,7 @@ class DiceRollTest {
         .thenAnswer(withValues(1)); // aa misses at 1 (0 based)
     // aa hits
     final DiceRoll hit =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
@@ -511,7 +513,7 @@ class DiceRollTest {
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
@@ -530,7 +532,7 @@ class DiceRollTest {
     // 6 bombers, 1 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
     final DiceRoll hitNoRoll =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
@@ -564,7 +566,7 @@ class DiceRollTest {
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // aa hits at 0 (0 based)
     final DiceRoll hit =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
@@ -602,7 +604,7 @@ class DiceRollTest {
         .thenAnswer(withValues(2)); // aa misses at 2 (0 based)
     // aa radar hits
     final DiceRoll hit =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
@@ -620,7 +622,7 @@ class DiceRollTest {
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
@@ -639,7 +641,7 @@ class DiceRollTest {
     // 6 bombers, 2 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
     final DiceRoll hitNoRoll =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
@@ -684,7 +686,7 @@ class DiceRollTest {
 
     // 1 AT gun
     final DiceRoll hit =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -697,7 +699,7 @@ class DiceRollTest {
                 .build());
     assertThat(hit.getHits(), is(1));
     final DiceRoll miss =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -713,7 +715,7 @@ class DiceRollTest {
     // 1 AT gun + 1 AT support (AT support is a unit that provides +2 AA strength for 3 units)
     final List<Unit> supportUnits = GameDataTestUtil.germanAtSupport(gameData).create(1, germany);
     final DiceRoll hitWithSupport =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -726,7 +728,7 @@ class DiceRollTest {
                 .build());
     assertThat(hitWithSupport.getHits(), is(1));
     final DiceRoll missWithSupport =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -742,7 +744,7 @@ class DiceRollTest {
     // 2 AT guns + 1 AT support
     atGuns.addAll(GameDataTestUtil.germanAntiTankGun(gameData).create(1, germany));
     final DiceRoll hitWith2AtAndSupport =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -755,7 +757,7 @@ class DiceRollTest {
                 .build());
     assertThat(hitWith2AtAndSupport.getHits(), is(1));
     final DiceRoll missWith2AtAndSupport =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -774,7 +776,7 @@ class DiceRollTest {
     final List<Unit> enemySupportUnits =
         GameDataTestUtil.americanAtCounter(gameData).create(1, usa);
     final DiceRoll missWith2AtAndSupportAndEnemySupport =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -791,7 +793,7 @@ class DiceRollTest {
     // Enemy AT counter zeroes out 3 AT guns and AT support so just 1 AT gun fires
     atGuns.addAll(GameDataTestUtil.germanAntiTankGun(gameData).create(2, germany));
     final DiceRoll hitWith4AtAndSupportAndEnemySupport =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -804,7 +806,7 @@ class DiceRollTest {
                 .build());
     assertThat(hitWith4AtAndSupportAndEnemySupport.getHits(), is(1));
     final DiceRoll missWith4AtAndSupportAndEnemySupport =
-        DiceRoll.rollAa(
+        RollAaDice.rollDice(
             targets,
             atGuns,
             bridge,
@@ -838,7 +840,7 @@ class DiceRollTest {
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(2, 3, 2));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             bombers,
             british,
             testDelegateBridge,
@@ -877,7 +879,7 @@ class DiceRollTest {
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(0));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             bombers,
             british,
             testDelegateBridge,
@@ -912,7 +914,7 @@ class DiceRollTest {
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(0));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             bombers,
             british,
             testDelegateBridge,
@@ -952,7 +954,7 @@ class DiceRollTest {
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(2, 3));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             bombers,
             british,
             testDelegateBridge,
@@ -993,7 +995,7 @@ class DiceRollTest {
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(3, 2));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             bombers,
             british,
             testDelegateBridge,
@@ -1033,7 +1035,7 @@ class DiceRollTest {
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(0, 1));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice =
-        DiceRoll.rollDice(
+        RollBattleDice.rollDice(
             bombers,
             british,
             testDelegateBridge,

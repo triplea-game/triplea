@@ -5,6 +5,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilte
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.dice.roller.RollBattleDice;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.function.BiFunction;
 
@@ -13,7 +14,7 @@ public class MainDiceRoller implements BiFunction<IDelegateBridge, RollDiceStep,
 
   @Override
   public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
-    return DiceRoll.rollDice(
+    return RollBattleDice.rollDice(
         step.getFiringGroup().getFiringUnits(),
         step.getBattleState().getPlayer(step.getSide()),
         bridge,
