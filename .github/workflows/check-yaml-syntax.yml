@@ -1,0 +1,10 @@
+name: Check YAML Formatting
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Validate YAML Formatting
+      run: ./gradlew validateYamls
+
