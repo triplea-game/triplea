@@ -5,5 +5,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Code Convention Checks
-        run: .travis/stages/verify/code-convention-checks/run
+        run: ./.travis/stages/verify/code-convention-checks/run
 
