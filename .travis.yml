@@ -27,14 +27,6 @@ jobs:
       addons: {postgresql: "10"}
       script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
 
-    - stage: Verify
-      name: "Tests: Compatibility Checks"
-      script: [ (travis_retry $VERIFY_STAGE/compatibility-testing/run) || $REPORT_FAIL "compatibility tests" ]
-
-    - stage: Verify
-      name: "Analysis: Code Convention Checks"
-      script: [ $VERIFY_STAGE/code-convention-checks/run || $REPORT_FAIL "code conventions" ]
-
     ########################################################################
 
     - stage: DeployPrerelease
