@@ -168,7 +168,6 @@ public class ServerLauncher implements ILauncher {
       isLaunching = false;
       abortLaunch = testShouldWeAbort();
       if (!abortLaunch) {
-        warmUpCryptoRandomSource();
         log.info("Launching game - starting game delegates.");
         serverGame.startGame();
       } else {
@@ -218,23 +217,6 @@ public class ServerLauncher implements ILauncher {
       log.info("Game Status: Waiting For Players");
       inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
     }
-  }
-
-  private void warmUpCryptoRandomSource() {
-    // the first roll takes a while, initialize here in the background so that the user doesn't
-    // notice
-    new Thread(
-            () -> {
-              try {
-                serverGame
-                    .getRandomSource()
-                    .getRandom(gameData.getDiceSides(), 2, "Warming up crypto random source");
-              } catch (final RuntimeException e) {
-                log.log(Level.SEVERE, "Failed to warm up crypto random source", e);
-              }
-            },
-            "Warming up crypto random source")
-        .start();
   }
 
   public void addObserver(
