@@ -4,6 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run Code Convention Checks
         run: ./.travis/stages/verify/code-convention-checks/run
 
