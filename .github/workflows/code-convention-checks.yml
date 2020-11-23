@@ -1,0 +1,9 @@
+name: Code Convention Checks
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Code Convention Checks
+        run: .travis/stages/verify/code-convention-checks/run
+
