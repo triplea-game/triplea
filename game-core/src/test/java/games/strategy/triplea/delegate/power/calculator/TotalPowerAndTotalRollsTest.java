@@ -4,8 +4,6 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -757,13 +755,13 @@ class TotalPowerAndTotalRollsTest {
       final List<Unit> sortedUnits =
           units.stream()
               .sorted(
-                  AaPowerStrengthAndRolls.sortAaHighToLow(
-                      CombatValueBuilder.aaCombatValue()
-                          .enemyUnits(List.of())
-                          .friendlyUnits(List.of())
-                          .side(BattleState.Side.OFFENSE)
-                          .supportAttachments(List.of())
-                          .build()))
+                  CombatValueBuilder.aaCombatValue()
+                      .enemyUnits(List.of())
+                      .friendlyUnits(List.of())
+                      .side(BattleState.Side.OFFENSE)
+                      .supportAttachments(List.of())
+                      .build()
+                      .unitComparator())
               .collect(Collectors.toList());
       assertThat(sortedUnits.get(0), is(unit1));
       assertThat(sortedUnits.get(1), is(unit2));
@@ -785,13 +783,13 @@ class TotalPowerAndTotalRollsTest {
       final List<Unit> sortedUnits =
           units.stream()
               .sorted(
-                  AaPowerStrengthAndRolls.sortAaHighToLow(
-                      CombatValueBuilder.aaCombatValue()
-                          .enemyUnits(List.of())
-                          .friendlyUnits(List.of())
-                          .side(BattleState.Side.DEFENSE)
-                          .supportAttachments(List.of())
-                          .build()))
+                  CombatValueBuilder.aaCombatValue()
+                      .enemyUnits(List.of())
+                      .friendlyUnits(List.of())
+                      .side(BattleState.Side.DEFENSE)
+                      .supportAttachments(List.of())
+                      .build()
+                      .unitComparator())
               .collect(Collectors.toList());
       assertThat(sortedUnits.get(0), is(unit5));
       assertThat(sortedUnits.get(1), is(unit3));
@@ -848,28 +846,55 @@ class TotalPowerAndTotalRollsTest {
     }
 
     @Test
-    void singleUnitWithSupport() {
+    void singleUnitWithSupport() throws GameParseException {
       final GameData gameData = givenGameData().build();
       final Unit unit = givenUnit("test", gameData);
-      unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
+      unit.getUnitAttachment()
+          .setOffensiveAttackAa(2)
+          .setMaxAaAttacks(1)
+          .setOffensiveAttackAaMaxDieSides(4);
 
-      final CombatValue combatValue = mock(CombatValue.class);
-      final RollCalculator rollCalculator = mock(RollCalculator.class);
-      when(rollCalculator.getRoll(unit)).thenReturn(RollValue.of(2));
-      when(combatValue.getRoll()).thenReturn(rollCalculator);
-      final StrengthCalculator strengthCalculator = mock(StrengthCalculator.class);
-      when(strengthCalculator.getStrength(unit)).thenReturn(StrengthValue.of(6, 3));
-      when(combatValue.getStrength()).thenReturn(strengthCalculator);
-      final PowerCalculator powerCalculator =
-          new PowerCalculator(strengthCalculator, rollCalculator, (unit1) -> true, (unit1) -> 6);
-      when(combatValue.getPower()).thenReturn(powerCalculator);
-      when(combatValue.getDiceSides(unit)).thenReturn(6);
-      when(combatValue.getBattleSide()).thenReturn(BattleState.Side.OFFENSE);
+      final Unit supportUnit = givenUnit("support", gameData);
+      final UnitSupportAttachment unitSupportAttachment =
+          new UnitSupportAttachment("rule", supportUnit.getType(), gameData)
+              .setBonus(2)
+              .setBonusType("bonus")
+              .setDice("AAstrength:AAroll")
+              .setNumber(1)
+              .setPlayers(List.of(owner))
+              .setSide("offence")
+              .setFaction("allied")
+              .setUnitType(Set.of(unit.getType()));
+
+      final AvailableSupports friendlySupport =
+          AvailableSupports.getSupport(
+              new SupportCalculator(
+                  List.of(supportUnit),
+                  List.of(unitSupportAttachment),
+                  BattleState.Side.OFFENSE,
+                  true));
+
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
-          AaPowerStrengthAndRolls.build(List.of(unit), 1, combatValue);
+          AaPowerStrengthAndRolls.build(
+              List.of(unit),
+              1,
+              AaOffenseCombatValue.builder()
+                  .friendUnits(List.of(unit, supportUnit))
+                  .enemyUnits(List.of())
+                  .rollSupportFromFriends(friendlySupport)
+                  .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+                  .strengthSupportFromFriends(friendlySupport.copy())
+                  .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+                  .build());
 
-      assertThat("Calculated value is used", totalPowerAndTotalRolls.getBestDiceSides(), is(6));
-      assertThat("Calculated value is used", totalPowerAndTotalRolls.getBestStrength(), is(3));
+      assertThat(
+          "Unit has a max die side of 4 so that will be used",
+          totalPowerAndTotalRolls.getBestDiceSides(),
+          is(4));
+      assertThat(
+          "Unit gets 2 support so its best strength is 4",
+          totalPowerAndTotalRolls.getBestStrength(),
+          is(4));
     }
 
     @Test

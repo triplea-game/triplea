@@ -13,9 +13,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -45,12 +42,8 @@ class PowerStrengthAndRollsTest {
   }
 
   private PowerStrengthAndRolls givenPowerStrengthAndRolls(final List<Unit> units) {
-    final List<Unit> sortedUnits = new ArrayList<>(units);
-    sortedUnits.sort(
-        Comparator.comparingInt(unit -> unit.getUnitAttachment().getAttack(unit.getOwner())));
-    Collections.reverse(sortedUnits);
     return PowerStrengthAndRolls.build(
-        sortedUnits,
+        units,
         MainOffenseCombatValue.builder()
             .gameSequence(mock(GameSequence.class))
             .gameDiceSides(6)
@@ -60,7 +53,7 @@ class PowerStrengthAndRollsTest {
             .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
             .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
             .territoryEffects(List.of())
-            .friendUnits(sortedUnits)
+            .friendUnits(units)
             .enemyUnits(List.of())
             .build());
   }

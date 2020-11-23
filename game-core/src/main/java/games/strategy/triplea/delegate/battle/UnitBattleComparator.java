@@ -36,21 +36,6 @@ public class UnitBattleComparator implements Comparator<Unit> {
   public UnitBattleComparator(
       final IntegerMap<UnitType> costs,
       final GameData data,
-      final CombatValue combatValueCalculator) {
-    this(costs, data, combatValueCalculator, false, false);
-  }
-
-  public UnitBattleComparator(
-      final IntegerMap<UnitType> costs,
-      final GameData data,
-      final CombatValue combatValueCalculator,
-      final boolean bonus) {
-    this(costs, data, combatValueCalculator, bonus, false);
-  }
-
-  public UnitBattleComparator(
-      final IntegerMap<UnitType> costs,
-      final GameData data,
       final CombatValue combatValueCalculator,
       final boolean bonus,
       final boolean ignorePrimaryPower) {

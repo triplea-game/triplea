@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
@@ -81,6 +80,13 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     this.activeStrengthAndRolls = calculateActiveStrengthAndRolls();
   }
 
+  /**
+   * Builds an AaPowerStrengthAndRolls that calculates the power, strength, and roll for each unit
+   *
+   * @param aaUnits does not need to be sorted
+   * @param targetCount the number of targets the AA is firing at
+   * @param calculator calculates the value of offense or defense
+   */
   public static AaPowerStrengthAndRolls build(
       final Collection<Unit> aaUnits, final int targetCount, final CombatValue calculator) {
 
@@ -90,28 +96,9 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     // First, sort units strongest to weakest without support so that later, the support is given
     // to the best units first
     return new AaPowerStrengthAndRolls(
-        aaUnits.stream()
-            .sorted(
-                sortAaHighToLow(
-                    CombatValueBuilder.aaCombatValue()
-                        .enemyUnits(List.of())
-                        .friendlyUnits(List.of())
-                        .side(calculator.getBattleSide())
-                        .supportAttachments(List.of())
-                        .build()))
-            .collect(Collectors.toList()),
+        aaUnits.stream().sorted(calculator.unitComparator()).collect(Collectors.toList()),
         targetCount,
         calculator);
-  }
-
-  @VisibleForTesting
-  static Comparator<Unit> sortAaHighToLow(final CombatValue calculator) {
-    return Comparator.<Unit, Boolean>comparing(
-            unit -> calculator.getStrength().getStrength(unit).getValue() == 0)
-        .thenComparingDouble(
-            unit ->
-                -calculator.getStrength().getStrength(unit).getValue()
-                    / (float) calculator.getDiceSides(unit));
   }
 
   private void addUnits(final Collection<Unit> units) {
@@ -159,7 +146,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     // Make sure the higher powers fire first
     final List<Unit> aaToRoll =
         totalStrengthAndTotalRollsByUnit.keySet().stream()
-            .sorted(sortAaHighToLow(calculator))
+            .sorted(calculator.unitComparator())
             .collect(Collectors.toList());
 
     // Setup all 3 groups of aa guns
