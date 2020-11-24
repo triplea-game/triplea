@@ -106,17 +106,12 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     final RollCalculator rollCalculator = calculator.getRoll();
     final PowerCalculator powerCalculator = calculator.getPower();
     for (final Unit unit : units) {
-      int strength = strengthCalculator.getStrength(unit).getValue();
-      int rolls = rollCalculator.getRoll(unit).getValue();
-      if (rolls == 0 || strength == 0) {
-        strength = 0;
-        rolls = 0;
-      }
       totalStrengthAndTotalRollsByUnit.put(
           unit,
           UnitPowerStrengthAndRolls.builder()
-              .strength(strength)
-              .rolls(rolls)
+              .strengthAndRolls(
+                  UnitPowerStrengthAndRolls.StrengthAndRolls.of(
+                      strengthCalculator.getStrength(unit), rollCalculator.getRoll(unit)))
               .power(powerCalculator.getValue(unit))
               .powerCalculator(powerCalculator)
               .diceSides(calculator.getDiceSides(unit))
@@ -235,8 +230,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
       if (activeUnits.contains(mapEntry.getKey())) {
         continue;
       }
-      totalStrengthAndTotalRollsByUnit.put(
-          mapEntry.getKey(), mapEntry.getValue().toBuilder().rolls(0).strength(0).power(0).build());
+      totalStrengthAndTotalRollsByUnit.put(mapEntry.getKey(), mapEntry.getValue().toZero());
     }
 
     return activeStrengthAndRolls;

@@ -89,16 +89,11 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     final RollCalculator rollCalculator = calculator.getRoll();
     final PowerCalculator powerCalculator = calculator.getPower();
     for (final Unit unit : units) {
-      int strength = strengthCalculator.getStrength(unit).getValue();
-      int rolls = rollCalculator.getRoll(unit).getValue();
-      if (rolls == 0 || strength == 0) {
-        strength = 0;
-        rolls = 0;
-      }
       final UnitPowerStrengthAndRolls data =
           UnitPowerStrengthAndRolls.builder()
-              .strength(strength)
-              .rolls(rolls)
+              .strengthAndRolls(
+                  UnitPowerStrengthAndRolls.StrengthAndRolls.of(
+                      strengthCalculator.getStrength(unit), rollCalculator.getRoll(unit)))
               .power(powerCalculator.getValue(unit))
               .powerCalculator(powerCalculator)
               .diceSides(calculator.getDiceSides(unit))

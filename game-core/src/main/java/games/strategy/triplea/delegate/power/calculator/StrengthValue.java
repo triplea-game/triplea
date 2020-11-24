@@ -20,7 +20,15 @@ class StrengthValue {
     return StrengthValue.of(diceSides, value + extraValue);
   }
 
+  StrengthValue toValue(final int value) {
+    return StrengthValue.of(diceSides, value);
+  }
+
   int getValue() {
     return Math.min(Math.max(value, 0), diceSides);
+  }
+
+  boolean isZero() {
+    return value == 0;
   }
 }
