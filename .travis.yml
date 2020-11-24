@@ -8,24 +8,10 @@ install: skip
 env:
   global:
    - REPORT_FAIL=".travis/shared/report-build-status FAILURE"
-   - VERIFY_STAGE=".travis/stages/verify"
    - DEPLOY_PRERELEASE_STAGE=".travis/stages/deploy/prerelease"
    - DEPLOY_PROD_STAGE=".travis/stages/deploy/prod"
 jobs:
   include:
-
-    ########################################################################
-    # Jobs are ordered tests first and then slower jobs before faster ones.
-
-    - stage: Verify
-      name: "Tests: Integration Test"
-      addons: { postgresql: "10" }
-      script: [ $VERIFY_STAGE/integration-testing/run || $REPORT_FAIL "integ tests" ]
-
-    - stage: Verify
-      name: "Tests: Smoke Test"
-      addons: {postgresql: "10"}
-      script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
 
     ########################################################################
 
