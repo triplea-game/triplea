@@ -283,7 +283,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
             + " owned units to: "
             + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false),
         unitsFinal);
-    bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap));
+    bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap, List.of(territory)));
     // territory.notifyChanged();
     return null;
   }
