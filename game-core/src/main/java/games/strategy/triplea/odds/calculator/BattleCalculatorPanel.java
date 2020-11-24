@@ -6,7 +6,6 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
@@ -14,7 +13,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
@@ -54,7 +52,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
 
@@ -1419,22 +1416,6 @@ class BattleCalculatorPanel extends JPanel {
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
-      attackers.sort(
-          new UnitBattleComparator(
-                  costs,
-                  data,
-                  CombatValueBuilder.mainCombatValue()
-                      .enemyUnits(List.of())
-                      .friendlyUnits(List.of())
-                      .side(BattleState.Side.OFFENSE)
-                      .gameSequence(data.getSequence())
-                      .supportAttachments(data.getUnitTypeList().getSupportRules())
-                      .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
-                      .gameDiceSides(data.getDiceSides())
-                      .territoryEffects(territoryEffects)
-                      .build())
-              .reversed());
       if (isAmphibiousBattle()) {
         attackers.stream()
             .filter(Matches.unitIsLand())

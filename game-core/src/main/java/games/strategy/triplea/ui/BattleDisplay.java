@@ -872,7 +872,6 @@ public class BattleDisplay extends JPanel {
         columns.add(i, new ArrayList<>());
       }
       final List<Unit> units = new ArrayList<>(this.units);
-      DiceRoll.sortByStrength(units, side);
       final TotalPowerAndTotalRolls unitPowerAndRollsMap;
       final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
       gameData.acquireReadLock();

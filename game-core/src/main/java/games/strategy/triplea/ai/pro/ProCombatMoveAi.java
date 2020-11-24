@@ -956,7 +956,7 @@ public class ProCombatMoveAi {
             final List<Unit> attackingUnits = patd.getUnits();
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, attackingUnits, defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, attackingUnits, defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
             if (!hasAa && !isOverwhelmingWin) {
               minWinPercentage = result.getWinPercentage();
@@ -995,7 +995,7 @@ public class ProCombatMoveAi {
             final List<Unit> attackingUnits = patd.getUnits();
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, attackingUnits, defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, attackingUnits, defendingUnits);
             if (!isOverwhelmingWin && result.getBattleRounds() > 2) {
               minWinTerritory = t;
               break;
@@ -1383,7 +1383,7 @@ public class ProCombatMoveAi {
             final boolean hasNoDefenders =
                 defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, patd.getUnits(), defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
             if (!hasNoDefenders
                 && !isOverwhelmingWin
@@ -1454,7 +1454,7 @@ public class ProCombatMoveAi {
             final boolean hasNoDefenders =
                 defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, patd.getUnits(), defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
             if (!isAirUnit
                 || (!hasNoDefenders

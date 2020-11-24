@@ -11,7 +11,7 @@ function createDatabase() {
   echo "create database ${dbName} owner ${dbUser}" | psql -h localhost -U postgres -d postgres
 }
 
-
+export PGPASSWORD=postgres
 createDatabase "lobby_db" "lobby_user"
 createDatabase "maps_db" "maps_user"
 

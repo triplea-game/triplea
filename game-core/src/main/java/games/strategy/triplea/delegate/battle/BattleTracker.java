@@ -35,7 +35,6 @@ import games.strategy.triplea.delegate.data.BattleRecords;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.TuvUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1364,14 +1363,13 @@ public class BattleTracker implements Serializable {
     for (final Territory territory : getPendingBattleSites(false)) {
       final IBattle battle = getPendingBattle(territory, BattleType.NORMAL);
       final Collection<Unit> defenders = battle.getDefendingUnits();
-      final List<Unit> sortedUnitsList =
-          getSortedDefendingUnits(bridge, bridge.getData(), territory, defenders);
+      final List<Unit> possibleDefenders = getPossibleDefendingUnits(territory, defenders);
       if (getDependentOn(battle).isEmpty()
           && PowerStrengthAndRolls.build(
-                      sortedUnitsList,
+                      possibleDefenders,
                       CombatValueBuilder.mainCombatValue()
                           .enemyUnits(defenders)
-                          .friendlyUnits(sortedUnitsList)
+                          .friendlyUnits(possibleDefenders)
                           .side(BattleState.Side.DEFENSE)
                           .gameSequence(bridge.getData().getSequence())
                           .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
@@ -1392,31 +1390,11 @@ public class BattleTracker implements Serializable {
         .forEach(battle -> battle.fight(bridge));
   }
 
-  private static List<Unit> getSortedDefendingUnits(
-      final IDelegateBridge bridge,
-      final GameData gameData,
-      final Territory territory,
-      final Collection<Unit> defenders) {
-    final List<Unit> sortedUnitsList =
-        new ArrayList<>(
-            CollectionUtils.getMatches(
-                defenders, Matches.unitCanBeInBattle(false, !territory.isWater(), 1, true)));
-    sortedUnitsList.sort(
-        new UnitBattleComparator(
-                TuvUtils.getCostsForTuv(bridge.getGamePlayer(), gameData),
-                gameData,
-                CombatValueBuilder.mainCombatValue()
-                    .enemyUnits(List.of())
-                    .friendlyUnits(List.of())
-                    .side(BattleState.Side.DEFENSE)
-                    .gameSequence(gameData.getSequence())
-                    .supportAttachments(gameData.getUnitTypeList().getSupportRules())
-                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
-                    .gameDiceSides(gameData.getDiceSides())
-                    .territoryEffects(TerritoryEffectHelper.getEffects(territory))
-                    .build())
-            .reversed());
-    return sortedUnitsList;
+  private static List<Unit> getPossibleDefendingUnits(
+      final Territory territory, final Collection<Unit> defenders) {
+    return new ArrayList<>(
+        CollectionUtils.getMatches(
+            defenders, Matches.unitCanBeInBattle(false, !territory.isWater(), 1, true)));
   }
 
   /** Fight battle automatically if there is only one left to pick from. */

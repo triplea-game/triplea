@@ -865,8 +865,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendList = transport.create(1, germans);
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
-    // fire the defending transport then the submarine (both miss)
-    whenGetRandom(bridge).thenAnswer(withValues(1, 2));
+    // fire the defending submarine then the transport (both miss)
+    whenGetRandom(bridge).thenAnswer(withValues(2, 1));
     // Execute the battle and verify no hits
     final DiceRoll roll =
         DiceRoll.rollDice(
@@ -1009,8 +1009,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendList = transport.create(1, germans);
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
-    // fire the defending transport then the submarine (both miss)
-    whenGetRandom(bridge).thenAnswer(withValues(1, 2));
+    // fire the defending submarine then the transport (both miss)
+    whenGetRandom(bridge).thenAnswer(withValues(2, 1));
     // Execute the battle and verify no hits
     final DiceRoll roll =
         DiceRoll.rollDice(

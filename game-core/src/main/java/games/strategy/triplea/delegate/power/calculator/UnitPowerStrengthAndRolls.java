@@ -14,45 +14,66 @@ import lombok.Value;
 public class UnitPowerStrengthAndRolls {
   @Getter(AccessLevel.PUBLIC)
   @Nonnull
-  Integer strength;
-
-  @Getter(AccessLevel.PUBLIC)
-  @Nonnull
-  Integer rolls;
-
-  @Getter(AccessLevel.PUBLIC)
-  @Nonnull
   Integer power;
+
+  @NonNull StrengthAndRolls strengthAndRolls;
 
   @NonNull PowerCalculator powerCalculator;
   @NonNull Boolean chooseBestRoll;
   @NonNull Integer diceSides;
 
+  @Value(staticConstructor = "of")
+  static class StrengthAndRolls {
+    StrengthValue strength;
+    RollValue rolls;
+
+    private StrengthAndRolls(final StrengthValue strength, final RollValue rolls) {
+      if (strength.isZero() || rolls.isZero()) {
+        this.strength = strength.toValue(0);
+        this.rolls = rolls.toValue(0);
+      } else {
+        this.strength = strength;
+        this.rolls = rolls;
+      }
+    }
+  }
+
+  public int getStrength() {
+    return strengthAndRolls.getStrength().getValue();
+  }
+
+  public int getRolls() {
+    return strengthAndRolls.getRolls().getValue();
+  }
+
   public UnitPowerStrengthAndRolls subtractStrength(final int strengthToSubtract) {
-    final int newStrength = Math.max(0, strength - strengthToSubtract);
-    return updateStrength(newStrength);
+    return update(
+        strengthAndRolls.getStrength().add(-1 * strengthToSubtract), strengthAndRolls.getRolls());
   }
 
-  UnitPowerStrengthAndRolls updateStrength(final int newStrength) {
-    final int newRolls = newStrength == 0 ? 0 : rolls;
-    return update(newStrength, newRolls);
-  }
-
-  private UnitPowerStrengthAndRolls update(final int newStrength, final int newRolls) {
+  private UnitPowerStrengthAndRolls update(
+      final StrengthValue newStrength, final RollValue newRolls) {
     return this.toBuilder()
-        .strength(newStrength)
-        .rolls(newRolls)
+        .strengthAndRolls(StrengthAndRolls.of(newStrength, newRolls))
         .power(powerCalculator.getValue(chooseBestRoll, diceSides, newStrength, newRolls))
         .build();
   }
 
   public UnitPowerStrengthAndRolls subtractRolls(final int rollsToSubtract) {
-    final int newRolls = Math.max(0, rolls - rollsToSubtract);
-    return updateRolls(newRolls);
+    return update(
+        strengthAndRolls.getStrength(), strengthAndRolls.getRolls().add(-1 * rollsToSubtract));
   }
 
   UnitPowerStrengthAndRolls updateRolls(final int newRolls) {
-    final int newStrength = newRolls == 0 ? 0 : strength;
-    return update(newStrength, newRolls);
+    return update(strengthAndRolls.getStrength(), strengthAndRolls.getRolls().toValue(newRolls));
+  }
+
+  UnitPowerStrengthAndRolls toZero() {
+    final StrengthValue newStrength = strengthAndRolls.getStrength().toValue(0);
+    final RollValue newRolls = strengthAndRolls.getRolls().toValue(0);
+    return this.toBuilder()
+        .strengthAndRolls(StrengthAndRolls.of(newStrength, newRolls))
+        .power(powerCalculator.getValue(chooseBestRoll, diceSides, newStrength, newRolls))
+        .build();
   }
 }

@@ -1,0 +1,14 @@
+name: Verify testing structure
+on: pull_request
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Find Unused DbUnit Datasets
+      run: ./.travis/stages/verify/find-unused-or-unmatched-tests/find-unused-dbunit-datasets
+    - name: Find Unmatched Test Packages
+      run: ./.travis/stages/verify/find-unused-or-unmatched-tests/find-unmatched-test-packages
+    - name: Find Orphaned Tests
+      run: ./.travis/stages/verify/find-unused-or-unmatched-tests/find-orphaned-tests
+

@@ -76,7 +76,7 @@ class ProScrambleAi {
             Comparator.<Unit>comparingDouble(
                     o ->
                         ProBattleUtils.estimateStrength(
-                            proData, scrambleTo, List.of(o), new ArrayList<>(), false))
+                            scrambleTo, List.of(o), new ArrayList<>(), false))
                 .reversed());
         canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
       }

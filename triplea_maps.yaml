@@ -2135,7 +2135,7 @@
 - mapName: Warcraft War Heroes
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/warcraft_war_heroes/archive/master.zip
-  version: 5
+  version: 6
   img: https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -2185,8 +2185,10 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/aggression_1941/archive/master.zip
   version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/master/description/mapimage.png
   description: |
-   <br>A WWII scenario loosely based on 1941, inspired from AA50 Anniversary and Big World
+   <br>A WWII scenario loosely based on 1941, inspired of AA50 Anniversary and Big World.
+   <br>WARNING! The balance hasn't extensively tested yet. Still progressing...
 - mapName: WW Terminus v2
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww_terminus_v2/archive/master.zip
