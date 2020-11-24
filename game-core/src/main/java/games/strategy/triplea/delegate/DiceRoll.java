@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -181,6 +182,28 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
+   * Used to roll dice for attackers and defenders in battles.
+   *
+   * @param units - units that could potentially be rolling
+   * @param player - that will be rolling the dice
+   * @param bridge - delegate bridge
+   * @param annotation - description of the battle being rolled for
+   * @return DiceRoll result which includes total hits and dice that were rolled
+   */
+  public static DiceRoll rollDice(
+      final Collection<Unit> units,
+      final GamePlayer player,
+      final IDelegateBridge bridge,
+      final String annotation,
+      final CombatValue combatValueCalculator) {
+
+    if (Properties.getLowLuck(bridge.getData().getProperties())) {
+      return rollDiceLowLuck(units, player, bridge, annotation, combatValueCalculator);
+    }
+    return rollDiceNormal(units, player, bridge, annotation, combatValueCalculator);
+  }
+
+  /**
    * Roll n-sided dice.
    *
    * @param annotation 0 based, add 1 to get actual die roll
@@ -201,28 +224,6 @@ public class DiceRoll implements Externalizable {
       dice.add(new Die(random[i], 1, DieType.IGNORED));
     }
     return new DiceRoll(dice, rollCount, rollCount);
-  }
-
-  /**
-   * Used to roll dice for attackers and defenders in battles.
-   *
-   * @param units - units that could potentially be rolling
-   * @param player - that will be rolling the dice
-   * @param bridge - delegate bridge
-   * @param annotation - description of the battle being rolled for
-   * @return DiceRoll result which includes total hits and dice that were rolled
-   */
-  public static DiceRoll rollDice(
-      final Collection<Unit> units,
-      final GamePlayer player,
-      final IDelegateBridge bridge,
-      final String annotation,
-      final CombatValue combatValueCalculator) {
-
-    if (Properties.getLowLuck(bridge.getData().getProperties())) {
-      return rollDiceLowLuck(units, player, bridge, annotation, combatValueCalculator);
-    }
-    return rollDiceNormal(units, player, bridge, annotation, combatValueCalculator);
   }
 
   /** Roll dice for units using low luck rules. */
@@ -265,6 +266,56 @@ public class DiceRoll implements Externalizable {
         .getHistoryWriter()
         .addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
 
+    return diceRoll;
+  }
+
+  public static DiceRoll airBattle(
+      final Collection<Unit> unitsList,
+      final GamePlayer player,
+      final IDelegateBridge bridge,
+      final String annotation,
+      final CombatValue combatValueCalculator) {
+
+    final TotalPowerAndTotalRolls unitPowerAndRollsMap =
+        PowerStrengthAndRolls.build(unitsList, combatValueCalculator);
+
+    final GameData data = bridge.getData();
+    final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
+    if (rollCount == 0) {
+      return new DiceRoll(new ArrayList<>(), 0, 0);
+    }
+    int[] random;
+    final List<Die> dice = new ArrayList<>();
+    int hitCount = 0;
+
+    // bonus is normally 1 for most games
+    final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
+
+    if (Properties.getLowLuck(data.getProperties())) {
+      // Get number of hits
+      hitCount = totalPower / data.getDiceSides();
+      random = new int[0];
+      // We need to roll dice for the fractional part of the dice.
+      final int power = totalPower % data.getDiceSides();
+      if (power != 0) {
+        random = bridge.getRandom(data.getDiceSides(), 1, player, DiceType.COMBAT, annotation);
+        final boolean hit = power > random[0];
+        if (hit) {
+          hitCount++;
+        }
+        dice.add(new Die(random[0], power, hit ? DieType.HIT : DieType.MISS));
+      }
+    } else {
+      random =
+          bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
+      dice.addAll(unitPowerAndRollsMap.getDiceHits(random));
+      hitCount = (int) dice.stream().filter(die -> die.getType() == DieType.HIT).count();
+    }
+    final double expectedHits = ((double) totalPower) / data.getDiceSides();
+    final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
+    bridge
+        .getHistoryWriter()
+        .addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
     return diceRoll;
   }
 
