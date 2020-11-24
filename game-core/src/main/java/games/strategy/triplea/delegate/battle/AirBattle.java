@@ -691,7 +691,7 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               dice =
-                  DiceRoll.airBattle(
+                  DiceRoll.rollDice(
                       attackingUnits,
                       attacker,
                       bridge,
@@ -771,7 +771,7 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               dice =
-                  DiceRoll.airBattle(
+                  DiceRoll.rollDice(
                       defendingUnits,
                       defender,
                       bridge,
