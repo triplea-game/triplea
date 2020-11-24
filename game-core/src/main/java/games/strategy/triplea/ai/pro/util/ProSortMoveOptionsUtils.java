@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.pro.util;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
@@ -13,7 +12,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI attack options utilities. */
 public final class ProSortMoveOptionsUtils {
@@ -201,45 +198,28 @@ public final class ProSortMoveOptionsUtils {
 
     int minPower = Integer.MAX_VALUE;
     for (final Territory t : territories) {
-      final Collection<TerritoryEffect> effects = TerritoryEffectHelper.getEffects(t);
-      final UnitBattleComparator comparator =
-          new UnitBattleComparator(
-              proData.getUnitValueMap(),
-              data,
-              CombatValueBuilder.mainCombatValue()
-                  .enemyUnits(List.of())
-                  .friendlyUnits(List.of())
-                  .side(BattleState.Side.OFFENSE)
-                  .gameSequence(data.getSequence())
-                  .supportAttachments(data.getUnitTypeList().getSupportRules())
-                  .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
-                  .gameDiceSides(data.getDiceSides())
-                  .territoryEffects(effects)
-                  .build());
-
       final List<Unit> defendingUnits =
           t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
-      final Collection<Unit> sortedUnits =
-          CollectionUtils.createSortedCollection(attackMap.get(t).getUnits(), comparator);
+      final Collection<Unit> attackingUnits = new ArrayList<>(attackMap.get(t).getUnits());
       // Compare the difference in total power when including the unit or not.
       int powerDifference = 0;
       for (final boolean includeUnit : new boolean[] {false, true}) {
         if (includeUnit) {
-          sortedUnits.add(unit);
+          attackingUnits.add(unit);
         }
         powerDifference +=
             (includeUnit ? 1 : -1)
                 * PowerStrengthAndRolls.build(
-                        sortedUnits,
+                        attackingUnits,
                         CombatValueBuilder.mainCombatValue()
                             .enemyUnits(defendingUnits)
-                            .friendlyUnits(sortedUnits)
+                            .friendlyUnits(attackingUnits)
                             .side(BattleState.Side.OFFENSE)
                             .gameSequence(data.getSequence())
                             .supportAttachments(data.getUnitTypeList().getSupportRules())
                             .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
                             .gameDiceSides(data.getDiceSides())
-                            .territoryEffects(effects)
+                            .territoryEffects(TerritoryEffectHelper.getEffects(t))
                             .build())
                     .calculateTotalPower();
       }

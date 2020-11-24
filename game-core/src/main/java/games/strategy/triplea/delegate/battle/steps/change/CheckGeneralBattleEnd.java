@@ -75,7 +75,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
   }
 
   private boolean hasNoStrengthOrRolls(final BattleState.Side side) {
-    return !PowerStrengthAndRolls.build(
+    return !PowerStrengthAndRolls.buildWithPreSortedUnits(
             battleState.filterUnits(ALIVE, side),
             CombatValueBuilder.mainCombatValue()
                 .enemyUnits(battleState.filterUnits(ALIVE, side.getOpposite()))

@@ -20,6 +20,10 @@ class RollValue {
     return RollValue.of(value, value == -1);
   }
 
+  RollValue toValue(final int value) {
+    return RollValue.of(value, false);
+  }
+
   RollValue add(final int extraValue) {
     return isInfinite ? this : RollValue.of(value + extraValue, false);
   }
@@ -27,5 +31,9 @@ class RollValue {
   int getValue() {
     // rolls don't have a maximum
     return isInfinite ? -1 : Math.max(0, value);
+  }
+
+  boolean isZero() {
+    return value == 0;
   }
 }

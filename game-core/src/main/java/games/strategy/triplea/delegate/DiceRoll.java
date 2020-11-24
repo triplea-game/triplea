@@ -1,12 +1,9 @@
 package games.strategy.triplea.delegate;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
@@ -26,7 +23,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -238,12 +234,10 @@ public class DiceRoll implements Externalizable {
       final String annotation,
       final CombatValue combatValueCalculator) {
 
-    final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
-    final TotalPowerAndTotalRolls unitPowerAndRollsMap =
-        PowerStrengthAndRolls.build(units, combatValueCalculator);
 
-    final int power = unitPowerAndRollsMap.calculateTotalPower();
+    final int power =
+        PowerStrengthAndRolls.build(unitsList, combatValueCalculator).calculateTotalPower();
     if (power == 0) {
       return new DiceRoll(List.of(), 0, 0);
     }
@@ -273,35 +267,6 @@ public class DiceRoll implements Externalizable {
         .addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
 
     return diceRoll;
-  }
-
-  /**
-   * Sorts the specified collection of units in ascending order of their attack or defense strength.
-   *
-   * @param side {@code DEFENSE} if the units should be sorted by their defense strength; otherwise
-   *     the units will be sorted by their attack strength.
-   */
-  public static void sortByStrength(final List<Unit> units, final BattleState.Side side) {
-    // Pre-compute unit strength information to speed up the sort.
-    final Table<UnitType, GamePlayer, Integer> strengthTable = HashBasedTable.create();
-    for (final Unit unit : units) {
-      final UnitType type = unit.getType();
-      final GamePlayer owner = unit.getOwner();
-      if (!strengthTable.contains(type, owner)) {
-        if (side == BattleState.Side.DEFENSE) {
-          strengthTable.put(type, owner, UnitAttachment.get(type).getDefense(owner));
-        } else {
-          strengthTable.put(type, owner, UnitAttachment.get(type).getAttack(owner));
-        }
-      }
-    }
-    final Comparator<Unit> comp =
-        (u1, u2) -> {
-          final int v1 = strengthTable.get(u1.getType(), u1.getOwner());
-          final int v2 = strengthTable.get(u2.getType(), u2.getOwner());
-          return Integer.compare(v1, v2);
-        };
-    units.sort(comp);
   }
 
   public static DiceRoll airBattle(
@@ -362,11 +327,9 @@ public class DiceRoll implements Externalizable {
       final String annotation,
       final CombatValue combatValueCalculator) {
 
-    final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
-    sortByStrength(units, combatValueCalculator.getBattleSide());
     final PowerStrengthAndRolls unitPowerAndRollsMap =
-        PowerStrengthAndRolls.build(units, combatValueCalculator);
+        PowerStrengthAndRolls.build(unitsList, combatValueCalculator);
 
     final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
     if (rollCount == 0) {

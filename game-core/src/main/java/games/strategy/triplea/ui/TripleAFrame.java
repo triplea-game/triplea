@@ -55,7 +55,7 @@ import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.data.TechRoll;
@@ -103,6 +103,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -1423,23 +1424,27 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
           for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
             final List<Unit> units = new ArrayList<>(entry.getValue());
-            units.sort(
-                new UnitBattleComparator(
-                        TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
-                        data,
-                        CombatValueBuilder.mainCombatValue()
-                            .enemyUnits(List.of())
-                            .friendlyUnits(List.of())
-                            .side(BattleState.Side.OFFENSE)
-                            .gameSequence(data.getSequence())
-                            .supportAttachments(data.getUnitTypeList().getSupportRules())
-                            .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
-                            .gameDiceSides(data.getDiceSides())
-                            .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
-                            .build(),
-                        true)
-                    .reversed());
-            possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
+            final List<Unit> sortedUnits =
+                CasualtySelector.getCasualtyOrderOfLoss(
+                    units,
+                    units.get(0).getOwner(),
+                    CombatValueBuilder.mainCombatValue()
+                        .enemyUnits(List.of())
+                        .friendlyUnits(List.of())
+                        .side(BattleState.Side.OFFENSE)
+                        .gameSequence(data.getSequence())
+                        .supportAttachments(data.getUnitTypeList().getSupportRules())
+                        .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                        .gameDiceSides(data.getDiceSides())
+                        .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
+                        .build(),
+                    entry.getKey(),
+                    TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+                    data);
+            // OOL is ordered with the first unit the owner would want to remove but in a kamikaze
+            // the player who picks is the attacker, so flip the order
+            Collections.reverse(sortedUnits);
+            possibleUnitsToAttackStringForm.put(entry.getKey().getName(), sortedUnits);
           }
           mapPanel.centerOn(
               data.getMap()

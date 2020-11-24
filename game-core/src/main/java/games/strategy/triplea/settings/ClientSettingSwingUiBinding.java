@@ -245,6 +245,19 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  SHOW_SERIALIZE_FEATURES_BINDING(
+      "Use New Serialization",
+      SettingType.TESTING,
+      "Toggles whether to use the new serialization mechanisms. This mechanism is still "
+          + "under development and potentially may break saved games and network games.\n"
+          + " All players in the same game must have it set to the same value."
+          + "Restart to fully activate") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.showSerializeFeatures);
+    }
+  },
+
   USE_MAPS_SERVER_BETA_FEATURE(
       "Use Maps Server (Beta)",
       SettingType.TESTING,

@@ -276,17 +276,8 @@ public class CasualtySelector {
       final boolean allowMultipleHitsPerUnit) {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
     // Sort units by power and cost in ascending order
-    final List<Unit> sorted;
-    sorted =
-        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
-            CasualtyOrderOfLosses.Parameters.builder()
-                .targetsToPickFrom(targetsToPickFrom)
-                .player(player)
-                .combatValue(combatValue)
-                .battlesite(battlesite)
-                .costs(costs)
-                .data(data)
-                .build());
+    final List<Unit> sorted =
+        getCasualtyOrderOfLoss(targetsToPickFrom, player, combatValue, battlesite, costs, data);
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
     if (allowMultipleHitsPerUnit) {
@@ -314,6 +305,24 @@ public class CasualtySelector {
       numSelectedCasualties++;
     }
     return Tuple.of(defaultCasualtySelection, sorted);
+  }
+
+  public static List<Unit> getCasualtyOrderOfLoss(
+      final Collection<Unit> targetsToPickFrom,
+      final GamePlayer player,
+      final CombatValue combatValue,
+      final Territory battlesite,
+      final IntegerMap<UnitType> costs,
+      final GameData data) {
+    return CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
+        CasualtyOrderOfLosses.Parameters.builder()
+            .targetsToPickFrom(targetsToPickFrom)
+            .player(player)
+            .combatValue(combatValue)
+            .battlesite(battlesite)
+            .costs(costs)
+            .data(data)
+            .build());
   }
 
   /**
