@@ -27,8 +27,8 @@ public class PowerCalculator {
     return getValue(
         chooseBestRoll.apply(unit),
         getDiceSides.apply(unit),
-        strengthCalculator.getStrength(unit).getValue(),
-        rollCalculator.getRoll(unit).getValue());
+        strengthCalculator.getStrength(unit),
+        rollCalculator.getRoll(unit));
   }
 
   /**
@@ -41,24 +41,26 @@ public class PowerCalculator {
   int getValue(
       final boolean chooseBestRoll,
       final int diceSides,
-      final int unitStrength,
-      final int unitRolls) {
-    if (unitStrength <= 0 || unitRolls <= 0) {
+      final StrengthValue unitStrength,
+      final RollValue unitRolls) {
+    if (unitStrength.isZero() || unitRolls.isZero()) {
       return 0;
     }
     // Bonus is normally 1 for most games
     final int extraRollBonus = Math.max(1, diceSides / 6);
 
     int totalPower = 0;
-    if (unitRolls == 1) {
-      totalPower += unitStrength;
+    if (unitRolls.getValue() == 1) {
+      totalPower += unitStrength.getValue();
     } else {
       if (chooseBestRoll) {
         // chooseBestRoll doesn't really make sense in LL. So instead,
         // we will just add +1 onto the power to simulate the gains of having the best die picked.
-        totalPower += Math.min(unitStrength + extraRollBonus * (unitRolls - 1), diceSides);
+        totalPower +=
+            Math.min(
+                unitStrength.getValue() + extraRollBonus * (unitRolls.getValue() - 1), diceSides);
       } else {
-        totalPower += unitRolls * unitStrength;
+        totalPower += unitRolls.getValue() * unitStrength.getValue();
       }
     }
     return totalPower;
