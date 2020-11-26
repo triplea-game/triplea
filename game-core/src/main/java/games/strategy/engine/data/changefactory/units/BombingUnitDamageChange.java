@@ -7,25 +7,19 @@ import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.triplea.java.collections.IntegerMap;
 
 /**
  * A game data change that captures the damage caused to a collection of units by a bombing attack.
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BombingUnitDamageChange extends Change {
   private static final long serialVersionUID = 7093658184880237574L;
   private final IntegerMap<String> hits;
   private final IntegerMap<String> undoHits;
   private final Collection<String> territoriesToNotify;
-
-  private BombingUnitDamageChange(
-      final IntegerMap<String> hits,
-      final IntegerMap<String> undoHits,
-      final Collection<String> territoriesToNotify) {
-    this.hits = hits;
-    this.undoHits = undoHits;
-    this.territoriesToNotify = territoriesToNotify;
-  }
 
   public BombingUnitDamageChange(
       final IntegerMap<Unit> hits, final Collection<Territory> territoriesToNotify) {
