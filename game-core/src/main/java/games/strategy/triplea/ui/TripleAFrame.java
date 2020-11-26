@@ -729,14 +729,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private void addZoomKeyboardShortcuts() {
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
         KeyCode.EQUALS,
         () ->
             mapPanel.setScale(
                 mapPanel.getScale() + (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
 
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
         KeyCode.MINUS,
         () ->
@@ -746,7 +746,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private void addTab(final String title, final Component component, final KeyCode hotkey) {
     tabsPanel.addTab(title, null, component, "Hotkey: CTRL+" + hotkey);
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
         hotkey,
         () -> tabsPanel.setSelectedIndex(List.of(tabsPanel.getComponents()).indexOf(component)));

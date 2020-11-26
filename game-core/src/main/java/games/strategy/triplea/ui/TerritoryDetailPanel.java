@@ -69,17 +69,17 @@ class TerritoryDetailPanel extends AbstractStatPanel {
 
     showOdds.addActionListener(
         e -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         frame,
         KeyCode.B,
         () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
 
     addAttackers.addActionListener(e -> BattleCalculatorDialog.addAttackers(currentTerritory));
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         frame, KeyCode.A, () -> BattleCalculatorDialog.addAttackers(currentTerritory));
 
     addDefenders.addActionListener(e -> BattleCalculatorDialog.addDefenders(currentTerritory));
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         frame, KeyCode.D, () -> BattleCalculatorDialog.addDefenders(currentTerritory));
     units.setBorder(BorderFactory.createEmptyBorder());
     units.getVerticalScrollBar().setUnitIncrement(20);
