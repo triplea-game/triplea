@@ -3,13 +3,11 @@ package org.triplea.web.socket;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 
 /**
  * Sends a server message (encoded as a JSON string) to all open and connected websocket sessions.
  */
-@Slf4j
 @AllArgsConstructor
 public class MessageBroadcaster
     implements BiConsumer<Collection<WebSocketSession>, MessageEnvelope> {
@@ -33,7 +31,6 @@ public class MessageBroadcaster
   @Override
   public void accept(
       final Collection<WebSocketSession> sessions, final MessageEnvelope messageEnvelope) {
-    log.info("Broadcasting: {}", messageEnvelope);
     sessions.parallelStream()
         .filter(WebSocketSession::isOpen)
         .forEach(s -> messageSender.accept(s, messageEnvelope));
