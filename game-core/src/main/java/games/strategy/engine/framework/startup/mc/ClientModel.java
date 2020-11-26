@@ -37,6 +37,7 @@ import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
@@ -83,6 +84,7 @@ public class ClientModel implements IMessengerErrorListener {
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private Messengers messengers;
   private IClientMessenger messenger;
+  private ClientNetworkBridge clientNetworkBridge;
   private Component ui;
   private ChatPanel chatPanel;
   private ClientGame game;
@@ -233,6 +235,8 @@ public class ClientModel implements IMessengerErrorListener {
               props,
               objectStreamFactory,
               new ClientLogin(this.ui, Injections.getInstance().getEngineVersion()));
+      // TODO: Project#20 replace no-op sender with a real sender.
+      clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
     } catch (final CouldNotLogInException e) {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
@@ -346,7 +350,7 @@ public class ClientModel implements IMessengerErrorListener {
             .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
     final Set<Player> playerSet = data.getGameLoader().newPlayers(playerMapping);
-    game = new ClientGame(data, playerSet, players, messengers);
+    game = new ClientGame(data, playerSet, players, messengers, clientNetworkBridge);
     new Thread(
             () -> {
               SwingUtilities.invokeLater(

@@ -16,6 +16,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
@@ -118,8 +119,19 @@ public class ServerLauncher implements ILauncher {
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<Player> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
+
+      // TODO: Project#20 - if feature flag is toggled, start game relay server
+      //   and use a real ClientNetworkingBridge
+      final ClientNetworkBridge clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
+
       serverGame =
-          new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, launchAction);
+          new ServerGame(
+              gameData,
+              localPlayerSet,
+              remotePlayers,
+              messengers,
+              clientNetworkBridge,
+              launchAction);
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
       launchAction.onLaunch(serverGame);
       // tell the clients to start, later we will wait for them to all signal that they are ready.
