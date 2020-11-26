@@ -1,10 +1,10 @@
 package org.triplea.map.xml.writer;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import java.nio.file.Path;
 import java.util.logging.Level;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import org.triplea.map.data.elements.Game;
