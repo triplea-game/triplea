@@ -1720,22 +1720,6 @@
     <br>c.) General tips:
     <br>An extensive manual is provided in the .zip file. Special units can be powerful.
     <br>
-- mapName: Domination 1914 Blood And Steel
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/domination_1914_blood_and_steel/archive/master.zip
-  version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/domination_1914_blood_and_steel/master/description/TripleA_domination_1914_blood_and_steel_mini.png
-  description: |
-    <br>by Navalland
-    <br>Version 1.0 for TripleA 1.8.0.5
-    <br>Suggestions to anillyuksell@hotmail.com
-    <br>
-    <br>"Domination 1914 Blood And Steel" is a realistic First World War immersive grand strategy wargame, based on the military conflict between two opposite sides. Germany, Austria, Ottomans, Bulgaria and Bolsheviks are Central Powers. Americans, British, French, Russia, Serbia, Romania, Greece and Japan are Allied. The various countries join the war at different times. Italy can join Central Powers or Allied, depending on Central Powers' achievements.
-    <br>
-    <br>Available politic panel and actions to declare war on some neutral countries. Different units for different countries. And different technologies for different countries. Featuring convoy zones, harbours, airfields and dogfighting.
-    <br>
-    <br>Highly dynamic gameplay. The war extending over the immense spaces of Africa, East Asia and Pacific, yet of scarce or no economic value. Europe is where the future of the World shall be forged, with steel and blood...
-    <br>
 - mapName: Invasion USA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/invasion_usa/archive/master.zip
@@ -2066,15 +2050,6 @@
   description:
     <br>
     <br>An alternate history World War 2 scenario.
-    <br>
-- mapName: Schultz European War
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/schultz_european_war/archive/master.zip
-  version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/schultz_european_war/master/description/TripleA_schultz_european_war_mini.png
-  description:
-    <br>
-    <br>A World War I Mod.
     <br>
 - mapName: Oztea 1939 Global
   mapCategory: EXPERIMENTAL
