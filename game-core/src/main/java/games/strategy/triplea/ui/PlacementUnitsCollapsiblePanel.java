@@ -23,7 +23,7 @@ class PlacementUnitsCollapsiblePanel {
     unitsToPlacePanel =
         new SimpleUnitPanel(
             uiContext, SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    panel = new CollapsiblePanel(unitsToPlacePanel, "Purchased Units");
+    panel = new CollapsiblePanel(unitsToPlacePanel, "Placements");
     panel.setVisible(false);
     gameData.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
   }
