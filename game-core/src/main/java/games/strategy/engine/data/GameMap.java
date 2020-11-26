@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -107,11 +108,15 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Returns all adjacent neighbors of the starting territory that match the condition. Does NOT
    * include the original/starting territory in the returned Set.
    */
-  public Set<Territory> getNeighbors(final Territory territory, final Predicate<Territory> cond) {
+  public Set<Territory> getNeighbors(
+      final Territory territory,
+      @Nullable final Predicate<Territory> cond,
+      final BiPredicate<Territory, Territory> routeCond) {
     if (cond == null) {
       return getNeighbors(territory);
     }
     return connections.getOrDefault(territory, Set.of()).parallelStream()
+        .filter(n -> routeCond.test(territory, n))
         .filter(cond)
         .collect(Collectors.toSet());
   }
@@ -121,25 +126,34 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * condition. Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance) {
-    return getNeighbors(territory, distance, Matches.always());
+    return getNeighbors(territory, distance, Matches.always(), Matches.alwaysBi());
   }
 
   /**
    * Returns all neighbors within a certain distance of the starting territory that match the
    * condition. Does NOT include the original/starting territory in the returned Set.
+   *
+   * @param territory starting territory
+   * @param distance distance to check
+   * @param cond the neighbor territory must match this condition
+   * @param routeCond the route between the starting territory and the neighbor territory must match
+   *     this condition
    */
   public Set<Territory> getNeighbors(
-      final Territory territory, final int distance, final Predicate<Territory> cond) {
+      final Territory territory,
+      final int distance,
+      @Nullable final Predicate<Territory> cond,
+      final BiPredicate<Territory, Territory> routeCond) {
     checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Set.of();
     }
-    final Set<Territory> neighbors = getNeighbors(territory, cond);
+    final Set<Territory> neighbors = getNeighbors(territory, cond, routeCond);
     if (distance == 1) {
       return neighbors;
     }
     final Set<Territory> result =
-        getNeighbors(neighbors, new HashSet<>(neighbors), distance - 1, cond);
+        getNeighbors(neighbors, new HashSet<>(neighbors), distance - 1, cond, routeCond);
     result.remove(territory);
     return result;
   }
@@ -152,7 +166,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   public Set<Territory> getNeighbors(
       final Set<Territory> frontier, final int distance, final Predicate<Territory> cond) {
     final Set<Territory> neighbors =
-        getNeighbors(frontier, new HashSet<>(frontier), distance, cond);
+        getNeighbors(frontier, new HashSet<>(frontier), distance, cond, Matches.alwaysBi());
     neighbors.removeAll(frontier);
     return neighbors;
   }
@@ -161,18 +175,19 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Set<Territory> frontier,
       final Set<Territory> searched,
       final int distance,
-      @Nullable final Predicate<Territory> cond) {
+      @Nullable final Predicate<Territory> cond,
+      final BiPredicate<Territory, Territory> routeCound) {
     if (distance == 0 || frontier.isEmpty()) {
       return searched;
     }
     final Set<Territory> newFrontier =
         frontier.stream()
-            .map(t -> getNeighbors(t, cond))
+            .map(t -> getNeighbors(t, cond, routeCound))
             .flatMap(Collection::stream)
             .filter(t -> !searched.contains(t))
             .collect(Collectors.toSet());
     searched.addAll(newFrontier);
-    return getNeighbors(newFrontier, searched, distance - 1, cond);
+    return getNeighbors(newFrontier, searched, distance - 1, cond, Matches.alwaysBi());
   }
 
   /**
@@ -190,7 +205,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (distance == 1) {
       return neighbors;
     }
-    final Set<Territory> start = getNeighbors(territory, cond);
+    final Set<Territory> start = getNeighbors(territory, cond, Matches.alwaysBi());
     for (int i = 2; i <= distance; i++) {
       neighbors.addAll(getNeighborsIgnoreEnd(start, new HashSet<>(start), i - 1, cond));
     }
@@ -209,7 +224,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     final Predicate<Territory> neighborCond = (distance == 1) ? Predicates.alwaysTrue() : cond;
     final Set<Territory> newFrontier =
         frontier.stream()
-            .map(t -> getNeighbors(t, neighborCond))
+            .map(t -> getNeighbors(t, neighborCond, Matches.alwaysBi()))
             .flatMap(Collection::stream)
             .filter(t -> !searched.contains(t))
             .collect(Collectors.toSet());
@@ -235,12 +250,17 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (movementLeft.compareTo(BigDecimal.ZERO) == 0) {
       return Set.of();
     }
-    final Set<Territory> neighbors = getNeighbors(territory, cond);
+    final Set<Territory> neighbors = getNeighbors(territory, cond, Matches.alwaysBi());
     if (movementLeft.compareTo(BigDecimal.ONE) <= 0) {
       return neighbors;
     }
     final Set<Territory> result =
-        getNeighbors(neighbors, new HashSet<>(neighbors), movementLeft.intValue() - 1, cond);
+        getNeighbors(
+            neighbors,
+            new HashSet<>(neighbors),
+            movementLeft.intValue() - 1,
+            cond,
+            Matches.alwaysBi());
     result.remove(territory);
     return result;
   }
@@ -305,7 +325,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    */
   public int getDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.always());
+    return getDistance(t1, t2, Matches.always(), Matches.alwaysBi());
   }
 
   /**
@@ -315,12 +335,17 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t1 start territory of the route
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
+   * @param routeCond condition that routes between neighboring territories must match
    */
-  public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
+  public int getDistance(
+      final Territory t1,
+      final Territory t2,
+      final Predicate<Territory> cond,
+      final BiPredicate<Territory, Territory> routeCond) {
     if (t1.equals(t2)) {
       return 0;
     }
-    return getDistance(0, new HashSet<>(), Set.of(t1), t2, cond);
+    return getDistance(0, new HashSet<>(), Set.of(t1), t2, cond, routeCond);
   }
 
   /**
@@ -333,16 +358,16 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Set<Territory> searched,
       final Set<Territory> frontier,
       final Territory target,
-      @Nullable final Predicate<Territory> cond) {
+      final Predicate<Territory> cond,
+      final BiPredicate<Territory, Territory> routeCond) {
     // add the frontier to the searched
     searched.addAll(frontier);
     // find the new frontier
 
     final Set<Territory> newFrontier =
         frontier.stream()
-            .map(connections::get)
-            .flatMap(Collection::stream)
-            .filter(f -> cond == null || cond.test(f))
+            .flatMap(f -> connections.get(f).stream().filter(t -> routeCond.test(f, t)))
+            .filter(cond)
             .collect(Collectors.toSet());
     if (newFrontier.contains(target)) {
       return distance + 1;
@@ -351,7 +376,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (newFrontier.isEmpty()) {
       return -1;
     }
-    return getDistance(distance + 1, searched, newFrontier, target, cond);
+    return getDistance(distance + 1, searched, newFrontier, target, cond, routeCond);
   }
 
   public IntegerMap<Territory> getDistance(
@@ -363,7 +388,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return distances;
     }
     for (final Territory t : territories) {
-      distances.put(t, getDistance(target, t, condition));
+      distances.put(t, getDistance(target, t, condition, Matches.alwaysBi()));
     }
     return distances;
   }
@@ -375,7 +400,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    */
   public int getLandDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.territoryIsLand());
+    return getDistance(t1, t2, Matches.territoryIsLand(), Matches.alwaysBi());
   }
 
   /**
@@ -385,7 +410,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    */
   public int getWaterDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.territoryIsWater());
+    return getDistance(t1, t2, Matches.territoryIsWater(), Matches.alwaysBi());
   }
 
   /**
@@ -398,7 +423,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public int getDistanceIgnoreEndForCondition(
       final Territory t1, final Territory t2, final Predicate<Territory> cond) {
-    return getDistance(t1, t2, Matches.territoryIs(t2).or(cond));
+    return getDistance(t1, t2, Matches.territoryIs(t2).or(cond), Matches.alwaysBi());
   }
 
   public List<Territory> getTerritories() {

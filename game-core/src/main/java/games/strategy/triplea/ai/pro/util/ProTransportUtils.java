@@ -342,7 +342,9 @@ public final class ProTransportUtils {
 
     // Find nearby carrier capacity
     final Set<Territory> nearbyTerritories =
-        data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false));
+        data.getMap()
+            .getNeighbors(
+                t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false), Matches.alwaysBi());
     nearbyTerritories.add(t);
     final List<Unit> ownedNearbyUnits = new ArrayList<>();
     int capacity = 0;

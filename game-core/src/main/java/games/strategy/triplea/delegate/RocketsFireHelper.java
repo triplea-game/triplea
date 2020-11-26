@@ -230,7 +230,7 @@ public class RocketsFireHelper implements Serializable {
                 Matches.territoryIsNotImpassable())
             .build();
     final Collection<Territory> possible =
-        data.getMap().getNeighbors(territory, maxDistance, allowed);
+        data.getMap().getNeighbors(territory, maxDistance, allowed, Matches.alwaysBi());
     final Predicate<Unit> attackableUnits =
         Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {

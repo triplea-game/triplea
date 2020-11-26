@@ -404,7 +404,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
         if (Matches.unitIsSea().test(u)) {
           final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(Matches.unitIsLand());
           final Set<Territory> neighbors =
-              new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
+              new HashSet<>(
+                  data.getMap().getNeighbors(t, Matches.territoryIsLand(), Matches.alwaysBi()));
           for (final Territory current : neighbors) {
             givesBonusUnits.addAll(
                 CollectionUtils.getMatches(current.getUnits(), givesBonusUnitLand));
@@ -412,7 +413,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
         } else if (Matches.unitIsLand().test(u)) {
           final Predicate<Unit> givesBonusUnitSea = givesBonusUnit.and(Matches.unitIsSea());
           final Set<Territory> neighbors =
-              new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
+              new HashSet<>(
+                  data.getMap().getNeighbors(t, Matches.territoryIsWater(), Matches.alwaysBi()));
           for (final Territory current : neighbors) {
             givesBonusUnits.addAll(
                 CollectionUtils.getMatches(current.getUnits(), givesBonusUnitSea));
@@ -574,7 +576,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
         new HashSet<>(territoryUnitIsIn.getUnitCollection().getMatches(repairUnit));
     if (Matches.unitIsSea().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
-          new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
+          new ArrayList<>(
+              data.getMap()
+                  .getNeighbors(territoryUnitIsIn, Matches.territoryIsLand(), Matches.alwaysBi()));
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitLand =
             Matches.alliedUnit(owner, data)
@@ -586,7 +590,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     } else if (Matches.unitIsLand().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
           new ArrayList<>(
-              data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
+              data.getMap()
+                  .getNeighbors(territoryUnitIsIn, Matches.territoryIsWater(), Matches.alwaysBi()));
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitSea =
             Matches.alliedUnit(owner, data)

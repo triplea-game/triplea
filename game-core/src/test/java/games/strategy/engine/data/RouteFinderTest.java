@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Preconditions;
+import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ class RouteFinderTest {
 
   private void configureNeighbors(final Territory territory, final Territory... neighbors) {
     Preconditions.checkNotNull(map);
-    when(map.getNeighbors(eq(territory), any())).thenReturn(Set.of(neighbors));
+    when(map.getNeighbors(eq(territory), any(), Matches.alwaysBi())).thenReturn(Set.of(neighbors));
   }
 
   @Test
@@ -106,7 +107,7 @@ class RouteFinderTest {
     final GameMap islandMap = mock(GameMap.class);
     final Territory island0 = mock(Territory.class);
     final Territory island1 = mock(Territory.class);
-    when(islandMap.getNeighbors(eq(island0), any())).thenReturn(Set.of());
+    when(islandMap.getNeighbors(eq(island0), any(), Matches.alwaysBi())).thenReturn(Set.of());
 
     final RouteFinder routeFinder =
         new RouteFinder(islandMap, t -> true, new ArrayList<>(), player);
@@ -178,7 +179,8 @@ class RouteFinderTest {
   @Test
   void testNoRouteByCostOnInvalidGraph() {
     final GameMap map = mock(GameMap.class);
-    when(map.getNeighbors(eq(territories.get(0)), any())).thenReturn(Set.of(territories.get(1)));
+    when(map.getNeighbors(eq(territories.get(0)), any(), Matches.alwaysBi()))
+        .thenReturn(Set.of(territories.get(1)));
 
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
     final Optional<Route> optRoute =

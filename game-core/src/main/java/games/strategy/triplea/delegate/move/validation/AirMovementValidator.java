@@ -138,7 +138,8 @@ public final class AirMovementValidator {
                 routeEnd,
                 maxMovementLeftForTheseAirUnitsBeingValidated,
                 // where can we fly to?
-                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir(data))));
+                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir(data)),
+                Matches.alwaysBi()));
     // we only want to consider
     landingSpots.removeAll(
         CollectionUtils.getMatches(
@@ -534,8 +535,10 @@ public final class AirMovementValidator {
         return 0;
       }
       final GameMap map = t1.getData().getMap();
-      final int distance1 = map.getDistance(territoryWeMeasureDistanceFrom, t1, condition);
-      final int distance2 = map.getDistance(territoryWeMeasureDistanceFrom, t2, condition);
+      final int distance1 =
+          map.getDistance(territoryWeMeasureDistanceFrom, t1, condition, Matches.alwaysBi());
+      final int distance2 =
+          map.getDistance(territoryWeMeasureDistanceFrom, t2, condition, Matches.alwaysBi());
       if (distance1 == distance2) {
         return 0;
       }

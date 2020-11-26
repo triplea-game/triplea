@@ -38,7 +38,8 @@ final class Utils {
         data.getMap()
             .getNeighbors(
                 location,
-                location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
+                location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand(),
+                Matches.alwaysBi())) {
       final List<Unit> enemies =
           t.getUnitCollection().getMatches(Matches.enemyUnit(location.getOwner(), data));
       strength += AiUtils.strength(enemies, true, location.isWater());
@@ -70,7 +71,8 @@ final class Utils {
         CollectionUtils.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
       for (final Territory capital :
           TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
-        if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {
+        if (data.getMap().getDistance(t, capital, Matches.territoryIsLand(), Matches.alwaysBi())
+            != -1) {
           return true;
         }
       }

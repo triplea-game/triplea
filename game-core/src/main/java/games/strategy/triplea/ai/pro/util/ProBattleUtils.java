@@ -181,7 +181,11 @@ public final class ProBattleUtils {
       // Find enemy strength
       final Set<Territory> nearbyTerritoriesForEnemy =
           data.getMap()
-              .getNeighbors(t, i, ProMatches.territoryCanMoveLandUnits(player, data, false));
+              .getNeighbors(
+                  t,
+                  i,
+                  ProMatches.territoryCanMoveLandUnits(player, data, false),
+                  Matches.alwaysBi());
       nearbyTerritoriesForEnemy.add(t);
       final List<Unit> enemyUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
@@ -194,7 +198,11 @@ public final class ProBattleUtils {
       // Find allied strength
       final Set<Territory> nearbyTerritoriesForAllied =
           data.getMap()
-              .getNeighbors(t, i - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
+              .getNeighbors(
+                  t,
+                  i - 1,
+                  ProMatches.territoryCanMoveLandUnits(player, data, false),
+                  Matches.alwaysBi());
       nearbyTerritoriesForAllied.add(t);
       final List<Unit> alliedUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
@@ -244,7 +252,11 @@ public final class ProBattleUtils {
     // Find enemy strength
     final Set<Territory> nearbyTerritoriesForEnemy =
         data.getMap()
-            .getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(player, data, false));
+            .getNeighbors(
+                t,
+                distance,
+                ProMatches.territoryCanMoveLandUnits(player, data, false),
+                Matches.alwaysBi());
     nearbyTerritoriesForEnemy.add(t);
     final List<Unit> enemyUnits = new ArrayList<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
@@ -258,7 +270,10 @@ public final class ProBattleUtils {
     final Set<Territory> nearbyTerritoriesForAllied =
         data.getMap()
             .getNeighbors(
-                t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
+                t,
+                distance - 1,
+                ProMatches.territoryCanMoveLandUnits(player, data, false),
+                Matches.alwaysBi());
     nearbyTerritoriesForAllied.add(t);
     final Set<Unit> alliedUnits = new HashSet<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
@@ -308,11 +323,13 @@ public final class ProBattleUtils {
     final List<Territory> nearbyLandTerritories =
         CollectionUtils.getMatches(nearbyTerritories, Matches.territoryIsLand());
     final Set<Territory> nearbyEnemySeaTerritories =
-        data.getMap().getNeighbors(t, enemyDistance, Matches.territoryIsWater());
+        data.getMap()
+            .getNeighbors(t, enemyDistance, Matches.territoryIsWater(), Matches.alwaysBi());
     nearbyEnemySeaTerritories.add(t);
     final int alliedDistance = (enemyDistance + 1) / 2;
     final Set<Territory> nearbyAlliedSeaTerritories =
-        data.getMap().getNeighbors(t, alliedDistance, Matches.territoryIsWater());
+        data.getMap()
+            .getNeighbors(t, alliedDistance, Matches.territoryIsWater(), Matches.alwaysBi());
     nearbyAlliedSeaTerritories.add(t);
     final List<Unit> enemyUnitsInLandTerritories = new ArrayList<>();
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {

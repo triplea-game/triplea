@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -77,6 +78,10 @@ public final class Matches {
 
   public static <T> Predicate<T> always() {
     return it -> true;
+  }
+
+  public static <T, U> BiPredicate<T, U> alwaysBi() {
+    return (it, it2) -> true;
   }
 
   public static <T> Predicate<T> never() {
@@ -910,7 +915,7 @@ public final class Matches {
 
   public static Predicate<Territory> territoryHasNeighborMatching(
       final GameData data, final Predicate<Territory> match) {
-    return t -> !data.getMap().getNeighbors(t, match).isEmpty();
+    return t -> !data.getMap().getNeighbors(t, match, Matches.alwaysBi()).isEmpty();
   }
 
   public static Predicate<Territory> territoryIsInList(final Collection<Territory> list) {
@@ -927,12 +932,14 @@ public final class Matches {
     return t ->
         !data.getMap()
             .getNeighbors(
-                t, territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player))
+                t,
+                territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player),
+                Matches.alwaysBi())
             .isEmpty();
   }
 
   public static Predicate<Territory> territoryHasWaterNeighbor(final GameData data) {
-    return t -> !data.getMap().getNeighbors(t, territoryIsWater()).isEmpty();
+    return t -> !data.getMap().getNeighbors(t, territoryIsWater(), Matches.alwaysBi()).isEmpty();
   }
 
   public static Predicate<Territory> territoryIsOwnedAndHasOwnedUnitMatching(
@@ -1660,7 +1667,8 @@ public final class Matches {
       }
       if (unitIsSea().test(damagedUnit)) {
         final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
+            new ArrayList<>(
+                data.getMap().getNeighbors(territory, territoryIsLand(), Matches.alwaysBi()));
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitLand =
               alliedUnit(player, data)
@@ -1673,7 +1681,8 @@ public final class Matches {
         }
       } else if (unitIsLand().test(damagedUnit)) {
         final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsWater()));
+            new ArrayList<>(
+                data.getMap().getNeighbors(territory, territoryIsWater(), Matches.alwaysBi()));
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitSea =
               alliedUnit(player, data)
@@ -1731,7 +1740,8 @@ public final class Matches {
       if (unitIsSea().test(unitWhichWillGetBonus)) {
         final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(unitIsLand());
         final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
+            new ArrayList<>(
+                data.getMap().getNeighbors(territory, territoryIsLand(), Matches.alwaysBi()));
         for (final Territory current : neighbors) {
           if (current.getUnitCollection().anyMatch(givesBonusUnitLand)) {
             return true;

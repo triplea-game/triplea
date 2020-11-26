@@ -349,7 +349,7 @@ public class WeakAi extends AbstractAi {
         // find our strength that we can attack with
         float ourStrength = 0;
         final Collection<Territory> attackFrom =
-            data.getMap().getNeighbors(t, Matches.territoryIsWater());
+            data.getMap().getNeighbors(t, Matches.territoryIsWater(), Matches.alwaysBi());
         for (final Territory owned : attackFrom) {
           // dont risk units we are carrying
           if (owned.getUnitCollection().anyMatch(Matches.unitIsLand())) {
@@ -597,7 +597,9 @@ public class WeakAi extends AbstractAi {
         // only take it with 1 unit
         boolean taken = false;
         for (final Territory attackFrom :
-            data.getMap().getNeighbors(enemy, Matches.territoryHasLandUnitsOwnedBy(player))) {
+            data.getMap()
+                .getNeighbors(
+                    enemy, Matches.territoryHasLandUnitsOwnedBy(player), Matches.alwaysBi())) {
           if (taken) {
             break;
           }
@@ -652,7 +654,9 @@ public class WeakAi extends AbstractAi {
         // find our strength that we can attack with
         float ourStrength = 0;
         final Collection<Territory> attackFrom =
-            data.getMap().getNeighbors(enemy, Matches.territoryHasLandUnitsOwnedBy(player));
+            data.getMap()
+                .getNeighbors(
+                    enemy, Matches.territoryHasLandUnitsOwnedBy(player), Matches.alwaysBi());
         for (final Territory owned : attackFrom) {
           if (TerritoryAttachment.get(owned) != null
               && TerritoryAttachment.get(owned).isCapital()
@@ -680,7 +684,10 @@ public class WeakAi extends AbstractAi {
             // 2) we can potentially attack another territory
             if (!owned.isWater()
                 && data.getMap()
-                        .getNeighbors(owned, Matches.territoryHasEnemyLandUnits(player, data))
+                        .getNeighbors(
+                            owned,
+                            Matches.territoryHasEnemyLandUnits(player, data),
+                            Matches.alwaysBi())
                         .size()
                     > 1) {
               units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units);
@@ -1081,7 +1088,7 @@ public class WeakAi extends AbstractAi {
         seaPlaceAt = amphibRoute.getAllTerritories().get(1);
       } else {
         final Set<Territory> seaNeighbors =
-            data.getMap().getNeighbors(placeAt, Matches.territoryIsWater());
+            data.getMap().getNeighbors(placeAt, Matches.territoryIsWater(), Matches.alwaysBi());
         if (!seaNeighbors.isEmpty()) {
           seaPlaceAt = seaNeighbors.iterator().next();
         }

@@ -229,7 +229,8 @@ public final class ProMoveUtils {
             final Set<Territory> neighbors =
                 map.getNeighbors(
                     transportTerritory,
-                    ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                    ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove),
+                    Matches.alwaysBi());
             Territory territoryToMoveTo = null;
             int minUnitDistance = Integer.MAX_VALUE;
             int maxDistanceFromEnd =

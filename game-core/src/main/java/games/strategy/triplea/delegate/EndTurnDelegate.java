@@ -113,7 +113,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         }
         if (!toAddSea.isEmpty()) {
           final Predicate<Territory> myTerrs = Matches.territoryIsWater();
-          final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
+          final Collection<Territory> waterNeighbors =
+              data.getMap().getNeighbors(t, myTerrs, Matches.alwaysBi());
           if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
             final Territory tw = getRandomTerritory(waterNeighbors, bridge);
             final String transcriptText =
@@ -131,7 +132,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         if (!toAddLand.isEmpty()) {
           final Predicate<Territory> myTerrs =
               Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand());
-          final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
+          final Collection<Territory> landNeighbors =
+              data.getMap().getNeighbors(t, myTerrs, Matches.alwaysBi());
           if (landNeighbors != null && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);
             final String transcriptText =

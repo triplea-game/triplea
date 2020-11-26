@@ -662,7 +662,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           && testUnits.stream().anyMatch(Matches.unitIsSea().and(Matches.unitIsConstruction()))) {
         boolean ownedNeighbor = false;
         for (final Territory current :
-            getData().getMap().getNeighbors(to, Matches.territoryIsLand())) {
+            getData().getMap().getNeighbors(to, Matches.territoryIsLand(), Matches.alwaysBi())) {
           if (current.getOwner().equals(player)
               && (canProduceInConquered || !wasConquered(current))) {
             ownedNeighbor = true;
@@ -753,7 +753,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (canProduce(to, to, unitsToPlace, player, simpleCheck) == null) {
       producers.add(to);
     }
-    for (final Territory current : getData().getMap().getNeighbors(to, Matches.territoryIsLand())) {
+    for (final Territory current :
+        getData().getMap().getNeighbors(to, Matches.territoryIsLand(), Matches.alwaysBi())) {
       if (canProduce(current, to, unitsToPlace, player, simpleCheck) == null) {
         producers.add(current);
       }

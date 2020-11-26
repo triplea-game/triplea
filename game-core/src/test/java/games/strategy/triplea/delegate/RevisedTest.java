@@ -150,7 +150,10 @@ class RevisedTest {
     final GamePlayer americans = americans(gameData);
     final Territory centralUs = territory("Central United States", gameData);
     final Set<Territory> enemyNeighbors =
-        gameData.getMap().getNeighbors(centralUs, Matches.isTerritoryEnemy(americans, gameData));
+        gameData
+            .getMap()
+            .getNeighbors(
+                centralUs, Matches.isTerritoryEnemy(americans, gameData), Matches.alwaysBi());
     assertTrue(enemyNeighbors.isEmpty());
   }
 
