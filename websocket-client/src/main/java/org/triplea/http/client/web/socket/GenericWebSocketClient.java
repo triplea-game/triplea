@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import lombok.extern.java.Log;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
@@ -28,6 +29,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
  * <p>Note: The error handler passed in is invoked if we get an error connecting to server, or if
  * server sends us an error message.
  */
+@Log
 public class GenericWebSocketClient implements WebSocket, WebSocketConnectionListener {
   private static final Gson gson = new Gson();
 
@@ -54,6 +56,10 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
       @Nonnull final URI websocketUri, @Nonnull final Consumer<String> errorHandler) {
     this(
         new WebSocketProtocolSwapper().apply(websocketUri), errorHandler, WebSocketConnection::new);
+  }
+
+  public GenericWebSocketClient(@Nonnull final URI websocketUri) {
+    this(websocketUri, log::warning);
   }
 
   @VisibleForTesting

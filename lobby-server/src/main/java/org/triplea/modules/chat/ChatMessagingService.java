@@ -34,10 +34,11 @@ public class ChatMessagingService {
   }
 
   public void configure(final WebSocketMessagingBus playerConnectionMessagingBus) {
-    playerConnectionMessagingBus.addListener(ConnectToChatMessage.TYPE, playerConnectedListener);
-    playerConnectionMessagingBus.addListener(ChatSentMessage.TYPE, chatMessageListener);
-    playerConnectionMessagingBus.addListener(PlayerSlapSentMessage.TYPE, slapListener);
-    playerConnectionMessagingBus.addListener(
+    playerConnectionMessagingBus.addMessageListener(
+        ConnectToChatMessage.TYPE, playerConnectedListener);
+    playerConnectionMessagingBus.addMessageListener(ChatSentMessage.TYPE, chatMessageListener);
+    playerConnectionMessagingBus.addMessageListener(PlayerSlapSentMessage.TYPE, slapListener);
+    playerConnectionMessagingBus.addMessageListener(
         PlayerStatusUpdateSentMessage.TYPE, statusUpdateListener);
     playerConnectionMessagingBus.addSessionDisconnectListener(playerLeftListener);
   }

@@ -37,7 +37,10 @@ public class WebSocketMessagingBus {
     Consumer<WebSocketMessageContext<T>> listener;
   }
 
+  /** These listeners are for specific message types. */
   private final List<MessageListener<?>> messageListeners = new ArrayList<>();
+  /** These listeners are invoked when we receive any type of message. */
+  private final List<Consumer<MessageEnvelope>> anyMessageListeners = new ArrayList<>();
 
   public WebSocketMessagingBus() {
     messageSender = new MessageSender();
@@ -51,17 +54,40 @@ public class WebSocketMessagingBus {
   }
 
   public <X extends WebSocketMessage> void broadcastMessage(final X broadcastMessage) {
-    messageBroadcaster.accept(sessionSet.getSessions(), broadcastMessage.toEnvelope());
+    broadcastMessageEnvelope(broadcastMessage.toEnvelope());
   }
 
-  public <T extends WebSocketMessage> void addListener(
+  public void broadcastMessageEnvelope(final MessageEnvelope messageEnvelope) {
+    messageBroadcaster.accept(sessionSet.getSessions(), messageEnvelope);
+  }
+
+  /**
+   * Adds a listener for specific message types. The messaging bus will automatically exclude any
+   * messages that are not of a matching type.
+   *
+   * @param type The message type to listen for.
+   * @param listener The listener that will be invoked with messages of a matching type.
+   */
+  public <T extends WebSocketMessage> void addMessageListener(
       final MessageType<T> type, final Consumer<WebSocketMessageContext<T>> listener) {
     messageListeners.add(new MessageListener<>(type, listener));
+  }
+
+  /**
+   * Adds a listener that will be invoked when any message is received
+   *
+   * @param messageListener The message listener to be added, will be invoked with any message
+   *     recieved.
+   */
+  public void addMessageListener(final Consumer<MessageEnvelope> messageListener) {
+    anyMessageListeners.add(messageListener);
   }
 
   @SuppressWarnings("unchecked")
   <T extends WebSocketMessage> void onMessage(
       final WebSocketSession session, final MessageEnvelope envelope) {
+    anyMessageListeners.forEach(listener -> listener.accept(envelope));
+
     determineMatchingMessageType(envelope)
         .ifPresent(
             messageType -> {

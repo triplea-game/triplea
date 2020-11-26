@@ -61,7 +61,7 @@ public class WebSocketSessionAdapter {
 
       @Override
       public boolean isOpen() {
-        return webSocket.isOpen();
+        return webSocket != null && webSocket.isOpen();
       }
 
       @Override
