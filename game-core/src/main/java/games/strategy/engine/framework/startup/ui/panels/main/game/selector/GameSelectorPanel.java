@@ -65,14 +65,14 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           .build();
   private final JButton loadNewGame =
       new JButtonBuilder()
-          .title("Select Map")
+          .title("Select Game")
           .toolTip(
               "<html>Select a game from all the maps/games that come with TripleA, "
                   + "<br>and the ones you have downloaded.</html>")
           .build();
   private final JButton mapOptions =
       new JButtonBuilder()
-          .title("Map Options")
+          .title("Game Options")
           .toolTip(
               "<html>Set options for the currently selected game, <br>such as enabling/disabling "
                   + "Low Luck, or Technology, etc.</html>")
@@ -286,7 +286,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     final String makeDefault = "Make Default";
     final String reset = "Reset";
     pane.setOptions(new Object[] {ok, makeDefault, reset, cancel});
-    final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Map Options");
+    final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Game Options");
     window.setVisible(true);
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {

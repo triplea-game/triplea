@@ -115,11 +115,11 @@ final class GameMenu extends JMenu {
   private void addGameOptionsMenu() {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
       add(SwingAction.of(
-              "Map Options",
+              "Game Options",
               e -> {
                 final PropertiesUi ui =
                     new PropertiesUi(gameData.getProperties().getEditableProperties(), false);
-                JOptionPane.showMessageDialog(frame, ui, "Map Options", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ui, "Game Options", JOptionPane.PLAIN_MESSAGE);
               }))
           .setMnemonic(KeyEvent.VK_O);
     }
