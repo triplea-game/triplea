@@ -1,9 +1,9 @@
 package org.triplea.map.data.elements;
 
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlValue;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
