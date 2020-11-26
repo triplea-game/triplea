@@ -150,7 +150,7 @@ public class UnitScroller {
               movesLeft = movesLeft();
               SwingUtilities.invokeLater(
                   () -> {
-                    panel.setTitle("Units To Move: " + movesLeft);
+                    panel.setTitle("Active Units: " + movesLeft);
 
                     if (movesLeft == 0) {
                       clearUnitAvatarArea();
