@@ -2185,15 +2185,3 @@
   version: 1
   description: |
     <br>A simple symmetrical map made for 4 players.
-- mapName: Sleeping Giant
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/sleeping_giant/archive/master.zip
-  version: 1
-  description: |
-    <br>A war between the United States and all her neighbors.
-- mapName: Small Balanced 4 Player
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/small_balanced_2_or_4_player/archive/master.zip
-  version: 1
-  description: |
-    <br>A simple symmetrical map made for 4 players.
