@@ -28,7 +28,6 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
-import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -580,35 +579,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     bridge
         .getDisplayChannelBroadcaster()
         .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
-    final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
-    final boolean allowMultipleHitsPerUnit =
-        !defendingAa.isEmpty()
-            && defendingAa.stream()
-                .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (isEditMode) {
-      final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
-      return CasualtySelector.selectCasualties(
-          attacker,
-          validAttackingUnitsForThisRoll,
-          CombatValueBuilder.mainCombatValue()
-              .enemyUnits(defendingUnits)
-              .friendlyUnits(attackingUnits)
-              .side(BattleState.Side.OFFENSE)
-              .gameSequence(bridge.getData().getSequence())
-              .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
-              .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
-              .gameDiceSides(bridge.getData().getDiceSides())
-              .territoryEffects(territoryEffects)
-              .build(),
-          battleSite,
-          bridge,
-          text,
-          null, /* dice */
-          battleId,
-          false, /* head-less */
-          0,
-          allowMultipleHitsPerUnit);
-    }
     final CasualtyDetails casualties =
         AaCasualtySelector.getAaCasualties(
             validAttackingUnitsForThisRoll,
