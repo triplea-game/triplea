@@ -35,7 +35,9 @@ import org.triplea.java.collections.CollectionUtils;
 public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
 
   @Getter int bestStrength;
-  @Getter int bestDiceSides;
+
+  @Getter(onMethod_ = @Override)
+  int diceSides;
 
   CombatValue calculator;
 
@@ -75,7 +77,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     }
 
     this.bestStrength = highestStrength;
-    this.bestDiceSides = chosenDiceSides;
+    this.diceSides = chosenDiceSides;
 
     this.activeStrengthAndRolls = calculateActiveStrengthAndRolls();
   }
@@ -159,7 +161,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     // dice sides within the same AA firing group isn't supported
     final Optional<Unit> bestInfiniteUnit =
         infiniteAa.stream()
-            .filter(unit -> calculator.getDiceSides(unit) == bestDiceSides)
+            .filter(unit -> calculator.getDiceSides(unit) == diceSides)
             .max(
                 Comparator.comparingInt(
                     unit -> totalStrengthAndTotalRollsByUnit.get(unit).getStrength()));

@@ -105,7 +105,7 @@ public class AaCasualtySelector {
     if (highestAttack < 1) {
       return new CasualtyDetails();
     }
-    final int chosenDiceSize = unitPowerAndRollsMap.getBestDiceSides();
+    final int chosenDiceSize = unitPowerAndRollsMap.getDiceSides();
     final boolean allSameAttackPower = unitPowerAndRollsMap.isSameStrength();
     // multiple HP units need to be counted multiple times:
     final List<Unit> planesList = new ArrayList<>();
