@@ -258,6 +258,16 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  USE_WEBSOCKET_NETWORK(
+      "Use Websocket Network (Beta)",
+      SettingType.TESTING,
+      "Toggles whether to use in-development websocket network") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.useWebsocketNetwork);
+    }
+  },
+
   USE_MAPS_SERVER_BETA_FEATURE(
       "Use Maps Server (Beta)",
       SettingType.TESTING,
