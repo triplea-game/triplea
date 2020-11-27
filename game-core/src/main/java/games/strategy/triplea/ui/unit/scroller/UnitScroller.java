@@ -120,11 +120,9 @@ public class UnitScroller {
 
     updateMovesLeft();
     clearUnitAvatarArea();
-    // Set last focused area to null so that if we select the next
-    // unit, the units in our previous territory do not become skipped.
-    // This is special for the case when we move units. For example, we select next
-    // unit, with say 2 in a territory, we move one, then if we select next
-    // we do not want the unmoved unit to become skipped.
+    // Units in lastFocusedTerritory become skipped when a player clicks 'next units'.
+    // If moving some units out of a territory, the remaining units should not be skipped
+    // if a player clicks 'next units'.
     lastFocusedTerritory = null;
 
     // remove any moved units from the sleeping units
