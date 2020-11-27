@@ -114,11 +114,11 @@ public final class GameSelectorPanel extends JPanel implements Observer {
         buildGridCell(1, row, new Insets(0, 0, 3, 0)));
     row++;
 
-    add(new JLabel("Map Name:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
+    add(new JLabel("Game Name:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
     add(nameText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
     row++;
 
-    add(new JLabel("Map Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
+    add(new JLabel("Game Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
     add(versionText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
     row++;
 
