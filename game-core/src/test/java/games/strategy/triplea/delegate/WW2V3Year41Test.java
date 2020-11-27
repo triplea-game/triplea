@@ -1774,7 +1774,7 @@ class WW2V3Year41Test {
     // damage a factory
     IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
-    gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
+    gameData.performChange(ChangeFactory.bombingUnitDamage(startHits, List.of(germany)));
     assertEquals(1, factory.getUnitDamage());
     RepairRule repair = germans(gameData).getRepairFrontier().getRules().get(0);
     IntegerMap<RepairRule> repairs = new IntegerMap<>();
@@ -1804,7 +1804,7 @@ class WW2V3Year41Test {
     // damage a factory
     startHits = new IntegerMap<>();
     startHits.put(factory, 2);
-    gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
+    gameData.performChange(ChangeFactory.bombingUnitDamage(startHits, List.of(germany)));
     assertEquals(2, factory.getUnitDamage());
     repair = germans(gameData).getRepairFrontier().getRules().get(0);
     repairs = new IntegerMap<>();
@@ -1833,7 +1833,7 @@ class WW2V3Year41Test {
     // dame a factory
     final IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
-    gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
+    gameData.performChange(ChangeFactory.bombingUnitDamage(startHits, List.of(germany)));
     assertEquals(1, factory.getUnitDamage());
     final RepairRule repair = germans(gameData).getRepairFrontier().getRules().get(0);
     final IntegerMap<RepairRule> repairs = new IntegerMap<>();

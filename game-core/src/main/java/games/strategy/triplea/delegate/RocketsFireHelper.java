@@ -451,7 +451,7 @@ public class RocketsFireHelper implements Serializable {
       // apply the hits to the targets
       final IntegerMap<Unit> damageMap = new IntegerMap<>();
       damageMap.put(unit, totalDamage);
-      bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
+      bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap, List.of(attackedTerritory)));
       // attackedTerritory.notifyChanged();
       // in WW2V2, limit rocket attack cost to production value of factory.
     } else if (Properties.getWW2V2(data.getProperties())

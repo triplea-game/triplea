@@ -197,7 +197,7 @@ public class UnitUtils {
       }
     }
     if (!damageMap.isEmpty()) {
-      changes.add(ChangeFactory.bombingUnitDamage(damageMap));
+      changes.add(ChangeFactory.bombingUnitDamage(damageMap, List.of(t)));
     }
     return changes;
   }

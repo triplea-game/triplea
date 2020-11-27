@@ -977,7 +977,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           // apply the hits to the targets
           final IntegerMap<Unit> damageMap = new IntegerMap<>();
           damageMap.put(current, totalDamage);
-          bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
+          bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap, List.of(battleSite)));
           bridge
               .getHistoryWriter()
               .addChildToEvent(

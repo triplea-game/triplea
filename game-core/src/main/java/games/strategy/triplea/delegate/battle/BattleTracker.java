@@ -1051,7 +1051,7 @@ public class BattleTracker implements Serializable {
         damageMap.put(unit, totalDamage);
       }
       if (!damageMap.isEmpty()) {
-        final Change damageChange = ChangeFactory.bombingUnitDamage(damageMap);
+        final Change damageChange = ChangeFactory.bombingUnitDamage(damageMap, List.of(territory));
         bridge.addChange(damageChange);
         if (changeTracker != null) {
           changeTracker.addChange(damageChange);
