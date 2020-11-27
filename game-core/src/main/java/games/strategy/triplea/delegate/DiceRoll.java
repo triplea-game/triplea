@@ -97,23 +97,20 @@ public class DiceRoll implements Externalizable {
   /**
    * Used to roll AA for battles, SBR, and fly over.
    *
-   * @param validTargets - potential AA targets
-   * @param aaUnits - AA units that could potentially be rolling
-   * @param bridge - delegate bridge
-   * @param location - battle territory
-   * @return DiceRoll result which includes total hits and dice that were rolled
+   * @param validTargets Units that are being fired at
+   * @param aaUnits Units that are firing. There must be at least one unit.
    */
   public static DiceRoll rollAa(
       final Collection<Unit> validTargets,
       final Collection<Unit> aaUnits,
       final IDelegateBridge bridge,
-      final Territory location,
+      final Territory battleSite,
       final CombatValue combatValueCalculator) {
 
     final String typeAa = UnitAttachment.get(aaUnits.iterator().next().getType()).getTypeAa();
     final GamePlayer player = aaUnits.iterator().next().getOwner();
     final String annotation =
-        player.getName() + " roll " + typeAa + " dice in " + location.getName();
+        player.getName() + " roll " + typeAa + " dice in " + battleSite.getName();
 
     final AaPowerStrengthAndRolls unitPowerAndRollsMap =
         AaPowerStrengthAndRolls.build(aaUnits, validTargets.size(), combatValueCalculator);
@@ -188,18 +185,18 @@ public class DiceRoll implements Externalizable {
 
   /** Roll dice for units using low luck rules. */
   private static DiceRoll rollDiceLowLuck(
-      final TotalPowerAndTotalRolls unitPowerAndRollsMap,
+      final TotalPowerAndTotalRolls totalPowerAndTotalRolls,
       final GamePlayer player,
       final IDelegateBridge bridge,
       final String annotation) {
 
-    final int power = unitPowerAndRollsMap.calculateTotalPower();
+    final int power = totalPowerAndTotalRolls.calculateTotalPower();
     if (power == 0) {
       return new DiceRoll(List.of(), 0, 0);
     }
 
     // Roll dice for the fractional part of the dice
-    final int diceSides = unitPowerAndRollsMap.getDiceSides();
+    final int diceSides = totalPowerAndTotalRolls.getDiceSides();
     int hitCount = power / diceSides;
     final List<Die> dice = new ArrayList<>();
     final int rollFor = power % diceSides;
@@ -221,23 +218,23 @@ public class DiceRoll implements Externalizable {
 
   /** Roll dice for units per normal rules. */
   private static DiceRoll rollDiceNormal(
-      final TotalPowerAndTotalRolls unitPowerAndRollsMap,
+      final TotalPowerAndTotalRolls totalPowerAndTotalRolls,
       final GamePlayer player,
       final IDelegateBridge bridge,
       final String annotation) {
 
-    final int rollCount = unitPowerAndRollsMap.calculateTotalRolls();
+    final int rollCount = totalPowerAndTotalRolls.calculateTotalRolls();
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
 
-    final int diceSides = unitPowerAndRollsMap.getDiceSides();
+    final int diceSides = totalPowerAndTotalRolls.getDiceSides();
     final int[] random =
         bridge.getRandom(diceSides, rollCount, player, DiceType.COMBAT, annotation);
-    final List<Die> dice = unitPowerAndRollsMap.getDiceHits(random);
+    final List<Die> dice = totalPowerAndTotalRolls.getDiceHits(random);
     final int hitCount = (int) dice.stream().filter(die -> die.getType() == DieType.HIT).count();
 
-    final int totalPower = unitPowerAndRollsMap.calculateTotalPower();
+    final int totalPower = totalPowerAndTotalRolls.calculateTotalPower();
     final double expectedHits = ((double) totalPower) / diceSides;
 
     return new DiceRoll(dice, hitCount, expectedHits);
