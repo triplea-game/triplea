@@ -342,7 +342,7 @@ public class AaCasualtySelector {
   }
 
   /** Choose plane casualties randomly. */
-  public static CasualtyDetails randomAaCasualties(
+  private static CasualtyDetails randomAaCasualties(
       final Collection<Unit> planes,
       final DiceRoll dice,
       final IDelegateBridge bridge,

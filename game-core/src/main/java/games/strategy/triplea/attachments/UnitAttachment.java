@@ -1351,7 +1351,8 @@ public class UnitAttachment extends DefaultAttachment {
     hitPoints = s ? 2 : 1;
   }
 
-  private void setHitPoints(final int value) {
+  @VisibleForTesting
+  public void setHitPoints(final int value) {
     hitPoints = value;
   }
 
@@ -2341,7 +2342,8 @@ public class UnitAttachment extends DefaultAttachment {
     damageableAa = getBool(s);
   }
 
-  private void setDamageableAa(final Boolean s) {
+  @VisibleForTesting
+  public void setDamageableAa(final Boolean s) {
     damageableAa = s;
   }
 
