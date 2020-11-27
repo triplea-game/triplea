@@ -31,3 +31,19 @@
   - Defending units can only participate in this phase if `Submarines Defending May Submerge Or Retreat` property is set.
   - `Sub Retreat Before Battle` defines if this phase occurs before the First Strike Phase or at the end of the Battle Round.
 - **Submerge Subs Phase**: Another name for **Evasion Phase** and generally used when only submarines have `canEvade` and `Submersible Subs` is set.
+
+##Development Terms
+- **Branch**: A Branch is a copy of the main codebase.  It is used to keep changes separate until they are completed or in a stable state.  
+- **Checkout**: When you Checkout a branch, that is where commits are stored.  
+- **Clone**: Cloning is when you take your repository and copy it to your local machine to work on.  
+- **Commit**: A Commit is a list of changes being made to a repository.  
+- **Fetch**: When you run a fetch command, your IDE is updating information in your local project.  
+- **Fork**: A Fork is when you make your own copy of a repository in Version Control (Github for TripleA). 
+- **IDE**: And IDE is an Integrated Development Environment that is a software application that combines many of the tools needed by programmers.  Examples are IntelliJ and Eclipse.  
+- **Origin**: The Origin is your fork of another repository.  
+- **Pull Request**: A Pull Request is a request to incorporate a set of commits into the main repository.  
+- **Push**: A Push is when you move a set of commits from your local work space to your repository.  
+- **Repository**:  A Repository is the place where TripleA game and map files are stored.  
+- **Rebase**: Updating your codebase to be current with another codebase, often the upstream master branch.  
+- **Upstream**: Upstream is the repository that you forked.  
+- **Version Control**: Version Control is where repositories are stored and commits are kept track of.  
