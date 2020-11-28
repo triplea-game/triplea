@@ -1,7 +1,9 @@
 # Game-Relay-Server
 
-Contains the stand-alone game-relay-server that acts as a network
-bridge for game clients. In this model all people connecting
-to the relay server are clients and the relay server is a bridge
-that re-broadcasts any messages it receives to all connected
-clients.
+Game-relay-server that acts as a network bridge. Any message
+sent to the relay server is re-broadcast to all connected clients.
+
+The relay-server can be launched as a standalone or launched
+when hosting a game. Game hosts will connect to the relay
+server they themselves launched and will act as a client.
+
