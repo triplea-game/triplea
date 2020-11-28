@@ -15,7 +15,7 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.units.BombingUnitDamageChange;
-import games.strategy.engine.data.changefactory.units.UnitHitsChange;
+import games.strategy.engine.data.changefactory.units.UnitDamageReceivedChange;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.data.BattleRecords;
@@ -124,7 +124,7 @@ public class ChangeFactory {
   /** Must already include existing damage to the unit. This does not add damage, it sets damage. */
   public static Change unitsHit(
       final IntegerMap<Unit> newHits, final Collection<Territory> territoriesToNotify) {
-    return new UnitHitsChange(newHits, territoriesToNotify);
+    return new UnitDamageReceivedChange(newHits, territoriesToNotify);
   }
 
   /** Must already include existing damage to the unit. This does not add damage, it sets damage. */
