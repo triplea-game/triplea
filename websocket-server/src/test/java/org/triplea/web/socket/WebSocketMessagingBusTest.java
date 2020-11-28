@@ -68,7 +68,7 @@ class WebSocketMessagingBusTest {
     @DisplayName("Add a listener, trigger message receipt, verify listener is invoked")
     void invokeListener() {
       final WebSocketMessagingBus webSocketMessagingBus = new WebSocketMessagingBus();
-      webSocketMessagingBus.addListener(BooleanMessage.TYPE, booleanMessageListener);
+      webSocketMessagingBus.addMessageListener(BooleanMessage.TYPE, booleanMessageListener);
 
       // trigger message
       final BooleanMessage message = new BooleanMessage(true);
@@ -96,8 +96,8 @@ class WebSocketMessagingBusTest {
     @Test
     void invokesCorrectListener() {
       final WebSocketMessagingBus webSocketMessagingBus = new WebSocketMessagingBus();
-      webSocketMessagingBus.addListener(BooleanMessage.TYPE, booleanMessageListener);
-      webSocketMessagingBus.addListener(StringMessage.TYPE, stringMessageListener);
+      webSocketMessagingBus.addMessageListener(BooleanMessage.TYPE, booleanMessageListener);
+      webSocketMessagingBus.addMessageListener(StringMessage.TYPE, stringMessageListener);
 
       webSocketMessagingBus.onMessage(session, new BooleanMessage(true).toEnvelope());
 
@@ -110,8 +110,8 @@ class WebSocketMessagingBusTest {
     @Test
     void invokesMultipleListeners() {
       final WebSocketMessagingBus webSocketMessagingBus = new WebSocketMessagingBus();
-      webSocketMessagingBus.addListener(BooleanMessage.TYPE, booleanMessageListener);
-      webSocketMessagingBus.addListener(BooleanMessage.TYPE, booleanMessageListenerSecond);
+      webSocketMessagingBus.addMessageListener(BooleanMessage.TYPE, booleanMessageListener);
+      webSocketMessagingBus.addMessageListener(BooleanMessage.TYPE, booleanMessageListenerSecond);
 
       webSocketMessagingBus.onMessage(session, new BooleanMessage(true).toEnvelope());
 

@@ -1,0 +1,36 @@
+package org.triplea.game.server;
+
+import lombok.extern.java.Log;
+import org.triplea.web.socket.StandaloneWebsocketServer;
+import org.triplea.web.socket.WebSocketMessagingBus;
+
+/**
+ * Game relay server re-broadcasts any messages it receives to everyone that is connected to it. A
+ * game relay can be launched stand-alone, or if a player is hosting a server game they will launch
+ * the relay server and then connect to it themselves as a client.
+ */
+@Log
+public class GameRelayServer {
+  private final StandaloneWebsocketServer standaloneWebsocketServer;
+
+  /**
+   * Constructs and starts the game relay server.
+   *
+   * @param port The local host port that the relay server will open and use to accept connections.
+   */
+  public GameRelayServer(final int port) {
+    final WebSocketMessagingBus webSocketMessagingBus = new WebSocketMessagingBus();
+    webSocketMessagingBus.addMessageListener(webSocketMessagingBus::broadcastMessageEnvelope);
+    standaloneWebsocketServer = new StandaloneWebsocketServer(webSocketMessagingBus, port);
+    standaloneWebsocketServer.start();
+    log.info("Game Relay Server started on port: " + port);
+  }
+
+  /**
+   * Halts the relay server and frees up the occupied network port. Note, the shutdown is async and
+   * can be slow.
+   */
+  public void stop() {
+    standaloneWebsocketServer.shutdown();
+  }
+}
