@@ -48,23 +48,7 @@ class AaCasualtySelectorTest {
   private UnitType planeMultiHpUnitType;
   private GameData gameData;
 
-  private List<Unit> givenAaUnits(final int quantity) {
-    return aaUnitType.create(quantity, aaPlayer, true);
-  }
-
-  private List<Unit> givenDamageableAaUnits(final int quantity) {
-    return damageableAaUnitType.create(quantity, aaPlayer, true);
-  }
-
-  private List<Unit> givenPlaneUnits(final int quantity) {
-    return planeUnitType.create(quantity, hitPlayer, true);
-  }
-
-  private List<Unit> givenMultiHpPlaneUnits(final int quantity) {
-    return planeMultiHpUnitType.create(quantity, hitPlayer, true);
-  }
-
-  private DiceRoll givenDiceRoll(final boolean... shots) {
+  private DiceRoll givenDiceRollWithHitSequence(final boolean... shots) {
     final int[] diceRolls = new int[shots.length];
     int hits = 0;
     for (int i = 0; i < shots.length; i++) {
@@ -131,11 +115,11 @@ class AaCasualtySelectorTest {
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               List.of(mock(Unit.class)),
-              givenAaUnits(1),
+              aaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(),
+              givenDiceRollWithHitSequence(),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -149,12 +133,12 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenPlaneUnits(1),
-              givenAaUnits(1),
+              planeUnitType.create(1, hitPlayer, true),
+              aaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true),
+              givenDiceRollWithHitSequence(true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -169,19 +153,19 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenPlaneUnits(1),
-              givenAaUnits(1),
+              planeUnitType.create(1, hitPlayer, true),
+              aaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true, true),
+              givenDiceRollWithHitSequence(true, true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
               mock(Territory.class));
 
       assertThat("The plane was hit and killed", details.getKilled(), hasSize(1));
-      assertThat("Planes only have 1 hit point so no damages", details.getDamaged(), is(empty()));
+      assertThat("Plane only had 1 hit point so no damages", details.getDamaged(), is(empty()));
     }
 
     @Test
@@ -191,12 +175,12 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenPlaneUnits(2),
-              givenAaUnits(1),
+              planeUnitType.create(2, hitPlayer, true),
+              aaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true),
+              givenDiceRollWithHitSequence(true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -213,16 +197,16 @@ class AaCasualtySelectorTest {
 
       whenGetRandom(bridge).thenAnswer(withValues(9, 9, 9, 9, 9));
 
-      final List<Unit> planes = givenPlaneUnits(10);
+      final List<Unit> planes = planeUnitType.create(10, hitPlayer, true);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              givenAaUnits(3),
+              aaUnitType.create(3, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true, true, true, true, true),
+              givenDiceRollWithHitSequence(true, true, true, true, true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -240,19 +224,20 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenMultiHpPlaneUnits(1),
-              givenDamageableAaUnits(1),
+              planeMultiHpUnitType.create(1, hitPlayer, true),
+              damageableAaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true, true),
+              givenDiceRollWithHitSequence(true, true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("Plane was killed", details.getKilled(), hasSize(1));
-      assertThat("Plane was also damaged", details.getDamaged(), hasSize(1));
+      assertThat(
+          "The damage is equal to the plane hp so it is killed", details.getKilled(), hasSize(1));
+      assertThat("The damage to the plane should be tracked", details.getDamaged(), hasSize(1));
     }
 
     @Test
@@ -260,19 +245,19 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenMultiHpPlaneUnits(1),
-              givenDamageableAaUnits(1),
+              planeMultiHpUnitType.create(1, hitPlayer, true),
+              damageableAaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true, true, true, true),
+              givenDiceRollWithHitSequence(true, true, true, true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("Plane was killed", details.getKilled(), hasSize(1));
-      assertThat("Plane was also damaged", details.getDamaged(), hasSize(1));
+      assertThat("More than enough damage to kill the plane", details.getKilled(), hasSize(1));
+      assertThat("The damage to the plane should be tracked", details.getDamaged(), hasSize(1));
     }
 
     @Test
@@ -282,18 +267,18 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenMultiHpPlaneUnits(1),
-              givenDamageableAaUnits(1),
+              planeMultiHpUnitType.create(1, hitPlayer, true),
+              damageableAaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true),
+              givenDiceRollWithHitSequence(true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("Plane is not killed", details.getKilled(), is(empty()));
+      assertThat("Plane has extra hp so it isn't killed", details.getKilled(), is(empty()));
       assertThat("Plane is damaged", details.getDamaged(), hasSize(1));
     }
 
@@ -304,20 +289,23 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenMultiHpPlaneUnits(2),
-              givenDamageableAaUnits(1),
+              planeMultiHpUnitType.create(2, hitPlayer, true),
+              damageableAaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true, true, true),
+              givenDiceRollWithHitSequence(true, true, true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("1 Plane is killed", details.getKilled(), hasSize(1));
       assertThat(
-          "The killed plane is also damaged and the other plane takes 1 damage",
+          "3 hits against 2 planes with 2 hp each is guaranteed to kill one of them",
+          details.getKilled(),
+          hasSize(1));
+      assertThat(
+          "3 hits against 2 planes with 2 hp each will damage both of them.",
           details.getDamaged(),
           hasSize(2));
     }
@@ -329,12 +317,12 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenMultiHpPlaneUnits(7),
-              givenDamageableAaUnits(3),
+              planeMultiHpUnitType.create(7, hitPlayer, true),
+              damageableAaUnitType.create(3, aaPlayer, true),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
-              givenDiceRoll(true, true, true, true, true),
+              givenDiceRollWithHitSequence(true, true, true, true, true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -390,12 +378,12 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              givenPlaneUnits(1),
-              givenAaUnits(1),
+              planeUnitType.create(1, hitPlayer, true),
+              aaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              givenDiceRoll(true),
+              givenDiceRollWithHitSequence(true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -408,16 +396,16 @@ class AaCasualtySelectorTest {
     @Test
     void hitsLessThanPlanesKillsAccordingToTheRolledDice() {
 
-      final List<Unit> planes = givenPlaneUnits(5);
+      final List<Unit> planes = planeUnitType.create(5, hitPlayer, true);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              givenAaUnits(1),
+              aaUnitType.create(1, aaPlayer, true),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              givenDiceRoll(true, false, true, false, true),
+              givenDiceRollWithHitSequence(true, false, true, false, true),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
