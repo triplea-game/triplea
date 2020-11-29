@@ -58,6 +58,7 @@ public class TripleA implements IGameLoader {
         ((ServerGame) game).addDelegateMessenger(delegate);
       }
     }
+
     final LocalPlayers localPlayers = new LocalPlayers(players);
     game.setDisplay(launchAction.startGame(localPlayers, game, players, chat));
     game.setSoundChannel(launchAction.getSoundChannel(localPlayers));

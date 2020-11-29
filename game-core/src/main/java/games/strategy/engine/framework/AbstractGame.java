@@ -39,12 +39,7 @@ public abstract class AbstractGame implements IGame {
   final Map<GamePlayer, Player> gamePlayers = new HashMap<>();
   final PlayerManager playerManager;
 
-  // TODO: Project#20 - clientNetworkBridge will be used for Websocket network bridge.
-  //   Usages will basically be to add listeners to map message types to methods calls.
-  //   The mapped method calls will replace the existing RMI-style based network code.
-  @SuppressWarnings({"FieldCanBeLocal", "unused"})
   private final ClientNetworkBridge clientNetworkBridge;
-
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
 
@@ -120,6 +115,21 @@ public abstract class AbstractGame implements IGame {
     }
     if (display != null) {
       messengers.registerChannelSubscriber(display, getDisplayChannel());
+
+      clientNetworkBridge.addListener(
+          IDisplay.BombingResultsMessage.TYPE, message -> message.accept(display));
+      clientNetworkBridge.addListener(
+          IDisplay.NotifyRetreatMessage.TYPE,
+          message -> message.accept(display, gameData.getPlayerList()));
+      clientNetworkBridge.addListener(
+          IDisplay.NotifyUnitsRetreatingMessage.TYPE,
+          message -> message.accept(display, gameData.getUnits()));
+      clientNetworkBridge.addListener(
+          IDisplay.NotifyDiceMessage.TYPE, message -> message.accept(display));
+      clientNetworkBridge.addListener(
+          IDisplay.DisplayShutdownMessage.TYPE, message -> message.accept(display));
+      clientNetworkBridge.addListener(
+          IDisplay.GoToBattleStepMessage.TYPE, message -> message.accept(display));
     }
     this.display = display;
   }

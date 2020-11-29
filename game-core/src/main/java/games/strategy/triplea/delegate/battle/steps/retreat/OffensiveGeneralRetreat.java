@@ -9,6 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
@@ -18,6 +19,7 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -109,7 +111,12 @@ public class OffensiveGeneralRetreat implements BattleStep {
       final Collection<Territory> possibleRetreatSites =
           retreater.getPossibleRetreatSites(retreatUnits);
 
-      bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
+      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+        bridge.sendMessage(
+            new IDisplay.GoToBattleStepMessage(battleState.getBattleId().toString(), getName()));
+      } else {
+        bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
+      }
       final Territory retreatTo =
           battleActions.queryRetreatTerritory(
               battleState,
@@ -167,18 +174,37 @@ public class OffensiveGeneralRetreat implements BattleStep {
     if (battleState.filterUnits(ALIVE, OFFENSE).isEmpty()) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
     } else {
-      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreatUnits);
+      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+        bridge.sendMessage(
+            new IDisplay.NotifyUnitsRetreatingMessage(battleState.getBattleId(), retreatUnits));
+      } else {
+        bridge
+            .getDisplayChannelBroadcaster()
+            .notifyRetreat(battleState.getBattleId(), retreatUnits);
+      }
     }
 
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyRetreat(
-            battleState.getPlayer(OFFENSE).getName()
-                + getShortBroadcastSuffix(retreater.getRetreatType()),
-            battleState.getPlayer(OFFENSE).getName()
-                + getLongBroadcastSuffix(retreater.getRetreatType(), retreatTo),
-            getName(),
-            battleState.getPlayer(OFFENSE));
+    final String shortMessage =
+        battleState.getPlayer(OFFENSE).getName()
+            + getShortBroadcastSuffix(retreater.getRetreatType());
+
+    final String longMessage =
+        battleState.getPlayer(OFFENSE).getName()
+            + getLongBroadcastSuffix(retreater.getRetreatType(), retreatTo);
+
+    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+      bridge.sendMessage(
+          IDisplay.NotifyRetreatMessage.builder()
+              .shortMessage(shortMessage)
+              .message(longMessage)
+              .step(getName())
+              .retreatingPlayerName(battleState.getPlayer(OFFENSE).getName())
+              .build());
+    } else {
+      bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(shortMessage, longMessage, getName(), battleState.getPlayer(OFFENSE));
+    }
   }
 
   private String getShortBroadcastSuffix(final MustFightBattle.RetreatType retreatType) {

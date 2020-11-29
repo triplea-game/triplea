@@ -20,6 +20,7 @@ dependencies {
     implementation project(":http-clients")
     implementation project(":java-extras")
     implementation project(":lobby-client")
+    implementation project(":game-relay-server")
     implementation project(":map-data")
     implementation project(":maps-server-client")
     implementation project(":swing-lib")

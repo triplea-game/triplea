@@ -1,5 +1,6 @@
 package org.triplea.game.server;
 
+import java.net.URI;
 import lombok.extern.java.Log;
 import org.triplea.web.socket.StandaloneWebsocketServer;
 import org.triplea.web.socket.WebSocketMessagingBus;
@@ -12,6 +13,11 @@ import org.triplea.web.socket.WebSocketMessagingBus;
 @Log
 public class GameRelayServer {
   private final StandaloneWebsocketServer standaloneWebsocketServer;
+  private final int port;
+
+  public static URI createLocalhostConnectionUri(final int port) {
+    return URI.create("ws://localhost:" + port);
+  }
 
   /**
    * Constructs and starts the game relay server.
@@ -19,9 +25,13 @@ public class GameRelayServer {
    * @param port The local host port that the relay server will open and use to accept connections.
    */
   public GameRelayServer(final int port) {
+    this.port = port;
     final WebSocketMessagingBus webSocketMessagingBus = new WebSocketMessagingBus();
     webSocketMessagingBus.addMessageListener(webSocketMessagingBus::broadcastMessageEnvelope);
     standaloneWebsocketServer = new StandaloneWebsocketServer(webSocketMessagingBus, port);
+  }
+
+  public void start() {
     standaloneWebsocketServer.start();
     log.info("Game Relay Server started on port: " + port);
   }

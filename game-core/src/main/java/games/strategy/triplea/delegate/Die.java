@@ -2,10 +2,12 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /** A single roll of a die. */
+@Builder
 @AllArgsConstructor
 @EqualsAndHashCode
 @Getter

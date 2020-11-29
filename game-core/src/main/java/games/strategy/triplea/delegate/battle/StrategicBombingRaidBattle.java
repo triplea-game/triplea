@@ -11,6 +11,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.display.IDisplay.NotifyDiceMessage;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -33,6 +35,7 @@ import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -249,7 +252,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, RAID);
+            if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+              bridge.sendMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), RAID));
+            } else {
+              bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, RAID);
+            }
             if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
                 gameData.getProperties())) {
               bridge
@@ -576,9 +583,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IDelegateBridge bridge,
       final DiceRoll dice,
       final String currentTypeAa) {
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
+
+    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+      bridge.sendMessage(
+          new NotifyDiceMessage(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX));
+    } else {
+      bridge
+          .getDisplayChannelBroadcaster()
+          .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
+    }
     final CasualtyDetails casualties =
         AaCasualtySelector.getAaCasualties(
             validAttackingUnitsForThisRoll,
@@ -936,7 +949,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = current.getUnitDamage() + currentUnitCost;
           // display the results
-          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
+          if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+            bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, dice, currentUnitCost));
+          } else {
+            bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
+          }
+
           if (currentUnitCost > 0) {
             bridge
                 .getSoundChannelBroadcaster()
@@ -978,7 +996,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // Record PUs lost
         DelegateFinder.moveDelegate(gameData).pusLost(battleSite, cost);
         cost *= Properties.getPuMultiplier(gameData.getProperties());
-        bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
+        if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+          bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, dice, cost));
+        } else {
+          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
+        }
         if (cost > 0) {
           bridge
               .getSoundChannelBroadcaster()

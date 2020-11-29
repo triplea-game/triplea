@@ -8,10 +8,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.Builder;
@@ -39,10 +41,16 @@ public class EvaderRetreat {
     final GamePlayer retreatingPlayer = parameters.battleState.getPlayer(parameters.side);
     final String text = retreatingPlayer.getName() + " retreat subs?";
 
-    parameters
-        .bridge
-        .getDisplayChannelBroadcaster()
-        .gotoBattleStep(parameters.battleState.getBattleId(), step);
+    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+      parameters.bridge.sendMessage(
+          new IDisplay.GoToBattleStepMessage(
+              parameters.battleState.getBattleId().toString(), step));
+    } else {
+      parameters
+          .bridge
+          .getDisplayChannelBroadcaster()
+          .gotoBattleStep(parameters.battleState.getBattleId(), step);
+    }
 
     final boolean isAttemptingSubmerge =
         possibleRetreatSites.size() == 1
@@ -84,10 +92,20 @@ public class EvaderRetreat {
       longMessage = retreatingPlayer.getName() + " retreats subs to " + retreatTo.getName();
     }
 
-    parameters
-        .bridge
-        .getDisplayChannelBroadcaster()
-        .notifyRetreat(shortMessage, longMessage, step, retreatingPlayer);
+    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+      parameters.bridge.sendMessage(
+          IDisplay.NotifyRetreatMessage.builder()
+              .shortMessage(shortMessage)
+              .message(longMessage)
+              .step(step)
+              .retreatingPlayerName(retreatingPlayer.getName())
+              .build());
+    } else {
+      parameters
+          .bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(shortMessage, longMessage, step, retreatingPlayer);
+    }
   }
 
   public static void submergeEvaders(final Parameters parameters) {
@@ -122,7 +140,12 @@ public class EvaderRetreat {
     if (battleState.filterUnits(ALIVE, side).isEmpty()) {
       battleActions.endBattle(side.getOpposite().getWhoWon(), bridge);
     } else {
-      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreating);
+      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+        bridge.sendMessage(
+            new IDisplay.NotifyUnitsRetreatingMessage(battleState.getBattleId(), retreating));
+      } else {
+        bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreating);
+      }
     }
   }
 

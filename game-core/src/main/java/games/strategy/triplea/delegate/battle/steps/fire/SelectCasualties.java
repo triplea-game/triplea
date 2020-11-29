@@ -6,11 +6,13 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_PR
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import java.util.function.BiFunction;
 import lombok.Getter;
@@ -54,13 +56,20 @@ public class SelectCasualties implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyDice(
-            fireRoundState.getDice(),
-            MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
-                battleState, firingGroup, side, getName()));
+    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+      bridge.sendMessage(
+          new IDisplay.NotifyDiceMessage(
+              fireRoundState.getDice(),
+              MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
+                  battleState, firingGroup, side, getName())));
+    } else {
+      bridge
+          .getDisplayChannelBroadcaster()
+          .notifyDice(
+              fireRoundState.getDice(),
+              MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
+                  battleState, firingGroup, side, getName()));
+    }
 
     final CasualtyDetails details = selectCasualties.apply(bridge, this);
 

@@ -76,7 +76,9 @@ public class DummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void sendMessage(final WebSocketMessage webSocketMessage) {}
+  public void sendMessage(final WebSocketMessage webSocketMessage) {
+
+  }
 
   @Override
   public void leaveDelegateExecution() {}

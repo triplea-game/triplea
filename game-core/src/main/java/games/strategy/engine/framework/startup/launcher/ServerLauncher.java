@@ -17,9 +17,11 @@ import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.net.websocket.WebsocketNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,12 +31,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.game.server.GameRelayServer;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 
 /** Implementation of {@link ILauncher} for a headed or headless network server game. */
 @Log
 public class ServerLauncher implements ILauncher {
+  // Server port is an arbitrary number that is a valid port and does not need root permissions.
+  // TODO: Project#20 port number should not be hardcoded
+  public static final int RELAY_SERVER_PORT = 5001;
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
   private final LaunchAction launchAction;
@@ -43,6 +49,7 @@ public class ServerLauncher implements ILauncher {
   private final PlayerListing playerListing;
   private final Map<String, INode> remotePlayers;
   private final ServerModel serverModel;
+  private final GameRelayServer gameRelayServer;
   private ServerGame serverGame;
   private ServerReady serverReady;
   private final CountDownLatch errorLatch = new CountDownLatch(1);
@@ -72,6 +79,7 @@ public class ServerLauncher implements ILauncher {
     this.remotePlayers = remotePlayers;
     this.serverModel = serverModel;
     this.gameData = gameSelectorModel.getGameData();
+    this.gameRelayServer = new GameRelayServer(RELAY_SERVER_PORT);
   }
 
   public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper watcher) {
@@ -120,9 +128,15 @@ public class ServerLauncher implements ILauncher {
       final Set<Player> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
 
-      // TODO: Project#20 - if feature flag is toggled, start game relay server
-      //   and use a real ClientNetworkingBridge
-      final ClientNetworkBridge clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
+      // start game relay server
+      final ClientNetworkBridge clientNetworkBridge;
+      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+        gameRelayServer.start();
+        final URI relayServerUri = GameRelayServer.createLocalhostConnectionUri(RELAY_SERVER_PORT);
+        clientNetworkBridge = new WebsocketNetworkBridge(relayServerUri);
+      } else {
+        clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
+      }
 
       serverGame =
           new ServerGame(
@@ -280,6 +294,7 @@ public class ServerLauncher implements ILauncher {
         serverGame.stopGame();
       }
     }
+    gameRelayServer.stop();
   }
 
   private void saveAndEndGame(final INode node) {
