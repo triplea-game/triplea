@@ -40,7 +40,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -78,10 +77,6 @@ public final class Matches {
 
   public static <T> Predicate<T> always() {
     return it -> true;
-  }
-
-  public static <T, U> BiPredicate<T, U> alwaysBi() {
-    return (it, it2) -> true;
   }
 
   public static <T> Predicate<T> never() {

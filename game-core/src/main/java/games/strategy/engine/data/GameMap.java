@@ -106,7 +106,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   public Set<Territory> getNeighbors(
       final Territory territory, @Nullable final Predicate<Territory> cond) {
-    return getNeighbors(territory, cond, Matches.alwaysBi());
+    return getNeighbors(territory, cond, (it, it2) -> true);
   }
 
   /**
@@ -144,7 +144,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighbors(
       final Territory territory, final int distance, @Nullable final Predicate<Territory> cond) {
-    return getNeighbors(territory, distance, cond, Matches.alwaysBi());
+    return getNeighbors(territory, distance, cond, (it, it2) -> true);
   }
 
   /**
@@ -184,7 +184,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   public Set<Territory> getNeighbors(
       final Set<Territory> frontier, final int distance, final Predicate<Territory> cond) {
     final Set<Territory> neighbors =
-        getNeighbors(frontier, new HashSet<>(frontier), distance, cond, Matches.alwaysBi());
+        getNeighbors(frontier, new HashSet<>(frontier), distance, cond, (it, it2) -> true);
     neighbors.removeAll(frontier);
     return neighbors;
   }
@@ -278,7 +278,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
             new HashSet<>(neighbors),
             movementLeft.intValue() - 1,
             cond,
-            Matches.alwaysBi());
+            (it, it2) -> true);
     result.remove(territory);
     return result;
   }
@@ -355,7 +355,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param cond condition that covered territories of the route must match
    */
   public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
-    return getDistance(t1, t2, cond, Matches.alwaysBi());
+    return getDistance(t1, t2, cond, (it, it2) -> true);
   }
 
   /**
