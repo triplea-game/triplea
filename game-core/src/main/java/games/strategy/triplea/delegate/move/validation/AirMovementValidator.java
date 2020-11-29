@@ -534,10 +534,8 @@ public final class AirMovementValidator {
         return 0;
       }
       final GameMap map = t1.getData().getMap();
-      final int distance1 =
-          map.getDistance(territoryWeMeasureDistanceFrom, t1, condition, Matches.alwaysBi());
-      final int distance2 =
-          map.getDistance(territoryWeMeasureDistanceFrom, t2, condition, Matches.alwaysBi());
+      final int distance1 = map.getDistance(territoryWeMeasureDistanceFrom, t1, condition);
+      final int distance2 = map.getDistance(territoryWeMeasureDistanceFrom, t2, condition);
       if (distance1 == distance2) {
         return 0;
       }

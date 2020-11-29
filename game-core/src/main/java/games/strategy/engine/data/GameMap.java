@@ -205,7 +205,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
             .filter(t -> !searched.contains(t))
             .collect(Collectors.toSet());
     searched.addAll(newFrontier);
-    return getNeighbors(newFrontier, searched, distance - 1, cond, Matches.alwaysBi());
+    return getNeighbors(newFrontier, searched, distance - 1, cond, routeCond);
   }
 
   /**
@@ -343,7 +343,19 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    */
   public int getDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.always(), Matches.alwaysBi());
+    return getDistance(t1, t2, Matches.always());
+  }
+
+  /**
+   * Returns the distance between two territories where the covered territories of the route satisfy
+   * the condition or -1 if they are not connected.
+   *
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
+   * @param cond condition that covered territories of the route must match
+   */
+  public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
+    return getDistance(t1, t2, cond, Matches.alwaysBi());
   }
 
   /**
@@ -406,7 +418,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return distances;
     }
     for (final Territory t : territories) {
-      distances.put(t, getDistance(target, t, condition, Matches.alwaysBi()));
+      distances.put(t, getDistance(target, t, condition));
     }
     return distances;
   }
@@ -418,7 +430,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    */
   public int getLandDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.territoryIsLand(), Matches.alwaysBi());
+    return getDistance(t1, t2, Matches.territoryIsLand());
   }
 
   /**
@@ -428,7 +440,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    */
   public int getWaterDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.territoryIsWater(), Matches.alwaysBi());
+    return getDistance(t1, t2, Matches.territoryIsWater());
   }
 
   /**
@@ -441,7 +453,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public int getDistanceIgnoreEndForCondition(
       final Territory t1, final Territory t2, final Predicate<Territory> cond) {
-    return getDistance(t1, t2, Matches.territoryIs(t2).or(cond), Matches.alwaysBi());
+    return getDistance(t1, t2, Matches.territoryIs(t2).or(cond));
   }
 
   public List<Territory> getTerritories() {

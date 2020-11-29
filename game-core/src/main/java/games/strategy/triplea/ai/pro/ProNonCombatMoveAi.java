@@ -135,10 +135,7 @@ class ProNonCombatMoveAi {
           final int distance =
               data.getMap()
                   .getDistance(
-                      myCapital,
-                      t,
-                      ProMatches.territoryCanMoveLandUnits(player, data, false),
-                      Matches.alwaysBi());
+                      myCapital, t, ProMatches.territoryCanMoveLandUnits(player, data, false));
           if (distance >= 0 && distance <= defenseRange) {
             value *= 10;
           }
@@ -1229,8 +1226,7 @@ class ProNonCombatMoveAi {
                   .getDistance(
                       myCapital,
                       currentTerritory,
-                      ProMatches.territoryCanMoveLandUnits(player, data, true),
-                      Matches.alwaysBi());
+                      ProMatches.territoryCanMoveLandUnits(player, data, true));
           if (distance > 0
               && (enemyDistance == distance || enemyDistance == (distance - 1))
               && !ProBattleUtils.territoryHasLocalLandSuperiorityAfterMoves(
@@ -2166,10 +2162,7 @@ class ProNonCombatMoveAi {
               int distance =
                   data.getMap()
                       .getDistance(
-                          t,
-                          factory,
-                          ProMatches.territoryCanMoveLandUnits(player, data, true),
-                          Matches.alwaysBi());
+                          t, factory, ProMatches.territoryCanMoveLandUnits(player, data, true));
               if (distance < 0) {
                 distance = 10 * data.getMap().getDistance(t, factory);
               }

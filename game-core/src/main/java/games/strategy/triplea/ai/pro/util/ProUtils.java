@@ -186,8 +186,7 @@ public final class ProUtils {
               .getDistance(
                   t,
                   enemyLandTerritory,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()),
-                  Matches.alwaysBi());
+                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
       if (distance < minDistance) {
         minDistance = distance;
       }
@@ -224,8 +223,7 @@ public final class ProUtils {
               .getDistance(
                   t,
                   enemyLandTerritory,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()),
-                  Matches.alwaysBi());
+                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
       if (ProUtils.isNeutralLand(enemyLandTerritory)) {
         distance++;
       }
