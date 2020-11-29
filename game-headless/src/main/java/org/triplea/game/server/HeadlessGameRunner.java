@@ -24,6 +24,9 @@ public final class HeadlessGameRunner {
   }
 
   private static Injections constructInjections() {
-    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
+    return Injections.builder()
+        .engineVersion(new ProductVersionReader().getVersion())
+        .gameExecutableLauncher(HeadlessGameRunner::main)
+        .build();
   }
 }

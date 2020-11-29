@@ -27,12 +27,11 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import org.triplea.domain.data.UserName;
-import org.triplea.game.ApplicationContext;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
-import org.triplea.util.Services;
 
 /**
  * GameRunner - The entrance class with the main method. In this class commonly used constants are
@@ -116,22 +115,20 @@ public final class GameRunner {
       final String comments,
       final char[] password,
       final URI lobbyUri) {
-    final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands);
-    commands.add("-D" + TRIPLEA_SERVER + "=true");
-    commands.add("-D" + TRIPLEA_PORT + "=" + port);
-    commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
-    commands.add("-D" + LOBBY_URI + "=" + lobbyUri);
-    commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
+
+    final List<String> args = new ArrayList<>();
+    args.add(TRIPLEA_PORT + "=" + port);
+    args.add(TRIPLEA_NAME + "=" + playerName);
+    args.add(LOBBY_URI + "=" + lobbyUri);
+    args.add(LOBBY_GAME_COMMENTS + "=" + comments);
     if (password != null && password.length > 0) {
-      commands.add("-D" + SERVER_PASSWORD + "=" + String.valueOf(password));
+      args.add("-D" + SERVER_PASSWORD + "=" + String.valueOf(password));
     }
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (fileName.length() > 0) {
-      commands.add("-D" + TRIPLEA_GAME + "=" + fileName);
+      args.add("-D" + TRIPLEA_GAME + "=" + fileName);
     }
-    commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
-    ProcessRunnerUtil.exec(commands);
+    Injections.getInstance().getGameExecutableLauncher().accept(args.toArray(String[]::new));
   }
 
   /** Spawns a new process to join a network game. */
@@ -141,16 +138,12 @@ public final class GameRunner {
       return;
     }
 
-    final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands);
-    final String prefix = "-D";
-    commands.add(prefix + TRIPLEA_CLIENT + "=true");
-    commands.add(prefix + TRIPLEA_PORT + "=" + description.getHostedBy().getPort());
-    commands.add(
-        prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
-    commands.add(prefix + TRIPLEA_NAME + "=" + userName.getValue());
-    commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
-    ProcessRunnerUtil.exec(commands);
+    final List<String> args = new ArrayList<>();
+    args.add(TRIPLEA_CLIENT + "=true");
+    args.add(TRIPLEA_PORT + "=" + description.getHostedBy().getPort());
+    args.add(TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
+    args.add(TRIPLEA_NAME + "=" + userName.getValue());
+    Injections.getInstance().getGameExecutableLauncher().accept(args.toArray(String[]::new));
   }
 
   public static void exitGameIfNoWindowsVisible() {

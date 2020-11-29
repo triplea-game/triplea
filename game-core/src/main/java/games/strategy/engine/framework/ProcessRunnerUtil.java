@@ -42,12 +42,4 @@ final class ProcessRunnerUtil {
       }
     }
   }
-
-  static void exec(final List<String> commands) {
-    try {
-      new ProcessBuilder(commands).inheritIO().start();
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to start new process", e);
-    }
-  }
 }

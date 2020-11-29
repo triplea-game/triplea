@@ -48,8 +48,6 @@ public final class HeadedGameRunner {
   }
 
   public static void initializeDesktopIntegrations(final String[] args) {
-    ArgParser.handleCommandLineArgs(args);
-
     if (SystemProperties.isMac()) {
       MacOsIntegration.setOpenUriHandler(
           uri -> {
@@ -88,18 +86,25 @@ public final class HeadedGameRunner {
         "UI client launcher invoked from headless environment. This is currently "
             + "prohibited by design to avoid UI rendering errors in the headless environment.");
     Injections.init(constructInjections());
-
     initializeClientSettingAndLogging();
     initializeLookAndFeel();
-
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ConsoleConfiguration::initialize);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
+    launch(args);
+  }
+
+  private static void launch(final String[] args) {
+    ClientSetting.mapFolderOverride.resetValue();
+    ArgParser.handleCommandLineArgs(args);
     GameRunner.start();
     AvailableGamesFileSystemReader.refreshMapFileCache();
   }
 
   private static Injections constructInjections() {
-    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
+    return Injections.builder()
+        .engineVersion(new ProductVersionReader().getVersion())
+        .gameExecutableLauncher(HeadedGameRunner::launch)
+        .build();
   }
 }

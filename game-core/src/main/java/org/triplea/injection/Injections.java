@@ -1,6 +1,7 @@
 package org.triplea.injection;
 
 import com.google.common.base.Preconditions;
+import java.util.function.Consumer;
 import lombok.Builder;
 import lombok.Getter;
 import org.triplea.util.Version;
@@ -68,6 +69,7 @@ public final class Injections {
   @Getter private static Injections instance;
 
   private final Version engineVersion;
+  private final Consumer<String[]> gameExecutableLauncher;
 
   public static synchronized void init(final Injections injections) {
     Preconditions.checkState(getInstance() == null);

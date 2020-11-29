@@ -20,7 +20,6 @@ public final class BackgroundTaskRunner {
   private static JFrame mainFrame;
 
   public static void setMainFrame(final JFrame mainFrame) {
-    checkState(BackgroundTaskRunner.mainFrame == null);
     BackgroundTaskRunner.mainFrame = mainFrame;
   }
 

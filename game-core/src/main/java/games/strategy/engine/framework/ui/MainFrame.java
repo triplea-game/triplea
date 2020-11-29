@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.ui;
 
-import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
@@ -48,7 +47,6 @@ public class MainFrame {
 
   public static void buildMainFrame(
       final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
-    Preconditions.checkState(instance == null);
     instance = new MainFrame(setupPanelModel, gameSelectorModel);
   }
 
