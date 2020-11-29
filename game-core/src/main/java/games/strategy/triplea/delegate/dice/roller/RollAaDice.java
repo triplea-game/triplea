@@ -35,13 +35,11 @@ public class RollAaDice {
     final AaPowerStrengthAndRolls unitPowerAndRollsMap =
         AaPowerStrengthAndRolls.build(aaUnits, validTargets.size(), combatValueCalculator);
 
-    final DiceRoll diceRoll;
-    if (Properties.getLowLuck(bridge.getData().getProperties())
-        || Properties.getLowLuckAaOnly(bridge.getData().getProperties())) {
-      diceRoll = LowLuckDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation);
-    } else {
-      diceRoll = RolledDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation);
-    }
+    final DiceRoll diceRoll =
+        Properties.getLowLuck(bridge.getData().getProperties())
+                || Properties.getLowLuckAaOnly(bridge.getData().getProperties())
+            ? LowLuckDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation)
+            : RolledDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation);
 
     bridge
         .getHistoryWriter()

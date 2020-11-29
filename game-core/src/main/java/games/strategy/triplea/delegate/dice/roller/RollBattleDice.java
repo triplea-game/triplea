@@ -24,14 +24,13 @@ public class RollBattleDice {
       final String annotation,
       final CombatValue combatValueCalculator) {
 
-    final DiceRoll diceRoll;
     final PowerStrengthAndRolls unitPowerAndRollsMap =
         PowerStrengthAndRolls.build(units, combatValueCalculator);
-    if (Properties.getLowLuck(bridge.getData().getProperties())) {
-      diceRoll = LowLuckDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation);
-    } else {
-      diceRoll = RolledDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation);
-    }
+
+    final DiceRoll diceRoll =
+        Properties.getLowLuck(bridge.getData().getProperties())
+            ? LowLuckDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation)
+            : RolledDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation);
 
     bridge
         .getHistoryWriter()

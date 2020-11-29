@@ -10,7 +10,7 @@ import java.util.List;
 import lombok.experimental.UtilityClass;
 
 /**
- * Roll n-sided dice.
+ * Roll a specified amount of dice with a specified dice side
  *
  * <p>0 based, add 1 to get actual die roll
  */
