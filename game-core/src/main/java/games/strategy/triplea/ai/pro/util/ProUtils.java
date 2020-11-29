@@ -175,8 +175,7 @@ public final class ProUtils {
             .getNeighbors(
                 t,
                 9,
-                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()),
-                Matches.alwaysBi());
+                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
             landTerritories, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player)));
@@ -211,8 +210,7 @@ public final class ProUtils {
             .getNeighbors(
                 t,
                 9,
-                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()),
-                Matches.alwaysBi());
+                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
             landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));

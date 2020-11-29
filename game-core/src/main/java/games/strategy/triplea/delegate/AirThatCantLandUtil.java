@@ -45,9 +45,7 @@ public class AirThatCantLandUtil {
       final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
           map.getNeighbors(
-                      current,
-                      Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player),
-                      Matches.alwaysBi())
+                      current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player))
                   .size()
               > 0;
       final boolean skip =

@@ -873,7 +873,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           // code is gutted and refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
           final Collection<Territory> neighborsLand =
-              data.getMap().getNeighbors(to, Matches.territoryIsLand(), Matches.alwaysBi());
+              data.getMap().getNeighbors(to, Matches.territoryIsLand());
           if (attackingUnits.stream().anyMatch(Matches.unitIsTransport())) {
             // first, we have to reset the "transportedBy" setting for all the land units that were
             // offloaded
@@ -936,8 +936,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                         to,
                         (Matches.territoryIsLand().test(to)
                             ? Matches.territoryIsLand()
-                            : Matches.territoryIsWater()),
-                        Matches.alwaysBi());
+                            : Matches.territoryIsWater()));
             // neighbors.removeAll(territoriesWithBattles);
             // neighbors.removeAll(Matches.getMatches(neighbors,
             // Matches.territoryHasEnemyUnits(player, data)));
@@ -953,8 +952,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // now make sure any amphibious battles that are dependent on this 'new' sea battle have their
       // dependencies set.
       if (to.isWater()) {
-        for (final Territory t :
-            data.getMap().getNeighbors(to, Matches.territoryIsLand(), Matches.alwaysBi())) {
+        for (final Territory t : data.getMap().getNeighbors(to, Matches.territoryIsLand())) {
           final IBattle adjacentBattle = battleTracker.getPendingBattle(t, BattleType.NORMAL);
           if (adjacentBattle != null) {
             if (Matches.battleIsAmphibiousWithUnitsAttackingFrom(to).test(adjacentBattle)) {
@@ -1304,7 +1302,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           boolean amphib = false;
           final Collection<Territory> landNeighbors =
-              data.getMap().getNeighbors(t, Matches.territoryIsLand(), Matches.alwaysBi());
+              data.getMap().getNeighbors(t, Matches.territoryIsLand());
           for (final Territory neighbor : landNeighbors) {
             final IBattle battle = battleTracker.getPendingBattle(neighbor, BattleType.NORMAL);
             if (battle == null) {

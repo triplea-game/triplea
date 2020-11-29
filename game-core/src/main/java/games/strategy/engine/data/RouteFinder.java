@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
@@ -105,8 +104,7 @@ class RouteFinder {
         player == null
             ? neighborFilter
             : neighborFilter.and(
-                t -> moveValidator.canAnyUnitsPassCanal(territory, t, units, player)),
-        Matches.alwaysBi());
+                t -> moveValidator.canAnyUnitsPassCanal(territory, t, units, player)));
   }
 
   @VisibleForTesting

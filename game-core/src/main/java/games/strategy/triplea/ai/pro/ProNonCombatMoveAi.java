@@ -558,7 +558,7 @@ class ProNonCombatMoveAi {
       double neighborValue = 0;
       if (!t.isWater()) {
         final Set<Territory> landNeighbors =
-            data.getMap().getNeighbors(t, Matches.territoryIsLand(), Matches.alwaysBi());
+            data.getMap().getNeighbors(t, Matches.territoryIsLand());
         for (final Territory neighbor : landNeighbors) {
           double neighborProduction = TerritoryAttachment.getProduction(neighbor);
           if (Matches.isTerritoryAllied(player, data).test(neighbor)) {
@@ -675,9 +675,7 @@ class ProNonCombatMoveAi {
     final Set<Territory> territoriesToCheck = new HashSet<>(seaFactories);
     for (final Territory t : seaFactories) {
       territoriesToCheck.addAll(
-          data.getMap()
-              .getNeighbors(
-                  t, ProMatches.territoryCanMoveSeaUnits(player, data, true), Matches.alwaysBi()));
+          data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true)));
     }
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
@@ -691,9 +689,7 @@ class ProNonCombatMoveAi {
         continue;
       }
       final Set<Territory> neighbors =
-          data.getMap()
-              .getNeighbors(
-                  t, ProMatches.territoryCanMoveSeaUnits(player, data, true), Matches.alwaysBi());
+          data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
       double maxValue = 0;
       Territory maxTerritory = null;
       for (final Territory neighbor : neighbors) {
@@ -1047,10 +1043,7 @@ class ProNonCombatMoveAi {
                 Territory minTerritory = null;
                 final Set<Territory> territoriesToMoveTransport =
                     data.getMap()
-                        .getNeighbors(
-                            t,
-                            ProMatches.territoryCanMoveSeaUnits(player, data, false),
-                            Matches.alwaysBi());
+                        .getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, false));
                 final Set<Territory> loadFromTerritories = new HashSet<>();
                 for (final Unit u : amphibUnitsToAdd) {
                   loadFromTerritories.add(unitTerritoryMap.get(u));
@@ -1377,10 +1370,7 @@ class ProNonCombatMoveAi {
             }
             final Set<Territory> territoriesToMoveTransport =
                 data.getMap()
-                    .getNeighbors(
-                        t,
-                        ProMatches.territoryCanMoveSeaUnits(player, data, false),
-                        Matches.alwaysBi());
+                    .getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, false));
             for (final Territory territoryToMoveTransport : territoriesToMoveTransport) {
               if (amphibData.getSeaTransportMap().containsKey(territoryToMoveTransport)
                   && amphibData
@@ -1455,15 +1445,12 @@ class ProNonCombatMoveAi {
               data.getMap()
                   .getNeighbors(
                       maxValueTerritory,
-                      ProMatches.territoryCanMoveLandUnitsAndIsAllied(player, data),
-                      Matches.alwaysBi());
+                      ProMatches.territoryCanMoveLandUnitsAndIsAllied(player, data));
           Territory unloadToTerritory = null;
           int maxNumSeaNeighbors = 0;
           for (final Territory t : possibleUnloadTerritories) {
             final int numSeaNeighbors =
-                data.getMap()
-                    .getNeighbors(t, Matches.territoryIsWater(), Matches.alwaysBi())
-                    .size();
+                data.getMap().getNeighbors(t, Matches.territoryIsWater()).size();
             final boolean isAdjacentToEnemy =
                 ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data).test(t);
             if (moveMap.get(t) != null
@@ -1673,8 +1660,7 @@ class ProNonCombatMoveAi {
                 data.getMap()
                     .getNeighbors(
                         minTerritory,
-                        ProMatches.territoryCanMoveLandUnitsAndIsAllied(player, data),
-                        Matches.alwaysBi());
+                        ProMatches.territoryCanMoveLandUnitsAndIsAllied(player, data));
             if (!possibleUnloadTerritories.isEmpty()) {
               // Find best unload territory
               Territory unloadToTerritory = possibleUnloadTerritories.iterator().next();
@@ -2078,10 +2064,7 @@ class ProNonCombatMoveAi {
             final List<Unit> transports1 = new ArrayList<>();
             final Set<Territory> seaNeighbors =
                 data.getMap()
-                    .getNeighbors(
-                        t,
-                        ProMatches.territoryCanMoveSeaUnits(player, data, true),
-                        Matches.alwaysBi());
+                    .getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
             for (final Territory neighborTerritory : seaNeighbors) {
               if (moveMap.containsKey(neighborTerritory)) {
                 transports1.addAll(
@@ -2099,11 +2082,7 @@ class ProNonCombatMoveAi {
             final List<Unit> transports2 = new ArrayList<>();
             final Set<Territory> nearbySeaTerritories =
                 data.getMap()
-                    .getNeighbors(
-                        t,
-                        2,
-                        ProMatches.territoryCanMoveSeaUnits(player, data, true),
-                        Matches.alwaysBi());
+                    .getNeighbors(t, 2, ProMatches.territoryCanMoveSeaUnits(player, data, true));
             nearbySeaTerritories.removeAll(seaNeighbors);
             for (final Territory neighborTerritory : nearbySeaTerritories) {
               if (moveMap.containsKey(neighborTerritory)) {
@@ -2144,9 +2123,7 @@ class ProNonCombatMoveAi {
                     + (1 + 10 * hasFactory)
                         * data.getMap()
                             .getNeighbors(
-                                t,
-                                ProMatches.territoryCanMoveSeaUnits(player, data, true),
-                                Matches.alwaysBi())
+                                t, ProMatches.territoryCanMoveSeaUnits(player, data, true))
                             .size();
             if (moveMap.get(t).getValue() > maxValue
                 || needAmphibUnitValue > maxNeedAmphibUnitValue) {
@@ -2339,10 +2316,7 @@ class ProNonCombatMoveAi {
         final Set<Territory> possibleAttackTerritories =
             data.getMap()
                 .getNeighbors(
-                    t,
-                    range / 2,
-                    ProMatches.territoryCanMoveAirUnits(player, data, true),
-                    Matches.alwaysBi());
+                    t, range / 2, ProMatches.territoryCanMoveAirUnits(player, data, true));
         final int numEnemyAttackTerritories =
             CollectionUtils.countMatches(
                 possibleAttackTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player, data));
@@ -2360,11 +2334,7 @@ class ProNonCombatMoveAi {
                             Matches.unitHasSubBattleAbilities().negate())));
         final Set<Territory> possibleMoveTerritories =
             data.getMap()
-                .getNeighbors(
-                    t,
-                    range,
-                    ProMatches.territoryCanMoveAirUnits(player, data, true),
-                    Matches.alwaysBi());
+                .getNeighbors(t, range, ProMatches.territoryCanMoveAirUnits(player, data, true));
         final int numNearbyEnemyTerritories =
             CollectionUtils.countMatches(
                 possibleMoveTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player, data));

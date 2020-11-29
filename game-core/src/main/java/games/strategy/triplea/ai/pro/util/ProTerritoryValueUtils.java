@@ -108,19 +108,13 @@ public final class ProTerritoryValueUtils {
     for (final Territory t : territoriesToCheck) {
       if (!territoriesThatCantBeHeld.contains(t)
           && t.isWater()
-          && !data.getMap()
-              .getNeighbors(t, Matches.territoryIsWater(), Matches.alwaysBi())
-              .isEmpty()) {
+          && !data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
 
         // Determine sea value based on nearby convoy production
         double nearbySeaProductionValue = 0;
         final Set<Territory> nearbySeaTerritories =
             data.getMap()
-                .getNeighbors(
-                    t,
-                    4,
-                    ProMatches.territoryCanMoveSeaUnits(player, data, true),
-                    Matches.alwaysBi());
+                .getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(player, data, true));
         final List<Territory> nearbyEnemySeaTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
@@ -262,8 +256,7 @@ public final class ProTerritoryValueUtils {
                   .getNeighbors(
                       t,
                       6,
-                      ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()),
-                      Matches.alwaysBi())
+                      ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()))
                   .size();
       final double value =
           Math.sqrt(factoryProduction + Math.sqrt(playerProduction))
@@ -379,9 +372,7 @@ public final class ProTerritoryValueUtils {
 
     final GameData data = proData.getData();
     if (territoriesThatCantBeHeld.contains(t)
-        || data.getMap()
-            .getNeighbors(t, Matches.territoryIsWater(), Matches.alwaysBi())
-            .isEmpty()) {
+        || data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
       return 0.0;
     }
 

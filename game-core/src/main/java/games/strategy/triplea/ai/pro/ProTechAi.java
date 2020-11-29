@@ -100,7 +100,7 @@ final class ProTechAi {
       nonTransportsInAttack = true;
     }
     final Set<Territory> waterTerr =
-        data.getMap().getNeighbors(location, Matches.territoryIsWater(), Matches.alwaysBi());
+        data.getMap().getNeighbors(location, Matches.territoryIsWater());
     while (playerIter.hasNext()) {
       float seaStrength = 0.0F;
       float firstStrength = 0.0F;
@@ -158,9 +158,7 @@ final class ProTechAi {
       for (final Territory t :
           data.getMap()
               .getNeighbors(
-                  location,
-                  onWater ? Matches.territoryIsWater() : Matches.territoryIsLand(),
-                  Matches.alwaysBi())) {
+                  location, onWater ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
         final List<Unit> enemies =
             t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(enemyPlayer));
         enemyWaterUnits.addAll(enemies);
@@ -239,9 +237,7 @@ final class ProTechAi {
               availOther += other;
             }
             final Set<Territory> transNeighbors =
-                data.getMap()
-                    .getNeighbors(
-                        t4, Matches.isTerritoryAllied(enemyPlayer, data), Matches.alwaysBi());
+                data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer, data));
             for (final Territory transNeighbor : transNeighbors) {
               final List<Unit> transUnits =
                   transNeighbor.getUnitCollection().getMatches(enemyTransportable);
@@ -502,8 +498,7 @@ final class ProTechAi {
         break;
       }
       for (final Territory neighbor :
-          data.getMap()
-              .getNeighbors(current, territoryIsNotImpassableToAirUnits(), Matches.alwaysBi())) {
+          data.getMap().getNeighbors(current, territoryIsNotImpassableToAirUnits())) {
         if (!distance.keySet().contains(neighbor)) {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
@@ -632,8 +627,7 @@ final class ProTechAi {
     final Predicate<Territory> canGo = endCondition.or(routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
     final List<Territory> frontier = new ArrayList<>();
-    final Queue<Territory> q =
-        new ArrayDeque<>(data.getMap().getNeighbors(start, canGo, Matches.alwaysBi()));
+    final Queue<Territory> q = new ArrayDeque<>(data.getMap().getNeighbors(start, canGo));
     Territory current;
     visited.put(start, 0);
     for (final Territory t : q) {
@@ -648,8 +642,7 @@ final class ProTechAi {
         break;
       }
 
-      for (final Territory neighbor :
-          data.getMap().getNeighbors(current, canGo, Matches.alwaysBi())) {
+      for (final Territory neighbor : data.getMap().getNeighbors(current, canGo)) {
         if (!visited.keySet().contains(neighbor)) {
           q.add(neighbor);
           final int dist = visited.getInt(current) + 1;

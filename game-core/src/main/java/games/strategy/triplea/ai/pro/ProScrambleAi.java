@@ -11,7 +11,6 @@ import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -101,9 +100,7 @@ class ProScrambleAi {
     final Map<Unit, Set<Territory>> unitDefendOptions = new HashMap<>();
     for (final Territory t : possibleMaxScramblerMap.keySet()) {
       final Set<Territory> possibleTerritories =
-          data.getMap()
-              .getNeighbors(
-                  t, ProMatches.territoryCanMoveSeaUnits(player, data, true), Matches.alwaysBi());
+          data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
       possibleTerritories.add(t);
       final Set<Territory> battleTerritories = new HashSet<>();
       for (final Territory possibleTerritory : possibleTerritories) {

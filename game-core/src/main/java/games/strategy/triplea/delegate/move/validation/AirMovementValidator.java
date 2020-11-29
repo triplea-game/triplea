@@ -138,8 +138,7 @@ public final class AirMovementValidator {
                 routeEnd,
                 maxMovementLeftForTheseAirUnitsBeingValidated,
                 // where can we fly to?
-                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir(data)),
-                Matches.alwaysBi()));
+                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir(data))));
     // we only want to consider
     landingSpots.removeAll(
         CollectionUtils.getMatches(

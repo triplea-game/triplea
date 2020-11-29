@@ -1170,8 +1170,7 @@ public class ProTerritoryManager {
                 data.getMap()
                     .getNeighbors(
                         currentTerritory,
-                        ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove),
-                        Matches.alwaysBi());
+                        ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
             for (final Territory possibleNeighborTerritory : possibleNeighborTerritories) {
               final Route route = new Route(currentTerritory, possibleNeighborTerritory);
               if (new MoveValidator(data).validateCanal(route, List.of(myTransportUnit), player)
@@ -1226,16 +1225,14 @@ public class ProTerritoryManager {
                         .getNeighbors(
                             currentTerritory,
                             movesLeft,
-                            ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove),
-                            Matches.alwaysBi());
+                            ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
                 if (isCheckingEnemyAttacks) {
                   neighborTerritories =
                       data.getMap()
                           .getNeighbors(
                               currentTerritory,
                               movesLeft,
-                              ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove),
-                              Matches.alwaysBi());
+                              ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove));
                 }
                 for (final Territory neighborTerritory : neighborTerritories) {
                   final Route myRoute =
@@ -1258,9 +1255,7 @@ public class ProTerritoryManager {
               final Set<Territory> amphibTerritories = new HashSet<>();
               for (final Territory seaMoveTerritory : seaMoveTerritories) {
                 amphibTerritories.addAll(
-                    data.getMap()
-                        .getNeighbors(
-                            seaMoveTerritory, unloadAmphibTerritoryMatch, Matches.alwaysBi()));
+                    data.getMap().getNeighbors(seaMoveTerritory, unloadAmphibTerritoryMatch));
               }
 
               // Add to transport map
