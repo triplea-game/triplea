@@ -1,9 +1,12 @@
 package games.strategy.engine.data;
 
 import java.util.Collection;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
 
 /** A game data change that captures the damage done to a collection of units. */
+@Deprecated
+@RemoveOnNextMajorRelease
 public class UnitHitsChange extends Change {
   private static final long serialVersionUID = 2862726651812142713L;
 
