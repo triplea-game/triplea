@@ -74,29 +74,30 @@ public final class GameRunner {
    * lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
-    MainFrame.show();
     ProAi.gameOverClearCache();
 
-    gameSelectorModel.loadDefaultGameSameThread();
-
-    final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
-    if (!saveGameFileName.isEmpty()) {
-      final File saveGameFile = new File(saveGameFileName);
-      if (saveGameFile.exists() && !gameSelectorModel.load(saveGameFile)) {
-        // abort launch if we failed to load the specified game
-        return;
-      }
-    }
-
-    openMapDownloadWindowIfDownloadScheduled();
-
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
+      MainFrame.show();
+      gameSelectorModel.loadDefaultGameSameThread();
       final ServerModel serverModel = setupPanelModel.showServer();
       MainFrame.addQuitAction(serverModel::cancel);
       System.clearProperty(TRIPLEA_SERVER);
     } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
+      MainFrame.show();
       setupPanelModel.showClient();
       System.clearProperty(TRIPLEA_CLIENT);
+    } else {
+      final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
+      if (!saveGameFileName.isEmpty()) {
+        final File saveGameFile = new File(saveGameFileName);
+        if (saveGameFile.exists() && !gameSelectorModel.load(saveGameFile)) {
+          // abort launch if we failed to load the specified game
+          return;
+        }
+      }
+      MainFrame.show();
+      gameSelectorModel.loadDefaultGameSameThread();
+      openMapDownloadWindowIfDownloadScheduled();
     }
   }
 
