@@ -31,6 +31,7 @@ import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.roller.RollAaDice;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -478,13 +479,21 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
                 validAttackingUnitsForThisRoll.removeAll(casualtiesSoFar);
                 if (!validAttackingUnitsForThisRoll.isEmpty()) {
+                  // SBR AA currently doesn't take into account support so don't pass in
+                  // the enemyUnits or friendlyUnits
                   dice =
-                      DiceRoll.rollSbrOrFlyOverAa(
+                      RollAaDice.rollDice(
                           validAttackingUnitsForThisRoll,
                           currentPossibleAa,
                           bridge,
                           battleSite,
-                          BattleState.Side.DEFENSE);
+                          CombatValueBuilder.aaCombatValue()
+                              .enemyUnits(List.of())
+                              .friendlyUnits(List.of())
+                              .side(BattleState.Side.DEFENSE)
+                              .supportAttachments(
+                                  bridge.getData().getUnitTypeList().getSupportAaRules())
+                              .build());
                   if (currentTypeAa.equals("AA")) {
                     if (dice.getHits() > 0) {
                       bridge

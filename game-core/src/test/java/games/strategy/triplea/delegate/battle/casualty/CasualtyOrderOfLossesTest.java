@@ -53,17 +53,17 @@ class CasualtyOrderOfLossesTest {
         CasualtyOrderOfLosses.computeOolCacheKey(
             withFakeParameters(),
             List.of(
-                CasualtyOrderOfLosses.AmphibType.of(typePikemen.create(1, player, true).get(0)),
+                CasualtyOrderOfLosses.AmphibType.of(typePikemen.createTemp(1, player).get(0)),
                 CasualtyOrderOfLosses.AmphibType.of(
-                    typeVeteranFootmen.create(1, player, true).get(0))));
+                    typeVeteranFootmen.createTemp(1, player).get(0))));
 
     final String key2 =
         CasualtyOrderOfLosses.computeOolCacheKey(
             withFakeParameters(),
             List.of(
-                CasualtyOrderOfLosses.AmphibType.of(typeFootmen.create(1, player, true).get(0)),
+                CasualtyOrderOfLosses.AmphibType.of(typeFootmen.createTemp(1, player).get(0)),
                 CasualtyOrderOfLosses.AmphibType.of(
-                    typeVeteranPikemen.create(1, player, true).get(0))));
+                    typeVeteranPikemen.createTemp(1, player).get(0))));
 
     assertThat(key1, is(not(key2)));
   }

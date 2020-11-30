@@ -83,7 +83,7 @@ public class UnitPanel extends JPanel {
 
   List<Unit> getUnits() {
     final List<Unit> units =
-        category.getType().create(textField.getValue(), category.getOwner(), true);
+        category.getType().createTemp(textField.getValue(), category.getOwner());
     if (!units.isEmpty()) {
       // creating the unit just makes it, we want to make sure it is damaged if the category says it
       // is damaged

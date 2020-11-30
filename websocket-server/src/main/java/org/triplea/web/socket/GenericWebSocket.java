@@ -45,6 +45,10 @@ public class GenericWebSocket {
   @Nullable private final Predicate<InetAddress> banCheck;
   @Nonnull private final MessageSender messageSender;
 
+  public GenericWebSocket(@Nonnull final WebSocketMessagingBus webSocketMessagingBus) {
+    this(webSocketMessagingBus, ip -> false, new MessageSender());
+  }
+
   public GenericWebSocket(
       @Nonnull final WebSocketMessagingBus webSocketMessagingBus,
       @Nullable final Predicate<InetAddress> banCheck) {

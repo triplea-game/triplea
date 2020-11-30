@@ -9,6 +9,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import java.util.Properties;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.ISound;
 
 /** TripleA implementation of DelegateBridge. */
@@ -24,6 +25,11 @@ public class GameDelegateBridge implements IDelegateBridge {
   @Override
   public GameData getData() {
     return bridge.getData();
+  }
+
+  @Override
+  public void sendMessage(final WebSocketMessage webSocketMessage) {
+    bridge.sendMessage(webSocketMessage);
   }
 
   /** Return our custom historyWriter instead of the default one. */

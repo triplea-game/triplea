@@ -3,11 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.dice.roller.RollAaDice;
-import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -68,27 +64,6 @@ public class DiceRoll implements Externalizable {
     rolls = new ArrayList<>(dice);
     this.hits = hits;
     this.expectedHits = expectedHits;
-  }
-
-  /** Used only for rolling SBR or fly over AA as they don't currently take into account support. */
-  public static DiceRoll rollSbrOrFlyOverAa(
-      final Collection<Unit> validTargets,
-      final Collection<Unit> aaUnits,
-      final IDelegateBridge bridge,
-      final Territory location,
-      final BattleState.Side side) {
-
-    return RollAaDice.rollDice(
-        validTargets,
-        aaUnits,
-        bridge,
-        location,
-        CombatValueBuilder.aaCombatValue()
-            .enemyUnits(List.of())
-            .friendlyUnits(List.of())
-            .side(side)
-            .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
-            .build());
   }
 
   /**

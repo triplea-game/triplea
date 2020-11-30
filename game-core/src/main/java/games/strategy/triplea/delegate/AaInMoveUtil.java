@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.roller.RollAaDice;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -116,13 +117,21 @@ class AaInMoveUtil implements Serializable {
               // get rid of units already killed, so we don't target them twice
               validTargetedUnitsForThisRoll.removeAll(casualties);
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
+                // Fly over AA currently doesn't take into account support so don't pass in
+                // the enemyUnits or friendlyUnits
                 dice.set(
-                    DiceRoll.rollSbrOrFlyOverAa(
+                    RollAaDice.rollDice(
                         validTargetedUnitsForThisRoll,
                         currentPossibleAa,
                         AaInMoveUtil.this.bridge,
                         territory,
-                        BattleState.Side.DEFENSE));
+                        CombatValueBuilder.aaCombatValue()
+                            .enemyUnits(List.of())
+                            .friendlyUnits(List.of())
+                            .side(BattleState.Side.DEFENSE)
+                            .supportAttachments(
+                                bridge.getData().getUnitTypeList().getSupportAaRules())
+                            .build()));
               }
             }
           };

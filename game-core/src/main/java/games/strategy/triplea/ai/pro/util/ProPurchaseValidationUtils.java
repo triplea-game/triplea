@@ -69,7 +69,7 @@ public final class ProPurchaseValidationUtils {
     if (ppo == null) {
       return false;
     }
-    final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
+    final List<Unit> units = ppo.getUnitType().createTemp(ppo.getQuantity(), player);
     return ProPurchaseValidationUtils.canUnitsBePlaced(
         proData, units, player, t, factoryTerritory, isBid);
   }

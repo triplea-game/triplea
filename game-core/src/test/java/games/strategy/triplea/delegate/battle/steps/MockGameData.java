@@ -3,11 +3,17 @@ package games.strategy.triplea.delegate.battle.steps;
 import static games.strategy.triplea.Constants.ALLIED_AIR_INDEPENDENT;
 import static games.strategy.triplea.Constants.ATTACKER_RETREAT_PLANES;
 import static games.strategy.triplea.Constants.CAPTURE_UNITS_ON_ENTERING_TERRITORY;
+import static games.strategy.triplea.Constants.CHOOSE_AA;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
+import static games.strategy.triplea.Constants.EDIT_MODE;
 import static games.strategy.triplea.Constants.LHTR_HEAVY_BOMBERS;
+import static games.strategy.triplea.Constants.LL_AA_ONLY;
+import static games.strategy.triplea.Constants.LOW_LUCK;
 import static games.strategy.triplea.Constants.NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE;
 import static games.strategy.triplea.Constants.PARTIAL_AMPHIBIOUS_RETREAT;
+import static games.strategy.triplea.Constants.RANDOM_AA_CASUALTIES;
+import static games.strategy.triplea.Constants.ROLL_AA_INDIVIDUALLY;
 import static games.strategy.triplea.Constants.SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
@@ -153,6 +159,36 @@ public class MockGameData {
 
   public MockGameData withCaptureUnitsOnEnteringTerritory(final boolean value) {
     when(gameProperties.get(CAPTURE_UNITS_ON_ENTERING_TERRITORY, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withEditMode(final boolean value) {
+    when(gameProperties.get(EDIT_MODE)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withChooseAaCasualties(final boolean value) {
+    when(gameProperties.get(CHOOSE_AA, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withLowLuck(final boolean value) {
+    when(gameProperties.get(LOW_LUCK, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withLowLuckAaOnly(final boolean value) {
+    when(gameProperties.get(LL_AA_ONLY, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withRollAaIndividually(final boolean value) {
+    when(gameProperties.get(ROLL_AA_INDIVIDUALLY, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withRandomAaCasualties(final boolean value) {
+    when(gameProperties.get(RANDOM_AA_CASUALTIES, false)).thenReturn(value);
     return this;
   }
 }

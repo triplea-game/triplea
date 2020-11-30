@@ -32,7 +32,7 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
       rule.setSide("offence")
@@ -82,10 +82,10 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -118,10 +118,10 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -154,11 +154,11 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
-      final Unit unit2 = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
+      final Unit unit2 = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -193,11 +193,11 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
-      final Unit unit2 = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
+      final Unit unit2 = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -231,12 +231,12 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
-      final Unit unit2 = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
+      final Unit unit2 = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
-      final Unit supportUnit2 = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
+      final Unit supportUnit2 = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -279,12 +279,12 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
-      final Unit unit2 = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
+      final Unit unit2 = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
-      final Unit supportUnit2 = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
+      final Unit supportUnit2 = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -329,12 +329,12 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
-      final Unit unit2 = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
+      final Unit unit2 = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
-      final Unit supportUnit2 = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
+      final Unit supportUnit2 = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -382,10 +382,10 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -398,7 +398,7 @@ class AvailableSupportsTest {
           .setNumber(1);
 
       final UnitType supportUnitType2 = new UnitType("support2", gameData);
-      final Unit supportUnit2 = supportUnitType2.create(1, owner, true).get(0);
+      final Unit supportUnit2 = supportUnitType2.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule2 =
           new UnitSupportAttachment("rule2", supportUnitType2, gameData);
@@ -441,10 +441,10 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -457,7 +457,7 @@ class AvailableSupportsTest {
           .setNumber(1);
 
       final UnitType supportUnitType2 = new UnitType("support2", gameData);
-      final Unit supportUnit2 = supportUnitType2.create(1, owner, true).get(0);
+      final Unit supportUnit2 = supportUnitType2.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule2 =
           new UnitSupportAttachment("rule2", supportUnitType2, gameData);
@@ -496,10 +496,10 @@ class AvailableSupportsTest {
       final GamePlayer owner = mock(GamePlayer.class);
 
       final UnitType unitType = new UnitType("unit", gameData);
-      final Unit unit = unitType.create(1, owner, true).get(0);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
 
       final UnitType supportUnitType = new UnitType("support", gameData);
-      final Unit supportUnit = supportUnitType.create(1, owner, true).get(0);
+      final Unit supportUnit = supportUnitType.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule =
           new UnitSupportAttachment("rule", supportUnitType, gameData);
@@ -512,7 +512,7 @@ class AvailableSupportsTest {
           .setNumber(1);
 
       final UnitType supportUnitType2 = new UnitType("support2", gameData);
-      final Unit supportUnit2 = supportUnitType2.create(1, owner, true).get(0);
+      final Unit supportUnit2 = supportUnitType2.createTemp(1, owner).get(0);
 
       final UnitSupportAttachment rule2 =
           new UnitSupportAttachment("rule2", supportUnitType2, gameData);
