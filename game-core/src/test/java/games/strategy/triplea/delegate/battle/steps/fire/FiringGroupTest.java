@@ -43,7 +43,7 @@ class FiringGroupTest {
   }
 
   private Unit givenUnit(final UnitType unitType) {
-    return unitType.create(1, player, true).get(0);
+    return unitType.createTemp(1, player).get(0);
   }
 
   private UnitType givenUnitType(final String typeName) {

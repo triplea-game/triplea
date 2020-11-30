@@ -27,7 +27,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -50,7 +50,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -82,7 +82,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -114,7 +114,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -146,7 +146,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -178,7 +178,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("defence")
@@ -210,7 +210,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -242,7 +242,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -274,7 +274,7 @@ class SupportCalculatorTest {
     final GamePlayer owner = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -311,7 +311,7 @@ class SupportCalculatorTest {
     when(techAttachment.getImprovedArtillerySupport()).thenReturn(true);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -341,7 +341,7 @@ class SupportCalculatorTest {
     when(techAttachment.getImprovedArtillerySupport()).thenReturn(true);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
@@ -372,9 +372,9 @@ class SupportCalculatorTest {
     final GamePlayer ownerWithoutImprovedTechnology = mock(GamePlayer.class);
 
     final UnitType unitType = new UnitType("unit", gameData);
-    final Unit unit = unitType.create(1, owner, true).get(0);
+    final Unit unit = unitType.createTemp(1, owner).get(0);
     final Unit unitWithoutImprovedTechnology =
-        unitType.create(1, ownerWithoutImprovedTechnology, true).get(0);
+        unitType.createTemp(1, ownerWithoutImprovedTechnology).get(0);
 
     final UnitSupportAttachment rule = new UnitSupportAttachment("rule", unitType, gameData);
     rule.setSide("offence")
