@@ -281,7 +281,7 @@ public class ProPurchaseOption {
 
     final List<Unit> units = new ArrayList<>(ownedLocalUnits);
     units.addAll(unitsToPlace);
-    units.addAll(unitType.create(1, player, true));
+    units.addAll(unitType.createTemp(1, player));
     final SupportCalculator availableSupports =
         new SupportCalculator(
             units,

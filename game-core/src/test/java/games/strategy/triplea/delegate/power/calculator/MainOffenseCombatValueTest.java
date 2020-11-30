@@ -38,10 +38,10 @@ class MainOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.getUnitAttachment().setAttackRolls(3);
 
-      final Unit supportUnit = unitType.create(1, player, true).get(0);
+      final Unit supportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment unitSupportAttachment =
           givenUnitOffenseSupportAttachment(gameData, unitType, "test")
               .setBonus(2)
@@ -56,7 +56,7 @@ class MainOffenseCombatValueTest {
                   BattleState.Side.OFFENSE,
                   true));
 
-      final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
+      final Unit enemySupportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
           givenUnitDefenseSupportAttachment(gameData, unitType, "test2")
               .setBonus(-1)
@@ -112,10 +112,10 @@ class MainOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.getUnitAttachment().setAttackRolls(3);
 
-      final Unit supportUnit = unitType.create(1, player, true).get(0);
+      final Unit supportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment unitSupportAttachment =
           givenUnitOffenseSupportAttachment(gameData, unitType, "test")
               .setBonus(2)
@@ -130,7 +130,7 @@ class MainOffenseCombatValueTest {
                   BattleState.Side.OFFENSE,
                   true));
 
-      final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
+      final Unit enemySupportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
           givenUnitDefenseSupportAttachment(gameData, unitType, "test2")
               .setBonus(-1)
@@ -172,10 +172,10 @@ class MainOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.getUnitAttachment().setAttack(3);
 
-      final Unit supportUnit = unitType.create(1, player, true).get(0);
+      final Unit supportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment unitSupportAttachment =
           givenUnitSupportAttachment(gameData, unitType, "test")
               .setBonus(3)
@@ -190,7 +190,7 @@ class MainOffenseCombatValueTest {
                   BattleState.Side.OFFENSE,
                   true));
 
-      final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
+      final Unit enemySupportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
           givenUnitSupportAttachment(gameData, unitType, "test2")
               .setBonus(-2)
@@ -241,7 +241,7 @@ class MainOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.setWasAmphibious(true).getUnitAttachment().setAttack(3).setIsMarine(1);
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
@@ -262,7 +262,7 @@ class MainOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.getUnitAttachment().setAttack(3).setIsMarine(1);
 
       final MainOffenseCombatValue.MainOffenseStrength strength =
@@ -283,10 +283,10 @@ class MainOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.getUnitAttachment().setAttack(3);
 
-      final Unit supportUnit = unitType.create(1, player, true).get(0);
+      final Unit supportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment unitSupportAttachment =
           givenUnitSupportAttachment(gameData, unitType, "test")
               .setBonus(2)
@@ -301,7 +301,7 @@ class MainOffenseCombatValueTest {
                   BattleState.Side.OFFENSE,
                   true));
 
-      final Unit enemySupportUnit = unitType.create(1, player, true).get(0);
+      final Unit enemySupportUnit = unitType.createTemp(1, player).get(0);
       final UnitSupportAttachment enemyUnitSupportAttachment =
           givenUnitSupportAttachment(gameData, unitType, "test2")
               .setBonus(-1)

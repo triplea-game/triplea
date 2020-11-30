@@ -287,7 +287,7 @@ final class MatchesTest {
           new UnitAttachment("infrastructure", unitType, gameData);
       unitAttachment.setIsInfrastructure(true);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit normally can not be in battle",
@@ -304,7 +304,7 @@ final class MatchesTest {
       unitAttachment.setIsInfrastructure(true);
       unitAttachment.setAttack(1);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit with attack can be in battle when it is attacking",
@@ -321,7 +321,7 @@ final class MatchesTest {
       unitAttachment.setIsInfrastructure(true);
       unitAttachment.setAttack(1);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit with attack can not be in battle when it is attacking",
@@ -338,7 +338,7 @@ final class MatchesTest {
       unitAttachment.setIsInfrastructure(true);
       unitAttachment.setDefense(1);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit with defense can be in battle when it is defending",
@@ -355,7 +355,7 @@ final class MatchesTest {
       unitAttachment.setIsInfrastructure(true);
       unitAttachment.setDefense(1);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit with defense can not be in battle when it is attacking",
@@ -373,7 +373,7 @@ final class MatchesTest {
           new UnitSupportAttachment(SUPPORT_ATTACHMENT_PREFIX + "support", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
       unitType.addAttachment(SUPPORT_ATTACHMENT_PREFIX, unitSupportAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit that gives some support can be in battle",
@@ -390,7 +390,7 @@ final class MatchesTest {
       unitAttachment.setIsAaForCombatOnly(true);
       unitAttachment.setMaxRoundsAa(1);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit that is combat AA and can fire in the round can be "
@@ -408,7 +408,7 @@ final class MatchesTest {
       unitAttachment.setIsAaForCombatOnly(true);
       unitAttachment.setMaxRoundsAa(1);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       assertThat(
           "An infrastructure unit that is combat AA but can only fire in round 1 and "
@@ -424,7 +424,7 @@ final class MatchesTest {
           new UnitAttachment("infrastructure", unitType, gameData);
       unitAttachment.setIsInfrastructure(true);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
 
       final UnitType firingUnitType = new UnitType("firingAa", gameData);
       final UnitAttachment firingUnitAttachment =

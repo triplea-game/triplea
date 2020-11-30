@@ -8,10 +8,8 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
-import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -71,27 +69,6 @@ public class DiceRoll implements Externalizable {
     rolls = new ArrayList<>(dice);
     this.hits = hits;
     this.expectedHits = expectedHits;
-  }
-
-  /** Used only for rolling SBR or fly over AA as they don't currently take into account support. */
-  public static DiceRoll rollSbrOrFlyOverAa(
-      final Collection<Unit> validTargets,
-      final Collection<Unit> aaUnits,
-      final IDelegateBridge bridge,
-      final Territory location,
-      final BattleState.Side side) {
-
-    return rollAa(
-        validTargets,
-        aaUnits,
-        bridge,
-        location,
-        CombatValueBuilder.aaCombatValue()
-            .enemyUnits(List.of())
-            .friendlyUnits(List.of())
-            .side(side)
-            .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
-            .build());
   }
 
   /**

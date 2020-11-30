@@ -284,8 +284,8 @@ class CheckGeneralBattleEndTest {
     attackerUnitAttachment.setCanNotTarget(Set.of(defenderUnitType));
     defenderUnitAttachment.setCanNotTarget(Set.of(attackerUnitType));
 
-    final Unit attackerUnit = attackerUnitType.create(1, attacker, true).get(0);
-    final Unit defenderUnit = defenderUnitType.create(1, defender, true).get(0);
+    final Unit attackerUnit = attackerUnitType.createTemp(1, attacker).get(0);
+    final Unit defenderUnit = defenderUnitType.createTemp(1, defender).get(0);
 
     final BattleState battleState =
         givenBattleStateBuilder()
@@ -321,8 +321,8 @@ class CheckGeneralBattleEndTest {
 
     defenderUnitAttachment.setCanNotTarget(Set.of(attackerUnitType));
 
-    final Unit attackerUnit = attackerUnitType.create(1, attacker, true).get(0);
-    final Unit defenderUnit = defenderUnitType.create(1, defender, true).get(0);
+    final Unit attackerUnit = attackerUnitType.createTemp(1, attacker).get(0);
+    final Unit defenderUnit = defenderUnitType.createTemp(1, defender).get(0);
 
     final BattleState battleState =
         givenBattleStateBuilder()
@@ -360,8 +360,8 @@ class CheckGeneralBattleEndTest {
 
     attackerUnitAttachment.setCanNotTarget(Set.of(defenderUnitType));
 
-    final Unit attackerUnit = attackerUnitType.create(1, attacker, true).get(0);
-    final Unit defenderUnit = defenderUnitType.create(1, defender, true).get(0);
+    final Unit attackerUnit = attackerUnitType.createTemp(1, attacker).get(0);
+    final Unit defenderUnit = defenderUnitType.createTemp(1, defender).get(0);
 
     final BattleState battleState =
         givenBattleStateBuilder()

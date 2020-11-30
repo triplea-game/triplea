@@ -28,7 +28,7 @@ class AirBattleOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.getUnitAttachment().setAirAttack(3);
 
       final AirBattleOffenseCombatValue.AirBattleOffenseStrength strength =
@@ -45,7 +45,7 @@ class AirBattleOffenseCombatValueTest {
       final UnitType unitType = new UnitType("test", gameData);
       final UnitAttachment unitAttachment = new UnitAttachment("attachment", unitType, gameData);
       unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
-      final Unit unit = unitType.create(1, player, true).get(0);
+      final Unit unit = unitType.createTemp(1, player).get(0);
       unit.getUnitAttachment().setAirAttack(8);
 
       final AirBattleOffenseCombatValue.AirBattleOffenseStrength strength =

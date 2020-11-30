@@ -14,11 +14,7 @@ public class UnitType extends NamedAttachable {
   }
 
   public List<Unit> create(final int quantity, final GamePlayer owner) {
-    return create(quantity, owner, false);
-  }
-
-  public List<Unit> create(final int quantity, final GamePlayer owner, final boolean isTemp) {
-    return create(quantity, owner, isTemp, 0, 0);
+    return create(quantity, owner, false, 0, 0);
   }
 
   public List<Unit> create(
@@ -48,6 +44,11 @@ public class UnitType extends NamedAttachable {
 
   public Unit create(final GamePlayer owner) {
     return create(owner, false, 0, 0);
+  }
+
+  /** Creates a unit that isn't added to GameData UnitList */
+  public List<Unit> createTemp(final int quantity, final GamePlayer owner) {
+    return create(quantity, owner, true, 0, 0);
   }
 
   @Override
