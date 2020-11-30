@@ -17,6 +17,7 @@ public class UnitType extends NamedAttachable {
     return create(quantity, owner, false, 0, 0);
   }
 
+  /** Creates a unit that isn't added to GameData UnitList */
   public List<Unit> createTemp(final int quantity, final GamePlayer owner) {
     return create(quantity, owner, true, 0, 0);
   }
