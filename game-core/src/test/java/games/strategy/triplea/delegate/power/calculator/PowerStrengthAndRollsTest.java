@@ -30,7 +30,7 @@ class PowerStrengthAndRollsTest {
   }
 
   private Unit givenUnit(final UnitType unitType) {
-    return unitType.create(1, owner, true).get(0);
+    return unitType.createTemp(1, owner).get(0);
   }
 
   private UnitType givenUnitType(final String name, final GameData gameData) {

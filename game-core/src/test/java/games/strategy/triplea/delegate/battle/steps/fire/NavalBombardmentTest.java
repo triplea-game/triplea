@@ -45,7 +45,7 @@ class NavalBombardmentTest {
   void bombardmentHappensIfHasBombardmentUnitsAndIsFirstRound() {
     final UnitType unitType = spy(new UnitType("type", mock(GameData.class)));
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(mock(UnitAttachment.class));
-    final Unit bombarder = spy(unitType.create(1, mock(GamePlayer.class), true).get(0));
+    final Unit bombarder = spy(unitType.createTemp(1, mock(GamePlayer.class)).get(0));
 
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
 

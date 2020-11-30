@@ -789,7 +789,7 @@ class ProPurchaseAi {
             remainingUnitProduction -= selectedOption.getQuantity();
           }
           unitsToPlace.addAll(
-              selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+              selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
           if (selectedOption.isCarrier() || selectedOption.isAir()) {
             unusedCarrierCapacity =
                 ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
@@ -1000,7 +1000,7 @@ class ProPurchaseAi {
       // Create new temp units
       resourceTracker.purchase(bestAaOption);
       final List<Unit> unitsToPlace =
-          bestAaOption.getUnitType().create(bestAaOption.getQuantity(), player, true);
+          bestAaOption.getUnitType().createTemp(bestAaOption.getQuantity(), player);
       placeTerritory.getPlaceUnits().addAll(unitsToPlace);
       ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
     }
@@ -1162,7 +1162,7 @@ class ProPurchaseAi {
         resourceTracker.purchase(selectedOption);
         remainingUnitProduction -= selectedOption.getQuantity();
         unitsToPlace.addAll(
-            selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+            selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
         attackAndDefenseDifference += (selectedOption.getAttack() - selectedOption.getDefense());
         selectFodderUnit = ((double) addedFodderUnits / unitsToPlace.size() * 100) <= fodderPercent;
         ProLogger.trace("Selected unit=" + selectedOption.getUnitType().getName());
@@ -1374,9 +1374,7 @@ class ProPurchaseAi {
         for (final ProPlaceTerritory ppt : factoryPurchaseTerritory.getCanPlaceTerritories()) {
           if (ppt.getTerritory().equals(maxTerritory)) {
             final List<Unit> factory =
-                bestFactoryOption
-                    .getUnitType()
-                    .create(bestFactoryOption.getQuantity(), player, true);
+                bestFactoryOption.getUnitType().createTemp(bestFactoryOption.getQuantity(), player);
             ppt.getPlaceUnits().addAll(factory);
             if (resourceTracker.hasEnough(bestFactoryOption)) {
               resourceTracker.purchase(bestFactoryOption);
@@ -1619,7 +1617,7 @@ class ProPurchaseAi {
             resourceTracker.tempPurchase(selectedOption);
             remainingUnitProduction -= selectedOption.getQuantity();
             unitsToPlace.addAll(
-                selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+                selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
             if (selectedOption.isCarrier() || selectedOption.isAir()) {
               unusedCarrierCapacity =
                   ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
@@ -1844,7 +1842,7 @@ class ProPurchaseAi {
           resourceTracker.purchase(selectedOption);
           remainingUnitProduction -= selectedOption.getQuantity();
           unitsToPlace.addAll(
-              selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+              selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
           if (selectedOption.isCarrier() || selectedOption.isAir()) {
             unusedCarrierCapacity =
                 ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
@@ -2018,7 +2016,7 @@ class ProPurchaseAi {
 
               // Add amphib unit
               final List<Unit> amphibUnits =
-                  ppo.getUnitType().create(ppo.getQuantity(), player, true);
+                  ppo.getUnitType().createTemp(ppo.getQuantity(), player);
               amphibUnitsToPlace.addAll(amphibUnits);
               resourceTracker.purchase(ppo);
               remainingUnitProduction -= ppo.getQuantity();
@@ -2049,7 +2047,7 @@ class ProPurchaseAi {
             final ProPurchaseOption ppo = optionalSelectedOption.get();
 
             // Add transports
-            final List<Unit> transports = ppo.getUnitType().create(ppo.getQuantity(), player, true);
+            final List<Unit> transports = ppo.getUnitType().createTemp(ppo.getQuantity(), player);
             transportUnitsToPlace.addAll(transports);
             resourceTracker.purchase(ppo);
             remainingUnitProduction -= ppo.getQuantity();
@@ -2169,7 +2167,7 @@ class ProPurchaseAi {
         resourceTracker.purchase(bestAttackOption);
         remainingUnitProduction -= bestAttackOption.getQuantity();
         final List<Unit> newUnit =
-            bestAttackOption.getUnitType().create(bestAttackOption.getQuantity(), player, true);
+            bestAttackOption.getUnitType().createTemp(bestAttackOption.getQuantity(), player);
         placeTerritory.getPlaceUnits().addAll(newUnit);
         ProLogger.trace(t + ", addedUnit=" + newUnit);
       }
@@ -2230,7 +2228,7 @@ class ProPurchaseAi {
         resourceTracker.purchase(selectedOption);
         remainingUnitProduction -= selectedOption.getQuantity();
         final List<Unit> newUnit =
-            selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true);
+            selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player);
         placeTerritory.getPlaceUnits().addAll(newUnit);
         ProLogger.trace(t + ", addedUnit=" + newUnit);
       }
@@ -2369,9 +2367,7 @@ class ProPurchaseAi {
           if (resourceTracker.hasEnough(bestUpgradeOption)) {
             resourceTracker.purchase(bestUpgradeOption);
             final List<Unit> newUnit =
-                bestUpgradeOption
-                    .getUnitType()
-                    .create(bestUpgradeOption.getQuantity(), player, true);
+                bestUpgradeOption.getUnitType().createTemp(bestUpgradeOption.getQuantity(), player);
             placeTerritory.getPlaceUnits().addAll(newUnit);
             ProLogger.trace(t + ", addedUnit=" + newUnit);
           }

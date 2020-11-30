@@ -115,7 +115,7 @@ class AaCasualtySelectorTest {
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               List.of(mock(Unit.class)),
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -133,8 +133,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeUnitType.create(1, hitPlayer, true),
-              aaUnitType.create(1, aaPlayer, true),
+              planeUnitType.createTemp(1, hitPlayer),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -153,8 +153,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeUnitType.create(1, hitPlayer, true),
-              aaUnitType.create(1, aaPlayer, true),
+              planeUnitType.createTemp(1, hitPlayer),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -175,8 +175,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeUnitType.create(2, hitPlayer, true),
-              aaUnitType.create(1, aaPlayer, true),
+              planeUnitType.createTemp(2, hitPlayer),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -197,12 +197,12 @@ class AaCasualtySelectorTest {
 
       whenGetRandom(bridge).thenAnswer(withValues(9, 9, 9, 9, 9));
 
-      final List<Unit> planes = planeUnitType.create(10, hitPlayer, true);
+      final List<Unit> planes = planeUnitType.createTemp(10, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(3, aaPlayer, true),
+              aaUnitType.createTemp(3, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -224,8 +224,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeMultiHpUnitType.create(1, hitPlayer, true),
-              damageableAaUnitType.create(1, aaPlayer, true),
+              planeMultiHpUnitType.createTemp(1, hitPlayer),
+              damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -245,8 +245,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeMultiHpUnitType.create(1, hitPlayer, true),
-              damageableAaUnitType.create(1, aaPlayer, true),
+              planeMultiHpUnitType.createTemp(1, hitPlayer),
+              damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -267,8 +267,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeMultiHpUnitType.create(1, hitPlayer, true),
-              damageableAaUnitType.create(1, aaPlayer, true),
+              planeMultiHpUnitType.createTemp(1, hitPlayer),
+              damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -289,8 +289,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeMultiHpUnitType.create(2, hitPlayer, true),
-              damageableAaUnitType.create(1, aaPlayer, true),
+              planeMultiHpUnitType.createTemp(2, hitPlayer),
+              damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -317,8 +317,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeMultiHpUnitType.create(7, hitPlayer, true),
-              damageableAaUnitType.create(3, aaPlayer, true),
+              planeMultiHpUnitType.createTemp(7, hitPlayer),
+              damageableAaUnitType.createTemp(3, aaPlayer),
               mock(CombatValue.class),
               mock(CombatValue.class),
               "text",
@@ -378,8 +378,8 @@ class AaCasualtySelectorTest {
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
-              planeUnitType.create(1, hitPlayer, true),
-              aaUnitType.create(1, aaPlayer, true),
+              planeUnitType.createTemp(1, hitPlayer),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -396,12 +396,12 @@ class AaCasualtySelectorTest {
     @Test
     void hitsLessThanPlanesKillsAccordingToTheRolledDice() {
 
-      final List<Unit> planes = planeUnitType.create(5, hitPlayer, true);
+      final List<Unit> planes = planeUnitType.createTemp(5, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",

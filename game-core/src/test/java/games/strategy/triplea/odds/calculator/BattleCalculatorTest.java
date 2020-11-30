@@ -61,9 +61,9 @@ class BattleCalculatorTest {
     final GamePlayer germans = germans(gameData);
     final GamePlayer british = british(gameData);
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
-    final List<Unit> defendingUnits = fighter(gameData).create(1, british, false);
-    final List<Unit> attackingUnits = infantry(gameData).create(1, germans, false);
-    attackingUnits.addAll(bomber(gameData).create(1, germans, false));
+    final List<Unit> defendingUnits = fighter(gameData).create(1, british);
+    final List<Unit> attackingUnits = infantry(gameData).create(1, germans);
+    attackingUnits.addAll(bomber(gameData).create(1, germans));
     final List<Unit> bombardingUnits = List.of();
     final BattleCalculator calculator = new BattleCalculator(gameData, false, new Version(2, 0, 0));
     calculator.setKeepOneAttackingLandUnit(true);
