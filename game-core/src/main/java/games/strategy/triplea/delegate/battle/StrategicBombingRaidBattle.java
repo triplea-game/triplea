@@ -479,7 +479,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
                 validAttackingUnitsForThisRoll.removeAll(casualtiesSoFar);
                 if (!validAttackingUnitsForThisRoll.isEmpty()) {
-                  // SBR AA currently doesn't take into account support
+                  // SBR AA currently doesn't take into account support so don't pass in
+                  // the enemyUnits or friendlyUnits
                   dice =
                       DiceRoll.rollAa(
                           validAttackingUnitsForThisRoll,

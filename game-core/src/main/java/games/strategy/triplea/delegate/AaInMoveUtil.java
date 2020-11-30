@@ -116,7 +116,8 @@ class AaInMoveUtil implements Serializable {
               // get rid of units already killed, so we don't target them twice
               validTargetedUnitsForThisRoll.removeAll(casualties);
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
-                // Fly over AA currently doesn't take into account support
+                // Fly over AA currently doesn't take into account support so don't pass in
+                // the enemyUnits or friendlyUnits
                 dice.set(
                     DiceRoll.rollAa(
                         validTargetedUnitsForThisRoll,
