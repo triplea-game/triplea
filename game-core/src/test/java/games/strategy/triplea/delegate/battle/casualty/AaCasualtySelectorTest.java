@@ -27,6 +27,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.List;
@@ -489,16 +490,16 @@ class AaCasualtySelectorTest {
     void oneTypeOfPlaneWithAmountEqualToDiceSides() {
 
       final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck would have 1 hit because 6 power / 6 dice side
-              givenDiceRollWithHitSequence(true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -511,21 +512,60 @@ class AaCasualtySelectorTest {
           is(empty()));
     }
 
+    private DiceRoll givenLowLuckDiceRoll(final List<Unit> aaUnits, final List<Unit> planes) {
+      final AaPowerStrengthAndRolls strengthAndRolls =
+          AaPowerStrengthAndRolls.build(
+              aaUnits,
+              planes.size(),
+              CombatValueBuilder.aaCombatValue()
+                  .enemyUnits(List.of())
+                  .friendlyUnits(List.of())
+                  .side(BattleState.Side.DEFENSE)
+                  .supportAttachments(List.of())
+                  .build());
+
+      return new DiceRoll(
+          new int[0],
+          strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides(),
+          1,
+          false);
+    }
+
+    private DiceRoll givenLowLuckDiceRollWithExtraHit(
+        final List<Unit> aaUnits, final List<Unit> planes) {
+      final AaPowerStrengthAndRolls strengthAndRolls =
+          AaPowerStrengthAndRolls.build(
+              aaUnits,
+              planes.size(),
+              CombatValueBuilder.aaCombatValue()
+                  .enemyUnits(List.of())
+                  .friendlyUnits(List.of())
+                  .side(BattleState.Side.DEFENSE)
+                  .supportAttachments(List.of())
+                  .build());
+
+      return new DiceRoll(
+          new int[0],
+          strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides() + 1,
+          1,
+          false);
+    }
+
     @Test
     void twoTypesOfPlanesAndBothHaveAmountEqualToDiceSides() {
 
       final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(6, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck would have 2 hits because 12 power / 6 dice side
-              givenDiceRollWithHitSequence(true, true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -551,16 +591,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(3, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(3, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck would have 1 hits because 6 power / 6 dice side
-              givenDiceRollWithHitSequence(true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -586,16 +626,16 @@ class AaCasualtySelectorTest {
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
       final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
+      final List<Unit> aaUnits = damageableAaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              damageableAaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck would have 1 hit because 6 power / 6 dice side
-              givenDiceRollWithHitSequence(true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -615,16 +655,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
       planes.addAll(otherPlaneMultiHpUnitType.createTemp(6, hitPlayer));
+      final List<Unit> aaUnits = damageableAaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              damageableAaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck would have 2 hits because 12 power / 6 dice side
-              givenDiceRollWithHitSequence(true, true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -649,17 +689,16 @@ class AaCasualtySelectorTest {
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
       final List<Unit> planes = planeUnitType.createTemp(3, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck would have a chance to 1 hit since 3 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -680,17 +719,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(2, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(2, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck would have a chance to 1 hit since 4 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -717,17 +755,16 @@ class AaCasualtySelectorTest {
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets one hit and a possibility of another since 8 power / 6 dice sides
-              // for the test, lets assume the remainder was not a successful hit
-              givenDiceRollWithHitSequence(true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -750,17 +787,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets two hits and a possibility of another since 16 power / 6 dice sides
-              // for the test, lets assume the remainder was not a successful hit
-              givenDiceRollWithHitSequence(true, true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -789,17 +825,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(4, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets one hit and a possibility of another since 8 power / 6 dice sides
-              // for the test, lets assume the remainder was not a successful hit
-              givenDiceRollWithHitSequence(true),
+              givenLowLuckDiceRoll(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -826,17 +861,16 @@ class AaCasualtySelectorTest {
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets one hit and a possibility of another since 8 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true, true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -853,17 +887,16 @@ class AaCasualtySelectorTest {
     void oneTypeOfPlaneWithRemainderOf1AndWithExtraHit() {
 
       final List<Unit> planes = planeUnitType.createTemp(7, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets one hit and a possibility of another since 7 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true, true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -884,17 +917,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets two hits and a possibility of another since 16 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true, true, true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -919,17 +951,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(7, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets two hits and a possibility of another since 14 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true, true, true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -956,17 +987,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(4, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets one hit and a possibility of another since 8 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true, true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
@@ -992,17 +1022,16 @@ class AaCasualtySelectorTest {
 
       final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(3, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(1, aaPlayer),
+              aaUnits,
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
-              // low luck gets one hit and a possibility of another since 8 power / 6 dice sides
-              // for the test, lets assume the remainder was a successful hit
-              givenDiceRollWithHitSequence(true, true),
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
               bridge,
               hitPlayer,
               UUID.randomUUID(),
