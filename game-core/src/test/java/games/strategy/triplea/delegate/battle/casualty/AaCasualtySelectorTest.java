@@ -488,12 +488,12 @@ class AaCasualtySelectorTest {
     @Test
     void oneTypeOfPlaneWithAmountEqualToDiceSides() {
 
-      final List<Unit> planes = planeUnitType.create(6, hitPlayer, true);
+      final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -514,13 +514,13 @@ class AaCasualtySelectorTest {
     @Test
     void twoTypesOfPlanesAndBothHaveAmountEqualToDiceSides() {
 
-      final List<Unit> planes = planeUnitType.create(6, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(6, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(6, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -549,13 +549,13 @@ class AaCasualtySelectorTest {
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
-      final List<Unit> planes = planeUnitType.create(3, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(3, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(3, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(3, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -585,12 +585,12 @@ class AaCasualtySelectorTest {
 
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
-      final List<Unit> planes = planeMultiHpUnitType.create(6, hitPlayer, true);
+      final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              damageableAaUnitType.create(1, aaPlayer, true),
+              damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -613,13 +613,13 @@ class AaCasualtySelectorTest {
 
       whenGetRandom(bridge).thenAnswer(withValues(1, 1));
 
-      final List<Unit> planes = planeMultiHpUnitType.create(6, hitPlayer, true);
-      planes.addAll(otherPlaneMultiHpUnitType.create(6, hitPlayer, true));
+      final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
+      planes.addAll(otherPlaneMultiHpUnitType.createTemp(6, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              damageableAaUnitType.create(1, aaPlayer, true),
+              damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -648,12 +648,12 @@ class AaCasualtySelectorTest {
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
-      final List<Unit> planes = planeUnitType.create(3, hitPlayer, true);
+      final List<Unit> planes = planeUnitType.createTemp(3, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -678,13 +678,13 @@ class AaCasualtySelectorTest {
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
-      final List<Unit> planes = planeUnitType.create(2, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(2, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(2, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(2, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -716,12 +716,12 @@ class AaCasualtySelectorTest {
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
-      final List<Unit> planes = planeUnitType.create(8, hitPlayer, true);
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -748,13 +748,13 @@ class AaCasualtySelectorTest {
       // group.
       whenGetRandom(bridge).thenAnswer(withValues(1)).thenAnswer(withValues(0, 0));
 
-      final List<Unit> planes = planeUnitType.create(8, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(8, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -787,13 +787,13 @@ class AaCasualtySelectorTest {
       // 2 planes to actually kill
       whenGetRandom(bridge).thenAnswer(withValues(1, 1)).thenAnswer(withValues(1));
 
-      final List<Unit> planes = planeUnitType.create(4, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(4, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(4, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -825,12 +825,12 @@ class AaCasualtySelectorTest {
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
-      final List<Unit> planes = planeUnitType.create(8, hitPlayer, true);
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -852,12 +852,12 @@ class AaCasualtySelectorTest {
     @Test
     void oneTypeOfPlaneWithRemainderOf1AndWithExtraHit() {
 
-      final List<Unit> planes = planeUnitType.create(7, hitPlayer, true);
+      final List<Unit> planes = planeUnitType.createTemp(7, hitPlayer);
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -882,13 +882,13 @@ class AaCasualtySelectorTest {
       // need to pick one plane out of the remainder list
       whenGetRandom(bridge).thenAnswer(withValues(0));
 
-      final List<Unit> planes = planeUnitType.create(8, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(8, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -917,13 +917,13 @@ class AaCasualtySelectorTest {
     @Test
     void twoTypesOfPlanesAndOneHasRemainderOf1AndWithExtraHit() {
 
-      final List<Unit> planes = planeUnitType.create(6, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(7, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(7, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -954,13 +954,13 @@ class AaCasualtySelectorTest {
       // need to randomly pick 2 planes to kill
       whenGetRandom(bridge).thenAnswer(withValues(1, 1));
 
-      final List<Unit> planes = planeUnitType.create(4, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(4, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(4, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
@@ -990,13 +990,13 @@ class AaCasualtySelectorTest {
       // need to randomly pick 2 planes to kill
       whenGetRandom(bridge).thenAnswer(withValues(1, 1));
 
-      final List<Unit> planes = planeUnitType.create(4, hitPlayer, true);
-      planes.addAll(otherPlaneUnitType.create(3, hitPlayer, true));
+      final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(3, hitPlayer));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.create(1, aaPlayer, true),
+              aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
               givenAaCombatValue(),
               "text",
