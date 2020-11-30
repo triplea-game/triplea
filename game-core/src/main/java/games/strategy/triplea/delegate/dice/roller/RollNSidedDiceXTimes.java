@@ -15,19 +15,20 @@ import lombok.experimental.UtilityClass;
  * <p>0 based, add 1 to get actual die roll
  */
 @UtilityClass
-public class RollNDice {
+public class RollNSidedDiceXTimes {
 
   public static DiceRoll rollDice(
       final IDelegateBridge bridge,
       final int rollCount,
-      final int sides,
+      final int diceSides,
       final GamePlayer playerRolling,
       final IRandomStats.DiceType diceType,
       final String annotation) {
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
-    final int[] random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
+    final int[] random =
+        bridge.getRandom(diceSides, rollCount, playerRolling, diceType, annotation);
     final List<Die> dice = new ArrayList<>();
     for (int i = 0; i < rollCount; i++) {
       dice.add(new Die(random[i], 1, Die.DieType.IGNORED));
