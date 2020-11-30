@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -58,7 +59,7 @@ public final class MockDelegateBridge {
   public static Answer<int[]> withValues(final int... values) {
     return invocation -> {
       final int count = invocation.getArgument(1);
-      assertEquals(values.length, count, "count of requested random values does not match");
+      assertThat("count of requested random values does not match", values.length, is(count));
       return values;
     };
   }

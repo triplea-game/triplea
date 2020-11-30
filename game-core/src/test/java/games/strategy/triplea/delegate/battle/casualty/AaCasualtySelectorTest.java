@@ -5,6 +5,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -26,10 +27,12 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -91,9 +94,9 @@ class AaCasualtySelectorTest {
           new UnitAttachment("aaUnitAttachment", aaUnitType, gameData);
       aaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, aaUnitAttachment);
 
-      damageableAaUnitType = new UnitType("aaUnitType", gameData);
+      damageableAaUnitType = new UnitType("damageableAaUnitType", gameData);
       final UnitAttachment damageableAaUnitAttachment =
-          new UnitAttachment("damageableAaUnitAttachment", aaUnitType, gameData);
+          new UnitAttachment("damageableAaUnitAttachment", damageableAaUnitType, gameData);
       damageableAaUnitAttachment.setDamageableAa(true);
       damageableAaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, damageableAaUnitAttachment);
 
@@ -102,7 +105,7 @@ class AaCasualtySelectorTest {
           new UnitAttachment("planeUnitAttachment", aaUnitType, gameData);
       planeUnitType.addAttachment(UNIT_ATTACHMENT_NAME, planeUnitAttachment);
 
-      planeMultiHpUnitType = new UnitType("planeUnitType", gameData);
+      planeMultiHpUnitType = new UnitType("planeMultiHpUnitType", gameData);
       final UnitAttachment planeMultiHpUnitAttachment =
           new UnitAttachment("planeMultiHpUnitAttachment", aaUnitType, gameData);
       planeMultiHpUnitAttachment.setHitPoints(2);
@@ -355,9 +358,9 @@ class AaCasualtySelectorTest {
           new UnitAttachment("aaUnitAttachment", aaUnitType, gameData);
       aaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, aaUnitAttachment);
 
-      damageableAaUnitType = new UnitType("aaUnitType", gameData);
+      damageableAaUnitType = new UnitType("damageableAaUnitType", gameData);
       final UnitAttachment damageableAaUnitAttachment =
-          new UnitAttachment("damageableAaUnitAttachment", aaUnitType, gameData);
+          new UnitAttachment("damageableAaUnitAttachment", damageableAaUnitType, gameData);
       damageableAaUnitAttachment.setDamageableAa(true);
       damageableAaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, damageableAaUnitAttachment);
 
@@ -366,7 +369,7 @@ class AaCasualtySelectorTest {
           new UnitAttachment("planeUnitAttachment", aaUnitType, gameData);
       planeUnitType.addAttachment(UNIT_ATTACHMENT_NAME, planeUnitAttachment);
 
-      planeMultiHpUnitType = new UnitType("planeUnitType", gameData);
+      planeMultiHpUnitType = new UnitType("planeMultiHpUnitType", gameData);
       final UnitAttachment planeMultiHpUnitAttachment =
           new UnitAttachment("planeMultiHpUnitAttachment", aaUnitType, gameData);
       planeMultiHpUnitAttachment.setHitPoints(2);
@@ -415,6 +418,636 @@ class AaCasualtySelectorTest {
           "1st, 3rd, and 5th plane were killed",
           details.getKilled(),
           is(List.of(planes.get(0), planes.get(2), planes.get(4))));
+    }
+  }
+
+  @Nested
+  class LowLuckCasualties {
+    private IDelegateBridge bridge;
+    @Mock private UnitType otherPlaneUnitType;
+    @Mock private UnitType otherPlaneMultiHpUnitType;
+    @Mock private UnitType powerfulAaUnitType;
+
+    @BeforeEach
+    void setupPlayers() {
+      when(hitPlayer.getName()).thenReturn("Hit Player");
+    }
+
+    @BeforeEach
+    void initializeGameData() {
+      gameData =
+          givenGameData()
+              .withDiceSides(6)
+              .withEditMode(false)
+              .withChooseAaCasualties(false)
+              .withLowLuck(true)
+              .build();
+      bridge = mock(IDelegateBridge.class);
+      when(bridge.getData()).thenReturn(gameData);
+
+      aaUnitType = new UnitType("aaUnitType", gameData);
+      final UnitAttachment aaUnitAttachment =
+          new UnitAttachment("aaUnitAttachment", aaUnitType, gameData);
+      aaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, aaUnitAttachment);
+
+      damageableAaUnitType = new UnitType("damageableAaUnitType", gameData);
+      final UnitAttachment damageableAaUnitAttachment =
+          new UnitAttachment("damageableAaUnitAttachment", damageableAaUnitType, gameData);
+      damageableAaUnitAttachment.setDamageableAa(true);
+      damageableAaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, damageableAaUnitAttachment);
+
+      powerfulAaUnitType = new UnitType("powerfulAaUnitType", gameData);
+      final UnitAttachment powerfulAaUnitAttachment =
+          new UnitAttachment("powerfulAaUnitAttachment", powerfulAaUnitType, gameData);
+      powerfulAaUnitAttachment.setAttackAa(5);
+      powerfulAaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, powerfulAaUnitAttachment);
+
+      planeUnitType = new UnitType("planeUnitType", gameData);
+      final UnitAttachment planeUnitAttachment =
+          new UnitAttachment("planeUnitAttachment", aaUnitType, gameData);
+      planeUnitType.addAttachment(UNIT_ATTACHMENT_NAME, planeUnitAttachment);
+
+      otherPlaneUnitType = new UnitType("otherPlaneUnitType", gameData);
+      final UnitAttachment otherPlaneUnitAttachment =
+          new UnitAttachment("otherPlaneUnitAttachment", aaUnitType, gameData);
+      otherPlaneUnitType.addAttachment(UNIT_ATTACHMENT_NAME, otherPlaneUnitAttachment);
+
+      planeMultiHpUnitType = new UnitType("planeMultiHpUnitType", gameData);
+      final UnitAttachment planeMultiHpUnitAttachment =
+          new UnitAttachment("planeMultiHpUnitAttachment", aaUnitType, gameData);
+      planeMultiHpUnitAttachment.setHitPoints(2);
+      planeMultiHpUnitType.addAttachment(UNIT_ATTACHMENT_NAME, planeMultiHpUnitAttachment);
+
+      otherPlaneMultiHpUnitType = new UnitType("otherPlaneMultiHpUnitType", gameData);
+      final UnitAttachment otherPlaneMultiHpUnitAttachment =
+          new UnitAttachment("otherPlaneMultiHpUnitAttachment", aaUnitType, gameData);
+      otherPlaneMultiHpUnitAttachment.setHitPoints(2);
+      otherPlaneMultiHpUnitType.addAttachment(
+          UNIT_ATTACHMENT_NAME, otherPlaneMultiHpUnitAttachment);
+    }
+
+    @Test
+    void oneTypeOfPlaneWithAmountEqualToDiceSides() {
+
+      final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(1));
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    private DiceRoll givenLowLuckDiceRoll(final List<Unit> aaUnits, final List<Unit> planes) {
+      final AaPowerStrengthAndRolls strengthAndRolls =
+          AaPowerStrengthAndRolls.build(
+              aaUnits,
+              planes.size(),
+              CombatValueBuilder.aaCombatValue()
+                  .enemyUnits(List.of())
+                  .friendlyUnits(List.of())
+                  .side(BattleState.Side.DEFENSE)
+                  .supportAttachments(List.of())
+                  .build());
+
+      return new DiceRoll(
+          new int[0],
+          strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides(),
+          1,
+          false);
+    }
+
+    private DiceRoll givenLowLuckDiceRollWithExtraHit(
+        final List<Unit> aaUnits, final List<Unit> planes) {
+      final AaPowerStrengthAndRolls strengthAndRolls =
+          AaPowerStrengthAndRolls.build(
+              aaUnits,
+              planes.size(),
+              CombatValueBuilder.aaCombatValue()
+                  .enemyUnits(List.of())
+                  .friendlyUnits(List.of())
+                  .side(BattleState.Side.DEFENSE)
+                  .supportAttachments(List.of())
+                  .build());
+
+      return new DiceRoll(
+          new int[0],
+          strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides() + 1,
+          1,
+          false);
+    }
+
+    @Test
+    void twoTypesOfPlanesAndBothHaveAmountEqualToDiceSides() {
+
+      final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(6, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(2));
+      assertThat(
+          "One of each plane type should be killed",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(planeUnitType, otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndTogetherHaveAmountEqualToDiceSides() {
+
+      // need to randomly pick a plane to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1));
+
+      final List<Unit> planes = planeUnitType.createTemp(3, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(3, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(1));
+      assertThat(
+          "The otherPlaneUnitType is killed because it's unitType is sorted before planeUnitType "
+              + "(it sorts by unit type name) and there are 3 of them and the random selection was "
+              + "for the second unit in the list.",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void oneTypeOfMultiHpPlaneWithAmountEqualToDiceSides() {
+
+      whenGetRandom(bridge).thenAnswer(withValues(1));
+
+      final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
+      final List<Unit> aaUnits = damageableAaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(
+          "Only one hit and the plane has 2 hp so it can withstand it",
+          details.getKilled(),
+          is(empty()));
+      assertThat("The planes have 2 hp so the hit damages it", details.getDamaged(), hasSize(1));
+    }
+
+    @Test
+    void twoTypesOfMultiHpPlanesAndBothHaveAmountEqualToDiceSides() {
+
+      whenGetRandom(bridge).thenAnswer(withValues(1, 1));
+
+      final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
+      planes.addAll(otherPlaneMultiHpUnitType.createTemp(6, hitPlayer));
+      final List<Unit> aaUnits = damageableAaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(
+          "Only two hits and the planes have 2 hp so they can withstand it",
+          details.getKilled(),
+          is(empty()));
+
+      assertThat(details.getDamaged(), hasSize(2));
+      assertThat(
+          "One of each plane type should be damaged",
+          details.getDamaged().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(planeMultiHpUnitType, otherPlaneMultiHpUnitType));
+    }
+
+    @Test
+    void oneTypeOfPlaneWithAmountLessThanDiceSidesButItHit() {
+
+      // need to randomly pick a plane to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1));
+
+      final List<Unit> planes = planeUnitType.createTemp(3, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(1));
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndTogetherHaveAmountLessThanDiceSidesButItHit() {
+
+      // need to randomly pick a plane to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1));
+
+      final List<Unit> planes = planeUnitType.createTemp(2, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(2, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(1));
+      assertThat(
+          "The otherPlaneUnitType is killed because it's unitType is sorted before planeUnitType "
+              + "(it sorts by unit type name) and there are 3 of them and the random selection was "
+              + "for the second unit in the list.",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void oneTypeOfPlaneWithRemainderOverDiceSidesButNotExtraHit() {
+
+      // need to randomly pick a plane to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1));
+
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(1));
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndBothHaveRemainderOverDiceSidesButNotExtraHit() {
+
+      // need to pick one plane out of the remainder list and then randomly pick two planes out of
+      // the final list. This behavior should probably be changed to just take one unit from each
+      // group.
+      whenGetRandom(bridge).thenAnswer(withValues(1)).thenAnswer(withValues(0, 0));
+
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(2));
+      assertThat(
+          "Both types of planes are killed because the first plane from each group is added "
+              + "to the selection and then one extra plane is added from the remainder. Then the "
+              + "'random' selects the 1st and 2nd plane which are the first from both groups.",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(planeUnitType, otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndTogetherHaveRemainderOverDiceSidesButNotExtraHit() {
+
+      // need to randomly pick 2 planes out of the remainder and then pick 1 plane out of those
+      // 2 planes to actually kill
+      whenGetRandom(bridge).thenAnswer(withValues(1, 1)).thenAnswer(withValues(1));
+
+      final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(4, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRoll(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(1));
+      assertThat(
+          "The 2nd and 4th plane were picked in the list and the fourth plane was finally "
+              + "finished. Since otherPlaneUnitType is sorted before planeUnitType, its 4 planes "
+              + "were in the list first and so the 2nd and 4th plane were both otherPlaneUnitType.",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void oneTypeOfPlaneWithRemainderOverDiceSidesAndWithExtraHit() {
+
+      // need to randomly pick a plane to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1));
+
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(2));
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void oneTypeOfPlaneWithRemainderOf1AndWithExtraHit() {
+
+      final List<Unit> planes = planeUnitType.createTemp(7, hitPlayer);
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(2));
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndBothHaveRemainderOverDiceSidesAndWithExtraHit() {
+
+      // need to pick one plane out of the remainder list
+      whenGetRandom(bridge).thenAnswer(withValues(0));
+
+      final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(3));
+      assertThat(
+          "The first of each unit type is selected and then the third hit is randomly "
+              + "selected, which this test forces it to be the first one in the list and that is "
+              + "the otherPlaneUnitType",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(planeUnitType, otherPlaneUnitType, otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndOneHasRemainderOf1AndWithExtraHit() {
+
+      final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(7, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(3));
+      assertThat(
+          "The first of each unit type is selected and then the third hit is picked from "
+              + "the remainder list which only contains 1 otherPlaneUnitType.",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(planeUnitType, otherPlaneUnitType, otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndTogetherHaveRemainderOverDiceSidesAndWithExtraHit() {
+
+      // need to randomly pick 2 planes to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1, 1));
+
+      final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(4, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(2));
+      assertThat(
+          "The 2nd and 4th plane were 'randomly' selected and they are both otherPlaneUnitType.",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(otherPlaneUnitType, otherPlaneUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
+    }
+
+    @Test
+    void twoTypesOfPlanesAndTogetherHaveRemainderOf1AndWithExtraHit() {
+
+      // need to randomly pick 2 planes to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1, 1));
+
+      final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
+      planes.addAll(otherPlaneUnitType.createTemp(3, hitPlayer));
+      final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
+
+      final CasualtyDetails details =
+          AaCasualtySelector.getAaCasualties(
+              planes,
+              aaUnits,
+              mock(CombatValue.class),
+              givenAaCombatValue(),
+              "text",
+              givenLowLuckDiceRollWithExtraHit(aaUnits, planes),
+              bridge,
+              hitPlayer,
+              UUID.randomUUID(),
+              mock(Territory.class));
+
+      assertThat(details.getKilled(), hasSize(2));
+      assertThat(
+          "The 2nd and 4th plane were 'randomly' selected and the 2nd is otherPlaneUnitType "
+              + "while the 4th is planeUnitType.",
+          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
+          containsInAnyOrder(otherPlaneUnitType, planeUnitType));
+
+      assertThat(
+          "The planes have 1 hp so there can't be damaged planes",
+          details.getDamaged(),
+          is(empty()));
     }
   }
 }
