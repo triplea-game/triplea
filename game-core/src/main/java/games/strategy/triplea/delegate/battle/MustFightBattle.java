@@ -621,13 +621,14 @@ public class MustFightBattle extends DependentBattle
       }
     }
     if (!unitsToAdd.isEmpty()) {
+      changes.add(
+          ChangeFactory.addUnits(battleSite, unitsToAdd),
+          ChangeFactory.markNoMovementChange(unitsToAdd));
       bridge.addChange(changes);
       remove(unitsToRemove, bridge, battleSite, null);
       final String transcriptText =
           MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
-      bridge.addChange(ChangeFactory.addUnits(battleSite, unitsToAdd));
-      bridge.addChange(ChangeFactory.markNoMovementChange(unitsToAdd));
       units.addAll(unitsToAdd);
       bridge
           .getDisplayChannelBroadcaster()
