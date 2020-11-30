@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import games.strategy.engine.data.changefactory.serializers.PrimitiveNamedAttachable;
 import java.util.Map;
 
 /**
@@ -16,4 +17,6 @@ public interface Attachable {
   IAttachment getAttachment(String key);
 
   Map<String, IAttachment> getAttachments();
+
+  PrimitiveNamedAttachable getPrimitiveForm();
 }

@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import games.strategy.engine.data.changefactory.serializers.PrimitiveNamedAttachable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,5 +34,10 @@ public class NamedAttachable extends DefaultNamed implements Attachable {
   @Override
   public void removeAttachment(final String keyString) {
     attachments.remove(keyString);
+  }
+
+  @Override
+  public PrimitiveNamedAttachable getPrimitiveForm() {
+    return new PrimitiveNamedAttachable(this);
   }
 }

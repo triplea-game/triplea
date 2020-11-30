@@ -1,14 +1,17 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.changefactory.attachments;
 
+import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.IAttachment;
+import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.changefactory.serializers.PrimitiveNamedAttachable;
 import java.util.Optional;
-import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** A game data change that captures a change to an attachment property value. */
-@Deprecated
-@RemoveOnNextMajorRelease
-public class ChangeAttachmentChange extends Change {
-  private static final long serialVersionUID = -6447264150952218283L;
-  private final Attachable attachedTo;
+public class AttachmentPropertyChange extends Change {
+  private static final long serialVersionUID = 5554561367125101920L;
+  private final PrimitiveNamedAttachable attachedTo;
   private final String attachmentName;
   private final Object newValue;
   private final Object oldValue;
@@ -22,28 +25,27 @@ public class ChangeAttachmentChange extends Change {
    * @param newValue The new value for the property.
    * @param property The property name.
    */
-  public ChangeAttachmentChange(
+  public AttachmentPropertyChange(
       final IAttachment attachment, final Object newValue, final String property) {
-    this(
-        attachment.getAttachedTo(),
-        attachment.getName(),
-        newValue,
-        attachment.getPropertyOrThrow(property).getValue(),
-        property,
-        false);
+    this(attachment, newValue, property, false);
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the
-   * setting method is actually adding things to a list rather than overwriting.
+   * Initializes a new instance of the ChangeAttachmentChange class.
+   *
+   * @param attachment The attachment to be updated.
+   * @param newValue The new value for the property.
+   * @param property The property name.
+   * @param clearFirst Clears the property before the attribute is updated with the newValue. This
+   *     is only needed when the attribute being updated is a collection.
    */
-  public ChangeAttachmentChange(
+  public AttachmentPropertyChange(
       final IAttachment attachment,
       final Object newValue,
       final String property,
       final boolean clearFirst) {
     this(
-        attachment.getAttachedTo(),
+        attachment.getAttachedTo().getPrimitiveForm(),
         attachment.getName(),
         newValue,
         attachment.getPropertyOrThrow(property).getValue(),
@@ -51,12 +53,8 @@ public class ChangeAttachmentChange extends Change {
         clearFirst);
   }
 
-  /**
-   * You don't want to clear the variable first unless you are setting some variable where the
-   * setting method is actually adding things to a list rather than overwriting.
-   */
-  public ChangeAttachmentChange(
-      final Attachable attachTo,
+  private AttachmentPropertyChange(
+      final PrimitiveNamedAttachable attachTo,
       final String attachmentName,
       final Object newValue,
       final Object oldValue,
@@ -74,8 +72,8 @@ public class ChangeAttachmentChange extends Change {
     this.clearFirst = clearFirst;
   }
 
-  public Attachable getAttachedTo() {
-    return attachedTo;
+  public Attachable getAttachedTo(final GameData data) {
+    return ((Attachable) attachedTo.getReference(data));
   }
 
   public String getAttachmentName() {
@@ -84,7 +82,8 @@ public class ChangeAttachmentChange extends Change {
 
   @Override
   public void perform(final GameData data) {
-    final IAttachment attachment = attachedTo.getAttachment(attachmentName);
+    final IAttachment attachment =
+        ((Attachable) attachedTo.getReference(data)).getAttachment(attachmentName);
     final MutableProperty<?> attachmentProperty = attachment.getPropertyOrThrow(property);
     if (clearFirst) {
       attachmentProperty.resetValue();
@@ -102,7 +101,7 @@ public class ChangeAttachmentChange extends Change {
 
   @Override
   public Change invert() {
-    return new ChangeAttachmentChange(
+    return new AttachmentPropertyChange(
         attachedTo, attachmentName, oldValue, newValue, property, clearFirst);
   }
 
