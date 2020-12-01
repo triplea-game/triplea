@@ -148,7 +148,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     new Thread(
             () -> {
               GameRunner.showMainFrame();
-              GameRunner.exitGameIfFinished();
+              GameRunner.exitGameIfNoWindowsVisible();
             })
         .start();
     return true;

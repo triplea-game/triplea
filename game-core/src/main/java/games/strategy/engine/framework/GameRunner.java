@@ -153,7 +153,7 @@ public final class GameRunner {
     ProcessRunnerUtil.exec(commands);
   }
 
-  public static void exitGameIfFinished() {
+  public static void exitGameIfNoWindowsVisible() {
     SwingUtilities.invokeLater(
         () -> {
           final boolean allFramesClosed =
