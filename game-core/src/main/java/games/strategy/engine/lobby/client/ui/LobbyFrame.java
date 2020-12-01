@@ -27,6 +27,7 @@ import org.triplea.domain.data.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.SwingComponents;
 
 /** The top-level frame window for the lobby client UI. */
 public class LobbyFrame extends JFrame implements QuitHandler {
@@ -39,6 +40,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   public LobbyFrame(final LobbyClient lobbyClient, final ServerProperties serverProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    SwingComponents.addWindowClosedListener(this, GameRunner::exitGameIfNoWindowsVisible);
     setIconImage(JFrameBuilder.getGameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
@@ -145,12 +147,6 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     dispose();
     chatTransmitter.disconnect();
     tableModel.shutdown();
-    new Thread(
-            () -> {
-              GameRunner.showMainFrame();
-              GameRunner.exitGameIfNoWindowsVisible();
-            })
-        .start();
     return true;
   }
 }
