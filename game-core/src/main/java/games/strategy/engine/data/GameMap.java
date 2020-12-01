@@ -155,7 +155,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Territory territory,
       final int distance,
       @Nullable final Predicate<Territory> territoryCondition) {
-    return getNeighbors(territory, distance, territoryCondition, (it, it2) -> true);
+    return getNeighbors(
+        territory,
+        distance,
+        (it, it2) -> territoryCondition == null || territoryCondition.test(it2));
   }
 
   /**
@@ -166,23 +169,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param distance All returned territories will be within the max distance from the starting
    *     territory. 0 represents the starting territory and no adjacencies, 1 is all immediately
    *     adjacent territories.
-   * @param territoryCondition the neighbor territory must match this condition
-   * @param routeCondition the route between the starting territory and the neighbor territory must
+   * @param routeCondition Condition that the starting territory and the neighbor territory must
    *     match this condition
    */
-  public Set<Territory> getNeighbors(
-      final Territory territory,
-      final int distance,
-      @Nullable final Predicate<Territory> territoryCondition,
-      final BiPredicate<Territory, Territory> routeCondition) {
-    return getNeighbors(
-        territory,
-        distance,
-        (t1, t2) ->
-            (territoryCondition == null || territoryCondition.test(t2))
-                && routeCondition.test(t1, t2));
-  }
-
   public Set<Territory> getNeighbors(
       final Territory territory,
       final int distance,
@@ -212,25 +201,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Predicate<Territory> territoryCondition) {
     final Set<Territory> neighbors =
         getNeighbors(
-            frontier, new HashSet<>(frontier), distance, territoryCondition, (it, it2) -> true);
+            frontier, new HashSet<>(frontier), distance, (it, it2) -> territoryCondition.test(it2));
     neighbors.removeAll(frontier);
     return neighbors;
-  }
-
-  private Set<Territory> getNeighbors(
-      final Set<Territory> frontier,
-      final Set<Territory> searched,
-      final int distance,
-      @Nullable final Predicate<Territory> territoryCondition,
-      final BiPredicate<Territory, Territory> routeCondition) {
-
-    return getNeighbors(
-        frontier,
-        searched,
-        distance,
-        (t1, t2) ->
-            (territoryCondition == null || territoryCondition.test(t2))
-                && routeCondition.test(t1, t2));
   }
 
   private Set<Territory> getNeighbors(
@@ -324,8 +297,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
             neighbors,
             new HashSet<>(neighbors),
             movementLeft.intValue() - 1,
-            territoryCondition,
-            (it, it2) -> true);
+            (it, it2) -> territoryCondition.test(it2));
     result.remove(territory);
     return result;
   }
@@ -402,26 +374,17 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param cond condition that covered territories of the route must match
    */
   public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
-    return getDistance(t1, t2, cond, (it, it2) -> true);
+    return getDistance(t1, t2, (it, it2) -> cond.test(t2));
   }
 
   /**
    * Returns the distance between two territories where the covered territories of the route satisfy
    * the condition or -1 if they are not connected.
    *
-   * @param territory1 start territory of the route
-   * @param territory2 end territory of the route
-   * @param cond condition that covered territories of the route must match
-   * @param routeCond condition that routes between neighboring territories must match
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
+   * @param routeCond condition that neighboring territories along route must match.
    */
-  public int getDistance(
-      final Territory territory1,
-      final Territory territory2,
-      final Predicate<Territory> cond,
-      final BiPredicate<Territory, Territory> routeCond) {
-    return getDistance(territory1, territory2, (t1, t2) -> cond.test(t2) && routeCond.test(t1, t2));
-  }
-
   public int getDistance(
       final Territory t1, final Territory t2, final BiPredicate<Territory, Territory> routeCond) {
     if (t1.equals(t2)) {
