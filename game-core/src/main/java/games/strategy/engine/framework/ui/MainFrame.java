@@ -34,8 +34,6 @@ public class MainFrame {
 
     LookAndFeelSwingFrameListener.register(mainFrame);
 
-    mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
     final Runnable quitAction =
         () -> {
           quitActions.forEach(Runnable::run);
