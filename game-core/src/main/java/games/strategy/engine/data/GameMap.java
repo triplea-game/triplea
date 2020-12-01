@@ -104,25 +104,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return neighbors;
   }
 
-  public Set<Territory> getNeighbors(
-      final Territory territory, @Nullable final Predicate<Territory> territoryCondition) {
-    return getNeighbors(territory, territoryCondition, (it, it2) -> true);
-  }
-
   /**
    * Returns all adjacent neighbors of the starting territory that match the condition. Does NOT
    * include the original/starting territory in the returned Set.
    */
-  private Set<Territory> getNeighbors(
-      final Territory territory,
-      @Nullable final Predicate<Territory> territoryCondition,
-      final BiPredicate<Territory, Territory> routeCondition) {
-
+  public Set<Territory> getNeighbors(
+      final Territory territory, @Nullable final Predicate<Territory> territoryCondition) {
     return getNeighbors(
-        territory,
-        (t1, t2) ->
-            (territoryCondition == null || territoryCondition.test(t2))
-                && routeCondition.test(t1, t2));
+        territory, (it, it2) -> territoryCondition == null || territoryCondition.test(it2));
   }
 
   private Set<Territory> getNeighbors(
