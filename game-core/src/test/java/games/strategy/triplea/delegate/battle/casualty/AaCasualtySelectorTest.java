@@ -71,21 +71,40 @@ class AaCasualtySelectorTest {
         .build();
   }
 
+  @Test
+  void noHitsReturnEmptyCasualties() {
+    gameData = givenGameData().build();
+    final IDelegateBridge bridge = mock(IDelegateBridge.class);
+    when(bridge.getData()).thenReturn(gameData);
+
+    aaUnitType = new UnitType("aaUnitType", gameData);
+    final UnitAttachment aaUnitAttachment =
+        new UnitAttachment("aaUnitAttachment", aaUnitType, gameData);
+    aaUnitType.addAttachment(UNIT_ATTACHMENT_NAME, aaUnitAttachment);
+
+    final CasualtyDetails details =
+        AaCasualtySelector.getAaCasualties(
+            List.of(mock(Unit.class)),
+            aaUnitType.createTemp(1, aaPlayer),
+            mock(CombatValue.class),
+            mock(CombatValue.class),
+            "text",
+            givenDiceRollWithHitSequence(),
+            bridge,
+            hitPlayer,
+            UUID.randomUUID(),
+            mock(Territory.class));
+
+    assertThat("No hits so no kills or damaged", details.size(), is(0));
+  }
+
   @Nested
   class RandomCasualties {
     private IDelegateBridge bridge;
 
     @BeforeEach
     void initializeGameData() {
-      gameData =
-          givenGameData()
-              .withEditMode(false)
-              .withChooseAaCasualties(false)
-              .withLowLuck(false)
-              .withLowLuckAaOnly(false)
-              .withRollAaIndividually(false)
-              .withRandomAaCasualties(true)
-              .build();
+      gameData = givenGameData().withDiceSides(6).build();
       bridge = mock(IDelegateBridge.class);
       when(bridge.getData()).thenReturn(gameData);
 
@@ -113,25 +132,6 @@ class AaCasualtySelectorTest {
     }
 
     @Test
-    void noHitsReturnEmptyCasualties() {
-
-      final CasualtyDetails details =
-          AaCasualtySelector.getAaCasualties(
-              List.of(mock(Unit.class)),
-              aaUnitType.createTemp(1, aaPlayer),
-              mock(CombatValue.class),
-              mock(CombatValue.class),
-              "text",
-              givenDiceRollWithHitSequence(),
-              bridge,
-              hitPlayer,
-              UUID.randomUUID(),
-              mock(Territory.class));
-
-      assertThat("No hits so no kills or damaged", details.size(), is(0));
-    }
-
-    @Test
     void hitsEqualToPlanesKillsAll() {
 
       final CasualtyDetails details =
@@ -139,7 +139,7 @@ class AaCasualtySelectorTest {
               planeUnitType.createTemp(1, hitPlayer),
               aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true),
               bridge,
@@ -159,7 +159,7 @@ class AaCasualtySelectorTest {
               planeUnitType.createTemp(1, hitPlayer),
               aaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true, true),
               bridge,
@@ -174,14 +174,20 @@ class AaCasualtySelectorTest {
     @Test
     void oneHitAgainstTwoPlanesOnlyKillsOne() {
 
+      final UnitType aaNonInfiniteUnitType = new UnitType("aaNonInfiniteUnitType", gameData);
+      final UnitAttachment aaNonInfiniteUnitAttachment =
+          new UnitAttachment("aaNonInfiniteUnitAttachment", aaNonInfiniteUnitType, gameData);
+      aaNonInfiniteUnitAttachment.setMaxAaAttacks(1);
+      aaNonInfiniteUnitType.addAttachment(UNIT_ATTACHMENT_NAME, aaNonInfiniteUnitAttachment);
+
       whenGetRandom(bridge).thenAnswer(withValues(0));
 
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planeUnitType.createTemp(2, hitPlayer),
-              aaUnitType.createTemp(1, aaPlayer),
+              aaNonInfiniteUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true),
               bridge,
@@ -198,6 +204,12 @@ class AaCasualtySelectorTest {
     @Test
     void identicalDieRollsShouldStillKillPlanesEqualToHits() {
 
+      final UnitType aaNonInfiniteUnitType = new UnitType("aaNonInfiniteUnitType", gameData);
+      final UnitAttachment aaNonInfiniteUnitAttachment =
+          new UnitAttachment("aaNonInfiniteUnitAttachment", aaNonInfiniteUnitType, gameData);
+      aaNonInfiniteUnitAttachment.setMaxAaAttacks(1);
+      aaNonInfiniteUnitType.addAttachment(UNIT_ATTACHMENT_NAME, aaNonInfiniteUnitAttachment);
+
       whenGetRandom(bridge).thenAnswer(withValues(9, 9, 9, 9, 9));
 
       final List<Unit> planes = planeUnitType.createTemp(10, hitPlayer);
@@ -205,9 +217,9 @@ class AaCasualtySelectorTest {
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planes,
-              aaUnitType.createTemp(3, aaPlayer),
+              aaNonInfiniteUnitType.createTemp(5, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true, true, true, true, true),
               bridge,
@@ -230,7 +242,7 @@ class AaCasualtySelectorTest {
               planeMultiHpUnitType.createTemp(1, hitPlayer),
               damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true, true),
               bridge,
@@ -251,7 +263,7 @@ class AaCasualtySelectorTest {
               planeMultiHpUnitType.createTemp(1, hitPlayer),
               damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true, true, true, true),
               bridge,
@@ -273,7 +285,7 @@ class AaCasualtySelectorTest {
               planeMultiHpUnitType.createTemp(1, hitPlayer),
               damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true),
               bridge,
@@ -295,7 +307,7 @@ class AaCasualtySelectorTest {
               planeMultiHpUnitType.createTemp(2, hitPlayer),
               damageableAaUnitType.createTemp(1, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true, true, true),
               bridge,
@@ -323,7 +335,7 @@ class AaCasualtySelectorTest {
               planeMultiHpUnitType.createTemp(7, hitPlayer),
               damageableAaUnitType.createTemp(3, aaPlayer),
               mock(CombatValue.class),
-              mock(CombatValue.class),
+              givenAaCombatValue(),
               "text",
               givenDiceRollWithHitSequence(true, true, true, true, true),
               bridge,
@@ -341,15 +353,7 @@ class AaCasualtySelectorTest {
 
     @BeforeEach
     void initializeGameData() {
-      gameData =
-          givenGameData()
-              .withDiceSides(6)
-              .withEditMode(false)
-              .withChooseAaCasualties(false)
-              .withLowLuck(false)
-              .withLowLuckAaOnly(false)
-              .withRollAaIndividually(true)
-              .build();
+      gameData = givenGameData().withDiceSides(6).build();
       bridge = mock(IDelegateBridge.class);
       when(bridge.getData()).thenReturn(gameData);
 
