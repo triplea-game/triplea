@@ -75,7 +75,7 @@ def probeUris(uris) {
         def executor = Executors.newFixedThreadPool(maxInFlightProbes)
         uris.each { uri ->
             probes << new UriProbe(uri, executor.submit({
-                def request = new HttpHead(uri)
+                def request = new HttpGet(uri)
                 client.execute(request).withCloseable { response ->
                     def statusCode = response.statusLine.statusCode
                     logger.info("URI probe result for '$uri': $statusCode")
