@@ -529,7 +529,7 @@ class AaCasualtySelectorTest {
                   .build());
 
       return new DiceRoll(
-          new int[0],
+          new int[] {5},
           strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides(),
           1,
           false);
@@ -549,7 +549,7 @@ class AaCasualtySelectorTest {
                   .build());
 
       return new DiceRoll(
-          new int[0],
+          new int[] {0},
           strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides() + 1,
           1,
           false);
@@ -612,11 +612,9 @@ class AaCasualtySelectorTest {
 
       assertThat(details.getKilled(), hasSize(1));
       assertThat(
-          "The otherPlaneUnitType is killed because it's unitType is sorted before planeUnitType "
-              + "(it sorts by unit type name) and there are 3 of them and the random selection was "
-              + "for the second unit in the list.",
+          "The 2nd plane was randomly selected and it is a planeUnitType.",
           details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(otherPlaneUnitType));
+          containsInAnyOrder(planeUnitType));
 
       assertThat(
           "The planes have 1 hp so there can't be damaged planes",
@@ -740,11 +738,9 @@ class AaCasualtySelectorTest {
 
       assertThat(details.getKilled(), hasSize(1));
       assertThat(
-          "The otherPlaneUnitType is killed because it's unitType is sorted before planeUnitType "
-              + "(it sorts by unit type name) and there are 3 of them and the random selection was "
-              + "for the second unit in the list.",
+          "The 2nd plane was randomly selected and it is a planeUnitType.",
           details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(otherPlaneUnitType));
+          containsInAnyOrder(planeUnitType));
 
       assertThat(
           "The planes have 1 hp so there can't be damaged planes",
@@ -754,9 +750,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneTypeOfPlaneWithRemainderOverDiceSidesButNotExtraHit() {
-
-      // need to randomly pick a plane to kill
-      whenGetRandom(bridge).thenAnswer(withValues(1));
 
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
       final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
@@ -783,11 +776,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndBothHaveRemainderOverDiceSidesButNotExtraHit() {
-
-      // need to pick one plane out of the remainder list and then randomly pick two planes out of
-      // the final list. This behavior should probably be changed to just take one unit from each
-      // group.
-      whenGetRandom(bridge).thenAnswer(withValues(1)).thenAnswer(withValues(0, 0));
 
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
@@ -823,9 +811,8 @@ class AaCasualtySelectorTest {
     @Test
     void twoTypesOfPlanesAndTogetherHaveRemainderOverDiceSidesButNotExtraHit() {
 
-      // need to randomly pick 2 planes out of the remainder and then pick 1 plane out of those
-      // 2 planes to actually kill
-      whenGetRandom(bridge).thenAnswer(withValues(1, 1)).thenAnswer(withValues(1));
+      // need to randomly pick 1 planes out of the remainder to kill
+      whenGetRandom(bridge).thenAnswer(withValues(1));
 
       final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(4, hitPlayer));
@@ -846,11 +833,9 @@ class AaCasualtySelectorTest {
 
       assertThat(details.getKilled(), hasSize(1));
       assertThat(
-          "The 2nd and 4th plane were picked in the list and the fourth plane was finally "
-              + "finished. Since otherPlaneUnitType is sorted before planeUnitType, its 4 planes "
-              + "were in the list first and so the 2nd and 4th plane were both otherPlaneUnitType.",
+          "The 2nd plane was randomly selected and it is planeUnitType.",
           details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(otherPlaneUnitType));
+          containsInAnyOrder(planeUnitType));
 
       assertThat(
           "The planes have 1 hp so there can't be damaged planes",
@@ -1008,9 +993,9 @@ class AaCasualtySelectorTest {
 
       assertThat(details.getKilled(), hasSize(2));
       assertThat(
-          "The 2nd and 4th plane were 'randomly' selected and they are both otherPlaneUnitType.",
+          "The 2nd and 4th plane were randomly selected and they are both planeUnitType.",
           details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(otherPlaneUnitType, otherPlaneUnitType));
+          containsInAnyOrder(planeUnitType, planeUnitType));
 
       assertThat(
           "The planes have 1 hp so there can't be damaged planes",
@@ -1022,7 +1007,7 @@ class AaCasualtySelectorTest {
     void twoTypesOfPlanesAndTogetherHaveRemainderOf1AndWithExtraHit() {
 
       // need to randomly pick 2 planes to kill
-      whenGetRandom(bridge).thenAnswer(withValues(1, 1));
+      whenGetRandom(bridge).thenAnswer(withValues(1, 2));
 
       final List<Unit> planes = planeUnitType.createTemp(4, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(3, hitPlayer));
@@ -1043,10 +1028,9 @@ class AaCasualtySelectorTest {
 
       assertThat(details.getKilled(), hasSize(2));
       assertThat(
-          "The 2nd and 4th plane were 'randomly' selected and the 2nd is otherPlaneUnitType "
-              + "while the 4th is planeUnitType.",
+          "The 2nd and 4th plane were randomly selected and both are planeUnitType.",
           details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(otherPlaneUnitType, planeUnitType));
+          containsInAnyOrder(planeUnitType, planeUnitType));
 
       assertThat(
           "The planes have 1 hp so there can't be damaged planes",

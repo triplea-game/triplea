@@ -278,10 +278,9 @@ class CasualtySelectorTest {
     assertEquals(2, casualties.size());
     // two extra rolls to pick which units are hit
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
-    // should be 1 fighter and 1 bomber
-    assertEquals(0, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
     assertEquals(
-        2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
+        0, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -540,7 +539,7 @@ class CasualtySelectorTest {
                 territory("Germany", data))
             .getKilled();
     assertEquals(2, casualties.size());
-    thenGetRandomShouldHaveBeenCalled(bridge, times(3));
+    thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     // should be 1 fighter and 1 bomber
     assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
     assertEquals(
