@@ -28,7 +28,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
-import games.strategy.triplea.delegate.dice.roller.RollBattleDice;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
@@ -443,7 +443,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final IBattle battle = mock(IBattle.class);
     when(battle.getTerritory()).thenReturn(westEurope);
     final DiceRoll roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             attackList,
             russians,
             bridge,
@@ -870,7 +870,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     whenGetRandom(bridge).thenAnswer(withValues(2, 1));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
             germans,
             bridge,
@@ -947,7 +947,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     whenGetRandom(bridge).thenAnswer(withValues(0, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
             germans,
             bridge,
@@ -1014,7 +1014,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     whenGetRandom(bridge).thenAnswer(withValues(2, 1));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
             germans,
             bridge,
@@ -1081,7 +1081,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     whenGetRandom(bridge).thenAnswer(withValues(0, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
             germans,
             bridge,

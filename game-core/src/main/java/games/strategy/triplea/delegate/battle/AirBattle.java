@@ -22,7 +22,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.dice.roller.RollBattleDice;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -692,7 +692,7 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               dice =
-                  RollBattleDice.rollDice(
+                  RollDiceFactory.rollBattleDice(
                       attackingUnits,
                       attacker,
                       bridge,
@@ -772,7 +772,7 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               dice =
-                  RollBattleDice.rollDice(
+                  RollDiceFactory.rollBattleDice(
                       defendingUnits,
                       defender,
                       bridge,

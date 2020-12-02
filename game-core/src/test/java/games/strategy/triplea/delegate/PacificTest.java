@@ -18,7 +18,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.dice.roller.RollBattleDice;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -109,7 +109,7 @@ class PacificTest extends AbstractDelegateTestCase {
         .thenAnswer(withValues(1)); // Defending Chinese infantry hit on a 2 (0 base)
     // Defending US infantry
     DiceRoll roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             infantryUs,
             americans,
             bridge,
@@ -128,7 +128,7 @@ class PacificTest extends AbstractDelegateTestCase {
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
     roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             marineUs,
             americans,
             bridge,
@@ -148,7 +148,7 @@ class PacificTest extends AbstractDelegateTestCase {
     // Defending Chinese infantry
     final List<Unit> infantryChina = infantry.create(1, chinese);
     roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             infantryChina,
             chinese,
             bridge,
@@ -185,7 +185,7 @@ class PacificTest extends AbstractDelegateTestCase {
         .thenAnswer(withValues(1)); // Defending Chinese infantry still hit on a 2 (0 base)
     // Defending US infantry
     DiceRoll roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             infantryUs,
             americans,
             bridge,
@@ -204,7 +204,7 @@ class PacificTest extends AbstractDelegateTestCase {
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
     roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             marineUs,
             americans,
             bridge,
@@ -224,7 +224,7 @@ class PacificTest extends AbstractDelegateTestCase {
     // Defending Chinese infantry
     final List<Unit> infantryChina = infantry.create(1, chinese);
     roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             infantryChina,
             chinese,
             bridge,
@@ -242,7 +242,7 @@ class PacificTest extends AbstractDelegateTestCase {
     assertEquals(1, roll.getHits());
     // Defending US infantry
     roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             infantryUs,
             americans,
             bridge,
@@ -260,7 +260,7 @@ class PacificTest extends AbstractDelegateTestCase {
     assertEquals(1, roll.getHits());
     // Defending US marines
     roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             marineUs,
             americans,
             bridge,
@@ -279,7 +279,7 @@ class PacificTest extends AbstractDelegateTestCase {
     // Chinese units
     // Defending Chinese infantry
     roll =
-        RollBattleDice.rollDice(
+        RollDiceFactory.rollBattleDice(
             infantryChina,
             chinese,
             bridge,

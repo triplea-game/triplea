@@ -31,7 +31,7 @@ import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.delegate.dice.roller.RollAaDice;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -482,7 +482,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   // SBR AA currently doesn't take into account support so don't pass in
                   // the enemyUnits or friendlyUnits
                   dice =
-                      RollAaDice.rollDice(
+                      RollDiceFactory.rollAaDice(
                           validAttackingUnitsForThisRoll,
                           currentPossibleAa,
                           bridge,

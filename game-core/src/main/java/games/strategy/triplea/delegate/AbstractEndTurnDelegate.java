@@ -24,7 +24,7 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.dice.roller.RollNSidedDiceXTimes;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.BonusIncomeUtils;
@@ -290,7 +290,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     }
     final String annotation = player.getName() + " rolling to resolve War Bonds: ";
     final DiceRoll dice =
-        RollNSidedDiceXTimes.rollDice(
+        RollDiceFactory.rollNSidedDiceXTimes(
             delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int total = 0;
     for (int i = 0; i < dice.size(); i++) {
@@ -342,7 +342,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
             + giveWarBondsTo.getName()
             + ": ";
     final DiceRoll dice =
-        RollNSidedDiceXTimes.rollDice(
+        RollDiceFactory.rollNSidedDiceXTimes(
             delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int totalWarBonds = 0;
     for (int i = 0; i < dice.size(); i++) {
