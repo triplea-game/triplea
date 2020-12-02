@@ -153,7 +153,9 @@ public final class GameRunner {
     ProcessRunnerUtil.exec(commands);
   }
 
-  public static void exitGameIfFinished() {
+  public static void exitGameIfNoWindowsVisible() {
+    // Invoke later to add this check to the end of the event dispatcher queue
+    // and allow any potential in-flight 'setVisible' invocations to execute first.
     SwingUtilities.invokeLater(
         () -> {
           final boolean allFramesClosed =

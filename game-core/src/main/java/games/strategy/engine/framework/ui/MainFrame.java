@@ -28,7 +28,7 @@ public class MainFrame {
     mainFrame =
         JFrameBuilder.builder()
             .title("TripleA")
-            .windowClosedAction(GameRunner::exitGameIfFinished)
+            .windowClosedAction(GameRunner::exitGameIfNoWindowsVisible)
             .build();
     BackgroundTaskRunner.setMainFrame(mainFrame);
 
