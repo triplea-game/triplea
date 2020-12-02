@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -278,13 +279,13 @@ public class MoveValidator {
    * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
    */
   public String validateCanal(
-      final Route route, final Collection<Unit> units, final GamePlayer player) {
+      final Route route, @Nullable final Collection<Unit> units, final GamePlayer player) {
     return validateCanal(route, units, new HashMap<>(), player);
   }
 
   String validateCanal(
       final Route route,
-      final Collection<Unit> units,
+      @Nullable final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
       final GamePlayer player) {
     // Check each unit 1 by 1 to see if they can move through necessary canals on route

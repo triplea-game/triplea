@@ -294,7 +294,10 @@ public final class ProTerritoryValueUtils {
               .getDistance(
                   t,
                   enemyCapitalOrFactory,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+                  (t1, t2) ->
+                      ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
+                              .test(t2)
+                          && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2));
       if (distance > 0) {
         values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
       }
@@ -313,7 +316,10 @@ public final class ProTerritoryValueUtils {
             .getNeighbors(
                 t,
                 2,
-                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+                (t1, t2) ->
+                    ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
+                            .test(t2)
+                        && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2));
     final List<Territory> nearbyEnemyTerritories =
         CollectionUtils.getMatches(
             nearbyTerritories,
@@ -325,7 +331,10 @@ public final class ProTerritoryValueUtils {
               .getDistance(
                   t,
                   nearbyEnemyTerritory,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+                  (t1, t2) ->
+                      ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
+                              .test(t2)
+                          && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2));
       if (distance > 0) {
         double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
@@ -346,7 +355,11 @@ public final class ProTerritoryValueUtils {
                 .getNeighbors(
                     t,
                     6,
-                    ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()))
+                    (t1, t2) ->
+                        ProMatches.territoryCanPotentiallyMoveLandUnits(
+                                    player, data.getProperties())
+                                .test(t2)
+                            && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2))
                 .size();
     double value = nearbyEnemyValue * landMassSize / maxLandMassSize + capitalOrFactoryValue;
     if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {

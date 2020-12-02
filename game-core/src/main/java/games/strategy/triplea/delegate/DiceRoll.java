@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.triplea.java.ChangeOnNextMajorRelease;
 
 /**
@@ -26,7 +27,7 @@ import org.triplea.java.ChangeOnNextMajorRelease;
 @ChangeOnNextMajorRelease("This class should be moved to dice.calculator")
 public class DiceRoll implements Externalizable {
   private static final long serialVersionUID = -1167204061937566271L;
-  private List<Die> rolls;
+  @Getter private List<Die> rolls;
   // this does not need to match the Die with isHit true since for low luck we get many hits with
   // few dice
   private int hits;

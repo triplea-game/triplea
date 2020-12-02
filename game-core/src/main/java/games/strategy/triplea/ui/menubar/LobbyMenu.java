@@ -82,9 +82,17 @@ public final class LobbyMenu extends JMenuBar {
                 'U',
                 () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE))
             .addMenuItem(
-                "TripleA Forum",
+                "Vew Forums",
                 'F',
                 () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM))
+            .addMenuItem(
+                "Send Bug Report",
+                'B',
+                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))
+            .addMenuItem(
+                "Open Debug Console", //
+                'C',
+                () -> ClientSetting.showConsole.setValueAndFlush(true))
             .build());
   }
 }

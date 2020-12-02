@@ -21,8 +21,14 @@ import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.experimental.UtilityClass;
 import org.triplea.util.Tuple;
 
@@ -64,40 +70,54 @@ public class AaCasualtySelector {
           allowMultipleHitsPerUnit);
     }
 
-    if (Properties.getLowLuck(data.getProperties())
-        || Properties.getLowLuckAaOnly(data.getProperties())) {
-      return getLowLuckAaCasualties(
-          planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
-    }
-
-    // priority goes: choose -> individually -> random
-    // if none are set, we roll individually
-    if (Properties.getRollAaIndividually(data.getProperties())) {
-      return individuallyFiredAaCasualties(
-          planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
-    }
-    if (Properties.getRandomAaCasualties(data.getProperties())) {
-      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
-    }
-    return individuallyFiredAaCasualties(
-        planes, defendingAa, aaCombatValueCalculator, dice, bridge, allowMultipleHitsPerUnit);
-  }
-
-  private static CasualtyDetails getLowLuckAaCasualties(
-      final Collection<Unit> planes,
-      final Collection<Unit> defendingAa,
-      final CombatValue aaCombatValueCalculator,
-      final DiceRoll dice,
-      final IDelegateBridge bridge,
-      final boolean allowMultipleHitsPerUnit) {
-
-    int hitsLeft = dice.getHits();
-    if (hitsLeft <= 0) {
+    if (dice.getHits() <= 0) {
       return new CasualtyDetails();
     }
 
     final AaPowerStrengthAndRolls unitPowerAndRollsMap =
         AaPowerStrengthAndRolls.build(defendingAa, planes.size(), aaCombatValueCalculator);
+    final List<Unit> availableTargets = calculateAvailableTargets(planes, allowMultipleHitsPerUnit);
+
+    if (Properties.getLowLuck(data.getProperties())
+        || Properties.getLowLuckAaOnly(data.getProperties())) {
+      return getLowLuckAaCasualties(
+          availableTargets, unitPowerAndRollsMap, dice, bridge, allowMultipleHitsPerUnit);
+    }
+
+    return calculateAaCasualties(availableTargets, unitPowerAndRollsMap, dice, bridge);
+  }
+
+  /**
+   * Calculate a list of targets that can be shot at
+   *
+   * @param allowMultipleHitsPerUnit if true, the targets will be increased to include duplicate
+   *     targets to handle their extra hit points
+   * @return A list of targets (that may contain duplicate) that can be shot at
+   */
+  private static List<Unit> calculateAvailableTargets(
+      final Collection<Unit> targets, final boolean allowMultipleHitsPerUnit) {
+    final List<Unit> targetsList = new ArrayList<>();
+    for (final Unit target : targets) {
+      final int hpLeft =
+          allowMultipleHitsPerUnit
+              ? (UnitAttachment.get(target.getType()).getHitPoints() - target.getHits())
+              : Math.min(1, UnitAttachment.get(target.getType()).getHitPoints() - target.getHits());
+      for (int hp = 0; hp < hpLeft; ++hp) {
+        // if allowMultipleHitsPerUnit, then the target needs to be added for each hp
+        targetsList.add(target);
+      }
+    }
+    return targetsList;
+  }
+
+  private static CasualtyDetails getLowLuckAaCasualties(
+      final List<Unit> availableTargets,
+      final AaPowerStrengthAndRolls unitPowerAndRollsMap,
+      final DiceRoll dice,
+      final IDelegateBridge bridge,
+      final boolean allowMultipleHitsPerUnit) {
+
+    int hitsLeft = dice.getHits();
 
     // if we can damage units, do it now
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
@@ -108,19 +128,6 @@ public class AaCasualtySelector {
     final int chosenDiceSize = unitPowerAndRollsMap.getDiceSides();
     final boolean allSameAttackPower = unitPowerAndRollsMap.isSameStrength();
     // multiple HP units need to be counted multiple times:
-    final List<Unit> planesList = new ArrayList<>();
-    for (final Unit plane : planes) {
-      final int hpLeft =
-          allowMultipleHitsPerUnit
-              ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
-              : Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits());
-      for (int hp = 0; hp < hpLeft; ++hp) {
-        // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the
-        // hitpoints of all units,
-        // we roll multiple times for any unit with multiple hitpoints
-        planesList.add(plane);
-      }
-    }
     // killing the air by groups does not work if the the attack power is different for some of the
     // rolls
     // also, killing by groups does not work if some of the aa guns have 'MayOverStackAA' and we
@@ -136,11 +143,11 @@ public class AaCasualtySelector {
       groupSize = chosenDiceSize;
     }
     final int numberOfGroupsByDiceSides =
-        (int) Math.ceil((double) planesList.size() / (double) groupSize);
+        (int) Math.ceil((double) availableTargets.size() / (double) groupSize);
     final boolean tooManyHitsToDoGroups = hitsLeft > numberOfGroupsByDiceSides;
     if (!allSameAttackPower || tooManyHitsToDoGroups || chosenDiceSize % highestAttack != 0) {
       // we have too many hits, so just pick randomly
-      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+      return calculateAaCasualties(availableTargets, unitPowerAndRollsMap, dice, bridge);
     }
 
     // if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we
@@ -152,7 +159,7 @@ public class AaCasualtySelector {
     // sure).
     // categorize with groupSize
     final Tuple<List<List<Unit>>, List<Unit>> airSplit =
-        categorizeLowLuckAirUnits(planesList, groupSize);
+        categorizeLowLuckAirUnits(availableTargets, groupSize);
     // the non rolling air units
     // if we are less hits than the number of groups, OR we have equal hits to number of groups but
     // we also have a
@@ -268,137 +275,67 @@ public class AaCasualtySelector {
     return finalCasualtyDetails;
   }
 
-  /** Choose plane casualties based on individual AA shots at each aircraft. */
-  private static CasualtyDetails individuallyFiredAaCasualties(
-      final Collection<Unit> planes,
-      final Collection<Unit> defendingAa,
-      final CombatValue aaCombatValueCalculator,
+  private static CasualtyDetails calculateAaCasualties(
+      final List<Unit> availableTargets,
+      final AaPowerStrengthAndRolls unitPowerAndRollsMap,
       final DiceRoll dice,
-      final IDelegateBridge bridge,
-      final boolean allowMultipleHitsPerUnit) {
+      final IDelegateBridge bridge) {
 
-    // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties
-    // since there are not
-    // enough rolls to have a single roll for each aircraft, or too many rolls normal behavior is
-    // instant kill, which
-    // means planes.size()
-    final int planeHitPoints =
-        (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
-    final AaPowerStrengthAndRolls unitPowerAndRollsMap =
-        AaPowerStrengthAndRolls.build(defendingAa, planes.size(), aaCombatValueCalculator);
-    if (unitPowerAndRollsMap.calculateTotalRolls() != planeHitPoints) {
-      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
-    }
-    final boolean allSameAttackPower = unitPowerAndRollsMap.isSameStrength();
-    if (!allSameAttackPower) {
-      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
-    }
-    final int highestAttack = unitPowerAndRollsMap.getBestStrength();
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final int hits = dice.getHits();
-    final List<Unit> planesList = new ArrayList<>();
-    for (final Unit plane : planes) {
-      final int hpLeft =
-          allowMultipleHitsPerUnit
-              ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
-              : Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits());
-      for (int hp = 0; hp < hpLeft; ++hp) {
-        // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the
-        // hitpoints of all units,
-        // we roll multiple times for any unit with multiple hitpoints
-        planesList.add(plane);
-      }
-    }
-    // We need to choose which planes die based on their position in the list and the individual AA
-    // rolls
-    if (hits > planeHitPoints) {
-      throw new IllegalStateException("Cannot have more hits than number of die rolls");
-    }
-    if (hits < planeHitPoints) {
-      final List<Die> rolls = dice.getRolls(highestAttack);
+    final Set<Integer> hitTargets;
+    if (unitPowerAndRollsMap.calculateTotalRolls() == availableTargets.size()
+        && hits < availableTargets.size()) {
+      // there is a roll for every target but not enough hits to kill all of the targets
+      // so no need to get a random set of units since all units will either have a hit
+      // or miss roll
+      final List<Die> rolls = dice.getRolls();
+      hitTargets = new HashSet<>();
       for (int i = 0; i < rolls.size(); i++) {
-        final Die die = rolls.get(i);
-        if (die.getType() == DieType.HIT) {
-          final Unit unit = planesList.get(i);
-          if (allowMultipleHitsPerUnit
-              && (Collections.frequency(finalCasualtyDetails.getDamaged(), unit)
-                  < (getTotalHitpointsLeft(unit) - 1))) {
-            finalCasualtyDetails.addToDamaged(unit);
-          } else {
-            finalCasualtyDetails.addToKilled(unit);
-          }
+        if (rolls.get(i).getType() == DieType.HIT) {
+          hitTargets.add(i);
         }
       }
-    } else {
-      for (final Unit plane : planesList) {
-        if (finalCasualtyDetails.getKilled().contains(plane)) {
-          finalCasualtyDetails.addToDamaged(plane);
-        } else {
-          finalCasualtyDetails.addToKilled(plane);
-        }
-      }
-    }
-    return finalCasualtyDetails;
-  }
-
-  /** Choose plane casualties randomly. */
-  private static CasualtyDetails randomAaCasualties(
-      final Collection<Unit> planes,
-      final DiceRoll dice,
-      final IDelegateBridge bridge,
-      final boolean allowMultipleHitsPerUnit) {
-
-    final int hitsLeft = dice.getHits();
-    if (hitsLeft <= 0) {
-      return new CasualtyDetails();
-    }
-    final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-    // normal behavior is instant kill, which means planes.size()
-    final int planeHitPoints =
-        (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
-    final List<Unit> planesList = new ArrayList<>();
-    for (final Unit plane : planes) {
-      final int hpLeft =
-          allowMultipleHitsPerUnit
-              ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
-              : Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits());
-      for (int hp = 0; hp < hpLeft; ++hp) {
-        // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the
-        // hitpoints of all units,
-        // we roll multiple times for any unit with multiple hitpoints
-        planesList.add(plane);
-      }
-    }
-    // We need to choose which planes die randomly
-    if (hitsLeft < planeHitPoints) {
-      // roll all at once to prevent frequent random calls, important for pbem games
+    } else if (hits < availableTargets.size()) {
+      // there isn't a roll for every target so need to randomly pick the target for each hit
       final int[] hitRandom =
           bridge.getRandom(
-              planeHitPoints,
-              hitsLeft,
+              availableTargets.size(),
+              hits,
               null,
               DiceType.ENGINE,
               "Deciding which planes should die due to AA fire");
-      int pos = 0;
-      for (final int element : hitRandom) {
-        pos += element;
-        final Unit unitHit = planesList.remove(pos % planesList.size());
-        if (allowMultipleHitsPerUnit
-            && (Collections.frequency(finalCasualtyDetails.getDamaged(), unitHit)
-                < (getTotalHitpointsLeft(unitHit) - 1))) {
-          finalCasualtyDetails.addToDamaged(unitHit);
-        } else {
-          finalCasualtyDetails.addToKilled(unitHit);
+      // turn the random numbers into a unique set of targets
+      hitTargets = new HashSet<>();
+      int index = 0;
+      for (final int randomIndex : hitRandom) {
+        index = (index + randomIndex) % availableTargets.size();
+        while (hitTargets.contains(index)) {
+          index = (index + 1) % availableTargets.size();
         }
+        hitTargets.add(index);
       }
     } else {
-      for (final Unit plane : planesList) {
-        if (finalCasualtyDetails.getKilled().contains(plane)) {
-          finalCasualtyDetails.addToDamaged(plane);
-        } else {
-          finalCasualtyDetails.addToKilled(plane);
-        }
-      }
+      // all targets were hit so add them all
+      hitTargets = IntStream.range(0, availableTargets.size()).boxed().collect(Collectors.toSet());
+    }
+
+    final Map<Unit, Long> unitHp =
+        availableTargets.stream()
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+    for (final Integer hitTarget : hitTargets) {
+      final Unit unit = availableTargets.get(hitTarget);
+      unitHp.computeIfPresent(
+          unit,
+          (unitKey, hp) -> {
+            if (hp > 1) {
+              finalCasualtyDetails.addToDamaged(unit);
+            } else {
+              finalCasualtyDetails.addToKilled(unit);
+            }
+            return hp - 1;
+          });
     }
     return finalCasualtyDetails;
   }

@@ -23,7 +23,7 @@ TripleA is a free to play, volunteer run, 100% open source gaming community.
 This project is licensed under the terms of the
 [GNU General Public License v3.0 with additional permissions](/LICENSE).
 
-Copyright (C) 2001-2019 TripleA contributors.
+Copyright (C) 2001-2021 TripleA contributors.
 
 This program is free software; you can redistribute it and/or modify it under the terms
 of the GNU General Public License as published by the Free Software Foundation; either

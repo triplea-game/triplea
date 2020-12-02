@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -11,12 +12,23 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 
 /** Pro AI matches. */
+@UtilityClass
 public final class ProMatches {
-  private ProMatches() {}
+
+  public static BiPredicate<Territory, Territory> noCanalsBetweenTerritories(
+      final GamePlayer player, final GameData gameData) {
+    return (startTerritory, endTerritory) -> {
+      final Route r = new Route(startTerritory, endTerritory);
+      return new MoveValidator(gameData).validateCanal(r, null, player) == null;
+    };
+  }
 
   public static Predicate<Territory> territoryCanLandAirUnits(
       final GamePlayer player,
