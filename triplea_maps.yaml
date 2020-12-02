@@ -2185,3 +2185,25 @@
   version: 1
   description: |
     <br>A simple symmetrical map made for 4 players.
+- mapName: Over The Top
+  mapCategory: EXPERIMENTAL
+  version: 1
+  url: https://github.com/triplea-maps/over-the-top/releases/download/0.1.0/over_the_top.zip
+  img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/over-the-top.png
+  description: |
+    <p style="font-family: 'Garamond' , serif;">
+    Welcome to <i>Over the Top</i>, an alternate scenario game loosely based on the
+    various high-water marks of the First World War.<br/>
+    <b>Featuring:</b></p>
+    <ul style="font-family: 'Garamond' , serif;">
+    <li>Large map tiles and unit images for high res displays</li>
+    <li>Ranged munitions for capital ships and heavy artillery</li>
+    <li>Trenches that provide hit points but are also capturable if undefended</li>
+    <li>Historical figures, like Lenin and the Red Baron</li>
+    <li>Dynamic African front with colonial powers</li>
+    <li>Western Front inset and dual Russian capitals <i>(credit: Great War)</i></li>
+    <li>Railroads <i>(credit: Civil War)</i></li>
+    <li>Research to unlock more advanced units <i>(credit: Age of Tribes)</i></li>
+    <li>Unique path to war for the Americans</li>
+    </ul>
+    </p>
