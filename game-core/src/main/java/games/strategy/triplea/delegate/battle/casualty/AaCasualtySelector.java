@@ -289,7 +289,7 @@ public class AaCasualtySelector {
       // there is a roll for every target but not enough hits to kill all of the targets
       // so no need to get a random set of units since all units will either have a hit
       // or miss roll
-      final List<Die> rolls = dice.getRolls(unitPowerAndRollsMap.getBestStrength());
+      final List<Die> rolls = dice.getRolls();
       hitTargets = new HashSet<>();
       for (int i = 0; i < rolls.size(); i++) {
         if (rolls.get(i).getType() == DieType.HIT) {
