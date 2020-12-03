@@ -59,7 +59,7 @@ class AaCasualtySelectorTest {
       hits += (shots[i] ? 1 : 0);
     }
 
-    return new DiceRoll(diceRolls, hits, 1, false);
+    return new DiceRoll(diceRolls, hits, 1, false, null);
   }
 
   private CombatValue givenAaCombatValue() {
@@ -532,7 +532,8 @@ class AaCasualtySelectorTest {
           new int[0],
           strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides(),
           1,
-          false);
+          false,
+          null);
     }
 
     private DiceRoll givenLowLuckDiceRollWithExtraHit(
@@ -552,7 +553,8 @@ class AaCasualtySelectorTest {
           new int[0],
           strengthAndRolls.calculateTotalPower() / strengthAndRolls.getDiceSides() + 1,
           1,
-          false);
+          false,
+          null);
     }
 
     @Test

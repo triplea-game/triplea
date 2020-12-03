@@ -79,7 +79,7 @@ class CasualtySelectorTest {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
-    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false);
+    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false, null);
     final Collection<Unit> planes = bomber(data).create(5, british(data));
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
@@ -120,7 +120,7 @@ class CasualtySelectorTest {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
-    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false);
+    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false, null);
     final List<Unit> planes = bomber(data).create(5, british(data));
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
