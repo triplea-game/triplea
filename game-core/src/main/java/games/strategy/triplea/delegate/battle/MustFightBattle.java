@@ -184,14 +184,11 @@ public class MustFightBattle extends DependentBattle
       return;
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
-    // handle possible null pointer
-    if (attackingFromMapUnits == null) {
-      attackingFromMapUnits = new ArrayList<>();
-    }
+    final Collection<Unit> attackingFromMapUnits =
+        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
     attackingFromMapUnits.removeAll(units);
     if (attackingFromMapUnits.isEmpty()) {
-      this.attackingFrom.remove(attackingFrom);
+      this.attackingFromMap.remove(attackingFrom);
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
@@ -224,11 +221,8 @@ public class MustFightBattle extends DependentBattle
             ? CollectionUtils.getMatches(units, ownedBy)
             : units;
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    this.attackingFrom.add(attackingFrom);
     this.attackingUnits.addAll(attackingUnits);
-    attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>());
-    final Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
-    attackingFromMapUnits.addAll(attackingUnits);
+    attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>()).addAll(attackingUnits);
     // are we amphibious
     if (route.getStart().isWater()
         && !route.getEnd().isWater()
@@ -477,9 +471,8 @@ public class MustFightBattle extends DependentBattle
    * Used for setting stuff when we make a scrambling battle when there was no previous battle
    * there, and we need retreat spaces.
    */
-  void setAttackingFromAndMap(final Map<Territory, Collection<Unit>> attackingFromMap) {
+  void setAttackingFromMap(final Map<Territory, Collection<Unit>> attackingFromMap) {
     this.attackingFromMap = attackingFromMap;
-    attackingFrom = new HashSet<>(attackingFromMap.keySet());
   }
 
   @Override
@@ -943,7 +936,7 @@ public class MustFightBattle extends DependentBattle
             .build();
     Collection<Territory> possible =
         CollectionUtils.getMatches(
-            attackingFrom,
+            attackingFromMap.keySet(),
             Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
@@ -1667,7 +1660,7 @@ public class MustFightBattle extends DependentBattle
         + " attacked by:"
         + attacker.getName()
         + " from:"
-        + attackingFrom
+        + attackingFromMap.keySet()
         + " attacking with: "
         + attackingUnits;
   }
