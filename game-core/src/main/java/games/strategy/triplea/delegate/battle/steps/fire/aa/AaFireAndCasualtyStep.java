@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.FireRoundStepsFactory;
 import games.strategy.triplea.delegate.battle.steps.fire.RollDiceStep;
 import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.Collections;
 import java.util.List;
@@ -104,7 +105,7 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
     @Override
     public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
       final DiceRoll dice =
-          DiceRoll.rollAa(
+          RollDiceFactory.rollAaDice(
               step.getFiringGroup().getTargetUnits(),
               step.getFiringGroup().getFiringUnits(),
               bridge,

@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,7 +105,7 @@ public class NavalBombardment implements BattleStep {
 
     @Override
     public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
-      return DiceRoll.rollDice(
+      return RollDiceFactory.rollBattleDice(
           step.getFiringGroup().getFiringUnits(),
           step.getBattleState().getPlayer(step.getSide()),
           bridge,
