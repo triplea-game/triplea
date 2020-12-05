@@ -13,6 +13,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +28,8 @@ import org.triplea.java.collections.CollectionUtils;
 /** Selects casualties for normal (basically, anything that isn't AA) hits */
 @NoArgsConstructor
 public class SelectMainBattleCasualties
-    implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+    implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails>, Serializable {
+  private static final long serialVersionUID = -7908927357325784680L;
 
   private Select selectFunction = new Select();
 
@@ -143,7 +145,9 @@ public class SelectMainBattleCasualties
     return transportsToSelect;
   }
 
-  static class Select {
+  static class Select implements Serializable {
+    private static final long serialVersionUID = 7023198402140098480L;
+
     public CasualtyDetails apply(
         final IDelegateBridge bridge,
         final SelectCasualties step,

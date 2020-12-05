@@ -7,10 +7,13 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import java.io.Serializable;
 import java.util.function.BiFunction;
 
 /** Rolls dice for normal (basically, anything that isn't AA) dice requests */
-public class MainDiceRoller implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> {
+public class MainDiceRoller
+    implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll>, Serializable {
+  private static final long serialVersionUID = 11934707918127558L;
 
   @Override
   public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
