@@ -180,6 +180,11 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
+  public Collection<Unit> removeNonCombatants(final Side side) {
+    return List.of();
+  }
+
+  @Override
   public List<String> getStepStrings() {
     return List.of();
   }

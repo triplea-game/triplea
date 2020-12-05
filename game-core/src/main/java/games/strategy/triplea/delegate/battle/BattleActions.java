@@ -12,8 +12,6 @@ import java.util.Collection;
 /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
 
-  void removeNonCombatants(IDelegateBridge bridge);
-
   void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge);
 
   void removeCasualties(
