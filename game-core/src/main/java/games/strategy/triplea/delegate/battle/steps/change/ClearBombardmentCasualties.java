@@ -21,7 +21,7 @@ public class ClearBombardmentCasualties implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    return clearCasualties() ? List.of(REMOVE_BOMBARDMENT_CASUALTIES) : List.of();
+    return valid() && clearCasualties() ? List.of(REMOVE_BOMBARDMENT_CASUALTIES) : List.of();
   }
 
   @Override
@@ -31,7 +31,7 @@ public class ClearBombardmentCasualties implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (clearCasualties()) {
+    if (valid() && clearCasualties()) {
       battleActions.clearWaitingToDieAndDamagedChangesInto(bridge);
     }
   }
@@ -39,5 +39,11 @@ public class ClearBombardmentCasualties implements BattleStep {
   private boolean clearCasualties() {
     return !Properties.getNavalBombardCasualtiesReturnFire(
         battleState.getGameData().getProperties());
+  }
+
+  private boolean valid() {
+    return battleState.getStatus().isFirstRound()
+        && !battleState.getBombardingUnits().isEmpty()
+        && !battleState.getBattleSite().isWater();
   }
 }
