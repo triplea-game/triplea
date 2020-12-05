@@ -159,22 +159,6 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
-  public void clearWaitingToDie(final Side... sides) {
-    for (final Side side : sides) {
-      switch (side) {
-        case OFFENSE:
-          attackingWaitingToDie.clear();
-          break;
-        case DEFENSE:
-          defendingWaitingToDie.clear();
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  @Override
   public void retreatUnits(final Side side, final Collection<Unit> units) {
     retreatUnits.addAll(units);
   }

@@ -88,8 +88,6 @@ public interface BattleState {
 
   Collection<Unit> filterUnits(UnitBattleFilter status, Side... sides);
 
-  void clearWaitingToDie(Side... sides);
-
   void retreatUnits(Side side, Collection<Unit> units);
 
   Collection<Unit> removeNonCombatants(Side side);
