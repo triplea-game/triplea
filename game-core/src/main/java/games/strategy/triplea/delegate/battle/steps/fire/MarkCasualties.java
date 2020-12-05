@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
@@ -45,9 +44,7 @@ public class MarkCasualties implements BattleStep {
 
   private final FireRoundState fireRoundState;
 
-  @ChangeOnNextMajorRelease(
-      "returnFire is ALL for everything except NavalBombardment and old saves."
-          + "Rework so that returnFire isn't needed at all.")
+  @RemoveOnNextMajorRelease("returnFire is ALL for everything except old saves")
   private final MustFightBattle.ReturnFire returnFire;
 
   @Override
