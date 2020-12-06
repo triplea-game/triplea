@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -11,18 +11,13 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeparator;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.Value;
+import java.util.stream.IntStream;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -79,10 +74,12 @@ public class AaCasualtySelector {
         AaPowerStrengthAndRolls.build(defendingAa, planes.size(), aaCombatValueCalculator);
     final List<Unit> availableTargets = calculateAvailableTargets(planes, allowMultipleHitsPerUnit);
 
-    return Properties.getLowLuck(data.getProperties())
-            || Properties.getLowLuckAaOnly(data.getProperties())
-        ? getLowLuckAaCasualties(availableTargets, unitPowerAndRollsMap, dice, bridge)
-        : calculateRolledAaCasualties(availableTargets, unitPowerAndRollsMap, dice, bridge);
+    return buildCasualtyDetails(
+        availableTargets,
+        Properties.getLowLuck(data.getProperties())
+                || Properties.getLowLuckAaOnly(data.getProperties())
+            ? getLowLuckAaCasualties(availableTargets, unitPowerAndRollsMap, dice, bridge)
+            : calculateRolledAaCasualties(availableTargets, unitPowerAndRollsMap, dice, bridge));
   }
 
   /**
@@ -108,130 +105,67 @@ public class AaCasualtySelector {
     return targetsList;
   }
 
-  private static CasualtyDetails getLowLuckAaCasualties(
+  private static CasualtyDetails buildCasualtyDetails(
+      final List<Unit> availableTargets, final Collection<Unit> hitTargets) {
+    final Map<Unit, Long> unitHp =
+        availableTargets.stream()
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+    final CasualtyDetails casualtyDetails = new CasualtyDetails();
+    for (final Unit hitTarget : hitTargets) {
+      final Unit unit = availableTargets.get(availableTargets.indexOf(hitTarget));
+      unitHp.computeIfPresent(
+          unit,
+          (unitKey, hp) -> {
+            if (hp > 1) {
+              casualtyDetails.addToDamaged(unit);
+            } else {
+              casualtyDetails.addToKilled(unit);
+            }
+            return hp - 1;
+          });
+    }
+    return casualtyDetails;
+  }
+
+  private static Collection<Unit> getLowLuckAaCasualties(
       final List<Unit> availableTargets,
       final AaPowerStrengthAndRolls unitPowerAndRollsMap,
       final DiceRoll dice,
       final IDelegateBridge bridge) {
 
     final LowLuckTargetGroups targetGroups =
-        createGuaranteedLowLuckHitGroups(availableTargets, dice, unitPowerAndRollsMap);
+        new LowLuckTargetGroups(availableTargets, dice, unitPowerAndRollsMap);
 
-    if (targetGroups.guaranteedHitGroups.isEmpty()) {
+    if (!targetGroups.hasGuaranteedGroups()) {
       // it is not possible to separate the targets into guaranteed hit groups so randomly choose
       // the targets instead
-      return buildCasualtyDetails(
-          availableTargets, findRandomTargets(availableTargets, bridge, dice.getHits()));
+      return findRandomTargets(availableTargets, bridge, dice.getHits());
     }
 
-    if (dice.getHits() >= targetGroups.guaranteedHitGroups.size()) {
-      // there are enough hits to take one unit from each guaranteed hit group
-      final List<Unit> hitTargetIndices = new ArrayList<>();
-      for (final List<Unit> group : targetGroups.guaranteedHitGroups) {
-        hitTargetIndices.add(group.get(0));
-      }
+    if (dice.getHits() >= targetGroups.getGuaranteedHitGroups().size()) {
+      // there are enough hits to hit all of the guaranteed hits
+      final List<Unit> hitUnits = targetGroups.getGuaranteedHits();
 
       // if there are more hits than groups, the extra hits come out of the remainderUnits
-      final int remainderHits = dice.getHits() - targetGroups.guaranteedHitGroups.size();
+      final int remainderHits = dice.getHits() - hitUnits.size();
       if (remainderHits > 0) {
-        if (remainderHits == targetGroups.remainderUnits.size()) {
-          hitTargetIndices.addAll(targetGroups.remainderUnits);
+        if (remainderHits == targetGroups.getRemainderUnits().size()) {
+          hitUnits.addAll(targetGroups.getRemainderUnits());
         } else {
           // randomly pull out units from the remainder group
-          hitTargetIndices.addAll(
-              findRandomTargets(targetGroups.remainderUnits, bridge, remainderHits));
+          hitUnits.addAll(
+              findRandomTargets(targetGroups.getRemainderUnits(), bridge, remainderHits));
         }
       }
-      return buildCasualtyDetails(availableTargets, hitTargetIndices);
+      return hitUnits;
     } else {
       // There is somehow more guaranteed hit groups than hits. This currently only happens
       // with multi hp targets and damageable AA shots.
 
-      // pull out one unit from each guaranteed hit and then randomly pick the hits from those
-      final List<Unit> guaranteedHitUnits = new ArrayList<>();
-      for (final List<Unit> group : targetGroups.guaranteedHitGroups) {
-        guaranteedHitUnits.add(group.get(0));
-      }
-
-      return buildCasualtyDetails(
-          availableTargets, findRandomTargets(guaranteedHitUnits, bridge, dice.getHits()));
+      // Randomly pick out of the guaranteed hits
+      return findRandomTargets(targetGroups.getGuaranteedHits(), bridge, dice.getHits());
     }
-  }
-
-  /**
-   * Categorize the units and then split them up into groups of guaranteeHitGroupSize
-   *
-   * <p>Any group less than guaranteeHitGroupSize is added to the remainderUnits
-   */
-  private static LowLuckTargetGroups createGuaranteedLowLuckHitGroups(
-      final Collection<Unit> targets,
-      final DiceRoll diceRoll,
-      final AaPowerStrengthAndRolls unitPowerAndRollsMap) {
-
-    final int guaranteeHitGroupSize =
-        calculateGuaranteeLowLuckHitGroupSize(targets, diceRoll, unitPowerAndRollsMap);
-
-    final Collection<UnitCategory> groupedTargets =
-        UnitSeparator.categorize(targets, null, false, true);
-    final List<List<Unit>> guaranteedHitGroups = new ArrayList<>();
-    final List<Unit> remainderUnits = new ArrayList<>();
-    for (final UnitCategory uc : groupedTargets) {
-      final Deque<List<Unit>> guaranteedGroups =
-          new ArrayDeque<>(Lists.partition(uc.getUnits(), guaranteeHitGroupSize));
-      final List<Unit> lastGroup = guaranteedGroups.peekLast();
-      // if the last group isn't the right size, put those units in the remainder list
-      if (lastGroup != null && lastGroup.size() != guaranteeHitGroupSize) {
-        guaranteedGroups.removeLast();
-        remainderUnits.addAll(lastGroup);
-      }
-      guaranteedHitGroups.addAll(guaranteedGroups);
-    }
-    return LowLuckTargetGroups.of(guaranteedHitGroups, remainderUnits);
-  }
-
-  @Value(staticConstructor = "of")
-  private static class LowLuckTargetGroups {
-    List<List<Unit>> guaranteedHitGroups;
-    List<Unit> remainderUnits;
-  }
-
-  /**
-   * Calculate the number of targets that guarantee a hit in a low luck dice roll
-   *
-   * <p>In low luck, the number of hits = (power / dice sides). If the strength for all of the aa
-   * units is the same, then the number of hits = (strength * targetCount / diceSides). To find out
-   * how big a group is needed to get a guaranteed hit, re-order the equation to be (targetCount /
-   * hits) = (diceSides / strength). So, for every (diceSides / strength) targets, there is one
-   * guaranteed hit.
-   *
-   * @return 0 if not possible to split up the targets into guaranteed hit groups or > 0 for the
-   *     size that guarantees a hit
-   */
-  private static int calculateGuaranteeLowLuckHitGroupSize(
-      final Collection<Unit> availableTargets,
-      final DiceRoll diceRoll,
-      final AaPowerStrengthAndRolls unitPowerAndRollsMap) {
-    final int bestStrength = unitPowerAndRollsMap.getBestStrength();
-    final int chosenDiceSize = unitPowerAndRollsMap.getDiceSides();
-
-    final boolean hasOverstackHits =
-        diceRoll.getHits()
-            > Math.ceil(
-                (double) (bestStrength * availableTargets.size()) / (double) chosenDiceSize);
-
-    // if the aa units aren't the same strength, then it isn't possible to calculate the target
-    // count for a guaranteed hit because different strengths have different target counts.
-    if (!unitPowerAndRollsMap.isSameStrength()
-        // if there are more hits than (strength * targetCount / diceSides), then there must have
-        // been overstack AA and that messes up the target count.
-        || hasOverstackHits
-        // if the best strength isn't a factor of chosenDiceSize, then the target count will be
-        // fractional which doesn't work
-        || chosenDiceSize % bestStrength != 0) {
-      return 0;
-    }
-
-    return chosenDiceSize / bestStrength;
   }
 
   /** Select a random set of targets out of availableTargets */
@@ -257,64 +191,37 @@ public class AaCasualtySelector {
     return hitTargets.stream().map(availableTargets::get).collect(Collectors.toList());
   }
 
-  private static CasualtyDetails buildCasualtyDetails(
-      final List<Unit> availableTargets, final Collection<Unit> hitTargets) {
-    final Map<Unit, Long> unitHp =
-        availableTargets.stream()
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-    final CasualtyDetails casualtyDetails = new CasualtyDetails();
-    for (final Unit hitTarget : hitTargets) {
-      final Unit unit = availableTargets.get(availableTargets.indexOf(hitTarget));
-      unitHp.computeIfPresent(
-          unit,
-          (unitKey, hp) -> {
-            if (hp > 1) {
-              casualtyDetails.addToDamaged(unit);
-            } else {
-              casualtyDetails.addToKilled(unit);
-            }
-            return hp - 1;
-          });
-    }
-    return casualtyDetails;
-  }
-
-  private static CasualtyDetails calculateRolledAaCasualties(
+  private static Collection<Unit> calculateRolledAaCasualties(
       final List<Unit> availableTargets,
       final AaPowerStrengthAndRolls unitPowerAndRollsMap,
       final DiceRoll dice,
       final IDelegateBridge bridge) {
 
-    final int hits = dice.getHits();
-    final Collection<Unit> hitTargets;
     if (unitPowerAndRollsMap.calculateTotalRolls() == availableTargets.size()
-        && hits < availableTargets.size()) {
+        && dice.getHits() < availableTargets.size()) {
       // there is a roll for every target but not enough hits to kill all of the targets
       // so no need to get a random set of units since all units will either have a hit
       // or miss roll
-      hitTargets = findRolledTargets(availableTargets, dice);
-    } else if (hits < availableTargets.size()) {
+      return findRolledTargets(availableTargets, dice);
+    } else if (dice.getHits() < availableTargets.size()) {
       // there isn't a roll for every target so need to randomly pick the target for each hit
-      hitTargets = findRandomTargets(availableTargets, bridge, hits);
+      return findRandomTargets(availableTargets, bridge, dice.getHits());
     } else {
       // all targets were hit so add them all
-      hitTargets = availableTargets;
+      return availableTargets;
     }
-
-    return buildCasualtyDetails(availableTargets, hitTargets);
   }
 
   /** Find the targets that were hit by a dice roll */
   private static Collection<Unit> findRolledTargets(
       final List<Unit> availableTargets, final DiceRoll dice) {
-    final List<Die> rolls = dice.getRolls();
-    final List<Unit> hitTargets = new ArrayList<>();
-    for (int i = 0; i < rolls.size(); i++) {
-      if (rolls.get(i).getType() == DieType.HIT) {
-        hitTargets.add(availableTargets.get(i));
-      }
-    }
-    return hitTargets;
+    Preconditions.checkArgument(
+        availableTargets.size() == dice.getRolls().size(),
+        "findRolledTargets needs one roll per target");
+
+    return IntStream.range(0, dice.getRolls().size())
+        .filter(rollIdx -> dice.getRolls().get(rollIdx).getType() == DieType.HIT)
+        .mapToObj(availableTargets::get)
+        .collect(Collectors.toList());
   }
 }
