@@ -10,7 +10,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -28,31 +27,23 @@ abstract class RemoveUnits implements BattleStep {
   private final BattleActions battleActions;
 
   protected void removeUnits(final IDelegateBridge bridge, final Predicate<Unit> unitMatch) {
-    final Collection<Unit> suicideAttackers =
+    removeSuicideUnits(bridge, unitMatch, OFFENSE);
+    removeSuicideUnits(bridge, unitMatch, DEFENSE);
+  }
+
+  private void removeSuicideUnits(
+      final IDelegateBridge bridge, final Predicate<Unit> unitMatch, final BattleState.Side side) {
+    final Collection<Unit> suicideUnits =
         CollectionUtils.getMatches(
-            battleState.filterUnits(ALIVE, OFFENSE),
-            unitMatch.and(Matches.unitIsSuicideOnAttack()));
-    final Collection<Unit> suicideDefenders =
-        CollectionUtils.getMatches(
-            battleState.filterUnits(ALIVE, DEFENSE),
-            unitMatch.and(Matches.unitIsSuicideOnDefense()));
+            battleState.filterUnits(ALIVE, side), unitMatch.and(Matches.unitIsSuicideOnAttack()));
     bridge
         .getDisplayChannelBroadcaster()
         .deadUnitNotification(
             battleState.getBattleId(),
-            battleState.getPlayer(OFFENSE),
-            suicideAttackers,
-            getDependents(suicideAttackers));
-    bridge
-        .getDisplayChannelBroadcaster()
-        .deadUnitNotification(
-            battleState.getBattleId(),
-            battleState.getPlayer(DEFENSE),
-            suicideDefenders,
-            getDependents(suicideDefenders));
-    final List<Unit> deadUnits = new ArrayList<>(suicideAttackers);
-    deadUnits.addAll(suicideDefenders);
-    battleActions.remove(deadUnits, bridge, battleState.getBattleSite(), OFFENSE, DEFENSE);
+            battleState.getPlayer(side),
+            suicideUnits,
+            getDependents(suicideUnits));
+    battleActions.remove(suicideUnits, bridge, battleState.getBattleSite(), side);
   }
 
   private Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
