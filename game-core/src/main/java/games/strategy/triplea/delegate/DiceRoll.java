@@ -32,6 +32,8 @@ public class DiceRoll implements Externalizable {
   // few dice
   private int hits;
   private double expectedHits;
+  // keep track of the randomness stats for the player
+  @Getter private String playerName = null;
 
   /**
    * Initializes a new instance of the DiceRoll class.
@@ -44,8 +46,13 @@ public class DiceRoll implements Externalizable {
    *     for equals.
    */
   public DiceRoll(
-      final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
+      final int[] dice,
+      final int hits,
+      final int rollAt,
+      final boolean hitOnlyIfEquals,
+      final String playerName) {
     this.hits = hits;
+    this.playerName = playerName;
     expectedHits = 0;
     rolls =
         Arrays.stream(dice)
@@ -61,10 +68,12 @@ public class DiceRoll implements Externalizable {
   public DiceRoll() {}
 
   @ChangeOnNextMajorRelease("This constructor should be made package visible once it is moved")
-  public DiceRoll(final List<Die> dice, final int hits, final double expectedHits) {
+  public DiceRoll(
+      final List<Die> dice, final int hits, final double expectedHits, final String playerName) {
     rolls = new ArrayList<>(dice);
     this.hits = hits;
     this.expectedHits = expectedHits;
+    this.playerName = playerName;
   }
 
   /**
@@ -133,6 +142,8 @@ public class DiceRoll implements Externalizable {
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
+    // add a marker to indicate that this is versioned
+    out.writeInt(1);
     final int[] dice = new int[rolls.size()];
     for (int i = 0; i < rolls.size(); i++) {
       dice[i] = rolls.get(i).getCompressedValue();
@@ -140,10 +151,13 @@ public class DiceRoll implements Externalizable {
     out.writeObject(dice);
     out.writeInt(hits);
     out.writeDouble(expectedHits);
+    out.writeObject(playerName);
   }
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+    final int serializedVersion = readSerializeVersion(in);
+
     final int[] dice = (int[]) in.readObject();
     rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
@@ -151,6 +165,17 @@ public class DiceRoll implements Externalizable {
     }
     hits = in.readInt();
     expectedHits = in.readDouble();
+    playerName = serializedVersion == 1 ? (String) in.readObject() : null;
+  }
+
+  /** Read the serialized version to support backwards compatibility */
+  private int readSerializeVersion(final ObjectInput in) {
+    try {
+      return in.readInt();
+    } catch (final IOException ignored) {
+      // the int doesn't exist in the stream so this is the initial version
+      return 0;
+    }
   }
 
   @Override

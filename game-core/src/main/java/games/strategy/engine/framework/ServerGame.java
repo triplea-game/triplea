@@ -168,10 +168,13 @@ public class ServerGame extends AbstractGame {
     if (node instanceof EventChild) {
       final EventChild childNode = (EventChild) node;
       if (childNode.getRenderingData() instanceof DiceRoll) {
-        final String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
+        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
+        final String playerName =
+            diceRoll.getPlayerName() == null
+                ? DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle())
+                : diceRoll.getPlayerName();
         final GamePlayer gamePlayer = gameData.getPlayerList().getPlayerId(playerName);
 
-        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
         final int[] rolls = new int[diceRoll.size()];
         for (int i = 0; i < rolls.length; i++) {
           rolls[i] = diceRoll.getDie(i).getValue();

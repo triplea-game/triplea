@@ -27,7 +27,7 @@ public class LowLuckDice {
 
     final int power = totalPowerAndTotalRolls.calculateTotalPower();
     if (power == 0) {
-      return new DiceRoll(List.of(), 0, 0);
+      return new DiceRoll(List.of(), 0, 0, player.getName());
     }
 
     final int diceSides = totalPowerAndTotalRolls.getDiceSides();
@@ -48,6 +48,6 @@ public class LowLuckDice {
     // Create DiceRoll object
     final double expectedHits = ((double) power) / diceSides;
 
-    return new DiceRoll(dice, hitCount, expectedHits);
+    return new DiceRoll(dice, hitCount, expectedHits, player.getName());
   }
 }
