@@ -220,8 +220,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
     final DiceRoll renderDice =
         (Properties.getLowLuckTechOnly(getData().getProperties())
-            ? new DiceRoll(random, techHits, remainder, false)
-            : new DiceRoll(random, techHits, diceSides - 1, true));
+            ? new DiceRoll(random, techHits, remainder, false, player.getName())
+            : new DiceRoll(random, techHits, diceSides - 1, true, player.getName()));
     bridge
         .getHistoryWriter()
         .startEvent(

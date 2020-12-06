@@ -90,7 +90,7 @@ public class RollDiceFactory {
       final IRandomStats.DiceType diceType,
       final String annotation) {
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<>(), 0, 0);
+      return new DiceRoll(new ArrayList<>(), 0, 0, playerRolling.getName());
     }
     final int[] random =
         bridge.getRandom(diceSides, rollCount, playerRolling, diceType, annotation);
@@ -98,6 +98,6 @@ public class RollDiceFactory {
     for (int i = 0; i < rollCount; i++) {
       dice.add(new Die(random[i], 1, Die.DieType.IGNORED));
     }
-    return new DiceRoll(dice, rollCount, rollCount);
+    return new DiceRoll(dice, rollCount, rollCount, playerRolling.getName());
   }
 }

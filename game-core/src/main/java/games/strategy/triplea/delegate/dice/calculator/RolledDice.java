@@ -33,7 +33,7 @@ public class RolledDice {
 
     final int rollCount = totalPowerAndTotalRolls.calculateTotalRolls();
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<>(), 0, 0);
+      return new DiceRoll(new ArrayList<>(), 0, 0, player.getName());
     }
 
     final int diceSides = totalPowerAndTotalRolls.getDiceSides();
@@ -46,7 +46,7 @@ public class RolledDice {
     final int totalPower = totalPowerAndTotalRolls.calculateTotalPower();
     final double expectedHits = ((double) totalPower) / diceSides;
 
-    return new DiceRoll(dice, hitCount, expectedHits);
+    return new DiceRoll(dice, hitCount, expectedHits, player.getName());
   }
 
   /**
