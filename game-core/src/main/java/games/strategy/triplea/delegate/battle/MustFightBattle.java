@@ -541,6 +541,11 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
+  /**
+   * Removes units that have been marked as a casualty
+   *
+   * <p>If the unit changes into another unit upon death, then this will transform them.
+   */
   @Override
   public void clearWaitingToDieAndDamagedChangesInto(
       final IDelegateBridge bridge, final BattleState.Side... sides) {
@@ -616,43 +621,17 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void removeCasualties(
-      final Collection<Unit> killed,
-      final ReturnFire returnFire,
-      final Side side,
-      final IDelegateBridge bridge) {
-    if (killed.isEmpty()) {
+  public void markCasualties(final Collection<Unit> casualties, final Side side) {
+    if (casualties.isEmpty()) {
       return;
     }
-    if (returnFire == ReturnFire.ALL) {
-      // move to waiting to die
-      if (side == DEFENSE) {
-        defendingWaitingToDie.addAll(killed);
-      } else {
-        attackingWaitingToDie.addAll(killed);
-      }
-    } else if (returnFire == ReturnFire.SUBS) {
-      // move to waiting to die
-      if (side == DEFENSE) {
-        defendingWaitingToDie.addAll(
-            CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike()));
-      } else {
-        attackingWaitingToDie.addAll(
-            CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike()));
-      }
-      remove(
-          CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike().negate()),
-          bridge,
-          battleSite,
-          side);
-    } else if (returnFire == ReturnFire.NONE) {
-      remove(killed, bridge, battleSite, side);
-    }
-    // remove from the active fighting
+
     if (side == DEFENSE) {
-      defendingUnits.removeAll(killed);
+      defendingWaitingToDie.addAll(casualties);
+      defendingUnits.removeAll(casualties);
     } else {
-      attackingUnits.removeAll(killed);
+      attackingWaitingToDie.addAll(casualties);
+      attackingUnits.removeAll(casualties);
     }
   }
 
@@ -698,8 +677,10 @@ public class MustFightBattle extends DependentBattle
     for (final Side side : sides) {
       if (side == DEFENSE) {
         defendingUnits.removeAll(killed);
+        defendingWaitingToDie.removeAll(killed);
       } else {
         attackingUnits.removeAll(killed);
+        attackingWaitingToDie.removeAll(killed);
       }
     }
   }
