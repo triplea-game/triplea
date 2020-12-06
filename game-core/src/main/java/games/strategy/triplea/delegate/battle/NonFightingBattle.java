@@ -39,11 +39,8 @@ public class NonFightingBattle extends DependentBattle {
       final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
     addDependentTransportingUnits(units);
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    this.attackingFrom.add(attackingFrom);
     attackingUnits.addAll(units);
-    final Collection<Unit> attackingFromMapUnits =
-        attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>());
-    attackingFromMapUnits.addAll(units);
+    attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>()).addAll(units);
     // are we amphibious
     if (route.getStart().isWater()
         && !route.getEnd().isWater()
@@ -100,14 +97,11 @@ public class NonFightingBattle extends DependentBattle {
       return;
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
-    // handle possible null pointer
-    if (attackingFromMapUnits == null) {
-      attackingFromMapUnits = new ArrayList<>();
-    }
+    final Collection<Unit> attackingFromMapUnits =
+        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
     attackingFromMapUnits.removeAll(units);
     if (attackingFromMapUnits.isEmpty()) {
-      this.attackingFrom.remove(attackingFrom);
+      this.attackingFromMap.remove(attackingFrom);
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {

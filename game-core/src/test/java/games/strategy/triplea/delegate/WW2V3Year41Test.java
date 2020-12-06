@@ -81,6 +81,7 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -166,7 +167,7 @@ class WW2V3Year41Test {
             .getMatches(Matches.unitIsAaForAnything());
     // don't allow rolling, 6 of each is deterministic
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -235,7 +236,7 @@ class WW2V3Year41Test {
     // then a dice to select the casualty
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(1));
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -308,7 +309,7 @@ class WW2V3Year41Test {
         .thenAnswer(withValues(0))
         .thenAnswer(withValues(0, 0));
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -738,7 +739,7 @@ class WW2V3Year41Test {
         .thenAnswer(withValues(4)); // With JET_POWER defending fighter misses on 5 (0 base)
     // Attacking fighter
     final DiceRoll roll1 =
-        DiceRoll.rollDice(
+        RollDiceFactory.rollBattleDice(
             germanFighter,
             germans,
             delegateBridge,
@@ -757,7 +758,7 @@ class WW2V3Year41Test {
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
-        DiceRoll.rollDice(
+        RollDiceFactory.rollBattleDice(
             germanFighter,
             germans,
             delegateBridge,

@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -119,7 +120,7 @@ class AaInMoveUtil implements Serializable {
                 // Fly over AA currently doesn't take into account support so don't pass in
                 // the enemyUnits or friendlyUnits
                 dice.set(
-                    DiceRoll.rollAa(
+                    RollDiceFactory.rollAaDice(
                         validTargetedUnitsForThisRoll,
                         currentPossibleAa,
                         AaInMoveUtil.this.bridge,

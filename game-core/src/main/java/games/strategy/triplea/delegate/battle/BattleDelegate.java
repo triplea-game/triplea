@@ -943,7 +943,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             for (final Territory t : neighbors) {
               attackingFromMap.put(t, attackingUnits);
             }
-            mfb.setAttackingFromAndMap(attackingFromMap);
+            mfb.setAttackingFromMap(attackingFromMap);
           }
         }
       } else if (battle instanceof MustFightBattle) {

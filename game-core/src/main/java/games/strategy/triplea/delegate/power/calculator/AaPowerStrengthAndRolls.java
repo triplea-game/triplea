@@ -1,19 +1,15 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
@@ -238,30 +234,9 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     return activeStrengthAndRolls;
   }
 
-  /**
-   * @param dice Rolled Dice numbers from bridge with size equal to getTotalRolls
-   * @return A list of Dice
-   */
   @Override
-  public List<Die> getDiceHits(final int[] dice) {
-    final Deque<Integer> diceQueue =
-        IntStream.of(dice).boxed().collect(Collectors.toCollection(ArrayDeque::new));
-
-    return activeStrengthAndRolls.stream()
-        .flatMap(
-            unitPowerStrengthAndRolls -> {
-              final int strength = unitPowerStrengthAndRolls.getStrength();
-              return IntStream.range(0, unitPowerStrengthAndRolls.getRolls())
-                  .mapToObj(
-                      rollNumber -> {
-                        final int diceValue = diceQueue.removeFirst();
-                        return new Die(
-                            diceValue,
-                            strength,
-                            diceValue < strength ? Die.DieType.HIT : Die.DieType.MISS);
-                      });
-            })
-        .collect(Collectors.toList());
+  public List<UnitPowerStrengthAndRolls> getActiveUnits() {
+    return activeStrengthAndRolls;
   }
 
   @Override

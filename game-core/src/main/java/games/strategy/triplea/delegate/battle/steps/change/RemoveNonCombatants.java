@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.change;
 
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -7,6 +8,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Collection;
 import java.util.List;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.RemoveOnNextMajorRelease;
@@ -37,7 +39,19 @@ public class RemoveNonCombatants implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    battleActions.removeNonCombatants(bridge);
+    removeNonCombatants(BattleState.Side.OFFENSE, bridge);
+    removeNonCombatants(BattleState.Side.DEFENSE, bridge);
+  }
+
+  private void removeNonCombatants(final BattleState.Side side, final IDelegateBridge bridge) {
+    final Collection<Unit> nonCombatants = battleState.removeNonCombatants(side);
+    if (nonCombatants.isEmpty()) {
+      return;
+    }
+    bridge
+        .getDisplayChannelBroadcaster()
+        .changedUnitsNotification(
+            battleState.getBattleId(), battleState.getPlayer(side), nonCombatants, null, null);
   }
 
   @RemoveOnNextMajorRelease("battleState will not need to be converted from battleActions")
