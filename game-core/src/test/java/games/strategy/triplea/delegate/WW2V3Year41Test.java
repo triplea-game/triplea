@@ -355,8 +355,10 @@ class WW2V3Year41Test {
                 territory("Germany", gameData))
             .getKilled();
     assertEquals(2, casualties.size());
-    thenGetRandomShouldHaveBeenCalled(bridge, times(3));
-    // should be 1 fighter and 2 bombers
+    // random should not have been called during getAaCasualties so the number of times
+    // should stay at 1
+    thenGetRandomShouldHaveBeenCalled(bridge, times(1));
+    // should be 1 fighter and 1 bomber
     assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
     assertEquals(
         1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
