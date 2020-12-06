@@ -95,7 +95,11 @@ public class ClearFirstStrikeCasualties implements BattleStep {
     final Collection<Unit> unitsToRemove =
         new ArrayList<>(
             battleState.filterUnits(CASUALTY, sidesToClear.toArray(new BattleState.Side[0])));
-    battleActions.remove(unitsToRemove, bridge, battleState.getBattleSite(), null);
+    battleActions.remove(
+        unitsToRemove,
+        bridge,
+        battleState.getBattleSite(),
+        sidesToClear.toArray(new BattleState.Side[0]));
     battleState.clearWaitingToDie(sidesToClear.toArray(new BattleState.Side[0]));
   }
 

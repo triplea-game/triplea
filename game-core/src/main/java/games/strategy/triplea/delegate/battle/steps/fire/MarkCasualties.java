@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_WITHOUT_SPACE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.NOTIFY_PREFIX;
@@ -76,10 +75,7 @@ public class MarkCasualties implements BattleStep {
     }
 
     battleActions.removeCasualties(
-        fireRoundState.getCasualties().getKilled(),
-        returnFire,
-        side.getOpposite() == DEFENSE,
-        bridge);
+        fireRoundState.getCasualties().getKilled(), returnFire, side.getOpposite(), bridge);
 
     if (firingGroup.isSuicideOnHit()) {
       removeSuicideOnHitUnits(bridge);
@@ -185,6 +181,6 @@ public class MarkCasualties implements BattleStep {
         .deadUnitNotification(
             battleState.getBattleId(), battleState.getPlayer(side), suicidedUnits, dependentUnits);
 
-    battleActions.remove(suicidedUnits, bridge, battleState.getBattleSite(), side == DEFENSE);
+    battleActions.remove(suicidedUnits, bridge, battleState.getBattleSite(), side);
   }
 }

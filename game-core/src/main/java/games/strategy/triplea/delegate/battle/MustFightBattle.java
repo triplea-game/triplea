@@ -491,7 +491,7 @@ public class MustFightBattle extends DependentBattle
     // the territory by the previous battle's remove method
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
     if (!withdrawn) {
-      remove(lost, bridge, battleSite, false);
+      remove(lost, bridge, battleSite, OFFENSE);
     }
     if (attackingUnits.isEmpty()) {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
@@ -563,7 +563,7 @@ public class MustFightBattle extends DependentBattle
     final Collection<Unit> unitsToRemove = new ArrayList<>();
     unitsToRemove.addAll(attackingWaitingToDie);
     unitsToRemove.addAll(defendingWaitingToDie);
-    remove(unitsToRemove, bridge, battleSite, null);
+    remove(unitsToRemove, bridge, battleSite, OFFENSE, DEFENSE);
     defendingWaitingToDie.clear();
     attackingWaitingToDie.clear();
     damagedChangeInto(
@@ -618,7 +618,7 @@ public class MustFightBattle extends DependentBattle
           ChangeFactory.addUnits(battleSite, unitsToAdd),
           ChangeFactory.markNoMovementChange(unitsToAdd));
       bridge.addChange(changes);
-      remove(unitsToRemove, bridge, battleSite, null);
+      remove(unitsToRemove, bridge, battleSite, OFFENSE, DEFENSE);
       final String transcriptText =
           MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
@@ -633,21 +633,21 @@ public class MustFightBattle extends DependentBattle
   public void removeCasualties(
       final Collection<Unit> killed,
       final ReturnFire returnFire,
-      final boolean defender,
+      final Side side,
       final IDelegateBridge bridge) {
     if (killed.isEmpty()) {
       return;
     }
     if (returnFire == ReturnFire.ALL) {
       // move to waiting to die
-      if (defender) {
+      if (side == DEFENSE) {
         defendingWaitingToDie.addAll(killed);
       } else {
         attackingWaitingToDie.addAll(killed);
       }
     } else if (returnFire == ReturnFire.SUBS) {
       // move to waiting to die
-      if (defender) {
+      if (side == DEFENSE) {
         defendingWaitingToDie.addAll(
             CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike()));
       } else {
@@ -658,12 +658,12 @@ public class MustFightBattle extends DependentBattle
           CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike().negate()),
           bridge,
           battleSite,
-          defender);
+          side);
     } else if (returnFire == ReturnFire.NONE) {
-      remove(killed, bridge, battleSite, defender);
+      remove(killed, bridge, battleSite, side);
     }
     // remove from the active fighting
-    if (defender) {
+    if (side == DEFENSE) {
       defendingUnits.removeAll(killed);
     } else {
       attackingUnits.removeAll(killed);
@@ -675,7 +675,7 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> killedUnits,
       final IDelegateBridge bridge,
       final Territory battleSite,
-      final Boolean defenderDying) {
+      final Side... sides) {
     if (killedUnits.isEmpty()) {
       return;
     }
@@ -709,12 +709,12 @@ public class MustFightBattle extends DependentBattle
       removeFromDependents(killed, bridge, dependentBattles);
     }
 
-    // Remove them from the battle display
-    if (defenderDying == null || defenderDying) {
-      defendingUnits.removeAll(killed);
-    }
-    if (defenderDying == null || !defenderDying) {
-      attackingUnits.removeAll(killed);
+    for (final Side side : sides) {
+      if (side == DEFENSE) {
+        defendingUnits.removeAll(killed);
+      } else {
+        attackingUnits.removeAll(killed);
+      }
     }
   }
 
@@ -731,7 +731,7 @@ public class MustFightBattle extends DependentBattle
       if (landedTerritory == null) {
         throw new IllegalStateException("not unloaded?:" + units);
       }
-      remove(lost, bridge, landedTerritory, false);
+      remove(lost, bridge, landedTerritory, OFFENSE);
     }
   }
 

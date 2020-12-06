@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -127,7 +126,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -141,7 +140,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -167,7 +166,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -195,7 +194,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -226,7 +225,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -264,7 +263,8 @@ class RemoveUnprotectedUnitsTest {
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
       verify(delegateBridge).addChange(any());
-      verify(battleActions).remove(anyCollection(), eq(delegateBridge), any(), eq(false));
+      verify(battleActions)
+          .remove(anyCollection(), eq(delegateBridge), any(), eq(BattleState.Side.OFFENSE));
     }
 
     @Test
@@ -302,7 +302,8 @@ class RemoveUnprotectedUnitsTest {
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
       verify(delegateBridge).addChange(any());
-      verify(battleActions).remove(anyCollection(), eq(delegateBridge), any(), eq(true));
+      verify(battleActions)
+          .remove(anyCollection(), eq(delegateBridge), any(), eq(BattleState.Side.DEFENSE));
     }
   }
 
@@ -319,7 +320,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -338,7 +339,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -357,7 +358,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -379,7 +380,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     Unit givenUnitHasOffenseCombatAbility(final GamePlayer player) {
@@ -419,7 +420,7 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).remove(anyCollection(), any(), any(), anyBoolean());
+      verify(battleActions, never()).remove(anyCollection(), any(), any(), any());
     }
 
     @Test
@@ -448,7 +449,7 @@ class RemoveUnprotectedUnitsTest {
               argThat(arg -> arg.contains(unitToDie)),
               eq(delegateBridge),
               eq(battleSite),
-              eq(false));
+              eq(BattleState.Side.OFFENSE));
     }
 
     @Test
@@ -477,7 +478,7 @@ class RemoveUnprotectedUnitsTest {
               argThat(arg -> arg.contains(unitToDie)),
               eq(delegateBridge),
               eq(battleSite),
-              eq(true));
+              eq(BattleState.Side.DEFENSE));
     }
 
     @Test
@@ -504,7 +505,8 @@ class RemoveUnprotectedUnitsTest {
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
       removeUnprotectedUnits.execute(executionStack, delegateBridge);
-      verify(battleActions).remove(eq(List.of()), eq(delegateBridge), eq(battleSite), eq(true));
+      verify(battleActions)
+          .remove(eq(List.of()), eq(delegateBridge), eq(battleSite), eq(BattleState.Side.DEFENSE));
     }
   }
 }
