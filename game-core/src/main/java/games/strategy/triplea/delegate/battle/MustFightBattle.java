@@ -1336,29 +1336,27 @@ public class MustFightBattle extends DependentBattle
     };
   }
 
+  /**
+   * Removes non combatants from the requested battle side and returns them
+   *
+   * @return the removed units
+   */
   @Override
-  public void removeNonCombatants(final IDelegateBridge bridge) {
-    final List<Unit> notRemovedDefending =
-        removeNonCombatants(defendingUnits, attackingUnits, false, true);
-    final List<Unit> notRemovedAttacking =
-        removeNonCombatants(attackingUnits, defendingUnits, true, true);
-    final Collection<Unit> toRemoveDefending =
-        CollectionUtils.difference(defendingUnits, notRemovedDefending);
-    final Collection<Unit> toRemoveAttacking =
-        CollectionUtils.difference(attackingUnits, notRemovedAttacking);
-    defendingUnits = notRemovedDefending;
-    attackingUnits = notRemovedAttacking;
-    if (!headless) {
-      if (!toRemoveDefending.isEmpty()) {
-        bridge
-            .getDisplayChannelBroadcaster()
-            .changedUnitsNotification(battleId, defender, toRemoveDefending, null, null);
-      }
-      if (!toRemoveAttacking.isEmpty()) {
-        bridge
-            .getDisplayChannelBroadcaster()
-            .changedUnitsNotification(battleId, attacker, toRemoveAttacking, null, null);
-      }
+  public Collection<Unit> removeNonCombatants(final Side side) {
+    if (side == DEFENSE) {
+      final List<Unit> notRemovedDefending =
+          removeNonCombatants(defendingUnits, attackingUnits, false, true);
+      final Collection<Unit> toRemoveDefending =
+          CollectionUtils.difference(defendingUnits, notRemovedDefending);
+      defendingUnits = notRemovedDefending;
+      return toRemoveDefending;
+    } else {
+      final List<Unit> notRemovedAttacking =
+          removeNonCombatants(attackingUnits, defendingUnits, true, true);
+      final Collection<Unit> toRemoveAttacking =
+          CollectionUtils.difference(attackingUnits, notRemovedAttacking);
+      attackingUnits = notRemovedAttacking;
+      return toRemoveAttacking;
     }
   }
 
