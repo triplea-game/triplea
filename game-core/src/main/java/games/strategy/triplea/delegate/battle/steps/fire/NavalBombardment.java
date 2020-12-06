@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.BattleStepStrings;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.sound.SoundPath;
 
 @AllArgsConstructor
@@ -84,15 +86,28 @@ public class NavalBombardment implements BattleStep {
         .battleActions(battleActions)
         .firingGroupSplitter(FiringGroupSplitterBombard.of())
         .side(side)
-        .returnFire(
-            Properties.getNavalBombardCasualtiesReturnFire(
-                    battleState.getGameData().getProperties())
-                ? MustFightBattle.ReturnFire.ALL
-                : MustFightBattle.ReturnFire.NONE)
+        .returnFire(calculateReturnFire())
         .diceRoller(new BombardmentDiceRoller())
         .casualtySelector(new BombardmentCasualtySelector())
         .build()
         .createSteps();
+  }
+
+  @RemoveOnNextMajorRelease("ReturnFire should always be ALL")
+  private MustFightBattle.ReturnFire calculateReturnFire() {
+    // if the step strings don't exist, then this is the battle start so it isn't an old save
+    // if the step strings don't have the remove bombardment casualty, then it is an old save
+    if (battleState.getStepStrings() != null
+        && !battleState
+            .getStepStrings()
+            .contains(BattleStepStrings.REMOVE_BOMBARDMENT_CASUALTIES)) {
+      return Properties.getNavalBombardCasualtiesReturnFire(
+              battleState.getGameData().getProperties())
+          ? MustFightBattle.ReturnFire.ALL
+          : MustFightBattle.ReturnFire.NONE;
+    } else {
+      return MustFightBattle.ReturnFire.ALL;
+    }
   }
 
   private boolean valid() {

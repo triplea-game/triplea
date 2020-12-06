@@ -118,7 +118,7 @@ public class MustFightBattle extends DependentBattle
   // the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
 
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   private List<String> stepStrings;
 
   @RemoveOnNextMajorRelease

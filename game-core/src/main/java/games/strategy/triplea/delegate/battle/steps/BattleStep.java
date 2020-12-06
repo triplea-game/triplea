@@ -6,6 +6,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.change.CheckGeneralBattleEnd;
 import games.strategy.triplea.delegate.battle.steps.change.CheckStalemateBattleEnd;
 import games.strategy.triplea.delegate.battle.steps.change.ClearAaCasualties;
+import games.strategy.triplea.delegate.battle.steps.change.ClearBombardmentCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualties;
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
@@ -47,6 +48,7 @@ public interface BattleStep extends IExecutable {
     AA_DEFENSIVE,
     AA_REMOVE_CASUALTIES,
     NAVAL_BOMBARDMENT,
+    NAVAL_BOMBARDMENT_REMOVE_CASUALTIES,
     REMOVE_NON_COMBATANTS,
     LAND_PARATROOPERS,
     MARK_NO_MOVEMENT_LEFT,
@@ -91,6 +93,7 @@ public interface BattleStep extends IExecutable {
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
         new RemoveUnprotectedUnits(battleState, battleActions),
         new NavalBombardment(battleState, battleActions),
+        new ClearBombardmentCasualties(battleState, battleActions),
         new LandParatroopers(battleState, battleActions),
         new OffensiveSubsRetreat(battleState, battleActions),
         new DefensiveSubsRetreat(battleState, battleActions),

@@ -10,6 +10,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STR
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.LAND_PARATROOPS;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.NAVAL_BOMBARD;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.NOTIFY_PREFIX;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_BOMBARDMENT_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_UNESCORTED_TRANSPORTS;
@@ -250,7 +251,8 @@ public class BattleStepsTest {
     return List.of(
         firingPlayer.getName() + " " + NAVAL_BOMBARD + FIRE_SUFFIX,
         hitPlayer.getName() + SELECT_PREFIX + NAVAL_BOMBARD + CASUALTIES_SUFFIX,
-        hitPlayer.getName() + NOTIFY_PREFIX + NAVAL_BOMBARD + CASUALTIES_SUFFIX);
+        hitPlayer.getName() + NOTIFY_PREFIX + NAVAL_BOMBARD + CASUALTIES_SUFFIX,
+        REMOVE_BOMBARDMENT_CASUALTIES);
   }
 
   private List<String> aaFightStepStrings(
