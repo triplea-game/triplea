@@ -44,7 +44,7 @@ public class MarkCasualties implements BattleStep {
 
   private final FireRoundState fireRoundState;
 
-  @RemoveOnNextMajorRelease("returnFire is ALL for everything except old saves")
+  @RemoveOnNextMajorRelease("This is ReturnFire.ALL for everything except old saves")
   private final MustFightBattle.ReturnFire returnFire;
 
   @Override
