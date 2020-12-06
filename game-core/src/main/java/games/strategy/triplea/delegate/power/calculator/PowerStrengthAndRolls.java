@@ -1,17 +1,12 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.Die;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
@@ -123,65 +118,9 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
                     .add(supportedUnits));
   }
 
-  /**
-   * @param dice Rolled Dice numbers from bridge with size equal to getTotalRolls
-   * @return A list of Dice
-   */
   @Override
-  public List<Die> getDiceHits(final int[] dice) {
-    final Deque<Integer> diceQueue =
-        IntStream.of(dice).boxed().collect(Collectors.toCollection(ArrayDeque::new));
-
-    return sortedStrengthAndRolls.stream()
-        .flatMap(
-            unitPowerStrengthAndRolls -> {
-              if (unitPowerStrengthAndRolls.getChooseBestRoll()) {
-                return getDiceForChooseBestRoll(diceQueue, unitPowerStrengthAndRolls);
-              } else {
-                return getDiceForAllRolls(diceQueue, unitPowerStrengthAndRolls);
-              }
-            })
-        .collect(Collectors.toList());
-  }
-
-  private Stream<Die> getDiceForChooseBestRoll(
-      final Deque<Integer> diceQueue, final UnitPowerStrengthAndRolls unitPowerStrengthAndRolls) {
-    final List<Integer> diceRolls = new ArrayList<>();
-    int bestRoll = unitPowerStrengthAndRolls.getDiceSides();
-    int bestRollIndex = 0;
-    for (int i = 0; i < unitPowerStrengthAndRolls.getRolls(); i++) {
-      final int die = diceQueue.remove();
-      diceRolls.add(die);
-      if (die < bestRoll) {
-        bestRoll = die;
-        bestRollIndex = i;
-      }
-    }
-
-    final int diceHitIndex = bestRollIndex;
-
-    final int strength = unitPowerStrengthAndRolls.getStrength();
-    return IntStream.range(0, unitPowerStrengthAndRolls.getRolls())
-        .mapToObj(
-            rollNumber ->
-                new Die(
-                    diceRolls.get(rollNumber),
-                    strength,
-                    rollNumber == diceHitIndex
-                        ? diceRolls.get(rollNumber) < strength ? Die.DieType.HIT : Die.DieType.MISS
-                        : Die.DieType.IGNORED));
-  }
-
-  private Stream<Die> getDiceForAllRolls(
-      final Deque<Integer> diceQueue, final UnitPowerStrengthAndRolls unitPowerStrengthAndRolls) {
-    final int strength = unitPowerStrengthAndRolls.getStrength();
-    return IntStream.range(0, unitPowerStrengthAndRolls.getRolls())
-        .mapToObj(
-            rollNumber -> {
-              final int diceValue = diceQueue.removeFirst();
-              return new Die(
-                  diceValue, strength, diceValue < strength ? Die.DieType.HIT : Die.DieType.MISS);
-            });
+  public List<UnitPowerStrengthAndRolls> getActiveUnits() {
+    return sortedStrengthAndRolls;
   }
 
   @Override

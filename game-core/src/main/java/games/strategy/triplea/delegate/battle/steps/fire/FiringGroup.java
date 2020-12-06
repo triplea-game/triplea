@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,8 @@ import org.triplea.java.collections.CollectionUtils;
  * figured out since all of the units are the same.
  */
 @Value
-public class FiringGroup {
+public class FiringGroup implements Serializable {
+  private static final long serialVersionUID = -6236125682894804895L;
 
   String displayName;
   String groupName;

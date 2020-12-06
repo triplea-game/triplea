@@ -16,7 +16,9 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -100,11 +102,12 @@ public class NavalBombardment implements BattleStep {
   }
 
   public static class BombardmentDiceRoller
-      implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> {
+      implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll>, Serializable {
+    private static final long serialVersionUID = 2947632065000032442L;
 
     @Override
     public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
-      return DiceRoll.rollDice(
+      return RollDiceFactory.rollBattleDice(
           step.getFiringGroup().getFiringUnits(),
           step.getBattleState().getPlayer(step.getSide()),
           bridge,
@@ -128,7 +131,8 @@ public class NavalBombardment implements BattleStep {
   }
 
   public static class BombardmentCasualtySelector
-      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails>, Serializable {
+    private static final long serialVersionUID = 125872363998041506L;
 
     @Override
     public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
