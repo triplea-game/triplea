@@ -114,8 +114,7 @@ public class MustFightBattle extends DependentBattle
   // keep track of all the units that die this round to see if they change into another unit
   private final List<Unit> killedDuringCurrentRound = new ArrayList<>();
   // Our current execution state, we keep a stack of executables, this allows us to save our state
-  // and resume while in
-  // the middle of a battle.
+  // and resume while in the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
 
   @Getter(onMethod_ = @Override)
@@ -436,22 +435,6 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void clearWaitingToDie(final Side... sides) {
-    for (final Side side : sides) {
-      switch (side) {
-        case OFFENSE:
-          attackingWaitingToDie.clear();
-          break;
-        case DEFENSE:
-          defendingWaitingToDie.clear();
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  @Override
   public void retreatUnits(final Side side, final Collection<Unit> retreatingUnits) {
     final Collection<Unit> units = side == DEFENSE ? defendingUnits : attackingUnits;
     final Collection<Unit> unitsRetreated =
@@ -538,7 +521,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void endBattle(final IDelegateBridge bridge) {
-    clearWaitingToDieAndDamagedChangesInto(bridge);
+    clearWaitingToDieAndDamagedChangesInto(bridge, OFFENSE, DEFENSE);
     isOver = true;
     battleTracker.removeBattle(this, bridge.getData());
 
@@ -559,29 +542,32 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void clearWaitingToDieAndDamagedChangesInto(final IDelegateBridge bridge) {
-    final Collection<Unit> unitsToRemove = new ArrayList<>();
-    unitsToRemove.addAll(attackingWaitingToDie);
-    unitsToRemove.addAll(defendingWaitingToDie);
-    remove(unitsToRemove, bridge, battleSite, OFFENSE, DEFENSE);
-    defendingWaitingToDie.clear();
-    attackingWaitingToDie.clear();
-    damagedChangeInto(
-        attacker,
-        attackingUnits,
-        CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
-        bridge);
-    damagedChangeInto(
-        defender,
-        defendingUnits,
-        CollectionUtils.getMatches(
-            killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
-        bridge);
+  public void clearWaitingToDieAndDamagedChangesInto(
+      final IDelegateBridge bridge, final BattleState.Side... sides) {
+    for (final Side side : sides) {
+      if (side == OFFENSE) {
+        remove(attackingWaitingToDie, bridge, battleSite, side);
+        attackingWaitingToDie.clear();
+        damagedChangeInto(
+            attacker,
+            attackingUnits,
+            CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
+            bridge);
+      } else {
+        remove(defendingWaitingToDie, bridge, battleSite, side);
+        defendingWaitingToDie.clear();
+        damagedChangeInto(
+            defender,
+            defendingUnits,
+            CollectionUtils.getMatches(
+                killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
+            bridge);
+      }
+    }
     killedDuringCurrentRound.clear();
   }
 
-  @Override
-  public void damagedChangeInto(
+  private void damagedChangeInto(
       final GamePlayer player,
       final Collection<Unit> units,
       final Collection<Unit> killedUnits,

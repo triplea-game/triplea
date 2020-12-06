@@ -2,16 +2,12 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.CASUALTY;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -38,8 +34,7 @@ class ClearFirstStrikeCasualtiesTest {
   @MethodSource
   void getStep(final List<BattleStateVariation> parameters, final List<BattleState.Side> sides) {
 
-    final BattleState battleState = spy(givenBattleState(parameters));
-    lenient().doNothing().when(battleState).clearWaitingToDie(any());
+    final BattleState battleState = givenBattleState(parameters);
 
     final ClearFirstStrikeCasualties clearFirstStrikeCasualties =
         new ClearFirstStrikeCasualties(battleState, battleActions);
@@ -51,20 +46,16 @@ class ClearFirstStrikeCasualtiesTest {
     switch (sides.size()) {
       case 0:
       default:
-        verify(battleState, never()).filterUnits(eq(CASUALTY), any());
-        verify(battleState, never()).clearWaitingToDie(any());
-        verify(battleActions, never()).remove(anyCollection(), eq(delegateBridge), any());
+        verify(battleActions, never()).clearWaitingToDieAndDamagedChangesInto(any(), any());
         break;
       case 1:
-        verify(battleState).filterUnits(CASUALTY, sides.get(0));
-        verify(battleState).clearWaitingToDie(eq(sides.get(0)));
-        verify(battleActions).remove(anyCollection(), eq(delegateBridge), any(), eq(sides.get(0)));
+        verify(battleActions)
+            .clearWaitingToDieAndDamagedChangesInto(eq(delegateBridge), eq(sides.get(0)));
         break;
       case 2:
-        verify(battleState).filterUnits(CASUALTY, sides.get(0), sides.get(1));
-        verify(battleState).clearWaitingToDie(eq(sides.get(0)), eq(sides.get(1)));
         verify(battleActions)
-            .remove(anyCollection(), eq(delegateBridge), any(), eq(sides.get(0)), eq(sides.get(1)));
+            .clearWaitingToDieAndDamagedChangesInto(
+                eq(delegateBridge), eq(sides.get(0)), eq(sides.get(1)));
         break;
     }
   }

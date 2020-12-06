@@ -12,7 +12,7 @@ import java.util.Collection;
 /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
 
-  void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge);
+  void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge, BattleState.Side... sides);
 
   void removeCasualties(
       Collection<Unit> killed,
@@ -27,12 +27,6 @@ public interface BattleActions {
       IDelegateBridge bridge,
       Territory battleSite,
       BattleState.Side... side);
-
-  void damagedChangeInto(
-      GamePlayer player,
-      Collection<Unit> units,
-      Collection<Unit> killedUnits,
-      IDelegateBridge bridge);
 
   Territory queryRetreatTerritory(
       BattleState battleState,
