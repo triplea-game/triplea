@@ -474,7 +474,7 @@ public class MustFightBattle extends DependentBattle
     // the territory by the previous battle's remove method
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
     if (!withdrawn) {
-      remove(lost, bridge, battleSite, OFFENSE);
+      removeUnits(lost, bridge, battleSite, OFFENSE);
     }
     if (attackingUnits.isEmpty()) {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
@@ -551,7 +551,7 @@ public class MustFightBattle extends DependentBattle
       final IDelegateBridge bridge, final BattleState.Side... sides) {
     for (final Side side : sides) {
       if (side == OFFENSE) {
-        remove(attackingWaitingToDie, bridge, battleSite, side);
+        removeUnits(attackingWaitingToDie, bridge, battleSite, side);
         attackingWaitingToDie.clear();
         damagedChangeInto(
             attacker,
@@ -559,7 +559,7 @@ public class MustFightBattle extends DependentBattle
             CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
             bridge);
       } else {
-        remove(defendingWaitingToDie, bridge, battleSite, side);
+        removeUnits(defendingWaitingToDie, bridge, battleSite, side);
         defendingWaitingToDie.clear();
         damagedChangeInto(
             defender,
@@ -609,7 +609,7 @@ public class MustFightBattle extends DependentBattle
           ChangeFactory.addUnits(battleSite, unitsToAdd),
           ChangeFactory.markNoMovementChange(unitsToAdd));
       bridge.addChange(changes);
-      remove(unitsToRemove, bridge, battleSite, OFFENSE, DEFENSE);
+      removeUnits(unitsToRemove, bridge, battleSite, OFFENSE, DEFENSE);
       final String transcriptText =
           MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
@@ -636,7 +636,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void remove(
+  public void removeUnits(
       final Collection<Unit> killedUnits,
       final IDelegateBridge bridge,
       final Territory battleSite,
@@ -698,7 +698,7 @@ public class MustFightBattle extends DependentBattle
       if (landedTerritory == null) {
         throw new IllegalStateException("not unloaded?:" + units);
       }
-      remove(lost, bridge, landedTerritory, OFFENSE);
+      removeUnits(lost, bridge, landedTerritory, OFFENSE);
     }
   }
 

@@ -43,7 +43,7 @@ abstract class RemoveUnits implements BattleStep {
             battleState.getPlayer(side),
             suicideUnits,
             getDependents(suicideUnits));
-    battleActions.remove(suicideUnits, bridge, battleState.getBattleSite(), side);
+    battleActions.removeUnits(suicideUnits, bridge, battleState.getBattleSite(), side);
   }
 
   private Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
