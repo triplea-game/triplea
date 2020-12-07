@@ -12,6 +12,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.history.change.units.KillUnits;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -910,11 +911,9 @@ public class AirBattle extends AbstractBattle {
       return;
     }
     final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
-    final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
-    final String transcriptText =
-        MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
-    bridge.addChange(killedChange);
+    final KillUnits killUnits = new KillUnits(battleSite, killed);
+    killUnits.perform(bridge);
+
     final Collection<IBattle> dependentBattles = battleTracker.getBlocked(AirBattle.this);
     removeFromDependents(killed, bridge, dependentBattles, false);
   }
