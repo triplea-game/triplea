@@ -77,14 +77,14 @@ public class MarkCasualties implements BattleStep {
     battleState.markCasualties(fireRoundState.getCasualties().getKilled(), side.getOpposite());
 
     if (returnFire == MustFightBattle.ReturnFire.SUBS) {
-      battleActions.remove(
+      battleActions.removeUnits(
           CollectionUtils.getMatches(
               fireRoundState.getCasualties().getKilled(), Matches.unitIsFirstStrike().negate()),
           bridge,
           battleState.getBattleSite(),
           side.getOpposite());
     } else if (returnFire == MustFightBattle.ReturnFire.NONE) {
-      battleActions.remove(
+      battleActions.removeUnits(
           fireRoundState.getCasualties().getKilled(),
           bridge,
           battleState.getBattleSite(),
@@ -195,6 +195,6 @@ public class MarkCasualties implements BattleStep {
         .deadUnitNotification(
             battleState.getBattleId(), battleState.getPlayer(side), suicidedUnits, dependentUnits);
 
-    battleActions.remove(suicidedUnits, bridge, battleState.getBattleSite(), side);
+    battleActions.removeUnits(suicidedUnits, bridge, battleState.getBattleSite(), side);
   }
 }

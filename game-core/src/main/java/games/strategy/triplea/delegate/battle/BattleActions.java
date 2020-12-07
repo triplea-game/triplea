@@ -20,7 +20,7 @@ public interface BattleActions {
    *
    * @param sides the side that the killedUnits are on
    */
-  void remove(
+  void removeUnits(
       Collection<Unit> killedUnits,
       IDelegateBridge bridge,
       Territory battleSite,
