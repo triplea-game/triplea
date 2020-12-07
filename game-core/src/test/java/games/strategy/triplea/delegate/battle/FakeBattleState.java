@@ -169,6 +169,9 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
+  public void markCasualties(final Collection<Unit> casualties, final Side side) {}
+
+  @Override
   public List<String> getStepStrings() {
     return List.of();
   }

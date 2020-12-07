@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.RemoveOnNextMajorRelease;
+import org.triplea.java.collections.CollectionUtils;
 
 /** Step where the casualties are moved from ALIVE to CASUALTY */
 @RequiredArgsConstructor
@@ -66,13 +68,28 @@ public class MarkCasualties implements BattleStep {
   }
 
   @Override
+  @ChangeOnNextMajorRelease("Remove the ReturnFire.SUBS and ReturnFire.NONE logic")
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (!battleState.getStatus().isHeadless()) {
       notifyCasualties(bridge);
     }
 
-    battleActions.removeCasualties(
-        fireRoundState.getCasualties().getKilled(), returnFire, side.getOpposite(), bridge);
+    battleState.markCasualties(fireRoundState.getCasualties().getKilled(), side.getOpposite());
+
+    if (returnFire == MustFightBattle.ReturnFire.SUBS) {
+      battleActions.remove(
+          CollectionUtils.getMatches(
+              fireRoundState.getCasualties().getKilled(), Matches.unitIsFirstStrike().negate()),
+          bridge,
+          battleState.getBattleSite(),
+          side.getOpposite());
+    } else if (returnFire == MustFightBattle.ReturnFire.NONE) {
+      battleActions.remove(
+          fireRoundState.getCasualties().getKilled(),
+          bridge,
+          battleState.getBattleSite(),
+          side.getOpposite());
+    }
 
     if (firingGroup.isSuicideOnHit()) {
       removeSuicideOnHitUnits(bridge);
