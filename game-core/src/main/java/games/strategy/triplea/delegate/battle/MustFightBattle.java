@@ -552,7 +552,8 @@ public class MustFightBattle extends DependentBattle
             attacker,
             attackingUnits,
             CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
-            bridge);
+            bridge,
+            side);
       } else {
         remove(defendingWaitingToDie, bridge, battleSite, side);
         defendingWaitingToDie.clear();
@@ -561,7 +562,8 @@ public class MustFightBattle extends DependentBattle
             defendingUnits,
             CollectionUtils.getMatches(
                 killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
-            bridge);
+            bridge,
+            side);
       }
     }
     killedDuringCurrentRound.clear();
@@ -571,7 +573,8 @@ public class MustFightBattle extends DependentBattle
       final GamePlayer player,
       final Collection<Unit> units,
       final Collection<Unit> killedUnits,
-      final IDelegateBridge bridge) {
+      final IDelegateBridge bridge,
+      final Side side) {
     final List<Unit> damagedUnits =
         CollectionUtils.getMatches(
             units,
@@ -602,13 +605,30 @@ public class MustFightBattle extends DependentBattle
     if (!unitsToAdd.isEmpty()) {
       changes.add(
           ChangeFactory.addUnits(battleSite, unitsToAdd),
-          ChangeFactory.markNoMovementChange(unitsToAdd));
+          ChangeFactory.markNoMovementChange(unitsToAdd),
+          ChangeFactory.removeUnits(battleSite, unitsToRemove));
       bridge.addChange(changes);
-      remove(unitsToRemove, bridge, battleSite, OFFENSE, DEFENSE);
-      final String transcriptText =
+
+      if (!unitsToRemove.isEmpty()) {
+        final String transformedTranscriptText =
+            MyFormatter.unitsToText(unitsToRemove) + " transformed in " + battleSite.getName();
+        bridge
+            .getHistoryWriter()
+            .addChildToEvent(transformedTranscriptText, new ArrayList<>(unitsToRemove));
+      }
+
+      final String addedTranscriptText =
           MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
-      bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
-      units.addAll(unitsToAdd);
+      bridge.getHistoryWriter().addChildToEvent(addedTranscriptText, new ArrayList<>(unitsToAdd));
+
+      if (side == DEFENSE) {
+        defendingUnits.addAll(unitsToAdd);
+        defendingUnits.removeAll(unitsToRemove);
+      } else {
+        attackingUnits.addAll(unitsToAdd);
+        attackingUnits.removeAll(unitsToRemove);
+      }
+
       bridge
           .getDisplayChannelBroadcaster()
           .changedUnitsNotification(battleId, player, unitsToRemove, unitsToAdd, null);
