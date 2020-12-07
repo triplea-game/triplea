@@ -18,13 +18,13 @@ public interface BattleActions {
   /**
    * Kills the unit and removes it from the battle
    *
-   * @param sides the side that the killedUnits are on
+   * @param side the side that the killedUnits are on
    */
   void removeUnits(
       Collection<Unit> killedUnits,
       IDelegateBridge bridge,
       Territory battleSite,
-      BattleState.Side... sides);
+      BattleState.Side side);
 
   Territory queryRetreatTerritory(
       BattleState battleState,
