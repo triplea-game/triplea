@@ -159,8 +159,17 @@ public class UnitUtils {
   }
 
   /**
-   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to
-   * be within max damage for the new units.
+   * Translates attributes and properties from one unit to a collection of units.
+   *
+   * <p>Used when a unit is being transformed, so the old unit is going away and the new units are
+   * taking its place
+   *
+   * <p>Currently, it translates: Hits, Damage, Unloaded units, and Transported units
+   *
+   * <p>Hits and Damage are modified as needed to fit within the limits of the new units. Units will
+   * always have at least 1 hp.
+   *
+   * <p>Unloaded units and transported units are given to the unit that matches stream().findFirst()
    *
    * @return change for unit's properties
    */
@@ -168,6 +177,30 @@ public class UnitUtils {
       final Unit unitGivingAttributes,
       final Collection<Unit> unitsThatWillGetAttributes,
       final Territory territory) {
+
+    final CompositeChange changes =
+        unitsThatWillGetAttributes.stream()
+            .findFirst()
+            .map(
+                receivingUnit -> {
+                  final CompositeChange unitChange = new CompositeChange();
+                  final List<Unit> unloaded = unitGivingAttributes.getUnloaded();
+                  if (!unloaded.isEmpty()) {
+                    unitChange.add(
+                        ChangeFactory.unitPropertyChange(receivingUnit, unloaded, Unit.UNLOADED));
+                  }
+
+                  final List<Unit> transporting = unitGivingAttributes.getTransporting();
+                  return transporting.stream()
+                      .map(
+                          transported ->
+                              new CompositeChange(
+                                  ChangeFactory.unitPropertyChange(
+                                      transported, receivingUnit, Unit.TRANSPORTED_BY)))
+                      .reduce(unitChange, CompositeChange::new);
+                })
+            .orElse(new CompositeChange());
+
     return unitsThatWillGetAttributes.stream()
         .map(
             receivingUnit -> {
@@ -195,6 +228,6 @@ public class UnitUtils {
               }
               return unitChange;
             })
-        .reduce(new CompositeChange(), CompositeChange::new);
+        .reduce(changes, CompositeChange::new);
   }
 }

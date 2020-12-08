@@ -3,6 +3,7 @@ package games.strategy.triplea;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.Change;
@@ -29,6 +30,8 @@ class UnitUtilsTest {
   private final Territory landZone = territory("Germany", gameData);
   private final UnitType battleship = GameDataTestUtil.battleship(gameData);
   private final UnitType factory = GameDataTestUtil.factory(gameData);
+  private final UnitType transport = GameDataTestUtil.transport(gameData);
+  private final UnitType infantry = GameDataTestUtil.infantry(gameData);
 
   @Nested
   class TranslateAttributesToOtherUnits {
@@ -124,6 +127,73 @@ class UnitUtilsTest {
               + "This is a forced situation.",
           newUnits.get(0).getUnitDamage(),
           is(0));
+    }
+
+    @Test
+    void unloadedUnitsAreTransferred() {
+      final Unit oldUnit = transport.create(1, player).get(0);
+      final List<Unit> newUnits = transport.create(1, player);
+
+      final List<Unit> unloadedInfantry = infantry.create(1, player);
+      oldUnit.setUnloaded(unloadedInfantry);
+
+      final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
+      gameData.performChange(changes);
+
+      assertThat(newUnits.get(0).getUnloaded(), is(unloadedInfantry));
+    }
+
+    @Test
+    void unloadedUnitsAreTransferredToOnlyOneOfTheNewUnits() {
+      final Unit oldUnit = transport.create(1, player).get(0);
+      final List<Unit> newUnits = transport.create(2, player);
+
+      final List<Unit> unloadedInfantry = infantry.create(1, player);
+      oldUnit.setUnloaded(unloadedInfantry);
+
+      final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
+      gameData.performChange(changes);
+
+      assertThat(newUnits.get(0).getUnloaded(), is(unloadedInfantry));
+      assertThat(
+          "Only the first new unit should get the unloaded infantry",
+          newUnits.get(1).getUnloaded(),
+          is(empty()));
+    }
+
+    @Test
+    void transportedUnitsAreTransferred() {
+      final Unit oldUnit = transport.create(1, player).get(0);
+      seaZone.getUnitCollection().add(oldUnit);
+      final List<Unit> newUnits = transport.create(1, player);
+
+      final List<Unit> transportedUnits = infantry.create(1, player);
+      seaZone.getUnitCollection().addAll(transportedUnits);
+      transportedUnits.get(0).setTransportedBy(oldUnit);
+
+      final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
+      gameData.performChange(changes);
+
+      assertThat(transportedUnits.get(0).getTransportedBy(), is(newUnits.get(0)));
+    }
+
+    @Test
+    void transportedUnitsAreTransferredToTheFirstNewUnit() {
+      final Unit oldUnit = transport.create(1, player).get(0);
+      seaZone.getUnitCollection().add(oldUnit);
+      final List<Unit> newUnits = transport.create(2, player);
+
+      final List<Unit> transportedUnits = infantry.create(1, player);
+      seaZone.getUnitCollection().addAll(transportedUnits);
+      transportedUnits.get(0).setTransportedBy(oldUnit);
+
+      final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
+      gameData.performChange(changes);
+
+      assertThat(
+          "The first new unit should be the new transporter for the units",
+          transportedUnits.get(0).getTransportedBy(),
+          is(newUnits.get(0)));
     }
   }
 }
