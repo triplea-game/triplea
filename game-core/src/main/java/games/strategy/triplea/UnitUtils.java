@@ -13,6 +13,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
@@ -166,39 +167,34 @@ public class UnitUtils {
   public static Change translateAttributesToOtherUnits(
       final Unit unitGivingAttributes,
       final Collection<Unit> unitsThatWillGetAttributes,
-      final Territory t) {
-    final CompositeChange changes = new CompositeChange();
-    // must look for hits, unitDamage,
-    final int combatDamage = unitGivingAttributes.getHits();
-    final IntegerMap<Unit> hits = new IntegerMap<>();
-    if (combatDamage > 0) {
-      for (final Unit u : unitsThatWillGetAttributes) {
-        final int maxHitPoints = UnitAttachment.get(u.getType()).getHitPoints();
-        final int transferDamage = Math.min(combatDamage, maxHitPoints - 1);
-        if (transferDamage <= 0) {
-          continue;
-        }
-        hits.put(u, transferDamage);
-      }
-    }
-    if (!hits.isEmpty()) {
-      changes.add(ChangeFactory.unitsHit(hits, List.of(t)));
-    }
-    final int unitDamage = unitGivingAttributes.getUnitDamage();
-    final IntegerMap<Unit> damageMap = new IntegerMap<>();
-    if (unitDamage > 0) {
-      for (final Unit u : unitsThatWillGetAttributes) {
-        final int maxDamage = u.getHowMuchDamageCanThisUnitTakeTotal(t);
-        final int transferDamage = Math.max(0, Math.min(unitDamage, maxDamage));
-        if (transferDamage <= 0) {
-          continue;
-        }
-        damageMap.put(u, transferDamage);
-      }
-    }
-    if (!damageMap.isEmpty()) {
-      changes.add(ChangeFactory.bombingUnitDamage(damageMap, List.of(t)));
-    }
-    return changes;
+      final Territory territory) {
+    return unitsThatWillGetAttributes.stream()
+        .map(
+            receivingUnit -> {
+              final CompositeChange unitChange = new CompositeChange();
+              final int transferHits =
+                  Math.min(
+                      unitGivingAttributes.getHits(),
+                      // ensure the receiving unit has at least 1 hit point after hits are
+                      // transferred
+                      receivingUnit.getUnitAttachment().getHitPoints() - 1);
+              if (transferHits > 0) {
+                unitChange.add(
+                    ChangeFactory.unitsHit(
+                        IntegerMap.of(Map.of(receivingUnit, transferHits)), List.of(territory)));
+              }
+
+              final int transferDamage =
+                  Math.min(
+                      unitGivingAttributes.getUnitDamage(),
+                      receivingUnit.getHowMuchDamageCanThisUnitTakeTotal(territory));
+              if (transferDamage > 0) {
+                unitChange.add(
+                    ChangeFactory.bombingUnitDamage(
+                        IntegerMap.of(Map.of(receivingUnit, transferDamage)), List.of(territory)));
+              }
+              return unitChange;
+            })
+        .reduce(new CompositeChange(), CompositeChange::new);
   }
 }
