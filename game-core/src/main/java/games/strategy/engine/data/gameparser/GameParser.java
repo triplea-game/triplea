@@ -555,6 +555,16 @@ public final class GameParser {
     for (final GamePlay.Sequence.Step current : stepList) {
       final IDelegate delegate = getDelegate(current.getDelegate());
       final GamePlayer player = getPlayerIdOptional(current.getPlayer()).orElse(null);
+      if (player == null && current.getPlayer() != null && !current.getPlayer().isBlank()) {
+        log.log(
+            Level.SEVERE,
+            "The step "
+                + current.getName()
+                + " wants a player with the name of '"
+                + current.getPlayer()
+                + "' but that player can not be found. "
+                + "Make sure the player's name is spelled correctly.");
+      }
       final String name = current.getName();
       String displayName = null;
       final Properties stepProperties = parseStepProperties(current.getStepProperties());
