@@ -557,7 +557,8 @@ public class MustFightBattle extends DependentBattle
             attacker,
             attackingUnits,
             CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
-            bridge);
+            bridge,
+            side);
       } else {
         removeUnits(defendingWaitingToDie, bridge, battleSite, side);
         defendingWaitingToDie.clear();
@@ -566,7 +567,8 @@ public class MustFightBattle extends DependentBattle
             defendingUnits,
             CollectionUtils.getMatches(
                 killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
-            bridge);
+            bridge,
+            side);
       }
     }
     killedDuringCurrentRound.clear();
@@ -576,7 +578,8 @@ public class MustFightBattle extends DependentBattle
       final GamePlayer player,
       final Collection<Unit> units,
       final Collection<Unit> killedUnits,
-      final IDelegateBridge bridge) {
+      final IDelegateBridge bridge,
+      final Side side) {
     final List<Unit> damagedUnits =
         CollectionUtils.getMatches(
             units,
@@ -609,7 +612,7 @@ public class MustFightBattle extends DependentBattle
           ChangeFactory.addUnits(battleSite, unitsToAdd),
           ChangeFactory.markNoMovementChange(unitsToAdd));
       bridge.addChange(changes);
-      removeUnits(unitsToRemove, bridge, battleSite, OFFENSE, DEFENSE);
+      removeUnits(unitsToRemove, bridge, battleSite, side);
       final String transcriptText =
           MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
@@ -640,7 +643,7 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> killedUnits,
       final IDelegateBridge bridge,
       final Territory battleSite,
-      final Side... sides) {
+      final Side side) {
     if (killedUnits.isEmpty()) {
       return;
     }
@@ -674,14 +677,12 @@ public class MustFightBattle extends DependentBattle
       removeFromDependents(killed, bridge, dependentBattles);
     }
 
-    for (final Side side : sides) {
-      if (side == DEFENSE) {
-        defendingUnits.removeAll(killed);
-        defendingWaitingToDie.removeAll(killed);
-      } else {
-        attackingUnits.removeAll(killed);
-        attackingWaitingToDie.removeAll(killed);
-      }
+    if (side == DEFENSE) {
+      defendingUnits.removeAll(killed);
+      defendingWaitingToDie.removeAll(killed);
+    } else {
+      attackingUnits.removeAll(killed);
+      attackingWaitingToDie.removeAll(killed);
     }
   }
 
