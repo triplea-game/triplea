@@ -1,0 +1,12 @@
+<tagExample>
+    <singleChild
+            attribute="value"
+            numberAttribute="1"
+            integerObjectAttribute="-1"
+            decimalAttribute="0.3"
+            decimalWithIntAttribute="3"
+            decimalObjectAttribute="10"
+            booleanAttribute="TRUE"
+            booleanObjectAttribute="true"/>
+</tagExample>
+

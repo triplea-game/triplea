@@ -1,5 +1,4 @@
 - name: deploy send logs script
-  become: true
   copy:
     src: send_logs
     dest: /home/admin/send_logs
@@ -8,7 +7,6 @@
     group: admin
 
 - name: install cronjob to send logs
-  become: true
   cron:
     user: admin
     name: "send logs {{ item }}"
@@ -18,7 +16,6 @@
 
 - name: deploy private logs-user ssh key to admin user
   # This is the SSH key that will be needed when sending log files to the aggregation server
-  become: true
   copy:
    src: log_aggregation_ed25519
    dest: "{{ log_sending_private_key_file }}"
@@ -28,7 +25,6 @@
 
 
 - name: deploy ssh config to admin user to disable strict host key checking
-  become: true
   template:
     src: ssh_config.j2
     dest: /home/admin/.ssh/config

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** A contiguous sequence of {@link GameStep}s within a single game round. */
-@Log
+@Slf4j
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
 
@@ -42,13 +42,11 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     }
     if (!found) {
       currentIndex = 0;
-      log.severe(
-          () ->
-              String.format(
-                  "Step Not Found (%s:%s), will instead use: %s",
-                  stepDisplayName,
-                  (player != null) ? player.getName() : "null",
-                  steps.get(currentIndex)));
+      log.error(
+          "Step Not Found ({}:{}), will instead use: {}",
+          stepDisplayName,
+          (player != null) ? player.getName() : "null",
+          steps.get(currentIndex));
     }
   }
 

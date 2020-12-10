@@ -48,16 +48,6 @@ public class TransportTracker {
     return transport.getTransporting();
   }
 
-  /**
-   * @return Unmodifiable collection of units that the given transport is transporting.
-   * @deprecated Invoke unit.getTransporting(Collection) directly
-   */
-  @Deprecated
-  public static List<Unit> transporting(
-      final Unit transport, final Collection<Unit> transportedUnitsPossible) {
-    return transport.getTransporting(transportedUnitsPossible);
-  }
-
   /** @return Unmodifiable map of transport -> collection of transported units. */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return transporting(units, TransportTracker::transporting);
@@ -83,11 +73,11 @@ public class TransportTracker {
   /**
    * Returns a map of transport -> collection of transported units. This method is identical to
    * {@link #transporting(Collection)} except that it considers all elements in {@code units} as the
-   * possible units to transport (see {@link #transporting(Unit, Collection)}).
+   * possible units to transport
    */
   public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(
       final Collection<Unit> units) {
-    return transporting(units, transport -> transporting(transport, units));
+    return transporting(units, transport -> transport.getTransporting(units));
   }
 
   public static boolean isTransporting(final Unit transport) {
@@ -139,17 +129,10 @@ public class TransportTracker {
       return change;
     }
     assertTransport(transport);
-    if (!transport.getTransporting().contains(unit)) {
-      throw new IllegalStateException(
-          "Not being carried, unit:" + unit + " transport:" + transport);
-    }
     change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
       change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_IN_COMBAT_PHASE));
-      // change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
       change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_IN_COMBAT_PHASE));
-      // change.add(ChangeFactory.unitPropertyChange(transport, true,
-      // TripleAUnit.UNLOADED_AMPHIBIOUS));
     }
     if (!dependentBattle) {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling
@@ -258,7 +241,8 @@ public class TransportTracker {
     // See if transport has unloaded anywhere yet
     final GameData data = transport.getData();
     for (final Unit unit : unloaded) {
-      if (Properties.getWW2V2(data) || Properties.getTransportUnloadRestricted(data)) {
+      if (Properties.getWW2V2(data.getProperties())
+          || Properties.getTransportUnloadRestricted(data.getProperties())) {
         // cannot unload to two different territories
         if (!unit.getUnloadedTo().equals(territory)) {
           return true;
@@ -298,7 +282,8 @@ public class TransportTracker {
   /** For ww2v3+ and LHTR, if a transport has been in combat then it can't load in NCM. */
   public static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
     final GameData data = transport.getData();
-    return (Properties.getWW2V3(data) || Properties.getLhtrCarrierProductionRules(data))
+    return (Properties.getWW2V3(data.getProperties())
+            || Properties.getLhtrCarrierProductionRules(data.getProperties()))
         && GameStepPropertiesHelper.isNonCombatMove(data, true)
         && transport.getWasInCombat();
   }
@@ -314,7 +299,7 @@ public class TransportTracker {
     // carrier unit
     final Collection<Unit> carriers =
         CollectionUtils.getMatches(attackingUnits, Matches.unitIsCarrier());
-    if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data)) {
+    if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data.getProperties())) {
       final Predicate<Unit> alliedFighters =
           Matches.isUnitAllied(attacker, data)
               .and(Matches.unitIsOwnedBy(attacker).negate())

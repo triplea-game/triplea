@@ -45,7 +45,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     }
     // empty
     techMap.put(player, null);
-    if (Properties.getTriggers(data)) {
+    if (Properties.getTriggers(data.getProperties())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out
       // as a composite match
       // OR.

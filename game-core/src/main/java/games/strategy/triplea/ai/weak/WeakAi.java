@@ -530,7 +530,7 @@ public class WeakAi extends AbstractAi {
     // find the territories we can just walk into
     final Predicate<Territory> walkInto =
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data)
-            .or(Matches.isTerritoryFreeNeutral(data));
+            .or(Matches.isTerritoryFreeNeutral(data.getProperties()));
     final List<Territory> enemyOwned =
         CollectionUtils.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
@@ -814,7 +814,7 @@ public class WeakAi extends AbstractAi {
             Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
-        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       repairRules = player.getRepairFrontier().getRules();
       final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
       final Map<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();

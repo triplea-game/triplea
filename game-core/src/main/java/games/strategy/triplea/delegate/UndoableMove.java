@@ -133,8 +133,9 @@ public class UndoableMove extends AbstractUndoableMove {
                                 Set.of(unit), Matches.unitIsStrategicBomber()),
                             data)));
             if (enemyTargets.size() > 1
-                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
-                && !Properties.getRaidsMayBePreceededByAirBattles(data)) {
+                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+                    data.getProperties())
+                && !Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())) {
               while (target == null) {
                 target =
                     bridge

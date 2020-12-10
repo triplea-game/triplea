@@ -1,2 +1,2 @@
-version: "2.1.20765"
+version: "2.5.22202"
 journalctl_applications: ["bot@01", "bot@02", "bot@03", "bot@04", "bot@05"]

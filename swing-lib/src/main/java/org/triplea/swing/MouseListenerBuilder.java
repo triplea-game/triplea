@@ -13,6 +13,7 @@ public class MouseListenerBuilder {
   private Consumer<MouseEvent> mouseReleased = e -> {};
   private Consumer<MouseEvent> mouseExited = e -> {};
 
+  /** Constructs the MouseLister. */
   public MouseListener build() {
     return new MouseListener() {
       @Override

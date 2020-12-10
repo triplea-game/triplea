@@ -7,10 +7,16 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /** Represents a battle. */
 public interface IBattle extends Serializable {
@@ -23,31 +29,30 @@ public interface IBattle extends Serializable {
   }
 
   /** The type of a battle. */
+  @AllArgsConstructor
+  @ToString(of = "type")
   enum BattleType {
-    NORMAL("Battle"),
-    AIR_BATTLE("Air Battle"),
-    AIR_RAID("Air Raid"),
-    BOMBING_RAID("Bombing Raid");
+    NORMAL("Battle", false, false),
+    AIR_BATTLE("Air Battle", false, true),
+    AIR_RAID("Air Raid", true, true),
+    BOMBING_RAID("Bombing Raid", true, false);
 
     private final String type;
+    @Getter private final boolean bombingRun;
+    @Getter private final boolean airBattle;
 
-    BattleType(final String type) {
-      this.type = type;
+    public static Collection<BattleType> nonBombingBattleTypes() {
+      return Arrays.stream(values())
+          .filter(Predicate.not(BattleType::isBombingRun))
+          .collect(Collectors.toSet());
     }
 
-    @Override
-    public String toString() {
+    public static Collection<BattleType> bombingBattleTypes() {
+      return Arrays.stream(values()).filter(BattleType::isBombingRun).collect(Collectors.toSet());
+    }
+
+    public String toDisplayText() {
       return type;
-    }
-
-    // if it has the word "Raid" in it, then it is a bombing battle
-    public boolean isBombingRun() {
-      return type.contains("Raid");
-    }
-
-    // if it has the word "Air" in it, then it is an air battle
-    public boolean isAirPreBattleOrPreRaid() {
-      return type.contains("Air");
     }
   }
 
@@ -121,9 +126,6 @@ public interface IBattle extends Serializable {
 
   /** @return Unmodifiable collection of units that are dependent on the given units. */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
-
-  /** @return Unmodifiable collection of units that are assaulting amphibiously. */
-  Collection<Unit> getAmphibiousLandAttackers();
 
   /** @return Unmodifiable collection of units that are bombarding. */
   Collection<Unit> getBombardingUnits();

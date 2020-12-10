@@ -14,6 +14,7 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Properties;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
 
@@ -42,6 +43,9 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   public GameData getData() {
     return gameData;
   }
+
+  @Override
+  public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
   public void leaveDelegateExecution() {}

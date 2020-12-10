@@ -10,46 +10,24 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class CasualtySortingUtil {
-  /**
-   * In an amphibious assault, sort on who is unloading from transports first as this will allow the
-   * marines with higher scores to get killed last.
-   */
-  public static void sortAmphib(final List<Unit> units, final List<Unit> amphibiousLandAttackers) {
-    final Comparator<Unit> decreasingMovement =
-        UnitComparator.getLowestToHighestMovementComparator();
-    units.sort(
-        Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
-            .thenComparing(
-                (u1, u2) -> {
-                  final UnitAttachment ua = UnitAttachment.get(u1.getType());
-                  final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-                  if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
-                    return compareAccordingToAmphibious(u1, u2, amphibiousLandAttackers);
-                  }
-                  return 0;
-                })
-            .thenComparing(decreasingMovement));
-  }
-
-  private static int compareAccordingToAmphibious(
-      final Unit u1, final Unit u2, final List<Unit> amphibiousLandAttackers) {
-    if (amphibiousLandAttackers.contains(u1) && !amphibiousLandAttackers.contains(u2)) {
-      return -1;
-    } else if (amphibiousLandAttackers.contains(u2) && !amphibiousLandAttackers.contains(u1)) {
-      return 1;
-    }
-    final int m1 = UnitAttachment.get(u1.getType()).getIsMarine();
-    final int m2 = UnitAttachment.get(u2.getType()).getIsMarine();
-    return m2 - m1;
-  }
-
-  /**
-   * Sort in a determined way so that the dice results appear in a logical order. Also sort by
-   * movement, so casualties will be chosen as the units with least movement.
-   */
+  /** In an amphibious assault, sort marines with higher scores last */
   public static void sortPreBattle(final List<Unit> units) {
     units.sort(
         Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
+            .thenComparing(compareMarines())
             .thenComparing(UnitComparator.getLowestToHighestMovementComparator()));
+  }
+
+  public static Comparator<Unit> compareMarines() {
+    return (u1, u2) -> {
+      final int result = Boolean.compare(u1.getWasAmphibious(), u2.getWasAmphibious());
+      if (result != 0) {
+        return result;
+      }
+
+      final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
+      final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+      return Integer.compare(ua1.getIsMarine(), ua2.getIsMarine());
+    };
   }
 }

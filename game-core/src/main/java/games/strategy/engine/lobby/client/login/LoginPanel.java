@@ -54,20 +54,11 @@ final class LoginPanel extends JPanel {
   private final JButton cancel = new JButton("Cancel");
   private final JLabel passwordLabel = new JLabel("Password:");
 
-  LoginPanel() {
-    initializeComponents();
-    layoutComponents();
-    setupListeners();
-    updateComponents();
-  }
-
-  private void initializeComponents() {
+  LoginPanel(final LoginMode loginMode) {
     username.setText(String.valueOf(ClientSetting.lobbyLoginName.getValue().orElse(new char[0])));
     password.setText(
         String.valueOf(ClientSetting.lobbySavedPassword.getValue().orElse(new char[0])));
-  }
 
-  private void layoutComponents() {
     setLayout(new BorderLayout());
 
     final JLabel label = new JLabel(new ImageIcon(Util.getBanner("Login")));
@@ -161,34 +152,38 @@ final class LoginPanel extends JPanel {
             new Insets(5, 5, 0, 0),
             0,
             0));
-    main.add(
-        new JLabel(),
-        new GridBagConstraints(
-            0,
-            3,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 0, 0, 0),
-            0,
-            0));
-    main.add(
-        anonymousLogin,
-        new GridBagConstraints(
-            1,
-            3,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 5, 0, 0),
-            0,
-            0));
+    if (loginMode == LoginMode.REGISTRATION_NOT_REQUIRED) {
+      main.add(
+          new JLabel(),
+          new GridBagConstraints(
+              0,
+              3,
+              1,
+              1,
+              0.0,
+              0.0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(5, 0, 0, 0),
+              0,
+              0));
+      main.add(
+          anonymousLogin,
+          new GridBagConstraints(
+              1,
+              3,
+              1,
+              1,
+              0.0,
+              0.0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(5, 5, 0, 0),
+              0,
+              0));
+    } else {
+      anonymousLogin.setSelected(false);
+    }
 
     final JPanel buttons = new JPanel();
     add(buttons, BorderLayout.SOUTH);
@@ -198,9 +193,7 @@ final class LoginPanel extends JPanel {
     buttons.add(createAccount);
     buttons.add(forgotPassword);
     buttons.add(cancel);
-  }
 
-  private void setupListeners() {
     logon.addActionListener(e -> logonPressed());
     createAccount.addActionListener(
         e -> {
@@ -215,6 +208,7 @@ final class LoginPanel extends JPanel {
           close();
         });
     SwingKeyBinding.addKeyBinding(this, KeyCode.ENTER, this::logonPressed);
+    updateComponents();
   }
 
   private void close() {

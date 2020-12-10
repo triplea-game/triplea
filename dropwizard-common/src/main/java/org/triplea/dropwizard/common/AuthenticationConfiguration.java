@@ -1,7 +1,7 @@
 package org.triplea.dropwizard.common;
 
 import com.codahale.metrics.MetricRegistry;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.Authenticator;
@@ -18,6 +18,10 @@ import org.triplea.http.client.AuthenticationHeaders;
 @UtilityClass
 public class AuthenticationConfiguration {
 
+  /**
+   * Enables configuration via OAuth token. Endpoints annotated with @RolesAllowed will be activated
+   * and will require a user to have been a given role during per-request authentication.
+   */
   public static <UserT extends Principal> void enableAuthentication(
       final Environment environment,
       final MetricRegistry metrics,
@@ -33,7 +37,7 @@ public class AuthenticationConfiguration {
                         new CachingAuthenticator<>(
                             metrics,
                             authenticator,
-                            CacheBuilder.newBuilder()
+                            Caffeine.newBuilder()
                                 .expireAfterAccess(Duration.ofMinutes(10))
                                 .maximumSize(10000)))
                     .setAuthorizer(authorizer)

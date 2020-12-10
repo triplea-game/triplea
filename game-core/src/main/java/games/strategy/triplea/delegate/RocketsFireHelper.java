@@ -50,9 +50,10 @@ public class RocketsFireHelper implements Serializable {
     // WW2V2/WW2V3, now fires at the start of the BattleDelegate
     // WW2V1, fires at end of non combat move so does not call here
     helper.needToFindRocketTargets = false;
-    if ((Properties.getWW2V2(data) || Properties.getAllRocketsAttack(data))
+    if ((Properties.getWW2V2(data.getProperties())
+            || Properties.getAllRocketsAttack(data.getProperties()))
         && TechTracker.hasRocket(bridge.getGamePlayer())) {
-      if (Properties.getSequentiallyTargetedRockets(data)) {
+      if (Properties.getSequentiallyTargetedRockets(data.getProperties())) {
         helper.needToFindRocketTargets = true;
       } else {
         helper.findRocketTargetsAndFireIfNeeded(bridge, false);
@@ -69,8 +70,8 @@ public class RocketsFireHelper implements Serializable {
     final GamePlayer player = bridge.getGamePlayer();
     // If we don't have rockets or aren't V1 then do nothing.
     if (!TechTracker.hasRocket(player)
-        || Properties.getWW2V2(data)
-        || Properties.getAllRocketsAttack(data)) {
+        || Properties.getWW2V2(data.getProperties())
+        || Properties.getAllRocketsAttack(data.getProperties())) {
       return;
     }
     final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
@@ -127,7 +128,7 @@ public class RocketsFireHelper implements Serializable {
             CollectionUtils.getMatches(
                 enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(targetTerritory).negate());
         Unit unitTarget = null;
-        if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
           final Collection<Unit> rocketTargets =
               new ArrayList<>(
                   CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
@@ -225,7 +226,7 @@ public class RocketsFireHelper implements Serializable {
     final Predicate<Territory> allowed =
         PredicateBuilder.of(Matches.territoryAllowsRocketsCanFlyOver(player, data))
             .andIf(
-                !Properties.getRocketsCanFlyOverImpassables(data),
+                !Properties.getRocketsCanFlyOverImpassables(data.getProperties()),
                 Matches.territoryIsNotImpassable())
             .build();
     final Collection<Territory> possible =
@@ -263,7 +264,7 @@ public class RocketsFireHelper implements Serializable {
     final GamePlayer attacked = attackedTerritory.getOwner();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean damageFromBombingDoneToUnits =
-        Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+        Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties());
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits =
         attackedTerritory
@@ -292,9 +293,9 @@ public class RocketsFireHelper implements Serializable {
     }
     final String transcript;
     final boolean doNotUseBombingBonus =
-        !Properties.getUseBombingMaxDiceSidesAndBonus(data) || attackFrom == null;
+        !Properties.getUseBombingMaxDiceSidesAndBonus(data.getProperties()) || attackFrom == null;
     int cost = 0;
-    if (!Properties.getLowLuckDamageOnly(data)) {
+    if (!Properties.getLowLuckDamageOnly(data.getProperties())) {
       if (doNotUseBombingBonus) {
         // no low luck, and no bonus, so just roll based on the map's dice sides
         final int[] rolls =
@@ -450,13 +451,14 @@ public class RocketsFireHelper implements Serializable {
       // apply the hits to the targets
       final IntegerMap<Unit> damageMap = new IntegerMap<>();
       damageMap.put(unit, totalDamage);
-      bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
+      bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap, List.of(attackedTerritory)));
       // attackedTerritory.notifyChanged();
       // in WW2V2, limit rocket attack cost to production value of factory.
-    } else if (Properties.getWW2V2(data)
-        || Properties.getLimitRocketAndSbrDamageToProduction(data)) {
+    } else if (Properties.getWW2V2(data.getProperties())
+        || Properties.getLimitRocketAndSbrDamageToProduction(data.getProperties())) {
       // If we are limiting total PUs lost then take that into account
-      if (Properties.getPuCap(data) || Properties.getLimitRocketDamagePerTurn(data)) {
+      if (Properties.getPuCap(data.getProperties())
+          || Properties.getLimitRocketDamagePerTurn(data.getProperties())) {
         final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);
@@ -492,7 +494,7 @@ public class RocketsFireHelper implements Serializable {
                   + " damage to "
                   + unit);
     } else {
-      cost *= Properties.getPuMultiplier(data);
+      cost *= Properties.getPuMultiplier(data.getProperties());
       getRemote(bridge)
           .reportMessage(
               "Rocket attack in " + attackedTerritory.getName() + " costs:" + cost,

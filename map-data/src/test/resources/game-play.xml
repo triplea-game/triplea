@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<game>
+    <gamePlay>
+        <delegate name="delegate1" javaClass="javaDelegate1" display="display1"/>
+        <delegate name="delegate2" javaClass="javaDelegate2"/>
+        <sequence>
+            <step name="step1" delegate="stepDelegate1" player="player1" maxRunCount="1" display="stepDisplay"/>
+            <step name="step2" delegate="stepDelegate2"/>
+            <step name="step3" delegate="stepDelegate3">
+                <stepProperty name="stepProp1" value="stepValue1"/>
+                <stepProperty name="stepProp2" value="stepValue2"/>
+            </step>
+        </sequence>
+        <offset round="3"/>
+    </gamePlay>
+</game>

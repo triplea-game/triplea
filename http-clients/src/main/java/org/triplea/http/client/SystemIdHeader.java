@@ -20,7 +20,7 @@ public class SystemIdHeader {
   }
 
   @VisibleForTesting
-  static Map<String, Object> headers(final Supplier<SystemId> systemIdSupplier) {
+  public static Map<String, Object> headers(final Supplier<SystemId> systemIdSupplier) {
     return Map.of(SYSTEM_ID_HEADER, systemIdSupplier.get().getValue());
   }
 }

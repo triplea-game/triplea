@@ -3,62 +3,15 @@ dist: xenial
 sudo: false
 language: java
 jdk: openjdk11
-cache: { directories: [ ".gradle", "~/.gradle/caches" ] }
 install: skip
 
 env:
   global:
    - REPORT_FAIL=".travis/shared/report-build-status FAILURE"
-   - VERIFY_STAGE=".travis/stages/verify"
    - DEPLOY_PRERELEASE_STAGE=".travis/stages/deploy/prerelease"
    - DEPLOY_PROD_STAGE=".travis/stages/deploy/prod"
 jobs:
   include:
-
-    ########################################################################
-    # Jobs are ordered tests first and then slower jobs before faster ones.
-
-    - stage: Verify
-      name: "Tests: Integration Test"
-      addons: { postgresql: "10" }
-      script: [ $VERIFY_STAGE/integration-testing/run || $REPORT_FAIL "integ tests" ]
-
-    - stage: Verify
-      name: "Tests: Unit Test"
-      script: [ $VERIFY_STAGE/unit-testing/run || $REPORT_FAIL "unit tests" ]
-
-    - stage: Verify
-      name: "Tests: Smoke Test"
-      addons: {postgresql: "10"}
-      script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
-
-    - stage: Verify
-      name: "Tests: Compatibility Checks"
-      script: [ (travis_retry $VERIFY_STAGE/compatibility-testing/run) || $REPORT_FAIL "compatibility tests" ]
-
-    - stage: Verify
-      name: "Analysis: PMD Verification"
-      script: [ $VERIFY_STAGE/pmd-verification/run || $REPORT_FAIL "pmd verification" ]
-
-    - stage: Verify
-      name: "Analysis: Checkstyle"
-      script: [ $VERIFY_STAGE/checkstyle/run || $REPORT_FAIL "checkstyle" ]
-
-    - stage: Verify
-      name: "Analysis: Java Formatting"
-      script: [ $VERIFY_STAGE/java-formatting/run || $REPORT_FAIL "formatting" ]
-
-    - stage: Verify
-      name: "Analysis: Check Links and YAML Syntax"
-      script: [ (travis_retry $VERIFY_STAGE/check-links-and-yaml-syntax/run) || $REPORT_FAIL "valid links and yaml" ]
-
-    - stage: Verify
-      name: "Analysis: Code Convention Checks"
-      script: [ $VERIFY_STAGE/code-convention-checks/run || $REPORT_FAIL "code conventions" ]
-
-    - stage: Verify
-      name: "Analysis: Find Unused or Unmatched Tests"
-      script: [ $VERIFY_STAGE/find-unused-or-unmatched-tests/run || $REPORT_FAIL "unused or unmatched tests" ]
 
     ########################################################################
 

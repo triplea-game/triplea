@@ -110,7 +110,7 @@ public class UnitUtils {
     }
     int productionCapacity;
     if (accountForDamage) {
-      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
         if (ua.getCanProduceXUnits() < 0) {
           // we could use territoryUnitProduction OR
           // territoryProduction if we wanted to, however we should
@@ -122,22 +122,31 @@ public class UnitUtils {
       } else {
         productionCapacity = territoryProduction;
         if (productionCapacity < 1) {
-          productionCapacity = (Properties.getWW2V2(data) || Properties.getWW2V3(data)) ? 0 : 1;
+          productionCapacity =
+              (Properties.getWW2V2(data.getProperties())
+                      || Properties.getWW2V3(data.getProperties()))
+                  ? 0
+                  : 1;
         }
       }
     } else {
       if (ua.getCanProduceXUnits() < 0
-          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+              data.getProperties())) {
         productionCapacity = territoryProduction;
       } else if (ua.getCanProduceXUnits() < 0
-          && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+          && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
         productionCapacity = territoryUnitProduction;
       } else {
         productionCapacity = ua.getCanProduceXUnits();
       }
       if (productionCapacity < 1
-          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        productionCapacity = (Properties.getWW2V2(data) || Properties.getWW2V3(data)) ? 0 : 1;
+          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+              data.getProperties())) {
+        productionCapacity =
+            (Properties.getWW2V2(data.getProperties()) || Properties.getWW2V3(data.getProperties()))
+                ? 0
+                : 1;
       }
     }
     // Increase production if have industrial technology
@@ -188,7 +197,7 @@ public class UnitUtils {
       }
     }
     if (!damageMap.isEmpty()) {
-      changes.add(ChangeFactory.bombingUnitDamage(damageMap));
+      changes.add(ChangeFactory.bombingUnitDamage(damageMap, List.of(t)));
     }
     return changes;
   }

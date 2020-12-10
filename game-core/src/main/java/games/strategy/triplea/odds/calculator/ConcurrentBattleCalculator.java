@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
 
@@ -127,7 +128,13 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         // on it while we copy
         // it 16 times, when once is enough) don't let the data change while we make the first copy
         data.acquireWriteLock();
-        newData = GameDataUtils.cloneGameDataWithoutHistory(data, false);
+        newData =
+            GameDataUtils.cloneGameDataWithoutHistory(
+                    data, false, Injections.getInstance().getEngineVersion())
+                .orElse(null);
+        if (newData == null) {
+          return;
+        }
       } finally {
         data.releaseWriteLock();
       }
@@ -144,7 +151,9 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
           // only 1 more copy to make)
           while (cancelCurrentOperation.get() >= 0 && i < currentThreads) {
             // the last one will use our already copied data from above, without copying it again
-            workers.add(new BattleCalculator(newData, (currentThreads == ++i)));
+            workers.add(
+                new BattleCalculator(
+                    newData, (currentThreads == ++i), Injections.getInstance().getEngineVersion()));
           }
         } else {
           // multi-thread our copying, cus why the heck not
@@ -153,10 +162,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
               IntStream.range(1, currentThreads)
                   .parallel()
                   .filter(j -> cancelCurrentOperation.get() >= 0)
-                  .mapToObj(j -> new BattleCalculator(newData, false))
+                  .mapToObj(
+                      j ->
+                          new BattleCalculator(
+                              newData, false, Injections.getInstance().getEngineVersion()))
                   .collect(Collectors.toList()));
           // the last one will use our already copied data from above, without copying it again
-          workers.add(new BattleCalculator(newData, true));
+          workers.add(
+              new BattleCalculator(newData, true, Injections.getInstance().getEngineVersion()));
         }
       } finally {
         newData.releaseReadLock();
@@ -215,8 +228,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final var runCountDistributor = new RunCountDistributor(runCount, workers.size());
       final AggregateResults results =
           new AggregateResults(
-              workers
-                  .parallelStream()
+              workers.parallelStream()
                   .map(
                       worker ->
                           worker.calculate(

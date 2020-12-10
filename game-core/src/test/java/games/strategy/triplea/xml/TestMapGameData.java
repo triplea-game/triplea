@@ -1,14 +1,14 @@
 package games.strategy.triplea.xml;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.TestAttachment;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.triplea.delegate.TestDelegate;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Map;
+import org.triplea.util.Version;
 
 /** The available maps for use during testing. */
 public enum TestMapGameData {
@@ -65,18 +65,14 @@ public enum TestMapGameData {
    * @throws RuntimeException If an error occurs while loading the map.
    */
   public GameData getGameData() {
-    try (InputStream is =
-        new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
-      return GameParser.parse(
-          "game name",
-          is,
-          new XmlGameElementMapper(
-              Map.of("TestDelegate", TestDelegate::new),
-              Map.of("TestAttachment", TestAttachment::new)));
-    } catch (final Exception e) {
-      // Rethrow as RuntimeException as this is not expected to happen, to simplify test code
-      // to not have to catch checked exception types.
-      throw new RuntimeException(e);
-    }
+    final URI mapUri = Paths.get("src", "test", "resources", fileName).toUri();
+
+    return GameParser.parse(
+            mapUri,
+            new XmlGameElementMapper(
+                Map.of("TestDelegate", TestDelegate::new),
+                Map.of("TestAttachment", TestAttachment::new)),
+            new Version(2, 0, 0))
+        .orElseThrow(() -> new IllegalStateException("Error parsing: " + mapUri));
   }
 }

@@ -16,6 +16,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
@@ -118,8 +119,19 @@ public class ServerLauncher implements ILauncher {
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<Player> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
+
+      // TODO: Project#20 - if feature flag is toggled, start game relay server
+      //   and use a real ClientNetworkingBridge
+      final ClientNetworkBridge clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
+
       serverGame =
-          new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, launchAction);
+          new ServerGame(
+              gameData,
+              localPlayerSet,
+              remotePlayers,
+              messengers,
+              clientNetworkBridge,
+              launchAction);
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
       launchAction.onLaunch(serverGame);
       // tell the clients to start, later we will wait for them to all signal that they are ready.
@@ -168,7 +180,6 @@ public class ServerLauncher implements ILauncher {
       isLaunching = false;
       abortLaunch = testShouldWeAbort();
       if (!abortLaunch) {
-        warmUpCryptoRandomSource();
         log.info("Launching game - starting game delegates.");
         serverGame.startGame();
       } else {
@@ -218,23 +229,6 @@ public class ServerLauncher implements ILauncher {
       log.info("Game Status: Waiting For Players");
       inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
     }
-  }
-
-  private void warmUpCryptoRandomSource() {
-    // the first roll takes a while, initialize here in the background so that the user doesn't
-    // notice
-    new Thread(
-            () -> {
-              try {
-                serverGame
-                    .getRandomSource()
-                    .getRandom(gameData.getDiceSides(), 2, "Warming up crypto random source");
-              } catch (final RuntimeException e) {
-                log.log(Level.SEVERE, "Failed to warm up crypto random source", e);
-              }
-            },
-            "Warming up crypto random source")
-        .start();
   }
 
   public void addObserver(

@@ -53,7 +53,7 @@ public class AllianceTracker implements Serializable {
    * @param player The player to add to the alliance.
    * @param allianceName The alliance to add to.
    */
-  protected void addToAlliance(final GamePlayer player, final String allianceName) {
+  public void addToAlliance(final GamePlayer player, final String allianceName) {
     alliances.put(player, allianceName);
   }
 
@@ -83,7 +83,7 @@ public class AllianceTracker implements Serializable {
     return !alliancesPlayerIsIn.isEmpty() ? alliancesPlayerIsIn : Set.of(player.getName());
   }
 
-  Set<GamePlayer> getAllies(final GamePlayer currentPlayer) {
+  public Set<GamePlayer> getAllies(final GamePlayer currentPlayer) {
     return alliances.get(currentPlayer).stream()
         .map(this::getPlayersInAlliance)
         .flatMap(Collection::stream)

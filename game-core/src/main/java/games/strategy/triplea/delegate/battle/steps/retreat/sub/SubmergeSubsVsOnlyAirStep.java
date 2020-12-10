@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBMERGE_SUBS_VS_AIR_ONLY;
 
 import games.strategy.engine.data.Unit;
@@ -9,7 +12,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import java.util.Collection;
+import games.strategy.triplea.delegate.battle.steps.retreat.EvaderRetreat;
 import java.util.List;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
@@ -39,34 +42,38 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
   }
 
   private boolean valid() {
-    return (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())
-        || isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits()));
+    return (sideOnlyHasAirThatCanNotTargetSubs(OFFENSE)
+        || sideOnlyHasAirThatCanNotTargetSubs(DEFENSE));
   }
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    final Collection<Unit> submergingSubs;
-    final boolean defender;
-    if (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())) {
-      // submerge the defending units
-      submergingSubs =
-          CollectionUtils.getMatches(battleState.getDefendingUnits(), canNotBeTargetedByAllMatch);
-      defender = true;
-    } else if (isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits())) {
-      // submerge the attacking units
-      submergingSubs =
-          CollectionUtils.getMatches(battleState.getAttackingUnits(), canNotBeTargetedByAllMatch);
-      defender = false;
+    final BattleState.Side submergingSide;
+    if (sideOnlyHasAirThatCanNotTargetSubs(OFFENSE)) {
+      submergingSide = DEFENSE;
+    } else if (sideOnlyHasAirThatCanNotTargetSubs(DEFENSE)) {
+      submergingSide = OFFENSE;
     } else {
       return;
     }
-    battleActions.submergeUnits(submergingSubs, defender, bridge);
+
+    EvaderRetreat.submergeEvaders(
+        EvaderRetreat.Parameters.builder()
+            .battleState(battleState)
+            .battleActions(battleActions)
+            .units(
+                CollectionUtils.getMatches(
+                    battleState.filterUnits(ALIVE, submergingSide), canNotBeTargetedByAllMatch))
+            .side(submergingSide)
+            .bridge(bridge)
+            .build());
   }
 
-  private boolean isOnlyAirVsSubs(
-      final Collection<Unit> possibleAirUnits, final Collection<Unit> possibleEvadingUnits) {
-    return !possibleAirUnits.isEmpty()
-        && possibleAirUnits.stream().allMatch(Matches.unitIsAir())
-        && possibleEvadingUnits.stream().anyMatch(canNotBeTargetedByAllMatch);
+  private boolean sideOnlyHasAirThatCanNotTargetSubs(final BattleState.Side sideWithAir) {
+    return !battleState.filterUnits(ALIVE, sideWithAir).isEmpty()
+        && battleState.filterUnits(ALIVE, sideWithAir).stream().allMatch(Matches.unitIsAir())
+        && !battleState.filterUnits(ALIVE, sideWithAir.getOpposite()).isEmpty()
+        && battleState.filterUnits(ALIVE, sideWithAir.getOpposite()).stream()
+            .anyMatch(canNotBeTargetedByAllMatch);
   }
 }

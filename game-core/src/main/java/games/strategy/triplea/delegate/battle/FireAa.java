@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
+import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -13,23 +16,31 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
-import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
+import games.strategy.triplea.delegate.battle.steps.fire.FireRoundState;
+import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
+import games.strategy.triplea.delegate.battle.steps.fire.MarkCasualties;
+import games.strategy.triplea.delegate.battle.steps.fire.RollDiceStep;
+import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.AaFireAndCasualtyStep;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.triplea.java.Interruptibles;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.sound.SoundUtils;
 
 /**
  * Maintains the state of a group of AA units firing during a {@link
  * games.strategy.triplea.delegate.battle.MustFightBattle}.
  */
+@RemoveOnNextMajorRelease
+@Deprecated
+@SuppressWarnings("unused")
 public class FireAa implements IExecutable {
   private static final long serialVersionUID = -6406659798754841382L;
 
@@ -46,8 +57,9 @@ public class FireAa implements IExecutable {
   private final Collection<TerritoryEffect> territoryEffects;
   private final List<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
-  private final boolean isAmphibious;
-  private final Collection<Unit> amphibiousLandAttackers;
+  private final boolean isAmphibious = false;
+  private final Collection<Unit> amphibiousLandAttackers = List.of();
+
   private final List<String> aaTypes;
 
   // These variables change state during execution
@@ -70,7 +82,7 @@ public class FireAa implements IExecutable {
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final List<String> aaTypes) {
     this.attackableUnits =
-        CollectionUtils.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
+        CollectionUtils.getMatches(attackableUnits, Matches.unitIsBeingTransported().negate());
     this.firingUnits = firingUnits;
     this.battle = battle;
     this.hitPlayer = hitPlayer;
@@ -83,8 +95,6 @@ public class FireAa implements IExecutable {
     this.territoryEffects = territoryEffects;
     this.allFriendlyUnitsAliveOrWaitingToDie = allFriendlyUnitsAliveOrWaitingToDie;
     this.allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
-    isAmphibious = this.battle.isAmphibious();
-    amphibiousLandAttackers = this.battle.getAmphibiousLandAttackers();
     this.aaTypes = aaTypes;
   }
 
@@ -95,7 +105,7 @@ public class FireAa implements IExecutable {
     for (final String aaType : aaTypes) {
       final Collection<Unit> aaTypeUnits =
           CollectionUtils.getMatches(firingUnits, Matches.unitIsAaOfTypeAa(aaType));
-      final List<Collection<Unit>> firingGroups = MustFightBattle.newFiringUnitGroups(aaTypeUnits);
+      final List<Collection<Unit>> firingGroups = newFiringUnitGroups(aaTypeUnits);
       for (final Collection<Unit> firingGroup : firingGroups) {
         final Set<UnitType> validTargetTypes =
             UnitAttachment.get(firingGroup.iterator().next().getType())
@@ -118,21 +128,19 @@ public class FireAa implements IExecutable {
 
               @Override
               public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-                validTargets.removeAll(casualtiesSoFar);
-                if (!validTargets.isEmpty()) {
-                  dice =
-                      DiceRoll.rollAa(
-                          validTargets,
-                          firingGroup,
-                          allEnemyUnitsAliveOrWaitingToDie,
-                          allFriendlyUnitsAliveOrWaitingToDie,
-                          bridge,
-                          battleSite,
-                          defending);
-                  if (!headless) {
-                    SoundUtils.playFireBattleAa(firingPlayer, aaType, dice.getHits() > 0, bridge);
-                  }
-                }
+                final FireRoundState fireRoundState = new FireRoundState();
+                new RollDiceStep(
+                        battle,
+                        defending ? DEFENSE : OFFENSE,
+                        new FiringGroup(
+                            aaType,
+                            firingUnits,
+                            attackableUnits,
+                            firingUnits.stream().anyMatch(Matches.unitIsSuicideOnHit())),
+                        fireRoundState,
+                        new AaFireAndCasualtyStep.AaDiceRoller())
+                    .execute(stack, bridge);
+                dice = fireRoundState.getDice();
               }
             };
         final IExecutable selectCasualties =
@@ -141,13 +149,20 @@ public class FireAa implements IExecutable {
 
               @Override
               public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-                if (!validTargets.isEmpty()) {
-                  final CasualtyDetails details =
-                      selectCasualties(validTargets, firingGroup, bridge, aaType);
-                  battle.markDamaged(details.getDamaged(), bridge);
-                  casualties = details;
-                  casualtiesSoFar.addAll(details.getKilled());
-                }
+                final FireRoundState fireRoundState = new FireRoundState();
+                fireRoundState.setDice(dice);
+                new SelectCasualties(
+                        battle,
+                        defending ? DEFENSE : OFFENSE,
+                        new FiringGroup(
+                            aaType,
+                            firingUnits,
+                            attackableUnits,
+                            firingUnits.stream().anyMatch(Matches.unitIsSuicideOnHit())),
+                        fireRoundState,
+                        new AaFireAndCasualtyStep.SelectAaCasualties())
+                    .execute(stack, bridge);
+                casualties = fireRoundState.getCasualties();
               }
             };
         final IExecutable notifyCasualties =
@@ -156,13 +171,21 @@ public class FireAa implements IExecutable {
 
               @Override
               public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-                if (!validTargets.isEmpty()) {
-                  notifyCasualtiesAa(bridge, aaType);
-                  battle.removeCasualties(
-                      casualties.getKilled(), ReturnFire.ALL, !defending, bridge);
-                  battle.removeSuicideOnHitCasualties(
-                      firingGroup, dice.getHits(), defending, bridge);
-                }
+                final FireRoundState fireRoundState = new FireRoundState();
+                fireRoundState.setDice(dice);
+                fireRoundState.setCasualties(casualties);
+                new MarkCasualties(
+                        battle,
+                        battle,
+                        defending ? DEFENSE : OFFENSE,
+                        new FiringGroup(
+                            aaType,
+                            firingUnits,
+                            attackableUnits,
+                            firingUnits.stream().anyMatch(Matches.unitIsSuicideOnHit())),
+                        fireRoundState,
+                        ReturnFire.ALL)
+                    .execute(stack, bridge);
               }
             };
         // push in reverse order of execution
@@ -173,70 +196,33 @@ public class FireAa implements IExecutable {
     }
   }
 
-  private CasualtyDetails selectCasualties(
-      final Collection<Unit> validAttackingUnitsForThisRoll,
-      final Collection<Unit> defendingAa,
-      final IDelegateBridge bridge,
-      final String currentTypeAa) {
-    // send defender the dice roll so he can see what the dice are while he waits for attacker to
-    // select casualties
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyDice(
-            dice,
-            hitPlayer.getName()
-                + BattleStepStrings.SELECT_PREFIX
-                + currentTypeAa
-                + BattleStepStrings.CASUALTIES_SUFFIX);
-    return AaCasualtySelector.getAaCasualties(
-        !defending,
-        validAttackingUnitsForThisRoll,
-        attackableUnits,
-        defendingAa,
-        firingUnits,
-        dice,
-        bridge,
-        hitPlayer,
-        battleId,
-        battleSite,
-        territoryEffects,
-        isAmphibious,
-        amphibiousLandAttackers);
-  }
+  /**
+   * Breaks list of units into groups of non suicide on hit units and each type of suicide on hit
+   * units since each type of suicide on hit units need to roll separately to know which ones get
+   * hits.
+   */
+  static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
 
-  private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {
-    if (headless) {
-      return;
+    // Sort suicide on hit units by type
+    final Map<UnitType, Collection<Unit>> map = new HashMap<>();
+    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit())) {
+      final UnitType type = unit.getType();
+      if (map.containsKey(type)) {
+        map.get(type).add(unit);
+      } else {
+        final Collection<Unit> unitList = new ArrayList<>();
+        unitList.add(unit);
+        map.put(type, unitList);
+      }
     }
-    bridge
-        .getDisplayChannelBroadcaster()
-        .casualtyNotification(
-            battleId,
-            hitPlayer.getName()
-                + BattleStepStrings.REMOVE_PREFIX
-                + currentTypeAa
-                + BattleStepStrings.CASUALTIES_SUFFIX,
-            dice,
-            hitPlayer,
-            new ArrayList<>(casualties.getKilled()),
-            new ArrayList<>(casualties.getDamaged()),
-            dependentUnits);
-    AbstractBattle.getRemote(hitPlayer, bridge)
-        .confirmOwnCasualties(battleId, "Press space to continue");
-    final Thread t =
-        new Thread(
-            () -> {
-              try {
-                AbstractBattle.getRemote(firingPlayer, bridge)
-                    .confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
-              } catch (final Exception e) {
-                // ignore
-              }
-            },
-            "click to continue waiter");
-    t.start();
-    bridge.leaveDelegateExecution();
-    Interruptibles.join(t);
-    bridge.enterDelegateExecution();
+
+    // Add all suicide on hit groups and the remaining units
+    final List<Collection<Unit>> result = new ArrayList<>(map.values());
+    final Collection<Unit> remainingUnits =
+        CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit().negate());
+    if (!remainingUnits.isEmpty()) {
+      result.add(remainingUnits);
+    }
+    return result;
   }
 }

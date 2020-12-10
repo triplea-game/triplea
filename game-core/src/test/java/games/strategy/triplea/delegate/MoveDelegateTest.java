@@ -21,10 +21,15 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
-import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -438,13 +443,21 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final IBattle battle = mock(IBattle.class);
     when(battle.getTerritory()).thenReturn(westEurope);
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollDiceFactory.rollBattleDice(
             attackList,
-            false,
             russians,
             bridge,
-            battle,
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(attackList)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(2, roll.getHits());
     advanceToStep(bridge, "russianNonCombatMove");
     // Test the move
@@ -825,10 +838,6 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 2);
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits =
-        new ArrayList<>(
-            balticSeaZone.getUnitCollection().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits =
         new ArrayList<>(
@@ -857,23 +866,32 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendList = transport.create(1, germans);
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
-    // fire the defending transport then the submarine (both miss)
-    whenGetRandom(bridge).thenAnswer(withValues(1, 2));
+    // fire the defending submarine then the transport (both miss)
+    whenGetRandom(bridge).thenAnswer(withValues(2, 1));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(IBattle.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
     // Retreat from the Baltic
-    ((MustFightBattle) inBalticSeaZone)
-        .externalRetreat(retreatingSeaUnits, northSea, false, bridge);
+    final OffensiveGeneralRetreat offensiveGeneralRetreat =
+        new OffensiveGeneralRetreat((BattleState) inBalticSeaZone, (BattleActions) inBalticSeaZone);
+    offensiveGeneralRetreat.execute(mock(ExecutionStack.class), bridge);
     // Get the total number of units that should be left
     final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
@@ -897,10 +915,6 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 2);
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits =
-        new ArrayList<>(
-            balticSeaZone.getUnitCollection().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits =
         new ArrayList<>(
@@ -933,19 +947,28 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     whenGetRandom(bridge).thenAnswer(withValues(0, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(IBattle.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
     // Retreat from the Baltic
-    ((MustFightBattle) inBalticSeaZone)
-        .externalRetreat(retreatingSeaUnits, northSea, false, bridge);
+    final OffensiveGeneralRetreat offensiveGeneralRetreat =
+        new OffensiveGeneralRetreat((BattleState) inBalticSeaZone, (BattleActions) inBalticSeaZone);
+    offensiveGeneralRetreat.execute(mock(ExecutionStack.class), bridge);
     // Get the total number of units that should be left
     final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
@@ -969,10 +992,6 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 2);
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits =
-        new ArrayList<>(
-            balticSeaZone.getUnitCollection().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits =
         new ArrayList<>(
@@ -991,23 +1010,32 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendList = transport.create(1, germans);
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
-    // fire the defending transport then the submarine (both miss)
-    whenGetRandom(bridge).thenAnswer(withValues(1, 2));
+    // fire the defending submarine then the transport (both miss)
+    whenGetRandom(bridge).thenAnswer(withValues(2, 1));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(IBattle.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();
     // Retreat from the Baltic
-    ((MustFightBattle) inBalticSeaZone)
-        .externalRetreat(retreatingSeaUnits, northSea, false, bridge);
+    final OffensiveGeneralRetreat offensiveGeneralRetreat =
+        new OffensiveGeneralRetreat((BattleState) inBalticSeaZone, (BattleActions) inBalticSeaZone);
+    offensiveGeneralRetreat.execute(mock(ExecutionStack.class), bridge);
     // Get the total number of units that should be left
     final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
@@ -1031,10 +1059,6 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 2);
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits =
-        new ArrayList<>(
-            balticSeaZone.getUnitCollection().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits =
         new ArrayList<>(
@@ -1057,19 +1081,28 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     whenGetRandom(bridge).thenAnswer(withValues(0, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll =
-        DiceRoll.rollDice(
+        RollDiceFactory.rollBattleDice(
             defendList,
-            true,
             germans,
             bridge,
-            mock(IBattle.class),
-            TerritoryEffectHelper.getEffects(balticSeaZone));
+            "",
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(defendList)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(balticSeaZone))
+                .build());
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();
     // Retreat from the Baltic
-    ((MustFightBattle) inBalticSeaZone)
-        .externalRetreat(retreatingSeaUnits, northSea, false, bridge);
+    final OffensiveGeneralRetreat offensiveGeneralRetreat =
+        new OffensiveGeneralRetreat((BattleState) inBalticSeaZone, (BattleActions) inBalticSeaZone);
+    offensiveGeneralRetreat.execute(mock(ExecutionStack.class), bridge);
     // Get the total number of units that should be left
     final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating

@@ -6,11 +6,11 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.GenericTechAdvance;
@@ -878,7 +878,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 CollectionUtils.getMatches(
                     data.getUnitTypeList().getAllUnitTypes(),
                     Matches.unitTypeIsAir().and(Matches.unitTypeIsStrategicBomber().negate()));
-            final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
+            final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data.getProperties());
             for (final UnitType jet : allJets) {
               if (ww2v3TechModel) {
                 taa.setAttackBonus("1:" + jet.getName());
@@ -937,8 +937,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
             final List<UnitType> allBombers =
                 CollectionUtils.getMatches(
                     data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
-            final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
-            final boolean heavyBombersLhtr = Properties.getLhtrHeavyBombers(data);
+            final int heavyBomberDiceRollsTotal =
+                Properties.getHeavyBomberDiceRolls(data.getProperties());
+            final boolean heavyBombersLhtr = Properties.getLhtrHeavyBombers(data.getProperties());
             for (final UnitType bomber : allBombers) {
               // TODO: The bomber dice rolls get set when the xml is parsed.
               // we subtract the base rolls to get the bonus

@@ -2,14 +2,11 @@ package games.strategy.engine.lobby.client.login;
 
 import com.google.common.base.Strings;
 import feign.FeignException;
-import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.engine.lobby.client.LobbyClient;
-import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import java.awt.Window;
 import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.HttpInteractionException;
@@ -19,7 +16,6 @@ import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
-import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
@@ -33,13 +29,13 @@ import org.triplea.swing.SwingComponents;
  */
 public class LobbyLogin {
   private static final String CONNECTING_TO_LOBBY = "Connecting to lobby...";
-  private final Window parentWindow;
-  private final ServerProperties serverProperties;
+  private final JFrame parentWindow;
 
+  private final ServerProperties serverProperties;
   private final LobbyLoginClient lobbyLoginClient;
 
-  public LobbyLogin(final Window parent, final ServerProperties serverProperties) {
-    parentWindow = parent;
+  public LobbyLogin(final JFrame parentWindow, final ServerProperties serverProperties) {
+    this.parentWindow = parentWindow;
     this.serverProperties = serverProperties;
     lobbyLoginClient = LobbyLoginClient.newClient(serverProperties.getUri());
   }
@@ -49,42 +45,42 @@ public class LobbyLogin {
    * server. If successful the user is presented with the lobby frame. Failure cases are handled and
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
-  public void promptLogin() {
-    loginToServer()
-        .ifPresent(
-            lobbyClient -> {
-              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, serverProperties);
-              MainFrame.hide();
-              lobbyFrame.setVisible(true);
+  public Optional<LoginResult> promptLogin(final LoginMode loginMode) {
+    final Optional<LoginResult> lobbyClient = loginToServer(loginMode);
 
-              if (lobbyClient.isPasswordChangeRequired()) {
-                try {
-                  final boolean passwordChanged =
-                      ChangePasswordPanel.doPasswordChange(
-                          lobbyFrame,
-                          lobbyClient.getPlayerToLobbyConnection(),
-                          ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
+    lobbyClient.ifPresent(
+        loginResult -> {
+          if (loginResult.isPasswordChangeRequired()) {
+            try {
+              final boolean passwordChanged =
+                  ChangePasswordPanel.doPasswordChange(
+                      parentWindow,
+                      serverProperties.getUri(),
+                      loginResult.getApiKey(),
+                      ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
 
-                  if (passwordChanged) {
-                    DialogBuilder.builder()
-                        .parent(lobbyFrame)
-                        .title("Success")
-                        .infoMessage("Password successfully updated!")
-                        .showDialog();
-                  } else {
-                    notifyTempPasswordInvalid(lobbyFrame, null);
-                  }
-                } catch (final HttpInteractionException e) {
-                  notifyTempPasswordInvalid(lobbyFrame, e);
-                }
+              if (passwordChanged) {
+                DialogBuilder.builder()
+                    .parent(parentWindow)
+                    .title("Success")
+                    .infoMessage("Password successfully updated!")
+                    .showDialog();
+              } else {
+                notifyTempPasswordInvalid(parentWindow, null);
               }
-            });
+
+            } catch (final HttpInteractionException e) {
+              notifyTempPasswordInvalid(parentWindow, e);
+            }
+          }
+        });
+    return lobbyClient;
   }
 
   private static void notifyTempPasswordInvalid(
-      final LobbyFrame lobbyFrame, final @Nullable Exception exception) {
+      final JFrame parentWindow, final @Nullable Exception exception) {
     DialogBuilder.builder()
-        .parent(lobbyFrame)
+        .parent(parentWindow)
         .title("Password Not Updated")
         .errorMessage(
             "Password not updated, your temporary password is expired.\n"
@@ -93,7 +89,7 @@ public class LobbyLogin {
         .showDialog();
   }
 
-  private Optional<LobbyClient> login(final LoginPanel panel) {
+  private Optional<LoginResult> login(final LoginPanel panel, final LoginMode loginMode) {
     try {
 
       final LobbyLoginResponse loginResponse =
@@ -103,22 +99,16 @@ public class LobbyLogin {
 
       if (loginResponse.getFailReason() == null) {
         return Optional.of(
-            LobbyClient.builder()
-                .playerToLobbyConnection(
-                    new PlayerToLobbyConnection(
-                        serverProperties.getUri(),
-                        ApiKey.of(loginResponse.getApiKey()),
-                        error ->
-                            SwingComponents.showError(
-                                null, "Error communicating with lobby", error)))
+            LoginResult.builder()
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
-                .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
+                .username(UserName.of(panel.getUserName()))
+                .apiKey(ApiKey.of(loginResponse.getApiKey()))
                 .moderator(loginResponse.isModerator())
-                .userName(UserName.of(panel.getUserName()))
+                .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .build());
       } else {
         showError("Login Failed", loginResponse.getFailReason());
-        return loginToServer();
+        return loginToServer(loginMode);
       }
     } catch (final FeignException e) {
       showError("Could Not Connect To Lobby", "Error: " + e.getMessage());
@@ -136,12 +126,12 @@ public class LobbyLogin {
     SwingComponents.showError(null, title, message);
   }
 
-  private Optional<LobbyClient> loginToServer() {
-    final LoginPanel loginPanel = new LoginPanel();
+  private Optional<LoginResult> loginToServer(final LoginMode loginMode) {
+    final LoginPanel loginPanel = new LoginPanel(loginMode);
     final LoginPanel.ReturnValue returnValue = loginPanel.show(parentWindow);
     switch (returnValue) {
       case LOGON:
-        return login(loginPanel);
+        return login(loginPanel, loginMode);
       case CANCEL:
         return Optional.empty();
       case CREATE_ACCOUNT:
@@ -154,17 +144,18 @@ public class LobbyLogin {
     }
   }
 
-  private Optional<LobbyClient> createAccount() {
+  private Optional<LoginResult> createAccount() {
     final CreateAccountPanel createAccountPanel = new CreateAccountPanel();
     final CreateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
     switch (returnValue) {
       case OK:
         return createAccount(createAccountPanel)
             .map(
-                playerToLobbyConnection ->
-                    LobbyClient.builder()
-                        .userName(UserName.of(createAccountPanel.getUsername()))
-                        .playerToLobbyConnection(playerToLobbyConnection)
+                lobbyLoginResponse ->
+                    LoginResult.builder()
+                        .username(UserName.of(createAccountPanel.getUsername()))
+                        .apiKey(ApiKey.of(lobbyLoginResponse.getApiKey()))
+                        .passwordChangeRequired(lobbyLoginResponse.isPasswordChangeRequired())
                         .build());
       case CANCEL:
         return Optional.empty();
@@ -173,7 +164,7 @@ public class LobbyLogin {
     }
   }
 
-  private Optional<PlayerToLobbyConnection> createAccount(final CreateAccountPanel panel) {
+  private Optional<LobbyLoginResponse> createAccount(final CreateAccountPanel panel) {
     try {
       final CreateAccountResponse createAccountResponse = sendCreateAccountRequest(panel);
       if (!createAccountResponse.isSuccess()) {
@@ -185,7 +176,7 @@ public class LobbyLogin {
       if (loginResponse.getFailReason() != null) {
         throw new LoginFailure(loginResponse.getFailReason());
       }
-      return Optional.of(createPlayerToLobbyConnect(loginResponse));
+      return Optional.of(loginResponse);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();
@@ -206,21 +197,6 @@ public class LobbyLogin {
     return BackgroundTaskRunner.runInBackgroundAndReturn(
         CONNECTING_TO_LOBBY,
         () -> lobbyLoginClient.login(panel.getUsername(), panel.getPassword()));
-  }
-
-  private PlayerToLobbyConnection createPlayerToLobbyConnect(
-      final LobbyLoginResponse loginResponse) {
-    return PlayerToLobbyConnection.builder()
-        .lobbyUri(serverProperties.getUri())
-        .apiKey(ApiKey.of(loginResponse.getApiKey()))
-        .errorHandler(
-            error ->
-                SwingComponents.showError(
-                    parentWindow,
-                    "Error communicating with lobby",
-                    "Please reconnect. Error: "
-                        + (error.isBlank() ? "No error details given by server" : error)))
-        .build();
   }
 
   private static class LoginFailure extends RuntimeException {

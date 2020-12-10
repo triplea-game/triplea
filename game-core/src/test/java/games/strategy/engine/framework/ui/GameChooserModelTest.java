@@ -1,9 +1,13 @@
 package games.strategy.engine.framework.ui;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
+import java.net.URI;
 import java.util.Set;
 import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Test;
@@ -16,19 +20,26 @@ class GameChooserModelTest {
   void testOrdering() throws Exception {
     SwingUtilities.invokeAndWait(
         () -> {
-          final GameChooserEntry entry1 = mock(GameChooserEntry.class);
-          final GameChooserEntry entry2 = mock(GameChooserEntry.class);
-          final GameChooserEntry entry3 = mock(GameChooserEntry.class);
-          when(entry1.compareTo(entry2)).thenReturn(-1);
-          when(entry2.compareTo(entry3)).thenReturn(-1);
-          when(entry3.compareTo(entry2)).thenReturn(1);
-          when(entry2.compareTo(entry1)).thenReturn(1);
-          when(entry1.compareTo(entry3)).thenReturn(-1);
-          when(entry3.compareTo(entry1)).thenReturn(1);
-          final GameChooserModel model = new GameChooserModel(Set.of(entry1, entry2, entry3));
-          assertEquals(entry1, model.get(0));
-          assertEquals(entry2, model.get(1));
-          assertEquals(entry3, model.get(2));
+          final DefaultGameChooserEntry entry1 = mock(DefaultGameChooserEntry.class);
+          final DefaultGameChooserEntry entry2 = mock(DefaultGameChooserEntry.class);
+          final DefaultGameChooserEntry entry3 = mock(DefaultGameChooserEntry.class);
+
+          when(entry1.getGameName()).thenReturn("b");
+          when(entry1.getUri()).thenReturn(URI.create("b"));
+          when(entry2.getGameName()).thenReturn("a");
+          when(entry2.getUri()).thenReturn(URI.create("a"));
+          when(entry3.getGameName()).thenReturn("c");
+          when(entry3.getUri()).thenReturn(URI.create("c"));
+          // use the real compareTo methods so it is sorted correctly
+          when(entry1.compareTo(any())).thenCallRealMethod();
+          when(entry2.compareTo(any())).thenCallRealMethod();
+          when(entry3.compareTo(any())).thenCallRealMethod();
+
+          final GameChooserModel model =
+              new GameChooserModel(new AvailableGamesList(Set.of(entry1, entry2, entry3)));
+          assertThat(model.get(0), is(entry2));
+          assertThat(model.get(1), is(entry1));
+          assertThat(model.get(2), is(entry3));
         });
   }
 }

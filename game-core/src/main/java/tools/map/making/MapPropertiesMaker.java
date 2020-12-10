@@ -50,8 +50,10 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
 import tools.image.FileSave;
+import tools.image.MapFolderLocationSystemProperty;
 import tools.util.ToolArguments;
 
 /**
@@ -70,28 +72,19 @@ public final class MapPropertiesMaker {
 
   private MapPropertiesMaker() {}
 
-  private static String[] getProperties() {
-    return new String[] {
-      ToolArguments.MAP_FOLDER,
-      ToolArguments.UNIT_ZOOM,
-      ToolArguments.UNIT_WIDTH,
-      ToolArguments.UNIT_HEIGHT
-    };
-  }
-
   /**
    * Runs the map properties maker tool.
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
-    new MapPropertiesMaker().runInternal(args);
+    new MapPropertiesMaker().runInternal();
   }
 
-  private void runInternal(final String[] args) {
-    handleCommandLineArgs(args);
+  private void runInternal() {
+    handleSystemProperties();
     if (mapFolderLocation == null) {
       log.info("Select the map folder");
       final String path =
@@ -112,7 +105,7 @@ public final class MapPropertiesMaker {
     } else {
       log.info("No Map Folder Selected. Shutting down.");
     }
-  } // end main
+  }
 
   private final class MapPropertiesMakerFrame extends JFrame {
     private static final long serialVersionUID = 8182821091131994702L;
@@ -351,8 +344,7 @@ public final class MapPropertiesMaker {
                 JOptionPane.showMessageDialog(this, propertyWrapperUi.getFirst());
                 mapProperties.writePropertiesToObject(propertyWrapperUi.getSecond());
                 createPlayerColorChooser();
-                validate();
-                repaint();
+                SwingComponents.redraw(this);
               }));
       panel.add(
           showMore,
@@ -544,64 +536,8 @@ public final class MapPropertiesMaker {
     }
   }
 
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
-  private void handleCommandLineArgs(final String[] args) {
-    final String[] properties = getProperties();
-    boolean usagePrinted = false;
-    for (final String arg2 : args) {
-      boolean found = false;
-      String arg = arg2;
-      final int indexOf = arg.indexOf('=');
-      if (indexOf > 0) {
-        arg = arg.substring(0, indexOf);
-        for (final String props : properties) {
-          if (arg.equals(props)) {
-            final String value = getValue(arg2);
-            System.setProperty(props, value);
-            log.info(props + ":" + value);
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found) {
-        log.info("Unrecogized:" + arg2);
-        if (!usagePrinted) {
-          usagePrinted = true;
-          log.info(
-              "Arguments\r\n"
-                  + "   "
-                  + ToolArguments.MAP_FOLDER
-                  + "=<FILE_PATH>\r\n"
-                  + "   "
-                  + ToolArguments.UNIT_ZOOM
-                  + "=<UNIT_ZOOM_LEVEL>\r\n"
-                  + "   "
-                  + ToolArguments.UNIT_WIDTH
-                  + "=<UNIT_WIDTH>\r\n"
-                  + "   "
-                  + ToolArguments.UNIT_HEIGHT
-                  + "=<UNIT_HEIGHT>\r\n");
-        }
-      }
-    }
-    // now account for anything set by -D
-    final String folderString = System.getProperty(ToolArguments.MAP_FOLDER);
-    if (folderString != null && folderString.length() > 0) {
-      final File mapFolder = new File(folderString);
-      if (mapFolder.exists()) {
-        mapFolderLocation = mapFolder;
-      } else {
-        log.info("Could not find directory: " + folderString);
-      }
-    }
+  private void handleSystemProperties() {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {

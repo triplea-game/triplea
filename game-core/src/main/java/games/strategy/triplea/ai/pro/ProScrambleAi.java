@@ -45,7 +45,7 @@ class ProScrambleAi {
     final GamePlayer player = proData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle =
-        delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
+        delegate.getBattleTracker().getPendingBattle(scrambleTo, BattleType.NORMAL);
 
     // Check if defense already wins
     final Collection<Unit> attackers = battle.getAttackingUnits();
@@ -76,7 +76,7 @@ class ProScrambleAi {
             Comparator.<Unit>comparingDouble(
                     o ->
                         ProBattleUtils.estimateStrength(
-                            proData, scrambleTo, List.of(o), new ArrayList<>(), false))
+                            scrambleTo, List.of(o), new ArrayList<>(), false))
                 .reversed());
         canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
       }
@@ -105,9 +105,7 @@ class ProScrambleAi {
       final Set<Territory> battleTerritories = new HashSet<>();
       for (final Territory possibleTerritory : possibleTerritories) {
         final IBattle possibleBattle =
-            delegate
-                .getBattleTracker()
-                .getPendingBattle(possibleTerritory, false, BattleType.NORMAL);
+            delegate.getBattleTracker().getPendingBattle(possibleTerritory, BattleType.NORMAL);
         if (possibleBattle != null) {
           battleTerritories.add(possibleTerritory);
         }

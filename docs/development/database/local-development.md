@@ -1,58 +1,28 @@
 # Local Database Development
 
+- Local database is run on docker containers
 - You need a local database to run the integration tests
 - You need a local database to run the application servers
-- Local database is run on docker containers
 
-Databases are kept in subprojects suffixed with `db` and have
-standard scripts to make things easier.
+We run multiple schemas on one database. All schema info
+and database config is in the 'database' subproject.
 
-## Quick-Start
+##Quick-Start
 
 - Install docker on your system
-- Run the `build_docker_db` script in each of the `*-db` projects
-- Run `./start-docker-databases`
+- Run `database/start_docker_db`
 
-## Working with Local Databases
+## Working with Database
 
-We will use `lobby-db` as an example.
+Convenience scripts are checked in to make typical operations
+easy and available for reference by viewing the script contents.
 
-### Build Docker
-
-First (one-time) build your docker container with:
-
-```
-./lobby-db/build_docker_db
-```
-
-### Start Docker
-
-Next, start the docker database with:
-
-```
-./lobby-db/start_docker_db
-```
-
-The start script will run flyway to apply migrations files
-and will insert example data.
-
-### Connect to Database on Docker
-
-You can then connect to your local docker database with:
-
+To connect to the locally running database with a psql CLI:
 ```
 ./lobby-db/connect_to_docker_db
 ```
 
-Note: You can view the connect script to obtain  connection parameters
-such as port number and credentials.
-
-### Reset Database Docker
-
-If you are in development and wish to have a clean database (for example
-you are modifying flyway migration files), to recreate a running
-database, run:
-
+To drop and recreate the database, run:
 ```
 ./lobby-db/reset_docker_db
 ```

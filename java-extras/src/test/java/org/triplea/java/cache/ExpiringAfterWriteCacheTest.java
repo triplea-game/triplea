@@ -4,10 +4,7 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.core.IsNull.nullValue;
 
 import java.util.Map;
 import java.util.Optional;
@@ -17,18 +14,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class ExpiringAfterWriteCacheTest {
 
   private static final String KEY = "key-value";
   private static final int VALUE = 100;
   private ExpiringAfterWriteCache<String, Integer> realCache;
 
-  @Mock private BiConsumer<String, Integer> cacheRemovalListener;
+  private String cacheRemovalKey;
+  private Integer cacheRemovalValue;
+  private final BiConsumer<String, Integer> cacheRemovalListener =
+      (key, value) -> {
+        cacheRemovalKey = key;
+        cacheRemovalValue = value;
+      };
 
   @BeforeEach
   void setUp() {
@@ -55,7 +54,8 @@ class ExpiringAfterWriteCacheTest {
       realCache.put("id", 1);
 
       assertThat(realCache.get("id"), isPresentAndIs(1));
-      verify(cacheRemovalListener, never()).accept(any(), any());
+      assertThat(cacheRemovalKey, is(nullValue()));
+      assertThat(cacheRemovalValue, is(nullValue()));
     }
   }
 
@@ -106,7 +106,8 @@ class ExpiringAfterWriteCacheTest {
 
       realCache.replace("id20", 1);
 
-      verify(cacheRemovalListener, never()).accept(any(), any());
+      assertThat(cacheRemovalKey, is(nullValue()));
+      assertThat(cacheRemovalValue, is(nullValue()));
     }
   }
 
@@ -142,7 +143,8 @@ class ExpiringAfterWriteCacheTest {
       realCache.put("id10", 0);
       realCache.invalidate("id10");
 
-      verify(cacheRemovalListener, atLeastOnce()).accept("id10", 0);
+      assertThat(cacheRemovalKey, is("id10"));
+      assertThat(cacheRemovalValue, is(0));
     }
   }
 

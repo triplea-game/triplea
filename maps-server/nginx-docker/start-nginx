@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -eu
+contentFolder="$(pwd)/$(dirname "$0")/content"
+mkdir -p "$contentFolder"
+
+docker run \
+  -it --rm -d \
+  -p 8000:80 \
+  -v "$contentFolder:/usr/share/nginx/html" \
+  --name nginx_map_host \
+  nginx
+
+
+bold="\e[1m"
+bold_green="${bold}\e[32m"
+normal="\e[0m"
+
+echo -e "${bold}[${bold_green}OK${normal}${bold}] Nginx started on port ${bold_green}8000${normal}"
+echo -e "Static content folder: ${bold}$contentFolder${normal}"
+

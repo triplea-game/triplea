@@ -38,7 +38,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import org.triplea.java.OptionalUtils;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
 import org.triplea.swing.JTextFieldBuilder;
@@ -137,33 +136,27 @@ final class SelectionComponentFactory {
         } else {
           final String encodedHost = hostText.getText().trim();
           final Optional<String> optionalHost = parseHost(encodedHost);
-          OptionalUtils.ifEmpty(
-              optionalHost,
-              () ->
-                  context.reportError(
-                      proxyHostClientSetting,
-                      "must be a network name or an IP address",
-                      Strings.emptyToNull(encodedHost)));
+          if (optionalHost.isEmpty()) {
+            context.reportError(
+                proxyHostClientSetting,
+                "must be a network name or an IP address",
+                Strings.emptyToNull(encodedHost));
+          }
 
           final String encodedPort = portText.getText().trim();
           final Optional<Integer> optionalPort = parsePort(encodedPort);
-          OptionalUtils.ifEmpty(
-              optionalPort,
-              () ->
-                  context.reportError(
-                      proxyPortClientSetting,
-                      "must be a positive integer, usually 4 to 5 digits",
-                      Strings.emptyToNull(encodedPort)));
+          if (optionalPort.isEmpty()) {
+            context.reportError(
+                proxyPortClientSetting,
+                "must be a positive integer, usually 4 to 5 digits",
+                Strings.emptyToNull(encodedPort));
+          }
 
-          OptionalUtils.ifAllPresent(
-              optionalHost,
-              optionalPort,
-              (host, port) -> {
-                context.setValue(
-                    proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-                context.setValue(proxyHostClientSetting, host);
-                context.setValue(proxyPortClientSetting, port);
-              });
+          if (optionalHost.isPresent() && optionalPort.isPresent()) {
+            context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+            context.setValue(proxyHostClientSetting, optionalHost.get());
+            context.setValue(proxyPortClientSetting, optionalPort.get());
+          }
         }
       }
 

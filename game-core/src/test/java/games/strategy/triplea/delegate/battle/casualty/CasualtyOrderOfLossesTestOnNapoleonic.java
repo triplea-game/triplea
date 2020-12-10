@@ -11,7 +11,9 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,15 +92,18 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
   private CasualtyOrderOfLosses.Parameters attackingWith(final Collection<Unit> units) {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
-        .combatModifiers(
-            CombatModifiers.builder()
-                .defending(false)
-                .amphibious(false)
+        .player(BRITISH)
+        .combatValue(
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(units)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(data.getSequence())
+                .supportAttachments(data.getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                .gameDiceSides(data.getDiceSides())
                 .territoryEffects(List.of())
                 .build())
-        .player(BRITISH)
-        .enemyUnits(List.of())
-        .amphibiousLandAttackers(List.of())
         .battlesite(NORMANDY)
         .costs(COST_MAP)
         .data(data)

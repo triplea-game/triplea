@@ -10,13 +10,13 @@ import org.triplea.db.dao.error.reporting.ErrorReportingDao;
 import org.triplea.db.dao.error.reporting.InsertHistoryRecordParams;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
+import org.triplea.http.client.github.issues.CreateIssueRequest;
 import org.triplea.http.client.github.issues.CreateIssueResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;
 
 /** Performs the steps for uploading an error report from the point of view of the server. */
 @Builder
 public class CreateIssueStrategy implements Function<CreateIssueParams, ErrorReportResponse> {
-
   @Nonnull private final Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Nonnull private final GithubIssueClient githubIssueClient;
   @Nonnull private final ErrorReportingDao errorReportingDao;
@@ -49,7 +49,12 @@ public class CreateIssueStrategy implements Function<CreateIssueParams, ErrorRep
   }
 
   private ErrorReportResponse sendRequest(final ErrorReportRequest errorReportRequest) {
-    final CreateIssueResponse response = githubIssueClient.newIssue(errorReportRequest);
-    return responseAdapter.apply(response);
+    return responseAdapter.apply(
+        githubIssueClient.newIssue(
+            CreateIssueRequest.builder()
+                .title(errorReportRequest.getGameVersion() + ": " + errorReportRequest.getTitle())
+                .body(errorReportRequest.getBody())
+                .labels(new String[] {"Error Report"})
+                .build()));
   }
 }

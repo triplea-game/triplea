@@ -608,7 +608,8 @@ class TriggerAttachmentTest {
 
         triggerToBeFiredTriggerAttachment =
             new TriggerAttachment("triggerToBeFired", gamePlayer, gameData);
-        gamePlayer.addAttachment("somekey", triggerToBeFiredTriggerAttachment);
+        gamePlayer.addAttachment(
+            triggerToBeFiredTriggerAttachment.getName(), triggerToBeFiredTriggerAttachment);
 
         final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
         gameTechnologyFrontier.addAdvance(

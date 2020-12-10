@@ -37,12 +37,11 @@ public class FinishedBattle extends AbstractBattle {
       final Territory battleSite,
       final GamePlayer attacker,
       final BattleTracker battleTracker,
-      final boolean isBombingRun,
       final BattleType battleType,
       final GameData data,
       final BattleResultDescription battleResultDescription,
       final WhoWon whoWon) {
-    super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
+    super(battleSite, attacker, battleTracker, battleType, data);
     this.battleResultDescription = battleResultDescription;
     this.whoWon = whoWon;
   }
@@ -86,7 +85,6 @@ public class FinishedBattle extends AbstractBattle {
         && !route.getEnd().isWater()
         && units.stream().anyMatch(Matches.unitIsLand())) {
       amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
-      amphibiousLandAttackers.addAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       isAmphibious = true;
     }
     return ChangeFactory.EMPTY_CHANGE;
@@ -108,9 +106,6 @@ public class FinishedBattle extends AbstractBattle {
     attackingFromMapUnits.removeAll(units);
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
-      if (!route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
-        amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
-      }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {

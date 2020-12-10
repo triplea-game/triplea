@@ -1,4 +1,4 @@
-latest: 2.2.20868
+latest: 2.5.22294
 servers:
   - version: "2.0.20057"
     lobby_uri: https://prod2-lobby.triplea-game.org
@@ -6,12 +6,6 @@ servers:
     message: |
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
-
-      Join the TripleA ranked ladder by posting here:
-      https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
-
-      Report any problems here:
-      https://github.com/triplea-game/triplea/issues
   - version: "2.0.19800"
     inactive: true
   - version: "2.0.0"

@@ -4,6 +4,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -11,8 +12,8 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 
 @Builder
-public class SupportRuleSort implements Comparator<UnitSupportAttachment> {
-  @Nonnull private final Boolean defense;
+class SupportRuleSort implements Comparator<UnitSupportAttachment> {
+  @Nonnull private final BattleState.Side side;
   @Nonnull private final Boolean friendly;
   @Nonnull private final Predicate<UnitSupportAttachment> roll;
   @Nonnull private final Predicate<UnitSupportAttachment> strength;
@@ -28,8 +29,8 @@ public class SupportRuleSort implements Comparator<UnitSupportAttachment> {
     // We should actually apply enemy negative support in order from worst to least bad, on a
     // unit list that is
     // ordered from strongest to weakest.
-    final boolean u1CanBonus = defense ? u1.getDefence() : u1.getOffence();
-    final boolean u2CanBonus = defense ? u2.getDefence() : u2.getOffence();
+    final boolean u1CanBonus = side == BattleState.Side.DEFENSE ? u1.getDefence() : u1.getOffence();
+    final boolean u2CanBonus = side == BattleState.Side.DEFENSE ? u2.getDefence() : u2.getOffence();
     if (friendly) {
       // favor rolls over strength
       if (roll.test(u1) || roll.test(u2)) {

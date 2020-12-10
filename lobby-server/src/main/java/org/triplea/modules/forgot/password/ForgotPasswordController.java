@@ -11,8 +11,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.AppConfig;
 import org.triplea.http.HttpController;
+import org.triplea.http.LobbyServerConfig;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.forgot.password.ForgotPasswordResponse;
@@ -25,7 +25,8 @@ import org.triplea.http.client.forgot.password.ForgotPasswordResponse;
 public class ForgotPasswordController extends HttpController {
   @Nonnull private final BiFunction<String, ForgotPasswordRequest, String> forgotPasswordModule;
 
-  public static ForgotPasswordController build(final AppConfig configuration, final Jdbi jdbi) {
+  public static ForgotPasswordController build(
+      final LobbyServerConfig configuration, final Jdbi jdbi) {
     return ForgotPasswordController.builder()
         .forgotPasswordModule(ForgotPasswordModule.build(configuration, jdbi))
         .build();

@@ -20,7 +20,7 @@ class UsernameBanDaoTest extends LobbyServerTest {
 
   @Test
   @DisplayName("Verify retrieving username bans")
-  @DataSet("username_ban/get_banned_usernames.yml")
+  @DataSet(value = "username_ban/get_banned_usernames.yml", useSequenceFiltering = false)
   void getBannedUserNames() {
     final List<UsernameBanRecord> result = usernameBanDao.getBannedUserNames();
     assertThat(result, hasSize(2));
@@ -34,7 +34,7 @@ class UsernameBanDaoTest extends LobbyServerTest {
 
   @Test
   @DisplayName("Verify name matching")
-  @DataSet("username_ban/get_banned_usernames.yml")
+  @DataSet(value = "username_ban/get_banned_usernames.yml", useSequenceFiltering = false)
   void nameIsBanned() {
     assertThat(
         "Exact match should return true",
@@ -54,7 +54,7 @@ class UsernameBanDaoTest extends LobbyServerTest {
 
   @Test
   @DisplayName("Verify adding a username ban")
-  @DataSet("username_ban/add_banned_username_before.yml")
+  @DataSet(value = "username_ban/add_banned_username_before.yml", useSequenceFiltering = false)
   @ExpectedDataSet("username_ban/add_banned_username_after.yml")
   void addBannedUserName() {
     usernameBanDao.addBannedUserName("username");
@@ -62,7 +62,7 @@ class UsernameBanDaoTest extends LobbyServerTest {
 
   @Test
   @DisplayName("Verify removing a username ban")
-  @DataSet("username_ban/remove_banned_username_before.yml")
+  @DataSet(value = "username_ban/remove_banned_username_before.yml", useSequenceFiltering = false)
   @ExpectedDataSet("username_ban/remove_banned_username_after.yml")
   void removeBannedUserName() {
     final int result = usernameBanDao.removeBannedUserName("username");
@@ -72,7 +72,7 @@ class UsernameBanDaoTest extends LobbyServerTest {
 
   @Test
   @DisplayName("Verify when removing a username that DNE, that nothing changes")
-  @DataSet("username_ban/remove_banned_username_before.yml")
+  @DataSet(value = "username_ban/remove_banned_username_before.yml", useSequenceFiltering = false)
   @ExpectedDataSet("username_ban/remove_banned_username_before.yml")
   void removeBannedUserNameNameDoesNotExist() {
     final int result = usernameBanDao.removeBannedUserName("DNE");

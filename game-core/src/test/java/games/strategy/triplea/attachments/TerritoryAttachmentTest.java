@@ -2,7 +2,8 @@ package games.strategy.triplea.attachments;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -34,7 +35,7 @@ final class TerritoryAttachmentTest {
 
     @Test
     void shouldReturnEmptyCollectionWhenZeroCaptureOwnershipChangesExist() {
-      assertThat(territoryAttachment.getCaptureOwnershipChanges(), hasSize(0));
+      assertThat(territoryAttachment.getCaptureOwnershipChanges(), is(empty()));
     }
 
     @Test

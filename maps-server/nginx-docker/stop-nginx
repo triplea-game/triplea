@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker stop nginx_map_host
+

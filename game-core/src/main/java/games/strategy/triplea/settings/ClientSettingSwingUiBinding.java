@@ -222,6 +222,17 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  SAVE_GAME_COMPATIBILITY_CHECK_BINDING(
+      "Check save games for compatibility",
+      SettingType.TESTING,
+      "If toggled to false, the engine will attempt to load any save game regardless"
+          + "of version.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.saveGameCompatibilityCheck);
+    }
+  },
+
   SHOW_BETA_FEATURES_BINDING(
       "Show Beta Features",
       SettingType.TESTING,
@@ -231,6 +242,29 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.showBetaFeatures);
+    }
+  },
+
+  SHOW_SERIALIZE_FEATURES_BINDING(
+      "Use New Serialization",
+      SettingType.TESTING,
+      "Toggles whether to use the new serialization mechanisms. This mechanism is still "
+          + "under development and potentially may break saved games and network games.\n"
+          + " All players in the same game must have it set to the same value."
+          + "Restart to fully activate") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.showSerializeFeatures);
+    }
+  },
+
+  USE_WEBSOCKET_NETWORK(
+      "Use Websocket Network (Beta)",
+      SettingType.TESTING,
+      "Toggles whether to use in-development websocket network") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.useWebsocketNetwork);
     }
   },
 

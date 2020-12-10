@@ -24,8 +24,9 @@ public class NumberProperty extends AbstractEditableProperty<Integer> {
       final String name, final String description, final int max, final int min, final int def) {
     super(name, description);
 
-    checkArgument(max >= min, "Max must be greater than min");
-    checkArgument((def >= min) && (def <= max), "Default value out of range");
+    checkArgument(max >= min, "Max %s must be greater than min %s", max, min);
+    checkArgument(
+        (def >= min) && (def <= max), "Default %s value out of range, %s - %s", def, min, max);
 
     this.max = max;
     this.min = min;
@@ -44,10 +45,10 @@ public class NumberProperty extends AbstractEditableProperty<Integer> {
 
   @Override
   public JComponent getEditorComponent() {
-    final IntTextField field = new IntTextField(min, max);
-    field.setValue(value);
-    field.addChangeListener(aField -> value = aField.getValue());
-    return field;
+    final IntTextField intTextField = new IntTextField(min, max);
+    intTextField.setValue(value);
+    intTextField.addChangeListener(field -> value = field.getValue());
+    return intTextField;
   }
 
   @Override

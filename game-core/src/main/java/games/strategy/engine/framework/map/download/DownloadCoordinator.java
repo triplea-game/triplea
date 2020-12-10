@@ -14,6 +14,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * thread, this class ensures N are in progress until all are done.
  */
 public final class DownloadCoordinator {
+  public static final DownloadCoordinator instance = new DownloadCoordinator();
+
   private static final int MAX_CONCURRENT_DOWNLOADS = 3;
 
   private final Object lock = new Object();
@@ -114,8 +116,8 @@ public final class DownloadCoordinator {
     }
 
     @Override
-    public void downloadStopped(final DownloadFileDescription download) {
-      downloadListeners.forEach(it -> it.downloadStopped(download));
+    public void downloadComplete(final DownloadFileDescription download) {
+      downloadListeners.forEach(it -> it.downloadComplete(download));
 
       synchronized (lock) {
         final Iterator<DownloadFile> iterator = activeDownloads.iterator();

@@ -3,39 +3,49 @@ package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.gameparser.GameParser;
+import games.strategy.engine.data.gameparser.GameParsingValidation;
+import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
-import games.strategy.engine.framework.ui.GameChooserEntry;
-import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.triplea.injection.Injections;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the game
  * selector panel on the staging screens, eg: map, round, filename.
  */
-@Log
+@Slf4j
 public class GameSelectorModel extends Observable implements GameSelector {
+
+  private final Function<URI, Optional<GameData>> gameParser;
+
   @Nullable
   @Getter(onMethod_ = {@Override})
   private GameData gameData = null;
 
-  @Getter private String gameName = "";
-  @Getter private String gameVersion = "";
-  @Getter private String gameRound = "";
+  @Getter private String gameName = "-";
+  @Getter private String gameVersion = "-";
+  @Getter private String gameRound = "-";
   @Nullable private String fileName;
   @Getter private boolean canSelect = true;
   @Getter private boolean hostIsHeadlessBot = false;
@@ -44,60 +54,90 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
-    resetGameDataToNull();
+    this(
+        uri ->
+            GameParser.parse(
+                uri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion()));
   }
 
-  public void resetGameDataToNull() {
-    load(null, null);
-  }
-
-  public void load(final @Nullable GameData data, final @Nullable String fileName) {
-    setGameData(data);
-    this.fileName = fileName;
-    if (data != null) {
-      log.info("Loaded game: " + data.getGameName() + ", in file: " + fileName);
-    }
-  }
-
-  public void load(final GameChooserEntry entry) {
-    fileName = null;
-    if (entry == null
-        || entry.getGameData() == null
-        || entry.getGameData().getGameName() == null
-        || entry.getUri() == null) {
-      ClientSetting.defaultGameName.resetValue();
-      ClientSetting.defaultGameUri.resetValue();
-    } else {
-      setGameData(entry.getGameData());
-      ClientSetting.defaultGameName.setValue(entry.getGameData().getGameName());
-      ClientSetting.defaultGameUri.setValue(entry.getUri().toString());
-    }
-    ClientSetting.flush();
+  GameSelectorModel(final Function<URI, Optional<GameData>> gameParser) {
+    this.gameParser = gameParser;
   }
 
   /**
    * Loads game data by parsing a given file.
    *
-   * @throws Exception If file parsing is successful and an internal {@code GameData} was set.
+   * @return True if successfully loaded, otherwise false.
    */
-  public void load(final File file) throws Exception {
+  public boolean load(final File file) {
     Preconditions.checkArgument(
         file.exists(),
         "Programming error, expected file to have already been checked to exist: "
             + file.getAbsolutePath());
 
-    final GameData newData;
     // if the file name is xml, load it as a new game
     if (file.getName().toLowerCase().endsWith("xml")) {
-      try (InputStream inputStream = new FileInputStream(file)) {
-        newData = GameParser.parse(file.getAbsolutePath(), inputStream);
-      }
+      load(file.toURI());
+      return true;
     } else {
       // try to load it as a saved game whatever the extension
-      newData = GameDataManager.loadGame(file);
+      final GameData newData = GameDataManager.loadGame(file).orElse(null);
+      if (newData == null) {
+        return false;
+      }
       newData.setSaveGameFileName(file.getName());
+      this.fileName = file.getName();
+      setGameData(newData);
+      return true;
     }
-    load(newData, file.getName());
+  }
+
+  public void load(final URI uri) {
+    fileName = null;
+    GameData gameData = null;
+    if (uri != null) {
+      gameData = parseAndValidate(uri);
+      if (gameData != null && gameData.getGameName() == null) {
+        gameData = null;
+      }
+    }
+    setGameData(gameData);
+    this.setDefaultGame(uri, gameData);
+  }
+
+  private void setDefaultGame(@Nullable final URI uri, @Nullable final GameData gameData) {
+    if (gameData == null || uri == null) {
+      ClientSetting.defaultGameName.resetValue();
+      ClientSetting.defaultGameUri.resetValue();
+    } else {
+      ClientSetting.defaultGameName.setValue(gameData.getGameName());
+      ClientSetting.defaultGameUri.setValue(uri.toString());
+    }
+    ClientSetting.flush();
+  }
+
+  private void resetDefaultGame() {
+    setGameData(null);
+    setDefaultGame(null, null);
+  }
+
+  @Nullable
+  private GameData parseAndValidate(final URI uri) {
+    final GameData gameData = gameParser.apply(uri).orElse(null);
+    if (gameData == null) {
+      return null;
+    }
+    final List<String> validationErrors = new GameParsingValidation(gameData).validate();
+
+    if (validationErrors.isEmpty()) {
+      return gameData;
+    } else {
+      log.error(
+          "Validation errors parsing map: {}, errors:\n{}",
+          uri,
+          String.join("\n", validationErrors));
+      return null;
+    }
   }
 
   public void setCanSelect(final boolean canSelect) {
@@ -163,72 +203,57 @@ public class GameSelectorModel extends Observable implements GameSelector {
    * startup.
    */
   public void loadDefaultGameSameThread() {
-    final String userPreferredDefaultGameUri = ClientSetting.defaultGameUri.getValue().orElse("");
-
-    // we don't want to load a game file by default that is not within the map folders we can load.
-    // (ie: if a previous
-    // version of triplea was using running a game within its root folder, we shouldn't open it)
-    GameChooserEntry selectedGame;
-    final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
-    if (!userPreferredDefaultGameUri.isEmpty() && userPreferredDefaultGameUri.contains(user)) {
-      // if the user has a preferred URI, then we load it, and don't bother parsing or doing
-      // anything with the whole
-      // game model list
-      try {
-        final URI defaultUri = new URI(userPreferredDefaultGameUri);
-        selectedGame = GameChooserEntry.newInstance(defaultUri);
-      } catch (final Exception e) {
-        resetToFactoryDefault();
-        selectedGame = selectByName();
-        if (selectedGame == null) {
-          return;
-        }
-      }
-      if (!selectedGame.isGameDataLoaded()) {
-        try {
-          selectedGame.fullyParseGameData();
-        } catch (final GameParseException e) {
-          resetToFactoryDefault();
-          loadDefaultGameSameThread();
-          return;
-        }
-      }
-    } else {
-      resetToFactoryDefault();
-      selectedGame = selectByName();
-      if (selectedGame == null) {
-        return;
-      }
-    }
-    load(selectedGame);
+    ClientSetting.defaultGameUri
+        .getValue()
+        .filter(Predicate.not(String::isBlank))
+        .filter(GameSelectorModel::gameUriExistsOnFileSystem)
+        .map(URI::create)
+        .ifPresentOrElse(this::load, this::resetDefaultGame);
   }
 
-  private static void resetToFactoryDefault() {
-    ClientSetting.defaultGameUri.resetValue();
-    ClientSetting.flush();
+  @SuppressWarnings("ReturnValueIgnored")
+  private static boolean gameUriExistsOnFileSystem(final String gameUri) {
+    final URI uri = URI.create(gameUri);
+    if (uri.getScheme() == null) {
+      return false;
+    }
+    final Path realPath = getDefaultGameRealPath(uri);
+
+    // starts with check is because we don't want to load a game file by default that is not within
+    // the map folders. (ie: if a previous version of triplea was using running a game within its
+    // root folder, we shouldn't open it)
+
+    return realPath.startsWith(ClientFileSystemHelper.getUserRootFolder().toPath())
+        && realPath.toFile().exists();
   }
 
-  private static GameChooserEntry selectByName() {
-    final String userPreferredDefaultGameName = ClientSetting.defaultGameName.getValueOrThrow();
-
-    final GameChooserModel model = new GameChooserModel();
-    GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName).orElse(null);
-
-    if (selectedGame == null && !model.isEmpty()) {
-      selectedGame = model.get(0);
-    }
-    if (selectedGame == null) {
-      return null;
-    }
-    if (!selectedGame.isGameDataLoaded()) {
+  /**
+   * Determine the real path of the default game.
+   *
+   * <p>A default game from a zip file will point to the file inside of the zip file. So, this
+   * method will find the location of the zip file itself.
+   */
+  private static Path getDefaultGameRealPath(final URI defaultGame) {
+    // The file system of the URI needs to be created before Path.of can be called.
+    // So, first see if the file system is already created and if that throws
+    // FileSystemNotFoundException, then try and create it.
+    try {
+      FileSystems.getFileSystem(defaultGame);
+    } catch (final FileSystemNotFoundException notFoundException) {
       try {
-        selectedGame.fullyParseGameData();
-      } catch (final GameParseException e) {
-        model.removeEntry(selectedGame);
-        resetToFactoryDefault();
-        return null;
+        FileSystems.newFileSystem(defaultGame, Map.of());
+      } catch (final IOException ioException) {
+        // just ignore this error as Path.of() will throw a better error if the file is unable to
+        // be read
       }
+    } catch (final IllegalArgumentException illegalArgumentException) {
+      // just ignore this error as Path.of() will throw a better error if the file is unable to
+      // be read
     }
-    return selectedGame;
+    final Path defaultGamePath = Path.of(defaultGame);
+    if (defaultGamePath.getFileSystem().getFileStores().iterator().next().type().equals("zipfs")) {
+      return Paths.get(defaultGamePath.getFileSystem().getFileStores().iterator().next().name());
+    }
+    return defaultGamePath;
   }
 }

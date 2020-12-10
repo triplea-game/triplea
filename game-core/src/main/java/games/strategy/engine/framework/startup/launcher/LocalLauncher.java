@@ -5,7 +5,6 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.engine.framework.startup.mc.GameSelector;
-import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
@@ -13,15 +12,13 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import java.awt.Component;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -67,7 +64,13 @@ public class LocalLauncher implements ILauncher {
       final Set<Player> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
       final ServerGame game =
-          new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, launchAction);
+          new ServerGame(
+              gameData,
+              gamePlayers,
+              new HashMap<>(),
+              messengers,
+              ClientNetworkBridge.NO_OP_SENDER,
+              launchAction);
       game.setRandomSource(randomSource);
       gameData.getGameLoader().startGame(game, gamePlayers, launchAction, null);
       return Optional.of(game);
@@ -124,31 +127,5 @@ public class LocalLauncher implements ILauncher {
             gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound());
     return new LocalLauncher(gameSelectorModel, new PlainRandomSource(), pl, parent, launchAction);
-  }
-
-  public static LocalLauncher create(
-      final List<Entry<String, String>> roleMapping,
-      final Predicate<String> isDisabled,
-      final GameData gameData) {
-    final Predicate<Entry<String, String>> isPlayerEnabled =
-        entry -> !isDisabled.test(entry.getValue());
-    final PlayerListing playerListing =
-        new PlayerListing(
-            roleMapping.stream()
-                .collect(Collectors.toUnmodifiableMap(Entry::getKey, isPlayerEnabled::test)),
-            roleMapping.stream()
-                .filter(isPlayerEnabled)
-                .collect(
-                    Collectors.toUnmodifiableMap(
-                        Entry::getKey, entry -> PlayerType.fromLabel(entry.getValue()))),
-            gameData.getGameVersion(),
-            gameData.getGameName(),
-            String.valueOf(gameData.getCurrentRound()));
-    return new LocalLauncher(
-        GameSelector.fromGameData(gameData),
-        new PlainRandomSource(),
-        playerListing,
-        null,
-        new HeadedLaunchAction(null));
   }
 }

@@ -54,7 +54,9 @@ import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.image.MapFolderLocationSystemProperty;
 import tools.util.ToolArguments;
+import tools.util.ToolsUtil;
 
 /**
  * The placement picker map making tool.
@@ -74,32 +76,23 @@ public final class PlacementPicker {
 
   private PlacementPicker() {}
 
-  private static String[] getProperties() {
-    return new String[] {
-      ToolArguments.MAP_FOLDER,
-      ToolArguments.UNIT_ZOOM,
-      ToolArguments.UNIT_WIDTH,
-      ToolArguments.UNIT_HEIGHT
-    };
-  }
-
   /**
    * Runs the placement picker tool.
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
     try {
-      new PlacementPicker().runInternal(args);
+      new PlacementPicker().runInternal();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "failed to run placement picker", e);
     }
   }
 
-  private void runInternal(final String[] args) throws IOException {
-    handleCommandLineArgs(args);
+  private void runInternal() throws IOException {
+    handleSystemProperties();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(
@@ -149,7 +142,7 @@ public final class PlacementPicker {
     } else {
       log.info("No Image Map Selected. Shutting down.");
     }
-  } // end main
+  }
 
   private final class PlacementPickerFrame extends JFrame {
     private static final long serialVersionUID = 953019978051420881L;
@@ -600,7 +593,7 @@ public final class PlacementPicker {
      */
     private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
       if (!rightMouse && !ctrlDown) {
-        currentCountry = Util.findTerritoryName(point, polygons, "there be dragons");
+        currentCountry = ToolsUtil.findTerritoryName(point, polygons, "there be dragons");
         // If there isn't an existing array, create one
         if (placements == null || placements.get(currentCountry) == null) {
           currentPlacements = new ArrayList<>();
@@ -642,108 +635,12 @@ public final class PlacementPicker {
     }
   }
 
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
-  private void handleCommandLineArgs(final String[] args) {
-    final String[] properties = getProperties();
-    if (args.length == 1) {
-      final String value;
-      if (args[0].startsWith(ToolArguments.UNIT_ZOOM)) {
-        value = getValue(args[0]);
-      } else {
-        value = args[0];
-      }
-      try {
-        Double.parseDouble(value);
-        System.setProperty(ToolArguments.UNIT_ZOOM, value);
-      } catch (final Exception ex) {
-        // ignore malformed input
-      }
-    } else if (args.length == 2) {
-      final String value0;
-      if (args[0].startsWith(ToolArguments.UNIT_WIDTH)) {
-        value0 = getValue(args[0]);
-      } else {
-        value0 = args[0];
-      }
-      try {
-        Integer.parseInt(value0);
-        System.setProperty(ToolArguments.UNIT_WIDTH, value0);
-      } catch (final Exception ex) {
-        // ignore malformed input
-      }
-      final String value1;
-      if (args[0].startsWith(ToolArguments.UNIT_HEIGHT)) {
-        value1 = getValue(args[1]);
-      } else {
-        value1 = args[1];
-      }
-      try {
-        Integer.parseInt(value1);
-        System.setProperty(ToolArguments.UNIT_HEIGHT, value1);
-      } catch (final Exception ex) {
-        // ignore malformed input
-      }
-    }
-    boolean usagePrinted = false;
-    for (final String arg2 : args) {
-      boolean found = false;
-      String arg = arg2;
-      final int indexOf = arg.indexOf('=');
-      if (indexOf > 0) {
-        arg = arg.substring(0, indexOf);
-        for (final String propertie : properties) {
-          if (arg.equals(propertie)) {
-            final String value = getValue(arg2);
-            System.setProperty(propertie, value);
-            log.info(propertie + ":" + value);
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found) {
-        log.info("Unrecogized:" + arg2);
-        if (!usagePrinted) {
-          usagePrinted = true;
-          log.info(
-              "Arguments\r\n"
-                  + "   "
-                  + ToolArguments.MAP_FOLDER
-                  + "=<FILE_PATH>\r\n"
-                  + "   "
-                  + ToolArguments.UNIT_ZOOM
-                  + "=<UNIT_ZOOM_LEVEL>\r\n"
-                  + "   "
-                  + ToolArguments.UNIT_WIDTH
-                  + "=<UNIT_WIDTH>\r\n"
-                  + "   "
-                  + ToolArguments.UNIT_HEIGHT
-                  + "=<UNIT_HEIGHT>\r\n");
-        }
-      }
-    }
-    final String folderString = System.getProperty(ToolArguments.MAP_FOLDER);
-    if (folderString != null && folderString.length() > 0) {
-      final File mapFolder = new File(folderString);
-      if (mapFolder.exists()) {
-        mapFolderLocation = mapFolder;
-      } else {
-        log.info("Could not find directory: " + folderString);
-      }
-    }
+  private void handleSystemProperties() {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
-        log.info("Unit Zoom Percent to use: " + unitZoomPercent);
-        placeDimensionsSet = true;
       } catch (final Exception e) {
         log.severe("Not a decimal percentage: " + zoomString);
       }
@@ -752,8 +649,7 @@ public final class PlacementPicker {
     if (widthString != null && widthString.length() > 0) {
       try {
         unitWidth = Integer.parseInt(widthString);
-        log.info("Unit Width to use: " + unitWidth);
-        placeDimensionsSet = true;
+        placeWidth = (int) (unitZoomPercent * unitWidth);
       } catch (final Exception e) {
         log.severe("Not an integer: " + widthString);
       }
@@ -762,16 +658,10 @@ public final class PlacementPicker {
     if (heightString != null && heightString.length() > 0) {
       try {
         unitHeight = Integer.parseInt(heightString);
-        log.info("Unit Height to use: " + unitHeight);
-        placeDimensionsSet = true;
+        placeHeight = (int) (unitZoomPercent * unitHeight);
       } catch (final Exception e) {
         log.severe("Not an integer: " + heightString);
       }
-    }
-    if (placeDimensionsSet) {
-      placeWidth = (int) (unitZoomPercent * unitWidth);
-      placeHeight = (int) (unitZoomPercent * unitHeight);
-      log.info("Place Dimensions to use: " + placeWidth + "x" + placeHeight);
     }
   }
 }

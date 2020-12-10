@@ -1,9 +1,7 @@
 package games.strategy.triplea;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
+import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
@@ -18,17 +16,17 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.io.ImageLoader;
 import org.triplea.java.UrlStreams;
 import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
@@ -39,7 +37,7 @@ import org.triplea.swing.SwingComponents;
  */
 @Log
 public class ResourceLoader implements Closeable {
-  public static final String RESOURCE_FOLDER = "assets";
+  public static final String ASSETS_FOLDER = "assets";
 
   private final URLClassLoader loader;
   private final String mapPrefix;
@@ -69,14 +67,25 @@ public class ResourceLoader implements Closeable {
     this.mapName = mapName;
   }
 
+  /**
+   * Loads an image from the 'assets' folder. Images downloaded as part of the build to be included
+   * with the game are downloaded to this location. Check the gradle build file download images task
+   * for more information on what will be contained in that folder.
+   */
+  public static Image loadImageAssert(final Path path) {
+    return ImageLoader.getImage(Path.of(ASSETS_FOLDER).resolve(path).toFile());
+  }
+
   public static ResourceLoader getGameEngineAssetLoader() {
     return getMapResourceLoader("");
   }
 
   /** Returns a resource loader that will find assets in a map directory. */
   public static ResourceLoader getMapResourceLoader(final String mapName) {
-    final List<String> dirs = getPaths(mapName);
-    if (mapName != null && dirs.isEmpty()) {
+    Preconditions.checkNotNull(mapName);
+
+    final Optional<String> dir = getPath(mapName);
+    if (dir.isEmpty()) {
       SwingComponents.promptUser(
           "Download Map?",
           "Map missing: "
@@ -88,7 +97,10 @@ public class ResourceLoader implements Closeable {
       throw new MapNotFoundException(mapName, getCandidatePaths(mapName));
     }
 
-    findDirectory(ClientFileSystemHelper.getRootFolder(), RESOURCE_FOLDER)
+    final List<String> dirs = new ArrayList<>();
+    dirs.add(dir.get());
+
+    findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
         .map(File::getAbsolutePath)
         .ifPresent(dirs::add);
 
@@ -119,7 +131,7 @@ public class ResourceLoader implements Closeable {
    */
   @VisibleForTesting
   static List<File> getMapDirectoryCandidates(final String mapName, final File userMapsFolder) {
-    checkNotNull(mapName);
+    Preconditions.checkNotNull(mapName);
 
     final String dirName = File.separator + mapName;
     final String normalizedMapName = File.separator + normalizeMapName(mapName) + "-master";
@@ -142,7 +154,7 @@ public class ResourceLoader implements Closeable {
    */
   public static List<File> getMapZipFileCandidates(
       final String mapName, final File userMapsFolder) {
-    checkNotNull(mapName);
+    Preconditions.checkNotNull(mapName);
 
     final String normalizedMapName = normalizeMapName(mapName);
     return List.of(
@@ -169,43 +181,11 @@ public class ResourceLoader implements Closeable {
     return sb.toString();
   }
 
-  private static List<String> getPaths(final String mapName) {
-    if (mapName == null) {
-      return new ArrayList<>();
-    }
-
-    final List<File> candidates = getCandidatePaths(mapName);
-
-    final Optional<File> match = candidates.stream().filter(File::exists).findFirst();
-    if (match.isEmpty()) {
-      // if we get no results, we will eventually prompt the user to download the map
-      return new ArrayList<>();
-    }
-
-    final List<String> paths = new ArrayList<>();
-    paths.add(match.get().getAbsolutePath());
-    // find dependencies
-    try (URLClassLoader url = new URLClassLoader(new URL[] {match.get().toURI().toURL()})) {
-      final URL dependenciesUrl = url.getResource("dependencies.txt");
-      if (dependenciesUrl != null) {
-        final Optional<InputStream> inputStream = UrlStreams.openStream(dependenciesUrl);
-        if (inputStream.isPresent()) {
-          try (InputStream stream = inputStream.get()) {
-            final java.util.Properties dependenciesFile = new java.util.Properties();
-            dependenciesFile.load(stream);
-            paths.addAll(
-                Splitter.on(',').omitEmptyStrings()
-                    .splitToList(dependenciesFile.getProperty("dependencies")).stream()
-                    .map(ResourceLoader::getPaths)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList()));
-          }
-        }
-      }
-    } catch (final Exception e) {
-      throw new IllegalStateException(e);
-    }
-    return paths;
+  private static Optional<String> getPath(final String mapName) {
+    return getCandidatePaths(mapName).stream()
+        .filter(File::exists)
+        .findAny()
+        .map(File::getAbsolutePath);
   }
 
   private static List<File> getCandidatePaths(final String mapName) {

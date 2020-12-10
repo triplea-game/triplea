@@ -69,7 +69,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
 
   private void setupBoard() {
     final GameData data = getData();
-    final boolean randomTerritories = Properties.getTerritoriesAreAssignedRandomly(data);
+    final boolean randomTerritories =
+        Properties.getTerritoriesAreAssignedRandomly(data.getProperties());
     final Predicate<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
     final Predicate<GamePlayer> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =

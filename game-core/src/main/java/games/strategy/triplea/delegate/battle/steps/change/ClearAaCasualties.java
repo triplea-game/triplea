@@ -18,7 +18,7 @@ public class ClearAaCasualties implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    return null;
+    return List.of();
   }
 
   @Override
@@ -28,8 +28,7 @@ public class ClearAaCasualties implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    if (!battleState.getOffensiveAa().isEmpty() || !battleState.getDefendingAa().isEmpty()) {
-      battleActions.clearWaitingToDieAndDamagedChangesInto(bridge);
-    }
+    battleActions.clearWaitingToDieAndDamagedChangesInto(
+        bridge, BattleState.Side.OFFENSE, BattleState.Side.DEFENSE);
   }
 }

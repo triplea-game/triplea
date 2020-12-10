@@ -117,7 +117,7 @@ public final class ProPurchaseUtils {
         pusSpent += bestDefenseOption.getCost();
         remainingUnitProduction -= bestDefenseOption.getQuantity();
         placeUnits.addAll(
-            bestDefenseOption.getUnitType().create(bestDefenseOption.getQuantity(), player, true));
+            bestDefenseOption.getUnitType().createTemp(bestDefenseOption.getQuantity(), player));
       }
       ProLogger.debug("Potential purchased defenders: " + placeUnits);
     }

@@ -14,7 +14,7 @@ public class RepairFrontierList extends GameDataComponent {
     super(data);
   }
 
-  protected void addRepairFrontier(final RepairFrontier pf) {
+  public void addRepairFrontier(final RepairFrontier pf) {
     repairFrontiers.put(pf.getName(), pf);
   }
 

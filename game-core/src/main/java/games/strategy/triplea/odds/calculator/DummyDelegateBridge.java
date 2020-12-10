@@ -5,7 +5,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitHitsChange;
+import games.strategy.engine.data.changefactory.units.UnitDamageReceivedChange;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.List;
 import java.util.Properties;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
 
@@ -73,6 +74,9 @@ public class DummyDelegateBridge implements IDelegateBridge {
   public GameData getData() {
     return gameData;
   }
+
+  @Override
+  public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
   public void leaveDelegateExecution() {}
@@ -142,7 +146,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void addChange(final Change change) {
-    if (change instanceof UnitHitsChange) {
+    if (change instanceof UnitDamageReceivedChange) {
       allChanges.add(change);
       gameData.performChange(change);
     } else if (change instanceof CompositeChange) {

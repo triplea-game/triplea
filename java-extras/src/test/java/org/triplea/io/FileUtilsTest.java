@@ -1,17 +1,14 @@
 package org.triplea.io;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.nio.file.Files;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 final class FileUtilsTest {
@@ -29,26 +26,36 @@ final class FileUtilsTest {
     }
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
   final class ListFilesTest {
-    @Mock private File directory;
-
     @Test
-    void shouldReturnFileCollectionWhenTargetIsDirectory() {
-      final File file1 = new File("file1");
-      final File file2 = new File("file2");
-      final File file3 = new File("file3");
-      when(directory.listFiles()).thenReturn(new File[] {file1, file2, file3});
+    void shouldReturnFileCollectionWhenTargetIsDirectory() throws Exception {
+      final File tempDir = com.google.common.io.Files.createTempDir();
+      Files.createFile(tempDir.toPath().resolve("file1"));
+      Files.createFile(tempDir.toPath().resolve("file2"));
+      Files.createFile(tempDir.toPath().resolve("file3"));
 
-      assertThat(FileUtils.listFiles(directory), contains(file1, file2, file3));
+      assertThat(
+          FileUtils.listFiles(tempDir),
+          containsInAnyOrder(
+              tempDir.toPath().resolve("file1").toFile(),
+              tempDir.toPath().resolve("file2").toFile(),
+              tempDir.toPath().resolve("file3").toFile()));
     }
 
     @Test
-    void shouldReturnEmptyCollectionWhenTargetIsNotDirectory() {
-      when(directory.listFiles()).thenReturn(null);
+    void shouldReturnEmptyCollectionWhenTargetIsNotDirectory() throws Exception {
+      final File tempDir = com.google.common.io.Files.createTempDir();
+      final File file1 = Files.createFile(tempDir.toPath().resolve("file1")).toFile();
 
-      assertThat(FileUtils.listFiles(directory), is(empty()));
+      assertThat(FileUtils.listFiles(file1), is(empty()));
+    }
+
+    @Test
+    void shouldReturnEmptyCollectionWhenDirectoryIsEmpty() {
+      final File tempDir = com.google.common.io.Files.createTempDir();
+
+      assertThat(FileUtils.listFiles(tempDir), is(empty()));
     }
   }
 }

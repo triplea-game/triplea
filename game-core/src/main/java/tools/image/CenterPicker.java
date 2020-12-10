@@ -42,7 +42,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
-import tools.util.ToolArguments;
+import tools.util.ToolsUtil;
 
 /**
  * The center picker map-making tool.
@@ -62,18 +62,18 @@ public final class CenterPicker {
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
     try {
-      new CenterPicker().runInternal(args);
+      new CenterPicker().runInternal();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "failed to run center picker", e);
     }
   }
 
-  private void runInternal(final String[] args) throws IOException {
-    handleCommandLineArgs(args);
+  private void runInternal() throws IOException {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
@@ -108,7 +108,7 @@ public final class CenterPicker {
     } else {
       log.info("No Image Map Selected. Shutting down.");
     }
-  } // end main
+  }
 
   private final class CenterPickerFrame extends JFrame {
     private static final long serialVersionUID = -5633998810385136625L;
@@ -288,7 +288,7 @@ public final class CenterPicker {
      * @param p A point on the map.
      */
     private String findTerritoryName(final Point p) {
-      return Util.findTerritoryName(p, polygons, "unknown");
+      return ToolsUtil.findTerritoryName(p, polygons, "unknown");
     }
 
     private void mouseEvent(final Point point, final boolean rightMouse) {
@@ -322,46 +322,6 @@ public final class CenterPicker {
         }
       }
       repaint();
-    }
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
-  private void handleCommandLineArgs(final String[] args) {
-    // arg can only be the map folder location.
-    if (args.length == 1) {
-      final String value;
-      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
-        value = getValue(args[0]);
-      } else {
-        value = args[0];
-      }
-      final File mapFolder = new File(value);
-      if (mapFolder.exists()) {
-        mapFolderLocation = mapFolder;
-      } else {
-        log.info("Could not find directory: " + value);
-      }
-    } else if (args.length > 1) {
-      log.info("Only argument allowed is the map directory.");
-    }
-    // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
-      if (value != null && value.length() > 0) {
-        final File mapFolder = new File(value);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-        } else {
-          log.info("Could not find directory: " + value);
-        }
-      }
     }
   }
 }

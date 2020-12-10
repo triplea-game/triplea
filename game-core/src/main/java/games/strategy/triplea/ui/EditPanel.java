@@ -18,9 +18,11 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
@@ -684,7 +686,21 @@ class EditPanel extends ActionPanel {
             sortUnitsToRemove(units);
             units.sort(
                 new UnitBattleComparator(
-                        false, TuvUtils.getCostsForTuv(player, getData()), null, getData(), true)
+                        TuvUtils.getCostsForTuv(player, getData()),
+                        getData(),
+                        CombatValueBuilder.mainCombatValue()
+                            .enemyUnits(List.of())
+                            .friendlyUnits(List.of())
+                            .side(BattleState.Side.OFFENSE)
+                            .gameSequence(getData().getSequence())
+                            .supportAttachments(getData().getUnitTypeList().getSupportRules())
+                            .lhtrHeavyBombers(
+                                Properties.getLhtrHeavyBombers(getData().getProperties()))
+                            .gameDiceSides(getData().getDiceSides())
+                            .territoryEffects(List.of())
+                            .build(),
+                        true,
+                        false)
                     .reversed());
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
@@ -758,7 +774,21 @@ class EditPanel extends ActionPanel {
             sortUnitsToRemove(units);
             units.sort(
                 new UnitBattleComparator(
-                        false, TuvUtils.getCostsForTuv(player, getData()), null, getData(), true)
+                        TuvUtils.getCostsForTuv(player, getData()),
+                        getData(),
+                        CombatValueBuilder.mainCombatValue()
+                            .enemyUnits(List.of())
+                            .friendlyUnits(List.of())
+                            .side(BattleState.Side.OFFENSE)
+                            .gameSequence(getData().getSequence())
+                            .supportAttachments(getData().getUnitTypeList().getSupportRules())
+                            .lhtrHeavyBombers(
+                                Properties.getLhtrHeavyBombers(getData().getProperties()))
+                            .gameDiceSides(getData().getDiceSides())
+                            .territoryEffects(List.of())
+                            .build(),
+                        true,
+                        false)
                     .reversed());
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
@@ -901,7 +931,7 @@ class EditPanel extends ActionPanel {
     add(new JButton(delUnitsAction));
     add(new JButton(changeTerritoryOwnerAction));
     add(new JButton(changePUsAction));
-    if (Properties.getTechDevelopment(getData())) {
+    if (Properties.getTechDevelopment(getData().getProperties())) {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
     }
@@ -911,7 +941,7 @@ class EditPanel extends ActionPanel {
       if (allUnitTypes.stream().anyMatch(Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
       }
-      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
           && allUnitTypes.stream().anyMatch(Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }

@@ -1,19 +1,18 @@
 # Game Rule Sets
 
-| Rule Variant  | Example Games |
-|:-------------:|:----------------:|
+| Rule Variant  | Example Games | Rule Book |
+|:-------------:|:----------------:|:----------------:|
 | V1.I | [UNSUPPORTED] |
-| V1.II | World War II Classic |
-| V1.III | World War II Classic 3rd Edition |
-| V2 Basic | World War II Revised/ Big World : 1942/ Pact of Steel |
-| V2 LHTR | World War II Revised LHTR |
-| V3 | World War II v3 1941/ World War II v3 1942/ Big World : 1942 v3 Rules |
-| V4 | World War II v4 |
-| V5 | World War II v5 1942 Second Edition/ World War II v5 1942 SE TR/ World War II v6 1941 |
+| V1.II | [World War II Classic](https://github.com/triplea-maps/world_war_ii_classic/blob/master/map/games/classic.xml) | [Rule Book](https://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-2nd-Edition.pdf)
+| V1.III | [World War II Classic 3rd Edition](https://github.com/triplea-maps/world_war_ii_classic/blob/master/map/games/classic_3rd_edition.xml) |
+| V2 Basic | [World War II Revised](https://github.com/triplea-maps/world_war_ii_revised/blob/master/map/games/ww2v2.xml) / [Big World : 1942](https://github.com/triplea-maps/big_world/blob/master/map/games/big_world_1942.xml) / [Pact of Steel](https://github.com/triplea-maps/the_pact_of_steel/blob/master/map/games/pact_of_steel_2.xml) | [Rule Book](https://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-Revised-pdf-232x300.jpg)
+| V2 LHTR | [World War II Revised LHTR](https://github.com/triplea-maps/world_war_ii_revised/blob/master/map/games/lhtr.xml) | [Rule Book](https://www.axisandallies.org/wp-content/uploads/AAR_LHTR_v2.0.pdf)
+| V3 | [World War II v3 1941](https://github.com/triplea-maps/world_war_ii_v3/blob/master/map/games/WW2v3-1941.xml) / [World War II v3 1942](https://github.com/triplea-maps/world_war_ii_v3/blob/master/map/games/WW2v3-1942.xml) / [Big World : 1942 v3 Rules](https://github.com/triplea-maps/big_world/blob/master/map/games/Big_World_1942_v3rules.xml) | [Rule Book](http://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-50th-Anniversary.pdf)
+| V4 | [World War II v4](https://github.com/triplea-maps/world_war_ii_v4/blob/master/map/games/WW2v4.xml) | [Rule Book](http://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-Spring-1942-compressed.pdf)
+| V5 | [World War II v5 1942 Second Edition](https://github.com/triplea-maps/world_war_ii_v5_1942/blob/master/map/games/WW2v5_1942_2nd.xml) / [World War II v5 1942 SE TR](https://github.com/triplea-maps/world_war_ii_v5_1942/blob/master/map/games/WW2v5_1942_2nd_TR.xml) | [Rule Book](https://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-1942-Second-Edition.pdf)
+| V6 | [World War II v6 1941](https://github.com/triplea-maps/world_war_ii_v6_1941/blob/master/map/games/WW2v6_1941.xml) |
 | Europe | Europe - Alpha [UNFINISHED] |
 | Pacific | Pacific [UNFINISHED] |
-| Europe/Pacific/Global 1940.I | World War II Europe 1940 Original/ World War II Pacific 1940 Original/ World War II Global 1940 Original |
-| Europe/Pacific/Global 1940.II | World War II Europe 1940 2nd Edition/ World War II Pacific 1940 2nd Edition/ World War II Global 1940 2nd Edition |
-
-
+| Europe/Pacific/Global 1940.I | [World War II Europe 1940 Original](https://github.com/triplea-maps/world_war_ii_europe/blob/master/map/games/ww2eur40.xml) / [World War II Pacific 1940 Original](https://github.com/triplea-maps/world_war_ii_pacific/blob/master/map/games/ww2pac40.xml) / [World War II Global 1940 Original](https://github.com/triplea-maps/world_war_ii_global/blob/master/map/games/ww2global40.xml) | [Pacific](https://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-Pacifc-1940-compressed.pdf)
+| Europe/Pacific/Global 1940.II | [World War II Europe 1940 2nd Edition](https://github.com/triplea-maps/world_war_ii_europe/blob/master/map/games/ww2eur40_2nd_edition.xml) / [World War II Pacific 1940 2nd Edition](https://github.com/triplea-maps/world_war_ii_pacific/blob/master/map/games/ww2pac40_2nd_edition.xml) / [World War II Global 1940 2nd Edition](https://github.com/triplea-maps/world_war_ii_global/blob/master/map/games/ww2global40_2nd_edition.xml) | [Europe](https://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-Europe-1940-Second-Edition.pdf) [Pacific](https://www.axisandallies.org/wp-content/uploads/2011/12/Axis-Allies-Pacific-1940-Second-Edition-pdf-231x300.jpg)
 

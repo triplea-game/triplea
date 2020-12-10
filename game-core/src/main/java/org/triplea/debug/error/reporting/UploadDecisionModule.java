@@ -1,11 +1,12 @@
 package org.triplea.debug.error.reporting;
 
-import games.strategy.engine.ClientContext;
-import java.util.logging.LogRecord;
 import javax.swing.JFrame;
 import lombok.experimental.UtilityClass;
+import org.triplea.debug.LoggerRecord;
+import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
+import org.triplea.injection.Injections;
 
 /**
  * Decision module to handle the case where a user wishes to report an error to TripleA. First we
@@ -17,12 +18,12 @@ import org.triplea.http.client.error.report.ErrorReportClient;
 public class UploadDecisionModule {
 
   public static void processUploadDecision(
-      final JFrame parentWindow, final ErrorReportClient uploader, final LogRecord logRecord) {
+      final JFrame parentWindow, final ErrorReportClient uploader, final LoggerRecord logRecord) {
 
     final var canUploadRequest =
         CanUploadRequest.builder()
-            .errorTitle(StackTraceErrorReportFormatter.createTitle(logRecord))
-            .gameVersion(ClientContext.engineVersion().toString())
+            .errorTitle(ErrorReportTitleFormatter.createTitle(logRecord))
+            .gameVersion(Injections.getInstance().getEngineVersion().toString())
             .build();
 
     final var canUploadErrorReportResponse = uploader.canUploadErrorReport(canUploadRequest);

@@ -22,6 +22,8 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
@@ -63,19 +65,13 @@ public class AirBattle extends AbstractBattle {
 
   AirBattle(
       final Territory battleSite,
-      final boolean bombingRaid,
+      final BattleType battleType,
       final GameData data,
       final GamePlayer attacker,
       final BattleTracker battleTracker) {
-    super(
-        battleSite,
-        attacker,
-        battleTracker,
-        bombingRaid,
-        (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
-        data);
+    super(battleSite, attacker, battleTracker, battleType, data);
     isAmphibious = false;
-    maxRounds = Properties.getAirBattleRounds(data);
+    maxRounds = Properties.getAirBattleRounds(data.getProperties());
     updateDefendingUnits();
   }
 
@@ -155,13 +151,13 @@ public class AirBattle extends AbstractBattle {
   protected boolean canAttackerRetreat() {
     return !shouldEndBattleDueToMaxRounds()
         && shouldFightAirBattle()
-        && Properties.getAirBattleAttackersCanRetreat(gameData);
+        && Properties.getAirBattleAttackersCanRetreat(gameData.getProperties());
   }
 
   protected boolean canDefenderRetreat() {
     return !shouldEndBattleDueToMaxRounds()
         && shouldFightAirBattle()
-        && Properties.getAirBattleDefendersCanRetreat(gameData);
+        && Properties.getAirBattleDefendersCanRetreat(gameData.getProperties());
   }
 
   List<IExecutable> getBattleExecutables(final boolean firstRun) {
@@ -363,7 +359,8 @@ public class AirBattle extends AbstractBattle {
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1
-                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData)) {
+                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
+                    gameData.getProperties())) {
               while (target == null) {
                 target =
                     getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, List.of(unit));
@@ -388,13 +385,12 @@ public class AirBattle extends AbstractBattle {
           }
         }
         final IBattle battle = battleTracker.getPendingBombingBattle(battleSite);
-        final IBattle dependent =
-            battleTracker.getPendingBattle(battleSite, false, BattleType.NORMAL);
+        final IBattle dependent = battleTracker.getPendingBattle(battleSite, BattleType.NORMAL);
         if (dependent != null) {
           battleTracker.addDependency(dependent, battle);
         }
         final IBattle dependentAirBattle =
-            battleTracker.getPendingBattle(battleSite, false, BattleType.AIR_BATTLE);
+            battleTracker.getPendingBattle(battleSite, BattleType.AIR_BATTLE);
         if (dependentAirBattle != null) {
           battleTracker.addDependency(dependentAirBattle, battle);
         }
@@ -568,7 +564,7 @@ public class AirBattle extends AbstractBattle {
             Map.of(),
             attacker,
             defender,
-            isAmphibious(),
+            false,
             getBattleType(),
             Set.of());
     bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
@@ -622,7 +618,7 @@ public class AirBattle extends AbstractBattle {
         // if normal battle, we may choose to withdraw some air units (keep them grounded for both
         // Air battle and the
         // subsequent normal battle) instead of launching
-        if (Properties.getAirBattleDefendersCanRetreat(gameData)) {
+        if (Properties.getAirBattleDefendersCanRetreat(gameData.getProperties())) {
           interceptors =
               getRemote(defender, bridge)
                   .selectUnitsQuery(
@@ -696,7 +692,17 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               dice =
-                  DiceRoll.airBattle(attackingUnits, false, attacker, bridge, "Attackers Fire, ");
+                  RollDiceFactory.rollBattleDice(
+                      attackingUnits,
+                      attacker,
+                      bridge,
+                      "Attackers Fire, ",
+                      CombatValueBuilder.airBattleCombatValue()
+                          .side(BattleState.Side.OFFENSE)
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .build());
             }
           };
       final IExecutable calculateCasualties =
@@ -709,16 +715,21 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       defender,
                       defendingUnits,
-                      defendingUnits,
-                      attackingUnits,
-                      false,
-                      new ArrayList<>(),
+                      CombatValueBuilder.mainCombatValue()
+                          .enemyUnits(attackingUnits)
+                          .friendlyUnits(defendingUnits)
+                          .side(BattleState.Side.DEFENSE)
+                          .gameSequence(bridge.getData().getSequence())
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .territoryEffects(List.of())
+                          .build(),
                       battleSite,
-                      null,
                       bridge,
                       ATTACKERS_FIRE,
                       dice,
-                      true,
                       battleId,
                       false,
                       dice.getHits(),
@@ -760,7 +771,18 @@ public class AirBattle extends AbstractBattle {
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              dice = DiceRoll.airBattle(defendingUnits, true, defender, bridge, "Defenders Fire, ");
+              dice =
+                  RollDiceFactory.rollBattleDice(
+                      defendingUnits,
+                      defender,
+                      bridge,
+                      "Defenders Fire, ",
+                      CombatValueBuilder.airBattleCombatValue()
+                          .side(BattleState.Side.DEFENSE)
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .build());
             }
           };
       final IExecutable calculateCasualties =
@@ -773,16 +795,21 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       attacker,
                       attackingUnits,
-                      attackingUnits,
-                      defendingUnits,
-                      false,
-                      new ArrayList<>(),
+                      CombatValueBuilder.mainCombatValue()
+                          .enemyUnits(defendingUnits)
+                          .friendlyUnits(attackingUnits)
+                          .side(BattleState.Side.OFFENSE)
+                          .gameSequence(bridge.getData().getSequence())
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                          .lhtrHeavyBombers(
+                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .gameDiceSides(bridge.getData().getDiceSides())
+                          .territoryEffects(List.of())
+                          .build(),
                       battleSite,
-                      null,
                       bridge,
                       DEFENDERS_FIRE,
                       dice,
-                      false,
                       battleId,
                       false,
                       dice.getHits(),
@@ -807,14 +834,6 @@ public class AirBattle extends AbstractBattle {
     }
   }
 
-  private static Predicate<Unit> unitHasAirDefenseGreaterThanZero() {
-    return u -> UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0;
-  }
-
-  private static Predicate<Unit> unitHasAirAttackGreaterThanZero() {
-    return u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0;
-  }
-
   static Predicate<Unit> attackingGroundSeaBattleEscorts() {
     return Matches.unitCanAirBattle();
   }
@@ -824,7 +843,9 @@ public class AirBattle extends AbstractBattle {
     return PredicateBuilder.of(Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().negate())
-        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
+        .andIf(
+            !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
+            Matches.unitWasScrambled().negate())
         .build();
   }
 
@@ -839,7 +860,8 @@ public class AirBattle extends AbstractBattle {
             .and(Matches.unitIsEnemyOf(data, attacker))
             .and(Matches.unitWasInAirBattle().negate())
             .andIf(
-                !Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
+                !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
+                Matches.unitWasScrambled().negate())
             .build();
     final Predicate<Unit> airbasesCanIntercept =
         Matches.unitIsEnemyOf(data, attacker)
@@ -858,7 +880,8 @@ public class AirBattle extends AbstractBattle {
       final GamePlayer attacker,
       final GameData data,
       final boolean bombing) {
-    final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
+    final boolean canScrambleToAirBattle =
+        Properties.getCanScrambleIntoAirBattles(data.getProperties());
     final Predicate<Unit> defendingAirMatch =
         bombing
             ? defendingBombingRaidInterceptors(territory, attacker, data)
@@ -878,31 +901,6 @@ public class AirBattle extends AbstractBattle {
     return territory.getUnitCollection().anyMatch(defendingAirMatch)
         || data.getMap().getNeighbors(territory, maxScrambleDistance).stream()
             .anyMatch(Matches.territoryHasUnitsThatMatch(defendingAirMatch));
-  }
-
-  public static int getAirBattleRolls(final Collection<Unit> units, final boolean defending) {
-    int rolls = 0;
-    for (final Unit u : units) {
-      rolls += getAirBattleRolls(u, defending);
-    }
-    return rolls;
-  }
-
-  public static int getAirBattleRolls(final Unit unit, final boolean defending) {
-    if (defending) {
-      if (!unitHasAirDefenseGreaterThanZero().test(unit)) {
-        return 0;
-      }
-    } else {
-      if (!unitHasAirAttackGreaterThanZero().test(unit)) {
-        return 0;
-      }
-    }
-    return Math.max(
-        0,
-        (defending
-            ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner())
-            : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
   }
 
   private void remove(

@@ -370,7 +370,7 @@ public class ProTerritoryManager {
       final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> moveMap) {
     final GameData data = proData.getData();
 
-    if (!Properties.getScrambleRulesInEffect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
 
@@ -392,8 +392,7 @@ public class ProTerritoryManager {
               .sorted(
                   Comparator.<Unit>comparingDouble(
                           unit ->
-                              ProBattleUtils.estimateStrength(
-                                  proData, to, List.of(unit), List.of(), false))
+                              ProBattleUtils.estimateStrength(to, List.of(unit), List.of(), false))
                       .reversed())
               .limit(maxCanScramble)
               .forEachOrdered(addTo::add);
@@ -829,31 +828,18 @@ public class ProTerritoryManager {
           }
 
           // Populate territories with sea unit
-          if (moveMap.containsKey(potentialTerritory)) {
-            moveMap.get(potentialTerritory).addMaxUnit(mySeaUnit);
-          } else {
-            final ProTerritory moveTerritoryData = new ProTerritory(potentialTerritory, proData);
-            moveTerritoryData.addMaxUnit(mySeaUnit);
-            moveMap.put(potentialTerritory, moveTerritoryData);
-          }
+          moveMap
+              .computeIfAbsent(
+                  potentialTerritory, k -> new ProTerritory(potentialTerritory, proData))
+              .addMaxUnit(mySeaUnit);
 
           // Populate appropriate unit move options map
           if (Matches.unitIsTransport().test(mySeaUnit)) {
-            if (transportMoveMap.containsKey(mySeaUnit)) {
-              transportMoveMap.get(mySeaUnit).add(potentialTerritory);
-            } else {
-              final Set<Territory> unitMoveTerritories = new HashSet<>();
-              unitMoveTerritories.add(potentialTerritory);
-              transportMoveMap.put(mySeaUnit, unitMoveTerritories);
-            }
+            transportMoveMap
+                .computeIfAbsent(mySeaUnit, k -> new HashSet<>())
+                .add(potentialTerritory);
           } else {
-            if (unitMoveMap.containsKey(mySeaUnit)) {
-              unitMoveMap.get(mySeaUnit).add(potentialTerritory);
-            } else {
-              final Set<Territory> unitMoveTerritories = new HashSet<>();
-              unitMoveTerritories.add(potentialTerritory);
-              unitMoveMap.put(mySeaUnit, unitMoveTerritories);
-            }
+            unitMoveMap.computeIfAbsent(mySeaUnit, k -> new HashSet<>()).add(potentialTerritory);
           }
         }
       }
@@ -903,7 +889,7 @@ public class ProTerritoryManager {
                       myLandUnit,
                       range,
                       ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(
-                          player, data, myLandUnit));
+                          player, data.getProperties(), myLandUnit));
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
@@ -958,36 +944,21 @@ public class ProTerritoryManager {
           }
 
           // Add to route map
-          if (landRoutesMap.containsKey(potentialTerritory)) {
-            landRoutesMap.get(potentialTerritory).add(myUnitTerritory);
-          } else {
-            final Set<Territory> territories = new HashSet<>();
-            territories.add(myUnitTerritory);
-            landRoutesMap.put(potentialTerritory, territories);
-          }
+          landRoutesMap
+              .computeIfAbsent(potentialTerritory, k -> new HashSet<>())
+              .add(myUnitTerritory);
 
           // Populate territories with land units
-          if (moveMap.containsKey(potentialTerritory)) {
-            final List<Unit> unitsToAdd =
-                ProTransportUtils.findBestUnitsToLandTransport(
-                    myLandUnit, startTerritory, moveMap.get(potentialTerritory).getMaxUnits());
-            moveMap.get(potentialTerritory).addMaxUnits(unitsToAdd);
-          } else {
-            final ProTerritory moveTerritoryData = new ProTerritory(potentialTerritory, proData);
-            final List<Unit> unitsToAdd =
-                ProTransportUtils.findBestUnitsToLandTransport(myLandUnit, startTerritory);
-            moveTerritoryData.addMaxUnits(unitsToAdd);
-            moveMap.put(potentialTerritory, moveTerritoryData);
-          }
+          final ProTerritory potentialTerritoryMove =
+              moveMap.computeIfAbsent(
+                  potentialTerritory, k -> new ProTerritory(potentialTerritory, proData));
+          final List<Unit> unitsToAdd =
+              ProTransportUtils.findBestUnitsToLandTransport(
+                  myLandUnit, startTerritory, potentialTerritoryMove.getMaxUnits());
+          potentialTerritoryMove.addMaxUnits(unitsToAdd);
 
           // Populate unit move options map
-          if (unitMoveMap.containsKey(myLandUnit)) {
-            unitMoveMap.get(myLandUnit).add(potentialTerritory);
-          } else {
-            final Set<Territory> unitMoveTerritories = new HashSet<>();
-            unitMoveTerritories.add(potentialTerritory);
-            unitMoveMap.put(myLandUnit, unitMoveTerritories);
-          }
+          unitMoveMap.computeIfAbsent(myLandUnit, k -> new HashSet<>()).add(potentialTerritory);
         }
       }
     }
@@ -1072,7 +1043,7 @@ public class ProTerritoryManager {
                       myUnitTerritory,
                       myAirUnit,
                       range,
-                      ProMatches.territoryCanPotentiallyMoveAirUnits(player, data));
+                      ProMatches.territoryCanPotentiallyMoveAirUnits(player, data.getProperties()));
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
@@ -1130,22 +1101,13 @@ public class ProTerritoryManager {
           }
 
           // Populate enemy territories with air unit
-          if (moveMap.containsKey(potentialTerritory)) {
-            moveMap.get(potentialTerritory).addMaxUnit(myAirUnit);
-          } else {
-            final ProTerritory moveTerritoryData = new ProTerritory(potentialTerritory, proData);
-            moveTerritoryData.addMaxUnit(myAirUnit);
-            moveMap.put(potentialTerritory, moveTerritoryData);
-          }
+          moveMap
+              .computeIfAbsent(
+                  potentialTerritory, k -> new ProTerritory(potentialTerritory, proData))
+              .addMaxUnit(myAirUnit);
 
           // Populate unit attack options map
-          if (unitMoveMap.containsKey(myAirUnit)) {
-            unitMoveMap.get(myAirUnit).add(potentialTerritory);
-          } else {
-            final Set<Territory> unitMoveTerritories = new HashSet<>();
-            unitMoveTerritories.add(potentialTerritory);
-            unitMoveMap.put(myAirUnit, unitMoveTerritories);
-          }
+          unitMoveMap.computeIfAbsent(myAirUnit, k -> new HashSet<>()).add(potentialTerritory);
         }
       }
     }
@@ -1176,7 +1138,7 @@ public class ProTerritoryManager {
               .and(moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
         unloadAmphibTerritoryMatch =
-            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)
+            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
                 .and(moveAmphibToTerritoryMatch);
       }
 
@@ -1354,13 +1316,9 @@ public class ProTerritoryManager {
         }
 
         // Add amphib units to attack map
-        if (moveMap.containsKey(moveTerritory)) {
-          moveMap.get(moveTerritory).addMaxAmphibUnits(amphibUnits);
-        } else {
-          final ProTerritory moveTerritoryData = new ProTerritory(moveTerritory, proData);
-          moveTerritoryData.addMaxAmphibUnits(amphibUnits);
-          moveMap.put(moveTerritory, moveTerritoryData);
-        }
+        moveMap
+            .computeIfAbsent(moveTerritory, k -> new ProTerritory(moveTerritory, proData))
+            .addMaxAmphibUnits(amphibUnits);
       }
     }
   }
@@ -1459,11 +1417,7 @@ public class ProTerritoryManager {
           }
 
           // Populate bombard options map
-          if (bombardMap.containsKey(mySeaUnit)) {
-            bombardMap.get(mySeaUnit).addAll(bombardToTerritories);
-          } else {
-            bombardMap.put(mySeaUnit, bombardToTerritories);
-          }
+          bombardMap.computeIfAbsent(mySeaUnit, k -> new HashSet<>()).addAll(bombardToTerritories);
         }
       }
     }

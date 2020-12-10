@@ -12,9 +12,12 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -114,13 +117,21 @@ class AaInMoveUtil implements Serializable {
               // get rid of units already killed, so we don't target them twice
               validTargetedUnitsForThisRoll.removeAll(casualties);
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
+                // Fly over AA currently doesn't take into account support so don't pass in
+                // the enemyUnits or friendlyUnits
                 dice.set(
-                    DiceRoll.rollSbrOrFlyOverAa(
+                    RollDiceFactory.rollAaDice(
                         validTargetedUnitsForThisRoll,
                         currentPossibleAa,
                         AaInMoveUtil.this.bridge,
                         territory,
-                        true));
+                        CombatValueBuilder.aaCombatValue()
+                            .enemyUnits(List.of())
+                            .friendlyUnits(List.of())
+                            .side(BattleState.Side.DEFENSE)
+                            .supportAttachments(
+                                bridge.getData().getUnitTypeList().getSupportAaRules())
+                            .build()));
               }
             }
           };
@@ -218,9 +229,9 @@ class AaInMoveUtil implements Serializable {
 
   Collection<Territory> getTerritoriesWhereAaWillFire(
       final Route route, final Collection<Unit> units) {
-    final boolean alwaysOnAa = Properties.getAlwaysOnAa(getData());
+    final boolean alwaysOnAa = Properties.getAlwaysOnAa(getData().getProperties());
     // Just the attacked territory will have AA firing
-    if (!alwaysOnAa && Properties.getAaTerritoryRestricted(getData())) {
+    if (!alwaysOnAa && Properties.getAaTerritoryRestricted(getData().getProperties())) {
       return List.of();
     }
     final GameData data = getData();
@@ -251,7 +262,7 @@ class AaInMoveUtil implements Serializable {
         territoriesWhereAaWillFire.add(current);
       }
     }
-    if (Properties.getForceAaAttacksForLastStepOfFlyOver(data)) {
+    if (Properties.getForceAaAttacksForLastStepOfFlyOver(data.getProperties())) {
       if (route.getEnd().getUnitCollection().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }
@@ -325,19 +336,35 @@ class AaInMoveUtil implements Serializable {
       final String currentTypeAa) {
     final CasualtyDetails casualties =
         AaCasualtySelector.getAaCasualties(
-            false,
             validTargetedUnitsForThisRoll,
-            allFriendlyUnits,
             defendingAa,
-            allEnemyUnits,
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(allEnemyUnits)
+                .friendlyUnits(allFriendlyUnits)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(TerritoryEffectHelper.getEffects(territory))
+                .build(),
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(allFriendlyUnits)
+                .friendlyUnits(allEnemyUnits)
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build(),
+            "Select "
+                + dice.getHits()
+                + " casualties from "
+                + currentTypeAa
+                + " fire in "
+                + territory.getName(),
             dice,
             bridge,
             player,
             null,
-            territory,
-            TerritoryEffectHelper.getEffects(territory),
-            false,
-            new ArrayList<>());
+            territory);
     bridge
         .getRemotePlayer(player)
         .reportMessage(

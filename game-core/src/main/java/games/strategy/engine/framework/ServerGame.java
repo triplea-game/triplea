@@ -37,6 +37,7 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
@@ -68,6 +69,8 @@ public class ServerGame extends AbstractGame {
   private InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
   private final LaunchAction launchAction;
+  private final ClientNetworkBridge clientNetworkBridge;
+
   /**
    * When the delegate execution is stopped, we countdown on this latch to prevent the
    * startgame(...) method from returning.
@@ -81,8 +84,10 @@ public class ServerGame extends AbstractGame {
       final Set<Player> localPlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers,
+      final ClientNetworkBridge clientNetworkBridge,
       final LaunchAction launchAction) {
-    super(data, localPlayers, remotePlayerMapping, messengers);
+    super(data, localPlayers, remotePlayerMapping, messengers, clientNetworkBridge);
+    this.clientNetworkBridge = clientNetworkBridge;
     this.launchAction = launchAction;
     gameModifiedChannel =
         new IGameModifiedChannel() {
@@ -163,10 +168,13 @@ public class ServerGame extends AbstractGame {
     if (node instanceof EventChild) {
       final EventChild childNode = (EventChild) node;
       if (childNode.getRenderingData() instanceof DiceRoll) {
-        final String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
+        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
+        final String playerName =
+            diceRoll.getPlayerName() == null
+                ? DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle())
+                : diceRoll.getPlayerName();
         final GamePlayer gamePlayer = gameData.getPlayerList().getPlayerId(playerName);
 
-        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
         final int[] rolls = new int[diceRoll.size()];
         for (int i = 0; i < rolls.length; i++) {
           rolls[i] = diceRoll.getDie(i).getValue();
@@ -469,7 +477,8 @@ public class ServerGame extends AbstractGame {
               this,
               new DelegateHistoryWriter(messengers),
               randomStats,
-              delegateExecutionManager);
+              delegateExecutionManager,
+              clientNetworkBridge);
       if (delegateRandomSource == null) {
         delegateRandomSource =
             (IRandomSource)
@@ -495,7 +504,8 @@ public class ServerGame extends AbstractGame {
             this,
             new DelegateHistoryWriter(messengers),
             randomStats,
-            delegateExecutionManager);
+            delegateExecutionManager,
+            clientNetworkBridge);
     if (delegateRandomSource == null) {
       delegateRandomSource =
           (IRandomSource)

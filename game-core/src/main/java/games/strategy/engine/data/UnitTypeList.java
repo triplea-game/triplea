@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 /** A collection of unit types. */
@@ -18,6 +19,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   private final Map<String, UnitType> unitTypes = new LinkedHashMap<>();
   // Cached support rules. Marked transient as the cache does not need to be part of saved games.
   private transient @Nullable Set<UnitSupportAttachment> supportRules;
+  private transient @Nullable Set<UnitSupportAttachment> supportAaRules;
 
   public UnitTypeList(final GameData data) {
     super(data);
@@ -60,6 +62,21 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     return supportRules;
   }
 
+  /**
+   * Returns the unit support rules for the unit types. Computed once and cached afterwards.
+   *
+   * @return The unit support rules.
+   */
+  public Set<UnitSupportAttachment> getSupportAaRules() {
+    if (supportAaRules == null) {
+      supportAaRules =
+          UnitSupportAttachment.get(getData()).stream()
+              .filter(usa -> (usa.getAaRoll() || usa.getAaStrength()))
+              .collect(Collectors.toSet());
+    }
+    return supportAaRules;
+  }
+
   public int size() {
     return unitTypes.size();
   }
@@ -67,6 +84,10 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   @Override
   public Iterator<UnitType> iterator() {
     return unitTypes.values().iterator();
+  }
+
+  public Stream<UnitType> stream() {
+    return unitTypes.values().stream();
   }
 
   public Set<UnitType> getAllUnitTypes() {

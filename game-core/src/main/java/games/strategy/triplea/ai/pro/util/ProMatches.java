@@ -2,20 +2,33 @@ package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 
 /** Pro AI matches. */
+@UtilityClass
 public final class ProMatches {
-  private ProMatches() {}
+
+  public static BiPredicate<Territory, Territory> noCanalsBetweenTerritories(
+      final GamePlayer player, final GameData gameData) {
+    return (startTerritory, endTerritory) -> {
+      final Route r = new Route(startTerritory, endTerritory);
+      return new MoveValidator(gameData).validateCanal(r, null, player) == null;
+    };
+  }
 
   public static Predicate<Territory> territoryCanLandAirUnits(
       final GamePlayer player,
@@ -43,16 +56,16 @@ public final class ProMatches {
 
   public static Predicate<Territory> territoryCanMoveAirUnits(
       final GamePlayer player, final GameData data, final boolean isCombatMove) {
-    return Matches.territoryDoesNotCostMoneyToEnter(data)
+    return Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
         .and(
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
                 player, data, isCombatMove, false, false, true, false));
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveAirUnits(
-      final GamePlayer player, final GameData data) {
-    return Matches.territoryDoesNotCostMoneyToEnter(data)
-        .and(Matches.territoryIsPassableAndNotRestricted(player, data));
+      final GamePlayer player, final GameProperties properties) {
+    return Matches.territoryDoesNotCostMoneyToEnter(properties)
+        .and(Matches.territoryIsPassableAndNotRestricted(player, properties));
   }
 
   public static Predicate<Territory> territoryCanMoveAirUnitsAndNoAa(
@@ -65,7 +78,7 @@ public final class ProMatches {
       final GamePlayer player, final GameData data, final boolean isCombatMove, final Unit u) {
     return t -> {
       final Predicate<Territory> territoryMatch =
-          Matches.territoryDoesNotCostMoneyToEnter(data)
+          Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
               .and(
                   Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
                       player, data, isCombatMove, true, false, false, false));
@@ -78,11 +91,11 @@ public final class ProMatches {
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveSpecificLandUnit(
-      final GamePlayer player, final GameData data, final Unit u) {
+      final GamePlayer player, final GameProperties properties, final Unit u) {
     return t -> {
       final Predicate<Territory> territoryMatch =
-          Matches.territoryDoesNotCostMoneyToEnter(data)
-              .and(Matches.territoryIsPassableAndNotRestricted(player, data));
+          Matches.territoryDoesNotCostMoneyToEnter(properties)
+              .and(Matches.territoryIsPassableAndNotRestricted(player, properties));
       final Predicate<Unit> unitMatch =
           Matches.unitIsOfTypes(
                   TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t))
@@ -93,17 +106,17 @@ public final class ProMatches {
 
   public static Predicate<Territory> territoryCanMoveLandUnits(
       final GamePlayer player, final GameData data, final boolean isCombatMove) {
-    return Matches.territoryDoesNotCostMoneyToEnter(data)
+    return Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
         .and(
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
                 player, data, isCombatMove, true, false, false, false));
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveLandUnits(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameProperties properties) {
     return Matches.territoryIsLand()
-        .and(Matches.territoryDoesNotCostMoneyToEnter(data))
-        .and(Matches.territoryIsPassableAndNotRestricted(player, data));
+        .and(Matches.territoryDoesNotCostMoneyToEnter(properties))
+        .and(Matches.territoryIsPassableAndNotRestricted(player, properties));
   }
 
   public static Predicate<Territory> territoryCanMoveLandUnitsAndIsAllied(
@@ -175,15 +188,16 @@ public final class ProMatches {
       final GamePlayer player, final GameData data, final boolean isCombatMove) {
     return t -> {
       final boolean navalMayNotNonComIntoControlled =
-          Properties.getWW2V2(data)
-              || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
+          Properties.getWW2V2(data.getProperties())
+              || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(
+                  data.getProperties());
       if (!isCombatMove
           && navalMayNotNonComIntoControlled
           && Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)) {
         return false;
       }
       final Predicate<Territory> match =
-          Matches.territoryDoesNotCostMoneyToEnter(data)
+          Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
               .and(
                   Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
                       player, data, isCombatMove, false, true, false, false));

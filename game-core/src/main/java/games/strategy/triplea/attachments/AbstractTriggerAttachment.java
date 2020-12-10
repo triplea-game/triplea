@@ -5,10 +5,10 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -51,16 +51,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    */
   public static CompositeChange triggerSetUsedForThisRound(final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
-    for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
-      if (ta.getUsedThisRound()) {
-        final int currentUses = ta.getUses();
-        if (currentUses > 0) {
-          change.add(
-              ChangeFactory.attachmentPropertyChange(
-                  ta, Integer.toString(currentUses - 1), "uses"));
-          change.add(ChangeFactory.attachmentPropertyChange(ta, false, "usedThisRound"));
-        }
-      }
+    for (final TriggerAttachment ta :
+        TriggerAttachment.getTriggers(player, ta -> ta.getUsedThisRound() && ta.getUses() > 0)) {
+      change.add(
+          ChangeFactory.attachmentPropertyChange(ta, Integer.toString(ta.getUses() - 1), "uses"));
+      change.add(ChangeFactory.attachmentPropertyChange(ta, false, "usedThisRound"));
     }
     return change;
   }

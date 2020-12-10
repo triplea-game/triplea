@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.collect.Maps;
-import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -20,7 +21,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
   private static final long serialVersionUID = -7288639737337542689L;
 
-  private final DownloadCoordinator downloadCoordinator = ClientContext.downloadCoordinator();
+  private final DownloadCoordinator downloadCoordinator = DownloadCoordinator.instance;
 
   /*
    * Maintain grids that are placed east and west.
@@ -97,8 +98,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
       progressGrid.add(progressBars.get(download));
     }
 
-    revalidate();
-    repaint();
+    SwingComponents.redraw(this);
   }
 
   @Override
@@ -108,9 +108,10 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
   }
 
   @Override
-  public void downloadStopped(final DownloadFileDescription download) {
+  public void downloadComplete(final DownloadFileDescription download) {
     SwingUtilities.invokeLater(
         () -> getMapDownloadProgressListenerFor(download).downloadCompleted());
+    AvailableGamesFileSystemReader.addNewMapToCache(download.getInstallLocation());
   }
 
   private MapDownloadProgressListener getMapDownloadProgressListenerFor(

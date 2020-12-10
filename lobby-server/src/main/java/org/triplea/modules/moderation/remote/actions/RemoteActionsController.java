@@ -15,9 +15,9 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.remote.actions.RemoteActionsClient;
 import org.triplea.java.ArgChecker;
+import org.triplea.java.IpAddressParser;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.web.socket.WebSocketMessagingBus;
 

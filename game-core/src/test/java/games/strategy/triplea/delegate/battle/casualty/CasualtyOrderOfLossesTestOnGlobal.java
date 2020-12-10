@@ -8,15 +8,18 @@ import static org.hamcrest.core.Is.is;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
+import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -130,15 +133,18 @@ class CasualtyOrderOfLossesTestOnGlobal {
   private CasualtyOrderOfLosses.Parameters attackingWith(final Collection<Unit> units) {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
-        .combatModifiers(
-            CombatModifiers.builder()
-                .defending(false)
-                .amphibious(false)
+        .player(BRITISH)
+        .combatValue(
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(units)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(data.getSequence())
+                .supportAttachments(data.getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                .gameDiceSides(data.getDiceSides())
                 .territoryEffects(List.of())
                 .build())
-        .player(BRITISH)
-        .enemyUnits(List.of())
-        .amphibiousLandAttackers(List.of())
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -204,17 +210,32 @@ class CasualtyOrderOfLossesTestOnGlobal {
   }
 
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
+    amphibUnits.forEach(
+        unit -> {
+          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+              .ifPresent(
+                  property -> {
+                    try {
+                      property.setValue(true);
+                    } catch (final MutableProperty.InvalidValueException e) {
+                      // should not happen
+                    }
+                  });
+        });
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(amphibUnits)
-        .combatModifiers(
-            CombatModifiers.builder()
-                .defending(false)
-                .amphibious(true)
+        .player(BRITISH)
+        .combatValue(
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(amphibUnits)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(data.getSequence())
+                .supportAttachments(data.getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                .gameDiceSides(data.getDiceSides())
                 .territoryEffects(List.of())
                 .build())
-        .player(BRITISH)
-        .enemyUnits(List.of())
-        .amphibiousLandAttackers(amphibUnits)
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -291,15 +312,18 @@ class CasualtyOrderOfLossesTestOnGlobal {
   private CasualtyOrderOfLosses.Parameters defendingWith(final Collection<Unit> units) {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
-        .combatModifiers(
-            CombatModifiers.builder()
-                .defending(true)
-                .territoryEffects(List.of())
-                .amphibious(false)
-                .build())
         .player(BRITISH)
-        .enemyUnits(List.of()) // << TODO: remove this parameter should not matter
-        .amphibiousLandAttackers(List.of())
+        .combatValue(
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(List.of())
+                .friendlyUnits(units)
+                .side(BattleState.Side.DEFENSE)
+                .gameSequence(data.getSequence())
+                .supportAttachments(data.getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                .gameDiceSides(data.getDiceSides())
+                .territoryEffects(List.of())
+                .build())
         .battlesite(FRANCE)
         .costs(COST_MAP)
         .data(data)
@@ -364,9 +388,9 @@ class CasualtyOrderOfLossesTestOnGlobal {
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
     assertThat(result, hasSize(4));
-    assertThat(result.get(0).getType(), is(ARTILLERY));
+    assertThat(result.get(0).getType(), is(MARINE));
     assertThat(result.get(1).getType(), is(MARINE));
-    assertThat(result.get(2).getType(), is(MARINE));
+    assertThat(result.get(2).getType(), is(ARTILLERY));
     assertThat(result.get(3).getType(), is(TANK)); // attack at 3
   }
 }

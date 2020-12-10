@@ -9,6 +9,7 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
 import java.io.Serializable;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Logic for querying and fighting pending battles. */
 public interface IBattleDelegate extends IRemote, IDelegate {
@@ -23,6 +24,7 @@ public interface IBattleDelegate extends IRemote, IDelegate {
    * @param bombing - fight a bombing raid
    * @return an error string if the battle could not be fought or an error occurred, null otherwise
    */
+  @RemoveOnNextMajorRelease("Remove 'boolean bombing' parameter")
   @RemoteActionCode(2)
   String fightBattle(Territory where, boolean bombing, BattleType type);
 

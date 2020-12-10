@@ -22,4 +22,3 @@ export INSTALL4J_LICENSE_KEY={License key here}
 
 Installers will be created in `triplea/build/releases/`
 
-

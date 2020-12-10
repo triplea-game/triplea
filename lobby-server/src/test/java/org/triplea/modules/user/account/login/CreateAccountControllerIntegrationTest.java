@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
@@ -11,6 +12,7 @@ import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.modules.http.BasicEndpointTest;
 
+@DataSet(value = "integration/user_role.yml", useSequenceFiltering = false)
 class CreateAccountControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient> {
   private static final String USERNAME = "user-name";
   private static final String EMAIL = "email@email.com";

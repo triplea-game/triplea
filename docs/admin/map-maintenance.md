@@ -30,7 +30,7 @@ echo "" > full_player_list;
 while read i; do
    grep "<player name" "$i" \
       | sed 's/^.*name="//' \
-      | sed 's/".*//'  >> full_player_list; 
+      | sed 's/".*//'  >> full_player_list;
 done < <(find . -path "**/games/**" -name "*.xml");
 
 sort full_player_list | uniq -c > players

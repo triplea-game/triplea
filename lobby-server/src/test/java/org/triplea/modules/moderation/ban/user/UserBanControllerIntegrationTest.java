@@ -1,12 +1,17 @@
 package org.triplea.modules.moderation.ban.user;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.modules.http.AllowedUserRole;
+import org.triplea.modules.http.LobbyServerTest;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
+@DataSet(
+    value = LobbyServerTest.LOBBY_USER_DATASET + ", integration/banned_user.yml",
+    useSequenceFiltering = false)
 class UserBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUserBanClient> {
 
   UserBanControllerIntegrationTest(final URI localhost) {

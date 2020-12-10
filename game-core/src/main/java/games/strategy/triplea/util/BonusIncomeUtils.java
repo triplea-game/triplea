@@ -22,10 +22,11 @@ public final class BonusIncomeUtils {
     final StringBuilder sb = new StringBuilder();
     for (final Resource resource : income.keySet()) {
       final int amount = income.getInt(resource);
-      final int incomePercent = Properties.getIncomePercentage(player, bridge.getData());
+      final int incomePercent =
+          Properties.getIncomePercentage(player, bridge.getData().getProperties());
       int puIncomeBonus = 0;
       if (resource.getName().equals(Constants.PUS)) {
-        puIncomeBonus = Properties.getPuIncomeBonus(player, bridge.getData());
+        puIncomeBonus = Properties.getPuIncomeBonus(player, bridge.getData().getProperties());
       }
       final int bonusIncome =
           (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100))

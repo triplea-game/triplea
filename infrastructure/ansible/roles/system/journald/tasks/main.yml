@@ -1,0 +1,15 @@
+- name: deploy journald config
+  register: journal_conf
+  copy:
+    src: journald.conf
+    dest: /etc/systemd/journald.conf
+    mode: 644
+    owner: root
+    group: root
+
+- name: restart journald if config was changed
+  when: journal_conf.changed
+  service:
+    state: restarted
+    name: systemd-journald
+

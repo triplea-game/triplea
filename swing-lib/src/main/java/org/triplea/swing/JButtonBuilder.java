@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.UIManager;
+import lombok.AllArgsConstructor;
 
 /**
  * Example usage:. <code><pre>
@@ -27,11 +28,21 @@ public class JButtonBuilder {
   private boolean selected;
   private boolean enabled = true;
   private int biggerFont;
+  private AlignmentX alignmentX;
 
   public JButtonBuilder() {}
 
   public JButtonBuilder(final String title) {
     this.title = title;
+  }
+
+  @AllArgsConstructor
+  public enum AlignmentX {
+    LEFT(Component.LEFT_ALIGNMENT),
+    CENTER(Component.CENTER_ALIGNMENT),
+    RIGHT(Component.RIGHT_ALIGNMENT);
+
+    private final float value;
   }
 
   /**
@@ -45,6 +56,9 @@ public class JButtonBuilder {
     Optional.ofNullable(clickAction)
         .ifPresent(listener -> button.addActionListener(e -> clickAction.accept(button)));
     Optional.ofNullable(toolTip).ifPresent(button::setToolTipText);
+    Optional.ofNullable(alignmentX)
+        .map(alignment -> alignment.value)
+        .ifPresent(button::setAlignmentX);
 
     button.setSelected(selected);
     button.setEnabled(enabled);
@@ -109,6 +123,11 @@ public class JButtonBuilder {
     return this;
   }
 
+  /** An alias for toolTip */
+  public JButtonBuilder toolTipText(final String toolTip) {
+    return toolTip(toolTip);
+  }
+
   /** Sets the event that occurs when the button is clicked. SIDE EFFECT: Enables the button */
   public JButtonBuilder actionListener(final Runnable actionListener) {
     checkNotNull(actionListener);
@@ -134,6 +153,11 @@ public class JButtonBuilder {
   /** Sets whether the button can be clicked or not. By default buttons are enabled. */
   public JButtonBuilder enabled(final boolean enabled) {
     this.enabled = enabled;
+    return this;
+  }
+
+  public JButtonBuilder alignmentX(final AlignmentX alignmentX) {
+    this.alignmentX = alignmentX;
     return this;
   }
 }

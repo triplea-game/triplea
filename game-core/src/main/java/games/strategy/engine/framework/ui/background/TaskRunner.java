@@ -46,9 +46,6 @@ public class TaskRunner<E extends Exception> {
   public void run(final ThrowingRunnable<E> backgroundAction) {
     Preconditions.checkNotNull(backgroundAction);
     final AtomicReference<Exception> exceptionRef = new AtomicReference<>();
-
-    // TODO: after https://github.com/triplea-game/triplea/pull/6001 is merged
-    //   change the 'null' parent window reference to main frame.
     final WaitDialog waitDialog = new WaitDialog(null, waitDialogTitle);
     waitDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 

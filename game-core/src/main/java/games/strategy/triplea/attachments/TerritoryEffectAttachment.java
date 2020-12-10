@@ -1,13 +1,14 @@
 package games.strategy.triplea.attachments;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ import org.triplea.java.collections.IntegerMap;
 
 /** An attachment for instances of {@link TerritoryEffect}. */
 public class TerritoryEffectAttachment extends DefaultAttachment {
+
+  public static final String COMBAT_OFFENSE_EFFECT = "combatOffenseEffect";
+  public static final String COMBAT_DEFENSE_EFFECT = "combatDefenseEffect";
+
   private static final long serialVersionUID = 6379810228136325991L;
 
   private IntegerMap<UnitType> combatDefenseEffect = new IntegerMap<>();
@@ -44,8 +49,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     setCombatEffect(combatDefenseEffect, true);
   }
 
-  private void setCombatDefenseEffect(final IntegerMap<UnitType> value) {
+  @VisibleForTesting
+  public TerritoryEffectAttachment setCombatDefenseEffect(final IntegerMap<UnitType> value) {
     combatDefenseEffect = value;
+    return this;
   }
 
   private IntegerMap<UnitType> getCombatDefenseEffect() {
@@ -60,8 +67,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     setCombatEffect(combatOffenseEffect, false);
   }
 
-  private void setCombatOffenseEffect(final IntegerMap<UnitType> value) {
+  @VisibleForTesting
+  public TerritoryEffectAttachment setCombatOffenseEffect(final IntegerMap<UnitType> value) {
     combatOffenseEffect = value;
+    return this;
   }
 
   private IntegerMap<UnitType> getCombatOffenseEffect() {
@@ -190,14 +199,14 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put(
-            "combatDefenseEffect",
+            COMBAT_DEFENSE_EFFECT,
             MutableProperty.of(
                 this::setCombatDefenseEffect,
                 this::setCombatDefenseEffect,
                 this::getCombatDefenseEffect,
                 this::resetCombatDefenseEffect))
         .put(
-            "combatOffenseEffect",
+            COMBAT_OFFENSE_EFFECT,
             MutableProperty.of(
                 this::setCombatOffenseEffect,
                 this::setCombatOffenseEffect,

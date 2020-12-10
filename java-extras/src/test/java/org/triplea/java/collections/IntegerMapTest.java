@@ -1,6 +1,7 @@
 package org.triplea.java.collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,8 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.common.collect.ImmutableMap;
 import java.util.Iterator;
 import java.util.Map;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class IntegerMapTest {
@@ -32,17 +32,60 @@ class IntegerMapTest {
     assertThat(actual, is(expected));
   }
 
-  @Test
-  void shouldBeEquatableAndHashable() {
-    EqualsVerifier.forClass(IntegerMap.class).suppress(Warning.NULL_FIELDS).verify();
+  @Nested
+  class EqualityTest {
+    @Test
+    void emptyMapsEqual() {
+      final IntegerMap<String> map1 = new IntegerMap<>();
+      final IntegerMap<String> map2 = new IntegerMap<>();
 
-    // We need to explicitly test this case because EqualsVerifier's internal prefab values for
-    // LinkedHashMap use the
-    // same value for all key/value pairs
-    assertThat(
-        "should not be equal when keys are equal but values are not equal",
-        new IntegerMap<>(ImmutableMap.of(k1, 1)),
-        is(not(new IntegerMap<>(ImmutableMap.of(k1, 2)))));
+      assertThat(map1, equalTo(map2));
+    }
+
+    @Test
+    void emptyMapsOfDifferentTypesEqual() {
+      final IntegerMap<String> map1 = new IntegerMap<>();
+      final IntegerMap<Integer> map2 = new IntegerMap<>();
+
+      assertThat(map1, equalTo(map2));
+    }
+
+    @Test
+    void verifyEqualMapsWithOneElement() {
+      final IntegerMap<String> map1 = new IntegerMap<>();
+      final IntegerMap<String> map2 = new IntegerMap<>();
+      map1.put("key", 2);
+      map2.put("key", 2);
+      assertThat(map1, equalTo(map2));
+    }
+
+    @Test
+    void verifyEqualMapsWithTwoElement() {
+      final IntegerMap<String> map1 = new IntegerMap<>();
+      final IntegerMap<String> map2 = new IntegerMap<>();
+      map1.put("key1", 2);
+      map1.put("key2", 2);
+      map2.put("key2", 2);
+      map2.put("key1", 2);
+      assertThat(map1, equalTo(map2));
+    }
+
+    @Test
+    void unequalMapsWithOneMapEmpty() {
+      final IntegerMap<String> map1 = new IntegerMap<>();
+      final IntegerMap<String> map2 = new IntegerMap<>();
+      map1.put("key", 2);
+      assertThat(map1, not(equalTo(map2)));
+    }
+
+    @Test
+    void unequalMapsWithDifferentValues() {
+      final IntegerMap<String> map1 = new IntegerMap<>();
+      final IntegerMap<String> map2 = new IntegerMap<>();
+      map1.put("key", 2);
+      map2.put("key", 0);
+      assertThat(map1, not(equalTo(map2)));
+    }
   }
 
   @Test

@@ -153,7 +153,7 @@ final class EditValidator {
     if (player == null) {
       return "No player selected";
     }
-    if (!Properties.getTechDevelopment(data)) {
+    if (!Properties.getTechDevelopment(data.getProperties())) {
       return "Technology not enabled";
     }
     if (player.getAttachment(Constants.TECH_ATTACHMENT_NAME) == null) {
@@ -179,7 +179,7 @@ final class EditValidator {
     if (player == null) {
       return "No player selected";
     }
-    if (!Properties.getTechDevelopment(data)) {
+    if (!Properties.getTechDevelopment(data.getProperties())) {
       return "Technology not enabled";
     }
     for (final TechAdvance tech : techs) {
@@ -239,7 +239,7 @@ final class EditValidator {
     if (result != null) {
       return result;
     }
-    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       return "Game does not allow bombing damage";
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());

@@ -10,9 +10,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.server.ServerEndpointConfig;
@@ -28,7 +26,6 @@ import org.glassfish.jersey.logging.LoggingFeature;
 public class ServerConfiguration<T extends Configuration> {
 
   private final Bootstrap<T> bootstrap;
-  private final Map<Class<?>, ServerEndpointConfig> websockets = new HashMap<>();
 
   @AllArgsConstructor
   public static class WebsocketConfig {
@@ -47,30 +44,11 @@ public class ServerConfiguration<T extends Configuration> {
   private ServerEndpointConfig[] addWebsockets(final WebsocketConfig... websocketConfigs) {
     return Arrays.stream(websocketConfigs)
         .map(
-            websocketConfig -> {
-              final var serverEndpointConfig =
-                  ServerEndpointConfig.Builder.create(
-                          websocketConfig.websocketClass, websocketConfig.path)
-                      .build();
-              websockets.put(websocketConfig.websocketClass, serverEndpointConfig);
-              return serverEndpointConfig;
-            })
+            websocketConfig ->
+                ServerEndpointConfig.Builder.create(
+                        websocketConfig.websocketClass, websocketConfig.path)
+                    .build())
         .toArray(ServerEndpointConfig[]::new);
-  }
-
-  /**
-   * Adds properties that will be available in the websocket user session, ie: <code>
-   * session.getUserProperties.get(key)</code> <br>
-   * Note, websocket endpoint is instantiated dynamically on every new connection and does not allow
-   * for constructor injection. To inject objects, we use 'userProperties' of the socket
-   * configuration that can then be retrieved from a websocket session.
-   *
-   * @param websocketClass The class to inject with properties.
-   * @param objectsByUserPropertyName Map of objects to inject, key and object.
-   */
-  public void injectWebsocketProperties(
-      final Class<?> websocketClass, final Map<String, Object> objectsByUserPropertyName) {
-    websockets.get(websocketClass).getUserProperties().putAll(objectsByUserPropertyName);
   }
 
   /**

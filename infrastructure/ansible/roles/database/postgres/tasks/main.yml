@@ -1,5 +1,4 @@
 - name: Ensure latest bash and ssl
-  become: true
   apt:
     state: latest
     name:
@@ -9,7 +8,6 @@
       - libssl-doc
 
 - name: Install PostgreSQL
-  become: true
   apt:
     state: present
     name:
@@ -25,7 +23,6 @@
     enabled: yes
 
 - name: Set postgres user password
-  become: true
   become_user: postgres
   no_log: true
   postgresql_user:
@@ -35,7 +32,6 @@
     encrypted: yes
 
 - name: Create application database users
-  become: true
   become_user: postgres
   postgresql_user:
     name: "{{ item.user }}"
@@ -49,7 +45,6 @@
   no_log: true
 
 - name: Create application databases
-  become: true
   become_user: postgres
   postgresql_db:
     name: "{{ item.name }}"
@@ -59,7 +54,6 @@
     label: "{{ item.name }}"
 
 - name: Ensure user has access to the database
-  become: true
   become_user: postgres
   postgresql_user:
     db: "{{ item.name }}"

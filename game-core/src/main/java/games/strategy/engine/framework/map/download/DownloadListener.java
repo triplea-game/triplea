@@ -5,5 +5,5 @@ interface DownloadListener {
 
   void downloadUpdated(DownloadFileDescription download, long bytesReceived);
 
-  void downloadStopped(DownloadFileDescription download);
+  void downloadComplete(DownloadFileDescription download);
 }

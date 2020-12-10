@@ -1,13 +1,13 @@
 package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
@@ -22,6 +22,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -51,6 +52,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
@@ -180,9 +182,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    */
   static Set<TriggerAttachment> getTriggers(
       final GamePlayer player, final Predicate<TriggerAttachment> cond) {
+    Preconditions.checkNotNull(cond);
     final Set<TriggerAttachment> trigs = new HashSet<>();
     for (final IAttachment a : player.getAttachments().values()) {
-      if (a instanceof TriggerAttachment && (cond == null || cond.test((TriggerAttachment) a))) {
+      if (a instanceof TriggerAttachment && cond.test((TriggerAttachment) a)) {
         trigs.add((TriggerAttachment) a);
       }
     }
@@ -222,11 +225,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public static Set<TriggerAttachment> collectForAllTriggersMatching(
       final Set<GamePlayer> players, final Predicate<TriggerAttachment> triggerMatch) {
-    final Set<TriggerAttachment> toFirePossible = new HashSet<>();
-    for (final GamePlayer player : players) {
-      toFirePossible.addAll(TriggerAttachment.getTriggers(player, triggerMatch));
-    }
-    return toFirePossible;
+    Preconditions.checkNotNull(triggerMatch);
+
+    return players.stream()
+        .map(player -> TriggerAttachment.getTriggers(player, triggerMatch))
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public static Map<ICondition, Boolean> collectTestsForAllTriggers(
@@ -353,13 +357,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     TriggerAttachment trigger = null;
     for (final GamePlayer player : getData().getPlayerList().getPlayers()) {
-      for (final TriggerAttachment ta : getTriggers(player, null)) {
-        if (ta.getName().equals(s[0])) {
-          trigger = ta;
-          break;
-        }
-      }
-      if (trigger != null) {
+      final TriggerAttachment triggerAttachment = (TriggerAttachment) player.getAttachment(s[0]);
+      if (triggerAttachment != null) {
+        trigger = triggerAttachment;
         break;
       }
     }
@@ -908,11 +908,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     players = new ArrayList<>();
   }
 
-  private void setPlayerAttachmentName(final String name) throws GameParseException {
-    if (name == null) {
-      playerAttachmentName = null;
+  private void setPlayerAttachmentName(final String playerAttachmentName)
+      throws GameParseException {
+    if (playerAttachmentName == null) {
+      this.playerAttachmentName = null;
       return;
     }
+    // replace-all to automatically correct legacy (1.8) attachment spelling
+    final String name = playerAttachmentName.replaceAll("ttatch", "ttach");
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
@@ -961,7 +964,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         && !s[0].startsWith(Constants.USERACTION_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    playerAttachmentName = Tuple.of(s[1], s[0]);
+    this.playerAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   private void setPlayerAttachmentName(final Tuple<String, String> value) {
@@ -2421,7 +2424,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         for (int i = 0; i < eachMultiple; ++i) {
           int toAdd = t.getResourceCount();
           if (t.getResource().equals(Constants.PUS)) {
-            toAdd *= Properties.getPuMultiplier(data);
+            toAdd *= Properties.getPuMultiplier(data.getProperties());
           }
           resources.add(data.getResourceList().getResource(t.getResource()), toAdd);
           int total = player.getResources().getQuantity(t.getResource()) + toAdd;
@@ -2474,13 +2477,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         // numberOfTimes:useUses:testUses:testConditions:testChance
         TriggerAttachment toFire = null;
         for (final GamePlayer player : data.getPlayerList().getPlayers()) {
-          for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
-            if (ta.getName().equals(tuple.getFirst())) {
-              toFire = ta;
-              break;
-            }
-          }
-          if (toFire != null) {
+          final TriggerAttachment ta = (TriggerAttachment) player.getAttachment(tuple.getFirst());
+          if (ta != null) {
+            toFire = ta;
             break;
           }
         }

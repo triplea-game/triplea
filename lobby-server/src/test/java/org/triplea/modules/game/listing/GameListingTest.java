@@ -36,11 +36,11 @@ import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
+import org.triplea.java.IpAddressParser;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.web.socket.WebSocketMessagingBus;
 

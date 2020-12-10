@@ -1,11 +1,11 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 archivesBaseName = "$group-$name"
-description = 'TripleA DropWizard Http Server'
-mainClassName = 'org.triplea.http.ServerApplication'
+description = 'Lobby Http Server'
+mainClassName = 'org.triplea.http.LobbyServer'
 ext {
     releasesDir = file("$buildDir/releases")
 }
@@ -37,10 +37,15 @@ dependencies {
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "at.favre.lib:bcrypt:$bcryptVersion"
+    implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     implementation project(':domain-data')
     implementation project(':dropwizard-common')
+    implementation project(':github-client')
     implementation project(':http-clients')
     implementation project(':java-extras')
+    implementation project(':lobby-client')
+    implementation project(':websocket-client')
+    implementation project(':websocket-server')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"

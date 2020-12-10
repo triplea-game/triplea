@@ -12,6 +12,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +39,12 @@ public abstract class AbstractGame implements IGame {
   final Map<GamePlayer, Player> gamePlayers = new HashMap<>();
   final PlayerManager playerManager;
 
+  // TODO: Project#20 - clientNetworkBridge will be used for Websocket network bridge.
+  //   Usages will basically be to add listeners to map message types to methods calls.
+  //   The mapped method calls will replace the existing RMI-style based network code.
+  @SuppressWarnings({"FieldCanBeLocal", "unused"})
+  private final ClientNetworkBridge clientNetworkBridge;
+
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
 
@@ -45,9 +52,11 @@ public abstract class AbstractGame implements IGame {
       final GameData data,
       final Set<Player> gamePlayers,
       final Map<String, INode> remotePlayerMapping,
-      final Messengers messengers) {
+      final Messengers messengers,
+      final ClientNetworkBridge clientNetworkBridge) {
     gameData = data;
     this.messengers = messengers;
+    this.clientNetworkBridge = clientNetworkBridge;
     vault = new Vault(messengers);
     final Map<String, INode> allPlayers = new HashMap<>(remotePlayerMapping);
     for (final Player player : gamePlayers) {

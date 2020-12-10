@@ -52,12 +52,14 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.data.TechRoll;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
@@ -101,6 +103,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -146,6 +149,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.CompletableFutureUtils;
@@ -243,8 +247,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     new Insets(0, 0, 0, 0),
                     0,
                     0));
-            territoryInfo.revalidate();
-            territoryInfo.repaint();
+            SwingComponents.redraw(territoryInfo);
             return;
           }
 
@@ -342,8 +345,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     0,
                     0));
           }
-          territoryInfo.revalidate();
-          territoryInfo.repaint();
+          SwingComponents.redraw(territoryInfo);
         }
       };
 
@@ -727,14 +729,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private void addZoomKeyboardShortcuts() {
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
         KeyCode.EQUALS,
         () ->
             mapPanel.setScale(
                 mapPanel.getScale() + (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
 
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
         KeyCode.MINUS,
         () ->
@@ -744,7 +746,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private void addTab(final String title, final Component component, final KeyCode hotkey) {
     tabsPanel.addTab(title, null, component, "Hotkey: CTRL+" + hotkey);
-    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
         hotkey,
         () -> tabsPanel.setSelectedIndex(List.of(tabsPanel.getComponents()).indexOf(component)));
@@ -994,8 +996,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     sb.append("</ul></html>");
     final boolean lhtrProd =
-        Properties.getLhtrCarrierProductionRules(data)
-            || Properties.getLandExistingFightersOnNewCarriers(data);
+        Properties.getLhtrCarrierProductionRules(data.getProperties())
+            || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
     final int carrierCount =
         GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer).stream()
             .map(GamePlayer::getUnitCollection)
@@ -1130,11 +1132,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public boolean getStrategicBombingRaid(final Territory location) {
     messageAndDialogThreadPool.waitForAll();
     final String message =
-        (Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb")
+        (Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
+                ? "Bomb/Escort"
+                : "Bomb")
             + " in "
             + location.getName();
     final String bomb =
-        (Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb");
+        (Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
+            ? "Bomb/Escort"
+            : "Bomb");
     final String normal = "Attack";
     final String[] choices = {bomb, normal};
     int choice = -1;
@@ -1418,15 +1424,27 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
           for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
             final List<Unit> units = new ArrayList<>(entry.getValue());
-            units.sort(
-                new UnitBattleComparator(
-                        false,
-                        TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
-                        TerritoryEffectHelper.getEffects(entry.getKey()),
-                        data,
-                        true)
-                    .reversed());
-            possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
+            final List<Unit> sortedUnits =
+                CasualtySelector.getCasualtyOrderOfLoss(
+                    units,
+                    units.get(0).getOwner(),
+                    CombatValueBuilder.mainCombatValue()
+                        .enemyUnits(List.of())
+                        .friendlyUnits(List.of())
+                        .side(BattleState.Side.OFFENSE)
+                        .gameSequence(data.getSequence())
+                        .supportAttachments(data.getUnitTypeList().getSupportRules())
+                        .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                        .gameDiceSides(data.getDiceSides())
+                        .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
+                        .build(),
+                    entry.getKey(),
+                    TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+                    data);
+            // OOL is ordered with the first unit the owner would want to remove but in a kamikaze
+            // the player who picks is the attacker, so flip the order
+            Collections.reverse(sortedUnits);
+            possibleUnitsToAttackStringForm.put(entry.getKey().getName(), sortedUnits);
           }
           mapPanel.centerOn(
               data.getMap()
@@ -2019,7 +2037,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     try {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
       // history
-      clonedGameData = GameDataUtils.cloneGameData(data);
+      clonedGameData = GameDataUtils.cloneGameData(data).orElse(null);
       if (clonedGameData == null) {
         return;
       }
@@ -2132,49 +2150,59 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     final File f = SaveGameFileChooser.getSaveGameLocation(TripleAFrame.this, data);
                     if (f != null) {
                       try (FileOutputStream fileOutputStream = new FileOutputStream(f)) {
-                        final GameData datacopy = GameDataUtils.cloneGameData(data, true);
-                        datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
-                        datacopy
-                            .getHistory()
-                            .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
-                        // TODO: the saved current delegate is still the current delegate,
-                        // rather than the delegate at that history popup node
-                        // TODO: it still shows the current round number, rather than the round at
-                        // the history popup node
-                        // TODO: this could be solved easily if rounds/steps were changes,
-                        // but that could greatly increase the file size :(
-                        // TODO: this also does not undo the runcount of each delegate step
-                        final Enumeration<?> enumeration =
-                            ((DefaultMutableTreeNode) datacopy.getHistory().getRoot())
-                                .preorderEnumeration();
-                        enumeration.nextElement();
-                        int round = 0;
-                        String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
-                        GamePlayer currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
-                        while (enumeration.hasMoreElements()) {
-                          final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                          if (node instanceof Round) {
-                            round =
-                                Math.max(
-                                    0,
-                                    ((Round) node).getRoundNo()
-                                        - datacopy.getSequence().getRoundOffset());
-                            currentPlayer = null;
-                            stepDisplayName = node.getTitle();
-                          } else if (node instanceof Step) {
-                            currentPlayer = ((Step) node).getPlayerId();
-                            stepDisplayName = node.getTitle();
+                        final GameData datacopy =
+                            GameDataUtils.cloneGameData(
+                                    data, true, Injections.getInstance().getEngineVersion())
+                                .orElse(null);
+                        if (datacopy != null) {
+                          datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
+                          datacopy
+                              .getHistory()
+                              .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                          // TODO: the saved current delegate is still the current delegate,
+                          // rather than the delegate at that history popup node
+                          // TODO: it still shows the current round number, rather than the round at
+                          // the history popup node
+                          // TODO: this could be solved easily if rounds/steps were changes,
+                          // but that could greatly increase the file size :(
+                          // TODO: this also does not undo the runcount of each delegate step
+                          final Enumeration<?> enumeration =
+                              ((DefaultMutableTreeNode) datacopy.getHistory().getRoot())
+                                  .preorderEnumeration();
+                          enumeration.nextElement();
+                          int round = 0;
+                          String stepDisplayName =
+                              datacopy.getSequence().getStep(0).getDisplayName();
+                          GamePlayer currentPlayer =
+                              datacopy.getSequence().getStep(0).getPlayerId();
+                          while (enumeration.hasMoreElements()) {
+                            final HistoryNode node = (HistoryNode) enumeration.nextElement();
+                            if (node instanceof Round) {
+                              round =
+                                  Math.max(
+                                      0,
+                                      ((Round) node).getRoundNo()
+                                          - datacopy.getSequence().getRoundOffset());
+                              currentPlayer = null;
+                              stepDisplayName = node.getTitle();
+                            } else if (node instanceof Step) {
+                              currentPlayer = ((Step) node).getPlayerId();
+                              stepDisplayName = node.getTitle();
+                            }
                           }
+                          datacopy
+                              .getSequence()
+                              .setRoundAndStep(round, stepDisplayName, currentPlayer);
+                          GameDataManager.saveGame(
+                              fileOutputStream,
+                              datacopy,
+                              Injections.getInstance().getEngineVersion());
+                          JOptionPane.showMessageDialog(
+                              TripleAFrame.this,
+                              "Game Saved",
+                              "Game Saved",
+                              JOptionPane.INFORMATION_MESSAGE);
                         }
-                        datacopy
-                            .getSequence()
-                            .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                        GameDataManager.saveGame(fileOutputStream, datacopy);
-                        JOptionPane.showMessageDialog(
-                            TripleAFrame.this,
-                            "Game Saved",
-                            "Game Saved",
-                            JOptionPane.INFORMATION_MESSAGE);
                       } catch (final IOException e) {
                         log.log(Level.SEVERE, "Failed to save game: " + f.getAbsolutePath(), e);
                       }

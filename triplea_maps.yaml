@@ -42,13 +42,15 @@
 - mapName: Big World
   mapCategory: BEST
   url: https://github.com/triplea-maps/big_world/archive/master.zip
-  version: 3
+  version: 4
   description: |
-    <br>WWII style map, larger version of revised.
+    <br>WWII style map, larger version of Revised.
+    <br>
+    <br>Includes a V3 Rules variant.
 - mapName: Middle Earth
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/master.zip
-  version: 1
+  version: 2
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empires
@@ -422,9 +424,9 @@
     <br>This map is the continuation of the (deprecated) Large Middle Earth map. Currently in balance testing period.
     <br>Version 2.0.7, last update 2018.10.08. for engine 1.9.0.0.11000+
 - mapName: WW2 Path to Victory
-  mapCategory: GOOD
+  mapCategory: BEST
   url: https://github.com/triplea-maps/ww2_path_to_victory/archive/master.zip
-  version: 4
+  version: 5
   img: https://raw.githubusercontent.com/triplea-maps/ww2_path_to_victory/master/map/smallMap.png
   description: |
     <br>A new World War II map, inspired by Global 1940, from the creators of G40 Balanced Mod.
@@ -675,7 +677,7 @@
 - mapName: Red Sun Over China
   mapCategory: GOOD
   url: https://github.com/triplea-maps/red_sun_over_china/archive/master.zip
-  version: 5
+  version: 6
   img: https://raw.githubusercontent.com/triplea-maps/red_sun_over_china/master/description/TripleA_red_sun_over_china_mini.png
   description: |
     <br>Red Sun Over China
@@ -796,7 +798,7 @@
 - mapName: Iron War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 20
+  version: 21
   img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -1240,7 +1242,7 @@
 - mapName: World War2010
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/world_war2010/master/description/TripleA_world_war_2010_mini.png
   description: |
     <br>The year is 2010.
@@ -1289,7 +1291,7 @@
 - mapName: New World Order Lebowski Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order_lebowski_edition/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/new_world_order_lebowski_edition/master/description/TripleA_nwo_1939_lebowski_mini.png
   description: |
     <br>
@@ -1718,22 +1720,6 @@
     <br>c.) General tips:
     <br>An extensive manual is provided in the .zip file. Special units can be powerful.
     <br>
-- mapName: Domination 1914 Blood And Steel
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/domination_1914_blood_and_steel/archive/master.zip
-  version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/domination_1914_blood_and_steel/master/description/TripleA_domination_1914_blood_and_steel_mini.png
-  description: |
-    <br>by Navalland
-    <br>Version 1.0 for TripleA 1.8.0.5
-    <br>Suggestions to anillyuksell@hotmail.com
-    <br>
-    <br>"Domination 1914 Blood And Steel" is a realistic First World War immersive grand strategy wargame, based on the military conflict between two opposite sides. Germany, Austria, Ottomans, Bulgaria and Bolsheviks are Central Powers. Americans, British, French, Russia, Serbia, Romania, Greece and Japan are Allied. The various countries join the war at different times. Italy can join Central Powers or Allied, depending on Central Powers' achievements.
-    <br>
-    <br>Available politic panel and actions to declare war on some neutral countries. Different units for different countries. And different technologies for different countries. Featuring convoy zones, harbours, airfields and dogfighting.
-    <br>
-    <br>Highly dynamic gameplay. The war extending over the immense spaces of Africa, East Asia and Pacific, yet of scarce or no economic value. Europe is where the future of the World shall be forged, with steel and blood...
-    <br>
 - mapName: Invasion USA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/invasion_usa/archive/master.zip
@@ -1894,7 +1880,7 @@
 - mapName: New World Order 1915Lebowski
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order1915lebowski/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/new_world_order1915lebowski/master/description/TripleA_nwo_1915_lebowski_mini.png
   description: |
     <br>
@@ -2051,7 +2037,7 @@
 - mapName: Global 40 House Rules
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_house_rules/archive/master.zip
-  version: 12
+  version: 13
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/description/TripleA_ww2_global_1940_mini.png
   description:
     <br>
@@ -2064,15 +2050,6 @@
   description:
     <br>
     <br>An alternate history World War 2 scenario.
-    <br>
-- mapName: Schultz European War
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/schultz_european_war/archive/master.zip
-  version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/schultz_european_war/master/description/TripleA_schultz_european_war_mini.png
-  description:
-    <br>
-    <br>A World War I Mod.
     <br>
 - mapName: Oztea 1939 Global
   mapCategory: EXPERIMENTAL
@@ -2133,7 +2110,7 @@
 - mapName: Warcraft War Heroes
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/warcraft_war_heroes/archive/master.zip
-  version: 4
+  version: 6
   img: https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -2167,3 +2144,44 @@
         More details in the docs! Enjoy!
     </p><br>
     <br>
+- mapName: World War II v3 1941 Balanced Mod
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/world_war_ii_v3_1941_balanced_mod/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3_1941_balanced_mod/master/description/TripleA_ww2v3_1941_mini.png
+  description: |
+   <br>A new version of World War II v3 that uses a small, steady flow of cash instead of a large initial bid to balance the game for the Allies.
+   <br>New national objectives encourage players to compete in both the Atlantic and Pacific theaters, with front lines appearing in historically plausible regions like the Solomon Islands, Eastern Ukraine, and Norway.
+   <br>China is preserved as a playable country with a modest setup change and an increased ability to collect reinforcements, including artillery from the Burma Road.
+   <br>Otherwise, unit types, regions, etc. have all been preserved so that players can take advantage of their previous experience with the World War II v3 map.
+   <br>Initial playtesting with human opponents suggests that the map is balanced without a bid -- but the TripleA community will be the ultimate judge.
+   <br>Try it and see what you think!
+- mapName: Aggression 1941
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/aggression_1941/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/master/description/mapimage.png
+  description: |
+   <br>A WWII scenario loosely based on 1941, inspired of AA50 Anniversary and Big World.
+   <br>WARNING! The balance hasn't extensively tested yet. Still progressing...
+- mapName: WW Terminus v2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ww_terminus_v2/archive/master.zip
+  version: 1
+  description: |
+    <br>A low-IPC variant of ww2v4. Featuring:
+    <br>Production before combat. (via triggers)
+    <br>An exclusive unit for each faction.
+    <br>Kamikaze airplanes for Japan only.
+- mapName: Sleeping Giant
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/sleeping_giant/archive/master.zip
+  version: 1
+  description: |
+    <br>A war between the United States and all her neighbors.
+- mapName: Small Balanced 4 Player
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/small_balanced_2_or_4_player/archive/master.zip
+  version: 1
+  description: |
+    <br>A simple symmetrical map made for 4 players.

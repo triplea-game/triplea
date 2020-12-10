@@ -9,10 +9,10 @@ import com.google.common.collect.Iterables;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
@@ -64,6 +64,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
     final Collection<GamePlayer> gamePlayers = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
+      if (subString.isBlank()) {
+        continue;
+      }
       this.conditions.add(
           gamePlayers.stream()
               .map(p -> p.getAttachment(subString))
@@ -73,7 +76,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
               .orElseThrow(
                   () ->
                       new GameParseException(
-                          "Could not find rule. name:" + subString + thisErrorMsg())));
+                          "Could not find rule. From conditions value: "
+                              + conditions
+                              + ", expected name: "
+                              + subString
+                              + thisErrorMsg())));
     }
   }
 
@@ -101,7 +108,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @VisibleForTesting
   void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
-    if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
+    if (uppercaseValue.matches("AND|OR|\\d+(?:-\\d+)?")) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
         conditionType = uppercaseValue;
@@ -109,7 +116,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       }
     }
     throw new GameParseException(
-        "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
+        "conditionType must be equal to 'AND' or 'OR' or 'y' or 'y-z' where Y "
             + "and Z are valid positive integers and Z is greater than Y"
             + thisErrorMsg());
   }

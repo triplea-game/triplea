@@ -9,12 +9,11 @@
 	- [Lobby and bot running OLD should be able to communicate with client running NEW](#lobby-and-bot-running-old-should-be-able-to-communicate-with-client-running-new)
 - [Manual Regression Testing](#manual-regression-testing)
 
-
 ## Game compatibility testing
 
-It is important to ensure that any proposed change does not break game compatibility 
-(unless this has been previously agreed upon).  The following sections describe the tests that should be 
-run to ensure game compatibility between a previously-released version (referred to below as **OLD**) and a 
+It is important to ensure that any proposed change does not break game compatibility
+(unless this has been previously agreed upon).  The following sections describe the tests that should be
+run to ensure game compatibility between a previously-released version (referred to below as **OLD**) and a
 branch containing a proposed change (referred to below as **NEW**).
 
 ### Save games
@@ -50,29 +49,26 @@ Ensure compatibility between network nodes running different versions.
     * Ensure OLD and NEW select players in adversarial roles.
 1. Progress far enough in the game to fight a battle.
 
-
-
 ## Manual Regression Testing
 
 - Various maps can be opened, no delegates broken
 - Launch an AI only game and let some AI players go at for a dozen rounds, verify no errors.
-- Join a lobby bot of live lobby, play through a combat (compatibility check). 
+- Join a lobby bot of live lobby, play through a combat (compatibility check).
 - Verify important combat rules are working (can be combined with above step)
 - More Compatibility checks
   - save games
   - network play
   - XML parsing
-  
+
 - Local host + client
-  - This means start up two copies of triplea.  In one copy you click ‘host networked game’ 
-and start hosting.  In the other copy you click ‘connect to networked game’ and join.  The client should choose the 
-FIRST player in the list (this is to test that the delegates are sending data correctly).  
-Start the game and play a round against yourself, making sure everything looks good.  
+  - This means start up two copies of triplea.  In one copy you click ‘host networked game’
+and start hosting.  In the other copy you click ‘connect to networked game’ and join.  The client should choose the
+FIRST player in the list (this is to test that the delegates are sending data correctly).
+Start the game and play a round against yourself, making sure everything looks good.
 
-- Play by Email, and Play by Forum  
-  - You can test both at once by setting up a game against yourself that has both settings enabled.  
-  You will probably need to add two email addresses for this to work. 
+- Play by Email, and Play by Forum
+  - You can test both at once by setting up a game against yourself that has both settings enabled.
+  You will probably need to add two email addresses for this to work.
   - Test all forums
-  - Recommend test play by email with both a gmail and a hotmail account.  
-
+  - Recommend test play by email with both a gmail and a hotmail account.
 

@@ -1,5 +1,4 @@
 - name: create service user
-  become: true
   user:
     name: "{{ lobby_server_user }}"
     create_home: yes
@@ -7,7 +6,6 @@
 
 - name: create bin folder for jar file
   when: using_latest
-  become: true
   file:
     state: directory
     path: "{{ lobby_server_home_folder }}/bin/"
@@ -17,7 +15,6 @@
 
 - name: deploy jar file
   when: using_latest
-  become: true
   register: deploy_jar_file
   copy:
     src: "{{ lobby_server_jar }}"
@@ -28,7 +25,6 @@
 
 - name: download zip file if not using latest
   when: not using_latest
-  become: true
   register: deploy_jar_file
   get_url:
     url: "{{ lobby_server_zip_download }}"
@@ -38,7 +34,6 @@
 
 - name: extract zip file if not using latest
   when: not using_latest
-  become: true
   unarchive:
     remote_src: yes
     src: "{{ lobby_server_home_folder }}/triplea-lobby-server-{{ version }}.zip"
@@ -47,7 +42,6 @@
     group: "{{ lobby_server_user }}"
 
 - name: deploy run_server script
-  become: true
   template:
     src: run_server.j2
     dest: "{{ lobby_server_run_file }}"
@@ -56,7 +50,6 @@
     group: "{{ lobby_server_user }}"
 
 - name: deploy server config file
-  become: true
   register: deploy_config_file
   template:
     src: configuration.yml.j2
@@ -66,35 +59,30 @@
     group: "{{ lobby_server_user }}"
 
 - name: install systemd service script
-  become: true
   template:
     src: lobby_server.service.j2
     dest: /lib/systemd/system/lobby_server.service
     mode: "644"
 
 - name: reload systemd
-  become: true
   systemd:
     daemon_reload: yes
 
 - name: enable and start service
   when: (deploy_jar_file.changed == false) and (deploy_config_file.changed == false)
-  become: true
   service:
     name: lobby_server
     state: started
     enabled: yes
 
 - name: restart service if new jar file deployed
-  when: (deploy_jar_file.changed) or (deploy_config_file.changed)
-  become: true
+  when: (lobby_restart_on_new_deployment) and ((deploy_jar_file.changed) or (deploy_config_file.changed))
   service:
     name: lobby_server
     state: restarted
     enabled: yes
 
 - name: deploy admin scripts to facilite server operations, EG. check logs, start, stop
-  become: true
   copy:
     src: "{{ item }}"
     dest: /home/admin/

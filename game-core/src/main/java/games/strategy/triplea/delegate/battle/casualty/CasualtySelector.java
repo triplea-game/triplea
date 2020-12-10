@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.battle.casualty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -14,9 +13,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
@@ -57,16 +56,11 @@ public class CasualtySelector {
   public static CasualtyDetails selectCasualties(
       final GamePlayer player,
       final Collection<Unit> targetsToPickFrom,
-      final Collection<Unit> friendlyUnits,
-      final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers,
+      final CombatValue combatValue,
       final Territory battlesite,
-      final Collection<TerritoryEffect> territoryEffects,
       final IDelegateBridge bridge,
       final String text,
       final DiceRoll dice,
-      final boolean defending,
       final UUID battleId,
       final boolean headLess,
       final int extraHits,
@@ -82,7 +76,9 @@ public class CasualtySelector {
         headLess ? Map.of() : CasualtyUtil.getDependents(targetsToPickFrom);
 
     final int hitsRemaining =
-        Properties.getTransportCasualtiesRestricted(data) ? extraHits : dice.getHits();
+        Properties.getTransportCasualtiesRestricted(data.getProperties())
+            ? extraHits
+            : dice.getHits();
 
     if (BaseEditDelegate.getEditMode(data)) {
       return tripleaPlayer.selectCasualties(
@@ -92,10 +88,10 @@ public class CasualtySelector {
           text,
           dice,
           player,
-          friendlyUnits,
-          enemyUnits,
-          amphibious,
-          amphibiousLandAttackers,
+          combatValue.getFriendUnits(),
+          combatValue.getEnemyUnits(),
+          false,
+          List.of(),
           new CasualtyDetails(),
           battleId,
           battlesite,
@@ -120,14 +116,10 @@ public class CasualtySelector {
         getDefaultCasualties(
             targetsToPickFrom,
             hitsRemaining,
-            defending,
             player,
-            enemyUnits,
-            amphibious,
-            amphibiousLandAttackers,
+            combatValue,
             battlesite,
             costs,
-            territoryEffects,
             data,
             allowMultipleHitsPerUnit);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
@@ -151,17 +143,17 @@ public class CasualtySelector {
                 text,
                 dice,
                 player,
-                friendlyUnits,
-                enemyUnits,
-                amphibious,
-                amphibiousLandAttackers,
+                combatValue.getFriendUnits(),
+                combatValue.getEnemyUnits(),
+                false,
+                List.of(),
                 defaultCasualties,
                 battleId,
                 battlesite,
                 allowMultipleHitsPerUnit);
     final List<Unit> killed = casualtySelection.getKilled();
     // if partial retreat is possible, kill amphibious units first
-    if (Properties.getPartialAmphibiousRetreat(data)) {
+    if (Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       killAmphibiousFirst(killed, sortedTargetsToPickFrom);
     }
     final List<Unit> damaged = casualtySelection.getDamaged();
@@ -194,16 +186,11 @@ public class CasualtySelector {
       return selectCasualties(
           player,
           sortedTargetsToPickFrom,
-          friendlyUnits,
-          enemyUnits,
-          amphibious,
-          amphibiousLandAttackers,
+          combatValue,
           battlesite,
-          territoryEffects,
           bridge,
           text,
           dice,
-          defending,
           battleId,
           headLess,
           extraHits,
@@ -223,16 +210,11 @@ public class CasualtySelector {
       return selectCasualties(
           player,
           sortedTargetsToPickFrom,
-          friendlyUnits,
-          enemyUnits,
-          amphibious,
-          amphibiousLandAttackers,
+          combatValue,
           battlesite,
-          territoryEffects,
           bridge,
           text,
           dice,
-          defending,
           battleId,
           headLess,
           extraHits,
@@ -286,37 +268,16 @@ public class CasualtySelector {
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(
       final Collection<Unit> targetsToPickFrom,
       final int hits,
-      final boolean defending,
       final GamePlayer player,
-      final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers,
+      final CombatValue combatValue,
       final Territory battlesite,
       final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects,
       final GameData data,
       final boolean allowMultipleHitsPerUnit) {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
     // Sort units by power and cost in ascending order
-    final List<Unit> sorted;
-    sorted =
-        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
-            CasualtyOrderOfLosses.Parameters.builder()
-                .targetsToPickFrom(targetsToPickFrom)
-                .player(player)
-                .enemyUnits(enemyUnits)
-                .combatModifiers(
-                    CombatModifiers.builder()
-                        .territoryEffects(territoryEffects)
-                        .amphibious(amphibious)
-                        .defending(defending)
-                        .build())
-                .amphibiousLandAttackers(
-                    amphibiousLandAttackers == null ? List.of() : amphibiousLandAttackers)
-                .battlesite(battlesite)
-                .costs(costs)
-                .data(data)
-                .build());
+    final List<Unit> sorted =
+        getCasualtyOrderOfLoss(targetsToPickFrom, player, combatValue, battlesite, costs, data);
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
     if (allowMultipleHitsPerUnit) {
@@ -344,6 +305,24 @@ public class CasualtySelector {
       numSelectedCasualties++;
     }
     return Tuple.of(defaultCasualtySelection, sorted);
+  }
+
+  public static List<Unit> getCasualtyOrderOfLoss(
+      final Collection<Unit> targetsToPickFrom,
+      final GamePlayer player,
+      final CombatValue combatValue,
+      final Territory battlesite,
+      final IntegerMap<UnitType> costs,
+      final GameData data) {
+    return CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
+        CasualtyOrderOfLosses.Parameters.builder()
+            .targetsToPickFrom(targetsToPickFrom)
+            .player(player)
+            .combatValue(combatValue)
+            .battlesite(battlesite)
+            .costs(costs)
+            .data(data)
+            .build());
   }
 
   /**

@@ -24,6 +24,7 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.BonusIncomeUtils;
@@ -70,7 +71,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
           && step.getDelegate().getName().equals("endTurn")) {
         final List<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
         final int pusFromTerritories =
-            getProduction(territories, data) * Properties.getPuMultiplier(data);
+            getProduction(territories, data) * Properties.getPuMultiplier(data.getProperties());
         resources.add(new Resource(Constants.PUS, data), pusFromTerritories);
         resources.add(EndTurnDelegate.getResourceProduction(territories, data));
       }
@@ -108,7 +109,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       int toAdd = getProduction(territories);
       final int blockadeLoss = getBlockadeProductionLoss(player, data, bridge, endTurnReport);
       toAdd -= blockadeLoss;
-      toAdd *= Properties.getPuMultiplier(data);
+      toAdd *= Properties.getPuMultiplier(data.getProperties());
       int total = player.getResources().getQuantity(pus) + toAdd;
       final String transcriptText;
       if (blockadeLoss == 0) {
@@ -224,7 +225,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     if (GameStepPropertiesHelper.isRepairUnits(data)) {
       MoveDelegate.repairMultipleHitPointUnits(bridge, bridge.getGamePlayer());
     }
-    if (Properties.getGiveUnitsByTerritory(getData())
+    if (Properties.getGiveUnitsByTerritory(getData().getProperties())
         && pa != null
         && pa.getGiveUnitControl() != null
         && !pa.getGiveUnitControl().isEmpty()) {
@@ -289,7 +290,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     }
     final String annotation = player.getName() + " rolling to resolve War Bonds: ";
     final DiceRoll dice =
-        DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+        RollDiceFactory.rollNSidedDiceXTimes(
+            delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int total = 0;
     for (int i = 0; i < dice.size(); i++) {
       total += dice.getDie(i).getValue() + 1;
@@ -340,7 +342,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
             + giveWarBondsTo.getName()
             + ": ";
     final DiceRoll dice =
-        DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+        RollDiceFactory.rollNSidedDiceXTimes(
+            delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int totalWarBonds = 0;
     for (int i = 0; i < dice.size(); i++) {
       totalWarBonds += dice.getDie(i).getValue() + 1;
@@ -468,7 +471,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     }
     final Predicate<Unit> enemyUnits = Matches.enemyUnit(player, data);
     int totalLoss = 0;
-    final boolean rollDiceForBlockadeDamage = Properties.getConvoyBlockadesRollDiceForCost(data);
+    final boolean rollDiceForBlockadeDamage =
+        Properties.getConvoyBlockadesRollDiceForCost(data.getProperties());
     final Collection<String> transcripts = new ArrayList<>();
     final Map<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone = new HashMap<>();
     boolean rolledDice = false;

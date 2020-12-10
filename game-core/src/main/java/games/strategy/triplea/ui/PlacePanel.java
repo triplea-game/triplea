@@ -154,8 +154,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         () -> {
           if (showUnitsToPlace) {
             unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
-            unitsToPlacePanel.revalidate();
-            unitsToPlacePanel.repaint();
+            SwingComponents.redraw(unitsToPlacePanel);
           } else {
             unitsToPlacePanel.removeAll();
           }
@@ -229,9 +228,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       // get the units that can be placed on this territory.
       Collection<Unit> units = getCurrentPlayer().getUnits();
       if (territory.isWater()) {
-        if (!(Properties.getProduceFightersOnCarriers(getData())
-            || Properties.getProduceNewFightersOnOldCarriers(getData())
-            || Properties.getLhtrCarrierProductionRules(getData())
+        if (!(Properties.getProduceFightersOnCarriers(getData().getProperties())
+            || Properties.getProduceNewFightersOnOldCarriers(getData().getProperties())
+            || Properties.getLhtrCarrierProductionRules(getData().getProperties())
             || GameStepPropertiesHelper.isBid(getData()))) {
           units = CollectionUtils.getMatches(units, Matches.unitIsSea());
         } else {

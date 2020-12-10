@@ -57,7 +57,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
-import tools.util.ToolArguments;
+import tools.util.ToolsUtil;
 
 /**
  * This is the DecorationPlacer, it will create a text file for you containing the points to place
@@ -116,26 +116,24 @@ public final class DecorationPlacer {
    *
    * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void run(final String[] args) {
+  public static void run() {
     checkState(SwingUtilities.isEventDispatchThread());
 
     try {
-      new DecorationPlacer().runInternal(args);
+      new DecorationPlacer().runInternal();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "failed to run decoration placer", e);
     }
   }
 
-  private void runInternal(final String[] args) throws IOException {
-    handleCommandLineArgs(args);
-    log.info("Select the map");
+  private void runInternal() throws IOException {
+    mapFolderLocation = MapFolderLocationSystemProperty.read();
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
-      log.info("Map : " + mapName);
       final DecorationPlacerFrame frame = new DecorationPlacerFrame(mapName);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
@@ -187,7 +185,7 @@ public final class DecorationPlacer {
     } else {
       log.info("No Image Map Selected. Shutting down.");
     }
-  } // end main
+  }
 
   private final class DecorationPlacerFrame extends JFrame {
     private static final long serialVersionUID = 6385408390173085656L;
@@ -724,7 +722,7 @@ public final class DecorationPlacer {
             new File(
                 ClientFileSystemHelper.getRootFolder()
                     + File.separator
-                    + ResourceLoader.RESOURCE_FOLDER
+                    + ResourceLoader.ASSETS_FOLDER
                     + File.separator
                     + imagePointType.getFolderName(),
                 imagePointType.getImageName());
@@ -860,7 +858,8 @@ public final class DecorationPlacer {
           && staticImageForPlacing != null
           && currentSelectedImage == null) {
         // create a new point here in this territory
-        final Optional<String> territoryName = Util.findTerritoryName(currentMousePoint, polygons);
+        final Optional<String> territoryName =
+            ToolsUtil.findTerritoryName(currentMousePoint, polygons);
         if (territoryName.isPresent()) {
           final List<Point> points = new ArrayList<>();
           points.add(new Point(currentMousePoint));
@@ -909,46 +908,6 @@ public final class DecorationPlacer {
         currentSelectedImage = null;
       }
       repaint();
-    }
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
-
-  private void handleCommandLineArgs(final String[] args) {
-    // arg can only be the map folder location.
-    if (args.length == 1) {
-      final String value;
-      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
-        value = getValue(args[0]);
-      } else {
-        value = args[0];
-      }
-      final File mapFolder = new File(value);
-      if (mapFolder.exists()) {
-        mapFolderLocation = mapFolder;
-      } else {
-        log.info("Could not find directory: " + value);
-      }
-    } else if (args.length > 1) {
-      log.info("Only argument allowed is the map directory.");
-    }
-    // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
-      if (value != null && value.length() > 0) {
-        final File mapFolder = new File(value);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-        } else {
-          log.info("Could not find directory: " + value);
-        }
-      }
     }
   }
 

@@ -4,5 +4,3 @@ Delete tag from github repo (standard git command to delete a tag, https://githu
 
 Delete release that is left behind: https://developer.github.com/v3/repos/releases/#delete-a-release
 
-
-

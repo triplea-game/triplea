@@ -2,60 +2,33 @@
 
 set -eu
 
-CUR_FOLDER=$(basename $(pwd))
+CUR_FOLDER=$(basename "$(pwd)")
 if [ "$CUR_FOLDER" != infrastructure ]; then
   echo "Error, must be in the infrastructure folder to run this script."
   exit 1
 fi
 
-export VERSION=$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)
-
-export CRT_FILE="triplea-nginx-vagrant.crt"
 
 function main() {
   symlinkNginxCert
-  buildJars
-  buildMigrations
+  local -r version=$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)
+  .include/build_latest_artifacts "$version"
 
   ansible-playbook -D -v \
       "$@" \
-      ansible/site.yml \
-      -i ansible/inventory/vagrant
+      -i ansible/inventory/vagrant \
+      ansible/site.yml
   # Update certs to pick up new or updated certs from nginx
   sudo update-ca-certificates -f
 }
 
 function symlinkNginxCert() {
-  local link="/usr/local/share/ca-certificates/${CRT_FILE}"
+  local crtFile="triplea-nginx-vagrant.crt"
+  local link="/usr/local/share/ca-certificates/${crtFile}"
   if [ ! -L "$link" ]; then
-    sudo ln -s "$(pwd)/.vagrant/${CRT_FILE}" "$link"
-  fi
-}
-
-function buildJars() {
-  (
-    cd ../
-    ./gradlew :lobby-server:shadowJar :game-headless:shadowJar
-    
-    local targetFolder="./infrastructure/ansible/roles"
-    mkdir -p "${targetFolder}/bot/files/" "${targetFolder}/lobby_server/files/"
-    cp "game-headless/build/libs/triplea-game-headless-${VERSION}.jar" "${targetFolder}/bot/files/"
-    cp "lobby-server/build/libs/triplea-lobby-server-${VERSION}.jar" "${targetFolder}/lobby_server/files/"
-  ) 
-}
-
-function buildMigrations() {
-  local targetFolder=./ansible/roles/database/flyway/files/
-  if [ ! -e $targetFolder/migrations.zip ] || [ ! -e "$targetFolder/map-migrations.zip" ]; then
-    (
-      cd ..
-      ./gradlew :lobby-db:release
-      ./gradlew :maps-db:release
-    )
-    mkdir -p $targetFolder
-    cp ../lobby-db/build/distributions/migrations.zip $targetFolder
-    cp ../maps-db/build/distributions/maps_database_migrations.zip $targetFolder
+    sudo ln -s "$(pwd)/.vagrant/${crtFile}" "$link"
   fi
 }
 
 main "$@"
+

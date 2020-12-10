@@ -38,7 +38,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   public void end() {
     super.end();
     resetAttempts();
-    if (Properties.getTriggers(getData())) {
+    if (Properties.getTriggers(getData().getProperties())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out
       // as a composite match
       // OR.
@@ -90,7 +90,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!player.amNotDeadYet(getData())) {
       return false;
     }
-    return Properties.getUsePolitics(getData()) && !getValidActions().isEmpty();
+    return Properties.getUsePolitics(getData().getProperties()) && !getValidActions().isEmpty();
   }
 
   public Map<ICondition, Boolean> getTestedConditions() {
@@ -120,7 +120,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   @Override
   public void attemptAction(final PoliticalActionAttachment paa) {
-    if (!Properties.getUsePolitics(getData())) {
+    if (!Properties.getUsePolitics(getData().getProperties())) {
       notifyPoliticsTurnedOff();
       return;
     }
@@ -180,7 +180,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
                     Matches.relationshipTypeIsAtWar(),
                     Matches.relationshipTypeIsAtWar().negate(),
                     data));
-    if (!Properties.getAlliancesCanChainTogether(data)
+    if (!Properties.getAlliancesCanChainTogether(data.getProperties())
         || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {
       for (final GamePlayer player : paa.getActionAccept()) {
         if (!getRemotePlayer(player)
@@ -459,7 +459,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private static void getMyselfOutOfAlliance(
       final PoliticalActionAttachment paa, final GamePlayer player, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data.getProperties())) {
       return;
     }
     final Collection<GamePlayer> players = data.getPlayerList().getPlayers();
@@ -514,7 +514,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private static void getNeutralOutOfWarWithAllies(
       final PoliticalActionAttachment paa, final GamePlayer player, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data.getProperties())) {
       return;
     }
 
@@ -575,7 +575,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   static void chainAlliancesTogether(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data.getProperties())) {
       return;
     }
     final Collection<RelationshipType> allTypes =

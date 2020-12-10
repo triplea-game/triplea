@@ -9,7 +9,7 @@
      1. After step 3 "Activate Checkstyle for your project", select the TripleA configuration file
       instead of "Sun Checks". Checkstyle file: [triplea/config/checkstyle/checkstyle.xml
      ](https://github.com/triplea-game/triplea/blob/master/config/checkstyle/checkstyle.xml)
-  - ***Lombok*** 
+  - ***Lombok***
     1. Download [jar file](https://projectlombok.org/downloads/lombok.jar) and execute it: `java -jar lombok.jar`
        - [manual install](https://groups.google.com/forum/#!topic/project-lombok/3rVS0eXVl5U)
          if that does not work

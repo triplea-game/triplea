@@ -69,7 +69,7 @@ public final class ProPurchaseValidationUtils {
     if (ppo == null) {
       return false;
     }
-    final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
+    final List<Unit> units = ppo.getUnitType().createTemp(ppo.getQuantity(), player);
     return ProPurchaseValidationUtils.canUnitsBePlaced(
         proData, units, player, t, factoryTerritory, isBid);
   }
@@ -113,7 +113,7 @@ public final class ProPurchaseValidationUtils {
 
   private static boolean isPlacingFightersOnNewCarriers(final Territory t, final List<Unit> units) {
     return t.isWater()
-        && Properties.getProduceFightersOnCarriers(t.getData())
+        && Properties.getProduceFightersOnCarriers(t.getData().getProperties())
         && units.stream().anyMatch(Matches.unitIsAir())
         && units.stream().anyMatch(Matches.unitIsCarrier());
   }
@@ -267,9 +267,9 @@ public final class ProPurchaseValidationUtils {
     final String constructionType = purchaseOption.getConstructionType();
     if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
         && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
-      if (Properties.getUnlimitedConstructions(data)) {
+      if (Properties.getUnlimitedConstructions(data.getProperties())) {
         maxConstructionType = Integer.MAX_VALUE;
-      } else if (Properties.getMoreConstructionsWithFactory(data)) {
+      } else if (Properties.getMoreConstructionsWithFactory(data.getProperties())) {
         int production = 0;
         final TerritoryAttachment terrAttachment = TerritoryAttachment.get(territory);
         if (terrAttachment != null) {

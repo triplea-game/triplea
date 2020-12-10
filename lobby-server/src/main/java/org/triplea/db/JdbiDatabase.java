@@ -2,9 +2,8 @@ package org.triplea.db;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
@@ -25,7 +24,7 @@ import org.triplea.db.dao.user.role.UserRoleLookup;
 import org.triplea.db.dao.username.ban.UsernameBanRecord;
 
 /** Utility to get connections to the Postgres lobby database. */
-@Log
+@Slf4j
 @UtilityClass
 public final class JdbiDatabase {
   /**
@@ -63,7 +62,7 @@ public final class JdbiDatabase {
 
           @Override
           public void logException(final StatementContext context, final SQLException ex) {
-            log.log(Level.SEVERE, "Exception executing SQL: " + context.getRawSql(), ex);
+            log.error("Exception executing SQL: " + context.getRawSql(), ex);
           }
         });
   }

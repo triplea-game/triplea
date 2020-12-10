@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -134,7 +135,7 @@ public class MoveValidator {
 
     // Don't let the user move out of a battle zone, the exception is air units and unloading units
     // into a battle zone
-    if (AbstractMoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false)
+    if (AbstractMoveDelegate.getBattleTracker(data).hasPendingNonBombingBattle(route.getStart())
         && units.stream().anyMatch(Matches.unitIsNotAir())) {
       // if the units did not move into the territory, then they can move out this will happen if
       // there is a submerged
@@ -248,7 +249,7 @@ public class MoveValidator {
     if (getEditMode(data)) {
       return result;
     }
-    if (!Properties.getUseFuelCost(data)) {
+    if (!Properties.getUseFuelCost(data.getProperties())) {
       return result;
     }
     final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data);
@@ -278,13 +279,13 @@ public class MoveValidator {
    * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
    */
   public String validateCanal(
-      final Route route, final Collection<Unit> units, final GamePlayer player) {
+      final Route route, @Nullable final Collection<Unit> units, final GamePlayer player) {
     return validateCanal(route, units, new HashMap<>(), player);
   }
 
   String validateCanal(
       final Route route,
-      final Collection<Unit> units,
+      @Nullable final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
       final GamePlayer player) {
     // Check each unit 1 by 1 to see if they can move through necessary canals on route
@@ -303,8 +304,10 @@ public class MoveValidator {
           }
           failureMessage = canPassThroughCanal(canalAttachment, unit, player);
           final boolean canPass = failureMessage.isEmpty();
-          if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
-              || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+          if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
+                  && canPass)
+              || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
+                  && !canPass)) {
             break; // If need to control any canal and can pass OR need to control all canals and
             // can't pass
           }
@@ -358,8 +361,9 @@ public class MoveValidator {
       final Collection<Unit> unitsWithoutDependents =
           findNonDependentUnits(units, route, new HashMap<>());
       canPass = canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player).isEmpty();
-      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
-          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties()) && canPass)
+          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
+              && !canPass)) {
         break; // If need to control any canal and can pass OR need to control all canals and can't
         // pass
       }
@@ -492,7 +496,8 @@ public class MoveValidator {
     // check aircraft
     if (units.stream().anyMatch(Matches.unitIsAir())
         && route.hasSteps()
-        && (!Properties.getNeutralFlyoverAllowed(data) || Properties.getNeutralsImpassable(data))
+        && (!Properties.getNeutralFlyoverAllowed(data.getProperties())
+            || Properties.getNeutralsImpassable(data.getProperties()))
         && route.getMiddleSteps().stream().anyMatch(Matches.territoryIsNeutralButNotWater())) {
       return result.setErrorReturnResult("Air units cannot fly over neutral territories");
     }
@@ -544,15 +549,17 @@ public class MoveValidator {
     if (route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
-    if (!route.anyMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
+    if (!route.anyMatch(
+        Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
     }
     final Predicate<Territory> neutralOrEnemy =
         Matches.territoryIsNeutralButNotWater()
             .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
     final boolean navalMayNotNonComIntoControlled =
-        Properties.getWW2V2(data)
-            || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
+        Properties.getWW2V2(data.getProperties())
+            || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(
+                data.getProperties());
     // TODO need to account for subs AND transports that are ignored, not just OR
     final Territory end = route.getEnd();
     if (neutralOrEnemy.test(end)) {
@@ -575,7 +582,7 @@ public class MoveValidator {
             .anyMatch(Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate()))
         && !onlyIgnoredUnitsOnPath(route, player, false)
         && !(end.isWater() && units.stream().allMatch(Matches.unitIsAir()))
-        && !(Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
+        && !(Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
             && units.stream().allMatch(Matches.unitCanMoveThroughEnemies()))) {
       return result.setErrorReturnResult("Cannot advance to battle in non combat");
     }
@@ -590,8 +597,8 @@ public class MoveValidator {
       // otherwise we can generally fly over anything in noncombat
       if (route.anyMatch(
               Matches.territoryIsNeutralButNotWater().and(Matches.territoryIsWater().negate()))
-          && (!Properties.getNeutralFlyoverAllowed(data)
-              || Properties.getNeutralsImpassable(data))) {
+          && (!Properties.getNeutralFlyoverAllowed(data.getProperties())
+              || Properties.getNeutralsImpassable(data.getProperties()))) {
         return result.setErrorReturnResult(
             "Air units cannot fly over neutral territories in non combat");
       }
@@ -620,7 +627,7 @@ public class MoveValidator {
     if (getEditMode(data)) {
       return result;
     }
-    if (!Properties.getMovementByTerritoryRestricted(data)) {
+    if (!Properties.getMovementByTerritoryRestricted(data.getProperties())) {
       return result;
     }
     final RulesAttachment ra =
@@ -834,7 +841,7 @@ public class MoveValidator {
     if (canCrossNeutralTerritory(route, player, result).getError() != null) {
       return result;
     }
-    if (Properties.getNeutralsImpassable(data)
+    if (Properties.getNeutralsImpassable(data.getProperties())
         && !isNeutralsBlitzable(data)
         && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
       return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
@@ -965,7 +972,8 @@ public class MoveValidator {
             .or(Matches.unitCanBeMovedThroughByEnemies())
             .or(Matches.enemyUnit(player, data).negate());
     final Predicate<Unit> transportOrSubOnly = transportOnly.or(subOnly);
-    final boolean getIgnoreTransportInMovement = Properties.getIgnoreTransportInMovement(data);
+    final boolean getIgnoreTransportInMovement =
+        Properties.getIgnoreTransportInMovement(data.getProperties());
     final List<Territory> steps;
     if (ignoreRouteEnd) {
       steps = route.getMiddleSteps();
@@ -1168,10 +1176,10 @@ public class MoveValidator {
       }
       final Collection<Unit> transports = TransportUtils.mapTransports(route, units, null).values();
       final boolean isScramblingOrKamikazeAttacksEnabled =
-          Properties.getScrambleRulesInEffect(data)
-              || Properties.getUseKamikazeSuicideAttacks(data);
+          Properties.getScrambleRulesInEffect(data.getProperties())
+              || Properties.getUseKamikazeSuicideAttacks(data.getProperties());
       final boolean subsPreventUnescortedAmphibAssaults =
-          Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
+          Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data.getProperties());
       final Predicate<Unit> enemySubMatch =
           Matches.unitIsEnemyOf(data, player).and(Matches.unitCanBeMovedThroughByEnemies());
       final Predicate<Unit> ownedSeaNonTransportMatch =
@@ -1294,7 +1302,7 @@ public class MoveValidator {
       }
       final Predicate<Unit> enemyNonSubmerged =
           Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate());
-      if (!Properties.getUnitsCanLoadInHostileSeaZones(data)
+      if (!Properties.getUnitsCanLoadInHostileSeaZones(data.getProperties())
           && route.getEnd().getUnitCollection().anyMatch(enemyNonSubmerged)
           && nonParatroopersPresent(player, landAndAir)
           && !onlyIgnoredUnitsOnPath(route, player, false)
@@ -1441,7 +1449,7 @@ public class MoveValidator {
         || units.stream().noneMatch(Matches.unitIsAirTransport())) {
       return result;
     }
-    if (nonCombat && !Properties.getParatroopersCanMoveDuringNonCombat(data)) {
+    if (nonCombat && !Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
       return result.setErrorReturnResult("Paratroops may not move during NonCombat");
     }
     if (!getEditMode(data)) {
@@ -1475,17 +1483,17 @@ public class MoveValidator {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         if (Matches.isTerritoryFriendly(player, data).test(routeEnd)
-            && !Properties.getParatroopersCanMoveDuringNonCombat(data)) {
+            && !Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
           result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
         }
         if (!nonCombat
             && Matches.isTerritoryFriendly(player, data).test(routeEnd)
-            && Properties.getParatroopersCanMoveDuringNonCombat(data)) {
+            && Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
           result.addDisallowedUnit(
               "Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
         }
       }
-      if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data)) {
+      if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data.getProperties())) {
         for (final Territory current :
             CollectionUtils.getMatches(route.getMiddleSteps(), Matches.territoryIsLand())) {
           if (Matches.isTerritoryEnemy(player, data).test(current)) {
@@ -1695,11 +1703,12 @@ public class MoveValidator {
     final boolean hasLand = units.stream().anyMatch(Matches.unitIsLand());
     final boolean hasAir = units.stream().anyMatch(Matches.unitIsAir());
     final boolean isNeutralsImpassable =
-        Properties.getNeutralsImpassable(data)
-            || (hasAir && !Properties.getNeutralFlyoverAllowed(data));
+        Properties.getNeutralsImpassable(data.getProperties())
+            || (hasAir && !Properties.getNeutralFlyoverAllowed(data.getProperties()));
     final Predicate<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().negate();
     final Predicate<Territory> noImpassableOrRestrictedOrNeutral =
-        PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player, data))
+        PredicateBuilder.of(
+                Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))
             .and(Matches.territoryEffectsAllowUnits(units))
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))
             .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data))
@@ -1833,10 +1842,11 @@ public class MoveValidator {
   }
 
   private static boolean isNeutralsBlitzable(final GameData data) {
-    return Properties.getNeutralsBlitzable(data) && !Properties.getNeutralsImpassable(data);
+    return Properties.getNeutralsBlitzable(data.getProperties())
+        && !Properties.getNeutralsImpassable(data.getProperties());
   }
 
   private static int getNeutralCharge(final GameData data, final int numberOfTerritories) {
-    return numberOfTerritories * Properties.getNeutralCharge(data);
+    return numberOfTerritories * Properties.getNeutralCharge(data.getProperties());
   }
 }

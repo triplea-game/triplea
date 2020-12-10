@@ -1,18 +1,15 @@
 - name: apt install nginx
-  become: true
   apt:
     name: nginx
     state: present
 
 
 - name: generate dhparam.pem
-  become: true
   shell:
     cmd: openssl dhparam -out {{ dhparams_pem_file }} 4096
     creates: "{{ dhparams_pem_file }}"
 
 - name: set permissions of dhparam.pem
-  become: true
   file:
     dest: "{{ dhparams_pem_file }}"
     mode: 600
@@ -31,7 +28,6 @@
   changed_when: false
 
 - name: create SSL keys if needed
-  become: true
   when: (has_cert_key.stat.exists == false) or (has_cert.stat.exists == false)
   command: |
        openssl req -x509 -nodes -days 365 \
@@ -78,14 +74,12 @@
 
 
 - name: deploy nginx sites_enabled configuation
-  become: true
   template:
     src: etc_nginx_sites_enabled_default.j2
     dest: /etc/nginx/sites-enabled/default
   register: nginx_config_changed
 
 - name: allow ports
-  become: true
   tags: firewall
   ufw:
     rule: allow
@@ -98,13 +92,11 @@
     (nginx_config_changed.changed) 
       or (has_cert_key.stat.exists == false) 
       or (has_cert.stat.exists == false)
-  become: true
   systemd:
     name: nginx
     state: restarted
 
 - name: ensure nginx is started
-  become: true
   systemd:
     name: nginx
     state: started

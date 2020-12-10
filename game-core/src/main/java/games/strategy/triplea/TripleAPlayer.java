@@ -410,7 +410,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     if (gamePlayer.getRepairFrontier() != null
         && gamePlayer.getRepairFrontier().getRules() != null
         && !gamePlayer.getRepairFrontier().getRules().isEmpty()
-        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       Predicate<Unit> myDamaged =
           Matches.unitIsOwnedBy(gamePlayer).and(Matches.unitHasTakenSomeBombingUnitDamage());
       if (isOnlyRepairIfDisabled) {

@@ -88,11 +88,11 @@ public class ProOtherMoveOptions {
           if (!maxUnits.isEmpty()) {
             maxStrength =
                 ProBattleUtils.estimateStrength(
-                    proData, t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
+                    t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
           }
           final double currentStrength =
               ProBattleUtils.estimateStrength(
-                  proData, t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
+                  t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
           final boolean currentHasLandUnits = currentUnits.stream().anyMatch(Matches.unitIsLand());
           final boolean maxHasLandUnits = maxUnits.stream().anyMatch(Matches.unitIsLand());
           if ((currentHasLandUnits

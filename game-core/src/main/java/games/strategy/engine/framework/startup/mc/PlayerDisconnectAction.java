@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.IpAddressParser;
+import org.triplea.java.IpAddressParser;
 
 /** Disconnects a player identified by name and/or IP from an {@code IServerMessenger}. */
 @AllArgsConstructor

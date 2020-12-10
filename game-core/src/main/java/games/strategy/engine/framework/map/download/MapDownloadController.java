@@ -96,7 +96,7 @@ public final class MapDownloadController {
     return new DownloadedMaps() {
       @Override
       public Optional<Version> getVersionForZipFile(final File mapZipFile) {
-        return Optional.ofNullable(DownloadFileProperties.loadForZip(mapZipFile).getVersion());
+        return DownloadFileProperties.loadForZip(mapZipFile).getVersion();
       }
 
       @Override

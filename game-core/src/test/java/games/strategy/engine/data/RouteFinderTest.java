@@ -9,9 +9,9 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.base.Preconditions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,10 +25,10 @@ class RouteFinderTest {
 
   private final GamePlayer player = mock(GamePlayer.class);
   private final GameMap map = mock(GameMap.class);
-  private final List<Territory> territories = new ArrayList<>();
+  private List<Territory> territories;
 
   /**
-   * This is an adjacency matrix. It's representing this graph:
+   * Create territories in this graph:
    *
    * <pre>
    * <code>
@@ -40,36 +40,43 @@ class RouteFinderTest {
    * </code>
    * </pre>
    */
-  private final int[][] graph = {
-    {0, 1, 0, 1, 0, 0, 0, 0, 0},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0},
-    {0, 1, 0, 1, 0, 0, 0, 0, 0},
-    {1, 0, 1, 0, 1, 0, 1, 0, 0},
-    {0, 0, 0, 1, 0, 1, 0, 0, 0},
-    {0, 0, 0, 0, 1, 0, 1, 1, 0},
-    {0, 0, 0, 1, 0, 1, 0, 0, 1},
-    {0, 0, 0, 0, 0, 1, 0, 0, 1},
-    {0, 0, 0, 0, 0, 0, 1, 1, 0}
-  };
-
   @BeforeEach
   void setUp() {
-    for (int x = 0; x < graph.length; x++) {
-      final Territory territory = mock(Territory.class);
-      final int currentIndex = x;
-      when(map.getNeighborsValidatingCanals(eq(territory), any(), any(), any()))
-          .thenAnswer(
-              invocation -> {
-                final Set<Territory> neighbours = new LinkedHashSet<>();
-                for (int y = 0; y < graph[currentIndex].length; y++) {
-                  if (graph[currentIndex][y] == 1) {
-                    neighbours.add(territories.get(y));
-                  }
-                }
-                return neighbours;
-              });
-      territories.add(territory);
-    }
+    final Territory territory0 = mock(Territory.class);
+    final Territory territory1 = mock(Territory.class);
+    final Territory territory2 = mock(Territory.class);
+    final Territory territory3 = mock(Territory.class);
+    final Territory territory4 = mock(Territory.class);
+    final Territory territory5 = mock(Territory.class);
+    final Territory territory6 = mock(Territory.class);
+    final Territory territory7 = mock(Territory.class);
+    final Territory territory8 = mock(Territory.class);
+    configureNeighbors(territory0, territory1, territory3);
+    configureNeighbors(territory1, territory0, territory2);
+    configureNeighbors(territory2, territory1, territory3);
+    configureNeighbors(territory3, territory0, territory2, territory4, territory6);
+    configureNeighbors(territory4, territory3, territory5);
+    configureNeighbors(territory5, territory4, territory6, territory7);
+    configureNeighbors(territory6, territory3, territory5, territory8);
+    configureNeighbors(territory7, territory5, territory8);
+    configureNeighbors(territory8, territory6, territory7);
+
+    territories =
+        List.of(
+            territory0,
+            territory1,
+            territory2,
+            territory3,
+            territory4,
+            territory5,
+            territory6,
+            territory7,
+            territory8);
+  }
+
+  private void configureNeighbors(final Territory territory, final Territory... neighbors) {
+    Preconditions.checkNotNull(map);
+    when(map.getNeighbors(eq(territory), any())).thenReturn(Set.of(neighbors));
   }
 
   @Test
@@ -96,14 +103,17 @@ class RouteFinderTest {
 
   @Test
   void testNoRouteOnInvalidGraph() {
-    final GameMap map = mock(GameMap.class);
-    when(map.getNeighborsValidatingCanals(eq(territories.get(0)), any(), any(), any()))
-        .thenReturn(Set.of(territories.get(1)));
-    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
-    final Optional<Route> optRoute =
-        routeFinder.findRouteByDistance(
-            territories.get(0), territories.get(territories.size() - 1));
-    assertFalse(optRoute.isPresent());
+    final GameMap islandMap = mock(GameMap.class);
+    final Territory island0 = mock(Territory.class);
+    final Territory island1 = mock(Territory.class);
+    when(islandMap.getNeighbors(eq(island0), any())).thenReturn(Set.of());
+
+    final RouteFinder routeFinder =
+        new RouteFinder(islandMap, t -> true, new ArrayList<>(), player);
+
+    final Optional<Route> optRoute = routeFinder.findRouteByDistance(island0, island1);
+
+    assertTrue(optRoute.isEmpty());
   }
 
   @Test
@@ -168,8 +178,8 @@ class RouteFinderTest {
   @Test
   void testNoRouteByCostOnInvalidGraph() {
     final GameMap map = mock(GameMap.class);
-    when(map.getNeighborsValidatingCanals(eq(territories.get(0)), any(), any(), any()))
-        .thenReturn(Set.of(territories.get(1)));
+    when(map.getNeighbors(eq(territories.get(0)), any())).thenReturn(Set.of(territories.get(1)));
+
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByCost(territories.get(0), territories.get(territories.size() - 1));

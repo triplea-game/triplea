@@ -8,7 +8,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
@@ -17,6 +16,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -968,7 +968,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean relationshipExistsLongEnough(
       final Relationship relationship, final int relationshipsExistence) {
     int roundCurrentRelationshipWasCreated = relationship.getRoundCreated();
-    roundCurrentRelationshipWasCreated += Properties.getRelationshipsLastExtraRounds(getData());
+    roundCurrentRelationshipWasCreated +=
+        Properties.getRelationshipsLastExtraRounds(getData().getProperties());
     return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated
         >= relationshipsExistence;
   }

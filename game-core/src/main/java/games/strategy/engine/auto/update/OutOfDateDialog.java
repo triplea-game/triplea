@@ -1,6 +1,5 @@
 package games.strategy.engine.auto.update;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -13,6 +12,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
 @UtilityClass
@@ -23,7 +23,7 @@ class OutOfDateDialog {
     return "<html>"
         + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
         + "<br />Your current version: "
-        + ClientContext.engineVersion()
+        + Injections.getInstance().getEngineVersion()
         + "<br />Latest version available for download: "
         + latestVersionOut
         + "<br /><br />Click to download: <a class=\"external\" href=\""

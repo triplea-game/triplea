@@ -4,7 +4,6 @@ Include a release note for notable changes that players would probably want to k
 
 The target audience for release notes are players, they should be very human readable and easy to understand. To word a release note well, pretend a player in lobby asked you "what changed in this update from the last version?".
 
-
 ## Syntax
 
 The release note comment is a tuple that is placed between special RELEASE_NOTE and END_RELEASE_NOTE comments. The first part of the release note comment is the update type, followed by a pipe and then the release note comment.
@@ -14,7 +13,6 @@ The release note comment is a tuple that is placed between special RELEASE_NOTE 
 ```
 
 **UPDATE_TYPE** should be one of:  { FIX, CHANGE, NEW }
-
 
 ### Example formats:
 
@@ -41,7 +39,8 @@ Run this script to parse release notes from merged PRs (this script could use so
 ```
 #!/bin/bash
 
-curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed" \
+for page in $(seq 1 4); do
+curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed&page=$page" \
   | grep -Eo "merged_at\":|number\":.*|RELEASE_NOTE.*END_RELEASE_NOTE" \
   | grep -B3 "merged_at\":" \
   | grep -B1 RELEASE_NOTE  \
@@ -49,6 +48,6 @@ curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed" \
   | sed 's/RELEASE_NOTE-->//' \
   | sed 's/<!--END_RELEASE_NOTE$/|/' \
   | paste -d '' - -
+done >> release-notes
 ```
-
 

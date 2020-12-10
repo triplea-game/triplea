@@ -69,7 +69,6 @@ https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/Diplom
 https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/DiplomacyV3rules.xml
 https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/DiplomacyWW1.xml
 https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/Diplomacy.xml
-https://raw.githubusercontent.com/triplea-maps/domination_1914_blood_and_steel/master/map/games/Domination_1914_Blood_And_Steel.xml
 https://raw.githubusercontent.com/triplea-maps/domination_1914_no_mans_land/master/map/games/Domination_1914_No_Mans_Land.xml
 https://raw.githubusercontent.com/triplea-maps/domination_1914-weltpolitik/master/map/games/Domination_1914-Weltpolitik.xml
 https://raw.githubusercontent.com/triplea-maps/domination/master/map/games/Domination_1900.xml
@@ -140,7 +139,6 @@ https://raw.githubusercontent.com/triplea-maps/roman_invasion/master/map/games/B
 https://raw.githubusercontent.com/triplea-maps/roman_invasion/master/map/games/Britannia_Roman_Invasion_1_2_7_alliance2.xml
 https://raw.githubusercontent.com/triplea-maps/roman_invasion/master/map/games/Britannia_Roman_Invasion_1_2_7_FFA.xml
 https://raw.githubusercontent.com/triplea-maps/rome_total_war/master/map/games/Rome_Total_War.xml
-https://raw.githubusercontent.com/triplea-maps/schultz_european_war/master/map/games/european_war.xml
 https://raw.githubusercontent.com/triplea-maps/sengoku_jidai/master/map/games/sengokuJidai.xml
 https://raw.githubusercontent.com/triplea-maps/sleeping_giant/master/map/games/Sleeping_Giant_v1.3.xml
 https://raw.githubusercontent.com/triplea-maps/small_balanced_2_or_4_player/master/map/games/Small_Balanced_2_Player_across.xml
@@ -201,9 +199,7 @@ https://raw.githubusercontent.com/triplea-maps/ultimate_world_variants/master/ma
 https://raw.githubusercontent.com/triplea-maps/ultimate_world_variants/master/map/games/Ultimate_World_-_Expanded.xml
 https://raw.githubusercontent.com/triplea-maps/ultimate_world_variants/master/map/games/UPww2v3_v.1.xml
 https://raw.githubusercontent.com/triplea-maps/ur_quan_war_masters_edition/master/map/games/UrQuanWarMastersEdition.xml
-https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/map/games/warcraft_war_heroes.xml
 https://raw.githubusercontent.com/triplea-maps/war_of_the_lance/master/map/games/War_of_the_Lance.xml
-https://raw.githubusercontent.com/triplea-maps/war_of_the_relics/master/map/games/war_of_the_relics.xml
 https://raw.githubusercontent.com/triplea-maps/world_at_war/master/map/games/WAW40.xml
 https://raw.githubusercontent.com/triplea-maps/world_at_war/master/map/games/World_At_War.xml
 https://raw.githubusercontent.com/triplea-maps/world_at_war_variants/master/map/games/World_at_War_Variant_-_FUEL-AA-Range.xml

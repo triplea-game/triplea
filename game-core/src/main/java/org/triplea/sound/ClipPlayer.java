@@ -6,7 +6,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,6 +27,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
@@ -119,6 +119,8 @@ public class ClipPlayer {
 
   protected final Map<String, List<URL>> sounds = new HashMap<>();
   private final Set<String> mutedClips = new HashSet<>();
+
+  private final boolean systemHasAudio;
   private final ResourceLoader resourceLoader;
 
   private ClipPlayer(final ResourceLoader resourceLoader) {
@@ -126,11 +128,26 @@ public class ClipPlayer {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     final Set<String> choices = SoundPath.getAllSoundOptions();
 
+    systemHasAudio = checkSystemForAudio();
+
     for (final String sound : choices) {
       final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false);
       if (muted) {
         mutedClips.add(sound);
       }
+    }
+  }
+
+  private static boolean checkSystemForAudio() {
+    try {
+      FactoryRegistry.systemRegistry().createAudioDevice();
+      return true;
+    } catch (final JavaLayerException e) {
+      log.log(
+          Level.INFO,
+          "Unable to create audio device, is there audio on the system? " + e.getMessage(),
+          e);
+      return false;
     }
   }
 
@@ -145,6 +162,10 @@ public class ClipPlayer {
       // make a new clip player with our new resource loader
       clipPlayer = new ClipPlayer(resourceLoader);
     }
+  }
+
+  public static boolean hasAudio() {
+    return getInstance().systemHasAudio;
   }
 
   boolean isSoundClipMuted(final String clipName) {
@@ -228,58 +249,47 @@ public class ClipPlayer {
       folder += "_" + gamePlayer.getName();
     }
 
-    final URI clip = loadClip(folder).orElse(loadClip(clipName).orElse(null));
-    // clip may still be null, we try to load all phases/all sound, for example: clipName =
-    // "phase_technology", folder =
-    // "phase_technology_Japanese"
-
-    if (clip != null) {
-      new Thread(
-              () -> {
-                try {
-                  final Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
-                  if (inputStream.isPresent()) {
-                    final AudioDevice audioDevice =
-                        FactoryRegistry.systemRegistry().createAudioDevice();
-                    new AdvancedPlayer(inputStream.get(), audioDevice).play();
-                  }
-                } catch (final Exception e) {
-                  log.log(Level.SEVERE, "Failed to play: " + clip, e);
-                }
-              })
-          .start();
-    }
+    loadClipPath(folder)
+        .or(() -> loadClipPath(clipName))
+        .ifPresent(
+            clip ->
+                new Thread(
+                        () ->
+                            UrlStreams.openStream(
+                                URI.create(clip.toString()),
+                                inputStream -> {
+                                  try {
+                                    final AudioDevice audioDevice =
+                                        FactoryRegistry.systemRegistry().createAudioDevice();
+                                    new AdvancedPlayer(inputStream, audioDevice).play();
+                                  } catch (final Exception e) {
+                                    log.log(Level.SEVERE, "Failed to play: " + clip, e);
+                                  }
+                                  return null;
+                                }))
+                    .start());
   }
 
   private boolean isSoundEnabled() {
     return !Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"))
         && !"true".equals(System.getenv("java.awt.headless"))
-        && ClientSetting.soundEnabled.getSetting();
+        && ClientSetting.soundEnabled.getSetting()
+        && hasAudio();
   }
 
-  private Optional<URI> loadClip(final String clipName) {
-    return (isSoundEnabled() && !isSoundClipMuted(clipName))
-        ? Optional.ofNullable(loadClipPath(clipName))
-        : Optional.empty();
-  }
-
-  private URI loadClipPath(final String pathName) {
+  private Optional<URL> loadClipPath(final String pathName) {
     if (!sounds.containsKey(pathName)) {
       // parse sounds for the first time
       sounds.put(pathName, parseClipPaths(pathName));
     }
     final List<URL> availableSounds = sounds.get(pathName);
     if (availableSounds == null || availableSounds.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
-    // we want to pick a random sound from this folder, as users don't like hearing the same ones
-    // over and over again
+    // we want to pick a random sound from this folder, as users
+    // don't like hearing the same ones over and over again
     Collections.shuffle(availableSounds);
-    try {
-      return availableSounds.get(0).toURI();
-    } catch (final URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+    return Optional.of(availableSounds.get(0));
   }
 
   /**

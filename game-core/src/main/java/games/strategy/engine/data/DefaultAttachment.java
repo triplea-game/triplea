@@ -95,7 +95,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   protected String thisErrorMsg() {
-    return "   for: " + toString();
+    return ",   for: " + toString();
   }
 
   /** Returns null or the toString() of the field value. */
@@ -115,7 +115,10 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @Override
   public String getName() {
-    return name;
+    return Optional.ofNullable(name)
+        // replace-all to automatically correct legacy (1.8) attachment spelling
+        .map(attachmentName -> attachmentName.replaceAll("ttatch", "ttach"))
+        .orElse(null);
   }
 
   @Override

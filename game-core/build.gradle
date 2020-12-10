@@ -1,7 +1,7 @@
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 ext {
-    apacheHttpComponentsVersion = '4.5.12'
+    apacheHttpComponentsVersion = '4.5.13'
 }
 
 dependencies {
@@ -19,7 +19,12 @@ dependencies {
     implementation project(":domain-data")
     implementation project(":http-clients")
     implementation project(":java-extras")
+    implementation project(":lobby-client")
+    implementation project(":map-data")
+    implementation project(":maps-server-client")
     implementation project(":swing-lib")
+    implementation project(":websocket-client")
+    implementation project(":xml-reader")
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation project(":test-common")

@@ -1,0 +1,6 @@
+<configuration>
+    <appender name="swingMessage" class="org.triplea.debug.Slf4jLogMessageUploader"/>
+    <root level="info">
+        <appender-ref ref="swingMessage"/>
+    </root>
+</configuration>

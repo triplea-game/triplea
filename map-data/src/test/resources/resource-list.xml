@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<game>
+    <resourceList>
+        <resource name="PUs"/>
+        <resource name="Gold" isDisplayedFor="player1"/>
+    </resourceList>
+</game>

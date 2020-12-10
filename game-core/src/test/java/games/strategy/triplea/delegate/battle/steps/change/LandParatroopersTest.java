@@ -5,14 +5,17 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -38,25 +41,25 @@ class LandParatroopersTest {
 
   @Test
   void secondRoundDoesNothing() {
-    final BattleState battleState = givenBattleStateBuilder().battleRound(2).build();
+    final BattleState battleState = spy(givenBattleStateBuilder().battleRound(2).build());
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());
+    verify(battleState, never()).removeDependentUnits(anyCollection());
   }
 
   @Test
   void waterBattleDoesNothing() {
     final BattleState battleState =
-        givenBattleStateBuilder().battleRound(1).battleSite(givenSeaBattleSite()).build();
+        spy(givenBattleStateBuilder().battleRound(1).battleSite(givenSeaBattleSite()).build());
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());
+    verify(battleState, never()).removeDependentUnits(anyCollection());
   }
 
   @Test
@@ -66,13 +69,13 @@ class LandParatroopersTest {
     when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(false);
     final BattleState battleState =
-        givenBattleStateBuilder().battleRound(1).attacker(attacker).build();
+        spy(givenBattleStateBuilder().battleRound(1).attacker(attacker).build());
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());
+    verify(battleState, never()).removeDependentUnits(anyCollection());
   }
 
   @Test
@@ -101,10 +104,10 @@ class LandParatroopersTest {
 
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(0));
+    assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleActions, never()).landParatroopers(eq(delegateBridge), anyList(), anyList());
+    verify(battleState, never()).removeDependentUnits(anyCollection());
   }
 
   @Test
@@ -137,6 +140,7 @@ class LandParatroopersTest {
     assertThat(landParatroopers.getNames(), hasSize(1));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleActions).landParatroopers(eq(delegateBridge), eq(airTransports), eq(dependents));
+    verify(delegateBridge).addChange(any(Change.class));
+    verify(battleState).removeDependentUnits(airTransports);
   }
 }

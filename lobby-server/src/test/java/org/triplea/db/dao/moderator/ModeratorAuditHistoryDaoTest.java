@@ -2,6 +2,7 @@ package org.triplea.db.dao.moderator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.test.common.IsInstant.isInstant;
@@ -15,6 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.triplea.modules.http.LobbyServerTest;
 
 @RequiredArgsConstructor
+@DataSet(
+    value =
+        "moderator_audit/user_role.yml,"
+            + "moderator_audit/lobby_user.yml,"
+            + "moderator_audit/moderator_action_history.yml",
+    useSequenceFiltering = false)
 class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
 
   private static final int MODERATOR_ID = 900000;
@@ -23,7 +30,6 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   @Test
-  @DataSet("moderator_audit/pre_insert.yml")
   void addAuditRecordThrowsIfModeratorNameNotFound() {
     assertThrows(
         UnableToExecuteStatementException.class,
@@ -37,8 +43,13 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("moderator_audit/pre_insert.yml")
-  @ExpectedDataSet("moderator_audit/post_insert.yml")
+  @DataSet(
+      value =
+          "moderator_audit/user_role.yml,"
+              + "moderator_audit/lobby_user.yml,"
+              + "moderator_audit/empty_moderator_action_history.yml",
+      useSequenceFiltering = false)
+  @ExpectedDataSet("moderator_audit/moderator_action_history_post_insert.yml")
   void addAuditRecord() {
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
@@ -49,7 +60,6 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
   }
 
   @Test
-  @DataSet("moderator_audit/history_select.yml")
   void selectHistory() {
     List<ModeratorAuditHistoryRecord> results = moderatorAuditHistoryDao.lookupHistoryItems(0, 3);
 
@@ -84,6 +94,6 @@ class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
     assertThat(results.get(1).getActionTarget(), is("ACTION_TARGET1"));
 
     results = moderatorAuditHistoryDao.lookupHistoryItems(5, 3);
-    assertThat(results, hasSize(0));
+    assertThat(results, is(empty()));
   }
 }

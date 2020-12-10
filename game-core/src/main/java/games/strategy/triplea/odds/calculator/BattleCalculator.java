@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -13,12 +14,12 @@ import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import lombok.Setter;
+import org.triplea.util.Version;
 
 class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
@@ -31,10 +32,14 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean cancelled = false;
   private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-  BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
+  BattleCalculator(
+      final GameData data, final boolean dataHasAlreadyBeenCloned, final Version engineVersion) {
     gameData =
         Preconditions.checkNotNull(
-            dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+            dataHasAlreadyBeenCloned
+                ? data
+                : GameDataUtils.cloneGameData(data, false, engineVersion).orElse(null),
+            "Error cloning game data (low memory?)");
   }
 
   @Override
@@ -103,13 +108,22 @@ class BattleCalculator implements IBattleCalculator {
         final MustFightBattle battle =
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
+        if (amphibious) {
+          attackingUnits.forEach(
+              unit -> {
+                unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+                    .ifPresent(
+                        property -> {
+                          try {
+                            property.setValue(true);
+                          } catch (final MutableProperty.InvalidValueException e) {
+                            // ignore
+                          }
+                        });
+              });
+        }
         battle.setUnits(
-            defendingUnits,
-            attackingUnits,
-            bombardingUnits,
-            (amphibious ? attackingUnits : new ArrayList<>()),
-            defender2,
-            territoryEffects2);
+            defendingUnits, attackingUnits, bombardingUnits, defender2, territoryEffects2);
         bridge1.setBattle(battle);
         battle.fight(bridge);
         aggregateResults.addResult(new BattleResults(battle, gameData));

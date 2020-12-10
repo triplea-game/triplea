@@ -894,7 +894,7 @@ public class ProCombatMoveAi {
                       Matches.unitCanProduceUnitsAndCanBeDamaged()
                           .and(Matches.unitIsLegalBombingTargetBy(unit)));
           final boolean canCreateAirBattle =
-              Properties.getRaidsMayBePreceededByAirBattles(data)
+              Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
           if (canBeBombedByThisUnit
               && !canCreateAirBattle
@@ -956,7 +956,7 @@ public class ProCombatMoveAi {
             final List<Unit> attackingUnits = patd.getUnits();
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, attackingUnits, defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, attackingUnits, defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
             if (!hasAa && !isOverwhelmingWin) {
               minWinPercentage = result.getWinPercentage();
@@ -995,7 +995,7 @@ public class ProCombatMoveAi {
             final List<Unit> attackingUnits = patd.getUnits();
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, attackingUnits, defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, attackingUnits, defendingUnits);
             if (!isOverwhelmingWin && result.getBattleRounds() > 2) {
               minWinTerritory = t;
               break;
@@ -1383,7 +1383,7 @@ public class ProCombatMoveAi {
             final boolean hasNoDefenders =
                 defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, patd.getUnits(), defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
             if (!hasNoDefenders
                 && !isOverwhelmingWin
@@ -1454,7 +1454,7 @@ public class ProCombatMoveAi {
             final boolean hasNoDefenders =
                 defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
-                ProBattleUtils.checkForOverwhelmingWin(proData, t, patd.getUnits(), defendingUnits);
+                ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
             if (!isAirUnit
                 || (!hasNoDefenders
@@ -1483,7 +1483,7 @@ public class ProCombatMoveAi {
 
     // If transports can take casualties try placing in naval battles first
     final List<Unit> alreadyAttackedWithTransports = new ArrayList<>();
-    if (!Properties.getTransportCasualtiesRestricted(data)) {
+    if (!Properties.getTransportCasualtiesRestricted(data.getProperties())) {
 
       // Loop through all my transports and see which territories they can attack from current list
       final Map<Unit, Set<Territory>> transportAttackOptions = new HashMap<>();

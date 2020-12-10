@@ -4,8 +4,9 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
 import lombok.extern.java.Log;
+import org.triplea.java.function.ThrowingRunnable;
+import org.triplea.java.function.ThrowingSupplier;
 
 /**
  * Provides a high level API to the game engine for performance measurements. This class handles the
@@ -46,11 +47,6 @@ public class PerfTimer implements Closeable {
     }
   }
 
-  @SuppressWarnings("unused")
-  public static PerfTimer startTimer(final String title) {
-    return startTimer(title, 1);
-  }
-
   /**
    * Creates a perf timer with a reporting frequency. The reporting frequency specifies N specifies
    * that performance information should be printed every N executions of the timer. If 0, no
@@ -61,8 +57,37 @@ public class PerfTimer implements Closeable {
    * @return the perf timer object
    */
   @SuppressWarnings("unused")
-  public static PerfTimer startTimer(final String title, final int reportingFrequency) {
+  public static PerfTimer time(final String title, final int reportingFrequency) {
     return new PerfTimer(title, reportingFrequency);
+  }
+
+  @SuppressWarnings("unused")
+  public static PerfTimer time(final String title) {
+    return time(title, 1);
+  }
+
+  @SuppressWarnings("try")
+  public static <T> T time(final String title, final ThrowingSupplier<T, ?> functionToTime) {
+    final T value;
+    try (PerfTimer timer = time(title)) {
+      value = functionToTime.get();
+    } catch (final Throwable throwable) {
+      throw new IllegalStateException(
+          "Unexpected throwable in timed method: " + throwable.getMessage(), throwable);
+    }
+    return value;
+  }
+
+  @SuppressWarnings("try")
+  public static void time(final String title, final ThrowingRunnable<?> functionToTime) {
+    try (PerfTimer timer = time(title)) {
+      try {
+        functionToTime.run();
+      } catch (final Throwable throwable) {
+        throw new IllegalStateException(
+            "Unexpected throwable in timed method: " + throwable.getMessage(), throwable);
+      }
+    }
   }
 
   private static synchronized void processResult(final long stopNanos, final PerfTimer perfTimer) {
@@ -99,19 +124,5 @@ public class PerfTimer implements Closeable {
     final long millis = (micros / 1000);
     final long milliFraction = (micros % 1000) / 100;
     return String.format("%s.%s", millis, milliFraction);
-  }
-
-  public static <T> T time(final String title, final Supplier<T> functionToTime) {
-    final T value;
-    try (PerfTimer timer = startTimer(title)) {
-      value = functionToTime.get();
-    }
-    return value;
-  }
-
-  public static void time(final String title, final Runnable functionToTime) {
-    try (PerfTimer timer = startTimer(title)) {
-      functionToTime.run();
-    }
   }
 }

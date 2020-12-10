@@ -28,13 +28,13 @@ status=0
 function main() {
   favorJava9CollectionsApi
   #referToCollectionsByInterfaceType
-  avoidLegacyApi
   removeUnusedLogAnnotations
   databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
   useEmptyOverSizeEqualsZero
   useStaticImportsInTest
+  useIsEmptyMatcherOverHasSizeZero
 }
 
 function title() {
@@ -76,17 +76,6 @@ function referToCollectionsByInterfaceType() {
 
   while read -r file; do
     grep --color=auto -EHn -f "$script_dir/style.include/concrete-collection-types" "$file" && status=1 && found=1
-  done <<< "$(cat "$javaFiles")"
-  
-  displayResult "$found"
-}
-
-function avoidLegacyApi() {
-  title "Do not use legacy API tools like Vector"
-  local found=0
-
-  while read -r file; do
-    grep --color=auto -Hn -f "$script_dir/style.include/legacy-api" "$file" && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
   
   displayResult "$found"
@@ -176,6 +165,20 @@ function useStaticImportsInTest() {
      && status=1 && found=1
   done <<< "$(cat "$testFiles")"
 
+  displayResult "$found"
+}
+
+function useIsEmptyMatcherOverHasSizeZero() {
+  title "Use IsEmptyCollection.isEmpty() instead of hasSize(0)"
+  example "assertThat(collection, hasSize(0)) -> assertThat(collection, is(empty())"
+  local found=0
+  while read -r file; do
+    grep --color=auto -Hn \
+      "hasSize(0)" \
+      "$file" \
+     && status=1 && found=1
+  done <<< "$(cat "$testFiles")"
+  
   displayResult "$found"
 }
 

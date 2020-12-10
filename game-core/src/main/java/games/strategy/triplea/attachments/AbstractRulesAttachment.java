@@ -1,14 +1,15 @@
 package games.strategy.triplea.attachments;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.triplea.java.RenameOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 
 /** The Purpose of this class is to hold shared and simple methods used by RulesAttachment. */
@@ -34,6 +36,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // only matters for objectiveValue, does not affect the condition
   protected int uses = -1;
   // condition for what turn it is
+  @RenameOnNextMajorRelease(newName = "rounds")
   protected Map<Integer, Integer> turns = null;
   // for on/off conditions
   protected boolean switched = true;
@@ -206,19 +209,16 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
-  private void setTurns(final String turns) throws GameParseException {
-    setRounds(turns);
-  }
-
-  private void setTurns(final Map<Integer, Integer> value) {
+  private void setRounds(final Map<Integer, Integer> value) {
     turns = value;
   }
 
-  private Map<Integer, Integer> getTurns() {
+  @VisibleForTesting
+  public Map<Integer, Integer> getRounds() {
     return turns;
   }
 
-  private void resetTurns() {
+  private void resetRounds() {
     turns = null;
   }
 
@@ -257,7 +257,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
               CollectionUtils.getMatches(
                   OriginalOwnerTracker.getOriginallyOwned(data, player),
                   // TODO: does this account for occupiedTerrOf???
-                  Matches.territoryIsNotImpassableToLandUnits(player, data)));
+                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
         }
         setTerritoryCount(originalTerritories.size());
         return originalTerritories;
@@ -275,7 +275,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           ownedTerrsNoWater.addAll(
               CollectionUtils.getMatches(
                   gameMap.getTerritoriesOwnedBy(player),
-                  Matches.territoryIsNotImpassableToLandUnits(player, data)));
+                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
         }
         setTerritoryCount(ownedTerrsNoWater.size());
         return ownedTerrsNoWater;
@@ -433,8 +433,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
             "uses",
             MutableProperty.of(this::setUses, this::setUses, this::getUses, this::resetUses))
         .put(
-            "turns",
-            MutableProperty.of(this::setTurns, this::setTurns, this::getTurns, this::resetTurns))
+            "rounds",
+            MutableProperty.of(
+                this::setRounds, this::setRounds, this::getRounds, this::resetRounds))
         .put(
             "switch",
             MutableProperty.of(
@@ -443,7 +444,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
             "gameProperty",
             MutableProperty.ofString(
                 this::setGameProperty, this::getGameProperty, this::resetGameProperty))
-        .put("rounds", MutableProperty.ofWriteOnlyString(this::setRounds))
         .build();
   }
 }

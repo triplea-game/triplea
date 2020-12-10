@@ -5,8 +5,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
-import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.IpAddressParser;
+import org.triplea.java.IpAddressParser;
 import org.triplea.modules.chat.ChatterSession;
-import org.triplea.web.socket.InetExtractor;
+import org.triplea.web.socket.WebSocketSession;
 
 @ExtendWith(MockitoExtension.class)
 class ChatParticipantAdapterTest {
@@ -28,12 +26,12 @@ class ChatParticipantAdapterTest {
   private static final String USERNAME = "username-value";
   private final ChatParticipantAdapter chatParticipantAdapter = new ChatParticipantAdapter();
 
-  @Mock private Session session;
+  @Mock private WebSocketSession session;
 
   @Test
   @DisplayName("Check data is copied from database lookup result to chatter session result object")
   void verifyData() {
-    when(session.getUserProperties()).thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "1.1.1.1"));
+    when(session.getRemoteAddress()).thenReturn(IpAddressParser.fromString("1.1.1.1"));
     final var userWithRoleRecord =
         PlayerApiKeyLookupRecord.builder()
             .userId(20)
@@ -56,7 +54,7 @@ class ChatParticipantAdapterTest {
   @DisplayName("Verify moderator flag is set for moderator user roles")
   void moderatorUsers(final String moderatorUserRole) {
     final var userWithRoleRecord = givenUserRecordWithRole(moderatorUserRole, 1);
-    when(session.getUserProperties()).thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "1.1.1.1"));
+    when(session.getRemoteAddress()).thenReturn(IpAddressParser.fromString("1.1.1.1"));
 
     final ChatterSession result = chatParticipantAdapter.apply(session, userWithRoleRecord);
 
@@ -81,7 +79,7 @@ class ChatParticipantAdapterTest {
   void nonModeratorUsers(final String notModeratorUserRole, final String userId) {
     final var userWithRoleRecord =
         givenUserRecordWithRole(notModeratorUserRole, Integer.parseInt(userId));
-    when(session.getUserProperties()).thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "1.1.1.1"));
+    when(session.getRemoteAddress()).thenReturn(IpAddressParser.fromString("1.1.1.1"));
 
     final ChatterSession result = chatParticipantAdapter.apply(session, userWithRoleRecord);
 

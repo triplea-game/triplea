@@ -4,11 +4,14 @@ import games.strategy.engine.random.IRemoteDiceServer.DiceServerException;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Point;
 import java.awt.Window;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import javax.swing.JButton;
@@ -127,7 +130,25 @@ public class PbemDiceRoller implements IRandomSource {
       getContentPane().add(new JScrollPane(textArea));
       textArea.setEditable(false);
       setSize(400, 300);
-      Util.center(this);
+      computeCenter().ifPresent(this::setLocation);
+    }
+
+    /** Computes the center of the specified window. */
+    private Optional<Point> computeCenter() {
+      final Dimension screenSize = Util.getScreenSize(this);
+      final int screenWidth = screenSize.width;
+      final int screenHeight = screenSize.height;
+      final int windowWidth = getWidth();
+      final int windowHeight = getHeight();
+      if (windowHeight > screenHeight) {
+        return Optional.empty();
+      }
+      if (windowWidth > screenWidth) {
+        return Optional.empty();
+      }
+      final int x = (screenWidth - windowWidth) / 2;
+      final int y = (screenHeight - windowHeight) / 2;
+      return Optional.of(new Point(x, y));
     }
 
     /**

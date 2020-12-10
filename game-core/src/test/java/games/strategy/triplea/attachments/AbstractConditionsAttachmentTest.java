@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.gameparser.GameParseException;
 import org.junit.jupiter.api.Test;
 
 class AbstractConditionsAttachmentTest {
@@ -27,8 +27,6 @@ class AbstractConditionsAttachmentTest {
     assertEquals("OR", instance.conditionType);
     instance.setConditionType("AND");
     assertEquals("AND", instance.conditionType);
-    instance.setConditionType("XOR");
-    assertEquals("XOR", instance.conditionType);
     instance.setConditionType("00000012345656");
     assertEquals("00000012345656", instance.conditionType);
     instance.setConditionType("0-9");
@@ -43,8 +41,6 @@ class AbstractConditionsAttachmentTest {
     assertEquals("OR", instance.conditionType);
     instance.setConditionType("and");
     assertEquals("AND", instance.conditionType);
-    instance.setConditionType("xor");
-    assertEquals("XOR", instance.conditionType);
     instance.setConditionType("123");
     assertEquals("123", instance.conditionType);
     instance.setConditionType("123-456");

@@ -921,7 +921,7 @@ class ProNonCombatMoveAi {
 
       // Loop through all my transports and see which territories they can defend from current list
       final List<Unit> alreadyMovedTransports = new ArrayList<>();
-      if (!Properties.getTransportCasualtiesRestricted(data)) {
+      if (!Properties.getTransportCasualtiesRestricted(data.getProperties())) {
         final Map<Unit, Set<Territory>> transportDefendOptions = new HashMap<>();
         for (final Unit unit : transportMoveMap.keySet()) {
 

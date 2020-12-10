@@ -3,8 +3,8 @@ package games.strategy.engine.framework.ui;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
-import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
+import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.event.WindowEvent;
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import org.triplea.swing.JFrameBuilder;
 
 /** Represents the outermost JFrame, maintains the reference to it and controls access. */
@@ -28,13 +27,11 @@ public class MainFrame {
     mainFrame =
         JFrameBuilder.builder()
             .title("TripleA")
-            .windowClosedAction(GameRunner::exitGameIfFinished)
+            .windowClosedAction(GameRunner::exitGameIfNoWindowsVisible)
             .build();
     BackgroundTaskRunner.setMainFrame(mainFrame);
 
     LookAndFeelSwingFrameListener.register(mainFrame);
-
-    mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     final Runnable quitAction =
         () -> {
@@ -47,7 +44,6 @@ public class MainFrame {
     mainFrame.pack();
 
     setupPanelModel.setUi(mainFrame);
-    show();
   }
 
   public static void buildMainFrame(

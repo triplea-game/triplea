@@ -12,7 +12,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.weak.WeakAi;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -27,6 +26,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -57,9 +57,12 @@ abstract class AbstractBattle implements IBattle {
 
   List<Unit> attackingUnits = new ArrayList<>();
   List<Unit> defendingUnits = new ArrayList<>();
-  List<Unit> amphibiousLandAttackers = new ArrayList<>();
+
+  @RemoveOnNextMajorRelease("amphibiousLandAttackers is no longer used")
+  List<Unit> amphibiousLandAttackers = List.of();
+
   List<Unit> bombardingUnits = new ArrayList<>();
-  Collection<TerritoryEffect> territoryEffects;
+  @Getter Collection<TerritoryEffect> territoryEffects;
   BattleResultDescription battleResultDescription;
   WhoWon whoWon = WhoWon.NOT_FINISHED;
   int attackerLostTuv = 0;
@@ -71,14 +74,13 @@ abstract class AbstractBattle implements IBattle {
       final Territory battleSite,
       final GamePlayer attacker,
       final BattleTracker battleTracker,
-      final boolean isBombingRun,
       final BattleType battleType,
       final GameData data) {
     this.battleTracker = battleTracker;
     this.attacker = attacker;
     this.battleSite = battleSite;
     territoryEffects = TerritoryEffectHelper.getEffects(battleSite);
-    this.isBombingRun = isBombingRun;
+    this.isBombingRun = battleType.isBombingRun();
     this.battleType = battleType;
     gameData = data;
     defender = findDefender(battleSite, attacker, data);
@@ -137,7 +139,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   /** Figure out what units a transport is transporting and has to unloaded. */
-  Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
+  public Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (headless) {
       return List.of();
     } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
@@ -180,11 +182,6 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public Collection<Unit> getAmphibiousLandAttackers() {
-    return Collections.unmodifiableCollection(amphibiousLandAttackers);
-  }
-
-  @Override
   public Collection<Unit> getAttackingUnits() {
     return Collections.unmodifiableCollection(attackingUnits);
   }
@@ -214,7 +211,7 @@ abstract class AbstractBattle implements IBattle {
 
   @Override
   public boolean isBombingRun() {
-    return isBombingRun;
+    return battleType.isBombingRun();
   }
 
   @Override
@@ -274,7 +271,6 @@ abstract class AbstractBattle implements IBattle {
     }
     final IBattle other = (IBattle) o;
     return other.getTerritory().equals(this.battleSite)
-        && other.isBombingRun() == this.isBombingRun()
         && other.getBattleType() == this.getBattleType();
   }
 
@@ -346,19 +342,6 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     return player;
-  }
-
-  /**
-   * The maximum number of hits that this collection of units can sustain, taking into account units
-   * with two hits, and accounting for existing damage.
-   */
-  static int getMaxHits(final Collection<Unit> units) {
-    int count = 0;
-    for (final Unit unit : units) {
-      count += UnitAttachment.get(unit.getType()).getHitPoints();
-      count -= unit.getHits();
-    }
-    return count;
   }
 
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {

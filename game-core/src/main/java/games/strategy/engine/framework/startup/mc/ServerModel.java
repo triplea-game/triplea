@@ -75,6 +75,7 @@ import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
+import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -136,7 +137,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
         @Override
         public void disablePlayer(final String playerName) {
-          if (ui != null) {
+          if (!HeadlessGameServer.headless()) {
             return;
           }
           // we don't want the client's changing stuff for anyone but a bot
@@ -145,7 +146,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
         @Override
         public void enablePlayer(final String playerName) {
-          if (ui != null) {
+          if (!HeadlessGameServer.headless()) {
             return;
           }
           // we don't want the client's changing stuff for anyone but a bot
@@ -179,7 +180,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         @Override
         public byte[] getSaveGame() {
           try {
-            return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
+            return IoUtils.writeToMemory(
+                os ->
+                    GameDataManager.saveGame(
+                        os, data, Injections.getInstance().getEngineVersion()));
           } catch (final IOException e) {
             throw new IllegalStateException(e);
           }
@@ -206,22 +210,20 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
         @Override
         public Set<String> getAvailableGames() {
-          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-          if (headless == null) {
+          if (!HeadlessGameServer.headless()) {
             return Set.of();
           }
           // Copy available games collection into a serializable collection
           // so it can be sent over network.
-          return new HashSet<>(headless.getAvailableGames());
+          return new HashSet<>(HeadlessGameServer.getInstance().getAvailableGames());
         }
 
         @Override
         public void changeServerGameTo(final String gameName) {
-          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-          if (headless == null) {
+          if (!HeadlessGameServer.headless()) {
             return;
           }
-          headless.setGameMapTo(gameName);
+          HeadlessGameServer.getInstance().setGameMapTo(gameName);
         }
 
         @Override
@@ -246,7 +248,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 bytes,
                 is -> {
                   try (InputStream inputStream = new BufferedInputStream(is)) {
-                    headless.loadGameSave(inputStream, fileName);
+                    headless.loadGameSave(inputStream);
                   }
                 });
           } catch (final Exception e) {
@@ -320,7 +322,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
         for (final GamePlayer player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
-          if (ui == null) {
+          if (!HeadlessGameServer.headless()) {
             if (player.getIsDisabled()) {
               playersToNodeListing.put(name, messengers.getLocalNode().getName());
               localPlayerTypes.put(name, PlayerType.WEAK_AI);
@@ -380,7 +382,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                       ClientSetting.flush();
                       final int port = options.getPort();
                       if (port >= 65536 || port == 0) {
-                        if (ui == null) {
+                        if (HeadlessGameServer.headless()) {
                           throw new IllegalStateException("Invalid Port: " + port);
                         }
                         JOptionPane.showMessageDialog(
@@ -424,7 +426,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             new LobbyWatcherThread(
                 gameSelectorModel,
                 serverMessenger,
-                ui == null
+                HeadlessGameServer.headless()
                     ? new WatcherThreadMessaging.HeadlessWatcherThreadMessaging()
                     : new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui));
 
@@ -539,7 +541,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         return;
       }
       playersEnabledListing.put(playerName, enabled);
-      if (ui == null) {
+      if (HeadlessGameServer.headless()) {
         // we do not want the host bot to actually play, so set to null if enabled, and set to weak
         // ai if disabled
         if (enabled) {

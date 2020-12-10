@@ -11,11 +11,12 @@ import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +41,6 @@ public final class ProBattleUtils {
    * or within a single round of combat.
    */
   public static boolean checkForOverwhelmingWin(
-      final ProData proData,
       final Territory t,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits) {
@@ -51,33 +51,26 @@ public final class ProBattleUtils {
     }
 
     // Check that defender has at least 1 power
-    final double power = estimatePower(proData, t, defendingUnits, attackingUnits, false);
+    final double power = estimatePower(t, defendingUnits, attackingUnits, false);
     if (power == 0 && !attackingUnits.isEmpty()) {
       return true;
     }
 
     // Determine if enough attack power to win in 1 round
-    final List<Unit> sortedUnitsList = new ArrayList<>(attackingUnits);
-    sortedUnitsList.sort(
-        new UnitBattleComparator(
-                false, //
-                proData.getUnitValueMap(),
-                TerritoryEffectHelper.getEffects(t),
-                data)
-            .reversed());
     final int attackPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                sortedUnitsList,
-                defendingUnits,
-                sortedUnitsList,
-                false,
-                data,
-                t,
-                TerritoryEffectHelper.getEffects(t),
-                false,
-                null),
-            data);
+        PowerStrengthAndRolls.build(
+                attackingUnits,
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(defendingUnits)
+                    .friendlyUnits(attackingUnits)
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(TerritoryEffectHelper.getEffects(t))
+                    .build())
+            .calculateTotalPower();
     final List<Unit> defendersWithHitPoints =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
     final int totalDefenderHitPoints = CasualtyUtil.getTotalHitpointsLeft(defendersWithHitPoints);
@@ -98,17 +91,15 @@ public final class ProBattleUtils {
       final Collection<Unit> defendingUnits) {
 
     if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())
-        || estimatePower(proData, t, attackingUnits, defendingUnits, true) <= 0) {
+        || estimatePower(t, attackingUnits, defendingUnits, true) <= 0) {
       return 0;
     }
     if (defendingUnits.stream().allMatch(Matches.unitIsInfrastructure())
-        || estimatePower(proData, t, defendingUnits, attackingUnits, false) <= 0) {
+        || estimatePower(t, defendingUnits, attackingUnits, false) <= 0) {
       return 99999;
     }
-    final double attackerStrength =
-        estimateStrength(proData, t, attackingUnits, defendingUnits, true);
-    final double defenderStrength =
-        estimateStrength(proData, t, defendingUnits, attackingUnits, false);
+    final double attackerStrength = estimateStrength(t, attackingUnits, defendingUnits, true);
+    final double defenderStrength = estimateStrength(t, defendingUnits, attackingUnits, false);
     return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
   }
 
@@ -118,7 +109,6 @@ public final class ProBattleUtils {
    * @return The larger the result, the stronger {@code myUnits} are relative to {@code enemyUnits}.
    */
   public static double estimateStrength(
-      final ProData proData,
       final Territory t,
       final Collection<Unit> myUnits,
       final Collection<Unit> enemyUnits,
@@ -128,18 +118,17 @@ public final class ProBattleUtils {
     List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(
             myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
-    if (Properties.getTransportCasualtiesRestricted(data)) {
+    if (Properties.getTransportCasualtiesRestricted(data.getProperties())) {
       unitsThatCanFight =
           CollectionUtils.getMatches(
               unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
     }
     final int myHitPoints = CasualtyUtil.getTotalHitpointsLeft(unitsThatCanFight);
-    final double myPower = estimatePower(proData, t, myUnits, enemyUnits, attacking);
+    final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);
     return (2.0 * myHitPoints) + myPower;
   }
 
   private static double estimatePower(
-      final ProData proData,
       final Territory t,
       final Collection<Unit> myUnits,
       final Collection<Unit> enemyUnits,
@@ -149,24 +138,20 @@ public final class ProBattleUtils {
     final List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(
             myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
-    final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
-    sortedUnitsList.sort(
-        new UnitBattleComparator(
-                !attacking, proData.getUnitValueMap(), TerritoryEffectHelper.getEffects(t), data)
-            .reversed());
     final int myPower =
-        DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                sortedUnitsList,
-                enemyUnits,
-                sortedUnitsList,
-                !attacking,
-                data,
-                t,
-                TerritoryEffectHelper.getEffects(t),
-                false,
-                null),
-            data);
+        PowerStrengthAndRolls.build(
+                unitsThatCanFight,
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(enemyUnits)
+                    .friendlyUnits(unitsThatCanFight)
+                    .side(attacking ? BattleState.Side.OFFENSE : BattleState.Side.DEFENSE)
+                    .gameSequence(data.getSequence())
+                    .supportAttachments(data.getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                    .gameDiceSides(data.getDiceSides())
+                    .territoryEffects(TerritoryEffectHelper.getEffects(t))
+                    .build())
+            .calculateTotalPower();
     return (myPower * 6.0 / data.getDiceSides());
   }
 

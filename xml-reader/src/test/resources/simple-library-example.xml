@@ -1,0 +1,12 @@
+<library>
+    <mostRead updated="Yesterday">Strategy Guide</mostRead>
+
+    <inventory type="available">
+        <book name="Crossing the Atlantic"/>
+        <book name="The Battle of the Bulge"/>
+        <dvd name="How to Win Revised"/>
+        <dvd name="Game of TripleA"/><!--
+        <dvd name="Commented out"/>
+        -->
+    </inventory>
+</library>

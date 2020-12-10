@@ -1,38 +1,50 @@
 package games.strategy.triplea.delegate.battle;
 
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
+import games.strategy.engine.player.Player;
+import games.strategy.triplea.ai.weak.WeakAi;
 import java.util.Collection;
 
 /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
 
-  void fireOffensiveAaGuns();
+  void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge, BattleState.Side... sides);
 
-  void fireDefensiveAaGuns();
+  void endBattle(IBattle.WhoWon whoWon, IDelegateBridge bridge);
 
-  void submergeUnits(Collection<Unit> units, boolean defender, IDelegateBridge bridge);
-
-  void queryRetreat(
-      boolean defender,
-      RetreatType retreatType,
+  /**
+   * Kills the unit and removes it from the battle
+   *
+   * @param side the side that the killedUnits are on
+   */
+  void removeUnits(
+      Collection<Unit> killedUnits,
       IDelegateBridge bridge,
-      Collection<Territory> initialAvailableTerritories);
+      Territory battleSite,
+      BattleState.Side side);
 
-  void fireNavalBombardment(IDelegateBridge bridge);
+  Territory queryRetreatTerritory(
+      BattleState battleState,
+      IDelegateBridge bridge,
+      GamePlayer retreatingPlayer,
+      Collection<Territory> availableTerritories,
+      String text);
 
-  void landParatroopers(
-      IDelegateBridge bridge, Collection<Unit> airTransports, Collection<Unit> dependents);
+  Territory querySubmergeTerritory(
+      BattleState battleState,
+      IDelegateBridge bridge,
+      GamePlayer retreatingPlayer,
+      Collection<Territory> availableTerritories,
+      String text);
 
-  void removeNonCombatants(IDelegateBridge bridge);
-
-  void markNoMovementLeft(IDelegateBridge bridge);
-
-  void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge);
-
-  void endBattle(IDelegateBridge bridge);
-
-  void attackerWins(IDelegateBridge bridge);
+  default Player getRemotePlayer(final GamePlayer player, final IDelegateBridge bridge) {
+    // if its the null player, return a do nothing proxy
+    if (player.isNull()) {
+      return new WeakAi(player.getName());
+    }
+    return bridge.getRemotePlayer(player);
+  }
 }

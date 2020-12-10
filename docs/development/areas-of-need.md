@@ -8,7 +8,7 @@ This page is a list of items that are needed from a code/development perspective
     - launch a game with AI players, run through a number of rounds and verify no errors
     - download a map, verify it is installed
     - load a save game from the latest version, verify still compatible
-    - verify a client of the last version can connect to a latest host, and vice versa 
+    - verify a client of the last version can connect to a latest host, and vice versa
 * **Incorporation of Debian modifications into the main codebase**
 The Debian distribution of TripleA has some key modifications that are made before the TripleA release version can be bundled with Debian. We want for these modifications to instead to be incorporated to the extent possible into the main TripleA codebase to allow the Debian distribution to be a simple copy of the main TripleA code without any modifications.
 * **Improved test coverage throughout the code base**
@@ -24,5 +24,4 @@ Build a UI to present a thumbnail save-game list, with information on who was pl
 Most game rules are embedded logic very much directly where-ever they are relevant. We instead want the game rules to be more configuration driven. Essentially when a game starts, you could select "V1" or "V3" rules for example, or you could drill down into specific rules and turn them on/off individually before starting a game. For this we need the rules to become modular, for game code that accesses these rules to be calling out to a game rule strategy, or module, and for the rules to be well tested within themselves.
 * **Improvements to map making tools and bringing them in-game**
 The map making tools are not ideal in a number ways, a bit clunky. We're looking for these tools to be brought into the game itself with the goal of maps being an upload process from a file menu option. The idea is a player could enter a 'map-edit' mode, change parameters and the map itself from within the game, save it as a new map, then upload the map.
-
 

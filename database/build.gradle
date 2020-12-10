@@ -1,0 +1,41 @@
+import org.flywaydb.gradle.task.*
+
+buildscript {
+    dependencies {
+        classpath "org.postgresql:postgresql:$postgresqlVersion"
+    }
+}
+
+plugins {
+    id 'org.flywaydb.flyway' version '7.3.1'
+}
+
+flyway {
+    driver = 'org.postgresql.Driver'
+    password = 'postgres'
+
+}
+task flywayMigrateLobbyDb(type: FlywayMigrateTask) {
+    url= 'jdbc:postgresql://localhost:5432/lobby_db'
+    user = 'lobby_user'
+    locations = ['filesystem:src/main/resources/db/migration/lobby_db']
+}
+
+task flywayMigrateMapsDb(type: FlywayMigrateTask) {
+    url= 'jdbc:postgresql://localhost:5432/maps_db'
+    user = 'maps_user'
+    locations = ['filesystem:src/main/resources/db/migration/maps_db']
+}
+
+task flywayMigrateAll(dependsOn: [flywayMigrateLobbyDb, flywayMigrateMapsDb])
+
+task portableInstaller(type: Zip, group: 'release') {
+    from 'src/main/resources/db/migration/'
+    archiveFileName = 'migrations.zip'
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}

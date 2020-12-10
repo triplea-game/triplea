@@ -10,7 +10,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.triplea.maps.server.http.MapServerTest;
 
-@DataSet("map_listing/select_maps.yml")
+@DataSet(value = "map_listing/select_maps.yml", useSequenceFiltering = false)
 class MapListingDaoTest extends MapServerTest {
 
   private final MapListingDao mapListingDao;

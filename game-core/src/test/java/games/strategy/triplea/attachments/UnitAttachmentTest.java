@@ -6,8 +6,8 @@ import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,12 +20,12 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import java.security.SecureRandom;
@@ -240,7 +240,7 @@ class UnitAttachmentTest {
 
       assertThat(attachment.getCanMoveThroughEnemies(), is(false));
       assertThat(attachment.getCanBeMovedThroughByEnemies(), is(false));
-      assertThat(attachment.getCanNotBeTargetedBy(), hasSize(0));
+      assertThat(attachment.getCanNotBeTargetedBy(), is(empty()));
 
       // called in getCanNotBeTargetedBy when AIR_ATTACK_SUB_RESTRICTED is true
       verify(unitTypeList, never()).getAllUnitTypes();

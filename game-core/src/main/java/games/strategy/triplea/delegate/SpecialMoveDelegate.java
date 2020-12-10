@@ -54,7 +54,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return;
     }
     final boolean onlyWhereUnderAttackAlready =
-        Properties.getAirborneAttacksOnlyInExistingBattles(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data.getProperties());
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (needToInitialize && onlyWhereUnderAttackAlready) {
       // we do this to clear any 'finishedBattles' and also to create battles for units that didn't
@@ -259,11 +259,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     final boolean onlyWhereUnderAttackAlready =
-        Properties.getAirborneAttacksOnlyInExistingBattles(data);
-    final boolean onlyEnemyTerritories = Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data.getProperties());
+    final boolean onlyEnemyTerritories =
+        Properties.getAirborneAttacksOnlyInEnemyTerritories(data.getProperties());
     final List<Territory> steps = route.getSteps();
     if (steps.isEmpty()
-        || !steps.stream().allMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
+        || !steps.stream()
+            .allMatch(Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
     if (steps.isEmpty()
@@ -286,7 +288,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     if (onlyWhereUnderAttackAlready) {
       if (!battleTracker.getConquered().contains(end)) {
-        final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
+        final IBattle battle = battleTracker.getPendingBattle(end, BattleType.NORMAL);
         if (battle == null) {
           return result.setErrorReturnResult(
               "Airborne May Only Attack Territories Already Under Assault");

@@ -13,8 +13,8 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.power.calculator.AvailableSupportCalculator;
-import games.strategy.triplea.delegate.power.calculator.SupportCalculationResult;
+import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.power.calculator.SupportCalculator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -216,7 +216,7 @@ public class ProPurchaseOption {
     if (isAir
         && (carrierCost <= 0
             || carrierCost > unusedCarrierCapacity
-            || !Properties.getProduceFightersOnCarriers(data))) {
+            || !Properties.getProduceFightersOnCarriers(data.getProperties()))) {
       return 0;
     }
     final double supportAttackFactor =
@@ -281,18 +281,18 @@ public class ProPurchaseOption {
 
     final List<Unit> units = new ArrayList<>(ownedLocalUnits);
     units.addAll(unitsToPlace);
-    units.addAll(unitType.create(1, player, true));
-    final SupportCalculationResult supportCalculationResult =
-        AvailableSupportCalculator.getSortedSupport(
-            units, data.getUnitTypeList().getSupportRules(), defense, true);
-
-    final Set<List<UnitSupportAttachment>> supportsAvailable =
-        supportCalculationResult.getSupportRules();
-    final IntegerMap<UnitSupportAttachment> supportLeft = supportCalculationResult.getSupportLeft();
+    units.addAll(unitType.createTemp(1, player));
+    final SupportCalculator availableSupports =
+        new SupportCalculator(
+            units,
+            data.getUnitTypeList().getSupportRules(),
+            defense ? BattleState.Side.DEFENSE : BattleState.Side.OFFENSE,
+            true);
 
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
-      for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
+      for (final List<UnitSupportAttachment> bonusType :
+          availableSupports.getUnitSupportAttachments()) {
         if (!bonusType.contains(usa)) {
           continue;
         }
@@ -305,7 +305,7 @@ public class ProPurchaseOption {
         int numSupportProvided = -numAddedSupport;
         final Set<Unit> supportableUnits = new HashSet<>();
         for (final UnitSupportAttachment usa2 : bonusType) {
-          numSupportProvided += supportLeft.getInt(usa2);
+          numSupportProvided += availableSupports.getSupport(usa2);
           supportableUnits.addAll(
               CollectionUtils.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
         }

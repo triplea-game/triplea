@@ -10,17 +10,21 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.delegate.power.calculator.CombatValue;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
+import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
@@ -45,7 +49,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -129,9 +132,7 @@ public class BattleDisplay extends JPanel {
       final Collection<Unit> attackingWaitingToDie,
       final Collection<Unit> defendingWaitingToDie,
       final MapPanel mapPanel,
-      final boolean isAmphibious,
-      final BattleType battleType,
-      final Collection<Unit> amphibiousLandAttackers) {
+      final BattleType battleType) {
     this.defender = defender;
     this.attacker = attacker;
     this.battleLocation = territory;
@@ -144,24 +145,18 @@ public class BattleDisplay extends JPanel {
     defenderModel =
         new BattleModel(
             defendingUnits,
-            false,
+            BattleState.Side.DEFENSE,
             battleType,
             gameData,
-            battleLocation,
             territoryEffects,
-            isAmphibious,
-            Set.of(),
             uiContext);
     attackerModel =
         new BattleModel(
             attackingUnits,
-            true,
+            BattleState.Side.OFFENSE,
             battleType,
             gameData,
-            battleLocation,
             territoryEffects,
-            isAmphibious,
-            amphibiousLandAttackers,
             uiContext);
     defenderModel.setEnemyBattleModel(attackerModel);
     attackerModel.setEnemyBattleModel(defenderModel);
@@ -806,36 +801,27 @@ public class BattleDisplay extends JPanel {
     private final UiContext uiContext;
     private final GameData gameData;
     // is the player the aggressor?
-    private final boolean attack;
+    private final BattleState.Side side;
     private final Collection<Unit> units;
-    private final Territory location;
     private final BattleType battleType;
     private final Collection<TerritoryEffect> territoryEffects;
-    private final boolean isAmphibious;
-    private final Collection<Unit> amphibiousLandAttackers;
     private BattleModel enemyBattleModel = null;
 
     BattleModel(
         final Collection<Unit> units,
-        final boolean attack,
+        final BattleState.Side side,
         final BattleType battleType,
         final GameData data,
-        final Territory battleLocation,
         final Collection<TerritoryEffect> territoryEffects,
-        final boolean isAmphibious,
-        final Collection<Unit> amphibiousLandAttackers,
         final UiContext uiContext) {
       super(new Object[0][0], varDiceArray(data));
       this.uiContext = uiContext;
       gameData = data;
-      this.attack = attack;
+      this.side = side;
       // were going to modify the units
       this.units = new ArrayList<>(units);
-      location = battleLocation;
       this.battleType = battleType;
       this.territoryEffects = territoryEffects;
-      this.isAmphibious = isAmphibious;
-      this.amphibiousLandAttackers = amphibiousLandAttackers;
     }
 
     private static String[] varDiceArray(final GameData data) {
@@ -886,48 +872,41 @@ public class BattleDisplay extends JPanel {
         columns.add(i, new ArrayList<>());
       }
       final List<Unit> units = new ArrayList<>(this.units);
-      DiceRoll.sortByStrength(units, !attack);
-      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap;
-      final boolean isAirPreBattleOrPreRaid = battleType.isAirPreBattleOrPreRaid();
-      if (isAirPreBattleOrPreRaid) {
-        unitPowerAndRollsMap = Map.of();
-      } else {
-        gameData.acquireReadLock();
-        try {
-          unitPowerAndRollsMap =
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                  units,
-                  new ArrayList<>(enemyBattleModel.getUnits()),
-                  units,
-                  !attack,
-                  gameData,
-                  location,
-                  territoryEffects,
-                  isAmphibious,
-                  amphibiousLandAttackers);
-        } finally {
-          gameData.releaseReadLock();
+      final TotalPowerAndTotalRolls unitPowerAndRollsMap;
+      final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
+      gameData.acquireReadLock();
+      try {
+        final CombatValue combatValue;
+        if (isAirPreBattleOrPreRaid) {
+          combatValue =
+              CombatValueBuilder.airBattleCombatValue()
+                  .side(BattleState.Side.DEFENSE)
+                  .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                  .gameDiceSides(gameData.getDiceSides())
+                  .build();
+        } else {
+          combatValue =
+              CombatValueBuilder.mainCombatValue()
+                  .enemyUnits(new ArrayList<>(enemyBattleModel.getUnits()))
+                  .friendlyUnits(units)
+                  .side(side)
+                  .gameSequence(gameData.getSequence())
+                  .supportAttachments(gameData.getUnitTypeList().getSupportRules())
+                  .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                  .gameDiceSides(gameData.getDiceSides())
+                  .territoryEffects(territoryEffects)
+                  .build();
         }
+        unitPowerAndRollsMap = PowerStrengthAndRolls.build(units, combatValue);
+      } finally {
+        gameData.releaseReadLock();
       }
-      final int diceSides = gameData.getDiceSides();
       final Collection<UnitCategory> unitCategories =
           UnitSeparator.categorize(units, null, false, false, false);
       for (final UnitCategory category : unitCategories) {
-        int strength;
-        final UnitAttachment attachment = UnitAttachment.get(category.getType());
         final int[] shift = new int[gameData.getDiceSides() + 1];
         for (final Unit current : category.getUnits()) {
-          if (isAirPreBattleOrPreRaid) {
-            if (attack) {
-              strength = attachment.getAirAttack(category.getOwner());
-            } else {
-              strength = attachment.getAirDefense(category.getOwner());
-            }
-          } else {
-            // normal battle
-            strength = unitPowerAndRollsMap.get(current).getTotalPower();
-          }
-          strength = Math.min(Math.max(strength, 0), diceSides);
+          final int strength = unitPowerAndRollsMap.getStrength(current);
           shift[strength]++;
         }
         for (int i = 0; i <= gameData.getDiceSides(); i++) {

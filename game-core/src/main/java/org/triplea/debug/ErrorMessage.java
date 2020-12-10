@@ -7,9 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -109,7 +107,7 @@ public enum ErrorMessage {
    * Note, we hide and reveal the error message dialog instead of creating and disposing it to avoid
    * swing component creation threading issues.
    */
-  public static void show(final LogRecord record) {
+  public static void show(final LoggerRecord record) {
     if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
       INSTANCE.setUploadRecord(record);
 
@@ -123,7 +121,7 @@ public enum ErrorMessage {
     }
   }
 
-  private void setUploadRecord(final LogRecord logRecord) {
+  private void setUploadRecord(final LoggerRecord logRecord) {
     new LiveServersFetcher()
         .lobbyUriForCurrentVersion()
         .ifPresentOrElse(
@@ -132,13 +130,13 @@ public enum ErrorMessage {
             () -> INSTANCE.uploadButton.setVisible(false));
   }
 
-  private void activateUploadErrorReportButton(final URI lobbyUri, final LogRecord logRecord) {
+  private void activateUploadErrorReportButton(final URI lobbyUri, final LoggerRecord logRecord) {
     // Set upload button to be visible only if the logging is greater than a 'warning'.
     // Warning logging should tell a user how to correct the error and it should be something
     // that is 'normal' (but maybe not happy, like no internet) and something they can fix
     // (or perhaps something that we simply can never fix). Hence, for warning we want to inform
     // the user that the problem happened, how to fix it, and let them create a bug report manually.
-    INSTANCE.uploadButton.setVisible(logRecord.getLevel().intValue() > Level.WARNING.intValue());
+    INSTANCE.uploadButton.setVisible(logRecord.isError());
 
     final ErrorReportClient errorReportClient = ErrorReportClient.newClient(lobbyUri);
 

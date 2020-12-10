@@ -4,14 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
-import javax.websocket.Session;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.user.ban.UserBanDao;
+import org.triplea.java.IpAddressParser;
 
 @ExtendWith(MockitoExtension.class)
 class SessionBannedCheckTest {
@@ -20,25 +19,21 @@ class SessionBannedCheckTest {
 
   @InjectMocks private SessionBannedCheck sessionBannedCheck;
 
-  @Mock private Session session;
-
   @Test
   void notBanned() {
-    givenSessionIsBanned(false);
+    givenSessionIsBanned(false, "1.1.1.1");
 
-    assertThat(sessionBannedCheck.test(session), is(false));
+    assertThat(sessionBannedCheck.test(IpAddressParser.fromString("1.1.1.1")), is(false));
   }
 
   @Test
   void banned() {
-    givenSessionIsBanned(true);
+    givenSessionIsBanned(true, "1.1.1.1");
 
-    assertThat(sessionBannedCheck.test(session), is(true));
+    assertThat(sessionBannedCheck.test(IpAddressParser.fromString("1.1.1.1")), is(true));
   }
 
-  private void givenSessionIsBanned(final boolean isBanned) {
-    when(session.getUserProperties())
-        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "/1.1.1.1:555"));
-    when(userBanDao.isBannedByIp("1.1.1.1")).thenReturn(isBanned);
+  private void givenSessionIsBanned(final boolean isBanned, final String ipAddress) {
+    when(userBanDao.isBannedByIp(ipAddress)).thenReturn(isBanned);
   }
 }

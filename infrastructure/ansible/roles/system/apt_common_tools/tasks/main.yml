@@ -1,0 +1,9 @@
+- name: apt install standard utilities and packages
+  apt:
+    state: present
+    update_cache: true
+    name:
+      - htop
+      - iftop
+      - unzip
+

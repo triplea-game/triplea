@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.IpAddressParser;
+import org.triplea.java.IpAddressParser;
 import org.triplea.web.socket.SessionSet;
 
 @ExtendWith(MockitoExtension.class)

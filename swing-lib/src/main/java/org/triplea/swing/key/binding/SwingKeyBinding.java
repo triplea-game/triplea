@@ -53,7 +53,7 @@ public class SwingKeyBinding {
    *     down.
    * @param action The action to execute when the keybinding is activated.
    */
-  public static void addKeyListenerWithMetaAndCtrlMasks(
+  public static void addKeyBindingWithMetaAndCtrlMasks(
       final JFrame component, final KeyCode key, final Runnable action) {
 
     addKeyMapping(

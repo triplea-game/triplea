@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import games.strategy.engine.data.gameparser.GameParseException;
 import java.io.Serializable;
 
 /**

@@ -1,0 +1,23 @@
+map_skin:
+  - id: 1
+    map_id: 10
+    version: 1
+    skin_name: map-skin-name-1
+    url: http://map-skin-1
+    preview_image_url: http://map-thumb-1
+    description: map-skin-description-1
+  - id: 2
+    map_id: 10
+    version: 2
+    skin_name: map-skin-name-2
+    url: http://map-skin-2
+    preview_image_url: http://map-thumb-2
+    description: map-skin-description-2
+  - id: 3
+    map_id: 20
+    version: 3
+    skin_name: map-skin-name-3
+    url: http://map-skin-3
+    preview_image_url: http://map-thumb-3
+    description: map-skin-description-3
+

@@ -4,10 +4,9 @@ import feign.FeignException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 
 /**
@@ -24,7 +23,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
  * the server "do you have this game?"
  */
 @Builder
-@Log
+@Slf4j
 class LobbyWatcherKeepAliveTask implements Runnable {
   /** The current gameId, updated if we re-post. */
   @Nonnull private String gameId;
@@ -42,7 +41,7 @@ class LobbyWatcherKeepAliveTask implements Runnable {
         repostGame();
       }
     } catch (final FeignException e) {
-      log.log(Level.INFO, "Unable to connect to lobby (lobby is shut down?)", e);
+      log.info("Unable to connect to lobby (lobby is shut down?)", e);
     }
   }
 
@@ -61,7 +60,7 @@ class LobbyWatcherKeepAliveTask implements Runnable {
   }
 
   private void messageConnectivityCheckFails() {
-    log.severe(
+    log.error(
         "Failed to re-post game back to the lobby, connectivity check to your host "
             + "failed. This is unexpected and means your host is no longer reachable from "
             + "the public internet, your game is no longer listed on the lobby.");

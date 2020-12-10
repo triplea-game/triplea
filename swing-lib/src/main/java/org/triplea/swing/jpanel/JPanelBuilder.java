@@ -110,8 +110,4 @@ public class JPanelBuilder {
   public GridBagLayoutBuilder gridBagLayout() {
     return new GridBagLayoutBuilder(this);
   }
-
-  public SimpleGridBagLayoutBuilder gridBagLayout(final int columnCount) {
-    return new SimpleGridBagLayoutBuilder(this, columnCount);
-  }
 }

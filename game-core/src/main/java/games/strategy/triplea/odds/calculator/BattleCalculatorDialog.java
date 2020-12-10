@@ -107,7 +107,7 @@ public class BattleCalculatorDialog extends JDialog {
   }
 
   public static void addDefenders(final Territory t) {
-    if (instances.isEmpty()) {
+    if (instances.isEmpty() || t == null) {
       return;
     }
     final BattleCalculatorDialog currentDialog = instances.get(instances.size() - 1);
