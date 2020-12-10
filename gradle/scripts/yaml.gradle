@@ -13,7 +13,7 @@ import com.github.fge.jsonschema.main.JsonSchemaFactory
 import org.apache.http.HttpStatus
 import org.apache.http.client.config.CookieSpecs
 import org.apache.http.client.config.RequestConfig
-import org.apache.http.client.methods.HttpGet
+import org.apache.http.client.methods.HttpHead
 import org.apache.http.impl.client.HttpClients
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
@@ -75,7 +75,7 @@ def probeUris(uris) {
         def executor = Executors.newFixedThreadPool(maxInFlightProbes)
         uris.each { uri ->
             probes << new UriProbe(uri, executor.submit({
-                def request = new HttpGet(uri)
+                def request = new HttpHead(uri)
                 client.execute(request).withCloseable { response ->
                     def statusCode = response.statusLine.statusCode
                     logger.info("URI probe result for '$uri': $statusCode")
