@@ -1,7 +1,14 @@
 package games.strategy.triplea;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.zip.ZipFile;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.val;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -10,42 +17,28 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 class ResourceLocationTracker {
+  private static final String REQUIRED_ASSET_FOLDER = "baseTiles/";
 
   /**
-   * master zip is the zipped folder format you get when downloading from a map repo via the 'clone
-   * or download' button.
-   */
-  static final String MASTER_ZIP_MAGIC_PREFIX = "-master/map/";
-
-  static final String MASTER_ZIP_IDENTIFYING_SUFFIX = "-master.zip";
-
-  /**
-   * * Will return an empty string unless a special prefix is needed, in which case that prefix is *
-   * constructed based on the map name. * *
+   * Will return an empty string unless a special prefix is needed, in which case that prefix is *
+   * constructed based on where the {@code baseTiles} folder is located within the zip.
    *
-   * <p>The 'mapPrefix' is the path within a map zip file where we will then find any map contents.
-   * * For example, if the map prefix is "map", then when we expand the map zip, we would expect *
-   * "/map" to be the first folder we see, and we would expect things like "/map/game" and *
-   * "/map/polygons.txt" to exist.
-   *
-   * @param mapName Used to construct any special resource loading path prefixes, used as needed
-   *     depending upon which resources are in the path
    * @param resourcePaths The list of paths used for a map as resources. From this we can determine
    *     if the map is being loaded from a zip or a directory, and if zip, if it matches any
    *     particular naming.
    */
-  static String getMapPrefix(final String mapName, final URL[] resourcePaths) {
-    final boolean isUsingMasterZip =
-        Arrays.stream(resourcePaths)
-            .map(Object::toString)
-            .anyMatch(path -> path.endsWith(MASTER_ZIP_IDENTIFYING_SUFFIX));
-
-    // map skins will have the full path name as their map name.
-    if (mapName.endsWith("-master.zip")) {
-      return mapName.substring(0, mapName.length() - "-master.zip".length())
-          + MASTER_ZIP_MAGIC_PREFIX;
-    } else {
-      return isUsingMasterZip ? mapName + MASTER_ZIP_MAGIC_PREFIX : "";
-    }
+  	static String getMapPrefix(final URL[] resourcePaths) {
+  		for (val url : resourcePaths) {
+  			try (val zip = new ZipFile(new File(url.toURI()))) {
+  				val e = zip.stream().filter(e -> e.getName().endsWith(REQUIRED_ASSET_FOLDER)).findAny();
+  				if (e.isPresent()) {
+  					val path = e.get().getName();
+  					return path.substring(0, path.length() - REQUIRED_ASSET_FOLDER.length());
+  				}
+  		    } catch (IOException | URISyntaxException e) {
+  		        // File is not a zip or can't be opened
+  		    }
+  		}
+  		return StringUtils.EMPTY;
   }
 }

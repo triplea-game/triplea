@@ -59,7 +59,7 @@ public class ResourceLoader implements Closeable {
         throw new IllegalStateException(e);
       }
     }
-    mapPrefix = ResourceLocationTracker.getMapPrefix(mapName, urls);
+    mapPrefix = ResourceLocationTracker.getMapPrefix(urls);
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
