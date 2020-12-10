@@ -28,7 +28,7 @@ class ResourceLocationTracker {
   	static String getMapPrefix(final URL[] resourcePaths) {
   		for (val url : resourcePaths) {
   			try (val zip = new ZipFile(new File(url.toURI()))) {
-  				val e = zip.stream().filter(e -> e.getName().endsWith(REQUIRED_ASSET_FOLDER)).findAny();
+  				val e = zip.stream().filter($ -> $.getName().endsWith(REQUIRED_ASSET_FOLDER)).findAny();
   				if (e.isPresent()) {
   					val path = e.get().getName();
   					return path.substring(0, path.length() - REQUIRED_ASSET_FOLDER.length());
