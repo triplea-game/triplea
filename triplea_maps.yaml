@@ -2188,7 +2188,7 @@
 - mapName: Over The Top
   mapCategory: EXPERIMENTAL
   version: 1
-  url: https://github.com/triplea-maps/over-the-top/releases/download/0.1.1/over_the_top.zip
+  url: https://github.com/triplea-maps/over_the_top/archive/master.zip
   img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/over-the-top.png
   description: |
     <p style="font-family: 'Garamond' , serif;">
