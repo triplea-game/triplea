@@ -6,8 +6,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.val;
 import lombok.experimental.UtilityClass;
 
@@ -39,6 +37,6 @@ class ResourceLocationTracker {
   		        // File is not a zip or can't be opened
   		    }
   		}
-  		return StringUtils.EMPTY;
+  		return "";
   }
 }
