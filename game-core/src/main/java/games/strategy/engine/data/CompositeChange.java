@@ -1,7 +1,9 @@
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** A Change made of several changes. */
 public class CompositeChange extends Change {
@@ -20,6 +22,21 @@ public class CompositeChange extends Change {
 
   public CompositeChange(final List<Change> changes) {
     this.changes = new ArrayList<>(changes);
+  }
+
+  public CompositeChange flatten() {
+    return new CompositeChange(
+        changes.stream()
+            .map(
+                change -> {
+                  if (change instanceof CompositeChange) {
+                    return ((CompositeChange) change).flatten().getChanges();
+                  } else {
+                    return List.of(change);
+                  }
+                })
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList()));
   }
 
   public void add(final Change... changes) {
