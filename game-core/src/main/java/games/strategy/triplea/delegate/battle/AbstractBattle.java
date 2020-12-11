@@ -90,33 +90,23 @@ abstract class AbstractBattle implements IBattle {
 
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
-    final List<Unit> dependentUnits = new ArrayList<>();
-    for (final Unit unit : units) {
-      final Collection<Unit> dependent = this.dependentUnits.get(unit);
-      if (dependent != null) {
-        dependentUnits.addAll(dependent);
-      }
-    }
-    return Collections.unmodifiableCollection(dependentUnits);
+    return units.stream()
+        .map(this.dependentUnits::get)
+        .filter(Objects::nonNull)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toUnmodifiableList());
   }
 
   protected Collection<Unit> getUnitsWithDependents(final Collection<Unit> units) {
-    final Collection<Unit> dependentUnits = getDependentUnits(units);
-    if (dependentUnits.isEmpty()) {
-      return Collections.unmodifiableCollection(units);
-    }
-    return ImmutableList.copyOf(Iterables.concat(units, dependentUnits));
+    return ImmutableList.copyOf(Iterables.concat(units, getDependentUnits(units)));
   }
 
   void addDependentTransportingUnits(final Collection<Unit> units) {
-    final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
-    for (final Unit unit : addedTransporting.keySet()) {
-      if (dependentUnits.get(unit) != null) {
-        dependentUnits.get(unit).addAll(addedTransporting.get(unit));
-      } else {
-        dependentUnits.put(unit, new ArrayList<>(addedTransporting.get(unit)));
-      }
-    }
+    TransportTracker.transporting(units)
+        .forEach(
+            (unit, transportedUnits) -> {
+              dependentUnits.computeIfAbsent(unit, k -> new ArrayList<>()).addAll(transportedUnits);
+            });
   }
 
   void clearTransportedBy(final IDelegateBridge bridge) {
@@ -145,11 +135,10 @@ abstract class AbstractBattle implements IBattle {
     } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
       return List.of();
     }
-    return ImmutableList.copyOf(
-        targets.stream()
-            .map(TransportTracker::transportingAndUnloaded)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList()));
+    return targets.stream()
+        .map(TransportTracker::transportingAndUnloaded)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toUnmodifiableList());
   }
 
   /**
