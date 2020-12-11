@@ -8,15 +8,14 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 
 /** Provides methods to configure the proxy to use for HTTP requests. */
-@Log
+@Slf4j
 public final class HttpProxy {
   private HttpProxy() {}
 
@@ -70,7 +69,7 @@ public final class HttpProxy {
         }
       }
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to get system HTTP proxy", e);
+      log.error("Failed to get system HTTP proxy", e);
     } finally {
       SystemProperties.setJavaNetUseSystemProxies("false");
     }

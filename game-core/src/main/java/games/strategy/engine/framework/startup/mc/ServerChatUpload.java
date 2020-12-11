@@ -4,7 +4,7 @@ import games.strategy.engine.chat.ChatMessageListener;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
@@ -15,7 +15,7 @@ import org.triplea.java.concurrency.AsyncRunner;
  * on a background thread.
  */
 @Builder
-@Log
+@Slf4j
 class ServerChatUpload implements ChatMessageListener {
   @Nonnull private final GameToLobbyConnection gameToLobbyConnection;
   @Nonnull private final UserName hostName;

@@ -11,11 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
@@ -29,7 +28,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
  *   <li>JFrame dispose on close
  * </ul>
  */
-@Log
+@Slf4j
 public class JFrameBuilder {
   private final Collection<Function<JFrame, Component>> children = new ArrayList<>();
   private boolean escapeClosesWindow;
@@ -105,7 +104,7 @@ public class JFrameBuilder {
     try {
       return ImageIO.read(JFrameBuilder.class.getResource("ta_icon.png"));
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "ta_icon.png not loaded", e);
+      log.error("ta_icon.png not loaded", e);
     }
     return null;
   }

@@ -8,18 +8,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 import org.triplea.generic.xml.reader.exceptions.JavaDataModelException;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 
-@Log
+@Slf4j
 public class XmlMapper implements Closeable {
   private final XMLStreamReader xmlStreamReader;
 
@@ -174,7 +173,7 @@ public class XmlMapper implements Closeable {
     try {
       xmlStreamReader.close();
     } catch (final XMLStreamException e) {
-      log.log(Level.INFO, "Failed to close xml stream", e);
+      log.info("Failed to close xml stream", e);
     }
   }
 }

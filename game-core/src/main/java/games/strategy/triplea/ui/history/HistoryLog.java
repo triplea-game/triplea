@@ -38,14 +38,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 
 /**
  * A window used to display a textual summary of a particular history node, including all of its
  * descendants, if applicable.
  */
-@Log
+@Slf4j
 public class HistoryLog extends JFrame {
   private static final long serialVersionUID = 4880602702815333376L;
   private final JTextArea textArea;
@@ -122,7 +122,7 @@ public class HistoryLog extends JFrame {
       }
       printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
     } else {
-      log.severe("No step node found in!");
+      log.error("No step node found in!");
     }
   }
 

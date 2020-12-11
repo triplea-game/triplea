@@ -73,7 +73,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
@@ -83,7 +83,7 @@ import org.triplea.sound.SoundUtils;
 import org.triplea.util.Tuple;
 
 /** Handles logic for battles in which fighting actually occurs. */
-@Log
+@Slf4j
 public class MustFightBattle extends DependentBattle
     implements BattleStepStrings, BattleActions, BattleState {
 
@@ -349,7 +349,7 @@ public class MustFightBattle extends DependentBattle
             availableTerritories,
             text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      log.severe(
+      log.error(
           "Invalid retreat selection: "
               + retreatTo
               + " not in "

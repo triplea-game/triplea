@@ -7,11 +7,10 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** To hold various static utility methods for running a java program. */
-@Log
+@Slf4j
 final class ProcessRunnerUtil {
   private ProcessRunnerUtil() {}
 
@@ -47,7 +46,7 @@ final class ProcessRunnerUtil {
     try {
       new ProcessBuilder(commands).inheritIO().start();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to start new process", e);
+      log.error("Failed to start new process", e);
     }
   }
 }

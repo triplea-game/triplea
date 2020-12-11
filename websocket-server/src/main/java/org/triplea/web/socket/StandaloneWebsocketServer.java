@@ -2,14 +2,13 @@ package org.triplea.web.socket;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.logging.Level;
 import javax.websocket.CloseReason;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-@Log
+@Slf4j
 public class StandaloneWebsocketServer extends WebSocketServer {
   private final GenericWebSocket genericWebSocket;
 
@@ -51,11 +50,10 @@ public class StandaloneWebsocketServer extends WebSocketServer {
     try {
       super.stop();
     } catch (final IOException e) {
-      log.log(Level.WARNING, "Error stopping server", e);
+      log.warn("Error stopping server", e);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
-      log.log(
-          Level.WARNING,
+      log.warn(
           "Shutdown terminated early, game server may not be fully stopped. "
               + "Terminate any remaining java processes to ensure it is stopped.",
           e);

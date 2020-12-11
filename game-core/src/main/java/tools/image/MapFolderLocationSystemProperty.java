@@ -3,11 +3,11 @@ package tools.image;
 import java.io.File;
 import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import tools.util.ToolArguments;
 
 @UtilityClass
-@Log
+@Slf4j
 public class MapFolderLocationSystemProperty {
 
   @Nullable

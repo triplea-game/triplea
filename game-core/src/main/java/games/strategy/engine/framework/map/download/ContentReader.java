@@ -10,15 +10,14 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
-import java.util.logging.Level;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.function.ThrowingFunction;
 
 /**
  * Provides methods to download content via HTTP. Auto-closes all http client and stream resources.
  */
-@Log
+@Slf4j
 @AllArgsConstructor
 public final class ContentReader {
   private final ThrowingFunction<URI, CloseableDownloader, IOException> downloaderFactory;
@@ -38,7 +37,7 @@ public final class ContentReader {
     try {
       return Optional.of(downloadAndApplyAction(uri, action));
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error while downloading file", e);
+      log.error("Error while downloading file", e);
       return Optional.empty();
     }
   }

@@ -4,14 +4,13 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.Messengers;
 import java.util.Collection;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.concurrency.AsyncRunner;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
-@Log
+@Slf4j
 public class MessengersChatTransmitter implements ChatTransmitter {
   private final UserName userName;
   private final Messengers messengers;
@@ -100,7 +99,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     final RemoteName chatControllerName = ChatController.getChatControllerRemoteName(chatName);
     final IChatController controller = (IChatController) messengers.getRemote(chatControllerName);
     AsyncRunner.runAsync(() -> controller.setStatus(status))
-        .exceptionally(throwable -> log.log(Level.WARNING, "Error updating status", throwable));
+        .exceptionally(throwable -> log.warn("Error updating status", throwable));
   }
 
   @Override

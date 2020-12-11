@@ -7,12 +7,11 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.UrlStreams;
 
 /** Same as PoliticsText but for user actions. */
-@Log
+@Slf4j
 public class UserActionText {
   // Filename
   private static final String PROPERTY_FILE = "actionstext.properties";
@@ -39,7 +38,7 @@ public class UserActionText {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Error reading " + PROPERTY_FILE, e);
+          log.error("Error reading " + PROPERTY_FILE, e);
         }
       }
     }

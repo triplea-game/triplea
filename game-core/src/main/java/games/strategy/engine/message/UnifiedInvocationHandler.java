@@ -3,16 +3,15 @@ package games.strategy.engine.message;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Invocation handler for the UnifiedMessenger.
  *
  * <p>Handles the invocation for a channel
  */
-@Log
+@Slf4j
 class UnifiedInvocationHandler extends WrappedInvocationHandler {
   private final UnifiedMessenger messenger;
   private final String endPointName;
@@ -50,7 +49,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
     }
 
     if (SwingUtilities.isEventDispatchThread()) {
-      log.log(Level.INFO, "Blocking network operation performed from EDT", new Exception());
+      log.info("Blocking network operation performed from EDT", new Exception());
     }
 
     final RemoteMethodCallResults response = messenger.invokeAndWait(endPointName, remoteMethodMsg);

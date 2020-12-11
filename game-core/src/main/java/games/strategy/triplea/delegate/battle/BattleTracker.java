@@ -50,14 +50,14 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
 
 /** Used to keep track of where battles have occurred. */
-@Log
+@Slf4j
 public class BattleTracker implements Serializable {
   private static final long serialVersionUID = 8806010984321554662L;
 
@@ -653,7 +653,7 @@ public class BattleTracker implements Serializable {
                     + territory.getName()
                     + "s neutrality.");
       } else {
-        log.severe(
+        log.error(
             "Player, "
                 + gamePlayer.getName()
                 + " attacks a Neutral territory, and should have had to pay "

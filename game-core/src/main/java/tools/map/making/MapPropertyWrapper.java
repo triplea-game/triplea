@@ -19,9 +19,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.swing.JComponent;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.Tuple;
 
 /**
@@ -32,7 +31,7 @@ import org.triplea.util.Tuple;
  *
  * @param <T> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
-@Log
+@Slf4j
 public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
   private static final long serialVersionUID = 6406798101396215624L;
 
@@ -99,7 +98,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     } catch (final IllegalArgumentException
         | InvocationTargetException
         | IllegalAccessException e) {
-      log.log(Level.SEVERE, "Failed to invoke setter reflectively: " + setter.getName(), e);
+      log.error("Failed to invoke setter reflectively: " + setter.getName(), e);
     }
   }
 
@@ -119,7 +118,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
       try {
         currentValue = field.get(object);
       } catch (final IllegalArgumentException | IllegalAccessException e) {
-        log.log(Level.SEVERE, "Failed to get field value reflectively: " + field.getName(), e);
+        log.error("Failed to get field value reflectively: " + field.getName(), e);
         continue;
       }
       try {
@@ -127,7 +126,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
             new MapPropertyWrapper<>(propertyName, null, currentValue, setter);
         properties.add(wrapper);
       } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to create map property wrapper", e);
+        log.error("Failed to create map property wrapper", e);
       }
     }
     properties.sort(Comparator.comparing(MapPropertyWrapper::getName));

@@ -9,13 +9,12 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** An action for downloading a save game from the server node to a client node. */
-@Log
+@Slf4j
 public class GetGameSaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1118264715230932068L;
   private final Component parent;
@@ -41,7 +40,7 @@ public class GetGameSaveClientAction extends AbstractAction {
       try (var fileOutputStream = new FileOutputStream(f)) {
         fileOutputStream.write(bytes);
       } catch (final IOException exception) {
-        log.log(Level.SEVERE, "Failed to download save game from server", exception);
+        log.error("Failed to download save game from server", exception);
       }
       JOptionPane.showMessageDialog(
           frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);

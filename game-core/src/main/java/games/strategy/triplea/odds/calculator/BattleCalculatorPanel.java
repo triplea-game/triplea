@@ -50,12 +50,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
 
-@Log
+@Slf4j
 class BattleCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
   private static final String NO_EFFECTS = "*None*";

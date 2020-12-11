@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicInteger;
-import lombok.extern.java.Log;
 
 /**
  * A packet of data to be written over the network.
@@ -14,7 +13,6 @@ import lombok.extern.java.Log;
  * <p>The packet is written over the network as 32 bits indicating the size in bytes, then the data
  * itself.
  */
-@Log
 class SocketWriteData {
   private static final AtomicInteger counter = new AtomicInteger();
   private final ByteBuffer size;
@@ -44,7 +42,6 @@ class SocketWriteData {
       if (count == -1) {
         throw new IOException("triplea: end of stream detected");
       }
-      log.finest(() -> "wrote size_buffer bytes:" + count);
       // we could not write everything
       if (size.hasRemaining()) {
         return false;
@@ -54,7 +51,6 @@ class SocketWriteData {
     if (count == -1) {
       throw new IOException("triplea: end of stream detected");
     }
-    log.finest(() -> "wrote content bytes:" + count);
     return !content.hasRemaining();
   }
 

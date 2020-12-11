@@ -40,7 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JButtonBuilder;
@@ -49,7 +49,7 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** UI for fighting battles. */
-@Log
+@Slf4j
 public final class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
   private final JLabel actionLabel = new JLabel();
@@ -200,7 +200,7 @@ public final class BattlePanel extends ActionPanel {
       Interruptibles.sleep(count);
       // something is wrong, we shouldn't have to wait this long
       if (count > 200) {
-        log.severe(
+        log.error(
             "battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed);
         return false;
       }

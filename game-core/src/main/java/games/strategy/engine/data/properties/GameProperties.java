@@ -12,10 +12,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.IoUtils;
 
 /**
@@ -23,7 +22,7 @@ import org.triplea.io.IoUtils;
  * Maps string -> Object <br>
  * Set through changeFactory.setProperty.
  */
-@Log
+@Slf4j
 public class GameProperties extends GameDataComponent {
   private static final long serialVersionUID = -1448163357090677564L;
 
@@ -181,8 +180,7 @@ public class GameProperties extends GameDataComponent {
     try {
       editableProperties = readEditableProperties(byteArray);
     } catch (final ClassCastException | IOException e) {
-      log.log(
-          Level.SEVERE,
+      log.error(
           "An Error occurred whilst trying to apply a Byte Map to Property. Bytes: "
               + Arrays.toString(byteArray),
           e);

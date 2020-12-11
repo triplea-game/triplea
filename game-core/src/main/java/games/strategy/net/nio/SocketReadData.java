@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import lombok.Getter;
-import lombok.extern.java.Log;
 
 /**
  * A packet of data being read over the network.
@@ -12,7 +11,6 @@ import lombok.extern.java.Log;
  * <p>A Packet does not correspond to a network packet, rather it is the bytes for 1 serialized java
  * object.
  */
-@Log
 class SocketReadData {
   static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
   // as a sanity check to make sure we are talking to another TripleA instance
@@ -46,7 +44,6 @@ class SocketReadData {
         sizeBuffer = ByteBuffer.allocate(4);
       }
       final int size = channel.read(sizeBuffer);
-      log.finest(() -> "read size_buffer bytes:" + size);
       if (size == -1) {
         throw new IOException("Socket closed");
       }

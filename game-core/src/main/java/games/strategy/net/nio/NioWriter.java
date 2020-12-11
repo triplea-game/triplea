@@ -11,14 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A thread that writes socket data using NIO. Data is written in packets that are enqueued on our
  * buffer. Packets are sent to the sockets in the order that they are received.
  */
-@Log
+@Slf4j
 class NioWriter {
   private final Selector selector;
   private final ErrorReporter errorReporter;
@@ -35,7 +34,7 @@ class NioWriter {
     try {
       selector = Selector.open();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Could not create Selector", e);
+      log.error("Could not create Selector", e);
       throw new IllegalStateException(e);
     }
     new Thread(this::loop, "NIO Writer").start();
@@ -46,7 +45,7 @@ class NioWriter {
     try {
       selector.close();
     } catch (final IOException e) {
-      log.log(Level.WARNING, "error closing selector", e);
+      log.warn("error closing selector", e);
     }
   }
 
@@ -63,7 +62,7 @@ class NioWriter {
       try {
         channel.register(selector, SelectionKey.OP_WRITE);
       } catch (final ClosedChannelException e) {
-        log.log(Level.FINEST, "socket already closed", e);
+        log.debug("socket already closed", e);
       }
     }
   }
@@ -78,7 +77,6 @@ class NioWriter {
         // select any new sockets that can be written to
         addNewSocketsToSelector();
         final Set<SelectionKey> selected = selector.selectedKeys();
-        log.finest(() -> "selected:" + selected.size());
         final Iterator<SelectionKey> iter = selected.iterator();
         while (iter.hasNext()) {
           final SelectionKey key = iter.next();
@@ -88,18 +86,12 @@ class NioWriter {
             final SocketWriteData packet = getData(channel);
             if (packet != null) {
               try {
-                log.finest(
-                    () ->
-                        "writing packet:"
-                            + packet
-                            + " to:"
-                            + channel.socket().getRemoteSocketAddress());
                 final boolean done = packet.write(channel);
                 if (done) {
                   removeLast(channel);
                 }
               } catch (final Exception e) {
-                log.log(Level.FINER, "exception writing", e);
+                log.debug("exception writing", e);
                 errorReporter.error(channel, e);
                 key.cancel();
               }
@@ -113,7 +105,7 @@ class NioWriter {
         }
       } catch (final Exception e) {
         // catch unhandled exceptions so that the writer thread doesn't die
-        log.log(Level.WARNING, "error in writer", e);
+        log.warn("error in writer", e);
       }
     }
   }
@@ -133,7 +125,7 @@ class NioWriter {
     synchronized (mutex) {
       final List<SocketWriteData> values = writing.get(to);
       if (values == null) {
-        log.severe("NO socket data to:" + to);
+        log.error("NO socket data to:" + to);
         return;
       }
       values.remove(0);

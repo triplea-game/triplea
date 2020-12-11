@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.debug.LoggerManager;
@@ -29,13 +29,12 @@ import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
 /** Runs a headed game client. */
-@Log
+@Slf4j
 public final class HeadedGameRunner {
   private HeadedGameRunner() {}
 
   public static void initializeClientSettingAndLogging() {
-    Thread.setDefaultUncaughtExceptionHandler(
-        (t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e.getLocalizedMessage(), e));
 
     ClientSetting.initialize();
 

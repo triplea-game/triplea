@@ -49,11 +49,10 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
@@ -65,7 +64,7 @@ import org.triplea.util.Tuple;
  * An attachment for instances of {@link GamePlayer} that defines actions to be triggered upon
  * various events.
  */
-@Log
+@Slf4j
 public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
   private static final Map<String, BiFunction<GamePlayer, String, DefaultAttachment>>
@@ -2598,7 +2597,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           ((EndRoundDelegate) delegateEndRound)
               .signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
         } catch (final Exception e) {
-          log.log(Level.SEVERE, "Failed to signal game over", e);
+          log.error("Failed to signal game over", e);
         }
       }
     }

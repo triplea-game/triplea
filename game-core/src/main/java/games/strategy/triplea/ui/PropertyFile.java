@@ -12,12 +12,11 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.UrlStreams;
 
 /** Common property file class which should be extended. */
-@Log
+@Slf4j
 public abstract class PropertyFile {
 
   protected static final Cache<Class<? extends PropertyFile>, PropertyFile> cache =
@@ -33,7 +32,7 @@ public abstract class PropertyFile {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Error reading " + fileName, e);
+          log.error("Error reading " + fileName, e);
         }
       }
     }

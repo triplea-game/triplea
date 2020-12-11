@@ -8,14 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.logging.Level;
 import javax.swing.DefaultListModel;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
 
-@Log
+@Slf4j
 class FileSystemAccessStrategy {
 
   Optional<Version> getMapVersion(final String mapName) {
@@ -49,10 +48,7 @@ class FileSystemAccessStrategy {
         try {
           Files.delete(map.getInstallLocation().toPath());
         } catch (final IOException e) {
-          log.log(
-              Level.SEVERE,
-              "Failed to delete map: " + map.getInstallLocation().getAbsolutePath(),
-              e);
+          log.error("Failed to delete map: " + map.getInstallLocation().getAbsolutePath(), e);
         }
         map.getInstallLocation().delete();
       }

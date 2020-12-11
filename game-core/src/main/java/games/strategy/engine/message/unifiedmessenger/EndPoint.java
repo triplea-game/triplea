@@ -10,16 +10,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This is where the methods finally get called. An end point contains the implementors for a given
  * name that are local to this node. You can invoke the method and get the results for all the
  * implementors.
  */
-@Log
+@Slf4j
 class EndPoint {
   // the next number we are going to give
   private final AtomicLong nextGivenNumber = new AtomicLong();
@@ -138,7 +137,7 @@ class EndPoint {
     } catch (final InvocationTargetException e) {
       return new RemoteMethodCallResults(e.getTargetException());
     } catch (final IllegalAccessException | IllegalArgumentException e) {
-      log.log(Level.SEVERE, "error in call:" + call, e);
+      log.error("error in call:" + call, e);
       return new RemoteMethodCallResults(e);
     } finally {
       MessageContext.setSenderNodeForThread(null);

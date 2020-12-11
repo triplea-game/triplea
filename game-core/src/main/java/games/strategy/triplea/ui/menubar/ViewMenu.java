@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
@@ -44,13 +43,13 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 
-@Log
+@Slf4j
 final class ViewMenu extends JMenu {
   private static final long serialVersionUID = -4703734404422047487L;
 
@@ -224,7 +223,7 @@ final class ViewMenu extends JMenu {
       }
     }
     if (!matchFound) {
-      log.severe("default unit size does not match any menu item");
+      log.error("default unit size does not match any menu item");
     }
     unitSizeMenu.add(radioItem125);
     unitSizeMenu.add(radioItem100);
@@ -260,7 +259,7 @@ final class ViewMenu extends JMenu {
               }
               showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
             } catch (final Exception exception) {
-              log.log(Level.SEVERE, "Error Changing Map Skin2", exception);
+              log.error("Error Changing Map Skin2", exception);
             }
           });
     }

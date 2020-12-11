@@ -23,13 +23,12 @@ import games.strategy.triplea.util.BonusIncomeUtils;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.function.Predicate;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** This delegate is only supposed to be run once, per game, at the start of the game. */
-@Log
+@Slf4j
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
@@ -134,8 +133,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
             try {
               bridge.addChange(TransportTracker.loadTransportChange(transport, toLoad));
             } catch (final IllegalStateException e) {
-              log.log(
-                  Level.SEVERE,
+              log.error(
                   "You can only edit add transports+units after the initialization delegate "
                       + "of the game is finished. If this error came up and you have not used Edit "
                       + "Mode to add units + transports, then please report this as a bug.",

@@ -7,13 +7,12 @@ import games.strategy.net.MessageHeader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.channels.SocketChannel;
-import java.util.logging.Level;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.IoUtils;
 
 /** Encodes data to be written by a writer. */
-@Log
+@Slf4j
 @AllArgsConstructor
 class Encoder {
   private final NioWriter writer;
@@ -31,7 +30,7 @@ class Encoder {
       writer.enque(data, to);
     } catch (final IOException e) {
       // we aren't doing any I/O, just writing in memory so something is very wrong
-      log.log(Level.SEVERE, "Error writing object:" + header, e);
+      log.error("Error writing object:" + header, e);
     }
   }
 

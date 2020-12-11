@@ -19,11 +19,10 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.ProgressWindow;
 
@@ -33,7 +32,7 @@ import org.triplea.swing.ProgressWindow;
  * the game data. This class does only implement {@link Serializable} because otherwise the delegate
  * would reject it, even though this class is for local use only.
  */
-@Log
+@Slf4j
 public class PbemMessagePoster implements Serializable {
   private static final long serialVersionUID = -1L;
   private final GameProperties gameProperties;
@@ -130,7 +129,7 @@ public class PbemMessagePoster implements Serializable {
           historyWriter.startEvent("Turn Summary: " + turnSummaryRef);
         }
       } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to post game to forum", e);
+        log.error("Failed to post game to forum", e);
       }
     }
     final Optional<IEmailSender> emailSender = newEmailSender();
@@ -149,7 +148,7 @@ public class PbemMessagePoster implements Serializable {
                     return true;
                   } catch (final IOException e) {
                     emailSendStatus = "Failed! Error " + e.getMessage();
-                    log.log(Level.SEVERE, "Failed to send game via email", e);
+                    log.error("Failed to send game via email", e);
                     return false;
                   }
                 })
@@ -261,7 +260,7 @@ public class PbemMessagePoster implements Serializable {
                   setSaveGame(saveGameFile);
                 } catch (final Exception e) {
                   postOk = false;
-                  log.log(Level.SEVERE, "Failed to create save game", e);
+                  log.error("Failed to create save game", e);
                 }
                 turnSummary = historyLog.toString();
                 try {
@@ -277,7 +276,7 @@ public class PbemMessagePoster implements Serializable {
                   }
                 } catch (final Exception e) {
                   postOk = false;
-                  log.log(Level.SEVERE, "Failed to post save game to forum", e);
+                  log.error("Failed to post save game to forum", e);
                 }
                 if (postingDelegate != null) {
                   postingDelegate.setHasPostedTurnSummary(postOk);

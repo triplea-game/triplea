@@ -7,7 +7,6 @@ import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.Pager;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,14 +14,14 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import lombok.Builder;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogSearchRequest;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
 
-@Log
+@Slf4j
 class AccessLogTabActions {
   private static final int PAGE_SIZE = 50;
 
@@ -57,11 +56,7 @@ class AccessLogTabActions {
       final JButton loadMoreButton) {
     AsyncRunner.runAsync(() -> runSearch(accessLogSearchRequest, table, loadMoreButton))
         .exceptionally(
-            e ->
-                log.log(
-                    Level.SEVERE,
-                    "Error running search with request: " + accessLogSearchRequest,
-                    e));
+            e -> log.error("Error running search with request: " + accessLogSearchRequest, e));
   }
 
   private void runSearch(

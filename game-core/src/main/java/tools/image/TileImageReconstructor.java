@@ -22,18 +22,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.PointFileReaderWriter;
 
 /** For taking a folder of basetiles and putting them back together into an image. */
-@Log
+@Slf4j
 public final class TileImageReconstructor {
   private String baseTileLocation = null;
   private String imageSaveLocation = null;
@@ -149,12 +148,12 @@ public final class TileImageReconstructor {
           try (InputStream in = new FileInputStream(polyName)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(in);
           } catch (final IOException e) {
-            log.log(Level.SEVERE, "Failed to load polygons: " + polyName, e);
+            log.error("Failed to load polygons: " + polyName, e);
             return;
           }
         }
       } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to load polygons", e);
+        log.error("Failed to load polygons", e);
       }
     }
     createMap();
@@ -211,7 +210,7 @@ public final class TileImageReconstructor {
     try {
       ImageIO.write(mapImage, "png", new File(imageSaveLocation));
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to save image: " + imageSaveLocation, e);
+      log.error("Failed to save image: " + imageSaveLocation, e);
     }
     textOptionPane.appendNewLine("Wrote " + imageSaveLocation);
     textOptionPane.appendNewLine("\r\nAll Finished!");

@@ -9,14 +9,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 @UtilityClass
-@Log
+@Slf4j
 class MapZipReaderUtil {
 
   /**
@@ -39,7 +38,7 @@ class MapZipReaderUtil {
         }
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error reading zip file in: " + zip.getAbsolutePath(), e);
+      log.error("Error reading zip file in: " + zip.getAbsolutePath(), e);
     }
     return zipFiles;
   }

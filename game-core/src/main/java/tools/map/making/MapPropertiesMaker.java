@@ -29,7 +29,6 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -47,7 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -65,7 +64,7 @@ import tools.util.ToolArguments;
  * To use, just fill in the information in the fields below, and click on 'Show More' to show other,
  * optional, fields.
  */
-@Log
+@Slf4j
 public final class MapPropertiesMaker {
   private File mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
@@ -513,7 +512,7 @@ public final class MapPropertiesMaker {
         log.info("Data written to :" + new File(fileName).getCanonicalPath());
         log.info(stringToWrite);
       } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to save map properties", e);
+        log.error("Failed to save map properties", e);
       }
     }
 
@@ -529,7 +528,7 @@ public final class MapPropertiesMaker {
         } catch (final IllegalArgumentException
             | InvocationTargetException
             | IllegalAccessException e) {
-          log.log(Level.SEVERE, "Failed to invoke method reflectively: " + outMethod.getName(), e);
+          log.error("Failed to invoke method reflectively: " + outMethod.getName(), e);
         }
       }
       return outString.toString();
@@ -544,7 +543,7 @@ public final class MapPropertiesMaker {
         mapProperties.setUnitsScale(Double.parseDouble(zoomString));
         log.info("Unit Zoom Percent to use: " + zoomString);
       } catch (final Exception e) {
-        log.severe("Not a decimal percentage: " + zoomString);
+        log.error("Not a decimal percentage: " + zoomString);
       }
     }
     final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
@@ -555,7 +554,7 @@ public final class MapPropertiesMaker {
         mapProperties.setUnitsCounterOffsetWidth(unitWidth / 4);
         log.info("Unit Width to use: " + unitWidth);
       } catch (final Exception e) {
-        log.severe("Not an integer: " + widthString);
+        log.error("Not an integer: " + widthString);
       }
     }
     final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
@@ -566,7 +565,7 @@ public final class MapPropertiesMaker {
         mapProperties.setUnitsCounterOffsetHeight(unitHeight);
         log.info("Unit Height to use: " + unitHeight);
       } catch (final Exception e) {
-        log.severe("Not an integer: " + heightString);
+        log.error("Not an integer: " + heightString);
       }
     }
   }

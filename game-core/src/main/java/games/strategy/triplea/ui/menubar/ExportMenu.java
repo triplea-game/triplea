@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -51,7 +50,7 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
@@ -59,7 +58,7 @@ import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
 
-@Log
+@Slf4j
 final class ExportMenu extends JMenu {
   private static final long serialVersionUID = 8416990293444575737L;
 
@@ -359,8 +358,7 @@ final class ExportMenu extends JMenu {
         writer.println();
       }
     } catch (final IOException e) {
-      log.log(
-          Level.SEVERE, "Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e);
+      log.error("Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e);
     } finally {
       gameData.releaseReadLock();
     }
@@ -389,10 +387,7 @@ final class ExportMenu extends JMenu {
               .replaceAll("</?p>|</tr>", "$0\r\n")
               .replaceAll("(?i)<img[^>]+/>", ""));
     } catch (final IOException e1) {
-      log.log(
-          Level.SEVERE,
-          "Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(),
-          e1);
+      log.error("Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
     }
   }
 

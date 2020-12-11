@@ -7,13 +7,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.ProgressWindow;
 
-@Log
+@Slf4j
 public class SendTestEmailAction {
 
   /** Tests the email sender. This must be called from the swing event thread */
@@ -51,7 +50,7 @@ public class SendTestEmailAction {
                 message =
                     "Unable to send email, check SMTP server credentials: "
                         + Ascii.truncate(ioe.getMessage(), 200, "...");
-                log.log(Level.SEVERE, message, ioe);
+                log.error(message, ioe);
               } finally {
                 // now that we have a result, marshall it back unto the swing thread
                 final String finalMessage = message;

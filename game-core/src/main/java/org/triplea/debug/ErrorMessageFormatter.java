@@ -29,11 +29,11 @@ class ErrorMessageFormatter implements Function<LoggerRecord, String> {
    * <pre>
    * (1) uncaught exception with no message, eg: {@code throw new NullPointerException()}
    * (2) uncaught exception with a message, eg:  {@code throw new NullPointerException("message")}
-   * (3) logging an error message, eg: {@code log.severe("message")}
+   * (3) logging an error message, eg: {@code log.error("message")}
    * (4) logging an error message with exception that has no message, eg:
-   * {@code log.log(Level.SEVERE, "message", new NullPointerException())}
+   * {@code log.error("message", new NullPointerException())}
    * (5) logging an error message with exception that has a message, eg:
-   * {@code log.log(Level.SEVERE, "log-message", new NullPointerException("exception message"))}
+   * {@code log.error("log-message", new NullPointerException("exception message"))}
    * </pre>
    */
   private static String format(final LoggerRecord logRecord) {

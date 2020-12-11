@@ -43,7 +43,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.FileNameUtils;
 
@@ -51,7 +51,7 @@ import org.triplea.util.FileNameUtils;
  * A panel that will show all objectives for all players, including if the objective is filled or
  * not.
  */
-@Log
+@Slf4j
 public class ObjectivePanel extends AbstractStatPanel {
   private static final long serialVersionUID = 3759819236905645520L;
   private Map<String, Map<ICondition, String>> statsObjective;
@@ -141,7 +141,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
-          log.severe(
+          log.error(
               "objective.properties keys must be 2 parts: <game_name>."
                   + ObjectiveProperties.GROUP_PROPERTY
                   + ".<#>;player  OR  <game_name>.player;attachmentName");
@@ -152,7 +152,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         }
         final List<String> sorter = Splitter.on('.').splitToList(key.get(0));
         if (sorter.size() != 2) {
-          log.severe(
+          log.error(
               "objective.properties "
                   + ObjectiveProperties.GROUP_PROPERTY
                   + "must have .<sorter> after it: "
@@ -178,7 +178,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
-          log.severe(
+          log.error(
               "objective.properties keys must be 2 parts: <game_name>."
                   + ObjectiveProperties.GROUP_PROPERTY
                   + ".<#>;player  OR  <game_name>.player;attachmentName");

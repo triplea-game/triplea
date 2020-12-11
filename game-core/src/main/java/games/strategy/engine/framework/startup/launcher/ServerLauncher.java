@@ -27,13 +27,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 
 /** Implementation of {@link ILauncher} for a headed or headless network server game. */
-@Log
+@Slf4j
 public class ServerLauncher implements ILauncher {
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
@@ -97,7 +96,7 @@ public class ServerLauncher implements ILauncher {
     try {
       loadGame();
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Error when loading game", e);
+      log.error("Error when loading game", e);
       abortLaunch = true;
     }
     new Thread(this::launchInternal).start();
@@ -153,7 +152,7 @@ public class ServerLauncher implements ILauncher {
             .startGame(
                 serverGame, localPlayerSet, launchAction, serverModel.getChatModel().getChat());
       } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to launch", e);
+        log.error("Failed to launch", e);
         abortLaunch = true;
       }
       log.info(
@@ -163,7 +162,7 @@ public class ServerLauncher implements ILauncher {
       }
       if (!serverReady.await(
           ClientSetting.serverStartGameSyncWaitTime.getValueOrThrow(), TimeUnit.SECONDS)) {
-        log.warning("Aborting launch - waiting for clients to be ready timed out!");
+        log.warn("Aborting launch - waiting for clients to be ready timed out!");
         abortLaunch = true;
       }
       messengers.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
@@ -187,7 +186,7 @@ public class ServerLauncher implements ILauncher {
         stopGame();
       }
     } catch (final RuntimeException e) {
-      log.log(Level.INFO, "Exception while launching", e);
+      log.info("Exception while launching", e);
 
       // no-op, this is a simple player disconnect, no need to scare the user with some giant stack
       // trace
@@ -202,7 +201,7 @@ public class ServerLauncher implements ILauncher {
                     && !errorLatch.await(
                         ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(),
                         TimeUnit.SECONDS)) {
-                  log.warning("Waiting on error latch timed out!");
+                  log.warn("Waiting on error latch timed out!");
                 }
               });
           stopGame();
@@ -211,7 +210,7 @@ public class ServerLauncher implements ILauncher {
               "Unrecognized error occurred. If this is a repeatable error, "
                   + "please make a copy of this savegame and report to:\n"
                   + UrlConstants.GITHUB_ISSUES;
-          log.log(Level.SEVERE, errorMessage, e);
+          log.error(errorMessage, e);
           stopGame();
         }
       }
@@ -289,7 +288,7 @@ public class ServerLauncher implements ILauncher {
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to save game: " + f.getAbsolutePath(), e);
+      log.error("Failed to save game: " + f.getAbsolutePath(), e);
     }
 
     stopGame();

@@ -21,11 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
 import org.triplea.java.UrlStreams;
 import org.triplea.java.function.ThrowingSupplier;
@@ -35,7 +34,7 @@ import org.triplea.swing.SwingComponents;
  * Utility for managing where images and property files for maps and units should be loaded from.
  * Based on java Classloaders.
  */
-@Log
+@Slf4j
 public class ResourceLoader implements Closeable {
   public static final String ASSETS_FOLDER = "assets";
 
@@ -48,10 +47,10 @@ public class ResourceLoader implements Closeable {
     for (int i = 0; i < paths.length; i++) {
       final File f = new File(paths[i]);
       if (!f.exists()) {
-        log.severe(f + " does not exist");
+        log.error(f + " does not exist");
       }
       if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
-        log.severe(f + " is not a directory or a zip file");
+        log.error(f + " is not a directory or a zip file");
       }
       try {
         urls[i] = f.toURI().toURL();
@@ -201,7 +200,7 @@ public class ResourceLoader implements Closeable {
     try {
       loader.close();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to close resource loader", e);
+      log.error("Failed to close resource loader", e);
     }
   }
 
@@ -291,11 +290,11 @@ public class ResourceLoader implements Closeable {
     try {
       final BufferedImage bufferedImage = ImageIO.read(url);
       if (bufferedImage == null) {
-        log.severe("Unsupported Image Format: " + url);
+        log.error("Unsupported Image Format: " + url);
       }
       return Optional.ofNullable(bufferedImage);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
+      log.error("Image loading failed: " + imageName, e);
       return Optional.empty();
     }
   }

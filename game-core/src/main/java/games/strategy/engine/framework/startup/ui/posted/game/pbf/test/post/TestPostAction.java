@@ -11,14 +11,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.DateTimeUtil;
 
-@Log
+@Slf4j
 @AllArgsConstructor
 public class TestPostAction implements BiConsumer<String, Integer> {
 
@@ -74,7 +73,7 @@ public class TestPostAction implements BiConsumer<String, Integer> {
               } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
               } catch (final ExecutionException e) {
-                log.log(Level.SEVERE, "Error while retrieving post", e);
+                log.error("Error while retrieving post", e);
               }
             })
         .start();

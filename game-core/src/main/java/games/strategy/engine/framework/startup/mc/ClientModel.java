@@ -52,7 +52,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.swing.Action;
@@ -60,7 +59,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -69,7 +68,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
 /** Represents a network aware game client connecting to another game that is acting as a server. */
-@Log
+@Slf4j
 public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
@@ -167,7 +166,7 @@ public class ClientModel implements IMessengerErrorListener {
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
     this.listener = Preconditions.checkNotNull(listener);
     AsyncRunner.runAsync(() -> internalPlayerListingChanged(getServerStartup().getPlayerListing()))
-        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
+        .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   private static ClientProps getProps(final Component ui) {
@@ -241,7 +240,7 @@ public class ClientModel implements IMessengerErrorListener {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
     } catch (final Exception ioe) {
-      log.log(Level.INFO, "Error connecting to host", ioe);
+      log.info("Error connecting to host", ioe);
       SwingComponents.showError(
           ui,
           "Error Connecting to Host",
@@ -362,7 +361,7 @@ public class ClientModel implements IMessengerErrorListener {
                     data.getGameLoader()
                         .startGame(game, playerSet, launchAction, getChatPanel().getChat());
                   } catch (final Exception e) {
-                    log.log(Level.SEVERE, "Failed to start Game", e);
+                    log.error("Failed to start Game", e);
                     game.shutDown();
                     messenger.shutDown();
                     gameLoadingWindow.doneWait();
@@ -383,23 +382,23 @@ public class ClientModel implements IMessengerErrorListener {
 
   public void takePlayer(final String playerName) {
     AsyncRunner.runAsync(() -> getServerStartup().takePlayer(messenger.getLocalNode(), playerName))
-        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
+        .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   public void releasePlayer(final String playerName) {
     AsyncRunner.runAsync(
             () -> getServerStartup().releasePlayer(messenger.getLocalNode(), playerName))
-        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
+        .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   public void disablePlayer(final String playerName) {
     AsyncRunner.runAsync(() -> getServerStartup().disablePlayer(playerName))
-        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
+        .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   public void enablePlayer(final String playerName) {
     AsyncRunner.runAsync(() -> getServerStartup().enablePlayer(playerName))
-        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
+        .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   private void internalPlayerListingChanged(final PlayerListing listing) {

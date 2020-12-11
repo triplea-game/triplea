@@ -4,7 +4,7 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.function.ThrowingRunnable;
 import org.triplea.java.function.ThrowingSupplier;
 
@@ -21,7 +21,7 @@ import org.triplea.java.function.ThrowingSupplier;
  * </code>
  */
 @SuppressWarnings("unused") // used on-demand by dev where needed and removed afterwards.
-@Log
+@Slf4j
 public class PerfTimer implements Closeable {
 
   private static final Map<String, AtomicLong> runningTotal = new HashMap<>();
