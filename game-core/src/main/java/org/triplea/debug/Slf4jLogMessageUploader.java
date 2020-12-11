@@ -1,5 +1,6 @@
 package org.triplea.debug;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
@@ -11,6 +12,8 @@ import ch.qos.logback.core.AppenderBase;
 public class Slf4jLogMessageUploader extends AppenderBase<ILoggingEvent> {
   @Override
   protected void append(final ILoggingEvent eventObject) {
-    ErrorMessage.show(LoggerRecordAdapter.fromLogbackEvent(eventObject));
+    if (eventObject.getLevel().isGreaterOrEqual(Level.WARN)) {
+      ErrorMessage.show(LoggerRecordAdapter.fromLogbackEvent(eventObject));
+    }
   }
 }
