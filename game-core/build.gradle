@@ -12,6 +12,7 @@ dependencies {
     implementation "commons-io:commons-io:$commonsIoVersion"
     implementation "io.github.openfeign:feign-gson:$openFeignVersion"
     implementation "org.apache.commons:commons-math3:$commonsMathVersion"
+    implementation "org.apache.commons:commons-text:$commonsTextVersion"
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     implementation "org.knowm.xchart:xchart:$xchartVersion"
