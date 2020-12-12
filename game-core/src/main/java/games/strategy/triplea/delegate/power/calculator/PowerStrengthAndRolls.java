@@ -90,6 +90,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     for (final Unit unit : units) {
       final UnitPowerStrengthAndRolls data =
           UnitPowerStrengthAndRolls.builder()
+              .unit(unit)
               .strengthAndRolls(
                   UnitPowerStrengthAndRolls.StrengthAndRolls.of(
                       strengthCalculator.getStrength(unit), rollCalculator.getRoll(unit)))

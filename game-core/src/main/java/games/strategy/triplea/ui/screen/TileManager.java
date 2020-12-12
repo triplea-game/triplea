@@ -567,6 +567,20 @@ public class TileManager {
     updateTerritory(territory, data, mapData);
   }
 
+  public void setTerritoryOverlayForTile(
+      final Territory territory,
+      final Color color,
+      final int alpha,
+      final GameData data,
+      final MapData mapData) {
+    synchronized (mutex) {
+      final IDrawable drawable =
+          new TerritoryOverLayDrawable(color, territory.getName(), alpha, Operation.FILL);
+      territoryOverlays.put(territory.getName(), drawable);
+    }
+    updateTerritory(territory, data, mapData);
+  }
+
   public void setTerritoryOverlayForBorder(
       final Territory territory, final Color color, final GameData data, final MapData mapData) {
     synchronized (mutex) {

@@ -11,8 +11,11 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -28,7 +31,7 @@ import javax.swing.border.EmptyBorder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
-class TerritoryDetailPanel extends AbstractStatPanel {
+public class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
   private final UiContext uiContext;
   private final JButton showOdds = new JButton("Battle Calculator (Ctrl-B)");
@@ -40,6 +43,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   private final JScrollPane units = new JScrollPane();
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
+  private List<Function<Territory, String>> additionalTerritoryDetailFunctions = new ArrayList<>();
 
   TerritoryDetailPanel(
       final MapPanel mapPanel,
@@ -108,6 +112,14 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     territoryChanged(null);
   }
 
+  public void addAdditionalTerritoryDetailsFunction(final Function<Territory, String> method) {
+    this.additionalTerritoryDetailFunctions.add(method);
+  }
+
+  public void removeAdditionalTerritoryDetailsFunction(final Function<Territory, String> method) {
+    this.additionalTerritoryDetailFunctions.remove(method);
+  }
+
   private void territoryChanged(final @Nullable Territory territory) {
     currentTerritory = territory;
     if (territory == null) {
@@ -117,10 +129,20 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     setElementsVisible(true);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
+    final String additionalText =
+        this.additionalTerritoryDetailFunctions.stream()
+            .map(method -> method.apply(territory))
+            .collect(Collectors.joining("<br />"));
     if (ta == null) {
-      labelText = "<html>" + territory.getName() + "<br>Water Territory" + "<br><br></html>";
+      labelText =
+          "<html>"
+              + territory.getName()
+              + "<br>Water Territory"
+              + "<br><br>"
+              + additionalText
+              + "</html>";
     } else {
-      labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
+      labelText = "<html>" + ta.toStringForInfo(true, true) + "<br>" + additionalText + "</html>";
     }
     territoryInfo.setText(labelText);
     unitInfo.setText(

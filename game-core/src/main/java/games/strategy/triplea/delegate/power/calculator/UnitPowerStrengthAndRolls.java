@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.power.calculator;
 
+import games.strategy.engine.data.Unit;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,6 +18,10 @@ public class UnitPowerStrengthAndRolls {
   Integer power;
 
   @NonNull StrengthAndRolls strengthAndRolls;
+
+  @Getter(AccessLevel.PUBLIC)
+  @NonNull
+  Unit unit;
 
   @NonNull PowerCalculator powerCalculator;
 
