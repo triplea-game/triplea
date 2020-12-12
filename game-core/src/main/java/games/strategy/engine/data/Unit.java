@@ -384,7 +384,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * This is a very slow method because it checks all territories on the map. Try not to use this
    * method if possible.
    *
-   * @return Unmodifiable collection of units that the given transport is transporting.
+   * @return Unmodifiable collection of units that this unit is transporting in the same territory
+   *     it is located in
    */
   public List<Unit> getTransporting() {
     if (Matches.unitCanTransport().test(this) || Matches.unitIsCarrier().test(this)) {
@@ -393,14 +394,19 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
       for (final Territory t : getData().getMap()) {
         // find the territory this transport is in
         if (t.getUnitCollection().contains(this)) {
-          return getTransporting(t.getUnitCollection());
+          return getTransporting(t);
         }
       }
     }
     return List.of();
   }
 
-  /** @return Unmodifiable collection of units that the given transport is transporting. */
+  /** @return Unmodifiable collection of units in the territory that this unit is transporting */
+  public List<Unit> getTransporting(final Territory territory) {
+    return getTransporting(territory.getUnitCollection());
+  }
+
+  /** @return Unmodifiable collection of a subset of the units that this unit is transporting */
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units

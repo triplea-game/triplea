@@ -49,11 +49,8 @@ abstract class AbstractBattle implements IBattle {
   boolean isAmphibious = false;
   final BattleType battleType;
   boolean isOver = false;
-  /**
-   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent
-   * on then we lose the corresponding collection of units.
-   */
-  final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+
+  @RemoveOnNextMajorRelease final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
 
   List<Unit> attackingUnits = new ArrayList<>();
   List<Unit> defendingUnits = new ArrayList<>();
@@ -91,22 +88,13 @@ abstract class AbstractBattle implements IBattle {
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
     return units.stream()
-        .map(this.dependentUnits::get)
-        .filter(Objects::nonNull)
+        .map(unit -> unit.getTransporting(battleSite))
         .flatMap(Collection::stream)
         .collect(Collectors.toUnmodifiableList());
   }
 
   protected Collection<Unit> getUnitsWithDependents(final Collection<Unit> units) {
     return ImmutableList.copyOf(Iterables.concat(units, getDependentUnits(units)));
-  }
-
-  void addDependentTransportingUnits(final Collection<Unit> units) {
-    TransportTracker.transporting(units)
-        .forEach(
-            (unit, transportedUnits) -> {
-              dependentUnits.computeIfAbsent(unit, k -> new ArrayList<>()).addAll(transportedUnits);
-            });
   }
 
   void clearTransportedBy(final IDelegateBridge bridge) {

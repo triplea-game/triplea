@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -41,25 +40,25 @@ class LandParatroopersTest {
 
   @Test
   void secondRoundDoesNothing() {
-    final BattleState battleState = spy(givenBattleStateBuilder().battleRound(2).build());
+    final BattleState battleState = givenBattleStateBuilder().battleRound(2).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
     assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleState, never()).removeDependentUnits(anyCollection());
+    verify(delegateBridge, never()).addChange(any(Change.class));
   }
 
   @Test
   void waterBattleDoesNothing() {
     final BattleState battleState =
-        spy(givenBattleStateBuilder().battleRound(1).battleSite(givenSeaBattleSite()).build());
+        givenBattleStateBuilder().battleRound(1).battleSite(givenSeaBattleSite()).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
     assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleState, never()).removeDependentUnits(anyCollection());
+    verify(delegateBridge, never()).addChange(any(Change.class));
   }
 
   @Test
@@ -69,13 +68,13 @@ class LandParatroopersTest {
     when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(false);
     final BattleState battleState =
-        spy(givenBattleStateBuilder().battleRound(1).attacker(attacker).build());
+        givenBattleStateBuilder().battleRound(1).attacker(attacker).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
     assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleState, never()).removeDependentUnits(anyCollection());
+    verify(delegateBridge, never()).addChange(any(Change.class));
   }
 
   @Test
@@ -107,7 +106,7 @@ class LandParatroopersTest {
     assertThat(landParatroopers.getNames(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
-    verify(battleState, never()).removeDependentUnits(anyCollection());
+    verify(delegateBridge, never()).addChange(any(Change.class));
   }
 
   @Test
@@ -141,6 +140,5 @@ class LandParatroopersTest {
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge).addChange(any(Change.class));
-    verify(battleState).removeDependentUnits(airTransports);
   }
 }

@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -37,7 +36,6 @@ public class NonFightingBattle extends DependentBattle {
   @Override
   public Change addAttackChange(
       final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
-    addDependentTransportingUnits(units);
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     attackingUnits.addAll(units);
     attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>()).addAll(units);
@@ -113,9 +111,6 @@ public class NonFightingBattle extends DependentBattle {
         isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
     }
-    for (final Collection<Unit> dependent : dependentUnits.values()) {
-      dependent.removeAll(units);
-    }
   }
 
   @Override
@@ -138,14 +133,6 @@ public class NonFightingBattle extends DependentBattle {
       bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);
       final Change change = ChangeFactory.removeUnits(battleSite, lost);
       bridge.addChange(change);
-    }
-  }
-
-  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
-    for (final Map.Entry<Unit, Collection<Unit>> entry : dependencies.entrySet()) {
-      dependentUnits
-          .computeIfAbsent(entry.getKey(), k -> new LinkedHashSet<>())
-          .addAll(new ArrayList<>(entry.getValue()));
     }
   }
 }

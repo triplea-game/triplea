@@ -63,14 +63,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.java.Log;
@@ -199,9 +198,6 @@ public class MustFightBattle extends DependentBattle
         isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
     }
-    for (final Collection<Unit> dependents : dependentUnits.values()) {
-      dependents.removeAll(units);
-    }
   }
 
   @Override
@@ -229,28 +225,28 @@ public class MustFightBattle extends DependentBattle
       getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
       isAmphibious = true;
     }
-    final Map<Unit, Collection<Unit>> dependencies =
-        new HashMap<>(TransportTracker.transporting(units));
     if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
-      dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, gameData, attacker));
-      for (final Unit carrier : dependencies.keySet()) {
-        final UnitAttachment ua = UnitAttachment.get(carrier.getType());
-        if (ua.getCarrierCapacity() == -1) {
-          continue;
-        }
+      // allied air can not participate in the battle so set transportedBy on each allied air unit
+      // and remove them from the attacking units
+      MoveValidator.carrierMustMoveWith(units, units, gameData, attacker)
+          .forEach(
+              (carrier, dependencies) -> {
+                final UnitAttachment ua = UnitAttachment.get(carrier.getType());
+                if (ua.getCarrierCapacity() == -1) {
+                  return;
+                }
 
-        // set transported by on each figher and remove each one from battle display
-        dependencies.get(carrier).stream()
-            .filter(Matches.unitIsAir())
-            .forEach(
-                fighter -> {
-                  change.add(
-                      ChangeFactory.unitPropertyChange(fighter, carrier, Unit.TRANSPORTED_BY));
-                  this.attackingUnits.remove(fighter);
-                });
-      }
+                dependencies.stream()
+                    .filter(Matches.unitIsAir())
+                    .forEach(
+                        fighter -> {
+                          change.add(
+                              ChangeFactory.unitPropertyChange(
+                                  fighter, carrier, Unit.TRANSPORTED_BY));
+                          this.attackingUnits.remove(fighter);
+                        });
+              });
     }
-    addDependentUnits(dependencies);
     // mark units with no movement for all but air
     Collection<Unit> nonAir = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotAir());
     // we don't want to change the movement of transported land units if this is a sea battle
@@ -265,17 +261,6 @@ public class MustFightBattle extends DependentBattle
     }
     change.add(ChangeFactory.markNoMovementChange(nonAir));
     return change;
-  }
-
-  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
-    for (final Unit holder : dependencies.keySet()) {
-      final Collection<Unit> transporting = dependencies.get(holder);
-      if (dependentUnits.get(holder) != null) {
-        dependentUnits.get(holder).addAll(transporting);
-      } else {
-        dependentUnits.put(holder, new LinkedHashSet<>(transporting));
-      }
-    }
   }
 
   /**
@@ -441,13 +426,6 @@ public class MustFightBattle extends DependentBattle
         side == DEFENSE ? defendingUnitsRetreated : attackingUnitsRetreated;
     units.removeAll(retreatingUnits);
     unitsRetreated.addAll(retreatingUnits);
-  }
-
-  @Override
-  public void removeDependentUnits(final Collection<Unit> unitsWithDependents) {
-    for (final Unit unit : unitsWithDependents) {
-      dependentUnits.remove(unit);
-    }
   }
 
   /**
@@ -727,7 +705,10 @@ public class MustFightBattle extends DependentBattle
           killed,
           attackingWaitingToDie,
           defendingWaitingToDie,
-          dependentUnits,
+          TransportTracker.transportingInTerritory(
+              Stream.concat(attackingUnits.stream(), defendingUnits.stream())
+                  .collect(Collectors.toList()),
+              battleSite),
           attacker,
           defender,
           false,
@@ -749,8 +730,6 @@ public class MustFightBattle extends DependentBattle
       endBattle(WhoWon.ATTACKER, bridge);
       return;
     }
-    addDependentUnits(TransportTracker.transporting(defendingUnits));
-    addDependentUnits(TransportTracker.transporting(attackingUnits));
     stepStrings = determineStepStrings();
     final IDisplay display = bridge.getDisplayChannelBroadcaster();
     display.showBattle(
@@ -762,7 +741,10 @@ public class MustFightBattle extends DependentBattle
         killed,
         attackingWaitingToDie,
         defendingWaitingToDie,
-        dependentUnits,
+        TransportTracker.transportingInTerritory(
+            Stream.concat(attackingUnits.stream(), defendingUnits.stream())
+                .collect(Collectors.toList()),
+            battleSite),
         attacker,
         defender,
         false,
