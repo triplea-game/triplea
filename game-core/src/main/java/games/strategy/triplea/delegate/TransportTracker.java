@@ -72,12 +72,22 @@ public class TransportTracker {
 
   /**
    * Returns a map of transport -> collection of transported units. This method is identical to
-   * {@link #transporting(Collection)} except that it considers all elements in {@code units} as the
+   * {@link #transporting(Collection)} except that it considers only items in {@code units} as the
    * possible units to transport
    */
   public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(
       final Collection<Unit> units) {
     return transporting(units, transport -> transport.getTransporting(units));
+  }
+
+  /**
+   * Returns a map of transport -> collection of transported units. This method is identical to
+   * {@link #transporting(Collection)} except that it considers only units in {@code territory} as
+   * the possible units to transport
+   */
+  public static Map<Unit, Collection<Unit>> transportingInTerritory(
+      final Collection<Unit> units, final Territory territory) {
+    return transporting(units, transport -> transport.getTransporting(territory));
   }
 
   public static boolean isTransporting(final Unit transport) {

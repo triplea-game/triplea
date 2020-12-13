@@ -869,61 +869,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         battleTracker.addBattle(new RouteScripted(to), attackingUnits, player, bridge, null, null);
         battle = battleTracker.getPendingBattle(to, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
-          // this is an ugly mess of hacks, but will have to stay here till all transport related
-          // code is gutted and refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
-          final Collection<Territory> neighborsLand =
-              data.getMap().getNeighbors(to, Matches.territoryIsLand());
           if (attackingUnits.stream().anyMatch(Matches.unitIsTransport())) {
-            // first, we have to reset the "transportedBy" setting for all the land units that were
-            // offloaded
-            final CompositeChange change1 = new CompositeChange();
-            TransportTracker.reloadTransports(attackingUnits, change1);
-            if (!change1.isEmpty()) {
-              bridge.addChange(change1);
-            }
-            // after that is applied, we have to make a map of all dependencies
-            final Map<Unit, Collection<Unit>> dependenciesForMfb =
-                new HashMap<>(TransportTracker.transportingWithAllPossibleUnits(attackingUnits));
-            for (final Unit transport :
-                CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
-              // however, the map we add to the newly created battle, cannot hold any units that are
-              // NOT in this territory.
-              // BUT it must still hold all transports
-              if (!dependenciesForMfb.containsKey(transport)) {
-                dependenciesForMfb.put(transport, new ArrayList<>());
-              }
-            }
-            final Map<Territory, Map<Unit, Collection<Unit>>> dependencies = new HashMap<>();
-            dependencies.put(to, dependenciesForMfb);
-            for (final Territory t : neighborsLand) {
-              // All other maps, must hold only the transported units that in their territory
-              final Collection<Unit> allNeighborUnits =
-                  new ArrayList<>(
-                      CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport()));
-              allNeighborUnits.addAll(
-                  t.getUnitCollection().getMatches(Matches.unitIsLandAndOwnedBy(player)));
-              final Map<Unit, Collection<Unit>> dependenciesForNeighbors =
-                  TransportTracker.transportingWithAllPossibleUnits(
-                      CollectionUtils.getMatches(
-                          allNeighborUnits, Matches.unitIsTransport().negate()));
-              dependencies.put(t, dependenciesForNeighbors);
-            }
-            mfb.addDependentUnits(dependencies.get(to));
-            for (final Territory territoryNeighborToNewBattle : neighborsLand) {
-              final IBattle battleInTerritoryNeighborToNewBattle =
-                  battleTracker.getPendingBattle(territoryNeighborToNewBattle, BattleType.NORMAL);
-              if (battleInTerritoryNeighborToNewBattle instanceof MustFightBattle) {
-                final MustFightBattle mfbattleInTerritoryNeighborToNewBattle =
-                    (MustFightBattle) battleInTerritoryNeighborToNewBattle;
-                mfbattleInTerritoryNeighborToNewBattle.addDependentUnits(
-                    dependencies.get(territoryNeighborToNewBattle));
-              } else if (battleInTerritoryNeighborToNewBattle instanceof NonFightingBattle) {
-                final NonFightingBattle nfbattleInTerritoryNeighborToNewBattle =
-                    (NonFightingBattle) battleInTerritoryNeighborToNewBattle;
-                nfbattleInTerritoryNeighborToNewBattle.addDependentUnits(
-                    dependencies.get(territoryNeighborToNewBattle));
-              }
+            // need to reload the transports since unload only happens after amphibious sea battles
+            // are finished
+            final CompositeChange reloadTransportChange = new CompositeChange();
+            TransportTracker.reloadTransports(attackingUnits, reloadTransportChange);
+            if (!reloadTransportChange.isEmpty()) {
+              bridge.addChange(reloadTransportChange);
             }
           }
           if (attackingUnits.stream().anyMatch(Matches.unitIsAir().negate())) {
