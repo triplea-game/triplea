@@ -5,12 +5,12 @@ import games.strategy.engine.framework.startup.mc.ClientModel;
 import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.SystemIdLoader;
 
 /** Factory class for implementations of {@link IClientMessenger}. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Log
+@Slf4j
 public final class ClientMessengerFactory {
 
   /** Creates a client messenger suitable for connecting to a hosted game server. */

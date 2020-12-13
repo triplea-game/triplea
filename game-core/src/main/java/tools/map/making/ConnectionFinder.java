@@ -25,14 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.AlphanumComparator;
 import org.triplea.util.PointFileReaderWriter;
 import tools.image.FileOpen;
@@ -43,7 +42,7 @@ import tools.image.MapFolderLocationSystemProperty;
  * Utility to find connections between polygons Not pretty, meant only for one time use. Inputs - a
  * polygons.txt file Outputs - a list of connections between the Polygons
  */
-@Log
+@Slf4j
 public final class ConnectionFinder {
   private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
@@ -117,7 +116,7 @@ public final class ConnectionFinder {
             entry.getKey(), entry.getValue().stream().map(Area::new).collect(Collectors.toList()));
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to load polygons: " + polyFile.getAbsolutePath(), e);
+      log.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);
       return;
     }
     if (!dimensionsSet) {
@@ -240,7 +239,7 @@ public final class ConnectionFinder {
         log.info("Data written to :" + new File(fileName).getCanonicalPath());
       }
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to write connections", e);
+      log.error("Failed to write connections", e);
     }
   }
 

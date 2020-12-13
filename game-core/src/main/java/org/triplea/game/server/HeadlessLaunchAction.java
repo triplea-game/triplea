@@ -14,11 +14,11 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.io.File;
 import java.util.Set;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
 
-@Log
+@Slf4j
 public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void handleGameInterruption(

@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -48,7 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
@@ -64,7 +63,7 @@ import tools.util.ToolsUtil;
  * <p>This tool will allow you to manually specify unit placement locations for each territory on a
  * given map. It will generate a {@code places.txt} file containing the unit placement locations.
  */
-@Log
+@Slf4j
 public final class PlacementPicker {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -87,7 +86,7 @@ public final class PlacementPicker {
     try {
       new PlacementPicker().runInternal();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "failed to run placement picker", e);
+      log.error("failed to run placement picker", e);
     }
   }
 
@@ -257,7 +256,7 @@ public final class PlacementPicker {
             }
           }
         } catch (final Exception e) {
-          log.log(Level.SEVERE, "Failed to initialize from map properties", e);
+          log.error("Failed to initialize from map properties", e);
         }
       }
       if (!placeDimensionsSet
@@ -306,7 +305,7 @@ public final class PlacementPicker {
           }
           placeDimensionsSet = true;
         } catch (final Exception e) {
-          log.log(Level.SEVERE, "Failed to initialize from user input", e);
+          log.error("Failed to initialize from user input", e);
         }
       }
       File file = null;
@@ -328,7 +327,7 @@ public final class PlacementPicker {
           log.info("Polygons : " + file.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.severe("Failed to load polygons: " + file.getAbsolutePath());
+          log.error("Failed to load polygons: " + file.getAbsolutePath());
           throw e;
         }
       } else {
@@ -340,7 +339,7 @@ public final class PlacementPicker {
           try (InputStream is = new FileInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
-            log.severe("Failed to load polygons: " + polyPath);
+            log.error("Failed to load polygons: " + polyPath);
             throw e;
           }
         } else {
@@ -561,7 +560,7 @@ public final class PlacementPicker {
         PointFileReaderWriter.writeOneToManyPlacements(out, placements);
         log.info("Data written to :" + new File(fileName).getCanonicalPath());
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to write placements: " + fileName, e);
+        log.error("Failed to write placements: " + fileName, e);
       }
     }
 
@@ -576,7 +575,7 @@ public final class PlacementPicker {
       try (InputStream in = new FileInputStream(placeName)) {
         placements = PointFileReaderWriter.readOneToManyPlacements(in);
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to load placements: " + placeName, e);
+        log.error("Failed to load placements: " + placeName, e);
       }
       repaint();
     }
@@ -642,7 +641,7 @@ public final class PlacementPicker {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
       } catch (final Exception e) {
-        log.severe("Not a decimal percentage: " + zoomString);
+        log.error("Not a decimal percentage: " + zoomString);
       }
     }
     final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
@@ -651,7 +650,7 @@ public final class PlacementPicker {
         unitWidth = Integer.parseInt(widthString);
         placeWidth = (int) (unitZoomPercent * unitWidth);
       } catch (final Exception e) {
-        log.severe("Not an integer: " + widthString);
+        log.error("Not an integer: " + widthString);
       }
     }
     final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
@@ -660,7 +659,7 @@ public final class PlacementPicker {
         unitHeight = Integer.parseInt(heightString);
         placeHeight = (int) (unitZoomPercent * unitHeight);
       } catch (final Exception e) {
-        log.severe("Not an integer: " + heightString);
+        log.error("Not an integer: " + heightString);
       }
     }
   }

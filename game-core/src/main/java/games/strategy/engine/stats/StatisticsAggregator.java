@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.tree.TreeNode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Analyzes a game's history and aggregates interesting statistics in a {@link Statistics} object.
  */
-@Log
+@Slf4j
 @RequiredArgsConstructor
 public class StatisticsAggregator {
   private static final Map<OverTimeStatisticType, IStat> defaultStatisticsMapping =

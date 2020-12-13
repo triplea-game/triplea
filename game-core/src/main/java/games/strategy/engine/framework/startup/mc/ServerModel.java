@@ -60,12 +60,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
@@ -84,7 +83,7 @@ import org.triplea.util.ExitStatus;
 import org.triplea.util.Version;
 
 /** Represents a network-aware game server to which multiple clients may connect. */
-@Log
+@Slf4j
 public class ServerModel extends Observable implements IConnectionChangeListener {
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName(
@@ -203,7 +202,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           try {
             return GameProperties.writeEditableProperties(currentEditableProperties);
           } catch (final IOException e) {
-            log.log(Level.SEVERE, "Failed to write game properties", e);
+            log.error("Failed to write game properties", e);
           }
           return null;
         }
@@ -252,7 +251,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                   }
                 });
           } catch (final Exception e) {
-            log.log(Level.SEVERE, "Failed to load save game: " + fileName, e);
+            log.error("Failed to load save game: " + fileName, e);
           }
         }
 
@@ -268,7 +267,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           try {
             headless.loadGameOptions(bytes);
           } catch (final Exception e) {
-            log.log(Level.SEVERE, "Failed to load game options", e);
+            log.error("Failed to load game options", e);
           }
         }
       };
@@ -377,7 +376,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                         return null;
                       }
                       final String name = options.getName();
-                      log.fine("Server playing as:" + name);
+                      log.debug("Server playing as:" + name);
                       ClientSetting.playerName.setValue(name);
                       ClientSetting.flush();
                       final int port = options.getPort();
@@ -483,15 +482,14 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       gameDataChanged();
       serverSetupModel.onServerMessengerCreated(this, gameHostingResponse);
     } catch (final BindException e) {
-      log.log(
-          Level.WARNING,
+      log.warn(
           "Could not open network port, please close any other TripleA games you are\n"
               + "hosting or choose a different network port. If that is not the problem\n"
               + "then check your firewall rules.",
           e);
       cancel();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Unable to create server socket.", e);
+      log.error("Unable to create server socket.", e);
       cancel();
     }
   }
@@ -568,7 +566,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               final IClientChannel channel =
                   (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
               AsyncRunner.runAsync(() -> channel.playerListingChanged(getPlayerListingInternal()))
-                  .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
+                  .exceptionally(e -> log.warn("Network communication error", e));
             });
   }
 

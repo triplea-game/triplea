@@ -7,14 +7,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Level;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 
 /** Responsible to write game data to a file or output bytes. */
-@Log
+@Slf4j
 @UtilityClass
 public class GameDataWriter {
 
@@ -37,7 +36,7 @@ public class GameDataWriter {
     try (OutputStream fout = new FileOutputStream(file)) {
       GameDataWriter.writeToOutputStream(gameData, fout, delegateExecutionManager);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to save game to file: " + file.getAbsolutePath(), e);
+      log.error("Failed to save game to file: " + file.getAbsolutePath(), e);
     }
   }
 
@@ -56,7 +55,7 @@ public class GameDataWriter {
       // try twice
       if (!delegateExecutionManager.blockDelegateExecution(6000)
           && !delegateExecutionManager.blockDelegateExecution(6000)) {
-        log.severe(errorMessage + " could not lock delegate execution");
+        log.error(errorMessage + " could not lock delegate execution");
         return;
       }
     } catch (final InterruptedException e) {

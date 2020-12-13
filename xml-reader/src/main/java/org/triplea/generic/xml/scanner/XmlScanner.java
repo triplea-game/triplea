@@ -2,17 +2,16 @@ package org.triplea.generic.xml.scanner;
 
 import java.io.InputStream;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Scans XML for a specific tag and returns specific data. Does not read the full XML file. This is
  * meant to be a quick read of an XML document if only partial data is needed.
  */
-@Log
+@Slf4j
 public class XmlScanner {
   private final XMLStreamReader xmlStreamReader;
 
@@ -35,7 +34,7 @@ public class XmlScanner {
       try {
         xmlStreamReader.close();
       } catch (final XMLStreamException e) {
-        log.log(Level.INFO, "Failed to close XML stream", e);
+        log.info("Failed to close XML stream", e);
       }
     }
   }

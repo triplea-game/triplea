@@ -12,10 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
 
 /**
@@ -24,7 +23,7 @@ import org.triplea.io.FileUtils;
  * disk are cached (can be updated by calling "{@code addNewMapToCache}).
  */
 @UtilityClass
-@Log
+@Slf4j
 public class AvailableGamesFileSystemReader {
 
   private static final String ZIP_EXTENSION = ".zip";
@@ -38,7 +37,7 @@ public class AvailableGamesFileSystemReader {
       entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
       availableGamesListCache = new AvailableGamesList(entries);
       entries.forEach(
-          entry -> log.fine("Found game: " + entry.getGameName() + " @ " + entry.getUri()));
+          entry -> log.debug("Found game: " + entry.getGameName() + " @ " + entry.getUri()));
     }
 
     return availableGamesListCache;
@@ -86,10 +85,7 @@ public class AvailableGamesFileSystemReader {
           .map(Path::toUri)
           .collect(Collectors.toList());
     } catch (final IOException e) {
-      log.log(
-          Level.WARNING,
-          "Unable to read map folder: " + mapDir.getAbsolutePath() + "," + e.getMessage(),
-          e);
+      log.warn("Unable to read map folder: " + mapDir.getAbsolutePath() + "," + e.getMessage(), e);
       return List.of();
     }
   }

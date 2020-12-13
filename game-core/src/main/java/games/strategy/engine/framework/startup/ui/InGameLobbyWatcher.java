@@ -14,10 +14,9 @@ import java.time.Instant;
 import java.util.Observer;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
@@ -32,7 +31,7 @@ import org.triplea.lobby.common.GameDescription;
  *
  * <p>This class opens its own connection to the lobby, and its own messenger.
  */
-@Log
+@Slf4j
 public class InGameLobbyWatcher {
   private boolean isShutdown = false;
   @Getter private String gameId;
@@ -181,7 +180,7 @@ public class InGameLobbyWatcher {
           new InGameLobbyWatcher(
               serverMessenger, gameToLobbyConnection, watcherThreadMessaging, oldWatcher));
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
+      log.error("Failed to create in-game lobby watcher", e);
       return Optional.empty();
     }
   }

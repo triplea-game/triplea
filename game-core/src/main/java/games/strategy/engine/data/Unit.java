@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -29,7 +29,7 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>As with all game data components, changes made to this unit must be made through a Change
  * instance. Calling setters on this directly will not serialize the changes across the network.
  */
-@Log
+@Slf4j
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
@@ -211,7 +211,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     private static void printError(final String errorMessage) {
       if (!shownError) {
         shownError = true;
-        log.severe(errorMessage);
+        log.error(errorMessage);
       }
     }
   }

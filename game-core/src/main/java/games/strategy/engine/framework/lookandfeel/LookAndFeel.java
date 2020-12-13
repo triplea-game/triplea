@@ -10,16 +10,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
 import org.triplea.util.Services;
 
 /** Provides methods for working with the Swing Look-And-Feel. */
-@Log
+@Slf4j
 public final class LookAndFeel {
   private LookAndFeel() {}
 
@@ -107,7 +106,7 @@ public final class LookAndFeel {
         try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (final Exception e) {
-          log.log(Level.SEVERE, "Failed to set system look and feel", e);
+          log.error("Failed to set system look and feel", e);
         }
       }
     }

@@ -8,13 +8,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Level;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.Version;
 
 /** Properties file used to know which map versions have been installed. */
-@Log
+@Slf4j
 @NoArgsConstructor
 class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
@@ -32,8 +31,7 @@ class DownloadFileProperties {
     try (InputStream fis = new FileInputStream(fromZip(zipFile))) {
       downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
-      log.log(
-          Level.SEVERE, "Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.error("Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
     }
     return downloadFileProperties;
   }
@@ -42,10 +40,7 @@ class DownloadFileProperties {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.store(fos, null);
     } catch (final IOException e) {
-      log.log(
-          Level.SEVERE,
-          "Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(),
-          e);
+      log.error("Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
     }
   }
 

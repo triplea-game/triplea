@@ -26,14 +26,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.ExitStatus;
 
 /** A way of hosting a game, but headless. */
-@Log
+@Slf4j
 public class HeadlessGameServer {
   public static final String BOT_GAME_HOST_COMMENT = "automated_host";
   public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
@@ -136,7 +135,7 @@ public class HeadlessGameServer {
     if (availableGames.hasGame(gameData.getGameName())) {
       return true;
     } else {
-      log.warning("Game is not installed on this server: " + gameData.getGameName());
+      log.warn("Game is not installed on this server: " + gameData.getGameName());
       return false;
     }
   }
@@ -196,7 +195,7 @@ public class HeadlessGameServer {
                     && setupPanelModel.getPanel().canGameStart()) {
                   final boolean started = startHeadlessGame(setupPanelModel, gameSelectorModel);
                   if (!started) {
-                    log.warning("Error in launcher, going back to waiting.");
+                    log.warn("Error in launcher, going back to waiting.");
                   } else {
                     // TODO: need a latch instead?
                     break;
@@ -235,7 +234,7 @@ public class HeadlessGameServer {
         return launched;
       }
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to start headless game", e);
+      log.error("Failed to start headless game", e);
       final ServerModel model = getServerModel(setupPanelModel);
       if (model != null) {
         // if we do not do this, we can get into an infinite loop of launching a game, then crashing
@@ -283,7 +282,7 @@ public class HeadlessGameServer {
     try {
       new HeadlessGameServer();
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to start game server", e);
+      log.error("Failed to start game server", e);
     }
   }
 
@@ -318,7 +317,7 @@ public class HeadlessGameServer {
 
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
     if ((playerName.length() < 7) || !playerName.startsWith(BOT_GAME_HOST_NAME_PREFIX)) {
-      log.warning(
+      log.warn(
           "Invalid or missing argument: "
               + TRIPLEA_NAME
               + " must at least 7 characters long "
@@ -328,12 +327,12 @@ public class HeadlessGameServer {
     }
 
     if (isInvalidPortNumber(System.getProperty(TRIPLEA_PORT, "0"))) {
-      log.warning("Invalid or missing argument: " + TRIPLEA_PORT + " must be greater than zero");
+      log.warn("Invalid or missing argument: " + TRIPLEA_PORT + " must be greater than zero");
       printUsage = true;
     }
 
     if (System.getProperty(LOBBY_URI, "").isEmpty()) {
-      log.warning("Invalid or missing argument: " + LOBBY_URI + " must be set");
+      log.warn("Invalid or missing argument: " + LOBBY_URI + " must be set");
       printUsage = true;
     }
 

@@ -116,7 +116,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
@@ -148,7 +147,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.IntegerMap;
@@ -168,7 +167,7 @@ import org.triplea.util.LocalizeHtml;
 import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
-@Log
+@Slf4j
 public final class TripleAFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = 7640069668264418976L;
 
@@ -371,7 +370,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   showRightHandSidePanel();
                 });
           } catch (final Exception e) {
-            log.log(Level.SEVERE, "Failed to process game data change", e);
+            log.error("Failed to process game data change", e);
           }
         }
       };
@@ -1885,8 +1884,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               .thenApplyAsync(ImageIcon::new)
               .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
       CompletableFutureUtils.logExceptionWhenComplete(
-          future,
-          throwable -> log.log(Level.SEVERE, "Failed to set round icon for " + player, throwable));
+          future, throwable -> log.error("Failed to set round icon for " + player, throwable));
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
@@ -2204,7 +2202,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                               JOptionPane.INFORMATION_MESSAGE);
                         }
                       } catch (final IOException e) {
-                        log.log(Level.SEVERE, "Failed to save game: " + f.getAbsolutePath(), e);
+                        log.error("Failed to save game: " + f.getAbsolutePath(), e);
                       }
                     }
                   } finally {

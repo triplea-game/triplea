@@ -4,12 +4,11 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import java.nio.file.Path;
-import java.util.logging.Level;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.map.data.elements.Game;
 
-@Log
+@Slf4j
 @UtilityClass
 public class GameXmlWriter {
   public void exportXml(final Game game, final Path toPath) {
@@ -19,7 +18,7 @@ public class GameXmlWriter {
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
       marshaller.marshal(game, toPath.toFile());
     } catch (final JAXBException e) {
-      log.log(Level.SEVERE, "Error writing game data to XML: " + e.getMessage(), e);
+      log.error("Error writing game data to XML: " + e.getMessage(), e);
     }
   }
 }

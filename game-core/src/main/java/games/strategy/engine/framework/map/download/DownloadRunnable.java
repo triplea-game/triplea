@@ -5,14 +5,13 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Downloads a map index file, parses it and returns a <code>List</code> of <code>
  * DownloadFileDescription</code>.
  */
-@Log
+@Slf4j
 public class DownloadRunnable {
 
   private DownloadRunnable() {}
@@ -35,7 +34,7 @@ public class DownloadRunnable {
     try (InputStream inputStream = Files.newInputStream(path)) {
       return DownloadFileParser.parse(inputStream);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file at: " + path.toAbsolutePath(), e);
+      log.error("Failed to read file at: " + path.toAbsolutePath(), e);
       return List.of();
     }
   }

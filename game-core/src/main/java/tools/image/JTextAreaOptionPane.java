@@ -11,10 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** A text area that can show updates scrolling by. */
-@Log
+@Slf4j
 class JTextAreaOptionPane {
   private final JTextArea editor = new JTextArea();
   private final JFrame windowFrame = new JFrame();

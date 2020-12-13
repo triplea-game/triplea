@@ -39,7 +39,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -60,7 +60,7 @@ import org.triplea.util.Tuple;
  * <p>As a rule, nothing that changes GameData should be in here (it should be in a delegate, and
  * done through an IDelegate using a change).
  */
-@Log
+@Slf4j
 public abstract class AbstractAi extends AbstractBasePlayer {
   public AbstractAi(final String name) {
     super(name);
@@ -608,7 +608,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           final String error =
               battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
           if (error != null) {
-            log.warning(error);
+            log.warn(error);
           }
         }
       }

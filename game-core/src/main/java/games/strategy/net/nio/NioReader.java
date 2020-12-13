@@ -13,15 +13,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A thread that reads socket data using NIO from a collection of sockets. Data is read in packets,
  * and placed in the output queue. Packets are placed in the output queue in order they are read
  * from the socket.
  */
-@Log
+@Slf4j
 class NioReader {
   private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<>();
   private volatile boolean running = true;
@@ -36,7 +35,7 @@ class NioReader {
     try {
       selector = Selector.open();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Could not create Selector", e);
+      log.error("Could not create Selector", e);
       throw new IllegalStateException(e);
     }
     new Thread(this::loop, "NIO Reader").start();
@@ -47,7 +46,7 @@ class NioReader {
     try {
       selector.close();
     } catch (final Exception e) {
-      log.log(Level.WARNING, "error closing selector", e);
+      log.warn("error closing selector", e);
     }
   }
 
@@ -99,7 +98,7 @@ class NioReader {
                 enque(packet);
               }
             } catch (final Exception e) {
-              log.log(Level.FINER, "exception reading", e);
+              log.debug("exception reading", e);
               key.cancel();
               errorReporter.error(channel, e);
             }
@@ -111,7 +110,7 @@ class NioReader {
         }
       } catch (final Exception e) {
         // catch unhandled exceptions so that the reader thread doesn't die
-        log.log(Level.SEVERE, "error in reader", e);
+        log.error("error in reader", e);
       }
     }
   }

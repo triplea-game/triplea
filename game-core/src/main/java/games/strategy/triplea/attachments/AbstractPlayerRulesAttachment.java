@@ -10,8 +10,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -26,7 +25,7 @@ import org.triplea.java.collections.IntegerMap;
  * Please do not add new things to this class. Any new Player-Rules type of stuff should go in
  * "PlayerAttachment".
  */
-@Log
+@Slf4j
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in
@@ -74,7 +73,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     final GamePlayer player = data.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
-      log.severe(
+      log.error(
           "When trying to find condition: "
               + conditionName
               + ", player does not exist: "
@@ -92,7 +91,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       } else if (conditionName.contains(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
         attachment = PoliticalActionAttachment.get(player, conditionName, allPlayers);
       } else {
-        log.severe(
+        log.error(
             conditionName
                 + " attachment must begin with: "
                 + Constants.RULES_OBJECTIVE_PREFIX
@@ -106,14 +105,11 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       }
     } catch (final Exception e) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
-      log.log(
-          Level.SEVERE,
-          "Failed to getCondition: " + conditionName + ", for playerName: " + playerName,
-          e);
+      log.error("Failed to getCondition: {}, for playerName: {}", conditionName, playerName, e);
       return null;
     }
     if (attachment == null) {
-      log.severe("Condition attachment does not exist: " + conditionName);
+      log.error("Condition attachment does not exist: " + conditionName);
       return null;
     }
     return attachment;

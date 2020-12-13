@@ -17,11 +17,10 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.StringUtils;
 
-@Log
+@Slf4j
 class UnitInformation {
   private GameData data;
 
@@ -107,8 +106,7 @@ class UnitInformation {
       }
       unitInformation.write("\r\n");
     } catch (final IOException e) {
-      log.log(
-          Level.SEVERE, "There was an error while trying to save File " + outFile.toString(), e);
+      log.error("There was an error while trying to save File " + outFile.toString(), e);
     }
   }
 

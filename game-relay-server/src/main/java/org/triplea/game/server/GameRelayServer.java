@@ -1,6 +1,6 @@
 package org.triplea.game.server;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.web.socket.StandaloneWebsocketServer;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
@@ -9,7 +9,7 @@ import org.triplea.web.socket.WebSocketMessagingBus;
  * game relay can be launched stand-alone, or if a player is hosting a server game they will launch
  * the relay server and then connect to it themselves as a client.
  */
-@Log
+@Slf4j
 public class GameRelayServer {
   private final StandaloneWebsocketServer standaloneWebsocketServer;
 

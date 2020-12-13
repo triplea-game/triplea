@@ -14,7 +14,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.Action;
@@ -36,10 +35,10 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 
-@Log
+@Slf4j
 class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;
   private JTextPane text;
@@ -158,7 +157,7 @@ class CommentPanel extends JPanel {
                 doc.insertString(doc.getLength(), prefix, bold);
                 doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
               } catch (final BadLocationException e1) {
-                log.log(Level.SEVERE, "Failed to add history node", e1);
+                log.error("Failed to add history node", e1);
               }
             }
           } finally {
@@ -207,7 +206,7 @@ class CommentPanel extends JPanel {
                             doc.insertString(doc.getLength(), prefix, bold);
                             doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
                           } catch (final BadLocationException e) {
-                            log.log(Level.SEVERE, "Failed to add history", e);
+                            log.error("Failed to add history", e);
                           }
                         });
                   }
@@ -235,7 +234,7 @@ class CommentPanel extends JPanel {
               doc.insertString(doc.getLength(), error + "\n", italic);
             }
           } catch (final BadLocationException e) {
-            log.log(Level.SEVERE, "Failed to add comment", e);
+            log.error("Failed to add comment", e);
           }
           final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
           scrollModel.setValue(scrollModel.getMaximum());

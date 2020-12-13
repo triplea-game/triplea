@@ -19,16 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 
 /** Implementation of {@link ILauncher} for a headed local or network client game. */
-@Log
+@Slf4j
 public class LocalLauncher implements ILauncher {
   private final GameData gameData;
   private final GameSelector gameSelector;
@@ -78,7 +77,7 @@ public class LocalLauncher implements ILauncher {
       // The throwing method of MapNotFoundException notifies and prompts user to download the map.
       return Optional.empty();
     } catch (final Exception ex) {
-      log.log(Level.SEVERE, "Failed to start game", ex);
+      log.error("Failed to start game", ex);
       return Optional.empty();
     }
   }

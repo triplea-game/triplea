@@ -7,12 +7,11 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.logging.Level;
 import javax.swing.AbstractAction;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** An action for loading a save game across all network nodes from a client node. */
-@Log
+@Slf4j
 public class ChangeGameToSaveGameClientAction extends AbstractAction {
   private static final long serialVersionUID = -6986376382381381377L;
   private final IServerStartupRemote serverStartupRemote;
@@ -42,7 +41,7 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
     try {
       bytes = Files.readAllBytes(saveGame.toPath());
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file: " + saveGame, e);
+      log.error("Failed to read file: " + saveGame, e);
       return;
     }
     serverStartupRemote.changeToGameSave(bytes, saveGame.getName());

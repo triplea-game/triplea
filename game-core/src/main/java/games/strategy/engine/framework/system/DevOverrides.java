@@ -7,9 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Level;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Utility class to read override values present on local file system. These overrides are not meant
@@ -17,7 +16,7 @@ import lombok.extern.java.Log;
  * property has a value set, then we will use it.
  */
 @UtilityClass
-@Log
+@Slf4j
 public class DevOverrides {
   private static final String OVERRIDE_FILE_NAME = "dev-overrides.properties";
 
@@ -36,10 +35,7 @@ public class DevOverrides {
               try (InputStream fileInput = Files.newInputStream(overrideFile)) {
                 properties.load(fileInput);
               } catch (final IOException e) {
-                log.log(
-                    Level.SEVERE,
-                    "Failed to read override file: " + overrideFile.toAbsolutePath(),
-                    e);
+                log.error("Failed to read override file: " + overrideFile.toAbsolutePath(), e);
               }
             });
     return properties;

@@ -34,7 +34,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
@@ -42,13 +41,13 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
 
 /** A place to find images and map data for a ui. */
-@Log
+@Slf4j
 public class UiContext {
   @Getter protected static String mapDir;
   @Getter protected static ResourceLoader resourceLoader;
@@ -135,7 +134,7 @@ public class UiContext {
           cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
         }
       } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to create cursor from: " + cursorUrl, e);
+        log.error("Failed to create cursor from: " + cursorUrl, e);
       }
     }
   }
@@ -234,7 +233,7 @@ public class UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -245,7 +244,7 @@ public class UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -292,7 +291,7 @@ public class UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -338,7 +337,7 @@ public class UiContext {
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     } catch (final ExecutionException e) {
-      log.log(Level.INFO, "UiContext shut down before supplying result", e);
+      log.info("UiContext shut down before supplying result", e);
     } finally {
       removeShutdownHook(rejectionCallback);
     }
@@ -427,7 +426,7 @@ public class UiContext {
     try {
       hook.run();
     } catch (final RuntimeException e) {
-      log.log(Level.SEVERE, "Failed to deactivate actor", e);
+      log.error("Failed to deactivate actor", e);
     }
   }
 
@@ -442,7 +441,7 @@ public class UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -457,7 +456,7 @@ public class UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -472,7 +471,7 @@ public class UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -487,7 +486,7 @@ public class UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 }

@@ -1,11 +1,10 @@
 package games.strategy.net;
 
-import java.util.logging.Level;
 import javax.annotation.Nullable;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** A collection of methods useful for writing tests that use instances of {@link IMessenger}. */
-@Log
+@Slf4j
 public final class MessengerTestUtils {
   private MessengerTestUtils() {}
 
@@ -19,7 +18,7 @@ public final class MessengerTestUtils {
       try {
         messenger.shutDown();
       } catch (final Exception e) {
-        log.log(Level.WARNING, "Failed to shut down messenger", e);
+        log.warn("Failed to shut down messenger", e);
       }
     }
   }

@@ -15,16 +15,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.FileNameUtils;
 
 /** Loads unit icons from unit_icons.properties. */
-@Log
+@Slf4j
 public final class UnitIconProperties extends PropertyFile {
   private static final String PROPERTY_FILE = "unit_icons.properties";
 
@@ -56,15 +55,13 @@ public final class UnitIconProperties extends PropertyFile {
         builder.add(
             parseUnitIconDescriptor(property.getKey().toString(), property.getValue().toString()));
       } catch (final MalformedUnitIconDescriptorException e) {
-        log.log(
-            Level.WARNING,
-            e,
-            () ->
-                "Expected "
-                    + PROPERTY_FILE
-                    + " property key to be of the form "
-                    + "<game_name>.<player>.<unit_type>;attachmentName OR if always true "
-                    + "<game_name>.<player>.<unit_type>");
+        log.warn(
+            "Expected "
+                + PROPERTY_FILE
+                + " property key to be of the form "
+                + "<game_name>.<player>.<unit_type>;attachmentName OR if always true "
+                + "<game_name>.<player>.<unit_type>",
+            e);
       }
     }
     return builder.build();

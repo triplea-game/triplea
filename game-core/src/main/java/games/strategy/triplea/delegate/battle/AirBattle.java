@@ -36,8 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
@@ -45,7 +44,7 @@ import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
 
 /** Battle class used for air battles and interception before a standard battle. */
-@Log
+@Slf4j
 public class AirBattle extends AbstractBattle {
   protected static final String AIR_BATTLE = "Air Battle";
   protected static final String INTERCEPTORS_LAUNCH = "Defender Launches Interceptors";
@@ -508,7 +507,7 @@ public class AirBattle extends AbstractBattle {
         getRemote(retreatingPlayer, bridge)
             .retreatQuery(battleId, false, battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      log.severe(
+      log.error(
           "Invalid retreat selection :"
               + retreatTo
               + " not in "
@@ -946,7 +945,7 @@ public class AirBattle extends AbstractBattle {
                 getRemote(firingPlayer, bridge)
                     .confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
               } catch (final Exception e) {
-                log.log(Level.SEVERE, "Error during casualty notification", e);
+                log.error("Error during casualty notification", e);
               }
             },
             "Click to continue waiter");

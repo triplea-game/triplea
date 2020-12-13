@@ -27,12 +27,12 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
 /** GUI class used to display logging window and logging settings. */
-@Log
+@Slf4j
 class ProLogWindow extends JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
@@ -381,7 +381,7 @@ class ProLogWindow extends JDialog {
       currentLogTextArea.append(message + "\r\n");
     } catch (
         final Exception ex) { // This is bad, but we don't want TripleA crashing because of this...
-      log.log(Level.INFO, "Error adding Pro log message! Message: " + message, ex);
+      log.info("Error adding Pro log message! Message: " + message, ex);
     }
   }
 

@@ -16,12 +16,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.logging.Level;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** Default implementation of PlayerBridge. */
-@Log
+@Slf4j
 public class DefaultPlayerBridge implements IPlayerBridge {
   private final IGame game;
 
@@ -79,7 +78,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
                   + stepName
                   + ", and CurrentDelegate: "
                   + currentDelegate;
-          log.log(Level.SEVERE, errorMessage, e);
+          log.error(errorMessage, e);
           throw new IllegalStateException(errorMessage, e);
         }
         return getRemoteThatChecksForGameOver(game.getMessengers().getRemote(remoteName));

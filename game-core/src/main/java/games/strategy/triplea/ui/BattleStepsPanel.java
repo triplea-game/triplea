@@ -9,7 +9,7 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 
 /**
@@ -17,7 +17,7 @@ import org.triplea.java.Interruptibles;
  * step, to a given step there is a delay while we walk so that the user can see the steps
  * progression. Users of this class should deactivate it after they are done.
  */
-@Log
+@Slf4j
 class BattleStepsPanel extends JPanel {
   private static final long serialVersionUID = 911638924664810435L;
   // if this is the target step, we want to walk to the last step
@@ -80,7 +80,7 @@ class BattleStepsPanel extends JPanel {
       }
       // we cant find it, something is wrong
       if (!targetStep.equals(LAST_STEP) && listModel.lastIndexOf(targetStep) == -1) {
-        log.severe("Step not found:" + targetStep + " in:" + listModel);
+        log.error("Step not found:" + targetStep + " in:" + listModel);
         clearTargetStep();
         return true;
       }
@@ -155,7 +155,7 @@ class BattleStepsPanel extends JPanel {
       if (listModel.indexOf(step) != -1) {
         targetStep = step;
       } else {
-        log.warning("Could not find step name:" + step);
+        log.warn("Could not find step name:" + step);
       }
     }
     goToTarget();

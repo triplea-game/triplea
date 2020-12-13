@@ -11,12 +11,11 @@ import java.nio.channels.SocketChannel;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 
 /** Server-side implementation of {@link QuarantineConversation}. */
-@Log
+@Slf4j
 public class ServerQuarantineConversation extends QuarantineConversation {
   /*
    * Communication sequence
@@ -130,7 +129,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           throw new IllegalStateException("Invalid state");
       }
     } catch (final Throwable t) {
-      log.log(Level.SEVERE, "Error with connection", t);
+      log.error("Error with connection", t);
       return Action.TERMINATE;
     }
   }

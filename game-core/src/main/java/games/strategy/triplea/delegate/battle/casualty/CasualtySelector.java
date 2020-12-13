@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -39,7 +39,7 @@ import org.triplea.util.Tuple;
  * Utility class for determining casualties and selecting casualties. The code was being duplicated
  * all over the place.
  */
-@Log
+@Slf4j
 @UtilityClass
 public class CasualtySelector {
 
@@ -175,7 +175,7 @@ public class CasualtySelector {
     if (numhits + damaged.size() != Math.min(hitsRemaining, totalHitpoints)) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
       if (headLess) {
-        log.severe(
+        log.error(
             "Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
                 + (numhits + damaged.size())
                 + " != number of hits to take "
@@ -201,7 +201,7 @@ public class CasualtySelector {
         || !sortedTargetsToPickFrom.containsAll(damaged)) {
       tripleaPlayer.reportError("Cannot remove enough units of those types");
       if (headLess) {
-        log.severe(
+        log.error(
             "Possible Infinite Loop: Cannot remove enough units of those types: targets "
                 + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom)
                 + ", for "

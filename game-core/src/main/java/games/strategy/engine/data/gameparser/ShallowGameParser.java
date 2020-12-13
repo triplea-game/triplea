@@ -4,10 +4,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.InputStream;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 import org.triplea.generic.xml.scanner.AttributeScannerParameters;
@@ -15,7 +14,7 @@ import org.triplea.generic.xml.scanner.XmlScanner;
 import org.triplea.map.data.elements.ShallowParsedGame;
 
 @UtilityClass
-@Log
+@Slf4j
 public class ShallowGameParser {
 
   /**
@@ -40,16 +39,10 @@ public class ShallowGameParser {
                               + xmlFileName
                               + ". Game file is missing the tag: '<info name=\"Game Name\"/>'")));
     } catch (final GameParseException e) {
-      log.log(
-          Level.WARNING,
-          "Error reading XMl file (invalid XML): " + xmlFileName + ", " + e.getMessage(),
-          e);
+      log.warn("Error reading XMl file (invalid XML): " + xmlFileName + ", " + e.getMessage(), e);
       return Optional.empty();
     } catch (final XMLStreamException e) {
-      log.log(
-          Level.WARNING,
-          "Unexpected error reading XML file: " + xmlFileName + ", " + e.getMessage(),
-          e);
+      log.warn("Unexpected error reading XML file: " + xmlFileName + ", " + e.getMessage(), e);
       return Optional.empty();
     }
   }
@@ -58,7 +51,7 @@ public class ShallowGameParser {
     try {
       return Optional.of(new XmlMapper(inputStream).mapXmlToObject(ShallowParsedGame.class));
     } catch (final XmlParsingException e) {
-      log.log(Level.WARNING, "Unexpected error reading Game XML, " + e.getMessage(), e);
+      log.warn("Unexpected error reading Game XML, " + e.getMessage(), e);
       return Optional.empty();
     }
   }

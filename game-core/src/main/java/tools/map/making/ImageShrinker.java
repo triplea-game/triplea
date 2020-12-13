@@ -8,7 +8,6 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -19,12 +18,12 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import tools.image.FileOpen;
 import tools.image.MapFolderLocationSystemProperty;
 
 /** Takes an image and shrinks it. Used for making small images. */
-@Log
+@Slf4j
 public final class ImageShrinker {
   private File mapFolderLocation = null;
 
@@ -41,7 +40,7 @@ public final class ImageShrinker {
     try {
       new ImageShrinker().runInternal();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "failed to run image shrinker", e);
+      log.error("failed to run image shrinker", e);
     }
   }
 

@@ -7,12 +7,11 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.UrlStreams;
 
 /** sounds.properties file helper class */
-@Log
+@Slf4j
 class SoundProperties {
   static final String GENERIC_FOLDER = "generic";
   // Filename
@@ -32,7 +31,7 @@ class SoundProperties {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Error reading: " + PROPERTY_FILE, e);
+          log.error("Error reading: " + PROPERTY_FILE, e);
         }
       }
     }

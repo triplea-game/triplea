@@ -8,12 +8,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.IoUtils;
 
 /** A thread to Decode messages from a reader. */
-@Log
+@Slf4j
 class Decoder {
   private final NioReader reader;
   private volatile boolean running = true;
@@ -86,7 +85,7 @@ class Decoder {
         } catch (final IOException | RuntimeException e) {
           // we are reading from memory here
           // there should be no network errors, something is odd
-          log.log(Level.SEVERE, "error reading object", e);
+          log.error("error reading object", e);
           errorReporter.error(data.getChannel(), e);
         }
       } catch (final InterruptedException e) {

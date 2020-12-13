@@ -17,14 +17,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** A factory for creating the base tile images used to render a map. */
-@Log
+@Slf4j
 public final class TileImageFactory {
   // one instance in the application
   private static boolean isDirty = false;
@@ -77,7 +76,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to save value: " + showReliefImages, ex);
+      log.error("Failed to save value: " + showReliefImages, ex);
     }
   }
 
@@ -89,7 +88,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "failed to save value: " + showMapBlends, ex);
+      log.error("failed to save value: " + showMapBlends, ex);
     }
   }
 
@@ -101,7 +100,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "failed to save value: " + showMapBlendMode, ex);
+      log.error("failed to save value: " + showMapBlendMode, ex);
     }
   }
 
@@ -113,7 +112,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "failed to save value: " + showMapBlendAlpha, ex);
+      log.error("failed to save value: " + showMapBlendAlpha, ex);
     }
   }
 
@@ -211,7 +210,7 @@ public final class TileImageFactory {
         baseFile = loadCompatibleImage(urlBase);
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to load one or more images: " + urlRelief + ", " + urlBase, e);
+      log.error("Failed to load one or more images: " + urlRelief + ", " + urlBase, e);
     }
 
     // This does the blend
@@ -220,7 +219,7 @@ public final class TileImageFactory {
       try {
         reliefFile = loadCompatibleImage(urlBlankRelief);
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to load image: " + urlBlankRelief, e);
+        log.error("Failed to load image: " + urlBlankRelief, e);
       }
     }
     // This fixes the blank land territories
@@ -264,7 +263,7 @@ public final class TileImageFactory {
       g.dispose();
       fromFile.flush();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Could not load image, url: " + imageLocation.toString(), e);
+      log.error("Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
     imageCache.put(fileName, new SoftReference<>(image));
