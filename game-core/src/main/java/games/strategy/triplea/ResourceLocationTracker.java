@@ -28,14 +28,14 @@ class ResourceLocationTracker {
    */
   static String getMapPrefix(final URL[] resourcePaths) {
     for (final URL url : resourcePaths) {
-      try (final ZipFile zip = new ZipFile(new File(url.toURI()))) {
+      try (ZipFile zip = new ZipFile(new File(url.toURI()))) {
         final Optional<? extends ZipEntry> e =
             zip.stream().filter($ -> $.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER)).findAny();
         if (e.isPresent()) {
           final String path = e.get().getName();
           return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
         }
-      } catch (IOException | URISyntaxException e) {
+      } catch (final IOException | URISyntaxException e) {
         // File is not a zip or can't be opened
       }
     }
