@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Optional;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import lombok.val;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -25,18 +25,19 @@ class ResourceLocationTracker {
    *     if the map is being loaded from a zip or a directory, and if zip, if it matches any
    *     particular naming.
    */
-  	static String getMapPrefix(final URL[] resourcePaths) {
-  		for (val url : resourcePaths) {
-  			try (val zip = new ZipFile(new File(url.toURI()))) {
-  				val e = zip.stream().filter($ -> $.getName().endsWith(REQUIRED_ASSET_FOLDER)).findAny();
-  				if (e.isPresent()) {
-  					val path = e.get().getName();
-  					return path.substring(0, path.length() - REQUIRED_ASSET_FOLDER.length());
-  				}
-  		    } catch (IOException | URISyntaxException e) {
-  		        // File is not a zip or can't be opened
-  		    }
-  		}
-  		return "";
+  static String getMapPrefix(final URL[] resourcePaths) {
+    for (final URL url : resourcePaths) {
+      try (final ZipFile zip = new ZipFile(new File(url.toURI()))) {
+        final Optional<? extends ZipEntry> e =
+            zip.stream().filter($ -> $.getName().endsWith(REQUIRED_ASSET_FOLDER)).findAny();
+        if (e.isPresent()) {
+          final String path = e.get().getName();
+          return path.substring(0, path.length() - REQUIRED_ASSET_FOLDER.length());
+        }
+      } catch (IOException | URISyntaxException e) {
+        // File is not a zip or can't be opened
+      }
+    }
+    return "";
   }
 }
