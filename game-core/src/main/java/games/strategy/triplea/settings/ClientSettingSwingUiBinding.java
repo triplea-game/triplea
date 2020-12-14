@@ -278,16 +278,6 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
-  SHOW_CONSOLE_BINDING(
-      "Show Console",
-      SettingType.GAME,
-      "Shows the TripleA console, closing the window will turn this setting off") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.showConsole);
-    }
-  },
-
   MAP_LIST_OVERRIDE_BINDING(
       "Map List Override",
       SettingType.TESTING,

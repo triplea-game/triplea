@@ -138,7 +138,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_CHAT_TIME");
   public static final BooleanClientSetting showCommentLog =
       new BooleanClientSetting("SHOW_COMMENT_LOG");
-  public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE");
   public static final BooleanClientSetting soundEnabled =
       new BooleanClientSetting("SOUND_ENABLED", true);
   public static final ClientSetting<Boolean> firstTimeThisVersion =

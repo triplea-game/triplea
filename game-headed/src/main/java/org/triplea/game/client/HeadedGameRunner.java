@@ -16,14 +16,11 @@ import games.strategy.triplea.ui.MacOsIntegration;
 import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
-import org.triplea.debug.LoggerManager;
-import org.triplea.debug.console.window.ConsoleConfiguration;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
@@ -37,9 +34,6 @@ public final class HeadedGameRunner {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e.getLocalizedMessage(), e));
 
     ClientSetting.initialize();
-
-    LoggerManager.setLogLevel(
-        ClientSetting.loggingVerbosity.getValue().map(Level::parse).orElse(Level.INFO));
   }
 
   public static void initializeLookAndFeel() {
@@ -92,7 +86,6 @@ public final class HeadedGameRunner {
     initializeLookAndFeel();
 
     initializeDesktopIntegrations(args);
-    SwingUtilities.invokeLater(ConsoleConfiguration::initialize);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
     GameRunner.start();
     AvailableGamesFileSystemReader.refreshMapFileCache();
