@@ -24,17 +24,22 @@ public class CompositeChange extends Change {
     this.changes = new ArrayList<>(changes);
   }
 
+  /**
+   * Flattens the list of changes so that there are no CompositeChanges
+   *
+   * <p>If there is a child CompositeChange, its children are added to the list and it is removed
+   * from the list. This will recursively go through any CompositeChange children.
+   *
+   * @return A new CompositeChange that doesn't have any CompositeChange children
+   */
   public CompositeChange flatten() {
     return new CompositeChange(
         changes.stream()
             .map(
-                change -> {
-                  if (change instanceof CompositeChange) {
-                    return ((CompositeChange) change).flatten().getChanges();
-                  } else {
-                    return List.of(change);
-                  }
-                })
+                change ->
+                    change instanceof CompositeChange
+                        ? ((CompositeChange) change).flatten().getChanges()
+                        : List.of(change))
             .flatMap(Collection::stream)
             .collect(Collectors.toList()));
   }
