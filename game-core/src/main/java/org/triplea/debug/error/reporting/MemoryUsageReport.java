@@ -1,13 +1,13 @@
-package org.triplea.debug.console.window;
+package org.triplea.debug.error.reporting;
 
 import lombok.experimental.UtilityClass;
 
 /** Provides a method to return a human-readable output of the JVMs memory usage status. */
 @UtilityClass
-public final class MemoryUsageReport {
+final class MemoryUsageReport {
 
   /** Returns a message containing information about current memory usage. */
-  public static String getMemory() {
+  static String getMemory() {
     System.gc();
     System.runFinalization();
     System.gc();
