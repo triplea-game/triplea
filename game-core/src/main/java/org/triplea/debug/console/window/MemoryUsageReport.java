@@ -2,12 +2,9 @@ package org.triplea.debug.console.window;
 
 import lombok.experimental.UtilityClass;
 
-/**
- * A collection of methods that provide information about the JVM state that may be useful for
- * debugging.
- */
+/** Provides a method to return a human-readable output of the JVMs memory usage status. */
 @UtilityClass
-public final class DebugUtils {
+public final class MemoryUsageReport {
 
   /** Returns a message containing information about current memory usage. */
   public static String getMemory() {
