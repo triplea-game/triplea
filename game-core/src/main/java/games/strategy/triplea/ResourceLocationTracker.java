@@ -15,7 +15,8 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 class ResourceLocationTracker {
-  private static final String REQUIRED_ASSET_FOLDER = "baseTiles/";
+  // All maps must have at least a "baseTiles" folder
+  private static final String REQUIRED_ASSET_EXAMPLE_FOLDER = "baseTiles/";
 
   /**
    * Will return an empty string unless a special prefix is needed, in which case that prefix is *
@@ -29,10 +30,10 @@ class ResourceLocationTracker {
     for (final URL url : resourcePaths) {
       try (final ZipFile zip = new ZipFile(new File(url.toURI()))) {
         final Optional<? extends ZipEntry> e =
-            zip.stream().filter($ -> $.getName().endsWith(REQUIRED_ASSET_FOLDER)).findAny();
+            zip.stream().filter($ -> $.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER)).findAny();
         if (e.isPresent()) {
           final String path = e.get().getName();
-          return path.substring(0, path.length() - REQUIRED_ASSET_FOLDER.length());
+          return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
         }
       } catch (IOException | URISyntaxException e) {
         // File is not a zip or can't be opened
