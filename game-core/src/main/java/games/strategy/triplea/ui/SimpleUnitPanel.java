@@ -23,12 +23,12 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.WrapLayout;
 
 /** A Simple panel that displays a list of units. */
-@Log
+@Slf4j
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
@@ -228,7 +228,7 @@ public class SimpleUnitPanel extends JPanel {
       final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(imageKey);
       if (icon.isEmpty() && !uiContext.isShutDown()) {
         final String imageName = imageKey.getFullName();
-        log.severe("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
+        log.error("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
       }
       icon.ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);

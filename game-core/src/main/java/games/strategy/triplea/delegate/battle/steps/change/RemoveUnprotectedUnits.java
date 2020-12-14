@@ -98,7 +98,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
         ChangeFactory.markNoMovementChange(
             CollectionUtils.getMatches(enemyUnits, Matches.unitIsSea()));
     bridge.addChange(change);
-    battleActions.remove(alliedUnits, bridge, battleState.getBattleSite(), side == DEFENSE);
+    battleActions.removeUnits(alliedUnits, bridge, battleState.getBattleSite(), side);
   }
 
   private List<Unit> getAlliedTransports(final GamePlayer player) {
@@ -141,7 +141,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
     }
 
     final Collection<Unit> unprotectedUnits = getUnprotectedUnits(side);
-    battleActions.remove(unprotectedUnits, bridge, battleState.getBattleSite(), side == DEFENSE);
+    battleActions.removeUnits(unprotectedUnits, bridge, battleState.getBattleSite(), side);
   }
 
   private boolean areFightingOrSupportingUnitsLeft(final BattleState.Side side) {

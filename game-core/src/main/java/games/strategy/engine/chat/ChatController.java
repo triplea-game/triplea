@@ -13,15 +13,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 
 /** Default implementation of {@link IChatController}. */
-@Log
+@Slf4j
 public class ChatController implements IChatController {
   private static final String CHAT_REMOTE = "_ChatRemote_";
   private static final String CHAT_CHANNEL = "_ChatControl_";
@@ -77,7 +76,7 @@ public class ChatController implements IChatController {
           try {
             getChatBroadcaster().ping();
           } catch (final Exception e) {
-            log.log(Level.SEVERE, "Error pinging", e);
+            log.error("Error pinging", e);
           }
         },
         180,

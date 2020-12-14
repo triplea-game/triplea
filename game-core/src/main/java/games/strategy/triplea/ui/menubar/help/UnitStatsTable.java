@@ -20,13 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 @UtilityClass
-@Log
+@Slf4j
 public class UnitStatsTable {
 
   public static String getUnitStatsTable(final GameData gameData, final UiContext uiContext) {
@@ -150,7 +149,7 @@ public class UnitStatsTable {
             unitTypes.add(ut);
           }
         } catch (final Exception e) {
-          log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);
+          log.error("Exception while drawing unit type: " + ut + ", ", e);
         }
       }
     }

@@ -8,7 +8,6 @@ import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.logging.Level;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.InputMap;
@@ -24,7 +23,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.DateTimeUtil;
 import org.triplea.java.Interruptibles;
@@ -41,7 +40,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
  *
  * <p>We can change the chat we are connected to using the setChat(...) method.
  */
-@Log
+@Slf4j
 public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   private static final long serialVersionUID = 118727200083595226L;
   private static final int MAX_LINES = 5000;
@@ -260,8 +259,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
       // don't let the chat get too big
       trimLines(doc, MAX_LINES);
     } catch (final BadLocationException e) {
-      log.log(
-          Level.SEVERE,
+      log.error(
           "There was an Error whilst trying to add the Chat Message \""
               + message
               + "\" sent by "
@@ -277,10 +275,8 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
       final Document doc = text.getDocument();
       doc.insertString(doc.getLength(), message + "\n", normal);
     } catch (final BadLocationException e) {
-      log.log(
-          Level.SEVERE,
-          "There was an Error whilst trying to add the Server Message \"" + message + "\"",
-          e);
+      log.error(
+          "There was an Error whilst trying to add the Server Message \"" + message + "\"", e);
     }
   }
 
@@ -311,8 +307,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
             // don't let the chat get too big
             trimLines(doc, MAX_LINES);
           } catch (final BadLocationException e) {
-            log.log(
-                Level.SEVERE,
+            log.error(
                 "There was an Error whilst trying to add the Status Message \"" + message + "\"",
                 e);
           }
@@ -337,7 +332,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
         }
       }
     } catch (final BadLocationException e) {
-      log.log(Level.SEVERE, "There was an Error whilst trying trimming Chat", e);
+      log.error("There was an Error whilst trying trimming Chat", e);
     }
   }
 

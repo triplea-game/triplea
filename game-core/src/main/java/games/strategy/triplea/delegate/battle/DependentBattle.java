@@ -7,15 +7,15 @@ import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Battle with possible dependencies Includes MustFightBattle and NonFightingBattle. */
 public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
   protected Map<Territory, Collection<Unit>> attackingFromMap;
-  protected Set<Territory> attackingFrom;
+  @RemoveOnNextMajorRelease protected Set<Territory> attackingFrom;
   private final Collection<Territory> amphibiousAttackFrom;
 
   DependentBattle(
@@ -25,13 +25,12 @@ public abstract class DependentBattle extends AbstractBattle {
       final GameData data) {
     super(battleSite, attacker, battleTracker, BattleType.NORMAL, data);
     attackingFromMap = new HashMap<>();
-    attackingFrom = new HashSet<>();
     amphibiousAttackFrom = new ArrayList<>();
   }
 
   /** Return attacking from Collection. */
   public Collection<Territory> getAttackingFrom() {
-    return attackingFrom;
+    return attackingFromMap.keySet();
   }
 
   /** Return attacking from Map. */

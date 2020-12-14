@@ -10,13 +10,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.db.dao.temp.password.TempPasswordDao;
 import org.triplea.http.LobbyServerConfig;
 
 /** Sends a temporary password to a target user. */
 @AllArgsConstructor
-@Log
+@Slf4j
 class PasswordEmailSender implements BiConsumer<String, String> {
   private static final String FROM = "no-reply@triplea-game.org";
 

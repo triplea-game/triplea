@@ -7,14 +7,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Optional;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 import org.triplea.util.Version;
 
 /** A collection of useful methods for working with instances of {@link GameData}. */
-@Log
+@Slf4j
 public final class GameDataUtils {
   private GameDataUtils() {}
 
@@ -70,7 +69,7 @@ public final class GameDataUtils {
       return IoUtils.readFromMemory(
           bytes, inputStream -> GameDataManager.loadGame(engineVersion, inputStream));
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to clone game data", e);
+      log.error("Failed to clone game data", e);
       return Optional.empty();
     }
   }

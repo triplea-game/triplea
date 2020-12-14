@@ -4,13 +4,12 @@ import java.awt.Component;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Builder;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.java.DateTimeFormatterUtil;
@@ -23,7 +22,7 @@ import org.triplea.swing.SwingComponents;
  * results in a dialog box.
  */
 @Builder
-@Log
+@Slf4j
 public class FetchChatHistory {
   @Nonnull private final String gameHostName;
   @Nonnull private final String gameId;
@@ -39,7 +38,7 @@ public class FetchChatHistory {
             })
         .exceptionally(
             e -> {
-              log.log(Level.SEVERE, "Error fetching game chat history", e);
+              log.error("Error fetching game chat history", e);
               return null;
             });
   }

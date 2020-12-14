@@ -4,12 +4,11 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingComponents;
 
 /** A wrapper class for opening Files & URLs using the Desktop API. */
-@Log
+@Slf4j
 public final class OpenFileUtility {
   private OpenFileUtility() {}
 
@@ -24,7 +23,7 @@ public final class OpenFileUtility {
       try {
         Desktop.getDesktop().open(file);
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Could not open File " + file.getAbsolutePath(), e);
+        log.error("Could not open File " + file.getAbsolutePath(), e);
       }
     } else {
       action.run();
@@ -42,7 +41,7 @@ public final class OpenFileUtility {
       try {
         Desktop.getDesktop().browse(URI.create(url));
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Could not open URL " + url, e);
+        log.error("Could not open URL " + url, e);
       }
     } else {
       action.run();

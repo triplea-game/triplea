@@ -15,11 +15,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** A game options cache that uses files to store the game options. */
-@Log
+@Slf4j
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   // chars illegal on windows (on linux/mac anything that is allowed on windows works fine)
   private static final char[] ILLEGAL_CHARS = {
@@ -52,8 +51,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         out.writeObject(serializableMap);
       }
     } catch (final IOException e) {
-      log.log(
-          Level.SEVERE, "Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
+      log.error("Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
     }
   }
 
@@ -78,8 +76,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         }
       }
     } catch (final IOException | ClassNotFoundException e) {
-      log.log(
-          Level.SEVERE, "Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
+      log.error("Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
     }
   }
 

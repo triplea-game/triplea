@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -44,7 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 
@@ -53,7 +52,7 @@ import org.triplea.util.PointFileReaderWriter;
  * centers - this is used to guess the territory name and to verify the - territory name entered
  * Outputs - a list of polygons for each country
  */
-@Log
+@Slf4j
 public final class PolygonGrabber {
   private File mapFolderLocation;
 
@@ -70,7 +69,7 @@ public final class PolygonGrabber {
     try {
       new PolygonGrabber().runInternal();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "failed to run polygon grabber", e);
+      log.error("failed to run polygon grabber", e);
     }
   }
 
@@ -160,7 +159,7 @@ public final class PolygonGrabber {
           log.info("Centers : " + file.getPath());
           centers = PointFileReaderWriter.readOneToOne(is);
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Something wrong with Centers file", e);
+          log.error("Something wrong with Centers file", e);
         }
       } else {
         try {
@@ -178,7 +177,7 @@ public final class PolygonGrabber {
             throw new IOException("no centers file specified");
           }
         } catch (final IOException e) {
-          log.severe("Something wrong with Centers file");
+          log.error("Something wrong with Centers file");
           throw e;
         }
       }
@@ -394,7 +393,7 @@ public final class PolygonGrabber {
         PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
         log.info("Data written to :" + new File(polyName).getCanonicalPath());
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to save polygons: " + polyName, e);
+        log.error("Failed to save polygons: " + polyName, e);
       }
     }
 
@@ -409,7 +408,7 @@ public final class PolygonGrabber {
       try (InputStream in = new FileInputStream(polyName)) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(in);
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to load polygons: " + polyName, e);
+        log.error("Failed to load polygons: " + polyName, e);
       }
       repaint();
     }

@@ -33,7 +33,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
@@ -41,7 +41,7 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** Window that allows for map downloads and removal. */
-@Log
+@Slf4j
 public class DownloadMapsWindow extends JFrame {
   private enum MapAction {
     INSTALL,

@@ -88,9 +88,19 @@ public interface BattleState {
 
   Collection<Unit> filterUnits(UnitBattleFilter status, Side... sides);
 
-  void clearWaitingToDie(Side... sides);
-
   void retreatUnits(Side side, Collection<Unit> units);
+
+  Collection<Unit> removeNonCombatants(Side side);
+
+  /**
+   * Mark the units that will be dying
+   *
+   * <p>Units that are only damaged should not be passed into this method.
+   *
+   * @param casualties units that are dying
+   * @param side the side the unit are on
+   */
+  void markCasualties(Collection<Unit> casualties, Side side);
 
   Collection<Unit> getBombardingUnits();
 
@@ -101,8 +111,6 @@ public interface BattleState {
   Collection<Territory> getAttackerRetreatTerritories();
 
   Collection<Unit> getDependentUnits(Collection<Unit> units);
-
-  void removeDependentUnits(Collection<Unit> units);
 
   Collection<Unit> getTransportDependents(Collection<Unit> units);
 

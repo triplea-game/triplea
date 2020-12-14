@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,7 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolsUtil;
@@ -51,7 +50,7 @@ import tools.util.ToolsUtil;
  * map. Center locations tell the game where to put things like flags, text, unit placements, etc.
  * It will generate a {@code centers.txt} file containing the territory center locations.
  */
-@Log
+@Slf4j
 public final class CenterPicker {
   private File mapFolderLocation;
 
@@ -68,7 +67,7 @@ public final class CenterPicker {
     try {
       new CenterPicker().runInternal();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "failed to run center picker", e);
+      log.error("failed to run center picker", e);
     }
   }
 
@@ -148,7 +147,7 @@ public final class CenterPicker {
         try (InputStream is = new FileInputStream(file.getPath())) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.severe("Something wrong with your Polygons file: " + file.getAbsolutePath());
+          log.error("Something wrong with your Polygons file: " + file.getAbsolutePath());
           throw e;
         }
       } else {
@@ -158,7 +157,7 @@ public final class CenterPicker {
           try (InputStream is = new FileInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
-            log.severe("Something wrong with your Polygons file: " + polyPath);
+            log.error("Something wrong with your Polygons file: " + polyPath);
             throw e;
           }
         }
@@ -262,7 +261,7 @@ public final class CenterPicker {
         PointFileReaderWriter.writeOneToOne(out, centers);
         log.info("Data written to :" + new File(fileName).getCanonicalPath());
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to save centers: " + fileName, e);
+        log.error("Failed to save centers: " + fileName, e);
       }
     }
 
@@ -277,7 +276,7 @@ public final class CenterPicker {
       try (InputStream in = new FileInputStream(centerName)) {
         centers = PointFileReaderWriter.readOneToOne(in);
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to load centers: " + centerName, e);
+        log.error("Failed to load centers: " + centerName, e);
       }
       repaint();
     }

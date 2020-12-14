@@ -6,7 +6,7 @@ import java.awt.Frame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.util.ExitStatus;
 
@@ -30,11 +30,11 @@ public interface WatcherThreadMessaging {
   void handleCurrentGameHostNotReachable();
 
   /** Simply logs notifications */
-  @Log
+  @Slf4j
   class HeadlessWatcherThreadMessaging implements WatcherThreadMessaging {
     @Override
     public void handleCurrentGameHostNotReachable() {
-      log.severe(COMPUTER_NOT_REACHABLE_ERROR_MESSAGE);
+      log.error(COMPUTER_NOT_REACHABLE_ERROR_MESSAGE);
       ExitStatus.FAILURE.exit();
     }
   }

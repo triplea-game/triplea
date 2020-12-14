@@ -23,7 +23,7 @@ import java.awt.RenderingHints;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.Tuple;
 
 /**
@@ -33,7 +33,7 @@ import org.triplea.util.Tuple;
  * horizontal row, overflowing to the right of the territory. A solid black line, rooted at the
  * territory's default placement point, will be drawn under all units in this case.
  */
-@Log
+@Slf4j
 public class UnitsDrawer extends AbstractDrawable {
   private final int count;
   private final String unitType;
@@ -124,7 +124,7 @@ public class UnitsDrawer extends AbstractDrawable {
     final Optional<Image> img = uiContext.getUnitImageFactory().getImage(imageKey);
     if (img.isEmpty() && !uiContext.isShutDown()) {
       final String imageName = imageKey.getBaseImageName();
-      log.severe(
+      log.error(
           "MISSING UNIT IMAGE (won't be displayed): "
               + imageName
               + ", "

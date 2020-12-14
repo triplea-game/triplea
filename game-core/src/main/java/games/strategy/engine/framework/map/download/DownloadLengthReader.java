@@ -8,9 +8,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -20,7 +19,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 /** Can execute an http head request to determine the size of a file download from URI. */
-@Log
+@Slf4j
 @AllArgsConstructor
 final class DownloadLengthReader {
   @VisibleForTesting
@@ -56,8 +55,7 @@ final class DownloadLengthReader {
     try (CloseableHttpClient client = httpClientFactory.get()) {
       return getDownloadLengthFromHost(uri, client);
     } catch (final IOException e) {
-      log.log(
-          Level.INFO, String.format("(Ignoring) Failed to get download length for '%s'", uri), e);
+      log.info("(Ignoring) Failed to get download length for '{}'", uri, e);
       return Optional.empty();
     }
   }

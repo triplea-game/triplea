@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
 
@@ -39,7 +38,7 @@ import tools.util.ToolArguments;
  * each territory on a given map. It will generate a {@code places.txt} file containing the unit
  * placement locations.
  */
-@Log
+@Slf4j
 public final class AutoPlacementFinder {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -197,8 +196,7 @@ public final class AutoPlacementFinder {
           }
         }
       } catch (final Exception e) {
-        log.log(
-            Level.SEVERE, "Failed to initialize from map properties: " + file.getAbsolutePath(), e);
+        log.error("Failed to initialize from map properties: " + file.getAbsolutePath(), e);
       }
     }
     if (!placeDimensionsSet
@@ -245,7 +243,7 @@ public final class AutoPlacementFinder {
         }
         placeDimensionsSet = true;
       } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to initialize from user input", e);
+        log.error("Failed to initialize from user input", e);
       }
     }
 
@@ -282,7 +280,7 @@ public final class AutoPlacementFinder {
       PointFileReaderWriter.writeOneToMany(os, placements);
       textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to write points file: " + fileName, e);
+      log.error("Failed to write points file: " + fileName, e);
       textOptionPane.dispose();
       return;
     }
@@ -462,7 +460,7 @@ public final class AutoPlacementFinder {
         log.info("Unit Zoom Percent to use: " + unitZoomPercent);
         placeDimensionsSet = true;
       } catch (final Exception e) {
-        log.severe("Not a decimal percentage: " + zoomString);
+        log.error("Not a decimal percentage: " + zoomString);
       }
     }
     final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
@@ -472,7 +470,7 @@ public final class AutoPlacementFinder {
         log.info("Unit Width to use: " + unitWidth);
         placeDimensionsSet = true;
       } catch (final Exception e) {
-        log.severe("Not an integer: " + widthString);
+        log.error("Not an integer: " + widthString);
       }
     }
     final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
@@ -482,7 +480,7 @@ public final class AutoPlacementFinder {
         log.info("Unit Height to use: " + unitHeight);
         placeDimensionsSet = true;
       } catch (final Exception e) {
-        log.severe("Not an integer: " + heightString);
+        log.error("Not an integer: " + heightString);
       }
     }
     if (placeDimensionsSet) {

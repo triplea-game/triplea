@@ -6,11 +6,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** An ExecutorService backed thread pool. */
-@Log
+@Slf4j
 public class ThreadPool {
   private final ExecutorService executorService;
   private final Queue<Future<?>> futureQueue = new ArrayDeque<>();
@@ -49,10 +48,7 @@ public class ThreadPool {
          * to tunnel exceptions thrown by tasks through the {@code Executor} API. We only log the
          * cause to reduce the number of stack trace frames visible to the user.
          */
-        log.log(
-            Level.SEVERE,
-            "Threading execution exception: " + exceptionToLog.getMessage(),
-            exceptionToLog);
+        log.error("Threading execution exception: " + exceptionToLog.getMessage(), exceptionToLog);
       }
     }
   }

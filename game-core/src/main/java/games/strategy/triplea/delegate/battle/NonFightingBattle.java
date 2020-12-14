@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -37,13 +36,9 @@ public class NonFightingBattle extends DependentBattle {
   @Override
   public Change addAttackChange(
       final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
-    addDependentTransportingUnits(units);
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    this.attackingFrom.add(attackingFrom);
     attackingUnits.addAll(units);
-    final Collection<Unit> attackingFromMapUnits =
-        attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>());
-    attackingFromMapUnits.addAll(units);
+    attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>()).addAll(units);
     // are we amphibious
     if (route.getStart().isWater()
         && !route.getEnd().isWater()
@@ -100,14 +95,11 @@ public class NonFightingBattle extends DependentBattle {
       return;
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
-    // handle possible null pointer
-    if (attackingFromMapUnits == null) {
-      attackingFromMapUnits = new ArrayList<>();
-    }
+    final Collection<Unit> attackingFromMapUnits =
+        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
     attackingFromMapUnits.removeAll(units);
     if (attackingFromMapUnits.isEmpty()) {
-      this.attackingFrom.remove(attackingFrom);
+      this.attackingFromMap.remove(attackingFrom);
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
@@ -118,9 +110,6 @@ public class NonFightingBattle extends DependentBattle {
         // do we have any amphibious attacks left?
         isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
-    }
-    for (final Collection<Unit> dependent : dependentUnits.values()) {
-      dependent.removeAll(units);
     }
   }
 
@@ -144,14 +133,6 @@ public class NonFightingBattle extends DependentBattle {
       bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);
       final Change change = ChangeFactory.removeUnits(battleSite, lost);
       bridge.addChange(change);
-    }
-  }
-
-  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
-    for (final Map.Entry<Unit, Collection<Unit>> entry : dependencies.entrySet()) {
-      dependentUnits
-          .computeIfAbsent(entry.getKey(), k -> new LinkedHashSet<>())
-          .addAll(new ArrayList<>(entry.getValue()));
     }
   }
 }

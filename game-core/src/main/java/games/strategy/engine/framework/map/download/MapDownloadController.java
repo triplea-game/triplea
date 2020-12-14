@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
 
 /** Controller for in-game map download actions. */
-@Log
+@Slf4j
 public final class MapDownloadController {
   private MapDownloadController() {}
 
@@ -43,7 +42,7 @@ public final class MapDownloadController {
             () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
       }
     } catch (final Exception e) {
-      log.log(Level.WARNING, "Failed to getting list of most recent maps", e);
+      log.warn("Failed to getting list of most recent maps", e);
     }
   }
 

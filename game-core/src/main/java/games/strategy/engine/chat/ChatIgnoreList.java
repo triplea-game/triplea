@@ -3,14 +3,13 @@ package games.strategy.engine.chat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 
-@Log
+@Slf4j
 class ChatIgnoreList {
   private final Object lock = new Object();
   private final Set<UserName> ignore = new HashSet<>();
@@ -20,7 +19,7 @@ class ChatIgnoreList {
     try {
       ignore.addAll(Arrays.stream(prefs.keys()).map(UserName::of).collect(Collectors.toSet()));
     } catch (final BackingStoreException e) {
-      log.log(Level.FINE, e.getMessage(), e);
+      log.debug(e.getMessage(), e);
     }
   }
 
@@ -32,7 +31,7 @@ class ChatIgnoreList {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        log.log(Level.FINE, e.getMessage(), e);
+        log.debug(e.getMessage(), e);
       }
     }
   }
@@ -49,7 +48,7 @@ class ChatIgnoreList {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        log.log(Level.FINE, e.getMessage(), e);
+        log.debug(e.getMessage(), e);
       }
     }
   }

@@ -8,10 +8,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 class InitialSetup {
   private final Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
 
@@ -34,7 +33,7 @@ class InitialSetup {
       new PlayerOrder().saveToFile(printData);
       new PuChart(printData).saveToFile();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to save print generation data", e);
+      log.error("Failed to save print generation data", e);
     }
   }
 }

@@ -10,12 +10,10 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 import org.triplea.injection.Injections;
 import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.EventThreadJOptionPane;
 
-@Log
 @UtilityClass
 final class EngineVersionCheck {
 

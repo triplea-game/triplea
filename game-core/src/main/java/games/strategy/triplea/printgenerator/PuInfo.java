@@ -12,11 +12,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 class PuInfo {
   private final Map<GamePlayer, Map<Resource, Integer>> infoMap = new HashMap<>();
 
@@ -66,7 +65,7 @@ class PuInfo {
         resourceWriter.write("\r\n");
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to save print generation data general information", e);
+      log.error("Failed to save print generation data general information", e);
     }
   }
 }

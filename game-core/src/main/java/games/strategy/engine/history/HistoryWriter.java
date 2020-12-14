@@ -4,10 +4,10 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GamePlayer;
 import java.io.Serializable;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** Used to write to a history object. Delegates should use a DelegateHistoryWriter. */
-@Log
+@Slf4j
 public class HistoryWriter implements Serializable {
   private static final long serialVersionUID = 4230519614567508061L;
 

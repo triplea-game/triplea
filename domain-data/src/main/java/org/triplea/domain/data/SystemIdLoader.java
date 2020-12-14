@@ -3,18 +3,17 @@ package org.triplea.domain.data;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /** Loads a SystemId from persistence. */
 @UtilityClass
-@Log
+@Slf4j
 public class SystemIdLoader {
   private static final String SYSTEM_KEY = "system-id-key";
 
@@ -27,7 +26,7 @@ public class SystemIdLoader {
           try {
             Preferences.userNodeForPackage(SystemIdLoader.class).flush();
           } catch (final BackingStoreException e) {
-            log.log(Level.SEVERE, "Failed to persist system id", e);
+            log.error("Failed to persist system id", e);
           }
         }
 

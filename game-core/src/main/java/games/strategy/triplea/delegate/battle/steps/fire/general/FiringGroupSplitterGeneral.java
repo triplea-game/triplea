@@ -12,6 +12,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +38,9 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>See {@link FiringGroup} for why isSuicideOnHit needs to be separated by unit type.
  */
 @Value(staticConstructor = "of")
-public class FiringGroupSplitterGeneral implements Function<BattleState, Collection<FiringGroup>> {
+public class FiringGroupSplitterGeneral
+    implements Function<BattleState, Collection<FiringGroup>>, Serializable {
+  private static final long serialVersionUID = -8563922735558824822L;
 
   public enum Type {
     NORMAL,

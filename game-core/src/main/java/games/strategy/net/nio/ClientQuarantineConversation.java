@@ -8,15 +8,14 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.DialogBuilder;
 
 /** Client-side implementation of {@link QuarantineConversation}. */
-@Log
+@Slf4j
 public class ClientQuarantineConversation extends QuarantineConversation {
   private enum Step {
     READ_CHALLENGE,
@@ -145,7 +144,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       isClosed = true;
       showLatch.countDown();
       doneShowLatch.countDown();
-      log.log(Level.SEVERE, "error with connection", t);
+      log.error("error with connection", t);
       return Action.TERMINATE;
     }
   }

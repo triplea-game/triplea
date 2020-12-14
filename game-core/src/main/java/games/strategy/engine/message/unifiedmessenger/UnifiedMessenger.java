@@ -26,13 +26,12 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.AsyncRunner;
 
 /** A messenger general enough that both Channel and Remote messenger can be based on it. */
-@Log
+@Slf4j
 public class UnifiedMessenger {
   private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
   // the messenger we are based on
@@ -154,10 +153,8 @@ public class UnifiedMessenger {
           endPoint.invokeLocal(call, number, getLocalNode());
       for (final RemoteMethodCallResults r : results) {
         if (r.getException() != null) {
-          log.log(
-              Level.WARNING,
-              "Remote method call exception: " + r.getException().getMessage(),
-              r.getException());
+          log.warn(
+              "Remote method call exception: " + r.getException().getMessage(), r.getException());
         }
       }
     }
@@ -337,7 +334,7 @@ public class UnifiedMessenger {
             threadPool)
         .exceptionally(
             throwable -> {
-              log.log(Level.SEVERE, "Exception during execution of client request", throwable);
+              log.error("Exception during execution of client request", throwable);
               if (invoke.needReturnValues) {
                 try {
                   send(
@@ -345,7 +342,7 @@ public class UnifiedMessenger {
                           new RemoteMethodCallResults(throwable), invoke.methodCallId),
                       from);
                 } catch (final RuntimeException e) {
-                  log.log(Level.SEVERE, "Exception while sending exception to client", throwable);
+                  log.error("Exception while sending exception to client", throwable);
                 }
               }
             });

@@ -27,6 +27,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
@@ -79,7 +80,7 @@ class CasualtySelectorTest {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
-    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false);
+    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false, null);
     final Collection<Unit> planes = bomber(data).create(5, british(data));
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
@@ -120,7 +121,7 @@ class CasualtySelectorTest {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
-    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false);
+    final DiceRoll roll = new DiceRoll(new int[] {0}, 1, 1, false, null);
     final List<Unit> planes = bomber(data).create(5, british(data));
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
@@ -169,7 +170,7 @@ class CasualtySelectorTest {
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     // don't allow rolling, 6 of each is deterministic
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -232,7 +233,7 @@ class CasualtySelectorTest {
     // should roll once, a hit
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(1, 1));
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -278,10 +279,9 @@ class CasualtySelectorTest {
     assertEquals(2, casualties.size());
     // two extra rolls to pick which units are hit
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
-    // should be 1 fighter and 1 bomber
-    assertEquals(0, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
     assertEquals(
-        2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
+        0, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -297,7 +297,7 @@ class CasualtySelectorTest {
     givenRemotePlayerWillSelectStrategicBombersForCasualties();
     // don't allow rolling, 6 of each is deterministic
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -361,7 +361,7 @@ class CasualtySelectorTest {
     // only 1 roll, a hit
     whenGetRandom(bridge).thenAnswer(withValues(0));
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -425,7 +425,7 @@ class CasualtySelectorTest {
     // one roll, a hit
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0));
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -495,7 +495,7 @@ class CasualtySelectorTest {
         .thenAnswer(withValues(0))
         .thenAnswer(withValues(0, 0));
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
@@ -540,7 +540,7 @@ class CasualtySelectorTest {
                 territory("Germany", data))
             .getKilled();
     assertEquals(2, casualties.size());
-    thenGetRandomShouldHaveBeenCalled(bridge, times(3));
+    thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     // should be 1 fighter and 1 bomber
     assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
     assertEquals(
@@ -560,7 +560,7 @@ class CasualtySelectorTest {
     // 1 roll for the extra fighter
     whenGetRandom(bridge).thenAnswer(withValues(0));
     final DiceRoll roll =
-        DiceRoll.rollAa(
+        RollDiceFactory.rollAaDice(
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(

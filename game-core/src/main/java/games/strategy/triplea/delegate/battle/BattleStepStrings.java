@@ -25,6 +25,7 @@ public interface BattleStepStrings {
   String SELECT_FIRST_STRIKE_CASUALTIES = " select first strike casualties";
   String SELECT_CASUALTIES = " select casualties";
   String REMOVE_CASUALTIES = "Remove casualties";
+  String REMOVE_BOMBARDMENT_CASUALTIES = "Remove bombardment casualties";
   String SUBS_WITHDRAW = " withdraw subs?";
   String SUBS_SUBMERGE = " submerge subs?";
   String ATTACKER_WITHDRAW = " withdraw?";

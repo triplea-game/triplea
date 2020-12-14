@@ -6,32 +6,25 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.weak.WeakAi;
-import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.Collection;
 
 /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
 
-  void removeNonCombatants(IDelegateBridge bridge);
-
-  void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge);
-
-  void removeCasualties(
-      Collection<Unit> killed, ReturnFire returnFire, boolean defender, IDelegateBridge bridge);
+  void clearWaitingToDieAndDamagedChangesInto(IDelegateBridge bridge, BattleState.Side... sides);
 
   void endBattle(IBattle.WhoWon whoWon, IDelegateBridge bridge);
 
-  void remove(
+  /**
+   * Kills the unit and removes it from the battle
+   *
+   * @param side the side that the killedUnits are on
+   */
+  void removeUnits(
       Collection<Unit> killedUnits,
       IDelegateBridge bridge,
       Territory battleSite,
-      Boolean defenderDying);
-
-  void damagedChangeInto(
-      GamePlayer player,
-      Collection<Unit> units,
-      Collection<Unit> killedUnits,
-      IDelegateBridge bridge);
+      BattleState.Side side);
 
   Territory queryRetreatTerritory(
       BattleState battleState,

@@ -2205,3 +2205,11 @@
     <li>Railroads <i>(credit: Civil War)</i></li>
     <li>Research to unlock more advanced units <i>(credit: Age of Tribes)</i></li>
     <li>Unique path to war for the Americans</li></ul>
+- mapName: Warcraft Lordaeron Wars
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/warcraft_lordaeron_wars/archive/master.zip
+  version: 1
+  description: |
+    <p>Warcraft: Lordaeron Wars is a strategy game based on the (World of) Warcraft setting
+    by Blizzard Entertainment. Set in the Eastern Kingdoms of Azeroth, you will control one
+    of the numerous races and factions vrying for supremacy of the continent.</p>

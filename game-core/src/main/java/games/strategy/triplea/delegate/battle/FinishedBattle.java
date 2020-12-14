@@ -74,7 +74,6 @@ public class FinishedBattle extends AbstractBattle {
   @Override
   public Change addAttackChange(
       final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
-    addDependentTransportingUnits(units);
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     attackingUnits.addAll(units);
     final Collection<Unit> attackingFromMapUnits =
@@ -113,9 +112,6 @@ public class FinishedBattle extends AbstractBattle {
         // do we have any amphibious attacks left?
         isAmphibious = !amphibiousAttackFrom.isEmpty();
       }
-    }
-    for (final Collection<Unit> dependent : dependentUnits.values()) {
-      dependent.removeAll(units);
     }
   }
 

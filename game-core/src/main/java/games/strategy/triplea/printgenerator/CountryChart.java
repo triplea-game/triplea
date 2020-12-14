@@ -18,11 +18,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 
-@Log
+@Slf4j
 class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
 
@@ -87,7 +86,7 @@ class CountryChart {
         countryFileWriter.write("\r\n");
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed Saving to File " + outFile.toString(), e);
+      log.error("Failed Saving to File " + outFile.toString(), e);
     }
   }
 }

@@ -63,17 +63,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
@@ -83,7 +82,7 @@ import org.triplea.sound.SoundUtils;
 import org.triplea.util.Tuple;
 
 /** Handles logic for battles in which fighting actually occurs. */
-@Log
+@Slf4j
 public class MustFightBattle extends DependentBattle
     implements BattleStepStrings, BattleActions, BattleState {
 
@@ -114,11 +113,10 @@ public class MustFightBattle extends DependentBattle
   // keep track of all the units that die this round to see if they change into another unit
   private final List<Unit> killedDuringCurrentRound = new ArrayList<>();
   // Our current execution state, we keep a stack of executables, this allows us to save our state
-  // and resume while in
-  // the middle of a battle.
+  // and resume while in the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
 
-  @Getter(onMethod = @__({@Override}))
+  @Getter(onMethod_ = @Override)
   private List<String> stepStrings;
 
   @RemoveOnNextMajorRelease
@@ -184,14 +182,11 @@ public class MustFightBattle extends DependentBattle
       return;
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
-    // handle possible null pointer
-    if (attackingFromMapUnits == null) {
-      attackingFromMapUnits = new ArrayList<>();
-    }
+    final Collection<Unit> attackingFromMapUnits =
+        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
     attackingFromMapUnits.removeAll(units);
     if (attackingFromMapUnits.isEmpty()) {
-      this.attackingFrom.remove(attackingFrom);
+      this.attackingFromMap.remove(attackingFrom);
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
@@ -202,9 +197,6 @@ public class MustFightBattle extends DependentBattle
         // do we have any amphibious attacks left?
         isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
-    }
-    for (final Collection<Unit> dependents : dependentUnits.values()) {
-      dependents.removeAll(units);
     }
   }
 
@@ -224,11 +216,8 @@ public class MustFightBattle extends DependentBattle
             ? CollectionUtils.getMatches(units, ownedBy)
             : units;
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    this.attackingFrom.add(attackingFrom);
     this.attackingUnits.addAll(attackingUnits);
-    attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>());
-    final Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
-    attackingFromMapUnits.addAll(attackingUnits);
+    attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>()).addAll(attackingUnits);
     // are we amphibious
     if (route.getStart().isWater()
         && !route.getEnd().isWater()
@@ -236,28 +225,28 @@ public class MustFightBattle extends DependentBattle
       getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
       isAmphibious = true;
     }
-    final Map<Unit, Collection<Unit>> dependencies =
-        new HashMap<>(TransportTracker.transporting(units));
     if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
-      dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, gameData, attacker));
-      for (final Unit carrier : dependencies.keySet()) {
-        final UnitAttachment ua = UnitAttachment.get(carrier.getType());
-        if (ua.getCarrierCapacity() == -1) {
-          continue;
-        }
+      // allied air can not participate in the battle so set transportedBy on each allied air unit
+      // and remove them from the attacking units
+      MoveValidator.carrierMustMoveWith(units, units, gameData, attacker)
+          .forEach(
+              (carrier, dependencies) -> {
+                final UnitAttachment ua = UnitAttachment.get(carrier.getType());
+                if (ua.getCarrierCapacity() == -1) {
+                  return;
+                }
 
-        // set transported by on each figher and remove each one from battle display
-        dependencies.get(carrier).stream()
-            .filter(Matches.unitIsAir())
-            .forEach(
-                fighter -> {
-                  change.add(
-                      ChangeFactory.unitPropertyChange(fighter, carrier, Unit.TRANSPORTED_BY));
-                  this.attackingUnits.remove(fighter);
-                });
-      }
+                dependencies.stream()
+                    .filter(Matches.unitIsAir())
+                    .forEach(
+                        fighter -> {
+                          change.add(
+                              ChangeFactory.unitPropertyChange(
+                                  fighter, carrier, Unit.TRANSPORTED_BY));
+                          this.attackingUnits.remove(fighter);
+                        });
+              });
     }
-    addDependentUnits(dependencies);
     // mark units with no movement for all but air
     Collection<Unit> nonAir = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotAir());
     // we don't want to change the movement of transported land units if this is a sea battle
@@ -272,17 +261,6 @@ public class MustFightBattle extends DependentBattle
     }
     change.add(ChangeFactory.markNoMovementChange(nonAir));
     return change;
-  }
-
-  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
-    for (final Unit holder : dependencies.keySet()) {
-      final Collection<Unit> transporting = dependencies.get(holder);
-      if (dependentUnits.get(holder) != null) {
-        dependentUnits.get(holder).addAll(transporting);
-      } else {
-        dependentUnits.put(holder, new LinkedHashSet<>(transporting));
-      }
-    }
   }
 
   /**
@@ -356,7 +334,7 @@ public class MustFightBattle extends DependentBattle
             availableTerritories,
             text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      log.severe(
+      log.error(
           "Invalid retreat selection: "
               + retreatTo
               + " not in "
@@ -442,22 +420,6 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void clearWaitingToDie(final Side... sides) {
-    for (final Side side : sides) {
-      switch (side) {
-        case OFFENSE:
-          attackingWaitingToDie.clear();
-          break;
-        case DEFENSE:
-          defendingWaitingToDie.clear();
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  @Override
   public void retreatUnits(final Side side, final Collection<Unit> retreatingUnits) {
     final Collection<Unit> units = side == DEFENSE ? defendingUnits : attackingUnits;
     final Collection<Unit> unitsRetreated =
@@ -466,20 +428,12 @@ public class MustFightBattle extends DependentBattle
     unitsRetreated.addAll(retreatingUnits);
   }
 
-  @Override
-  public void removeDependentUnits(final Collection<Unit> unitsWithDependents) {
-    for (final Unit unit : unitsWithDependents) {
-      dependentUnits.remove(unit);
-    }
-  }
-
   /**
    * Used for setting stuff when we make a scrambling battle when there was no previous battle
    * there, and we need retreat spaces.
    */
-  void setAttackingFromAndMap(final Map<Territory, Collection<Unit>> attackingFromMap) {
+  void setAttackingFromMap(final Map<Territory, Collection<Unit>> attackingFromMap) {
     this.attackingFromMap = attackingFromMap;
-    attackingFrom = new HashSet<>(attackingFromMap.keySet());
   }
 
   @Override
@@ -498,7 +452,7 @@ public class MustFightBattle extends DependentBattle
     // the territory by the previous battle's remove method
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
     if (!withdrawn) {
-      remove(lost, bridge, battleSite, false);
+      removeUnits(lost, bridge, battleSite, OFFENSE);
     }
     if (attackingUnits.isEmpty()) {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
@@ -545,7 +499,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void endBattle(final IDelegateBridge bridge) {
-    clearWaitingToDieAndDamagedChangesInto(bridge);
+    clearWaitingToDieAndDamagedChangesInto(bridge, OFFENSE, DEFENSE);
     isOver = true;
     battleTracker.removeBattle(this, bridge.getData());
 
@@ -565,34 +519,45 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
+  /**
+   * Removes units that have been marked as a casualty
+   *
+   * <p>If the unit changes into another unit upon death, then this will transform them.
+   */
   @Override
-  public void clearWaitingToDieAndDamagedChangesInto(final IDelegateBridge bridge) {
-    final Collection<Unit> unitsToRemove = new ArrayList<>();
-    unitsToRemove.addAll(attackingWaitingToDie);
-    unitsToRemove.addAll(defendingWaitingToDie);
-    remove(unitsToRemove, bridge, battleSite, null);
-    defendingWaitingToDie.clear();
-    attackingWaitingToDie.clear();
-    damagedChangeInto(
-        attacker,
-        attackingUnits,
-        CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
-        bridge);
-    damagedChangeInto(
-        defender,
-        defendingUnits,
-        CollectionUtils.getMatches(
-            killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
-        bridge);
+  public void clearWaitingToDieAndDamagedChangesInto(
+      final IDelegateBridge bridge, final BattleState.Side... sides) {
+    for (final Side side : sides) {
+      if (side == OFFENSE) {
+        removeUnits(attackingWaitingToDie, bridge, battleSite, side);
+        attackingWaitingToDie.clear();
+        damagedChangeInto(
+            attacker,
+            attackingUnits,
+            CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
+            bridge,
+            side);
+      } else {
+        removeUnits(defendingWaitingToDie, bridge, battleSite, side);
+        defendingWaitingToDie.clear();
+        damagedChangeInto(
+            defender,
+            defendingUnits,
+            CollectionUtils.getMatches(
+                killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
+            bridge,
+            side);
+      }
+    }
     killedDuringCurrentRound.clear();
   }
 
-  @Override
-  public void damagedChangeInto(
+  private void damagedChangeInto(
       final GamePlayer player,
       final Collection<Unit> units,
       final Collection<Unit> killedUnits,
-      final IDelegateBridge bridge) {
+      final IDelegateBridge bridge,
+      final Side side) {
     final List<Unit> damagedUnits =
         CollectionUtils.getMatches(
             units,
@@ -625,7 +590,7 @@ public class MustFightBattle extends DependentBattle
           ChangeFactory.addUnits(battleSite, unitsToAdd),
           ChangeFactory.markNoMovementChange(unitsToAdd));
       bridge.addChange(changes);
-      remove(unitsToRemove, bridge, battleSite, null);
+      removeUnits(unitsToRemove, bridge, battleSite, side);
       final String transcriptText =
           MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
@@ -637,52 +602,26 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void removeCasualties(
-      final Collection<Unit> killed,
-      final ReturnFire returnFire,
-      final boolean defender,
-      final IDelegateBridge bridge) {
-    if (killed.isEmpty()) {
+  public void markCasualties(final Collection<Unit> casualties, final Side side) {
+    if (casualties.isEmpty()) {
       return;
     }
-    if (returnFire == ReturnFire.ALL) {
-      // move to waiting to die
-      if (defender) {
-        defendingWaitingToDie.addAll(killed);
-      } else {
-        attackingWaitingToDie.addAll(killed);
-      }
-    } else if (returnFire == ReturnFire.SUBS) {
-      // move to waiting to die
-      if (defender) {
-        defendingWaitingToDie.addAll(
-            CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike()));
-      } else {
-        attackingWaitingToDie.addAll(
-            CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike()));
-      }
-      remove(
-          CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike().negate()),
-          bridge,
-          battleSite,
-          defender);
-    } else if (returnFire == ReturnFire.NONE) {
-      remove(killed, bridge, battleSite, defender);
-    }
-    // remove from the active fighting
-    if (defender) {
-      defendingUnits.removeAll(killed);
+
+    if (side == DEFENSE) {
+      defendingWaitingToDie.addAll(casualties);
+      defendingUnits.removeAll(casualties);
     } else {
-      attackingUnits.removeAll(killed);
+      attackingWaitingToDie.addAll(casualties);
+      attackingUnits.removeAll(casualties);
     }
   }
 
   @Override
-  public void remove(
+  public void removeUnits(
       final Collection<Unit> killedUnits,
       final IDelegateBridge bridge,
       final Territory battleSite,
-      final Boolean defenderDying) {
+      final Side side) {
     if (killedUnits.isEmpty()) {
       return;
     }
@@ -716,12 +655,12 @@ public class MustFightBattle extends DependentBattle
       removeFromDependents(killed, bridge, dependentBattles);
     }
 
-    // Remove them from the battle display
-    if (defenderDying == null || defenderDying) {
+    if (side == DEFENSE) {
       defendingUnits.removeAll(killed);
-    }
-    if (defenderDying == null || !defenderDying) {
+      defendingWaitingToDie.removeAll(killed);
+    } else {
       attackingUnits.removeAll(killed);
+      attackingWaitingToDie.removeAll(killed);
     }
   }
 
@@ -738,7 +677,7 @@ public class MustFightBattle extends DependentBattle
       if (landedTerritory == null) {
         throw new IllegalStateException("not unloaded?:" + units);
       }
-      remove(lost, bridge, landedTerritory, false);
+      removeUnits(lost, bridge, landedTerritory, OFFENSE);
     }
   }
 
@@ -766,7 +705,10 @@ public class MustFightBattle extends DependentBattle
           killed,
           attackingWaitingToDie,
           defendingWaitingToDie,
-          dependentUnits,
+          TransportTracker.transportingInTerritory(
+              Stream.concat(attackingUnits.stream(), defendingUnits.stream())
+                  .collect(Collectors.toList()),
+              battleSite),
           attacker,
           defender,
           false,
@@ -788,8 +730,6 @@ public class MustFightBattle extends DependentBattle
       endBattle(WhoWon.ATTACKER, bridge);
       return;
     }
-    addDependentUnits(TransportTracker.transporting(defendingUnits));
-    addDependentUnits(TransportTracker.transporting(attackingUnits));
     stepStrings = determineStepStrings();
     final IDisplay display = bridge.getDisplayChannelBroadcaster();
     display.showBattle(
@@ -801,7 +741,10 @@ public class MustFightBattle extends DependentBattle
         killed,
         attackingWaitingToDie,
         defendingWaitingToDie,
-        dependentUnits,
+        TransportTracker.transportingInTerritory(
+            Stream.concat(attackingUnits.stream(), defendingUnits.stream())
+                .collect(Collectors.toList()),
+            battleSite),
         attacker,
         defender,
         false,
@@ -943,7 +886,7 @@ public class MustFightBattle extends DependentBattle
             .build();
     Collection<Territory> possible =
         CollectionUtils.getMatches(
-            attackingFrom,
+            attackingFromMap.keySet(),
             Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
@@ -1343,29 +1286,27 @@ public class MustFightBattle extends DependentBattle
     };
   }
 
+  /**
+   * Removes non combatants from the requested battle side and returns them
+   *
+   * @return the removed units
+   */
   @Override
-  public void removeNonCombatants(final IDelegateBridge bridge) {
-    final List<Unit> notRemovedDefending =
-        removeNonCombatants(defendingUnits, attackingUnits, false, true);
-    final List<Unit> notRemovedAttacking =
-        removeNonCombatants(attackingUnits, defendingUnits, true, true);
-    final Collection<Unit> toRemoveDefending =
-        CollectionUtils.difference(defendingUnits, notRemovedDefending);
-    final Collection<Unit> toRemoveAttacking =
-        CollectionUtils.difference(attackingUnits, notRemovedAttacking);
-    defendingUnits = notRemovedDefending;
-    attackingUnits = notRemovedAttacking;
-    if (!headless) {
-      if (!toRemoveDefending.isEmpty()) {
-        bridge
-            .getDisplayChannelBroadcaster()
-            .changedUnitsNotification(battleId, defender, toRemoveDefending, null, null);
-      }
-      if (!toRemoveAttacking.isEmpty()) {
-        bridge
-            .getDisplayChannelBroadcaster()
-            .changedUnitsNotification(battleId, attacker, toRemoveAttacking, null, null);
-      }
+  public Collection<Unit> removeNonCombatants(final Side side) {
+    if (side == DEFENSE) {
+      final List<Unit> notRemovedDefending =
+          removeNonCombatants(defendingUnits, attackingUnits, false, true);
+      final Collection<Unit> toRemoveDefending =
+          CollectionUtils.difference(defendingUnits, notRemovedDefending);
+      defendingUnits = notRemovedDefending;
+      return toRemoveDefending;
+    } else {
+      final List<Unit> notRemovedAttacking =
+          removeNonCombatants(attackingUnits, defendingUnits, true, true);
+      final Collection<Unit> toRemoveAttacking =
+          CollectionUtils.difference(attackingUnits, notRemovedAttacking);
+      attackingUnits = notRemovedAttacking;
+      return toRemoveAttacking;
     }
   }
 
@@ -1667,7 +1608,7 @@ public class MustFightBattle extends DependentBattle
         + " attacked by:"
         + attacker.getName()
         + " from:"
-        + attackingFrom
+        + attackingFromMap.keySet()
         + " attacking with: "
         + attackingUnits;
   }

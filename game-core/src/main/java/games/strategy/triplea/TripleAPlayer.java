@@ -46,10 +46,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -61,7 +60,7 @@ import org.triplea.util.Tuple;
  * As a rule, nothing that changes GameData should be in here. It should be using a Change done in a
  * delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
  */
-@Log
+@Slf4j
 public abstract class TripleAPlayer extends AbstractHumanPlayer {
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
@@ -79,10 +78,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
           final IEditDelegate editDelegate =
               (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
           AsyncRunner.runAsync(() -> editDelegate.setEditMode(editMode))
-              .exceptionally(
-                  throwable -> log.log(Level.SEVERE, "Failed to toggle edit mode", throwable));
+              .exceptionally(throwable -> log.error("Failed to toggle edit mode", throwable));
         } catch (final Exception exception) {
-          log.log(Level.SEVERE, "Failed to set edit mode to " + editMode, exception);
+          log.error("Failed to set edit mode to " + editMode, exception);
           // toggle back to previous state since setEditMode failed
           ui.getEditModeButtonModel().setSelected(!ui.getEditModeButtonModel().isSelected());
         }
@@ -178,7 +176,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     try {
       ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to set edit delegate", e);
+      log.error("Failed to set edit delegate", e);
     }
     SwingUtilities.invokeLater(
         () -> {
@@ -209,7 +207,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
 
@@ -234,7 +232,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
     final UserActionAttachment actionChoice =
@@ -273,7 +271,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
 
@@ -313,7 +311,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
       // for some reason the client is not seeing or getting these errors, so print to err too
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
 
@@ -368,7 +366,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
     return airCantLand.isEmpty()
@@ -387,7 +385,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
     return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight));
@@ -436,7 +434,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
                     + getPlayerBridge().getRemoteDelegate().getClass();
             // for some reason the client is not seeing or getting these errors, so print to err
             // too
-            log.log(Level.SEVERE, errorContext, e);
+            log.error(errorContext, e);
             throw new IllegalStateException(errorContext, e);
           }
           final String error = purchaseDel.purchaseRepair(repair);
@@ -464,7 +462,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
     final String purchaseError = purchaseDel.purchase(prod);
@@ -488,7 +486,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
 
@@ -535,7 +533,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
     while (true) {
@@ -579,7 +577,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
               + getPlayerBridge().getStepName()
               + ", Remote class name: "
               + getPlayerBridge().getRemoteDelegate().getClass();
-      log.log(Level.SEVERE, errorContext, e);
+      log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
     if (!soundPlayedAlreadyEndTurn

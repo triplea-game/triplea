@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.CASUALTIES_WITHOUT_SPACE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.NOTIFY_PREFIX;
@@ -27,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.RemoveOnNextMajorRelease;
+import org.triplea.java.collections.CollectionUtils;
 
 /** Step where the casualties are moved from ALIVE to CASUALTY */
 @RequiredArgsConstructor
@@ -45,9 +45,7 @@ public class MarkCasualties implements BattleStep {
 
   private final FireRoundState fireRoundState;
 
-  @ChangeOnNextMajorRelease(
-      "returnFire is ALL for everything except NavalBombardment and old saves."
-          + "Rework so that returnFire isn't needed at all.")
+  @RemoveOnNextMajorRelease("This is ReturnFire.ALL for everything except old saves")
   private final MustFightBattle.ReturnFire returnFire;
 
   @Override
@@ -70,16 +68,28 @@ public class MarkCasualties implements BattleStep {
   }
 
   @Override
+  @ChangeOnNextMajorRelease("Remove the ReturnFire.SUBS and ReturnFire.NONE logic")
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (!battleState.getStatus().isHeadless()) {
       notifyCasualties(bridge);
     }
 
-    battleActions.removeCasualties(
-        fireRoundState.getCasualties().getKilled(),
-        returnFire,
-        side.getOpposite() == DEFENSE,
-        bridge);
+    battleState.markCasualties(fireRoundState.getCasualties().getKilled(), side.getOpposite());
+
+    if (returnFire == MustFightBattle.ReturnFire.SUBS) {
+      battleActions.removeUnits(
+          CollectionUtils.getMatches(
+              fireRoundState.getCasualties().getKilled(), Matches.unitIsFirstStrike().negate()),
+          bridge,
+          battleState.getBattleSite(),
+          side.getOpposite());
+    } else if (returnFire == MustFightBattle.ReturnFire.NONE) {
+      battleActions.removeUnits(
+          fireRoundState.getCasualties().getKilled(),
+          bridge,
+          battleState.getBattleSite(),
+          side.getOpposite());
+    }
 
     if (firingGroup.isSuicideOnHit()) {
       removeSuicideOnHitUnits(bridge);
@@ -185,6 +195,6 @@ public class MarkCasualties implements BattleStep {
         .deadUnitNotification(
             battleState.getBattleId(), battleState.getPlayer(side), suicidedUnits, dependentUnits);
 
-    battleActions.remove(suicidedUnits, bridge, battleState.getBattleSite(), side == DEFENSE);
+    battleActions.removeUnits(suicidedUnits, bridge, battleState.getBattleSite(), side);
   }
 }

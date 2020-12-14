@@ -19,12 +19,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 
 /** Implementation of {@link IGame} for a network client node. */
-@Log
+@Slf4j
 public class ClientGame extends AbstractGame {
   public ClientGame(
       final GameData data,
@@ -158,7 +157,7 @@ public class ClientGame extends AbstractGame {
               }
               i++;
               if (i > 300 && !shownErrorMessage) {
-                log.severe("Waited more than 30 seconds for step to update. Something wrong.");
+                log.error("Waited more than 30 seconds for step to update. Something wrong.");
                 shownErrorMessage = true;
                 // TODO: should we throw an illegal state error? or just return? or a game over
                 // exception? should we
@@ -216,7 +215,7 @@ public class ClientGame extends AbstractGame {
         messengers.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
     } catch (final RuntimeException e) {
-      log.log(Level.SEVERE, "Failed to shut down client game", e);
+      log.error("Failed to shut down client game", e);
     }
     gameData.getGameLoader().shutDown();
   }

@@ -50,8 +50,6 @@ public class LandParatroopers implements BattleStep {
             TransportTracker.unloadAirTransportChange(unit, battleState.getBattleSite(), false));
       }
       bridge.addChange(change);
-
-      battleState.removeDependentUnits(transportsAndParatroopers.airTransports);
     }
   }
 

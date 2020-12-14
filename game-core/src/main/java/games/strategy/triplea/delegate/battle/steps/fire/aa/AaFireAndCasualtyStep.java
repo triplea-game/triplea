@@ -15,7 +15,9 @@ import games.strategy.triplea.delegate.battle.steps.fire.FireRoundStepsFactory;
 import games.strategy.triplea.delegate.battle.steps.fire.RollDiceStep;
 import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -63,7 +65,8 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
   abstract BattleState.Side getSide();
 
   public static class SelectAaCasualties
-      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> {
+      implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails>, Serializable {
+    private static final long serialVersionUID = 5901942018345133129L;
 
     @Override
     public CasualtyDetails apply(final IDelegateBridge bridge, final SelectCasualties step) {
@@ -99,12 +102,14 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
     }
   }
 
-  public static class AaDiceRoller implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> {
+  public static class AaDiceRoller
+      implements BiFunction<IDelegateBridge, RollDiceStep, DiceRoll>, Serializable {
+    private static final long serialVersionUID = -2206313715234203245L;
 
     @Override
     public DiceRoll apply(final IDelegateBridge bridge, final RollDiceStep step) {
       final DiceRoll dice =
-          DiceRoll.rollAa(
+          RollDiceFactory.rollAaDice(
               step.getFiringGroup().getTargetUnits(),
               step.getFiringGroup().getFiringUnits(),
               bridge,

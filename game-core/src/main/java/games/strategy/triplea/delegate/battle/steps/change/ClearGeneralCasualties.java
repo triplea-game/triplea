@@ -30,6 +30,7 @@ public class ClearGeneralCasualties implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    battleActions.clearWaitingToDieAndDamagedChangesInto(bridge);
+    battleActions.clearWaitingToDieAndDamagedChangesInto(
+        bridge, BattleState.Side.OFFENSE, BattleState.Side.DEFENSE);
   }
 }

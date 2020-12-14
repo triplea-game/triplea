@@ -49,11 +49,8 @@ abstract class AbstractBattle implements IBattle {
   boolean isAmphibious = false;
   final BattleType battleType;
   boolean isOver = false;
-  /**
-   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent
-   * on then we lose the corresponding collection of units.
-   */
-  final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+
+  @RemoveOnNextMajorRelease final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
 
   List<Unit> attackingUnits = new ArrayList<>();
   List<Unit> defendingUnits = new ArrayList<>();
@@ -90,33 +87,14 @@ abstract class AbstractBattle implements IBattle {
 
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
-    final List<Unit> dependentUnits = new ArrayList<>();
-    for (final Unit unit : units) {
-      final Collection<Unit> dependent = this.dependentUnits.get(unit);
-      if (dependent != null) {
-        dependentUnits.addAll(dependent);
-      }
-    }
-    return Collections.unmodifiableCollection(dependentUnits);
+    return units.stream()
+        .map(unit -> unit.getTransporting(battleSite))
+        .flatMap(Collection::stream)
+        .collect(Collectors.toUnmodifiableList());
   }
 
   protected Collection<Unit> getUnitsWithDependents(final Collection<Unit> units) {
-    final Collection<Unit> dependentUnits = getDependentUnits(units);
-    if (dependentUnits.isEmpty()) {
-      return Collections.unmodifiableCollection(units);
-    }
-    return ImmutableList.copyOf(Iterables.concat(units, dependentUnits));
-  }
-
-  void addDependentTransportingUnits(final Collection<Unit> units) {
-    final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
-    for (final Unit unit : addedTransporting.keySet()) {
-      if (dependentUnits.get(unit) != null) {
-        dependentUnits.get(unit).addAll(addedTransporting.get(unit));
-      } else {
-        dependentUnits.put(unit, new ArrayList<>(addedTransporting.get(unit)));
-      }
-    }
+    return ImmutableList.copyOf(Iterables.concat(units, getDependentUnits(units)));
   }
 
   void clearTransportedBy(final IDelegateBridge bridge) {
@@ -145,11 +123,10 @@ abstract class AbstractBattle implements IBattle {
     } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
       return List.of();
     }
-    return ImmutableList.copyOf(
-        targets.stream()
-            .map(TransportTracker::transportingAndUnloaded)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList()));
+    return targets.stream()
+        .map(TransportTracker::transportingAndUnloaded)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toUnmodifiableList());
   }
 
   /**

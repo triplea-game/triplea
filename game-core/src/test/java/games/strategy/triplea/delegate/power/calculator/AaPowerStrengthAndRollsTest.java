@@ -11,6 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.delegate.dice.calculator.RolledDice;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -390,7 +391,7 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
       final int[] dice = {0, 5, 1, 4, 2, 4};
-      final List<Die> diceHits = result.getDiceHits(dice);
+      final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
       assertThat(
           "Normal unit rolls twice but only hits on the 0, not the 5. Infinite unit rolls "

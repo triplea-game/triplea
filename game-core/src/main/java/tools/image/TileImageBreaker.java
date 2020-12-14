@@ -14,13 +14,12 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Utility for breaking an image into separate smaller images. User must make a new directory called
@@ -28,7 +27,7 @@ import lombok.extern.java.Log;
  * prompt. To create territories, he must choose "N" at the prompt. sea zone images directory must
  * be renamed to "seazone
  */
-@Log
+@Slf4j
 public final class TileImageBreaker {
   private String location = null;
   private final JFrame observer = new JFrame();
@@ -58,7 +57,7 @@ public final class TileImageBreaker {
     try {
       new TileImageBreaker().runInternal();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "failed to run tile image breaker", e);
+      log.error("failed to run tile image breaker", e);
     }
   }
 

@@ -21,14 +21,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
 /** For choosing territories and units for them, during RandomStartDelegate. */
-@Log
+@Slf4j
 public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private static final long serialVersionUID = -2672163347536778594L;
   private final TripleAFrame parent;
@@ -101,7 +101,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
                   setWidgetActivation();
                 });
           } else {
-            log.severe(
+            log.error(
                 "Should not be able to select a territory outside of the selectTerritoryAction.");
           }
         }
@@ -109,7 +109,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         @Override
         public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
           if (!isActive()) {
-            log.severe("Should not be able to select a territory when inactive: " + territory);
+            log.error("Should not be able to select a territory when inactive: " + territory);
             return;
           }
 

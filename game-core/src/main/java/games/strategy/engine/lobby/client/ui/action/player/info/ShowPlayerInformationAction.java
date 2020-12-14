@@ -1,12 +1,11 @@
 package games.strategy.engine.lobby.client.ui.action.player.info;
 
 import java.util.function.Function;
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import lombok.Builder;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
@@ -19,7 +18,7 @@ import org.triplea.swing.SwingAction;
  * clicked on player and display it in a tabbed dialog.
  */
 @Builder
-@Log
+@Slf4j
 public class ShowPlayerInformationAction {
   @Nonnull private final JFrame parent;
   @Nonnull private final PlayerToLobbyConnection playerToLobbyConnection;
@@ -41,6 +40,6 @@ public class ShowPlayerInformationAction {
   }
 
   private void logFetchError(final Throwable throwable) {
-    log.log(Level.SEVERE, "Error fetching player information", throwable);
+    log.error("Error fetching player information", throwable);
   }
 }

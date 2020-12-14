@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
 
@@ -110,7 +109,7 @@ import org.triplea.java.UrlStreams;
  * generic folder completely) <br>
  * 6. Randomize the list's order, then pick one, and play the sound.
  */
-@Log
+@Slf4j
 public class ClipPlayer {
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
@@ -143,10 +142,7 @@ public class ClipPlayer {
       FactoryRegistry.systemRegistry().createAudioDevice();
       return true;
     } catch (final JavaLayerException e) {
-      log.log(
-          Level.INFO,
-          "Unable to create audio device, is there audio on the system? " + e.getMessage(),
-          e);
+      log.info("Unable to create audio device, is there audio on the system? " + e.getMessage(), e);
       return false;
     }
   }
@@ -220,7 +216,7 @@ public class ClipPlayer {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -263,7 +259,7 @@ public class ClipPlayer {
                                         FactoryRegistry.systemRegistry().createAudioDevice();
                                     new AdvancedPlayer(inputStream, audioDevice).play();
                                   } catch (final Exception e) {
-                                    log.log(Level.SEVERE, "Failed to play: " + clip, e);
+                                    log.error("Failed to play: " + clip, e);
                                   }
                                   return null;
                                 }))
@@ -403,7 +399,7 @@ public class ClipPlayer {
                               try {
                                 return resourceLoader.getResource(name);
                               } catch (final RuntimeException e) {
-                                log.log(Level.SEVERE, "Failed to load sound resource: " + name, e);
+                                log.error("Failed to load sound resource: " + name, e);
                               }
                               return null;
                             })
@@ -414,7 +410,7 @@ public class ClipPlayer {
               }
             }
           } catch (final Exception e) {
-            log.log(Level.SEVERE, "Failed to read sound file: " + decoded, e);
+            log.error("Failed to read sound file: " + decoded, e);
           }
         }
       }
@@ -438,7 +434,7 @@ public class ClipPlayer {
             } catch (final MalformedURLException e) {
               final String msg =
                   "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
-              log.log(Level.SEVERE, msg, e);
+              log.error(msg, e);
             }
           }
         }

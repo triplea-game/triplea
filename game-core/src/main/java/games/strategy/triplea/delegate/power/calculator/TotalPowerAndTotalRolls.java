@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.Die;
 import java.util.List;
 
 public interface TotalPowerAndTotalRolls {
@@ -11,7 +10,7 @@ public interface TotalPowerAndTotalRolls {
 
   boolean hasStrengthOrRolls();
 
-  List<Die> getDiceHits(int[] dice);
+  List<UnitPowerStrengthAndRolls> getActiveUnits();
 
   int getDiceSides();
 

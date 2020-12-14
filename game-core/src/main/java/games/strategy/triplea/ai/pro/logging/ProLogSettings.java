@@ -10,13 +10,13 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.IoUtils;
 
 /** Class to manage log settings. */
 @Getter
 @Setter
-@Log
+@Slf4j
 final class ProLogSettings implements Serializable {
   private static final long serialVersionUID = 5532153908942939829L;
   private static final String PROGRAM_SETTINGS = "Program Settings";
@@ -42,7 +42,7 @@ final class ProLogSettings implements Serializable {
             });
       }
     } catch (final Exception ex) {
-      log.log(Level.SEVERE, "Failed to load pro AI log settings", ex);
+      log.error("Failed to load pro AI log settings", ex);
     }
 
     return new ProLogSettings();
@@ -62,10 +62,10 @@ final class ProLogSettings implements Serializable {
       try {
         prefs.flush();
       } catch (final BackingStoreException ex) {
-        log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
+        log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
       }
     } catch (final Exception ex) {
-      log.log(Level.SEVERE, "Failed to save pro AI log settings", ex);
+      log.error("Failed to save pro AI log settings", ex);
     }
   }
 }

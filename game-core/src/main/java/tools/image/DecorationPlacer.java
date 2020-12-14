@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -51,7 +50,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
@@ -105,7 +104,7 @@ import tools.util.ToolsUtil;
  * option to 'Save Current And Keep On Map And Load New'. To reset all currently image points, use
  * 'Load Image Points'.
  */
-@Log
+@Slf4j
 public final class DecorationPlacer {
   private File mapFolderLocation;
 
@@ -122,7 +121,7 @@ public final class DecorationPlacer {
     try {
       new DecorationPlacer().runInternal();
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "failed to run decoration placer", e);
+      log.error("failed to run decoration placer", e);
     }
   }
 
@@ -236,7 +235,7 @@ public final class DecorationPlacer {
           log.info("Centers : " + fileCenters.getPath());
           centers = PointFileReaderWriter.readOneToOne(is);
         } catch (final IOException e) {
-          log.severe("Something wrong with Centers file");
+          log.error("Something wrong with Centers file");
           throw e;
         }
       } else {
@@ -255,7 +254,7 @@ public final class DecorationPlacer {
             throw new IOException("no centers file specified");
           }
         } catch (final IOException e) {
-          log.severe("Something wrong with Centers file");
+          log.error("Something wrong with Centers file");
           throw e;
         }
       }
@@ -278,7 +277,7 @@ public final class DecorationPlacer {
           log.info("Polygons : " + filePoly.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.severe("Something wrong with your Polygons file: " + filePoly.getAbsolutePath());
+          log.error("Something wrong with your Polygons file: " + filePoly.getAbsolutePath());
           throw e;
         }
       } else {
@@ -290,7 +289,7 @@ public final class DecorationPlacer {
           try (InputStream is = new FileInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
-            log.severe("Something wrong with your Polygons file: " + polyPath);
+            log.error("Something wrong with your Polygons file: " + polyPath);
             throw e;
           }
         } else {
@@ -529,7 +528,7 @@ public final class DecorationPlacer {
         PointFileReaderWriter.writeOneToMany(out, currentPoints);
         log.info("Data written to :" + new File(fileName).getCanonicalPath());
       } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to save points: " + fileName, e);
+        log.error("Failed to save points: " + fileName, e);
       }
     }
 
@@ -703,7 +702,7 @@ public final class DecorationPlacer {
         try (InputStream in = new FileInputStream(centerName.getPathString())) {
           currentPoints = PointFileReaderWriter.readOneToMany(in);
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Failed to load image points: " + centerName.getPathString(), e);
+          log.error("Failed to load image points: " + centerName.getPathString(), e);
           currentPoints = new HashMap<>();
         }
       } else {

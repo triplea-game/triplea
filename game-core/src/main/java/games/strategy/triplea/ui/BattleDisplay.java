@@ -80,7 +80,7 @@ import javax.swing.table.TableCellRenderer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.ScrollableJPanel;
@@ -90,7 +90,7 @@ import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /** Displays a running battle. */
-@Log
+@Slf4j
 public class BattleDisplay extends JPanel {
   private static final long serialVersionUID = -7939993104972562765L;
 

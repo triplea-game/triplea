@@ -6,14 +6,14 @@ import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.player.Player;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done
  * through an IDelegate using a change).
  */
-@Log
+@Slf4j
 @ToString(exclude = "playerBridge")
 public abstract class AbstractBasePlayer implements Player {
 
@@ -54,7 +54,7 @@ public abstract class AbstractBasePlayer implements Player {
         Interruptibles.sleep(100);
         i++;
         if (i == 30) {
-          log.severe(
+          log.error(
               "Start step: "
                   + stepName
                   + " does not match player bridge step: "
@@ -68,7 +68,7 @@ public abstract class AbstractBasePlayer implements Player {
                   + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
         }
         if (i > 310) {
-          log.severe(
+          log.error(
               "Start step: "
                   + stepName
                   + " still does not match player bridge step: "

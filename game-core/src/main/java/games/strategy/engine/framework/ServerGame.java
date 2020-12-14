@@ -48,13 +48,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.ExitStatus;
 
 /** Implementation of {@link IGame} for a network server node. */
-@Log
+@Slf4j
 public class ServerGame extends AbstractGame {
   public static final String GAME_HAS_BEEN_SAVED_PROPERTY =
       "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
@@ -168,10 +167,13 @@ public class ServerGame extends AbstractGame {
     if (node instanceof EventChild) {
       final EventChild childNode = (EventChild) node;
       if (childNode.getRenderingData() instanceof DiceRoll) {
-        final String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
+        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
+        final String playerName =
+            diceRoll.getPlayerName() == null
+                ? DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle())
+                : diceRoll.getPlayerName();
         final GamePlayer gamePlayer = gameData.getPlayerList().getPlayerId(playerName);
 
-        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
         final int[] rolls = new int[diceRoll.size()];
         for (int i = 0; i < rolls.length; i++) {
           rolls[i] = diceRoll.getDie(i).getValue();
@@ -210,12 +212,9 @@ public class ServerGame extends AbstractGame {
                   waitOnObserver.countDown();
                 } catch (final Exception e) {
                   if (e.getCause() instanceof ConnectionLostException) {
-                    log.log(
-                        Level.SEVERE,
-                        "Connection lost to observer while joining: " + newNode.getName(),
-                        e);
+                    log.error("Connection lost to observer while joining: " + newNode.getName(), e);
                   } else {
-                    log.log(Level.SEVERE, "Failed to join game", e);
+                    log.error("Failed to join game", e);
                   }
                 }
               },
@@ -231,7 +230,7 @@ public class ServerGame extends AbstractGame {
         nonBlockingObserver.cannotJoinGame(e.getMessage());
       }
     } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to join game", e);
+      log.error("Failed to join game", e);
       nonBlockingObserver.cannotJoinGame(e.getMessage());
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
@@ -304,7 +303,7 @@ public class ServerGame extends AbstractGame {
       }
     } catch (final GameOverException e) {
       if (!isGameOver) {
-        log.log(Level.SEVERE, "GameOverException raised, but game is not over", e);
+        log.error("GameOverException raised, but game is not over", e);
       }
     }
   }
@@ -315,7 +314,7 @@ public class ServerGame extends AbstractGame {
    */
   public void stopGame() {
     if (isGameOver) {
-      log.warning("Game previously stopped, cannot stop again.");
+      log.warn("Game previously stopped, cannot stop again.");
       return;
     }
 
@@ -330,10 +329,10 @@ public class ServerGame extends AbstractGame {
     // block delegate execution to prevent outbound messages to the players while we shut down.
     try {
       if (!delegateExecutionManager.blockDelegateExecution(16000)) {
-        log.warning("Could not stop delegate execution.");
+        log.warn("Could not stop delegate execution.");
         // Try one more time
         if (!delegateExecutionManager.blockDelegateExecution(16000)) {
-          log.severe("Exiting...");
+          log.error("Exiting...");
           ExitStatus.FAILURE.exit();
         }
       }
@@ -360,7 +359,7 @@ public class ServerGame extends AbstractGame {
         messengers.unregisterRemote(getRemoteName(delegate));
       }
     } catch (final RuntimeException e) {
-      log.log(Level.SEVERE, "Failed to shut down server game", e);
+      log.error("Failed to shut down server game", e);
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
@@ -377,7 +376,7 @@ public class ServerGame extends AbstractGame {
 
     final File parentDir = file.getParentFile();
     if (!parentDir.exists() && !parentDir.mkdirs()) {
-      log.severe(
+      log.error(
           "Failed to create save game directory (or one of its ancestors): "
               + parentDir.getAbsolutePath());
     }

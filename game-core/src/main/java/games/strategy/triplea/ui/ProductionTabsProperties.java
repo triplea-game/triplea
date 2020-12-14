@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.UrlStreams;
 import org.triplea.util.Tuple;
 
-@Log
+@Slf4j
 class ProductionTabsProperties {
   // Filename
   private static final String PROPERTY_FILE = "production_tabs";
@@ -57,7 +56,7 @@ class ProductionTabsProperties {
           try {
             properties.load(inputStream.get());
           } catch (final IOException e) {
-            log.log(Level.SEVERE, "Error reading " + propertyFile, e);
+            log.error("Error reading " + propertyFile, e);
           }
         }
       }

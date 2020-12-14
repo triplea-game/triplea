@@ -1,6 +1,14 @@
 <configuration>
     <appender name="swingMessage" class="org.triplea.debug.Slf4jLogMessageUploader"/>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
     <root level="info">
         <appender-ref ref="swingMessage"/>
+        <appender-ref ref="console"/>
     </root>
 </configuration>

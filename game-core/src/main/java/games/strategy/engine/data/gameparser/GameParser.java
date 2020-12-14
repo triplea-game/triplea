@@ -47,10 +47,9 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 import org.triplea.injection.Injections;
@@ -73,7 +72,7 @@ import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
 /** Parses a game XML file into a {@link GameData} domain object. */
-@Log
+@Slf4j
 public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
@@ -109,10 +108,10 @@ public final class GameParser {
             return new GameParser(mapUri.toString(), xmlGameElementMapper, engineVersion)
                 .parse(inputStream);
           } catch (final EngineVersionException e) {
-            log.log(Level.WARNING, "Game engine not compatible with: " + mapUri, e);
+            log.warn("Game engine not compatible with: " + mapUri, e);
             return null;
           } catch (final Exception e) {
-            log.log(Level.SEVERE, "Could not parse:" + mapUri + ", " + e.getMessage(), e);
+            log.error("Could not parse:" + mapUri + ", " + e.getMessage(), e);
             return null;
           }
         });
@@ -555,6 +554,15 @@ public final class GameParser {
     for (final GamePlay.Sequence.Step current : stepList) {
       final IDelegate delegate = getDelegate(current.getDelegate());
       final GamePlayer player = getPlayerIdOptional(current.getPlayer()).orElse(null);
+      if (player == null && current.getPlayer() != null && !current.getPlayer().isBlank()) {
+        throw new GameParseException(
+            "The step "
+                + current.getName()
+                + " wants a player with the name of '"
+                + current.getPlayer()
+                + "' but that player can not be found. "
+                + "Make sure the player's name is spelled correctly.");
+      }
       final String name = current.getName();
       String displayName = null;
       final Properties stepProperties = parseStepProperties(current.getStepProperties());

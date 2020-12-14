@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.client.ui.action;
 import java.awt.Component;
 import java.util.Collection;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.swing.Action;
@@ -11,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Builder;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -27,7 +26,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * observing).
  */
 @Builder
-@Log
+@Slf4j
 public class ShowPlayersAction {
   @Nonnull private final Supplier<LobbyGameListing> gameIdSelection;
   @Nonnull private final PlayerToLobbyConnection playerToLobbyConnection;
@@ -38,7 +37,7 @@ public class ShowPlayersAction {
         "Show Players",
         () ->
             AsyncRunner.runAsync(() -> showPlayersInGame(gameIdSelection.get()))
-                .exceptionally(e -> log.log(Level.INFO, "Failed to fetch players in game", e)));
+                .exceptionally(e -> log.info("Failed to fetch players in game", e)));
   }
 
   private void showPlayersInGame(final LobbyGameListing lobbyGameListing) {
