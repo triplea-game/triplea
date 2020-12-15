@@ -41,7 +41,7 @@ class CompositeChangeTest {
   }
 
   @Test
-  void flattenChangesWithSingleChange() {
+  void flattenChangesWithNoNesting() {
     final Territory territory = mock(Territory.class);
     final UnitCollection unitCollection = mock(UnitCollection.class);
     when(territory.getUnitCollection()).thenReturn(unitCollection);
@@ -58,5 +58,26 @@ class CompositeChangeTest {
             + "changes after flattening",
         flattenedChange.getChanges(),
         is(change.getChanges()));
+  }
+
+  @Test
+  void flattenChangesWithNestedSingleChange() {
+    final Territory territory = mock(Territory.class);
+    final UnitCollection unitCollection = mock(UnitCollection.class);
+    when(territory.getUnitCollection()).thenReturn(unitCollection);
+    when(unitCollection.getHolder()).thenReturn(territory);
+
+    final Change nestedChange = ChangeFactory.removeUnits(territory, List.of());
+
+    final CompositeChange change =
+        new CompositeChange(
+            new CompositeChange(new CompositeChange(new CompositeChange(nestedChange))));
+
+    final CompositeChange flattenedChange = change.flatten();
+    assertThat(
+        "After flattening, the one real change at the bottom of the nested CompositeChanges "
+            + "should be the only change",
+        flattenedChange.getChanges(),
+        is(List.of(nestedChange)));
   }
 }
