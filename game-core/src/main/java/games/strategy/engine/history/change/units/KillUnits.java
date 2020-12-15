@@ -55,7 +55,7 @@ public class KillUnits implements HistoryChange {
           unit.setHits(unit.getUnitAttachment().getHitPoints());
         });
 
-    transformUnits = new TransformUnits(location, killedUnits, true);
+    transformUnits = new TransformUnits(location, killedUnits);
 
     killedUnits.forEach(
         unit -> {
