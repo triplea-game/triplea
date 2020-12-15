@@ -33,13 +33,6 @@ public class TransformUnits implements HistoryChange {
   CompositeChange attributeChanges = new CompositeChange();
 
   public TransformUnits(final Territory location, final Collection<Unit> transformUnits) {
-    this(location, transformUnits, false);
-  }
-
-  TransformUnits(
-      final Territory location,
-      final Collection<Unit> transformUnits,
-      final boolean unitsWereKilled) {
     this.location = location;
 
     for (final Unit unit : transformUnits) {
