@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerDebug;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -24,6 +25,16 @@ final class DebugMenu extends JMenu {
       add(SwingAction.of("Show Hard AI Logs", AbstractProAi::showSettingsWindow))
           .setMnemonic(KeyEvent.VK_X);
     }
+
+    players.stream()
+        .filter(PlayerDebug.class::isInstance)
+        .forEach(
+            player -> {
+              final JMenu playerDebugMenu = new JMenu(player.getName());
+              add(playerDebugMenu);
+
+              ((PlayerDebug) player).addDebugMenuItems(frame, playerDebugMenu::add);
+            });
 
     add(SwingAction.of("Show Console", () -> ClientSetting.showConsole.setValueAndFlush(true)))
         .setMnemonic(KeyEvent.VK_C);
