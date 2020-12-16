@@ -6,15 +6,18 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.player.Player;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.Test;
+import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 
 class PlayerTypeTest {
 
   @Test
   void playerTypes() {
+    ClientSetting.setPreferences(new MemoryPreferences());
     assertThat(
         "Ensure we do not have an example invisible player type in the selection list",
         List.of(PlayerType.playerTypes()),
@@ -32,6 +35,7 @@ class PlayerTypeTest {
 
     stream(PlayerType.values())
         .filter(playerType -> playerType != PlayerType.BATTLE_CALC_DUMMY)
+        .filter(playerType -> playerType != PlayerType.FLOW_FIELD_AI)
         .forEach(
             playerType -> {
               final Player result = playerType.newPlayerWithName(testName);
