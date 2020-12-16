@@ -3,9 +3,11 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.fast.FastAi;
+import games.strategy.triplea.ai.flowfield.FlowFieldAI;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.weak.DoesNothingAi;
 import games.strategy.triplea.ai.weak.WeakAi;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -47,6 +49,13 @@ public enum PlayerType {
     @Override
     public Player newPlayerWithName(final String name) {
       return new ProAi(name);
+    }
+  },
+
+  FLOW_FIELD_AI("Field (AI)") {
+    @Override
+    public Player newPlayerWithName(final String name) {
+      return new FlowFieldAI(name);
     }
   },
 
@@ -97,6 +106,9 @@ public enum PlayerType {
   public static String[] playerTypes() {
     return Arrays.stream(values())
         .filter(PlayerType::isVisible)
+        .filter(
+            value ->
+                ClientSetting.showBetaFeatures.getValue().orElse(false) || value != FLOW_FIELD_AI)
         .map(enumValue -> enumValue.label)
         .toArray(String[]::new);
   }
