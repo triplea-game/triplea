@@ -11,12 +11,16 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +103,10 @@ public final class HeadedGameRunner {
   }
 
   private static Injections constructInjections() {
-    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
+    final ServiceLoader<AiProvider> loader = ServiceLoader.load(AiProvider.class);
+    return Injections.builder()
+        .engineVersion(new ProductVersionReader().getVersion())
+        .aiProviders(StreamSupport.stream(loader.spliterator(), false).collect(Collectors.toList()))
+        .build();
   }
 }

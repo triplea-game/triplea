@@ -5,7 +5,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.engine.framework.startup.mc.GameSelector;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
@@ -61,7 +61,9 @@ public class LocalLauncher implements ILauncher {
       gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new LocalNoOpMessenger());
       final Set<Player> gamePlayers =
-          gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
+          gameData
+              .getGameLoader()
+              .newPlayers(playerListing.getLocalPlayerTypeMap(new PlayerTypes()));
       final ServerGame game =
           new ServerGame(
               gameData,
@@ -105,7 +107,7 @@ public class LocalLauncher implements ILauncher {
       final Component parent,
       final LaunchAction launchAction) {
 
-    final Map<String, PlayerType> playerTypes =
+    final Map<String, PlayerTypes.Type> playerTypes =
         playerRows.stream()
             .collect(
                 Collectors.toMap(

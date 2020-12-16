@@ -113,7 +113,8 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             new Insets(0, 5, 5, 0),
             0,
             0));
-    final JComboBox<String> setAllTypes = new JComboBox<>(PlayerType.playerTypes());
+    final PlayerTypes playerTypes = new PlayerTypes();
+    final JComboBox<String> setAllTypes = new JComboBox<>(playerTypes.getAvailablePlayerLabels());
     setAllTypes.insertItemAt(SET_ALL_DEFAULT_LABEL, 0);
     setAllTypes.setSelectedIndex(-1);
     panel.add(

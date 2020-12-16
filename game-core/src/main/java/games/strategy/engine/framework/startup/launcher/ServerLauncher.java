@@ -9,6 +9,7 @@ import games.strategy.engine.framework.startup.mc.IClientChannel;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.MessengerException;
@@ -117,7 +118,9 @@ public class ServerLauncher implements ILauncher {
       abortLaunch = testShouldWeAbort();
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<Player> localPlayerSet =
-          gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
+          gameData
+              .getGameLoader()
+              .newPlayers(playerListing.getLocalPlayerTypeMap(new PlayerTypes()));
 
       // TODO: Project#20 - if feature flag is toggled, start game relay server
       //   and use a real ClientNetworkingBridge

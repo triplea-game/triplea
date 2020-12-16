@@ -16,7 +16,7 @@ final class GamePlayerTest {
   private final GamePlayer gamePlayer = new GamePlayer("name", new GameData());
 
   @Nested
-  final class GetPlayerTypeTest {
+  final class GetPlayerTypesTest {
     @Test
     void shouldReturnType() {
       List.of(Tuple.of("AI", "Hard (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))

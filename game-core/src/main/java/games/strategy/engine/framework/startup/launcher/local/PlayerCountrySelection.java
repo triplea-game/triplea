@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.launcher.local;
 
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 
 /**
  * Represents the data behind a player selected country, who is playing the country, which country,
@@ -10,7 +10,7 @@ public interface PlayerCountrySelection {
 
   String getPlayerName();
 
-  PlayerType getPlayerType();
+  PlayerTypes.Type getPlayerType();
 
   boolean isPlayerEnabled();
 }
