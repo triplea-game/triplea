@@ -83,7 +83,7 @@ subprojects {
         feignGsonVersion = '10.2.0'
         javaWebSocketVersion = '1.5.1'
         gsonVersion = '2.8.6'
-        guavaVersion = '30.0-jre'
+        guavaVersion = '30.1-jre'
         hamcrestJsonVersion = '0.2'
         hamcrestOptionalVersion = '2.0.0'
         hamcrestVersion = '2.0.0.0'
