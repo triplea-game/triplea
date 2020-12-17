@@ -277,7 +277,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return capital != null;
   }
 
-  public String getCapital() {
+  public @Nullable String getCapital() {
     return capital;
   }
 
