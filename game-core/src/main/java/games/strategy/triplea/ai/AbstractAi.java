@@ -340,7 +340,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
             unitChoices.stream().anyMatch(Matches.unitCanProduceUnits().negate());
         final Predicate<Unit> ownedFactories =
             Matches.unitCanProduceUnits().and(Matches.unitIsOwnedBy(me));
-        final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
+        final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data.getMap());
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
         final List<Territory> territoriesWithFactories =
@@ -422,7 +422,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
         }
       } else {
         // pick a not owned territory if possible
-        final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
+        final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data.getMap());
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(notOwned);
         if (!test.isEmpty()) {

@@ -1611,7 +1611,8 @@ public final class Matches {
         boolean atLeastOnePlayerOwnsCapital = false;
         for (final GamePlayer player : players) {
           final boolean ownCapital =
-              TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, damagedUnit.getData());
+              TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
+                  player, damagedUnit.getData().getMap());
           atLeastOnePlayerOwnsCapital = atLeastOnePlayerOwnsCapital || ownCapital;
           if (!ownCapital && territoryOfRepairUnit.getOwner().equals(player)) {
             return false;
@@ -1624,7 +1625,7 @@ public final class Matches {
 
         // Damaged units can only be repaired by facilities if the unit owner controls their capital
         if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
-            damagedUnit.getOwner(), damagedUnit.getData())) {
+            damagedUnit.getOwner(), damagedUnit.getData().getMap())) {
           return false;
         }
       }

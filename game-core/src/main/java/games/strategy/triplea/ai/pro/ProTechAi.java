@@ -42,7 +42,7 @@ final class ProTechAi {
       return;
     }
     final Territory myCapitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength =
         (myCapitol == null || myCapitol.getUnitCollection() == null)

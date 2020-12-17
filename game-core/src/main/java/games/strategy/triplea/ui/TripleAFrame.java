@@ -1938,7 +1938,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     try {
                       mapPanel.centerOn(
                           TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
-                              player, data));
+                              player, data.getMap()));
                     } finally {
                       data.releaseReadLock();
                     }

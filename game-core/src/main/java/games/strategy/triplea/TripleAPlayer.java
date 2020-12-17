@@ -566,7 +566,6 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final GameData data = getGameData();
     // play a sound for this phase
     final IAbstractForumPosterDelegate endTurnDelegate;
     try {
@@ -581,7 +580,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       throw new IllegalStateException(errorContext, e);
     }
     if (!soundPlayedAlreadyEndTurn
-        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(this.getGamePlayer(), data)) {
+        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
+            this.getGamePlayer(), getGameData().getMap())) {
       // do not play if we are reloading a savegame from pbem (gets annoying)
       if (!endTurnDelegate.getHasPostedTurnSummary()) {
         ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, this.getGamePlayer());
