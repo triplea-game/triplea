@@ -125,7 +125,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (!Properties.getTechDevelopment(getData().getProperties())) {
       return false;
     }
-    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData())) {
+    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData().getMap())) {
       return false;
     }
     if (Properties.getWW2V3TechModel(getData().getProperties())) {

@@ -65,7 +65,7 @@ public class WeakAi extends AbstractAi {
       return null;
     }
     final Territory ourCapitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     if (ourCapitol == null) {
       return null;
     }
@@ -94,7 +94,7 @@ public class WeakAi extends AbstractAi {
 
   private static boolean isAmphibAttack(final GamePlayer player, final GameData data) {
     final Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     // we dont own our own capitol
     if (capitol == null || !capitol.getOwner().equals(player)) {
       return false;
@@ -156,7 +156,7 @@ public class WeakAi extends AbstractAi {
       return List.of();
     }
     final Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     if (capitol == null || !capitol.getOwner().equals(player)) {
       return List.of();
     }
@@ -449,7 +449,8 @@ public class WeakAi extends AbstractAi {
       // find the nearest enemy owned capital
       for (final GamePlayer otherPlayer : data.getPlayerList().getPlayers()) {
         final Territory capitol =
-            TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(otherPlayer, data);
+            TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                otherPlayer, data.getMap());
         if (capitol != null
             && !data.getRelationshipTracker().isAllied(player, capitol.getOwner())) {
           final Route route = data.getMap().getRoute(t, capitol, moveThrough);
@@ -803,7 +804,7 @@ public class WeakAi extends AbstractAi {
     final int totalPu = player.getResources().getQuantity(pus);
     int leftToSpend = totalPu;
     final @Nullable Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
     final List<RepairRule> repairRules;
@@ -1043,7 +1044,7 @@ public class WeakAi extends AbstractAi {
       return;
     }
     final @Nullable Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     if (capitol != null) {
       // place in capitol first
       placeAllWeCanOn(data, capitol, placeDelegate, player);

@@ -69,7 +69,8 @@ public final class ProData {
       winPercentage = 90;
       minWinPercentage = 65;
     }
-    myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+    myCapital =
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     myUnitTerritories =
         CollectionUtils.getMatches(
             data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));

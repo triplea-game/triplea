@@ -51,8 +51,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   private boolean needToInitialize = true;
   private boolean hasPostedTurnSummary = false;
 
-  private static boolean canPlayerCollectIncome(final GamePlayer player, final GameData data) {
-    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
+  private static boolean canPlayerCollectIncome(final GamePlayer player, final GameMap gameMap) {
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, gameMap);
   }
 
   /**
@@ -100,7 +100,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     hasPostedTurnSummary = false;
     final PlayerAttachment pa = PlayerAttachment.get(player);
     // can't collect unless you own your own capital
-    if (!canPlayerCollectIncome(player, data)) {
+    if (!canPlayerCollectIncome(player, data.getMap())) {
       endTurnReport.append(rollWarBondsForFriends(bridge, player, data));
       // we do not collect any income this turn
     } else {
@@ -328,7 +328,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       // if both are zero, then it must mean we did not share our war bonds tech with them, even
       // though we are sharing
       // all tech (because they cannot have this tech)
-      if (diceSides <= 0 && diceCount <= 0 && canPlayerCollectIncome(p, data)) {
+      if (diceSides <= 0 && diceCount <= 0 && canPlayerCollectIncome(p, data.getMap())) {
         giveWarBondsTo = p;
         break;
       }

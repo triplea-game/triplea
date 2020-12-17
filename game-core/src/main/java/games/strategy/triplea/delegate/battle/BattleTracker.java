@@ -684,7 +684,7 @@ public class BattleTracker implements Serializable {
       final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
       final List<Territory> capitalsList =
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data);
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data.getMap());
       // we are losing one right now, so it is < not <=
       if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
         // do nothing, we keep our money since we still control enough capitals
@@ -765,12 +765,13 @@ public class BattleTracker implements Serializable {
         && relationshipTracker.isAllied(terrOrigOwner, gamePlayer)
         && !terrOrigOwner.equals(territory.getOwner())) {
       final List<Territory> capitalsListOwned =
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data);
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data.getMap());
       if (!capitalsListOwned.isEmpty()) {
         newOwner = terrOrigOwner;
       } else {
         newOwner = gamePlayer;
-        for (final Territory current : TerritoryAttachment.getAllCapitals(terrOrigOwner, data)) {
+        for (final Territory current :
+            TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap())) {
           if (territory.equals(current) || current.getOwner().equals(GamePlayer.NULL_PLAYERID)) {
             // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
             newOwner = terrOrigOwner;
@@ -855,7 +856,7 @@ public class BattleTracker implements Serializable {
     if (isTerritoryOwnerAnEnemy
         && terrOrigOwner != null
         && ta.getCapital() != null
-        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
+        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap()).contains(territory)
         && relationshipTracker.isAllied(terrOrigOwner, gamePlayer)) {
       // if it is give it back to the original owner
       final Collection<Territory> originallyOwned =

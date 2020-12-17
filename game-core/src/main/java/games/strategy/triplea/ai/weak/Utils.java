@@ -69,7 +69,7 @@ final class Utils {
     for (final GamePlayer player :
         CollectionUtils.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
       for (final Territory capital :
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data.getMap())) {
         if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {
           return true;
         }

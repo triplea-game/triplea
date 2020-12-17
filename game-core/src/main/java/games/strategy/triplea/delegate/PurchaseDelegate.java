@@ -134,7 +134,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
     }
     // if my capital is captured, I can't produce, but I may have PUs if I captured someone else's
     // capital
-    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData());
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData().getMap());
   }
 
   protected boolean canWePurchaseOrRepair() {

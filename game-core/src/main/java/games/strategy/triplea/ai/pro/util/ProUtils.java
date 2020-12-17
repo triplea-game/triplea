@@ -135,7 +135,8 @@ public final class ProUtils {
     final List<Territory> enemyCapitals = new ArrayList<>();
     final List<GamePlayer> enemyPlayers = getEnemyPlayers(player);
     for (final GamePlayer otherPlayer : enemyPlayers) {
-      enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
+      enemyCapitals.addAll(
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data.getMap()));
     }
     enemyCapitals.retainAll(
         CollectionUtils.getMatches(
@@ -153,7 +154,8 @@ public final class ProUtils {
     final List<Territory> capitals = new ArrayList<>();
     final List<GamePlayer> players = getAlliedPlayers(player);
     for (final GamePlayer alliedPlayer : players) {
-      capitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data));
+      capitals.addAll(
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data.getMap()));
     }
     capitals.retainAll(
         CollectionUtils.getMatches(

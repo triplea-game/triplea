@@ -232,7 +232,7 @@ public final class ProSimulateTurnUtils {
     if (ta != null
         && ta.getCapital() != null
         && terrOrigOwner != null
-        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(t)
+        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap()).contains(t)
         && relationshipTracker.isAllied(terrOrigOwner, player)) {
 
       // Give capital and any allied territories back to original owner

@@ -147,23 +147,23 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     // Quick check to see who still owns their own capital
     final boolean russia =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(russians, data)
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(russians, data.getMap())
             .getOwner()
             .equals(russians);
     final boolean germany =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(germans, data)
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(germans, data.getMap())
             .getOwner()
             .equals(germans);
     final boolean britain =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data)
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data.getMap())
             .getOwner()
             .equals(british);
     final boolean japan =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data)
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data.getMap())
             .getOwner()
             .equals(japanese);
     final boolean america =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(americans, data)
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(americans, data.getMap())
             .getOwner()
             .equals(americans);
     int count = 0;
