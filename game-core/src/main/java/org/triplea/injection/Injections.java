@@ -1,7 +1,7 @@
 package org.triplea.injection;
 
 import com.google.common.base.Preconditions;
-import games.strategy.triplea.ai.AiProvider;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
@@ -70,7 +70,7 @@ public final class Injections {
   @Getter private static Injections instance;
 
   private final Version engineVersion;
-  private final Collection<AiProvider> aiProviders;
+  private final Collection<PlayerTypes.Type> playerTypes;
 
   public static synchronized void init(final Injections injections) {
     Preconditions.checkState(getInstance() == null);

@@ -8,15 +8,13 @@ import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.weak.DoesNothingAi;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.settings.ClientSetting;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
-import org.triplea.injection.Injections;
 
 @Value
 public class PlayerTypes {
@@ -85,22 +83,21 @@ public class PlayerTypes {
         }
       };
 
-  Collection<Type> playerTypes = new ArrayList<>();
+  Collection<Type> playerTypes;
 
-  public PlayerTypes() {
-    playerTypes.add(HUMAN_PLAYER);
-    playerTypes.add(WEAK_AI);
-    playerTypes.add(FAST_AI);
-    playerTypes.add(PRO_AI);
-    playerTypes.add(DOES_NOTHING_AI);
-    playerTypes.add(CLIENT_PLAYER);
-    playerTypes.add(BATTLE_CALC_DUMMY);
+  public PlayerTypes(final Collection<Type> playerTypes) {
+    this.playerTypes = playerTypes;
+  }
 
-    final Injections injection = Injections.getInstance();
-    if (injection != null) {
-      playerTypes.addAll(
-          injection.getAiProviders().stream().map(AiType::new).collect(Collectors.toList()));
-    }
+  public static Collection<Type> getBuiltInPlayerTypes() {
+    return List.of(
+        PlayerTypes.HUMAN_PLAYER,
+        PlayerTypes.WEAK_AI,
+        PlayerTypes.FAST_AI,
+        PlayerTypes.PRO_AI,
+        PlayerTypes.DOES_NOTHING_AI,
+        PlayerTypes.CLIENT_PLAYER,
+        PlayerTypes.BATTLE_CALC_DUMMY);
   }
 
   /**

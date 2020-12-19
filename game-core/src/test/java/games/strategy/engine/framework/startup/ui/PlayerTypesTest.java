@@ -14,7 +14,7 @@ class PlayerTypesTest {
 
   @Test
   void playerTypes() {
-    final PlayerTypes playerTypes = new PlayerTypes();
+    final PlayerTypes playerTypes = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
     assertThat(
         "Ensure we do not have an example invisible player type in the selection list",
         List.of(playerTypes.getAvailablePlayerLabels()),
@@ -30,7 +30,7 @@ class PlayerTypesTest {
   void newPlayerWithName() {
     final String testName = "example";
 
-    final PlayerTypes playerTypesProvider = new PlayerTypes();
+    final PlayerTypes playerTypesProvider = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
     playerTypesProvider.getPlayerTypes().stream()
         .filter(playerType -> !playerType.equals(PlayerTypes.BATTLE_CALC_DUMMY))
         .forEach(
@@ -49,7 +49,7 @@ class PlayerTypesTest {
 
   @Test
   void fromLabel() {
-    final PlayerTypes playerTypesProvider = new PlayerTypes();
+    final PlayerTypes playerTypesProvider = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
     assertThrows(
         IllegalStateException.class, () -> playerTypesProvider.fromLabel("invalid_label_type"));
 
@@ -65,7 +65,7 @@ class PlayerTypesTest {
 
   @Test
   void getLabel() {
-    final PlayerTypes playerTypes = new PlayerTypes();
+    final PlayerTypes playerTypes = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
     assertThat(
         "All player type labels should be unique, count of unique labels should match total",
         playerTypes.getPlayerTypes().stream().map(PlayerTypes.Type::getLabel).distinct().count(),

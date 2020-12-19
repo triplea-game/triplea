@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 
 /** Implementation of {@link ILauncher} for a headed local or network client game. */
@@ -63,7 +64,9 @@ public class LocalLauncher implements ILauncher {
       final Set<Player> gamePlayers =
           gameData
               .getGameLoader()
-              .newPlayers(playerListing.getLocalPlayerTypeMap(new PlayerTypes()));
+              .newPlayers(
+                  playerListing.getLocalPlayerTypeMap(
+                      new PlayerTypes(Injections.getInstance().getPlayerTypes())));
       final ServerGame game =
           new ServerGame(
               gameData,

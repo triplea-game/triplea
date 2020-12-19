@@ -15,8 +15,8 @@ ext {
 
 dependencies {
     implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
+    implementation project(":ai")
     implementation project(":game-core")
-    implementation project(":game-ai")
     implementation project(":java-extras")
     implementation project(":swing-lib")
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"

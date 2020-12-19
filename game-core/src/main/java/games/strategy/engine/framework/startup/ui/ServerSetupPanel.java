@@ -38,6 +38,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.injection.Injections;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -403,7 +404,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       // this gets updated later
       enabledCheckBox.setSelected(true);
-      playerTypesProvider = new PlayerTypes();
+      playerTypesProvider = new PlayerTypes(Injections.getInstance().getPlayerTypes());
       final String[] playerTypes = playerTypesProvider.getAvailablePlayerLabels();
       type = new JComboBox<>(playerTypes);
       String previousSelection = reloadSelections.get(playerName);
