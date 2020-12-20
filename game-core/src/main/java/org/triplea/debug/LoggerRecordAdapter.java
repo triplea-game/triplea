@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.LogRecord;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -73,49 +72,6 @@ class LoggerRecordAdapter {
         return Arrays.stream(proxies)
             .map(StackTraceElementProxy::getStackTraceElement)
             .toArray(StackTraceElement[]::new);
-      }
-    };
-  }
-
-  static LoggerRecord fromJavaUtilLogRecord(final LogRecord record) {
-    return new LoggerRecord() {
-      @Override
-      public String getLoggerClassName() {
-        return record.getLoggerName();
-      }
-
-      @Override
-      public String getLogMessage() {
-        return record.getMessage();
-      }
-
-      @Override
-      public boolean isError() {
-        return record.getLevel().intValue() >= java.util.logging.Level.SEVERE.intValue();
-      }
-
-      @Override
-      public boolean isWarning() {
-        return record.getLevel().intValue() == java.util.logging.Level.WARNING.intValue();
-      }
-
-      @Override
-      public List<ExceptionDetails> getExceptions() {
-        final List<ExceptionDetails> exceptionDetails = new ArrayList<>();
-        Throwable throwable = record.getThrown();
-        for (int i = 0; i < 20 && throwable != null; i++) {
-          exceptionDetails.add(mapToExceptionDetails(throwable));
-          throwable = throwable.getCause();
-        }
-        return exceptionDetails;
-      }
-
-      private ExceptionDetails mapToExceptionDetails(final Throwable throwable) {
-        return ExceptionDetails.builder()
-            .exceptionClassName(throwable.getClass().getName())
-            .exceptionMessage(throwable.getMessage())
-            .stackTraceElements(throwable.getStackTrace())
-            .build();
       }
     };
   }
