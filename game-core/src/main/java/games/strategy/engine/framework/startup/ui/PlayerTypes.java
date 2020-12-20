@@ -7,7 +7,6 @@ import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.weak.DoesNothingAi;
 import games.strategy.triplea.ai.weak.WeakAi;
-import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.List;
 import lombok.AccessLevel;
@@ -150,9 +149,7 @@ public class PlayerTypes {
     private final AiProvider aiProvider;
 
     public AiType(final AiProvider aiProvide) {
-      super(
-          aiProvide.getLabel(),
-          !aiProvide.isBetaPlayer() || ClientSetting.showBetaFeatures.getValue().orElse(false));
+      super(aiProvide.getLabel());
       this.aiProvider = aiProvide;
     }
 

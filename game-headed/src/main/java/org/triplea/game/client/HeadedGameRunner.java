@@ -20,7 +20,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.ServiceLoader;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -88,9 +87,9 @@ public final class HeadedGameRunner {
         !GraphicsEnvironment.isHeadless(),
         "UI client launcher invoked from headless environment. This is currently "
             + "prohibited by design to avoid UI rendering errors in the headless environment.");
-    Injections.init(constructInjections());
 
     initializeClientSettingAndLogging();
+    Injections.init(constructInjections());
     initializeLookAndFeel();
 
     initializeDesktopIntegrations(args);
@@ -108,9 +107,17 @@ public final class HeadedGameRunner {
 
   private static Collection<PlayerTypes.Type> gatherPlayerTypes() {
     return Stream.concat(
+            PlayerTypes.getBuiltInPlayerTypes().stream(),
             StreamSupport.stream(ServiceLoader.load(AiProvider.class).spliterator(), false)
-                .map(PlayerTypes.AiType::new),
-            PlayerTypes.getBuiltInPlayerTypes().stream())
+                .map(PlayerTypes.AiType::new))
+        .filter(HeadedGameRunner::filterBetaPlayerType)
         .collect(Collectors.toList());
+  }
+
+  private static boolean filterBetaPlayerType(final PlayerTypes.Type playerType) {
+    if (playerType.getLabel().equals("FlowField (AI)")) {
+      return ClientSetting.showBetaFeatures.getValue().orElse(false);
+    }
+    return true;
   }
 }

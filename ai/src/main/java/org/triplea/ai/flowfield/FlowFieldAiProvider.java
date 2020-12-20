@@ -14,9 +14,4 @@ public class FlowFieldAiProvider implements AiProvider {
   public String getLabel() {
     return "FlowField (AI)";
   }
-
-  @Override
-  public boolean isBetaPlayer() {
-    return true;
-  }
 }

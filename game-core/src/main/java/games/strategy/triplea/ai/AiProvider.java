@@ -6,6 +6,4 @@ public interface AiProvider {
   AbstractAi create(String name, PlayerTypes.AiType playerType);
 
   String getLabel();
-
-  boolean isBetaPlayer();
 }
