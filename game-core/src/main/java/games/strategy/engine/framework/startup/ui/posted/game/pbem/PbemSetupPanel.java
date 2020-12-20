@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import org.triplea.injection.Injections;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -246,6 +247,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             null,
             null);
     return Optional.of(
-        new LocalLauncher(gameSelectorModel, randomSource, pl, this, new HeadedLaunchAction(this)));
+        new LocalLauncher(
+            gameSelectorModel,
+            randomSource,
+            pl,
+            this,
+            new HeadedLaunchAction(this),
+            new PlayerTypes(Injections.getInstance().getPlayerTypes())));
   }
 }
