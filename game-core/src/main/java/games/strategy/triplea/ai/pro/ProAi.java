@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
 
@@ -20,8 +20,8 @@ public class ProAi extends AbstractProAi {
   }
 
   @Override
-  public PlayerType getPlayerType() {
-    return PlayerType.PRO_AI;
+  public PlayerTypes.Type getPlayerType() {
+    return PlayerTypes.PRO_AI;
   }
 
   @Override

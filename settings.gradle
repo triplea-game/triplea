@@ -1,4 +1,5 @@
 rootProject.name='triplea'
+include 'ai'
 include 'database'
 include 'domain-data'
 include 'dropwizard-common'

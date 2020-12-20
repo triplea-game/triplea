@@ -6,8 +6,8 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
+import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -18,15 +18,15 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
  * An AI implementation that takes no action except to purchase and place units according to very
  * simple rules.
  */
-public class DoesNothingAi extends AbstractAi {
+public class DoesNothingAi extends AbstractBuiltInAi {
 
   public DoesNothingAi(final String name) {
     super(name);
   }
 
   @Override
-  public PlayerType getPlayerType() {
-    return PlayerType.DOES_NOTHING_AI;
+  public PlayerTypes.Type getPlayerType() {
+    return PlayerTypes.DOES_NOTHING_AI;
   }
 
   @Override

@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.injection.Injections;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -113,7 +114,8 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             new Insets(0, 5, 5, 0),
             0,
             0));
-    final JComboBox<String> setAllTypes = new JComboBox<>(PlayerType.playerTypes());
+    final PlayerTypes playerTypes = new PlayerTypes(Injections.getInstance().getPlayerTypes());
+    final JComboBox<String> setAllTypes = new JComboBox<>(playerTypes.getAvailablePlayerLabels());
     setAllTypes.insertItemAt(SET_ALL_DEFAULT_LABEL, 0);
     setAllTypes.setSelectedIndex(-1);
     panel.add(

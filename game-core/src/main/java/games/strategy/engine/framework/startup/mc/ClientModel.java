@@ -25,7 +25,7 @@ import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
@@ -343,11 +343,11 @@ public class ClientModel implements IMessengerErrorListener {
       return;
     }
     objectStreamFactory.setData(data);
-    final Map<String, PlayerType> playerMapping =
+    final Map<String, PlayerTypes.Type> playerMapping =
         playersToNodes.entrySet().stream()
             .filter(e -> e.getValue() != null)
             .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerTypes.CLIENT_PLAYER));
     final Set<Player> playerSet = data.getGameLoader().newPlayers(playerMapping);
     game = new ClientGame(data, playerSet, players, messengers, clientNetworkBridge);
     new Thread(
