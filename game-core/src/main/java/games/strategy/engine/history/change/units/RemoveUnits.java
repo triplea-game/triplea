@@ -11,37 +11,37 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import lombok.Value;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.text.StringSubstitutor;
 import org.triplea.java.collections.IntegerMap;
 
 /**
- * Kills a set of units in a location
+ * Removes a set of units in a location and adds a history event
  *
- * <p>Adds a history event for the killing
- *
- * <p>Transforms units to other units if needed. See {@link TransformUnits}
+ * <p>Transforms units to other units if needed. See {@link TransformDamagedUnits}
  */
-@Value
-public class KillUnits implements HistoryChange {
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
+@EqualsAndHashCode
+public class RemoveUnits implements HistoryChange {
 
   Territory location;
   Collection<Unit> killedUnits;
   Map<Territory, Collection<Unit>> unloadedUnits = new HashMap<>();
-  TransformUnits transformUnits;
+  TransformDamagedUnits transformDamagedUnits;
   String messageTemplate;
   /** Units that were killed */
   Collection<Unit> oldUnits = new ArrayList<>();
   /** The units that were created after a transformation */
   Collection<Unit> newUnits = new ArrayList<>();
 
-  public KillUnits(final Territory location, final Collection<Unit> killedUnits) {
-    this(location, killedUnits, "${units} lost in ${territory}");
-  }
-
   /** @param messageTemplate ${units} and ${territory} will be replaced in this template */
-  public KillUnits(
+  public RemoveUnits(
       final Territory location, final Collection<Unit> killedUnits, final String messageTemplate) {
     this.location = location;
     this.messageTemplate = messageTemplate;
@@ -55,7 +55,7 @@ public class KillUnits implements HistoryChange {
           unit.setHits(unit.getUnitAttachment().getHitPoints());
         });
 
-    transformUnits = new TransformUnits(location, killedUnits);
+    transformDamagedUnits = new TransformDamagedUnits(location, killedUnits);
 
     killedUnits.forEach(
         unit -> {
@@ -81,19 +81,22 @@ public class KillUnits implements HistoryChange {
               oldUnits.add(unloadedUnit);
             });
 
-    newUnits.addAll(transformUnits.getNewUnits());
+    newUnits.addAll(transformDamagedUnits.getNewUnits());
 
-    this.killedUnits = new ArrayList<>(oldUnits);
-    // remove the units that were transformed as TransformUnits will handle them
-    this.killedUnits.removeAll(transformUnits.getOldUnits());
-    // remove the unloaded units as they will be handled separately
-    this.killedUnits.removeAll(
-        unloadedUnits.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
+    final Collection<Unit> allUnloadedUnits =
+        unloadedUnits.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
+    // the killed units shouldn't contain units that were transformed as TransformUnits handles them
+    // it should also not include unloaded units as they are handled separately
+    this.killedUnits =
+        oldUnits.stream()
+            .filter(unit -> !transformDamagedUnits.getOldUnits().contains(unit))
+            .filter(Predicate.not(allUnloadedUnits::contains))
+            .collect(Collectors.toList());
   }
 
   @Override
   public void perform(final IDelegateBridge bridge) {
-    transformUnits.perform(bridge);
+    transformDamagedUnits.perform(bridge);
 
     final Collection<Unit> allKilledUnits = new ArrayList<>();
 

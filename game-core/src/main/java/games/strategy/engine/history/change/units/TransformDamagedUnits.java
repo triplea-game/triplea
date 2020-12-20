@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.Value;
 import org.triplea.util.Tuple;
 
@@ -24,7 +23,7 @@ import org.triplea.util.Tuple;
  * UnitAttachment#getWhenHitPointsDamagedChangesInto()}
  */
 @Value
-public class TransformUnits implements HistoryChange {
+public class TransformDamagedUnits implements HistoryChange {
 
   Territory location;
   /** Map of old unit -> new unit */
@@ -32,11 +31,13 @@ public class TransformUnits implements HistoryChange {
 
   CompositeChange attributeChanges = new CompositeChange();
 
-  public TransformUnits(final Territory location, final Collection<Unit> transformUnits) {
+  public TransformDamagedUnits(final Territory location, final Collection<Unit> damagedUnits) {
     this.location = location;
 
-    for (final Unit unit : transformUnits) {
-
+    // check if each of the damaged units are supposed to change when they take damage
+    // if it is supposed to change, create the new unit and translate attributes from the old unit
+    // to the new unit
+    for (final Unit unit : damagedUnits) {
       final Map<Integer, Tuple<Boolean, UnitType>> map =
           unit.getUnitAttachment().getWhenHitPointsDamagedChangesInto();
       if (map.containsKey(unit.getHits())) {
@@ -65,29 +66,40 @@ public class TransformUnits implements HistoryChange {
 
     // to reduce the amount of history text, group the transforming units by both the original and
     // new unit type
-    transformingUnits.entrySet().stream()
-        .collect(Collectors.groupingBy(entry -> entry.getKey().getType()))
-        .values()
-        .stream()
-        .flatMap(Collection::stream)
-        .collect(Collectors.groupingBy(entry -> entry.getValue().getType()))
-        .values()
+    final Map<UnitType, Map<UnitType, GroupedUnits>> groupedByOldAndNewUnitTypes = new HashMap<>();
+    transformingUnits.forEach(
+        (oldUnit, newUnit) -> {
+          groupedByOldAndNewUnitTypes
+              .computeIfAbsent(oldUnit.getType(), k -> new HashMap<>())
+              .computeIfAbsent(newUnit.getType(), k -> new GroupedUnits())
+              .addUnits(oldUnit, newUnit);
+        });
+
+    groupedByOldAndNewUnitTypes.values().stream()
+        .flatMap(tmp -> tmp.values().stream())
         .forEach(
-            (entries) -> {
+            (groupedUnits) -> {
               final String transformTranscriptText =
-                  MyFormatter.unitsToText(
-                          entries.stream().map(Map.Entry::getKey).collect(Collectors.toList()))
+                  MyFormatter.unitsToText(groupedUnits.getOldUnits())
                       + " transformed into "
-                      + MyFormatter.unitsToText(
-                          entries.stream().map(Map.Entry::getValue).collect(Collectors.toList()))
+                      + MyFormatter.unitsToText(groupedUnits.getNewUnits())
                       + " in "
                       + location.getName();
               bridge
                   .getHistoryWriter()
-                  .addChildToEvent(
-                      transformTranscriptText,
-                      entries.stream().map(Map.Entry::getKey).collect(Collectors.toList()));
+                  .addChildToEvent(transformTranscriptText, groupedUnits.getOldUnits());
             });
+  }
+
+  @Value
+  private static class GroupedUnits {
+    Collection<Unit> oldUnits = new ArrayList<>();
+    Collection<Unit> newUnits = new ArrayList<>();
+
+    void addUnits(final Unit oldUnit, final Unit newUnit) {
+      oldUnits.add(oldUnit);
+      newUnits.add(newUnit);
+    }
   }
 
   public Collection<Unit> getOldUnits() {

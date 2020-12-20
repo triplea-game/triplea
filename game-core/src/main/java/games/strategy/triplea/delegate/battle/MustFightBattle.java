@@ -23,8 +23,9 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.history.change.units.KillUnits;
-import games.strategy.engine.history.change.units.TransformUnits;
+import games.strategy.engine.history.change.HistoryChangeFactory;
+import games.strategy.engine.history.change.units.RemoveUnits;
+import games.strategy.engine.history.change.units.TransformDamagedUnits;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -567,14 +568,20 @@ public class MustFightBattle extends DependentBattle
     unitsThatMightTransform.addAll(
         CollectionUtils.getMatches(
             unitsKilledDuringRound, Matches.unitAtMaxHitPointDamageChangesInto()));
-    final TransformUnits transformUnits = new TransformUnits(battleSite, unitsThatMightTransform);
-    transformUnits.perform(bridge);
+    final TransformDamagedUnits transformDamagedUnits =
+        HistoryChangeFactory.transformDamagedUnits(battleSite, unitsThatMightTransform);
+    transformDamagedUnits.perform(bridge);
 
-    cleanupKilledUnits(bridge, side, transformUnits.getOldUnits(), transformUnits.getNewUnits());
+    cleanupKilledUnits(
+        bridge, side, transformDamagedUnits.getOldUnits(), transformDamagedUnits.getNewUnits());
     bridge
         .getDisplayChannelBroadcaster()
         .changedUnitsNotification(
-            battleId, player, transformUnits.getOldUnits(), transformUnits.getNewUnits(), null);
+            battleId,
+            player,
+            transformDamagedUnits.getOldUnits(),
+            transformDamagedUnits.getNewUnits(),
+            null);
   }
 
   @Override
@@ -601,11 +608,12 @@ public class MustFightBattle extends DependentBattle
     if (killedUnits.isEmpty()) {
       return;
     }
-    final KillUnits killUnits = new KillUnits(battleSite, killedUnits);
+    final RemoveUnits removeUnits =
+        HistoryChangeFactory.removeUnitsFromTerritory(battleSite, killedUnits);
 
-    final Collection<Unit> killedUnitsIncludingDependents = killUnits.getOldUnits();
-    final Collection<Unit> transformedUnits = killUnits.getNewUnits();
-    killUnits.perform(bridge);
+    final Collection<Unit> killedUnitsIncludingDependents = removeUnits.getOldUnits();
+    final Collection<Unit> transformedUnits = removeUnits.getNewUnits();
+    removeUnits.perform(bridge);
 
     cleanupKilledUnits(bridge, side, killedUnitsIncludingDependents, transformedUnits);
   }

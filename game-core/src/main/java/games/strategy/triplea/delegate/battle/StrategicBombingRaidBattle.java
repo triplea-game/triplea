@@ -11,7 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.history.change.units.KillUnits;
+import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -301,7 +301,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack());
               attackingUnits.removeAll(suicideUnits);
 
-              new KillUnits(battleSite, suicideUnits).perform(bridge);
+              HistoryChangeFactory.removeUnitsFromTerritory(battleSite, suicideUnits)
+                  .perform(bridge);
 
               final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
               final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, costs, gameData);
@@ -317,7 +318,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                       unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(battleSite)));
               if (!unitsCanDie.isEmpty()) {
                 // targets.removeAll(unitsCanDie);
-                new KillUnits(battleSite, unitsCanDie).perform(bridge);
+                HistoryChangeFactory.removeUnitsFromTerritory(battleSite, unitsCanDie)
+                    .perform(bridge);
                 final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(defender, gameData);
                 final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, defender, costs, gameData);
                 defenderLostTuv += tuvLostDefender;
@@ -663,8 +665,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       attackerLostTuv += tuvLostAttacker;
       // attackingUnits.removeAll(casualties);
       removeAttackers(killed, false);
-      new KillUnits(battleSite, killed, "${units} killed by " + currentTypeAa + " in ${territory}")
-          .perform(bridge);
+      HistoryChangeFactory.removeUnitsWithAa(battleSite, killed, currentTypeAa).perform(bridge);
     }
   }
 

@@ -8,7 +8,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.history.change.units.KillUnits;
+import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import java.util.ArrayList;
@@ -128,7 +128,7 @@ public class NonFightingBattle extends DependentBattle {
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
     if (!lost.isEmpty()) {
-      new KillUnits(battleSite, lost).perform(bridge);
+      HistoryChangeFactory.removeUnitsFromTerritory(battleSite, lost).perform(bridge);
     }
   }
 }
