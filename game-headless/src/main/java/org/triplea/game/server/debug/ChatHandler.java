@@ -1,14 +1,12 @@
 package org.triplea.game.server.debug;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.AppenderBase;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.SimpleFormatter;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import org.triplea.game.server.HeadlessGameServer;
@@ -28,36 +26,27 @@ import org.triplea.game.server.HeadlessGameServer;
  * </ul>
  */
 @ThreadSafe
-public final class ChatHandler extends Handler {
+public final class ChatHandler extends AppenderBase<ILoggingEvent> {
   @GuardedBy("this")
   private boolean enabled = true;
 
-  public ChatHandler() {
-    setLevel(Level.WARNING);
-    setFormatter(new SimpleFormatter());
-  }
-
   @Override
-  public void close() {}
-
-  @Override
-  public void flush() {}
-
-  @Override
-  public synchronized void publish(final LogRecord record) {
-    publish(record, ChatHandler::sendChatMessage);
+  protected void append(final ILoggingEvent loggingEvent) {
+    publish(loggingEvent, ChatHandler::sendChatMessage);
   }
 
   @GuardedBy("this")
   @VisibleForTesting
-  void publish(final LogRecord record, final Consumer<String> sendChatMessage) {
+  void publish(final ILoggingEvent record, final Consumer<String> sendChatMessage) {
     assert Thread.holdsLock(this);
 
     // guard against infinite recursion if sendChatMessage also logs
-    if (isLoggable(record) && enabled) {
+    if (enabled) {
       enabled = false;
       try {
-        formatChatMessage(record).forEach(sendChatMessage);
+        formatChatMessage(record).stream()
+            .map(message -> "[" + record.getLevel() + "] " + message)
+            .forEach(sendChatMessage);
       } finally {
         enabled = true;
       }
@@ -70,7 +59,7 @@ public final class ChatHandler extends Handler {
         .ifPresent(chat -> chat.sendMessage(message));
   }
 
-  private List<String> formatChatMessage(final LogRecord record) {
-    return List.of(getFormatter().format(record).trim().split("\\n"));
+  private List<String> formatChatMessage(final ILoggingEvent record) {
+    return List.of(record.getFormattedMessage().trim().split("\\n"));
   }
 }
