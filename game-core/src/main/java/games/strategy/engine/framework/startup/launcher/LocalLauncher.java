@@ -36,19 +36,22 @@ public class LocalLauncher implements ILauncher {
   private final PlayerListing playerListing;
   private final Component parent;
   private final LaunchAction launchAction;
+  private final PlayerTypes playerTypes;
 
   public LocalLauncher(
       final GameSelector gameSelector,
       final IRandomSource randomSource,
       final PlayerListing playerListing,
       final Component parent,
-      final LaunchAction launchAction) {
+      final LaunchAction launchAction,
+      final PlayerTypes playerTypes) {
     this.randomSource = randomSource;
     this.playerListing = playerListing;
     this.gameSelector = gameSelector;
     this.gameData = gameSelector.getGameData();
     this.parent = parent;
     this.launchAction = launchAction;
+    this.playerTypes = playerTypes;
   }
 
   @Override
@@ -62,11 +65,7 @@ public class LocalLauncher implements ILauncher {
       gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new LocalNoOpMessenger());
       final Set<Player> gamePlayers =
-          gameData
-              .getGameLoader()
-              .newPlayers(
-                  playerListing.getLocalPlayerTypeMap(
-                      new PlayerTypes(Injections.getInstance().getPlayerTypes())));
+          gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap(playerTypes));
       final ServerGame game =
           new ServerGame(
               gameData,
@@ -123,13 +122,19 @@ public class LocalLauncher implements ILauncher {
                     PlayerCountrySelection::getPlayerName,
                     PlayerCountrySelection::isPlayerEnabled));
 
-    final PlayerListing pl =
+    final PlayerListing playerListing =
         new PlayerListing(
             playersEnabled,
             playerTypes,
             gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound());
-    return new LocalLauncher(gameSelectorModel, new PlainRandomSource(), pl, parent, launchAction);
+    return new LocalLauncher(
+        gameSelectorModel,
+        new PlainRandomSource(),
+        playerListing,
+        parent,
+        launchAction,
+        new PlayerTypes(Injections.getInstance().getPlayerTypes()));
   }
 }
