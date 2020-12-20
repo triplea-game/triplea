@@ -7,7 +7,6 @@ githubApiToken: test
 # if we are using any stubbing, we'll assert that this value is false.
 # this is to help guarantee that we do not accidentally use test configuration in prod.
 prod: false
-logRequestAndResponses: false
 logSqlStatements: false
 
 database:
