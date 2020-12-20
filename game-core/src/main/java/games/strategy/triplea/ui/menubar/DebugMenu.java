@@ -32,8 +32,7 @@ final class DebugMenu extends JMenu {
             player -> {
               final JMenu playerDebugMenu = new JMenu(player.getName());
               add(playerDebugMenu);
-
-              ((PlayerDebug) player).addDebugMenuItems(frame, playerDebugMenu::add);
+              ((PlayerDebug) player).addDebugMenuItems(frame).forEach(playerDebugMenu::add);
             });
 
     add(SwingAction.of("Show Console", () -> ClientSetting.showConsole.setValueAndFlush(true)))
