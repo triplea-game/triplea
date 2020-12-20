@@ -7,7 +7,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.LogManager;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -36,7 +35,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public enum ErrorMessage {
   INSTANCE;
 
-  private static final String DEFAULT_LOGGER = "";
   private final JFrame windowReference = new JFrame("TripleA Error");
   private final JEditorPaneWithClickableLinks errorMessage = new JEditorPaneWithClickableLinks("");
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
@@ -99,7 +97,6 @@ public enum ErrorMessage {
             + "be errors rendering swing components. Check the call flow to this point and make "
             + "sure we do not enable error reporting unless we are in a non-headless environment");
     INSTANCE.enableErrorPopup = true;
-    LogManager.getLogManager().getLogger(DEFAULT_LOGGER).addHandler(new ErrorMessageHandler());
   }
 
   /**

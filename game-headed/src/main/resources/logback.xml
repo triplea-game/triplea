@@ -1,5 +1,12 @@
 <configuration>
     <appender name="swingMessage" class="org.triplea.debug.Slf4jLogMessageUploader"/>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>triplea.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%-4relative %d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
@@ -7,8 +14,10 @@
             </Pattern>
         </layout>
     </appender>
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="swingMessage"/>
         <appender-ref ref="console"/>
+        <appender-ref ref="FILE" />
     </root>
+    <logger name="org.apache.http" level="info"/>
 </configuration>

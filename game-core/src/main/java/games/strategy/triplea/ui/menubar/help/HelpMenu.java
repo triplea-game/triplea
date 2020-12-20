@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -19,9 +18,6 @@ public final class HelpMenu {
       SwingAction.of(
           "Send Bug Report",
           e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES));
-
-  private static final Action openDebugConsole =
-      SwingAction.of("Open Debug Console", e -> ClientSetting.showConsole.setValueAndFlush(true));
 
   private static final Action gameLicenseMenu =
       SwingAction.of(
@@ -49,8 +45,6 @@ public final class HelpMenu {
     menu.addSeparator();
 
     menu.add(gameLicenseMenu).setMnemonic(KeyEvent.VK_I);
-
-    menu.add(openDebugConsole).setMnemonic(KeyEvent.VK_C);
 
     menu.add(bugReportMenu).setMnemonic(KeyEvent.VK_B);
 
