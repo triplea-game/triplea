@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.debug.LoggerRecord;
-import org.triplea.debug.console.window.DebugUtils;
 import org.triplea.debug.error.reporting.formatting.ErrorReportBodyFormatter;
 import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.ErrorReportRequest;
@@ -39,7 +38,7 @@ class StackTraceReportModel {
                 Optional.ofNullable(UiContext.getResourceLoader())
                     .map(ResourceLoader::getMapName)
                     .orElse(null),
-                DebugUtils.getMemory(),
+                MemoryUsageReport.getMemory(),
                 stackTraceRecord,
                 engineVersion))
         .gameVersion(Injections.getInstance().getEngineVersion().toString())
