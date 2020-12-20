@@ -5,7 +5,6 @@ import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
-import games.strategy.triplea.ai.weak.DoesNothingAi;
 import games.strategy.triplea.ai.weak.WeakAi;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +16,8 @@ import lombok.Value;
 
 @Value
 public class PlayerTypes {
+
+  public static final String DOES_NOTHING_PLAYER = "Does Nothing (AI)";
 
   public static final Type HUMAN_PLAYER =
       new Type("Human") {
@@ -49,13 +50,6 @@ public class PlayerTypes {
         @Override
         public Player newPlayerWithName(final String name) {
           return new ProAi(name);
-        }
-      };
-  public static final Type DOES_NOTHING_AI =
-      new Type("Does Nothing (AI)") {
-        @Override
-        public Player newPlayerWithName(final String name) {
-          return new DoesNothingAi(name);
         }
       };
   /** A hidden player type to represent network connected players. */
@@ -94,7 +88,6 @@ public class PlayerTypes {
         PlayerTypes.WEAK_AI,
         PlayerTypes.FAST_AI,
         PlayerTypes.PRO_AI,
-        PlayerTypes.DOES_NOTHING_AI,
         PlayerTypes.CLIENT_PLAYER,
         PlayerTypes.BATTLE_CALC_DUMMY);
   }
