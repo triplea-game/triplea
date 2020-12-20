@@ -130,7 +130,7 @@ class UnitUtilsTest {
     }
 
     @Test
-    void unloadedUnitsAreTransferred() {
+    void unloadedUnitsAreTransferredFromOldUnitToNewUnit() {
       final Unit oldUnit = transport.create(1, player).get(0);
       final List<Unit> newUnits = transport.create(1, player);
 
@@ -191,7 +191,9 @@ class UnitUtilsTest {
       gameData.performChange(changes);
 
       assertThat(
-          "The first new unit should be the new transporter for the units",
+          "Units can only be transported by one unit at a time. So the transported unit "
+              + "should be transferred to one of the new units. Since the new units is a list, the "
+              + "first one will be selected.",
           transportedUnits.get(0).getTransportedBy(),
           is(newUnits.get(0)));
     }

@@ -178,56 +178,67 @@ public class UnitUtils {
       final Collection<Unit> unitsThatWillGetAttributes,
       final Territory territory) {
 
+    // first, translate attributes that can only go to one receiving unit
     final CompositeChange changes =
         unitsThatWillGetAttributes.stream()
             .findFirst()
             .map(
-                receivingUnit -> {
-                  final CompositeChange unitChange = new CompositeChange();
-                  final List<Unit> unloaded = unitGivingAttributes.getUnloaded();
-                  if (!unloaded.isEmpty()) {
-                    unitChange.add(
-                        ChangeFactory.unitPropertyChange(receivingUnit, unloaded, Unit.UNLOADED));
-                  }
-
-                  final List<Unit> transporting = unitGivingAttributes.getTransporting();
-                  return transporting.stream()
-                      .map(
-                          transported ->
-                              new CompositeChange(
-                                  ChangeFactory.unitPropertyChange(
-                                      transported, receivingUnit, Unit.TRANSPORTED_BY)))
-                      .reduce(unitChange, CompositeChange::new);
-                })
+                receivingUnit ->
+                    translateDependentUnitsToOtherUnit(unitGivingAttributes, receivingUnit))
             .orElse(new CompositeChange());
 
+    // next, translate attributes that can go to all of the receiving units
     return unitsThatWillGetAttributes.stream()
         .map(
-            receivingUnit -> {
-              final CompositeChange unitChange = new CompositeChange();
-              final int transferHits =
-                  Math.min(
-                      unitGivingAttributes.getHits(),
-                      // ensure the receiving unit has at least 1 hit point after hits are
-                      // transferred
-                      receivingUnit.getUnitAttachment().getHitPoints() - 1);
-              if (transferHits > 0) {
-                unitChange.add(
-                    ChangeFactory.unitsHit(
-                        IntegerMap.of(Map.of(receivingUnit, transferHits)), List.of(territory)));
-              }
-
-              final int transferDamage =
-                  Math.min(
-                      unitGivingAttributes.getUnitDamage(),
-                      receivingUnit.getHowMuchDamageCanThisUnitTakeTotal(territory));
-              if (transferDamage > 0) {
-                unitChange.add(
-                    ChangeFactory.bombingUnitDamage(
-                        IntegerMap.of(Map.of(receivingUnit, transferDamage)), List.of(territory)));
-              }
-              return unitChange;
-            })
+            receivingUnit ->
+                translateHitPointsAndDamageToOtherUnit(
+                    unitGivingAttributes, territory, receivingUnit))
         .reduce(changes, CompositeChange::new);
+  }
+
+  /** Translates dependent units from one unit to another */
+  private static CompositeChange translateDependentUnitsToOtherUnit(
+      final Unit unitGivingAttributes, final Unit receivingUnit) {
+    final CompositeChange unitChange = new CompositeChange();
+    final List<Unit> unloaded = unitGivingAttributes.getUnloaded();
+    if (!unloaded.isEmpty()) {
+      unitChange.add(ChangeFactory.unitPropertyChange(receivingUnit, unloaded, Unit.UNLOADED));
+    }
+
+    final List<Unit> transporting = unitGivingAttributes.getTransporting();
+    return transporting.stream()
+        .map(
+            transported ->
+                new CompositeChange(
+                    ChangeFactory.unitPropertyChange(
+                        transported, receivingUnit, Unit.TRANSPORTED_BY)))
+        .reduce(unitChange, CompositeChange::new);
+  }
+
+  private static CompositeChange translateHitPointsAndDamageToOtherUnit(
+      final Unit unitGivingAttributes, final Territory territory, final Unit receivingUnit) {
+    final CompositeChange unitChange = new CompositeChange();
+    final int transferHits =
+        Math.min(
+            unitGivingAttributes.getHits(),
+            // ensure the receiving unit has at least 1 hit point after hits are
+            // transferred
+            receivingUnit.getUnitAttachment().getHitPoints() - 1);
+    if (transferHits > 0) {
+      unitChange.add(
+          ChangeFactory.unitsHit(
+              IntegerMap.of(Map.of(receivingUnit, transferHits)), List.of(territory)));
+    }
+
+    final int transferDamage =
+        Math.min(
+            unitGivingAttributes.getUnitDamage(),
+            receivingUnit.getHowMuchDamageCanThisUnitTakeTotal(territory));
+    if (transferDamage > 0) {
+      unitChange.add(
+          ChangeFactory.bombingUnitDamage(
+              IntegerMap.of(Map.of(receivingUnit, transferDamage)), List.of(territory)));
+    }
+    return unitChange;
   }
 }
