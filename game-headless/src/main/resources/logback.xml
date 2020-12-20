@@ -1,5 +1,5 @@
 <configuration>
-    <appender name="chatMessage" class="org.triplea.game.server.debug.ChatHandler">
+    <appender name="chatMessage" class="org.triplea.game.server.debug.ChatAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>WARN</level>
         </filter>
@@ -16,5 +16,5 @@
         <appender-ref ref="chatMessage"/>
         <appender-ref ref="console"/>
     </root>
-    <logger name="org.triplea.game.server.debug.ChatHandler" level="warn"/>
+    <logger name="org.triplea.game.server.debug.ChatAppender" level="warn"/>
 </configuration>

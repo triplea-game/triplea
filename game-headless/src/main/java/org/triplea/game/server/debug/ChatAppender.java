@@ -26,13 +26,13 @@ import org.triplea.game.server.HeadlessGameServer;
  * </ul>
  */
 @ThreadSafe
-public final class ChatHandler extends AppenderBase<ILoggingEvent> {
+public final class ChatAppender extends AppenderBase<ILoggingEvent> {
   @GuardedBy("this")
   private boolean enabled = true;
 
   @Override
   protected void append(final ILoggingEvent loggingEvent) {
-    publish(loggingEvent, ChatHandler::sendChatMessage);
+    publish(loggingEvent, ChatAppender::sendChatMessage);
   }
 
   @GuardedBy("this")
