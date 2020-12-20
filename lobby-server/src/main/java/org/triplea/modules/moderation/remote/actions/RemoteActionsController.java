@@ -1,11 +1,7 @@
 package org.triplea.modules.moderation.remote.actions;
 
 import com.google.common.base.Preconditions;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
@@ -49,9 +45,6 @@ public class RemoteActionsController extends HttpController {
 
   @POST
   @Path(RemoteActionsClient.IS_PLAYER_BANNED_PATH)
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 60, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @RolesAllowed(UserRole.HOST)
   public Response isUserBanned(final String ipAddress) {
     ArgChecker.checkNotEmpty(ipAddress);

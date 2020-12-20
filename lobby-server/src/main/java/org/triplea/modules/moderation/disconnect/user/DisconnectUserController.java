@@ -1,11 +1,7 @@
 package org.triplea.modules.moderation.disconnect.user;
 
 import com.google.common.base.Preconditions;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,9 +31,6 @@ public class DisconnectUserController extends HttpController {
 
   @POST
   @Path(ModeratorChatClient.DISCONNECT_PLAYER_PATH)
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.MINUTES)})
   public Response disconnectPlayer(
       @Auth final AuthenticatedUser authenticatedUser, final String playerIdToBan) {
     Preconditions.checkNotNull(playerIdToBan);

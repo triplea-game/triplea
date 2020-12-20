@@ -102,7 +102,6 @@ subprojects {
         mockitoVersion = '3.6.28'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.18'
-        rateLimitjVersion = '0.7.0-RC1'
         snakeYamlVersion = '2.2.1'
         sonatypeGoodiesPrefsVersion = '2.3.1'
         substanceVersion = '2.5.1'

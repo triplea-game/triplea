@@ -78,7 +78,6 @@ public class LobbyServer extends Application<LobbyServerConfig> {
 
     serverConfiguration.enableEnvironmentVariablesInConfig();
     serverConfiguration.enableBetterJdbiExceptions();
-    serverConfiguration.enableEndpointRateLimiting();
   }
 
   @Override

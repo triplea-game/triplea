@@ -1,11 +1,7 @@
 package org.triplea.modules.player.info;
 
 import com.google.common.base.Preconditions;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
@@ -35,9 +31,6 @@ public class PlayerInfoController extends HttpController {
 
   @POST
   @Path(PlayerLobbyActionsClient.FETCH_PLAYER_INFORMATION)
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})
   public PlayerSummary fetchPlayerInfo(
       @Auth final AuthenticatedUser authenticatedUser, final String playerId) {
     Preconditions.checkNotNull(playerId);

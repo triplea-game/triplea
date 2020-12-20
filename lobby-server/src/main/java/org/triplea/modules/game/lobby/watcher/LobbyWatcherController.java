@@ -2,11 +2,7 @@ package org.triplea.modules.game.lobby.watcher;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -65,10 +61,6 @@ public class LobbyWatcherController extends HttpController {
    * Adds a game to the lobby listing. Responds with the gameId assigned to the new game. If we see
    * duplicate posts, the same gameId will be returned.
    */
-  @RateLimited(
-      reportOnly = true,
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 20, duration = 4, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(LobbyWatcherClient.POST_GAME_PATH)
   public GamePostingResponse postGame(
@@ -104,10 +96,6 @@ public class LobbyWatcherController extends HttpController {
   }
 
   /** Explicit remove of a game from the lobby. */
-  @RateLimited(
-      reportOnly = true,
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @POST
   @Path(LobbyWatcherClient.REMOVE_GAME_PATH)
   public Response removeGame(@Auth final AuthenticatedUser authenticatedUser, final String gameId) {
@@ -121,10 +109,6 @@ public class LobbyWatcherController extends HttpController {
    * with the corresponding gameId will be unlisted. The return value indicates if the game has been
    * kept alive, or false indicates the game was already removed and the client should re-post.
    */
-  @RateLimited(
-      reportOnly = true,
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @POST
   @Path(LobbyWatcherClient.KEEP_ALIVE_PATH)
   public boolean keepAlive(@Auth final AuthenticatedUser authenticatedUser, final String gameId) {
@@ -132,10 +116,6 @@ public class LobbyWatcherController extends HttpController {
   }
 
   /** Replaces an existing game with new game data details. */
-  @RateLimited(
-      reportOnly = true,
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @POST
   @Path(LobbyWatcherClient.UPDATE_GAME_PATH)
   public Response updateGame(
@@ -150,10 +130,6 @@ public class LobbyWatcherController extends HttpController {
   /** Endpoint used to consume and persist chat messages to database. */
   @POST
   @Path(LobbyWatcherClient.UPLOAD_CHAT_PATH)
-  @RateLimited(
-      reportOnly = true,
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @RolesAllowed(UserRole.HOST)
   public Response uploadChatMessage(
       @Context final HttpServletRequest request, final ChatMessageUpload chatMessageUpload) {
@@ -178,10 +154,6 @@ public class LobbyWatcherController extends HttpController {
 
   @POST
   @Path(LobbyWatcherClient.PLAYER_JOINED_PATH)
-  @RateLimited(
-      reportOnly = true,
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @RolesAllowed(UserRole.HOST)
   public Response playerJoinedGame(
       @Auth final AuthenticatedUser authenticatedUser,
@@ -196,10 +168,6 @@ public class LobbyWatcherController extends HttpController {
 
   @POST
   @Path(LobbyWatcherClient.PLAYER_LEFT_PATH)
-  @RateLimited(
-      reportOnly = true,
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @RolesAllowed(UserRole.HOST)
   public Response playerLeftGame(
       @Auth final AuthenticatedUser authenticatedUser,
