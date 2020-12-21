@@ -12,14 +12,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
 
 /** Controller for in-game map download actions. */
 @Slf4j
+@UtilityClass
 public final class MapDownloadController {
-  private MapDownloadController() {}
 
   /** Prompts user to download map updates if maps are out of date. */
   public static void checkDownloadedMapsAreLatest() {
