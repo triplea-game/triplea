@@ -19,6 +19,7 @@ import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +27,8 @@ import java.util.stream.StreamSupport;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.ai.does.nothing.DoesNothingAiProvider;
+import org.triplea.ai.flowfield.FlowFieldAiProvider;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.injection.Injections;
@@ -106,10 +109,15 @@ public final class HeadedGameRunner {
   }
 
   private static Collection<PlayerTypes.Type> gatherPlayerTypes() {
-    return Stream.concat(
-            PlayerTypes.getBuiltInPlayerTypes().stream(),
+    return Stream.of(
+            PlayerTypes.getBuiltInPlayerTypes(),
+            List.of(
+                new PlayerTypes.AiType(new DoesNothingAiProvider()),
+                new PlayerTypes.AiType(new FlowFieldAiProvider())),
             StreamSupport.stream(ServiceLoader.load(AiProvider.class).spliterator(), false)
-                .map(PlayerTypes.AiType::new))
+                .map(PlayerTypes.AiType::new)
+                .collect(Collectors.toSet()))
+        .flatMap(Collection::stream)
         .filter(HeadedGameRunner::filterBetaPlayerType)
         .collect(Collectors.toList());
   }
