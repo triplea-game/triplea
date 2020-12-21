@@ -348,7 +348,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     for (final Map.Entry<String, Collection<String>> entry :
         model.getPlayerNamesAndAlliancesInTurnOrder().entrySet()) {
       final PlayerRow newPlayerRow =
-          new PlayerRow(entry.getKey(), reloadSelections, entry.getValue());
+          new PlayerRow(
+              entry.getKey(),
+              reloadSelections,
+              entry.getValue(),
+              new PlayerTypes(Injections.getInstance().getPlayerTypes()));
       playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);
     }
@@ -389,12 +393,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             setWidgetActivation();
           }
         };
-    private final PlayerTypes playerTypesProvider;
 
     PlayerRow(
         final String playerName,
         final Map<String, String> reloadSelections,
-        final Collection<String> playerAlliances) {
+        final Collection<String> playerAlliances,
+        final PlayerTypes playerTypesProvider) {
       nameLabel = new JLabel(playerName);
       playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
       localCheckBox = new JCheckBox();
@@ -404,7 +408,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       // this gets updated later
       enabledCheckBox.setSelected(true);
-      playerTypesProvider = new PlayerTypes(Injections.getInstance().getPlayerTypes());
       final String[] playerTypes = playerTypesProvider.getAvailablePlayerLabels();
       type = new JComboBox<>(playerTypes);
       String previousSelection = reloadSelections.get(playerName);
