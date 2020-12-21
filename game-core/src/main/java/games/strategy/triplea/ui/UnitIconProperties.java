@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -184,7 +185,7 @@ public final class UnitIconProperties extends PropertyFile {
   @VisibleForTesting
   interface ConditionSupplier {
     @Nullable
-    ICondition getCondition(String playerName, String conditionName, GameData gameData);
+    ICondition getCondition(String playerName, String conditionName, GameDataInjections gameData);
   }
 
   @AllArgsConstructor

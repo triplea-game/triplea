@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.IAttachment;
@@ -633,7 +634,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     boolean objectiveMet = true;
     final List<GamePlayer> players = getPlayers();
-    final GameData data = delegateBridge.getData();
+    final GameDataInjections data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
     if (!conditions.isEmpty()) {
       final Map<ICondition, Boolean> actualTestedConditions =
@@ -983,7 +984,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String exclType,
       final int numberNeeded,
       final List<GamePlayer> players,
-      final GameData data) {
+      final GameDataInjections data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
@@ -1066,7 +1067,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String exclType,
       final int numberNeeded,
       final List<GamePlayer> players,
-      final GameData data) {
+      final GameDataInjections data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
@@ -1161,7 +1162,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Collection<Territory> listedTerrs,
       final int numberNeeded,
       final Collection<GamePlayer> players,
-      final GameData data) {
+      final GameDataInjections data) {
     int numberMet = 0;
     boolean satisfied = false;
     final Collection<GamePlayer> allies =
@@ -1217,7 +1218,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final GamePlayer player,
       final Set<GamePlayer> enemies,
       final int count,
-      final GameData data) {
+      final GameDataInjections data) {
     int found = 0;
     for (final GamePlayer e : enemies) {
       if (data.getRelationshipTracker().isAtWar(player, e)) {
@@ -1233,7 +1234,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return found >= count;
   }
 
-  private boolean checkTechs(final GamePlayer player, final GameData data) {
+  private boolean checkTechs(final GamePlayer player, final GameDataInjections data) {
     int found = 0;
     for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, data)) {
       if (techs.contains(a)) {
@@ -1250,7 +1251,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public void validate(final GameData data) {
+  public void validate(final GameDataInjections data) {
     validateNames(alliedOwnershipTerritories);
     validateNames(enemyExclusionTerritories);
     validateNames(enemySurfaceExclusionTerritories);

@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -172,7 +173,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     protected void place(
         final boolean placeForBid,
         final IAbstractPlaceDelegate placeDelegate,
-        final GameData data,
+        final GameDataInjections data,
         final GamePlayer player) {
       throw new UnsupportedOperationException();
     }

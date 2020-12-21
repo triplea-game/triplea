@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.move.validation;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
@@ -553,7 +554,7 @@ public final class AirMovementValidator {
   }
 
   private static BigDecimal maxMovementLeftForAllOwnedCarriers(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameDataInjections data) {
     BigDecimal max = BigDecimal.ZERO;
     final Predicate<Unit> ownedCarrier = Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
@@ -641,7 +642,7 @@ public final class AirMovementValidator {
 
   private static boolean canAirReachThisSpot(
       final Unit unit,
-      final GameData data,
+      final GameDataInjections data,
       final GamePlayer player,
       final Territory currentSpot,
       final BigDecimal movementLeft,
@@ -834,25 +835,26 @@ public final class AirMovementValidator {
     return 0;
   }
 
-  private static boolean getEditMode(final GameData data) {
-    return BaseEditDelegate.getEditMode(data);
+  private static boolean getEditMode(final GameDataInjections data) {
+    return BaseEditDelegate.getEditMode(data.getProperties());
   }
 
   public static Collection<Unit> getFriendly(
-      final Territory territory, final GamePlayer player, final GameData data) {
+      final Territory territory, final GamePlayer player, final GameDataInjections data) {
     return territory.getUnitCollection().getMatches(Matches.alliedUnit(player, data));
   }
 
-  private static boolean areNeutralsPassableByAir(final GameData data) {
+  private static boolean areNeutralsPassableByAir(final GameDataInjections data) {
     return Properties.getNeutralFlyoverAllowed(data.getProperties())
         && !Properties.getNeutralsImpassable(data.getProperties());
   }
 
-  private static int getNeutralCharge(final GameData data, final Route route) {
+  private static int getNeutralCharge(final GameDataInjections data, final Route route) {
     return getNeutralCharge(data, MoveDelegate.getEmptyNeutral(route).size());
   }
 
-  private static int getNeutralCharge(final GameData data, final int numberOfTerritories) {
+  private static int getNeutralCharge(
+      final GameDataInjections data, final int numberOfTerritories) {
     return numberOfTerritories * Properties.getNeutralCharge(data.getProperties());
   }
 }

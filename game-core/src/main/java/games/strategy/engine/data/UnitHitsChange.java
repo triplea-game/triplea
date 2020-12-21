@@ -37,7 +37,7 @@ public class UnitHitsChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameDataInjections data) {
     for (final Unit item : hits.keySet()) {
       item.setHits(hits.getInt(item));
     }

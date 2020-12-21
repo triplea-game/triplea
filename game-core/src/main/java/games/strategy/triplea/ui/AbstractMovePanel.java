@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Unit;
@@ -109,7 +110,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     cancelMoveButton.setEnabled(false);
   }
 
-  protected final GameData getGameData() {
+  protected final GameDataInjections getGameData() {
     return playerBridge.getGameData();
   }
 

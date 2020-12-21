@@ -1,7 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.properties.GameProperties;
 
 class SetPropertyChange extends Change {
@@ -29,7 +29,7 @@ class SetPropertyChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameDataInjections data) {
     data.getProperties().set(property, value);
   }
 }

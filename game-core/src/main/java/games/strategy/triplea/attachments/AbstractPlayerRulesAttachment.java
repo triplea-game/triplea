@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.UnitType;
@@ -69,7 +70,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 
   /** Get condition attachment for the given player and condition name. */
   public static ICondition getCondition(
-      final String playerName, final String conditionName, final GameData data) {
+      final String playerName, final String conditionName, final GameDataInjections data) {
     final GamePlayer player = data.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
@@ -339,7 +340,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   @Override
-  public void validate(final GameData data) {
+  public void validate(final GameDataInjections data) {
     validateNames(movementRestrictionTerritories);
   }
 

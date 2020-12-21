@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -49,7 +49,7 @@ public class OriginalOwnerTracker implements Serializable {
 
   /** Returns the territories originally owned by the specified player. */
   public static Collection<Territory> getOriginallyOwned(
-      final GameData data, final GamePlayer player) {
+      final GameDataInjections data, final GamePlayer player) {
     final Collection<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {
       GamePlayer originalOwner = getOriginalOwner(t);

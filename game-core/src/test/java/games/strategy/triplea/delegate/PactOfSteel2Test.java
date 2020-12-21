@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -20,7 +20,7 @@ import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class PactOfSteel2Test {
-  private final GameData gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+  private final GameDataInjections gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
 
   @Test
   void testDirectOwnershipTerritories() {

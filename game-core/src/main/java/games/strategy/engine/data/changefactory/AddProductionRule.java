@@ -3,7 +3,7 @@ package games.strategy.engine.data.changefactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 
@@ -22,7 +22,7 @@ class AddProductionRule extends Change {
   }
 
   @Override
-  public void perform(final GameData data) {
+  public void perform(final GameDataInjections data) {
     frontier.addRule(rule);
   }
 

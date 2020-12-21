@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -113,7 +114,7 @@ public final class ProBattleUtils {
       final Collection<Unit> myUnits,
       final Collection<Unit> enemyUnits,
       final boolean attacking) {
-    final GameData data = t.getData();
+    final GameDataInjections data = t.getData();
 
     List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(
@@ -171,7 +172,7 @@ public final class ProBattleUtils {
       final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
-    final GameData data = proData.getData();
+    final GameDataInjections data = proData.getData();
     if (t == null) {
       return true;
     }
@@ -239,7 +240,7 @@ public final class ProBattleUtils {
       final int distance,
       final GamePlayer player,
       final Map<Territory, ProTerritory> moveMap) {
-    final GameData data = proData.getData();
+    final GameDataInjections data = proData.getData();
 
     // Find enemy strength
     final Set<Territory> nearbyTerritoriesForEnemy =
@@ -297,7 +298,7 @@ public final class ProBattleUtils {
       final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Collection<Unit> unitsToPlace) {
-    final GameData data = proData.getData();
+    final GameDataInjections data = proData.getData();
 
     int landDistance = ProUtils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
     if (landDistance <= 0) {

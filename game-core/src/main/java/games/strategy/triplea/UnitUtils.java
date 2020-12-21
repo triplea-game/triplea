@@ -2,7 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -32,7 +32,7 @@ public class UnitUtils {
       final Collection<Unit> unitsAtStartOfStepInTerritory,
       final Territory producer,
       final GamePlayer player,
-      final GameData data,
+      final GameDataInjections data,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     return getHowMuchCanUnitProduce(
@@ -55,7 +55,7 @@ public class UnitUtils {
       final Collection<Unit> units,
       final Territory producer,
       final GamePlayer player,
-      final GameData data,
+      final GameDataInjections data,
       final boolean accountForDamage) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
@@ -92,7 +92,7 @@ public class UnitUtils {
       final Unit unit,
       final Territory producer,
       final GamePlayer player,
-      final GameData data,
+      final GameDataInjections data,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     if (unit == null) {

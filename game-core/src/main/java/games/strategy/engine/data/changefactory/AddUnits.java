@@ -1,7 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
@@ -58,7 +58,7 @@ public class AddUnits extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameDataInjections data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
     final Collection<Unit> unitsWithCorrectOwner =
         // old saved games will have a null unitOwnerMap
@@ -66,7 +66,7 @@ public class AddUnits extends Change {
     holder.getUnitCollection().addAll(unitsWithCorrectOwner);
   }
 
-  private Collection<Unit> buildUnitsWithOwner(final GameData data) {
+  private Collection<Unit> buildUnitsWithOwner(final GameDataInjections data) {
     final Map<UUID, Unit> uuidToUnits =
         units.stream().collect(Collectors.toMap(Unit::getId, unit -> unit));
     return unitOwnerMap.entrySet().stream()

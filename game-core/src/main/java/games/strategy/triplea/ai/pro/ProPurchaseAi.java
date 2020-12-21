@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -55,7 +56,8 @@ class ProPurchaseAi {
   private final ProOddsCalculator calc;
   private final ProData proData;
   private GameData data;
-  private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
+  private GameDataInjections
+      startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
   private GamePlayer player;
   private ProResourceTracker resourceTracker;
   private ProTerritoryManager territoryManager;
@@ -140,7 +142,9 @@ class ProPurchaseAi {
    * started with a unit in said territory or sea zone prior to placing the bid.
    */
   Map<Territory, ProPurchaseTerritory> bid(
-      final int pus, final IPurchaseDelegate purchaseDelegate, final GameData startOfTurnData) {
+      final int pus,
+      final IPurchaseDelegate purchaseDelegate,
+      final GameDataInjections startOfTurnData) {
 
     // Current data fields
     data = proData.getData();
@@ -257,7 +261,7 @@ class ProPurchaseAi {
   }
 
   Map<Territory, ProPurchaseTerritory> purchase(
-      final IPurchaseDelegate purchaseDelegate, final GameData startOfTurnData) {
+      final IPurchaseDelegate purchaseDelegate, final GameDataInjections startOfTurnData) {
 
     // Current data fields
     data = proData.getData();

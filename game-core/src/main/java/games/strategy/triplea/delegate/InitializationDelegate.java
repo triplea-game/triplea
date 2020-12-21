@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.NamedAttachable;
@@ -99,7 +99,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
    * no exceptions.
    */
   private static void initTransportedLandUnits(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     // check every territory
     boolean historyItemCreated = false;
     for (final Territory current : data.getMap().getTerritories()) {
@@ -166,7 +166,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     if (!Properties.getDisabledPlayersAssetsDeleted(data.getProperties())) {
       return;
     }
@@ -202,7 +202,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private static void initSkipUnusedBids(final GameData data) {
+  private static void initSkipUnusedBids(final GameDataInjections data) {
     // we have a lot of bid steps, 12 for pact of steel
     // in multi player this can be time consuming, since each vm
     // must be notified (and have its ui) updated for each step,
@@ -217,7 +217,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static void initTech(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       final Collection<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data);
       if (!advances.isEmpty()) {
@@ -232,7 +232,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static void initDestroyerArtillery(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     final boolean addArtilleryAndDestroyers =
         Properties.getUseDestroyersAndArtillery(data.getProperties());
     if (!Properties.getWW2V2(data.getProperties()) && addArtilleryAndDestroyers) {
@@ -275,7 +275,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static void initShipyards(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     final boolean useShipyards = Properties.getUseShipyards(data.getProperties());
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
@@ -307,7 +307,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static void initTwoHitBattleship(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     final boolean userEnabled = Properties.getTwoHitBattleships(data.getProperties());
     final UnitType battleShipUnit =
         data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
@@ -325,7 +325,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static void initOriginalOwner(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     final CompositeChange changes = new CompositeChange();
     for (final Territory current : data.getMap()) {
       if (!current.getOwner().isNull()) {

@@ -6,7 +6,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.IsNot.not;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 class TargetGroupTest extends AbstractDelegateTestCase {
 
-  final GameData twwGameData = TestMapGameData.TWW.getGameData();
+  final GameDataInjections twwGameData = TestMapGameData.TWW.getGameData();
 
   @Test
   @DisplayName("Verify no target groups if no units and no enemy units")

@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
 class DiceRollTest {
-  private GameData gameData = TestMapGameData.LHTR.getGameData();
+  private GameDataInjections gameData = TestMapGameData.LHTR.getGameData();
 
   @Test
   void testSimple() {

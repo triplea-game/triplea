@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -80,7 +81,7 @@ public final class ProData {
     minCostPerHitPoint = getMinCostPerHitPoint(purchaseOptions.getLandOptions());
   }
 
-  private static Map<Unit, Territory> newUnitTerritoryMap(final GameData data) {
+  private static Map<Unit, Territory> newUnitTerritoryMap(final GameDataInjections data) {
     final Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit u : t.getUnits()) {

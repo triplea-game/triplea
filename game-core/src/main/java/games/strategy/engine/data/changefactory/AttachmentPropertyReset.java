@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.IAttachment;
 
 /** Resets the value to the default value. */
@@ -37,7 +37,7 @@ class AttachmentPropertyReset extends Change {
   }
 
   @Override
-  public void perform(final GameData data) {
+  public void perform(final GameDataInjections data) {
     final IAttachment attachment = attachedTo.getAttachment(attachmentName);
     attachment.getPropertyOrThrow(property).resetValue();
   }

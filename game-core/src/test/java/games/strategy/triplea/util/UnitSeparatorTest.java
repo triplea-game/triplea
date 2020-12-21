@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -62,7 +63,7 @@ class UnitSeparatorTest {
 
   @Test
   void testGetSortedUnitCategoriesDontDrawUnit() {
-    final GameData data = TestMapGameData.TWW.getGameData();
+    final GameDataInjections data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
     northernGermany.getUnitCollection().clear();
     final GamePlayer italians = GameDataTestUtil.italy(data);

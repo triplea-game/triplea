@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
@@ -45,7 +45,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       return;
     }
     String victoryMessage;
-    final GameData data = getData();
+    final GameDataInjections data = getData();
     if (Properties.getPacificTheater(getData().getProperties())) {
       final GamePlayer japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
       final PlayerAttachment pa = PlayerAttachment.get(japanese);
@@ -193,7 +193,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   @Override
   public void end() {
     super.end();
-    final GameData data = getData();
+    final GameDataInjections data = getData();
     if (Properties.getTriggers(data.getProperties())) {
       final CompositeChange change = new CompositeChange();
       for (final GamePlayer player : data.getPlayerList().getPlayers()) {
@@ -230,7 +230,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
 
   private void checkVictoryCities(
       final IDelegateBridge bridge, final String victoryMessage, final String victoryType) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
 
     final Collection<Territory> territories = data.getMap().getTerritories();
     for (final String allianceName : data.getAllianceTracker().getAlliances()) {
@@ -259,11 +259,13 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
   }
 
-  private static int getEconomicVictoryAmount(final GameData data, final String alliance) {
+  private static int getEconomicVictoryAmount(
+      final GameDataInjections data, final String alliance) {
     return data.getProperties().get(alliance + " Economic Victory", 200);
   }
 
-  private static int getVcAmount(final GameData data, final String alliance, final String type) {
+  private static int getVcAmount(
+      final GameDataInjections data, final String alliance, final String type) {
     int defaultVc = 20;
     switch (type) {
       case " Total Victory VCs":

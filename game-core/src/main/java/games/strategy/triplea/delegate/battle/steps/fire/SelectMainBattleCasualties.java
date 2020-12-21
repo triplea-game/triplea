@@ -47,7 +47,7 @@ public class SelectMainBattleCasualties
     final int hitsLeftForRestrictedTransports = hitCount - totalHitPointsAvailable;
 
     final CasualtyDetails casualtyDetails;
-    if (BaseEditDelegate.getEditMode(step.getBattleState().getGameData())) {
+    if (BaseEditDelegate.getEditMode(step.getBattleState().getGameData().getProperties())) {
       final CasualtyDetails message =
           selectFunction.apply(bridge, step, step.getFiringGroup().getTargetUnits(), 0);
       casualtyDetails = new CasualtyDetails(message, true);

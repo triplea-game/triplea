@@ -3,7 +3,7 @@ package games.strategy.engine.data.changefactory;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.ProductionFrontier;
@@ -42,7 +42,7 @@ public class ChangeFactory {
         private static final long serialVersionUID = -5514560889478876641L;
 
         @Override
-        protected void perform(final GameData data) {}
+        protected void perform(final GameDataInjections data) {}
 
         @Override
         public Change invert() {
@@ -117,7 +117,8 @@ public class ChangeFactory {
     return compositeChange;
   }
 
-  public static Change setProperty(final String property, final Object value, final GameData data) {
+  public static Change setProperty(
+      final String property, final Object value, final GameDataInjections data) {
     return new SetPropertyChange(property, value, data.getProperties());
   }
 
@@ -189,7 +190,8 @@ public class ChangeFactory {
     return new ObjectPropertyChange(unit, propertyName, newValue);
   }
 
-  public static Change addBattleRecords(final BattleRecords records, final GameData data) {
+  public static Change addBattleRecords(
+      final BattleRecords records, final GameDataInjections data) {
     return new AddBattleRecordsChange(records, data);
   }
 

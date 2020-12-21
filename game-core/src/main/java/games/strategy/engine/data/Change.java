@@ -14,7 +14,7 @@ import java.io.Serializable;
 public abstract class Change implements Serializable {
   private static final long serialVersionUID = -5563487769423328606L;
 
-  protected abstract void perform(GameData data);
+  protected abstract void perform(GameDataInjections data);
 
   public abstract Change invert();
 

@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
@@ -282,7 +283,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private int rollWarBonds(
-      final IDelegateBridge delegateBridge, final GamePlayer player, final GameData data) {
+      final IDelegateBridge delegateBridge,
+      final GamePlayer player,
+      final GameDataInjections data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -303,7 +306,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private String rollWarBondsForFriends(
-      final IDelegateBridge delegateBridge, final GamePlayer player, final GameData data) {
+      final IDelegateBridge delegateBridge,
+      final GamePlayer player,
+      final GameDataInjections data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -438,7 +443,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   /** Returns the total production value of the specified territories. */
-  public static int getProduction(final Collection<Territory> territories, final GameData data) {
+  public static int getProduction(
+      final Collection<Territory> territories, final GameDataInjections data) {
     int value = 0;
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);
@@ -456,7 +462,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   // finds losses due to blockades, positive value returned.
   private int getBlockadeProductionLoss(
       final GamePlayer player,
-      final GameData data,
+      final GameDataInjections data,
       final IDelegateBridge bridge,
       final StringBuilder endTurnReport) {
     final PlayerAttachment playerRules = PlayerAttachment.get(player);

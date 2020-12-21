@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import com.google.common.collect.ImmutableList;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -287,7 +287,7 @@ public final class ProTransportUtils {
    */
   public static List<Unit> getAirThatCantLandOnCarrier(
       final GamePlayer player, final Territory t, final List<Unit> units) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
     final Collection<Unit> airUnits =
@@ -316,7 +316,7 @@ public final class ProTransportUtils {
       final Territory t,
       final Collection<Unit> existingUnits,
       final Unit newUnit) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
     final Collection<Unit> airUnits =
@@ -338,7 +338,7 @@ public final class ProTransportUtils {
    */
   public static int getUnusedLocalCarrierCapacity(
       final GamePlayer player, final Territory t, final List<Unit> unitsToPlace) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
 
     // Find nearby carrier capacity
     final Set<Territory> nearbyTerritories =

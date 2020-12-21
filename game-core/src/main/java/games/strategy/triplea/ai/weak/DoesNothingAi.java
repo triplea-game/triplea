@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.weak;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -58,7 +59,7 @@ public class DoesNothingAi extends AbstractBuiltInAi {
   protected void place(
       final boolean placeForBid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameData data,
+      final GameDataInjections data,
       final GamePlayer player) {
     // place whatever we have
     if (!player.getUnitCollection().isEmpty()) {

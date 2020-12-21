@@ -1,6 +1,6 @@
 package games.strategy.triplea.printgenerator;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.triplea.delegate.BidPlaceDelegate;
@@ -27,7 +27,7 @@ class PlayerOrder {
   }
 
   void saveToFile(final PrintGenerationData printData) throws IOException {
-    final GameData gameData = printData.getData();
+    final GameDataInjections gameData = printData.getData();
     for (final GameStep currentStep : gameData.getSequence()) {
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();

@@ -158,7 +158,8 @@ public class MovePanel extends AbstractMovePanel {
         private void selectUnitsToMove(
             final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
           // are any of the units ours, note - if no units selected that's still ok
-          if (!BaseEditDelegate.getEditMode(getData()) || !selectedUnits.isEmpty()) {
+          if (!BaseEditDelegate.getEditMode(getData().getProperties())
+              || !selectedUnits.isEmpty()) {
             for (final Unit unit : units) {
               if (!unit.getOwner().equals(getUnitOwner(selectedUnits))) {
                 return;
@@ -184,7 +185,7 @@ public class MovePanel extends AbstractMovePanel {
             }
             final String text = "Select units to move from " + t.getName();
             final UnitChooser chooser;
-            if (BaseEditDelegate.getEditMode(getData())
+            if (BaseEditDelegate.getEditMode(getData().getProperties())
                 && !CollectionUtils.getMatches(
                         unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove)))
                     .containsAll(unitsToMove)) {
@@ -241,7 +242,7 @@ public class MovePanel extends AbstractMovePanel {
           if (mouseDetails.isShiftDown()) {
             // prevent units of multiple owners from being chosen in edit mode
             final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
-            if (!BaseEditDelegate.getEditMode(getData())) {
+            if (!BaseEditDelegate.getEditMode(getData().getProperties())) {
               ownedNotFactoryBuilder.and(unitsToMoveMatch);
             } else if (!selectedUnits.isEmpty()) {
               ownedNotFactoryBuilder
@@ -763,7 +764,9 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private GamePlayer getUnitOwner(final Collection<Unit> units) {
-    return (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
+    return (BaseEditDelegate.getEditMode(getData().getProperties())
+            && units != null
+            && !units.isEmpty())
         ? units.iterator().next().getOwner()
         : getCurrentPlayer();
   }
@@ -995,7 +998,7 @@ public class MovePanel extends AbstractMovePanel {
 
   private Predicate<Unit> getMovableMatch(final Route route, final Collection<Unit> units) {
     final PredicateBuilder<Unit> movableBuilder = PredicateBuilder.trueBuilder();
-    if (!BaseEditDelegate.getEditMode(getData())) {
+    if (!BaseEditDelegate.getEditMode(getData().getProperties())) {
       movableBuilder.and(Matches.unitIsOwnedBy(getCurrentPlayer()));
     }
     /*
@@ -1011,7 +1014,7 @@ public class MovePanel extends AbstractMovePanel {
     if (route != null) {
       final Predicate<Unit> enoughMovement =
           u ->
-              BaseEditDelegate.getEditMode(getData())
+              BaseEditDelegate.getEditMode(getData().getProperties())
                   || (u.getMovementLeft().compareTo(route.getMovementCost(u)) >= 0);
 
       if (route.isUnload()) {
@@ -1034,7 +1037,7 @@ public class MovePanel extends AbstractMovePanel {
     if (units != null && !units.isEmpty()) {
       // force all units to have the same owner in edit mode
       final GamePlayer owner = getUnitOwner(units);
-      if (BaseEditDelegate.getEditMode(getData())) {
+      if (BaseEditDelegate.getEditMode(getData().getProperties())) {
         movableBuilder.and(Matches.unitIsOwnedBy(owner));
       }
       movableBuilder.and(areOwnedUnitsOfType(units, owner));

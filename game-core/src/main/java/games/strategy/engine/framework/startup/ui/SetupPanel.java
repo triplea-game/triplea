@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -50,7 +50,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
   public abstract List<Action> getUserActions();
 
   public void layoutPlayerComponents(
-      final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {
+      final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameDataInjections data) {
     panel.removeAll();
     playerRows.clear();
     panel.setLayout(new GridBagLayout());

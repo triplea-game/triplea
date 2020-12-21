@@ -58,7 +58,7 @@ import org.triplea.util.Version;
  * <p>Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made
  * through a DelegateBridge or through a History object.
  */
-public class GameData implements Serializable {
+public class GameData implements Serializable, GameDataInjections {
   private static final long serialVersionUID = -2612710634080125728L;
 
   /** When we load a game from a save file, this property will be the name of that file. */
@@ -127,51 +127,61 @@ public class GameData implements Serializable {
    *
    * @return the map for this game.
    */
+  @Override
   public GameMap getMap() {
     return map;
   }
 
   /** Returns a collection of all units in the game. */
+  @Override
   public UnitsList getUnits() {
     return unitsList;
   }
 
   /** Returns list of Players in the game. */
+  @Override
   public PlayerList getPlayerList() {
     return playerList;
   }
 
   /** Returns list of resources available in the game. */
+  @Override
   public ResourceList getResourceList() {
     return resourceList;
   }
 
   /** Returns list of production Frontiers for this game. */
+  @Override
   public ProductionFrontierList getProductionFrontierList() {
     return productionFrontierList;
   }
 
   /** Returns list of Production Rules for the game. */
+  @Override
   public ProductionRuleList getProductionRuleList() {
     return productionRuleList;
   }
 
   /** Returns the Technology Frontier for this game. */
+  @Override
   public TechnologyFrontier getTechnologyFrontier() {
     return technologyFrontier;
   }
 
   /** Returns the list of production Frontiers for this game. */
+  @Override
   public RepairFrontierList getRepairFrontierList() {
     return repairFrontierList;
   }
 
   /** Returns the list of Production Rules for the game. */
+  @Override
   public RepairRules getRepairRules() {
     return repairRules;
   }
 
   /** Returns the Alliance Tracker for the game. */
+  @Override
   public AllianceTracker getAllianceTracker() {
     return alliances;
   }
@@ -192,10 +202,12 @@ public class GameData implements Serializable {
     forceInSwingEventThread = true;
   }
 
+  @Override
   public GameSequence getSequence() {
     return sequence;
   }
 
+  @Override
   public UnitTypeList getUnitTypeList() {
     return unitTypeList;
   }
@@ -212,6 +224,7 @@ public class GameData implements Serializable {
     return delegates.get(name);
   }
 
+  @Override
   public UnitHolder getUnitHolder(final String name, final String type) {
     switch (type) {
       case UnitHolder.PLAYER:
@@ -223,6 +236,7 @@ public class GameData implements Serializable {
     }
   }
 
+  @Override
   public GameProperties getProperties() {
     return properties;
   }
@@ -370,19 +384,23 @@ public class GameData implements Serializable {
    * (relation with the Null player / Neutral) and the SelfRelation (Relation with yourself) all
    * other relations are map designer defined.
    */
+  @Override
   public RelationshipTypeList getRelationshipTypeList() {
     return relationshipTypeList;
   }
 
   /** Returns a tracker which tracks all current relationships that exist between all players. */
+  @Override
   public RelationshipTracker getRelationshipTracker() {
     return relationships;
   }
 
+  @Override
   public Map<String, TerritoryEffect> getTerritoryEffectList() {
     return territoryEffectList;
   }
 
+  @Override
   public BattleRecordsList getBattleRecordsList() {
     return battleRecordsList;
   }

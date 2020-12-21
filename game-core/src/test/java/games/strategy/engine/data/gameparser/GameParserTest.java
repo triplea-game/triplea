@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -68,7 +69,7 @@ final class GameParserTest {
    * The test-XML is intentinally loaded with legacy properties and options. Here we assert that
    * those legacy values have been forward-ported to their new, non-legacy values.
    */
-  private void verifyLegacyPropertiesAreUpdated(final GameData gameData) {
+  private void verifyLegacyPropertiesAreUpdated(final GameDataInjections gameData) {
     assertThat(
         gameData.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN), is(true));
     assertThat(

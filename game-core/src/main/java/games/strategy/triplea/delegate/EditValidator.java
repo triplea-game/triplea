@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
@@ -146,7 +147,7 @@ final class EditValidator {
 
   @Nullable
   static String validateAddTech(
-      final GameData data, final Collection<TechAdvance> techs, final GamePlayer player) {
+      final GameDataInjections data, final Collection<TechAdvance> techs, final GamePlayer player) {
     if (techs == null) {
       return "No tech selected";
     }
@@ -172,7 +173,7 @@ final class EditValidator {
 
   @Nullable
   static String validateRemoveTech(
-      final GameData data, final Collection<TechAdvance> techs, final GamePlayer player) {
+      final GameDataInjections data, final Collection<TechAdvance> techs, final GamePlayer player) {
     if (techs == null) {
       return "No tech selected";
     }

@@ -1,6 +1,6 @@
 package games.strategy.triplea.ai;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
@@ -26,7 +26,7 @@ public final class AiPoliticalUtils {
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(
       final GamePlayer gamePlayer,
       final Map<ICondition, Boolean> testedConditions,
-      final GameData data) {
+      final GameDataInjections data) {
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     for (final PoliticalActionAttachment nextAction :
         PoliticalActionAttachment.getValidActions(gamePlayer, testedConditions, data)) {
@@ -44,7 +44,7 @@ public final class AiPoliticalUtils {
   public static List<PoliticalActionAttachment> getPoliticalActionsOther(
       final GamePlayer gamePlayer,
       final Map<ICondition, Boolean> testedConditions,
-      final GameData data) {
+      final GameDataInjections data) {
     final List<PoliticalActionAttachment> warActions =
         getPoliticalActionsTowardsWar(gamePlayer, testedConditions, data);
     final Collection<PoliticalActionAttachment> validActions =
@@ -84,7 +84,7 @@ public final class AiPoliticalUtils {
   private static boolean wantToPerFormActionTowardsWar(
       final PoliticalActionAttachment nextAction,
       final GamePlayer gamePlayer,
-      final GameData data) {
+      final GameDataInjections data) {
     return isFree(nextAction) && goesTowardsWar(nextAction, gamePlayer, data);
   }
 
@@ -92,7 +92,9 @@ public final class AiPoliticalUtils {
   // only switches from a Neutral to an War state... won't go through in-between neutral states
   // TODO have another look at this part.
   private static boolean goesTowardsWar(
-      final PoliticalActionAttachment nextAction, final GamePlayer p0, final GameData data) {
+      final PoliticalActionAttachment nextAction,
+      final GamePlayer p0,
+      final GameDataInjections data) {
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
         nextAction.getRelationshipChanges()) {
       final GamePlayer p1 = relationshipChange.player1;
@@ -112,7 +114,9 @@ public final class AiPoliticalUtils {
   }
 
   private static boolean awayFromAlly(
-      final PoliticalActionAttachment nextAction, final GamePlayer p0, final GameData data) {
+      final PoliticalActionAttachment nextAction,
+      final GamePlayer p0,
+      final GameDataInjections data) {
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
         nextAction.getRelationshipChanges()) {
       final GamePlayer p1 = relationshipChange.player1;
@@ -137,7 +141,9 @@ public final class AiPoliticalUtils {
   }
 
   private static boolean isAcceptableCost(
-      final PoliticalActionAttachment nextAction, final GamePlayer player, final GameData data) {
+      final PoliticalActionAttachment nextAction,
+      final GamePlayer player,
+      final GameDataInjections data) {
     // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then
     // it is an acceptable
     // price.

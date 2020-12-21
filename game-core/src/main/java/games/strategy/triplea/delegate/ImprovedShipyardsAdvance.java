@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -26,7 +27,7 @@ public final class ImprovedShipyardsAdvance extends TechAdvance {
 
   @Override
   public void perform(final GamePlayer gamePlayer, final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     if (!Properties.getUseShipyards(data.getProperties())) {
       return;
     }

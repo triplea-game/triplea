@@ -1,6 +1,6 @@
 package games.strategy.triplea.printgenerator;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitCollection;
@@ -26,7 +26,7 @@ class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
 
   void saveToFile(final GamePlayer player, final PrintGenerationData printData) {
-    final GameData gameData = printData.getData();
+    final GameDataInjections gameData = printData.getData();
     final Collection<Territory> terrCollection =
         CollectionUtils.getMatches(
             gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));

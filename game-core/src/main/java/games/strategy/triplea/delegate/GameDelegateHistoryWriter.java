@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
 /**
@@ -9,16 +9,16 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
  */
 public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
   private final IDelegateHistoryWriter delegateHistoryWriter;
-  private final GameData gameData;
+  private final GameDataInjections gameData;
 
   GameDelegateHistoryWriter(
-      final IDelegateHistoryWriter delegateHistoryWriter, final GameData data) {
+      final IDelegateHistoryWriter delegateHistoryWriter, final GameDataInjections data) {
     this.delegateHistoryWriter = delegateHistoryWriter;
     gameData = data;
   }
 
   private String getEventPrefix() {
-    if (BaseEditDelegate.getEditMode(gameData)) {
+    if (BaseEditDelegate.getEditMode(gameData.getProperties())) {
       return "EDIT: ";
     }
     return "";

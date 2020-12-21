@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
@@ -275,7 +276,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   private Change resetBonusMovement() {
-    final GameData data = getData();
+    final GameDataInjections data = getData();
     final CompositeChange change = new CompositeChange();
     for (final Unit u : data.getUnits()) {
       if (u.getBonusMovement() != 0) {
@@ -299,7 +300,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  static Change getResetUnitStateChange(final GameData data) {
+  static Change getResetUnitStateChange(final GameDataInjections data) {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : data.getUnits()) {
       if (unit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
@@ -343,7 +344,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   private static void removeMovementFromAirOnDamagedAlliedCarriers(
       final IDelegateBridge bridge, final GamePlayer player) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     final Predicate<Unit> crippledAlliedCarriersMatch =
         Matches.isUnitAllied(player, data)
             .and(Matches.unitIsOwnedBy(player).negate())
@@ -380,7 +381,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Change giveBonusMovement(final IDelegateBridge bridge, final GamePlayer player) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       change.add(giveBonusMovementToUnits(player, data, t));
@@ -389,7 +390,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   static Change giveBonusMovementToUnits(
-      final GamePlayer player, final GameData data, final Territory t) {
+      final GamePlayer player, final GameDataInjections data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits()) {
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
@@ -436,7 +437,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final GamePlayer player) {
-    final GameData data = bridge.getData();
+    final GameDataInjections data = bridge.getData();
     final boolean repairOnlyOwn =
         Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData().getProperties());
     final Predicate<Unit> damagedUnits =
@@ -561,7 +562,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   /** This has to be the exact same as Matches.UnitCanBeRepairedByFacilitiesInItsTerritory() */
   private static int getLargestRepairRateForThisUnit(
-      final Unit unitToBeRepaired, final Territory territoryUnitIsIn, final GameData data) {
+      final Unit unitToBeRepaired,
+      final Territory territoryUnitIsIn,
+      final GameDataInjections data) {
     if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data.getProperties())) {
       return 1;
     }

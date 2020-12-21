@@ -1,7 +1,7 @@
 package games.strategy.engine.data.changefactory.units;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class UnitDamageReceivedChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameDataInjections data) {
     // update units damage
     newTotalDamage.forEach(
         (unitId, damage) -> {

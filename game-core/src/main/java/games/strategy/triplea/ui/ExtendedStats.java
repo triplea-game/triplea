@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -45,14 +46,14 @@ public class ExtendedStats extends StatPanel {
     // no layout necessary
   }
 
-  public IStat[] getStatsExtended(final GameData data) {
+  public IStat[] getStatsExtended(final GameDataInjections data) {
     if (statsExtended.length == 0) {
       fillExtendedStats(data);
     }
     return statsExtended;
   }
 
-  private void fillExtendedStats(final GameData data) {
+  private void fillExtendedStats(final GameDataInjections data) {
     // add other resources, other than PUs and tech tokens
     final List<Resource> resources = data.getResourceList().getResources();
     for (final Resource r : resources) {

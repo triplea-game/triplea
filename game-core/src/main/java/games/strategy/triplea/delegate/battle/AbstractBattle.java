@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -266,7 +267,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   static GamePlayer findDefender(
-      final Territory battleSite, final GamePlayer attacker, final GameData data) {
+      final Territory battleSite, final GamePlayer attacker, final GameDataInjections data) {
     if (battleSite == null) {
       return GamePlayer.NULL_PLAYERID;
     }

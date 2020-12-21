@@ -1,6 +1,6 @@
 package games.strategy.triplea.printgenerator;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.Constants;
 import java.awt.AlphaComposite;
@@ -31,7 +31,7 @@ class PuChart {
   private final File outDir;
 
   PuChart(final PrintGenerationData printData) {
-    final GameData gameData = printData.getData();
+    final GameDataInjections gameData = printData.getData();
     players = gameData.getPlayerList();
     moneyMap = new IntegerMap<>();
     numPlayers = gameData.getPlayerList().size();

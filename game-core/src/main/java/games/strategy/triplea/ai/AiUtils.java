@@ -1,6 +1,6 @@
 package games.strategy.triplea.ai;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -32,7 +32,8 @@ public final class AiUtils {
    *
    * <p>If the player cannot produce the given unit, return Integer.MAX_VALUE
    */
-  static int getCost(final UnitType unitType, final GamePlayer player, final GameData data) {
+  static int getCost(
+      final UnitType unitType, final GamePlayer player, final GameDataInjections data) {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final ProductionRule rule = getProductionRule(unitType, player);
     return (rule == null) ? Integer.MAX_VALUE : rule.getCosts().getInt(pus);

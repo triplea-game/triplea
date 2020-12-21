@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Unit;
@@ -16,7 +17,7 @@ class PlacementUnitsCollapsiblePanel {
   private final SimpleUnitPanel unitsToPlacePanel;
 
   @Getter private final CollapsiblePanel panel;
-  private final GameData gameData;
+  private final GameDataInjections gameData;
 
   PlacementUnitsCollapsiblePanel(final GameData gameData, final UiContext uiContext) {
     this.gameData = gameData;

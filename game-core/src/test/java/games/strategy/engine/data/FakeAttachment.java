@@ -61,7 +61,7 @@ public final class FakeAttachment implements IAttachment {
   }
 
   @Override
-  public void validate(final GameData data) {
+  public void validate(final GameDataInjections data) {
     throw new UnsupportedOperationException();
   }
 

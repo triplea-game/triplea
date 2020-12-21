@@ -1,7 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
@@ -32,7 +32,7 @@ public class RemoveUnits extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameDataInjections data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
     if (!holder.getUnitCollection().containsAll(units)) {
       throw new IllegalStateException(

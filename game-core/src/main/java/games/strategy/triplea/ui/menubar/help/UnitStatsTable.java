@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
@@ -89,7 +90,7 @@ public class UnitStatsTable {
 
   /** Will return a key of NULL for any units which we do not have art for. */
   private static Map<GamePlayer, List<UnitType>> getAllPlayerUnitsWithImages(
-      final GameData data, final UiContext uiContext) {
+      final GameDataInjections data, final UiContext uiContext) {
     final Map<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
     for (final GamePlayer p : data.getPlayerList().getPlayers()) {
       unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
@@ -112,7 +113,7 @@ public class UnitStatsTable {
   }
 
   private static List<UnitType> getPlayerUnitsWithImages(
-      final GamePlayer player, final GameData data, final UiContext uiContext) {
+      final GamePlayer player, final GameDataInjections data, final UiContext uiContext) {
     final Set<UnitType> unitTypes = new HashSet<>();
     // add first based on current production ability
     if (player.getProductionFrontier() != null) {

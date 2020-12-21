@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -92,7 +93,7 @@ final class MatchesTest {
 
   @Nested
   final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {
-    private GameData gameData;
+    private GameDataInjections gameData;
     private GamePlayer player;
     private GamePlayer alliedPlayer;
     private GamePlayer enemyPlayer;

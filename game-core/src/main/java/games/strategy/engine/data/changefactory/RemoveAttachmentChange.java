@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.IAttachment;
 
 class RemoveAttachmentChange extends Change {
@@ -24,7 +24,7 @@ class RemoveAttachmentChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameDataInjections data) {
     originalAttachable.removeAttachment(originalAttachmentName);
     attachment.setAttachedTo(attachable);
     attachment.setName(name);

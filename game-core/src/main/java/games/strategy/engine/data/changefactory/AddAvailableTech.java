@@ -3,7 +3,7 @@ package games.strategy.engine.data.changefactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -26,7 +26,7 @@ class AddAvailableTech extends Change {
   }
 
   @Override
-  public void perform(final GameData data) {
+  public void perform(final GameDataInjections data) {
     final TechnologyFrontier front =
         player.getTechnologyFrontierList().getTechnologyFrontier(frontier.getName());
     front.addAdvance(tech);

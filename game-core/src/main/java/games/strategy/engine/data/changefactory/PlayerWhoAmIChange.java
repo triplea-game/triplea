@@ -1,7 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 
 class PlayerWhoAmIChange extends Change {
@@ -24,7 +24,7 @@ class PlayerWhoAmIChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameDataInjections data) {
     final GamePlayer player = data.getPlayerList().getPlayerId(playerName);
     player.setWhoAmI(endWhoAmI);
   }

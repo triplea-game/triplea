@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -163,7 +164,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {
+  public void validate(final GameDataInjections data) throws GameParseException {
     if (canalName == null) {
       throw new GameParseException("Canals must have a canalName set!" + thisErrorMsg());
     }

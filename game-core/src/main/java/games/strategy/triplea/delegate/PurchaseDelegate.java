@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
@@ -57,7 +57,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
   @Override
   public void start() {
     super.start();
-    final GameData data = getData();
+    final GameDataInjections data = getData();
     if (needToInitialize) {
       if (Properties.getTriggers(data.getProperties())) {
         // First set up a match for what we want to have fire as a default in this delegate. List

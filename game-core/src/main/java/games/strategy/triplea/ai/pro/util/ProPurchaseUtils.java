@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -85,7 +86,7 @@ public final class ProPurchaseUtils {
       final List<ProPurchaseOption> landPurchaseOptions) {
 
     ProLogger.info("Find max purchase defenders for " + t.getName());
-    final GameData data = proData.getData();
+    final GameDataInjections data = proData.getData();
 
     // Determine most cost efficient defender that can be produced in this territory
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
@@ -197,7 +198,7 @@ public final class ProPurchaseUtils {
   }
 
   private static int getUnitProduction(
-      final Territory territory, final GameData data, final GamePlayer player) {
+      final Territory territory, final GameDataInjections data, final GamePlayer player) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
             .and(Matches.unitIsBeingTransported().negate())
@@ -227,7 +228,7 @@ public final class ProPurchaseUtils {
    */
   public static int getMaxConstructions(
       final Territory territory,
-      final GameData data,
+      final GameDataInjections data,
       final GamePlayer player,
       final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions) {
     final IntegerMap<String> constructionTypesPerTurn = new IntegerMap<>();

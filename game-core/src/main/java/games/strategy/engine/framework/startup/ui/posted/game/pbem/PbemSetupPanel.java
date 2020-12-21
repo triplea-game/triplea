@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
@@ -153,7 +153,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   private void loadAll() {
     Optional.ofNullable(gameSelectorModel.getGameData())
-        .map(GameData::getProperties)
+        .map(GameDataInjections::getProperties)
         .ifPresent(
             properties -> {
               diceServerEditor.populateFromGameProperties(properties);
@@ -180,7 +180,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void postStartGame() {
-    final GameData data = gameSelectorModel.getGameData();
+    final GameDataInjections data = gameSelectorModel.getGameData();
 
     Preconditions.checkNotNull(
         data,

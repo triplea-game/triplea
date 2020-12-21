@@ -1,6 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
@@ -1490,7 +1491,8 @@ class BattleCalculatorPanel extends JPanel {
     calculateButton.requestFocus();
   }
 
-  private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameData data) {
+  private static boolean doesPlayerHaveUnitsOnMap(
+      final GamePlayer player, final GameDataInjections data) {
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {

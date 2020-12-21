@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import com.google.common.collect.Streams;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -25,7 +25,7 @@ public final class ProUtils {
 
   /** Returns a list of all players in turn order excluding {@code player}. */
   public static List<GamePlayer> getOtherPlayersInTurnOrder(final GamePlayer player) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
     final List<GamePlayer> players = new ArrayList<>();
     final GameSequence sequence = data.getSequence();
     final int startIndex = sequence.getStepIndex();
@@ -47,7 +47,7 @@ public final class ProUtils {
   }
 
   public static List<GamePlayer> getAlliedPlayersInTurnOrder(final GamePlayer player) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
     final List<GamePlayer> players = getOtherPlayersInTurnOrder(player);
     players.removeIf(
         currentPlayer -> !data.getRelationshipTracker().isAllied(player, currentPlayer));
@@ -55,7 +55,7 @@ public final class ProUtils {
   }
 
   public static List<GamePlayer> getEnemyPlayersInTurnOrder(final GamePlayer player) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
     final List<GamePlayer> players = getOtherPlayersInTurnOrder(player);
     players.removeIf(
         currentPlayer -> data.getRelationshipTracker().isAllied(player, currentPlayer));
@@ -75,7 +75,7 @@ public final class ProUtils {
   }
 
   public static List<GamePlayer> getEnemyPlayers(final GamePlayer player) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
     final List<GamePlayer> enemyPlayers = new ArrayList<>();
     for (final GamePlayer players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
@@ -86,7 +86,7 @@ public final class ProUtils {
   }
 
   private static List<GamePlayer> getAlliedPlayers(final GamePlayer player) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
     final List<GamePlayer> alliedPlayers = new ArrayList<>();
     for (final GamePlayer players : data.getPlayerList().getPlayers()) {
       if (data.getRelationshipTracker().isAllied(player, players)) {
@@ -98,7 +98,7 @@ public final class ProUtils {
 
   /** Given a player, finds all non-allied (enemy) players. */
   public static List<GamePlayer> getPotentialEnemyPlayers(final GamePlayer player) {
-    final GameData data = player.getData();
+    final GameDataInjections data = player.getData();
     final List<GamePlayer> otherPlayers = data.getPlayerList().getPlayers();
     for (final Iterator<GamePlayer> it = otherPlayers.iterator(); it.hasNext(); ) {
       final GamePlayer otherPlayer = it.next();
@@ -113,7 +113,7 @@ public final class ProUtils {
   }
 
   /** Computes PU production amount a given player currently has based on a given game data. */
-  public static double getPlayerProduction(final GamePlayer player, final GameData data) {
+  public static double getPlayerProduction(final GamePlayer player, final GameDataInjections data) {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea
@@ -131,7 +131,8 @@ public final class ProUtils {
    * Gets list of enemy capitals for a given player that are currently still held by those enemy
    * players.
    */
-  public static List<Territory> getLiveEnemyCapitals(final GameData data, final GamePlayer player) {
+  public static List<Territory> getLiveEnemyCapitals(
+      final GameDataInjections data, final GamePlayer player) {
     final List<Territory> enemyCapitals = new ArrayList<>();
     final List<GamePlayer> enemyPlayers = getEnemyPlayers(player);
     for (final GamePlayer otherPlayer : enemyPlayers) {
@@ -150,7 +151,7 @@ public final class ProUtils {
 
   /** Gets a list of friendly capitals still held by friendly powers. */
   public static List<Territory> getLiveAlliedCapitals(
-      final GameData data, final GamePlayer player) {
+      final GameDataInjections data, final GamePlayer player) {
     final List<Territory> capitals = new ArrayList<>();
     final List<GamePlayer> players = getAlliedPlayers(player);
     for (final GamePlayer alliedPlayer : players) {
@@ -171,7 +172,7 @@ public final class ProUtils {
    * @return -1 if there is no enemy land territory within a distance of 10 of {@code t}.
    */
   public static int getClosestEnemyLandTerritoryDistance(
-      final GameData data, final GamePlayer player, final Territory t) {
+      final GameDataInjections data, final GamePlayer player, final Territory t) {
     final Set<Territory> landTerritories =
         data.getMap()
             .getNeighbors(
@@ -202,7 +203,7 @@ public final class ProUtils {
    * @return -1 if there is no enemy or neutral land territory within a distance of 10 of {@code t}.
    */
   public static int getClosestEnemyOrNeutralLandTerritoryDistance(
-      final GameData data,
+      final GameDataInjections data,
       final GamePlayer player,
       final Territory t,
       final Map<Territory, Double> territoryValueMap) {
@@ -244,7 +245,7 @@ public final class ProUtils {
    *     only through water territories.
    */
   public static int getClosestEnemyLandTerritoryDistanceOverWater(
-      final GameData data, final GamePlayer player, final Territory t) {
+      final GameDataInjections data, final GamePlayer player, final Territory t) {
     final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);
     final List<Territory> enemyOrAdjacentLandTerritories =
         CollectionUtils.getMatches(
@@ -266,7 +267,7 @@ public final class ProUtils {
    * Returns whether the game is a FFA based on whether any of the player's enemies are enemies of
    * each other.
    */
-  public static boolean isFfa(final GameData data, final GamePlayer player) {
+  public static boolean isFfa(final GameDataInjections data, final GamePlayer player) {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final Set<GamePlayer> enemies = relationshipTracker.getEnemies(player);
     final Set<GamePlayer> enemiesWithoutNeutrals =

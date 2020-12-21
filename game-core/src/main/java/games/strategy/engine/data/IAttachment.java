@@ -10,7 +10,7 @@ import java.io.Serializable;
 public interface IAttachment extends Serializable, DynamicallyModifiable {
 
   /** Called after ALL attachments are created. */
-  void validate(GameData data) throws GameParseException;
+  void validate(GameDataInjections data) throws GameParseException;
 
   Attachable getAttachedTo();
 

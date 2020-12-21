@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -56,7 +56,7 @@ final class ViewMenu extends JMenu {
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
-  private final GameData gameData;
+  private final GameDataInjections gameData;
   private final TripleAFrame frame;
   private final UiContext uiContext;
 

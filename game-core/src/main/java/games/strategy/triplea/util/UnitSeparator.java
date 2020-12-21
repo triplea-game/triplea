@@ -1,6 +1,6 @@
 package games.strategy.triplea.util;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -32,7 +32,7 @@ public class UnitSeparator {
    */
   public static List<UnitCategory> getSortedUnitCategories(
       final Territory t, final MapData mapData) {
-    final GameData data = t.getData();
+    final GameDataInjections data = t.getData();
     final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(t.getUnits()));
     categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
     final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());

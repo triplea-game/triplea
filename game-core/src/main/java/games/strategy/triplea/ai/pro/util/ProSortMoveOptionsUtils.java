@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -108,7 +109,7 @@ public final class ProSortMoveOptionsUtils {
       final Map<Unit, Set<Territory>> unitAttackOptions,
       final Map<Territory, ProTerritory> attackMap,
       final ProOddsCalculator calc) {
-    final GameData data = proData.getData();
+    final GameDataInjections data = proData.getData();
     final Map<Unit, Territory> unitTerritoryMap = proData.getUnitTerritoryMap();
 
     final List<Map.Entry<Unit, Set<Territory>>> list =

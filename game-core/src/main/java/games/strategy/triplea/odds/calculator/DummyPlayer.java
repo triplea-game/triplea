@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -93,7 +94,7 @@ class DummyPlayer extends AbstractBuiltInAi {
   protected void place(
       final boolean placeForBid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameData data,
+      final GameDataInjections data,
       final GamePlayer player) {}
 
   @Override

@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
@@ -71,7 +71,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   }
 
   private void triggerWhenTriggerAttachments(final String beforeOrAfter) {
-    final GameData data = getData();
+    final GameDataInjections data = getData();
     if (Properties.getTriggers(data.getProperties())) {
       final String stepName = data.getSequence().getStep().getName();
       // we use AND in order to make sure there are uses and when is set correctly.

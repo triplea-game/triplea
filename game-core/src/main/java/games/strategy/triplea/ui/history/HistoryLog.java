@@ -2,6 +2,7 @@ package games.strategy.triplea.ui.history;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Resource;
@@ -550,7 +551,7 @@ public class HistoryLog extends JFrame {
     textArea.setText(stringBuilder.toString());
   }
 
-  private static int getProduction(final GamePlayer player, final GameData data) {
+  private static int getProduction(final GamePlayer player, final GameDataInjections data) {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       boolean isConvoyOrLand = false;

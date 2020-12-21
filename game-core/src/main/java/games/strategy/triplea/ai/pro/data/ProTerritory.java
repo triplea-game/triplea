@@ -1,6 +1,6 @@
 package games.strategy.triplea.ai.pro.data;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -144,7 +144,7 @@ public class ProTerritory {
   }
 
   public Collection<Unit> getAllDefendersForCarrierCalcs(
-      final GameData data, final GamePlayer player) {
+      final GameDataInjections data, final GamePlayer player) {
     if (Properties.getProduceNewFightersOnOldCarriers(data.getProperties())) {
       return getAllDefenders();
     }
@@ -165,7 +165,7 @@ public class ProTerritory {
     return defenders;
   }
 
-  public List<Unit> getMaxEnemyDefenders(final GamePlayer player, final GameData data) {
+  public List<Unit> getMaxEnemyDefenders(final GamePlayer player, final GameDataInjections data) {
     final List<Unit> defenders =
         territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
     defenders.addAll(maxScrambleUnits);
