@@ -222,7 +222,8 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
               playersEnablementListing,
               data.getAllianceTracker().getAlliancesPlayerIsIn(player),
               this,
-              data.getProperties());
+              data.getProperties(),
+              new PlayerTypes(Injections.getInstance().getPlayerTypes()));
       playerRows.add(selector);
       if (!player.isHidden()) {
         selector.layout(++gridy, panel);

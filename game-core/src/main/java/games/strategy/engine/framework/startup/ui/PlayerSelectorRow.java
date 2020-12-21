@@ -17,7 +17,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import org.triplea.injection.Injections;
 
 /**
  * Represents a player selection row worth of data, during initial setup this is a row where a
@@ -48,13 +47,14 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       final Map<String, Boolean> playersEnablementListing,
       final Collection<String> playerAlliances,
       final SetupPanel parent,
-      final GameProperties gameProperties) {
+      final GameProperties gameProperties,
+      final PlayerTypes playerTypes) {
     this.disableable = disableable;
     this.parent = parent;
     playerName = player.getName();
     this.player = player;
     name = new JLabel(playerName + ":");
-    this.playerTypesProvider = new PlayerTypes(Injections.getInstance().getPlayerTypes());
+    this.playerTypesProvider = playerTypes;
 
     enabledCheckBox = new JCheckBox();
     final ActionListener disablePlayerActionListener =
