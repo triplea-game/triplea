@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
@@ -29,6 +30,11 @@ class DisconnectUserControllerIntegrationTest extends ProtectedEndpointTest<Mode
             HttpInteractionException.class,
             () -> verifyEndpoint(client -> client.disconnectPlayer(CHAT_ID)));
 
-    assertThat(exception.status(), is(400));
+
+    assertThat(
+        "Expecting a 4xx status code, status code is: exception.status()",
+        HttpStatus.getCode(exception.status()),
+        //.isClientError(),
+        is(400));
   }
 }
