@@ -23,9 +23,10 @@ public final class MapDownloadController {
 
   /** Prompts user to download map updates if maps are out of date. */
   public static void checkDownloadedMapsAreLatest() {
+
     try {
       final Collection<String> outOfDateMapNames =
-          getOutOfDateMapNames(MapListingFetcher.getMapDownloadList());
+          getOutOfDateMapNames(MapListingFetcher.getMapDownloadList(), getDownloadedMaps());
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
         text.append(
@@ -44,11 +45,6 @@ public final class MapDownloadController {
     } catch (final Exception e) {
       log.warn("Failed to getting list of most recent maps", e);
     }
-  }
-
-  private static Collection<String> getOutOfDateMapNames(
-      final Collection<DownloadFileDescription> downloads) {
-    return getOutOfDateMapNames(downloads, getDownloadedMaps());
   }
 
   @VisibleForTesting
