@@ -1,10 +1,6 @@
 package org.triplea.modules.error.reporting;
 
 import com.google.common.base.Preconditions;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
@@ -55,9 +51,6 @@ public class ErrorReportController extends HttpController {
 
   @POST
   @Path(ErrorReportClient.CAN_UPLOAD_ERROR_REPORT_PATH)
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
   public CanUploadErrorReportResponse canUploadErrorReport(
       final CanUploadRequest canUploadRequest) {
     if (canUploadRequest == null
@@ -75,11 +68,6 @@ public class ErrorReportController extends HttpController {
    */
   @POST
   @Path(ErrorReportClient.ERROR_REPORT_PATH)
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {
-        @Rate(limit = ErrorReportClient.MAX_REPORTS_PER_DAY, duration = 1, timeUnit = TimeUnit.DAYS)
-      })
   public ErrorReportResponse uploadErrorReport(
       @Context final HttpServletRequest request, final ErrorReportRequest errorReport) {
 

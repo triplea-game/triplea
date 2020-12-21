@@ -1,11 +1,7 @@
 package org.triplea.modules.game.hosting;
 
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
@@ -39,9 +35,6 @@ public class GameHostingController extends HttpController {
 
   @POST
   @Path(GameHostingClient.GAME_HOSTING_REQUEST_PATH)
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
   public GameHostingResponse hostingRequest(@Context final HttpServletRequest request) {
     try {
       return GameHostingResponse.builder()

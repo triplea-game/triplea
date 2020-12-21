@@ -30,7 +30,6 @@ public class MapsServer extends Application<MapsConfig> {
         new ServerConfiguration<>(bootstrap);
     serverConfiguration.enableEnvironmentVariablesInConfig();
     serverConfiguration.enableBetterJdbiExceptions();
-    serverConfiguration.enableEndpointRateLimiting();
   }
 
   @Override

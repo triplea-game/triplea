@@ -26,8 +26,6 @@ dependencies {
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
     implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
-    implementation "es.moki.ratelimitj:ratelimitj-dropwizard:$rateLimitjVersion"
-    implementation "es.moki.ratelimitj:ratelimitj-inmemory:$rateLimitjVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"

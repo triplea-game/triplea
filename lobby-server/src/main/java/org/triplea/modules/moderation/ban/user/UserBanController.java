@@ -1,11 +1,7 @@
 package org.triplea.modules.moderation.ban.user;
 
 import com.google.common.base.Preconditions;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -80,9 +76,6 @@ public class UserBanController extends HttpController {
 
   @POST
   @Path(ModeratorChatClient.BAN_PLAYER_PATH)
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.MINUTES)})
   public Response banPlayer(
       @Auth final AuthenticatedUser authenticatedUser, final BanPlayerRequest banPlayerRequest) {
     Preconditions.checkNotNull(banPlayerRequest);

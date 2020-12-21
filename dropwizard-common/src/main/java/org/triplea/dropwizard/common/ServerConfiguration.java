@@ -1,7 +1,5 @@
 package org.triplea.dropwizard.common;
 
-import es.moki.ratelimij.dropwizard.RateLimitBundle;
-import es.moki.ratelimitj.inmemory.InMemoryRateLimiterFactory;
 import io.dropwizard.Configuration;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
@@ -66,11 +64,6 @@ public class ServerConfiguration<T extends Configuration> {
    */
   public void enableBetterJdbiExceptions() {
     bootstrap.addBundle(new JdbiExceptionsBundle());
-  }
-
-  /** Enables the rate4j annotations which can be used to do server endpoint throttling. */
-  public void enableEndpointRateLimiting() {
-    bootstrap.addBundle(new RateLimitBundle(new InMemoryRateLimiterFactory()));
   }
 
   public void registerRequestFilter(

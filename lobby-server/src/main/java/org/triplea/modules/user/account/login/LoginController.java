@@ -1,10 +1,6 @@
 package org.triplea.modules.user.account.login;
 
 import com.google.common.base.Preconditions;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -29,9 +25,6 @@ public class LoginController extends HttpController {
         .build();
   }
 
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.HOURS)})
   @POST
   @Path(LobbyLoginClient.LOGIN_PATH)
   public LobbyLoginResponse login(
