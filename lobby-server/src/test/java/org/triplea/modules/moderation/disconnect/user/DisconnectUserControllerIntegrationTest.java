@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +13,10 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.modules.http.AllowedUserRole;
+import org.triplea.modules.http.LobbyServerTest;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
+@DataSet(value = LobbyServerTest.LOBBY_USER_DATASET, useSequenceFiltering = false)
 class DisconnectUserControllerIntegrationTest extends ProtectedEndpointTest<ModeratorChatClient> {
 
   private static final PlayerChatId CHAT_ID = PlayerChatId.of("chat-id");
@@ -30,11 +33,6 @@ class DisconnectUserControllerIntegrationTest extends ProtectedEndpointTest<Mode
             HttpInteractionException.class,
             () -> verifyEndpoint(client -> client.disconnectPlayer(CHAT_ID)));
 
-
-    assertThat(
-        "Expecting a 4xx status code, status code is: exception.status()",
-        HttpStatus.getCode(exception.status()),
-        //.isClientError(),
-        is(400));
+    assertThat(exception.status(), is(400));
   }
 }
