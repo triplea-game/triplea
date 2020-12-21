@@ -3,14 +3,13 @@ package games.strategy.engine.framework.map.download;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
-import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -24,83 +23,122 @@ public final class MapDownloadController {
 
   /** Prompts user to download map updates if maps are out of date. */
   public static void checkDownloadedMapsAreLatest() {
+    // {map name -> version}
+    final Map<String, Version> availableToDownloadMapVersions =
+        downloadAvailableMapsListAndComputeAvailableVersions();
 
-    try {
-      final Collection<String> outOfDateMapNames =
-          getOutOfDateMapNames(MapListingFetcher.getMapDownloadList(), getDownloadedMaps());
-      if (!outOfDateMapNames.isEmpty()) {
-        final StringBuilder text = new StringBuilder();
-        text.append(
-            "<html>Some of the maps you have are out of date, and newer versions of those "
-                + "maps exist.<br><br>");
-        text.append("Would you like to update (re-download) the following maps now?<br><ul>");
-        for (final String mapName : outOfDateMapNames) {
-          text.append("<li> ").append(mapName).append("</li>");
-        }
-        text.append("</ul></html>");
-        SwingComponents.promptUser(
-            "Update Your Maps?",
-            text.toString(),
-            () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
-      }
-    } catch (final Exception e) {
-      log.warn("Failed to getting list of most recent maps", e);
+    if (availableToDownloadMapVersions.isEmpty()) {
+      // A failure happened getting maps. User is already notified.
+      return;
+    }
+
+    // {property file name -> version}
+    final Map<String, Version> installedMapVersions = readMapPropertyFilesForInstalledMapVersions();
+
+    final Collection<String> outOfDateMapNames =
+        computeOutOfDateMaps(installedMapVersions, availableToDownloadMapVersions);
+
+    if (!outOfDateMapNames.isEmpty()) {
+      promptUserToUpdateMaps(outOfDateMapNames);
     }
   }
 
-  @VisibleForTesting
-  static Collection<String> getOutOfDateMapNames(
-      final Collection<DownloadFileDescription> downloads, final DownloadedMaps downloadedMaps) {
-    return downloads.stream()
-        .filter(Objects::nonNull)
-        .filter(it -> isMapOutOfDate(it, downloadedMaps))
-        .map(DownloadFileDescription::getMapName)
-        .collect(Collectors.toList());
+  private static Map<String, Version> readMapPropertyFilesForInstalledMapVersions() {
+    return
+    // get all .property files in the downloads folder
+    Arrays.stream(ClientFileSystemHelper.getUserMapsFolder().listFiles())
+        .filter(file -> file.getName().endsWith(".properties"))
+        // Read each property file to find map version
+        // Create map of {property file name -> optional<version>}
+        .collect(
+            Collectors.toMap(File::getName, MapDownloadController::readVersionFromPropertyFile))
+        // loop back over the map
+        .entrySet()
+        .stream()
+        // Keep only entries that have a version (optional is present)
+        .filter(entry -> entry.getValue().isPresent())
+        // Now that all optionals are guaranteed to hold a value, unwrap them &
+        // normalize the map names.
+        // Convert from:
+        //     {property file name -> Optional<Version>}
+        //    to:
+        //     {property file name -> Version}
+        .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get()));
   }
 
-  private static boolean isMapOutOfDate(
-      final DownloadFileDescription download, final DownloadedMaps downloadedMaps) {
-    final Optional<Version> latestVersion = Optional.ofNullable(download.getVersion());
-    final Optional<Version> downloadedVersion =
-        getDownloadedVersion(download.getMapName(), downloadedMaps);
-
-    final AtomicBoolean mapOutOfDate = new AtomicBoolean(false);
-    latestVersion.ifPresent(
-        latest ->
-            downloadedVersion.ifPresent(
-                downloaded -> mapOutOfDate.set(latest.isGreaterThan(downloaded))));
-    return mapOutOfDate.get();
+  private static Optional<Version> readVersionFromPropertyFile(final File propertyFile) {
+    return DownloadFileProperties.loadForZipPropertyFile(propertyFile).getVersion();
   }
 
-  private static Optional<Version> getDownloadedVersion(
-      final String mapName, final DownloadedMaps downloadedMaps) {
-    return downloadedMaps.getZipFileCandidates(mapName).stream()
-        .map(downloadedMaps::getVersionForZipFile)
-        .filter(Optional::isPresent)
-        .findFirst()
-        .orElseGet(Optional::empty);
+  private static Map<String, Version> downloadAvailableMapsListAndComputeAvailableVersions() {
+    try {
+      return MapListingFetcher.getMapDownloadList().stream()
+          .collect(
+              Collectors.toMap(
+                  downloadFileDescription -> normalizeName(downloadFileDescription.getMapName()),
+                  DownloadFileDescription::getVersion));
+    } catch (final Exception e) {
+      log.warn("Failed to getting list of most recent maps", e);
+      return Map.of();
+    }
   }
 
-  @VisibleForTesting
-  interface DownloadedMaps {
-    Optional<Version> getVersionForZipFile(File mapZipFile);
+  private static Collection<String> computeOutOfDateMaps(
+      final Map<String, Version> installedMapVersions,
+      final Map<String, Version> availableToDownloadMapVersions) {
 
-    List<File> getZipFileCandidates(String mapName);
-  }
+    final Collection<String> outOfDateMapNames = new ArrayList<>();
 
-  private static DownloadedMaps getDownloadedMaps() {
-    return new DownloadedMaps() {
-      @Override
-      public Optional<Version> getVersionForZipFile(final File mapZipFile) {
-        return DownloadFileProperties.loadForZip(mapZipFile).getVersion();
+    // Loop over all available maps, check if we have that map present by comparing
+    // normalized names, if so, check versions and remember any that are out of date.
+    for (final Map.Entry<String, Version> availableMap :
+        availableToDownloadMapVersions.entrySet()) {
+      final String availableMapName = normalizeName(availableMap.getKey());
+
+      for (final Map.Entry<String, Version> installedMap : installedMapVersions.entrySet()) {
+        final String installedMapName = normalizeName(installedMap.getKey());
+        if (installedMapName.equals(availableMapName)) {
+
+          if (availableMap.getValue().isGreaterThan(installedMap.getValue())) {
+            outOfDateMapNames.add(availableMap.getKey());
+          }
+          break;
+        }
       }
+    }
+    return outOfDateMapNames;
+  }
 
-      @Override
-      public List<File> getZipFileCandidates(final String mapName) {
-        return ResourceLoader.getMapZipFileCandidates(
-            mapName, ClientFileSystemHelper.getUserMapsFolder());
-      }
-    };
+  /**
+   * Returns a normalized version of the input. Trims off a '.properties' suffix if present,
+   * converts to lower case and replaces all spaces with underscores.
+   */
+  private static String normalizeName(final String inputName) {
+    String normalizedName = inputName;
+    if (inputName.endsWith(".properties")) {
+      normalizedName = inputName.substring(0, inputName.indexOf(".properties"));
+    }
+
+    normalizedName = normalizedName.replaceAll(" ", "_");
+    normalizedName = normalizedName.toLowerCase();
+
+    return normalizedName;
+  }
+
+  private static void promptUserToUpdateMaps(final Collection<String> outOfDateMapNames) {
+    final StringBuilder text = new StringBuilder();
+    text.append(
+        "<html>Some of the maps you have are out of date, and newer versions of those "
+            + "maps exist.<br><br>");
+    text.append("Would you like to update (re-download) the following maps now?<br><ul>");
+    for (final String mapName : outOfDateMapNames) {
+      text.append("<li> ").append(mapName).append("</li>");
+    }
+    text.append("</ul></html>");
+    SwingComponents.promptUser(
+        "Update Your Maps?",
+        text.toString(),
+        () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
   }
 
   /**
@@ -149,8 +187,7 @@ public final class MapDownloadController {
   private static UserMaps getUserMaps() {
     return () -> {
       final String[] entries = ClientFileSystemHelper.getUserMapsFolder().list();
-      final int entryCount = Optional.ofNullable(entries).map(it -> it.length).orElse(0);
-      return entryCount == 0;
+      return entries == null || entries.length == 0;
     };
   }
 

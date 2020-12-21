@@ -24,17 +24,21 @@ class DownloadFileProperties {
   }
 
   static DownloadFileProperties loadForZip(final File zipFile) {
-    if (!fromZip(zipFile).exists()) {
-      return new DownloadFileProperties();
-    }
+    return fromZip(zipFile).exists()
+        ? loadForZipPropertyFile(fromZip(zipFile))
+        : new DownloadFileProperties();
+  }
+
+  static DownloadFileProperties loadForZipPropertyFile(final File propertyFile) {
     final DownloadFileProperties downloadFileProperties = new DownloadFileProperties();
-    try (InputStream fis = new FileInputStream(fromZip(zipFile))) {
+    try (InputStream fis = new FileInputStream(propertyFile)) {
       downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
-      log.error("Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.error("Failed to read property file: " + propertyFile.getAbsolutePath(), e);
     }
     return downloadFileProperties;
   }
+
 
   void saveForZip(final File zipFile) {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
