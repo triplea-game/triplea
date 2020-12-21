@@ -11,12 +11,9 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.websocket.server.ServerEndpointConfig;
 import javax.ws.rs.container.ContainerRequestFilter;
 import lombok.AllArgsConstructor;
-import org.glassfish.jersey.logging.LoggingFeature;
 
 /**
  * Facilitates configuration for a dropwizard server Application class.
@@ -91,21 +88,5 @@ public class ServerConfiguration<T extends Configuration> {
   public void registerExceptionMappers(
       final Environment environment, final List<Object> exceptionMappers) {
     exceptionMappers.forEach(mapper -> environment.jersey().register(mapper));
-  }
-
-  /**
-   * Turns on server request & response logging, this causes the server to log any request and
-   * response details. This is useful for development but must be used with care (or not at all) in
-   * production to avoid leaking sensitive request parameter or response data.
-   */
-  public void enableRequestResponseLogging(final Environment environment) {
-    environment
-        .jersey()
-        .register(
-            new LoggingFeature(
-                Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
-                Level.INFO,
-                LoggingFeature.Verbosity.PAYLOAD_ANY,
-                LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
   }
 }

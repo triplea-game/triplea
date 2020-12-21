@@ -45,10 +45,6 @@ public class LobbyServerConfig extends Configuration {
 
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
-  private boolean logRequestAndResponses;
-
-  @Getter(onMethod_ = {@JsonProperty})
-  @Setter(onMethod_ = {@JsonProperty})
   private boolean logSqlStatements;
 
   @Valid @NotNull @JsonProperty @Getter
