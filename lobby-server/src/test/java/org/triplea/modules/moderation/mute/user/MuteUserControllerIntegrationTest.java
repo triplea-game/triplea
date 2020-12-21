@@ -2,7 +2,6 @@ package org.triplea.modules.moderation.mute.user;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
