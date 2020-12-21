@@ -15,7 +15,7 @@ import org.triplea.util.Version;
 /** Properties file used to know which map versions have been installed. */
 @Slf4j
 @NoArgsConstructor
-class DownloadFileProperties {
+public class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
@@ -29,7 +29,7 @@ class DownloadFileProperties {
         : new DownloadFileProperties();
   }
 
-  static DownloadFileProperties loadForZipPropertyFile(final File propertyFile) {
+  public static DownloadFileProperties loadForZipPropertyFile(final File propertyFile) {
     final DownloadFileProperties downloadFileProperties = new DownloadFileProperties();
     try (InputStream fis = new FileInputStream(propertyFile)) {
       downloadFileProperties.props.load(fis);
@@ -52,7 +52,7 @@ class DownloadFileProperties {
     return new File(zipFile.getAbsolutePath() + ".properties");
   }
 
-  Optional<Version> getVersion() {
+  public Optional<Version> getVersion() {
     return Optional.ofNullable(props.getProperty(VERSION_PROPERTY)).map(Version::new);
   }
 }

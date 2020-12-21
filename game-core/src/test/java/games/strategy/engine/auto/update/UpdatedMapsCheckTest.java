@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 
+import games.strategy.engine.auto.update.maps.UpdatedMapsCheck;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;

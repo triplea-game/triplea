@@ -4,7 +4,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
-import games.strategy.engine.framework.map.download.MapDownloadController;
 
 /**
  * Runs background update checks and would prompt user if anything needs to be updated. This class
@@ -26,7 +25,8 @@ public final class UpdateChecks {
     EngineVersionCheck.checkForLatestEngineVersionOut();
 
     if (UpdatedMapsCheck.isMapUpdateCheckRequired()) {
-      MapDownloadController.checkDownloadedMapsAreLatest();
+      UpdatedMapsCheck.checkDownloadedMapsAreLatest();
+      // TODO: add check here to prompt for tutorial map
     }
   }
 
