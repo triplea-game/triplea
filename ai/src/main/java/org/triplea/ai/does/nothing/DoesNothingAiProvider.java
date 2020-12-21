@@ -1,4 +1,4 @@
-package org.triplea.ai.doesnothing;
+package org.triplea.ai.does.nothing;
 
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.ai.AbstractAi;
@@ -12,6 +12,6 @@ public class DoesNothingAiProvider implements AiProvider {
 
   @Override
   public String getLabel() {
-    return PlayerTypes.DOES_NOTHING_PLAYER;
+    return PlayerTypes.DOES_NOTHING_PLAYER_LABEL;
   }
 }

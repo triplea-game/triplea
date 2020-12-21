@@ -1,4 +1,4 @@
-package org.triplea.ai.doesnothing;
+package org.triplea.ai.does.nothing;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;

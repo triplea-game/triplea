@@ -17,7 +17,7 @@ import lombok.Value;
 @Value
 public class PlayerTypes {
 
-  public static final String DOES_NOTHING_PLAYER = "Does Nothing (AI)";
+  public static final String DOES_NOTHING_PLAYER_LABEL = "Does Nothing (AI)";
 
   public static final Type HUMAN_PLAYER =
       new Type("Human") {
