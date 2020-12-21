@@ -12,11 +12,11 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
-import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -45,15 +45,15 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** A very weak ai, based on some simple rules. */
-public class WeakAi extends AbstractAi {
+public class WeakAi extends AbstractBuiltInAi {
 
   public WeakAi(final String name) {
     super(name);
   }
 
   @Override
-  public PlayerType getPlayerType() {
-    return PlayerType.WEAK_AI;
+  public PlayerTypes.Type getPlayerType() {
+    return PlayerTypes.WEAK_AI;
   }
 
   @Override

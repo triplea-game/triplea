@@ -15,6 +15,7 @@ ext {
 
 dependencies {
     implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
+    implementation project(":ai")
     implementation project(":game-core")
     implementation project(":java-extras")
     implementation project(":swing-lib")

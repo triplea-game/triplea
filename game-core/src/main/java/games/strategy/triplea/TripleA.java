@@ -6,7 +6,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.delegate.EditDelegate;
 import java.util.Map;
@@ -26,11 +26,11 @@ public class TripleA implements IGameLoader {
   protected transient IGame game;
 
   @Override
-  public Set<Player> newPlayers(final Map<String, PlayerType> playerNames) {
+  public Set<Player> newPlayers(final Map<String, PlayerTypes.Type> playerNames) {
     return playerNames.entrySet().stream().map(TripleA::toGamePlayer).collect(Collectors.toSet());
   }
 
-  private static Player toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
+  private static Player toGamePlayer(final Map.Entry<String, PlayerTypes.Type> namePlayerType) {
     return namePlayerType.getValue().newPlayerWithName(namePlayerType.getKey());
   }
 

@@ -9,16 +9,26 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.ai.does.nothing.DoesNothingAiProvider;
+import org.triplea.ai.flowfield.FlowFieldAiProvider;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.injection.Injections;
@@ -80,9 +90,9 @@ public final class HeadedGameRunner {
         !GraphicsEnvironment.isHeadless(),
         "UI client launcher invoked from headless environment. This is currently "
             + "prohibited by design to avoid UI rendering errors in the headless environment.");
-    Injections.init(constructInjections());
 
     initializeClientSettingAndLogging();
+    Injections.init(constructInjections());
     initializeLookAndFeel();
 
     initializeDesktopIntegrations(args);
@@ -92,6 +102,30 @@ public final class HeadedGameRunner {
   }
 
   private static Injections constructInjections() {
-    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
+    return Injections.builder()
+        .engineVersion(new ProductVersionReader().getVersion())
+        .playerTypes(gatherPlayerTypes())
+        .build();
+  }
+
+  private static Collection<PlayerTypes.Type> gatherPlayerTypes() {
+    return Stream.of(
+            PlayerTypes.getBuiltInPlayerTypes(),
+            List.of(
+                new PlayerTypes.AiType(new DoesNothingAiProvider()),
+                new PlayerTypes.AiType(new FlowFieldAiProvider())),
+            StreamSupport.stream(ServiceLoader.load(AiProvider.class).spliterator(), false)
+                .map(PlayerTypes.AiType::new)
+                .collect(Collectors.toSet()))
+        .flatMap(Collection::stream)
+        .filter(HeadedGameRunner::filterBetaPlayerType)
+        .collect(Collectors.toList());
+  }
+
+  private static boolean filterBetaPlayerType(final PlayerTypes.Type playerType) {
+    if (playerType.getLabel().equals("FlowField (AI)")) {
+      return ClientSetting.showBetaFeatures.getValue().orElse(false);
+    }
+    return true;
   }
 }

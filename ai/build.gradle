@@ -1,0 +1,6 @@
+description = 'TripleA ai implementations'
+
+dependencies {
+    implementation project(":game-core")
+    implementation project(":java-extras")
+}

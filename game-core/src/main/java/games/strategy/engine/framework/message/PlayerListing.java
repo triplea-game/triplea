@@ -2,7 +2,7 @@ package games.strategy.engine.framework.message;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.NetworkData;
 import java.io.Serializable;
 import java.util.Collection;
@@ -42,7 +42,7 @@ public class PlayerListing implements Serializable {
 
   public PlayerListing(
       final Map<String, Boolean> playersEnabledListing,
-      final Map<String, PlayerType> localPlayerTypes,
+      final Map<String, PlayerTypes.Type> localPlayerTypes,
       final Version gameVersion,
       final String gameName,
       final String gameRound) {
@@ -62,7 +62,7 @@ public class PlayerListing implements Serializable {
   public PlayerListing(
       final Map<String, String> playerToNodeListing,
       final Map<String, Boolean> playersEnabledListing,
-      final Map<String, PlayerType> localPlayerTypes,
+      final Map<String, PlayerTypes.Type> localPlayerTypes,
       final Version gameVersion,
       final String gameName,
       final String gameRound,
@@ -119,8 +119,8 @@ public class PlayerListing implements Serializable {
     return "PlayerListingMessage:" + playerToNodeListing;
   }
 
-  public Map<String, PlayerType> getLocalPlayerTypeMap() {
+  public Map<String, PlayerTypes.Type> getLocalPlayerTypeMap(final PlayerTypes playerTypes) {
     return localPlayerTypes.entrySet().stream()
-        .collect(Collectors.toMap(Entry::getKey, e -> PlayerType.fromLabel(e.getValue())));
+        .collect(Collectors.toMap(Entry::getKey, e -> playerTypes.fromLabel(e.getValue())));
   }
 }

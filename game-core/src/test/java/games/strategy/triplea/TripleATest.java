@@ -16,7 +16,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.delegate.EditDelegate;
 import java.util.HashMap;
@@ -49,10 +49,10 @@ public class TripleATest {
 
   @Test
   void testNewPlayersAreRetrievedFromGivenPlayerNames() {
-    final Map<String, PlayerType> playerNames = new HashMap<>();
-    playerNames.put("first", PlayerType.HUMAN_PLAYER);
-    playerNames.put("second", PlayerType.WEAK_AI);
-    playerNames.put("third", PlayerType.PRO_AI);
+    final Map<String, PlayerTypes.Type> playerNames = new HashMap<>();
+    playerNames.put("first", PlayerTypes.HUMAN_PLAYER);
+    playerNames.put("second", PlayerTypes.WEAK_AI);
+    playerNames.put("third", PlayerTypes.PRO_AI);
     final Set<Player> players = tripleA.newPlayers(playerNames);
     assertThat(players, hasSize(playerNames.size()));
   }

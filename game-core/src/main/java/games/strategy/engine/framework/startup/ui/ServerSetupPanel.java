@@ -38,6 +38,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.injection.Injections;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -347,7 +348,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     for (final Map.Entry<String, Collection<String>> entry :
         model.getPlayerNamesAndAlliancesInTurnOrder().entrySet()) {
       final PlayerRow newPlayerRow =
-          new PlayerRow(entry.getKey(), reloadSelections, entry.getValue());
+          new PlayerRow(
+              entry.getKey(),
+              reloadSelections,
+              entry.getValue(),
+              new PlayerTypes(Injections.getInstance().getPlayerTypes()));
       playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);
     }
@@ -380,10 +385,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
           public void actionPerformed(final ActionEvent e) {
             if (enabledCheckBox.isSelected()) {
               model.enablePlayer(nameLabel.getText());
-              type.setSelectedItem(PlayerType.HUMAN_PLAYER);
+              type.setSelectedItem(PlayerTypes.HUMAN_PLAYER);
             } else {
               model.disablePlayer(nameLabel.getText());
-              type.setSelectedItem(PlayerType.WEAK_AI.name());
+              type.setSelectedItem(PlayerTypes.WEAK_AI);
             }
             setWidgetActivation();
           }
@@ -392,7 +397,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     PlayerRow(
         final String playerName,
         final Map<String, String> reloadSelections,
-        final Collection<String> playerAlliances) {
+        final Collection<String> playerAlliances,
+        final PlayerTypes playerTypesProvider) {
       nameLabel = new JLabel(playerName);
       playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
       localCheckBox = new JCheckBox();
@@ -402,7 +408,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       // this gets updated later
       enabledCheckBox.setSelected(true);
-      final String[] playerTypes = PlayerType.playerTypes();
+      final String[] playerTypes = playerTypesProvider.getAvailablePlayerLabels();
       type = new JComboBox<>(playerTypes);
       String previousSelection = reloadSelections.get(playerName);
       if (previousSelection.equalsIgnoreCase("Client")) {
@@ -411,11 +417,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       if (!previousSelection.equals("no_one") && List.of(playerTypes).contains(previousSelection)) {
         type.setSelectedItem(previousSelection);
         model.setLocalPlayerType(
-            nameLabel.getText(), PlayerType.fromLabel((String) type.getSelectedItem()));
+            nameLabel.getText(), playerTypesProvider.fromLabel((String) type.getSelectedItem()));
       } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
         // the 4th in the list should be Pro AI (Hard AI)
-        type.setSelectedItem(PlayerType.PRO_AI.getLabel());
-        model.setLocalPlayerType(nameLabel.getText(), PlayerType.PRO_AI);
+        type.setSelectedItem(PlayerTypes.PRO_AI.getLabel());
+        model.setLocalPlayerType(nameLabel.getText(), PlayerTypes.PRO_AI);
       }
       if (playerAlliances.contains(playerName)) {
         alliance = new JButton();
@@ -427,7 +433,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       type.addActionListener(
           e ->
               model.setLocalPlayerType(
-                  nameLabel.getText(), PlayerType.fromLabel((String) type.getSelectedItem())));
+                  nameLabel.getText(),
+                  playerTypesProvider.fromLabel((String) type.getSelectedItem())));
     }
 
     public void takePlayerAction() {

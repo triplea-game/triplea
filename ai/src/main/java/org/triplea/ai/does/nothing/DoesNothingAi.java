@@ -1,4 +1,4 @@
-package games.strategy.triplea.ai.weak;
+package org.triplea.ai.does.nothing;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -6,8 +6,9 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -20,13 +21,8 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
  */
 public class DoesNothingAi extends AbstractAi {
 
-  public DoesNothingAi(final String name) {
-    super(name);
-  }
-
-  @Override
-  public PlayerType getPlayerType() {
-    return PlayerType.DOES_NOTHING_AI;
+  public DoesNothingAi(final String name, final PlayerTypes.AiType playerType) {
+    super(name, playerType);
   }
 
   @Override

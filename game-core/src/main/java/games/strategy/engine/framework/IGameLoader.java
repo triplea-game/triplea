@@ -2,7 +2,7 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.Player;
 import java.io.Serializable;
 import java.util.Map;
@@ -22,7 +22,7 @@ public interface IGameLoader extends Serializable {
    *
    * @return a Set of GamePlayers
    */
-  Set<Player> newPlayers(Map<String, PlayerType> players);
+  Set<Player> newPlayers(Map<String, PlayerTypes.Type> players);
 
   /** The game is about to start. */
   void startGame(IGame game, Set<Player> players, LaunchAction launchAction, @Nullable Chat chat);

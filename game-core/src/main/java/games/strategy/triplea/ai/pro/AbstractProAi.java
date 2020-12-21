@@ -8,7 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -49,7 +49,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
 /** Pro AI. */
-public abstract class AbstractProAi extends AbstractAi {
+public abstract class AbstractProAi extends AbstractBuiltInAi {
 
   private final ProOddsCalculator calc;
   @Getter private final ProData proData;
