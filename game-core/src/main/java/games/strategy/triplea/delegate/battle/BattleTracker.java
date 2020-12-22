@@ -448,9 +448,11 @@ public class BattleTracker implements Serializable {
     final Collection<Territory> blitzed =
         CollectionUtils.getMatches(conquered, Matches.territoryIsBlitzable(gamePlayer, data));
     this.blitzed.addAll(
-        CollectionUtils.getMatches(blitzed, Matches.isTerritoryEnemy(gamePlayer, data)));
+        CollectionUtils.getMatches(
+            blitzed, Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker())));
     this.conquered.addAll(
-        CollectionUtils.getMatches(conquered, Matches.isTerritoryEnemy(gamePlayer, data)));
+        CollectionUtils.getMatches(
+            conquered, Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker())));
     for (final Territory current : conquered) {
       IBattle nonFight = getPendingBattle(current, BattleType.NORMAL);
       // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this
@@ -503,7 +505,8 @@ public class BattleTracker implements Serializable {
           addDependency(nonFight, precede);
         }
       } else {
-        if (Matches.isTerritoryEnemy(gamePlayer, data).test(route.getEnd())) {
+        if (Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker())
+            .test(route.getEnd())) {
           if (Matches.territoryIsBlitzable(gamePlayer, data).test(route.getEnd())) {
             this.blitzed.add(route.getEnd());
           }

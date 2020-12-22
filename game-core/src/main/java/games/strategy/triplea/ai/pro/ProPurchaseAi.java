@@ -1302,7 +1302,8 @@ class ProPurchaseAi {
               .getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
       final int numNearbyEnemyTerritories =
           CollectionUtils.countMatches(
-              nearbyLandTerritories, Matches.isTerritoryEnemy(player, data));
+              nearbyLandTerritories,
+              Matches.isTerritoryEnemy(player, data.getRelationshipTracker()));
       ProLogger.trace(
           t
               + ", strategic value="

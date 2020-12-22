@@ -291,7 +291,7 @@ public class MovePerformer implements Serializable {
                             .terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
                                 gamePlayer)
                             .and(Matches.territoryIsBlitzable(gamePlayer, data)))) {
-                  if (Matches.isTerritoryEnemy(gamePlayer, data).test(t)
+                  if (Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker()).test(t)
                       || Matches.territoryHasEnemyUnits(gamePlayer, data.getRelationshipTracker())
                           .test(t)) {
                     continue;

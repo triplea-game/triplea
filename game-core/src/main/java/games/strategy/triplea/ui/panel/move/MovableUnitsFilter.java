@@ -176,7 +176,7 @@ final class MovableUnitsFilter {
   private boolean isInvading() {
     return !nonCombat
         && route.isUnload()
-        && Matches.isTerritoryEnemy(player, data).test(route.getEnd());
+        && Matches.isTerritoryEnemy(player, data.getRelationshipTracker()).test(route.getEnd());
   }
 
   // Whether the two units are equivalent for the purposes of movement.

@@ -399,7 +399,7 @@ public class WeakAi extends AbstractBuiltInAi {
               .and(Matches.unitIsOwnedBy(player))
               .and(Matches.unitHasNotMoved());
       final Predicate<Territory> enemyTerritory =
-          Matches.isTerritoryEnemy(player, data)
+          Matches.isTerritoryEnemy(player, data.getRelationshipTracker())
               .and(Matches.territoryIsLand())
               .and(Matches.territoryIsNeutralButNotWater().negate())
               .and(Matches.territoryIsEmpty());
@@ -487,7 +487,11 @@ public class WeakAi extends AbstractBuiltInAi {
         // move to any enemy territory
         if (newRoute == null) {
           newRoute =
-              Utils.findNearest(t, Matches.isTerritoryEnemy(player, data), routeCondition, data);
+              Utils.findNearest(
+                  t,
+                  Matches.isTerritoryEnemy(player, data.getRelationshipTracker()),
+                  routeCondition,
+                  data);
         }
         if (newRoute != null && newRoute.numberOfSteps() != 0) {
           final Territory firstStep = newRoute.getAllTerritories().get(1);

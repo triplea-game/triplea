@@ -393,8 +393,9 @@ public class MoveValidator {
     // owned territory. do not allow unless each unit can blitz the current territory.
     if (!route.getStart().isWater()
         && Matches.isAtWar(route.getStart().getOwner(), data).test(player)
-        && (route.anyMatch(Matches.isTerritoryEnemy(player, data))
-            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).negate()))) {
+        && (route.anyMatch(Matches.isTerritoryEnemy(player, data.getRelationshipTracker()))
+            && !route.allMatchMiddleSteps(
+                Matches.isTerritoryEnemy(player, data.getRelationshipTracker()).negate()))) {
       if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult(
@@ -411,8 +412,9 @@ public class MoveValidator {
     // Do not allow unless the territory is blitzable.
     if (!route.getStart().isWater()
         && !Matches.isAtWar(route.getStart().getOwner(), data).test(player)
-        && (route.anyMatch(Matches.isTerritoryEnemy(player, data))
-            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).negate()))
+        && (route.anyMatch(Matches.isTerritoryEnemy(player, data.getRelationshipTracker()))
+            && !route.allMatchMiddleSteps(
+                Matches.isTerritoryEnemy(player, data.getRelationshipTracker()).negate()))
         && !Matches.territoryIsBlitzable(player, data).test(route.getStart())
         && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
       return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
@@ -520,7 +522,8 @@ public class MoveValidator {
     }
     // See if we are doing invasions in combat phase, with units or transports that can't do
     // invasion.
-    if (route.isUnload() && Matches.isTerritoryEnemy(player, data).test(route.getEnd())) {
+    if (route.isUnload()
+        && Matches.isTerritoryEnemy(player, data.getRelationshipTracker()).test(route.getEnd())) {
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitCanInvade().negate())) {
         result.addDisallowedUnit(
             unit.getType().getName()
@@ -1505,7 +1508,7 @@ public class MoveValidator {
       if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data.getProperties())) {
         for (final Territory current :
             CollectionUtils.getMatches(route.getMiddleSteps(), Matches.territoryIsLand())) {
-          if (Matches.isTerritoryEnemy(player, data).test(current)) {
+          if (Matches.isTerritoryEnemy(player, data.getRelationshipTracker()).test(current)) {
             return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
           }
         }
@@ -1802,7 +1805,7 @@ public class MoveValidator {
     final Predicate<Territory> hasRequiredUnitsToMove =
         Matches.territoryHasRequiredUnitsToMove(unitsWhichAreNotBeingTransportedOrDependent, data);
     final Predicate<Territory> notEnemyOwned =
-        Matches.isTerritoryEnemy(player, data)
+        Matches.isTerritoryEnemy(player, data.getRelationshipTracker())
             .negate()
             .and(
                 Matches.territoryWasFoughtOver(AbstractMoveDelegate.getBattleTracker(data))

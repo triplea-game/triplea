@@ -239,7 +239,8 @@ public class ProCombatMoveAi {
         final Set<Territory> nearbyTerritories =
             data.getMap().getNeighbors(t, ProMatches.territoryCanMoveLandUnits(player, data, true));
         final List<Territory> nearbyEnemyTerritories =
-            CollectionUtils.getMatches(nearbyTerritories, Matches.isTerritoryEnemy(player, data));
+            CollectionUtils.getMatches(
+                nearbyTerritories, Matches.isTerritoryEnemy(player, data.getRelationshipTracker()));
         final List<Territory> nearbyTerritoriesWithOwnedUnits =
             CollectionUtils.getMatches(nearbyTerritories, Matches.territoryHasUnitsOwnedBy(player));
         for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories) {

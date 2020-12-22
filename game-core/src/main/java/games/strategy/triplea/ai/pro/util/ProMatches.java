@@ -285,7 +285,8 @@ public final class ProMatches {
 
   public static Predicate<Territory> territoryHasInfraFactoryAndIsEnemyLand(
       final GamePlayer player, final GameState data) {
-    return territoryHasInfraFactoryAndIsLand().and(Matches.isTerritoryEnemy(player, data));
+    return territoryHasInfraFactoryAndIsLand()
+        .and(Matches.isTerritoryEnemy(player, data.getRelationshipTracker()));
   }
 
   static Predicate<Territory> territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(
@@ -383,7 +384,7 @@ public final class ProMatches {
   public static Predicate<Territory> territoryIsEnemyLand(
       final GamePlayer player, final GameState data) {
     return territoryCanMoveLandUnits(player, data, false)
-        .and(Matches.isTerritoryEnemy(player, data));
+        .and(Matches.isTerritoryEnemy(player, data.getRelationshipTracker()));
   }
 
   public static Predicate<Territory> territoryIsEnemyNotNeutralLand(

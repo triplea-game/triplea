@@ -1291,9 +1291,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryEnemy(
-      final GamePlayer player, final GameState data) {
-    return t ->
-        !t.getOwner().equals(player) && data.getRelationshipTracker().isAtWar(player, t.getOwner());
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> !t.getOwner().equals(player) && relationshipTracker.isAtWar(player, t.getOwner());
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWater(
