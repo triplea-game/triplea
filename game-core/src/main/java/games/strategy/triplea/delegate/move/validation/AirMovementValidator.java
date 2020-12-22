@@ -74,7 +74,7 @@ public final class AirMovementValidator {
     final Predicate<Unit> airAlliedNotOwned =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsAir())
             .and(Matches.unitCanLandOnCarrier());
     final Set<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
@@ -208,7 +208,7 @@ public final class AirMovementValidator {
     final Predicate<Unit> carrierAlliedNotOwned =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsCarrier());
     final boolean landAirOnNewCarriers =
         Properties.getLhtrCarrierProductionRules(data.getProperties())
@@ -263,13 +263,13 @@ public final class AirMovementValidator {
     final Predicate<Unit> alliedNotOwnedAirMatch =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsAir())
             .and(Matches.unitCanLandOnCarrier());
     final Predicate<Unit> alliedNotOwnedCarrierMatch =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsCarrier());
     final Territory routeEnd = route.getEnd();
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);

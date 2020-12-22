@@ -1268,8 +1268,9 @@ public final class Matches {
     };
   }
 
-  public static Predicate<Unit> isUnitAllied(final GamePlayer player, final GameState data) {
-    return t -> data.getRelationshipTracker().isAllied(player, t.getOwner());
+  public static Predicate<Unit> isUnitAllied(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> relationshipTracker.isAllied(player, t.getOwner());
   }
 
   public static Predicate<Territory> isTerritoryFriendly(
@@ -1880,7 +1881,7 @@ public final class Matches {
       }
 
       final Predicate<Unit> unitIsOwnedByAndNotDisabled =
-          isUnitAllied(unit.getOwner(), data).and(unitIsNotDisabled());
+          isUnitAllied(unit.getOwner(), data.getRelationshipTracker()).and(unitIsNotDisabled());
       final List<Unit> units =
           CollectionUtils.getMatches(t.getUnits(), unitIsOwnedByAndNotDisabled);
       for (final String[] array : ua.getRequiresUnitsToMove()) {

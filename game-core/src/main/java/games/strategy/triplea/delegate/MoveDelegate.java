@@ -346,7 +346,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final IDelegateBridge bridge, final GamePlayer player) {
     final GameState data = bridge.getData();
     final Predicate<Unit> crippledAlliedCarriersMatch =
-        Matches.isUnitAllied(player, data)
+        Matches.isUnitAllied(player, data.getRelationshipTracker())
             .and(Matches.unitIsOwnedBy(player).negate())
             .and(Matches.unitIsCarrier())
             .and(
@@ -394,7 +394,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits()) {
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
-        if (!Matches.isUnitAllied(player, data).test(u)) {
+        if (!Matches.isUnitAllied(player, data.getRelationshipTracker()).test(u)) {
           continue;
         }
         int bonusMovement = Integer.MIN_VALUE;

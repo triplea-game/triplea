@@ -105,14 +105,14 @@ public class RemoveUnprotectedUnits implements BattleStep {
     final Predicate<Unit> matchAllied =
         Matches.unitIsTransport()
             .and(Matches.unitIsNotCombatTransport())
-            .and(Matches.isUnitAllied(player, battleState.getGameData()))
+            .and(Matches.isUnitAllied(player, battleState.getGameData().getRelationshipTracker()))
             .and(Matches.unitIsSea());
     return CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), matchAllied);
   }
 
   private Collection<Unit> getAlliedUnits(final GamePlayer player) {
     final Predicate<Unit> alliedUnitsMatch =
-        Matches.isUnitAllied(player, battleState.getGameData())
+        Matches.isUnitAllied(player, battleState.getGameData().getRelationshipTracker())
             .and(Matches.unitIsNotLand())
             .and(Matches.unitIsSubmerged().negate());
     return CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), alliedUnitsMatch);

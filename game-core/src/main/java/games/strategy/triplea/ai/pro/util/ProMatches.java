@@ -516,7 +516,7 @@ public final class ProMatches {
     final Predicate<Unit> alliedUnitMatch =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(
                 Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
                         t.getUnits(), player, data, false)
@@ -533,13 +533,15 @@ public final class ProMatches {
   public static Predicate<Unit> unitIsAlliedLandAndNotInfra(
       final GamePlayer player, final GameState data) {
     return Matches.unitIsLand()
-        .and(Matches.isUnitAllied(player, data))
+        .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
         .and(Matches.unitIsNotInfrastructure());
   }
 
   public static Predicate<Unit> unitIsAlliedNotOwned(
       final GamePlayer player, final GameState data) {
-    return Matches.unitIsOwnedBy(player).negate().and(Matches.isUnitAllied(player, data));
+    return Matches.unitIsOwnedBy(player)
+        .negate()
+        .and(Matches.isUnitAllied(player, data.getRelationshipTracker()));
   }
 
   public static Predicate<Unit> unitIsAlliedNotOwnedAir(
@@ -548,7 +550,7 @@ public final class ProMatches {
   }
 
   static Predicate<Unit> unitIsAlliedAir(final GamePlayer player, final GameState data) {
-    return Matches.isUnitAllied(player, data).and(Matches.unitIsAir());
+    return Matches.isUnitAllied(player, data.getRelationshipTracker()).and(Matches.unitIsAir());
   }
 
   public static Predicate<Unit> unitIsEnemyAir(final GamePlayer player, final GameState data) {

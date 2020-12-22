@@ -1609,7 +1609,8 @@ public class ProCombatMoveAi {
                     final List<Unit> defenders =
                         territoryToMoveTransport
                             .getUnitCollection()
-                            .getMatches(Matches.isUnitAllied(player, data));
+                            .getMatches(
+                                Matches.isUnitAllied(player, data.getRelationshipTracker()));
                     defenders.add(transport);
                     final double strengthDifference =
                         ProBattleUtils.estimateStrengthDifference(
@@ -1778,7 +1779,9 @@ public class ProCombatMoveAi {
       final Set<Territory> territoriesAdjacentToCapital =
           data.getMap().getNeighbors(myCapital, Matches.territoryIsLand());
       final List<Unit> defenders =
-          myCapital.getUnitCollection().getMatches(Matches.isUnitAllied(player, data));
+          myCapital
+              .getUnitCollection()
+              .getMatches(Matches.isUnitAllied(player, data.getRelationshipTracker()));
       defenders.addAll(placeUnits);
       for (final Territory t : territoriesAdjacentToCapital) {
         defenders.addAll(
