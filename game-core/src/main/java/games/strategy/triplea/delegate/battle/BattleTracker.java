@@ -433,7 +433,8 @@ public class BattleTracker implements Serializable {
                 Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
                     gamePlayer, data));
     final Predicate<Territory> conquerable =
-        Matches.territoryIsEmptyOfCombatUnits(data, gamePlayer).and(passableLandAndNotRestricted);
+        Matches.territoryIsEmptyOfCombatUnits(data.getRelationshipTracker(), gamePlayer)
+            .and(passableLandAndNotRestricted);
     final Collection<Territory> conquered = new ArrayList<>();
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));

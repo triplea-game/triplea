@@ -987,12 +987,10 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsEmptyOfCombatUnits(
-      final GameState data, final GamePlayer player) {
+      final RelationshipTracker relationshipTracker, final GamePlayer player) {
     return t ->
         t.getUnitCollection()
-            .allMatch(
-                unitIsInfrastructure()
-                    .or(enemyUnit(player, data.getRelationshipTracker()).negate()));
+            .allMatch(unitIsInfrastructure().or(enemyUnit(player, relationshipTracker).negate()));
   }
 
   public static Predicate<Territory> territoryIsNeutralButNotWater() {

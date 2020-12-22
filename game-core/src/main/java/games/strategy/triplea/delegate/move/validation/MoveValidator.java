@@ -1211,7 +1211,8 @@ public class MoveValidator {
           } else if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(routeEnd)) {
             // this is an unload to a friendly territory
             if (isScramblingOrKamikazeAttacksEnabled
-                || !Matches.territoryIsEmptyOfCombatUnits(data, player).test(routeStart)) {
+                || !Matches.territoryIsEmptyOfCombatUnits(data.getRelationshipTracker(), player)
+                    .test(routeStart)) {
               // Unloading a transport from a sea zone with a battle, to a friendly land territory,
               // during combat move phase, is illegal and in addition to being illegal, it is also
               // causing problems if
