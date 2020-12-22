@@ -145,6 +145,9 @@ class UpdatedMapsCheck {
     if (inputName.endsWith(".zip.properties")) {
       normalizedName = inputName.substring(0, inputName.indexOf(".zip.properties"));
     }
+    if (normalizedName.endsWith("-master")) {
+      normalizedName = inputName.substring(0, inputName.indexOf("-master"));
+    }
 
     normalizedName = normalizedName.replaceAll(" ", "_");
     normalizedName = normalizedName.toLowerCase();
