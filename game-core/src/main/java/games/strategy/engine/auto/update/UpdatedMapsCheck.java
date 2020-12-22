@@ -46,6 +46,10 @@ class UpdatedMapsCheck {
 
   /** Prompts user to download map updates if maps are out of date. */
   public static void checkDownloadedMapsAreLatest() {
+    if (!isMapUpdateCheckRequired()) {
+      return;
+    }
+
     // {map name -> version}
     final Map<String, Version> availableToDownloadMapVersions =
         downloadAvailableMapsListAndComputeAvailableVersions();

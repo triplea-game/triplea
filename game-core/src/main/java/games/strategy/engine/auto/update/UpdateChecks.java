@@ -22,11 +22,7 @@ public final class UpdateChecks {
 
     TutorialMapCheck.checkForTutorialMap();
     EngineVersionCheck.checkForLatestEngineVersionOut();
-
-    if (UpdatedMapsCheck.isMapUpdateCheckRequired()) {
-      UpdatedMapsCheck.checkDownloadedMapsAreLatest();
-      // TODO: add check here to prompt for tutorial map
-    }
+    UpdatedMapsCheck.checkDownloadedMapsAreLatest();
   }
 
   private static boolean shouldRun() {
