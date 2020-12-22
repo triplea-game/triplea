@@ -441,7 +441,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // add the dependants to the attacking list
       attackingUnits.addAll(dependants);
       final List<Unit> enemyUnits =
-          territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
+          territory
+              .getUnitCollection()
+              .getMatches(Matches.enemyUnit(player, data.getRelationshipTracker()));
       final IBattle bombingBattle = battleTracker.getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         // we need to remove any units which are participating in bombing raids
@@ -623,7 +625,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // units
     for (final Territory territory : battleTerritories) {
       final List<Unit> abandonedToUnits =
-          territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
+          territory
+              .getUnitCollection()
+              .getMatches(Matches.enemyUnit(player, data.getRelationshipTracker()));
       final GamePlayer abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(abandonedToUnits);
 
       // now make sure to add any units that must move with these units, so that they get included

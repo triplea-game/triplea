@@ -94,7 +94,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
     final Predicate<Unit> defenders =
-        Matches.enemyUnit(attacker, gameData)
+        Matches.enemyUnit(attacker, gameData.getRelationshipTracker())
             .and(
                 Matches.unitCanBeDamaged()
                     .or(

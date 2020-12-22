@@ -180,7 +180,7 @@ public class MovePerformer implements Serializable {
                   route
                       .getEnd()
                       .getUnitCollection()
-                      .getMatches(Matches.enemyUnit(gamePlayer, data));
+                      .getMatches(Matches.enemyUnit(gamePlayer, data.getRelationshipTracker()));
               final Collection<Unit> enemyTargetsTotal =
                   CollectionUtils.getMatches(
                       enemyUnits,

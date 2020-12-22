@@ -124,7 +124,8 @@ public class RocketsFireHelper implements Serializable {
         final Collection<Unit> enemyUnits =
             CollectionUtils.getMatches(
                 targetTerritory.getUnitCollection(),
-                Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate()));
+                Matches.enemyUnit(player, data.getRelationshipTracker())
+                    .and(Matches.unitIsBeingTransported().negate()));
         final Collection<Unit> enemyTargetsTotal =
             CollectionUtils.getMatches(
                 enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(targetTerritory).negate());
@@ -233,7 +234,8 @@ public class RocketsFireHelper implements Serializable {
     final Collection<Territory> possible =
         data.getMap().getNeighbors(territory, maxDistance, allowed);
     final Predicate<Unit> attackableUnits =
-        Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate());
+        Matches.enemyUnit(player, data.getRelationshipTracker())
+            .and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null
@@ -271,7 +273,8 @@ public class RocketsFireHelper implements Serializable {
         attackedTerritory
             .getUnitCollection()
             .getMatches(
-                Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate()));
+                Matches.enemyUnit(player, data.getRelationshipTracker())
+                    .and(Matches.unitIsBeingTransported().negate()));
     final Collection<Unit> enemyTargetsTotal =
         CollectionUtils.getMatches(
             enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).negate());

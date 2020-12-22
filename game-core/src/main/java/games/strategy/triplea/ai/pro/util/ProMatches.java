@@ -242,7 +242,7 @@ public final class ProMatches {
       final Predicate<Unit> subOnly =
           Matches.unitIsInfrastructure()
               .or(Matches.unitCanBeMovedThroughByEnemies())
-              .or(Matches.enemyUnit(player, data).negate());
+              .or(Matches.enemyUnit(player, data.getRelationshipTracker()).negate());
       return t.getUnitCollection().allMatch(subOnly)
           || Matches.territoryHasNoEnemyUnits(player, data).test(t);
     };
@@ -552,20 +552,21 @@ public final class ProMatches {
   }
 
   public static Predicate<Unit> unitIsEnemyAir(final GamePlayer player, final GameState data) {
-    return Matches.enemyUnit(player, data).and(Matches.unitIsAir());
+    return Matches.enemyUnit(player, data.getRelationshipTracker()).and(Matches.unitIsAir());
   }
 
   public static Predicate<Unit> unitIsEnemyAndNotInfa(
       final GamePlayer player, final GameState data) {
-    return Matches.enemyUnit(player, data).and(Matches.unitIsNotInfrastructure());
+    return Matches.enemyUnit(player, data.getRelationshipTracker())
+        .and(Matches.unitIsNotInfrastructure());
   }
 
   public static Predicate<Unit> unitIsEnemyNotLand(final GamePlayer player, final GameState data) {
-    return Matches.enemyUnit(player, data).and(Matches.unitIsNotLand());
+    return Matches.enemyUnit(player, data.getRelationshipTracker()).and(Matches.unitIsNotLand());
   }
 
   static Predicate<Unit> unitIsEnemyNotNeutral(final GamePlayer player, final GameState data) {
-    return Matches.enemyUnit(player, data).and(unitIsNeutral().negate());
+    return Matches.enemyUnit(player, data.getRelationshipTracker()).and(unitIsNeutral().negate());
   }
 
   private static Predicate<Unit> unitIsNeutral() {

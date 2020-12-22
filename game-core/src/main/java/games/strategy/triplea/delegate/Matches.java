@@ -715,7 +715,7 @@ public final class Matches {
       final int battleRoundNumber,
       final boolean defending,
       final GameState data) {
-    return enemyUnit(playerMovingOrAttacking, data)
+    return enemyUnit(playerMovingOrAttacking, data.getRelationshipTracker())
         .and(unitIsBeingTransported().negate())
         .and(
             unitIsAaThatCanHitTheseUnits(
@@ -979,14 +979,18 @@ public final class Matches {
         return false;
       }
       return !t.getOwner().isNull()
-          && t.getUnitCollection().anyMatch(enemyUnit(player, data).and(unitMatch));
+          && t.getUnitCollection()
+              .anyMatch(enemyUnit(player, data.getRelationshipTracker()).and(unitMatch));
     };
   }
 
   public static Predicate<Territory> territoryIsEmptyOfCombatUnits(
       final GameState data, final GamePlayer player) {
     return t ->
-        t.getUnitCollection().allMatch(unitIsInfrastructure().or(enemyUnit(player, data).negate()));
+        t.getUnitCollection()
+            .allMatch(
+                unitIsInfrastructure()
+                    .or(enemyUnit(player, data.getRelationshipTracker()).negate()));
   }
 
   public static Predicate<Territory> territoryIsNeutralButNotWater() {
@@ -1277,7 +1281,7 @@ public final class Matches {
 
   private static Predicate<Unit> unitIsEnemyAaForFlyOver(
       final GamePlayer player, final GameState data) {
-    return unitIsAaForFlyOverOnly().and(enemyUnit(player, data));
+    return unitIsAaForFlyOverOnly().and(enemyUnit(player, data.getRelationshipTracker()));
   }
 
   public static Predicate<Unit> unitIsInTerritory(final Territory territory) {
@@ -1337,7 +1341,7 @@ public final class Matches {
       }
       // we ignore neutral units
       final Predicate<Unit> blitzableUnits =
-          PredicateBuilder.of(enemyUnit(player, data).negate())
+          PredicateBuilder.of(enemyUnit(player, data.getRelationshipTracker()).negate())
               // WW2V2, cant blitz through factories and aa guns
               // WW2V1, you can
               .orIf(
@@ -1363,8 +1367,9 @@ public final class Matches {
             || Properties.getNeutralCharge(properties) <= 0;
   }
 
-  public static Predicate<Unit> enemyUnit(final GamePlayer player, final GameState data) {
-    return unit -> data.getRelationshipTracker().isAtWar(player, unit.getOwner());
+  public static Predicate<Unit> enemyUnit(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return unit -> relationshipTracker.isAtWar(player, unit.getOwner());
   }
 
   public static Predicate<Unit> enemyUnitOfAnyOfThesePlayers(
@@ -1426,7 +1431,7 @@ public final class Matches {
 
   public static Predicate<Territory> territoryHasNoEnemyUnits(
       final GamePlayer player, final GameState data) {
-    return t -> !t.getUnitCollection().anyMatch(enemyUnit(player, data));
+    return t -> !t.getUnitCollection().anyMatch(enemyUnit(player, data.getRelationshipTracker()));
   }
 
   public static Predicate<Territory> territoryHasAlliedUnits(
@@ -1436,23 +1441,28 @@ public final class Matches {
 
   static Predicate<Territory> territoryHasNonSubmergedEnemyUnits(
       final GamePlayer player, final GameState data) {
-    final Predicate<Unit> match = enemyUnit(player, data).and(unitIsSubmerged().negate());
+    final Predicate<Unit> match =
+        enemyUnit(player, data.getRelationshipTracker()).and(unitIsSubmerged().negate());
     return t -> t.getUnitCollection().anyMatch(match);
   }
 
   public static Predicate<Territory> territoryHasEnemyLandUnits(
       final GamePlayer player, final GameState data) {
-    return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data).and(unitIsLand()));
+    return t ->
+        t.getUnitCollection()
+            .anyMatch(enemyUnit(player, data.getRelationshipTracker()).and(unitIsLand()));
   }
 
   public static Predicate<Territory> territoryHasEnemySeaUnits(
       final GamePlayer player, final GameState data) {
-    return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data).and(unitIsSea()));
+    return t ->
+        t.getUnitCollection()
+            .anyMatch(enemyUnit(player, data.getRelationshipTracker()).and(unitIsSea()));
   }
 
   public static Predicate<Territory> territoryHasEnemyUnits(
       final GamePlayer player, final GameState data) {
-    return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data));
+    return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data.getRelationshipTracker()));
   }
 
   public static Predicate<Territory> territoryIsNotUnownedWater() {
@@ -1469,7 +1479,9 @@ public final class Matches {
       final List<Unit> enemyUnits =
           t.getUnitCollection()
               .getMatches(
-                  enemyUnit(player, gameData).and(unitIsNotAir()).and(unitIsNotInfrastructure()));
+                  enemyUnit(player, gameData.getRelationshipTracker())
+                      .and(unitIsNotAir())
+                      .and(unitIsNotInfrastructure()));
       final Collection<GamePlayer> enemyPlayers =
           enemyUnits.stream().map(Unit::getOwner).collect(Collectors.toSet());
       return isAtWarWithAnyOfThesePlayers(enemyPlayers, gameData).test(t.getOwner());
