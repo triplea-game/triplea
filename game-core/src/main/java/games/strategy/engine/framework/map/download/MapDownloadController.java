@@ -4,10 +4,8 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 
 /** Controller for in-game map download actions. */
-@Slf4j
 @UtilityClass
 public final class MapDownloadController {
 
