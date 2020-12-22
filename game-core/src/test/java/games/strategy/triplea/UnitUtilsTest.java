@@ -179,23 +179,26 @@ class UnitUtilsTest {
 
     @Test
     void transportedUnitsAreTransferredToTheFirstNewUnit() {
-      final Unit oldUnit = transport.create(1, player).get(0);
-      seaZone.getUnitCollection().add(oldUnit);
-      final List<Unit> newUnits = transport.create(2, player);
+      final Unit oldTransport = transport.create(1, player).get(0);
+      seaZone.getUnitCollection().add(oldTransport);
+      final Unit newTransport1 = transport.create(1, player).get(0);
+      final Unit newTransport2 = transport.create(1, player).get(0);
 
       final List<Unit> transportedUnits = infantry.create(1, player);
       seaZone.getUnitCollection().addAll(transportedUnits);
-      transportedUnits.get(0).setTransportedBy(oldUnit);
+      transportedUnits.get(0).setTransportedBy(oldTransport);
 
-      final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
+      final Change changes =
+          UnitUtils.translateAttributesToOtherUnits(
+              oldTransport, List.of(newTransport1, newTransport2), seaZone);
       gameData.performChange(changes);
 
       assertThat(
           "Units can only be transported by one unit at a time. So the transported unit "
               + "should be transferred to one of the new units. Since the new units is a list, the "
-              + "first one will be selected.",
+              + "first one will be selected and the first one is 'newTransport1'",
           transportedUnits.get(0).getTransportedBy(),
-          is(newUnits.get(0)));
+          is(newTransport1));
     }
   }
 }
