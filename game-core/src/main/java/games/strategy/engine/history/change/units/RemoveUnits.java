@@ -1,5 +1,6 @@
 package games.strategy.engine.history.change.units;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -30,6 +31,7 @@ import org.triplea.java.collections.IntegerMap;
 @EqualsAndHashCode
 public class RemoveUnits implements HistoryChange {
 
+  CompositeChange change = new CompositeChange();
   Territory location;
   Collection<Unit> killedUnits;
   Map<Territory, Collection<Unit>> unloadedUnits = new HashMap<>();
@@ -115,7 +117,8 @@ public class RemoveUnits implements HistoryChange {
     if (change.isEmpty()) {
       return;
     }
-    bridge.addChange(change);
+    this.change.add(change);
+    bridge.addChange(this.change);
 
     final String text =
         new StringSubstitutor(
@@ -124,5 +127,10 @@ public class RemoveUnits implements HistoryChange {
                     "territory", location.getName()))
             .replace(messageTemplate);
     bridge.getHistoryWriter().addChildToEvent(text, allKilledUnits);
+  }
+
+  @Override
+  public Change invert() {
+    return this.change.invert();
   }
 }

@@ -1,5 +1,6 @@
 package games.strategy.engine.history.change.units;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -15,16 +16,23 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Value;
+import lombok.experimental.FieldDefaults;
 import org.triplea.util.Tuple;
 
 /**
  * Transforms units into other unit types as determined by {@link
  * UnitAttachment#getWhenHitPointsDamagedChangesInto()}
  */
-@Value
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
+@EqualsAndHashCode
 public class TransformDamagedUnits implements HistoryChange {
 
+  CompositeChange change = new CompositeChange();
   Territory location;
   /** Map of old unit -> new unit */
   Map<Unit, Unit> transformingUnits = new HashMap<>();
@@ -58,11 +66,13 @@ public class TransformDamagedUnits implements HistoryChange {
       return;
     }
 
-    bridge.addChange(
+    this.change.add(
         new CompositeChange(
             ChangeFactory.addUnits(location, getNewUnits()),
             ChangeFactory.removeUnits(location, getOldUnits()),
             attributeChanges));
+
+    bridge.addChange(this.change);
 
     // to reduce the amount of history text, group the transforming units by both the original and
     // new unit type
@@ -89,6 +99,11 @@ public class TransformDamagedUnits implements HistoryChange {
                   .getHistoryWriter()
                   .addChildToEvent(transformTranscriptText, groupedUnits.getOldUnits());
             });
+  }
+
+  @Override
+  public Change invert() {
+    return this.change.invert();
   }
 
   @Value
