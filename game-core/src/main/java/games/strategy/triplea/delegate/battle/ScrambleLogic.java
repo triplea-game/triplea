@@ -57,7 +57,7 @@ public class ScrambleLogic {
     this.territoriesWithBattles = territoriesWithBattles;
     this.battleTracker = battleTracker;
     this.airbaseThatCanScramblePredicate =
-        Matches.unitIsEnemyOf(data, player)
+        Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());
@@ -66,7 +66,7 @@ public class ScrambleLogic {
             .and(
                 Matches.territoryHasUnitsThatMatch(
                     Matches.unitCanScramble()
-                        .and(Matches.unitIsEnemyOf(data, player))
+                        .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))
                         .and(Matches.unitIsNotDisabled())))
             .and(Matches.territoryHasUnitsThatMatch(airbaseThatCanScramblePredicate))
             .andIf(
@@ -168,7 +168,7 @@ public class ScrambleLogic {
       return Map.of();
     }
     final Predicate<Unit> unitCanScramble =
-        Matches.unitIsEnemyOf(data, player)
+        Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitWasScrambled().negate());

@@ -140,7 +140,9 @@ public class BattleTracker implements Serializable {
   public boolean didAllThesePlayersJustGoToWarThisTurn(
       final GamePlayer p1, final Collection<Unit> enemyUnits, final GameState data) {
     final Set<GamePlayer> enemies = new HashSet<>();
-    for (final Unit u : CollectionUtils.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1))) {
+    for (final Unit u :
+        CollectionUtils.getMatches(
+            enemyUnits, Matches.unitIsEnemyOf(data.getRelationshipTracker(), p1))) {
       enemies.add(u.getOwner());
     }
     for (final GamePlayer e : enemies) {
@@ -596,7 +598,8 @@ public class BattleTracker implements Serializable {
         final GamePlayer convoyOwner = convoy.getOwner();
         if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
           if (CollectionUtils.getMatches(
-                      cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
+                      cta.getConvoyAttached(),
+                      Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
                   .size()
               <= 0) {
             bridge
@@ -612,7 +615,8 @@ public class BattleTracker implements Serializable {
           }
         } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
             && CollectionUtils.getMatches(
-                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
+                        cta.getConvoyAttached(),
+                        Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
                     .size()
                 == 1) {
           bridge
@@ -831,7 +835,9 @@ public class BattleTracker implements Serializable {
     // TODO: see if necessary
     if (territory
         .getUnitCollection()
-        .anyMatch(Matches.unitIsEnemyOf(data, gamePlayer).and(Matches.unitCanBeDamaged()))) {
+        .anyMatch(
+            Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
+                .and(Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -864,7 +870,8 @@ public class BattleTracker implements Serializable {
           OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
           CollectionUtils.getMatches(
-              originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+              originallyOwned,
+              Matches.isTerritoryAllied(terrOrigOwner, data.getRelationshipTracker()));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner().equals(terrOrigOwner)) {

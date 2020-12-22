@@ -245,8 +245,9 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getDefense(unit.getOwner()) >= defendValue;
   }
 
-  public static Predicate<Unit> unitIsEnemyOf(final GameState data, final GamePlayer player) {
-    return unit -> data.getRelationshipTracker().isAtWar(unit.getOwner(), player);
+  public static Predicate<Unit> unitIsEnemyOf(
+      final RelationshipTracker relationshipTracker, final GamePlayer player) {
+    return unit -> relationshipTracker.isAtWar(unit.getOwner(), player);
   }
 
   public static Predicate<Unit> unitIsNotSea() {
@@ -557,10 +558,11 @@ public final class Matches {
     return t -> t.getUnitCollection().anyMatch(unitIsOwnedBy(player).and(unitIsCarrier()));
   }
 
-  public static Predicate<Unit> unitIsAlliedCarrier(final GamePlayer player, final GameState data) {
+  public static Predicate<Unit> unitIsAlliedCarrier(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return unit ->
         UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
-            && data.getRelationshipTracker().isAllied(player, unit.getOwner());
+            && relationshipTracker.isAllied(player, unit.getOwner());
   }
 
   public static Predicate<Unit> unitCanBeTransported() {
@@ -964,9 +966,9 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryHasAlliedIsFactoryOrCanProduceUnits(
-      final GameState data, final GamePlayer player) {
+      final RelationshipTracker relationshipTracker, final GamePlayer player) {
     return t ->
-        isTerritoryAllied(player, data).test(t)
+        isTerritoryAllied(player, relationshipTracker).test(t)
             && t.getUnitCollection().anyMatch(unitCanProduceUnits());
   }
 
@@ -1242,8 +1244,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryAllied(
-      final GamePlayer player, final GameState data) {
-    return t -> data.getRelationshipTracker().isAllied(player, t.getOwner());
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> relationshipTracker.isAllied(player, t.getOwner());
   }
 
   public static Predicate<Territory> isTerritoryOwnedBy(final GamePlayer player) {

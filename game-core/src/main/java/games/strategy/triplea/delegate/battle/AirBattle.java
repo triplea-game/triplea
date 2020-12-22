@@ -841,7 +841,7 @@ public class AirBattle extends AbstractBattle {
   public static Predicate<Unit> defendingGroundSeaBattleInterceptors(
       final GamePlayer attacker, final GameState data) {
     return PredicateBuilder.of(Matches.unitCanAirBattle())
-        .and(Matches.unitIsEnemyOf(data, attacker))
+        .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker))
         .and(Matches.unitWasInAirBattle().negate())
         .andIf(
             !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
@@ -857,14 +857,14 @@ public class AirBattle extends AbstractBattle {
       final Territory territory, final GamePlayer attacker, final GameState data) {
     final Predicate<Unit> canIntercept =
         PredicateBuilder.of(Matches.unitCanIntercept())
-            .and(Matches.unitIsEnemyOf(data, attacker))
+            .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker))
             .and(Matches.unitWasInAirBattle().negate())
             .andIf(
                 !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
                 Matches.unitWasScrambled().negate())
             .build();
     final Predicate<Unit> airbasesCanIntercept =
-        Matches.unitIsEnemyOf(data, attacker)
+        Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker)
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());

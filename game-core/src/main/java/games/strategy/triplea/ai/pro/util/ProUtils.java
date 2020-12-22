@@ -162,7 +162,8 @@ public final class ProUtils {
         CollectionUtils.getMatches(
             capitals, Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
     capitals.retainAll(
-        CollectionUtils.getMatches(capitals, Matches.isTerritoryAllied(player, data)));
+        CollectionUtils.getMatches(
+            capitals, Matches.isTerritoryAllied(player, data.getRelationshipTracker())));
     return capitals;
   }
 

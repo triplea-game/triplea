@@ -669,7 +669,7 @@ public class ProTerritoryManager {
         moveMap,
         unitMoveMap,
         landRoutesMap,
-        Matches.isTerritoryAllied(player, data),
+        Matches.isTerritoryAllied(player, data.getRelationshipTracker()),
         new ArrayList<>(),
         clearedTerritories,
         false,
@@ -695,7 +695,7 @@ public class ProTerritoryManager {
         moveMap,
         transportMapList,
         landRoutesMap,
-        Matches.isTerritoryAllied(player, data),
+        Matches.isTerritoryAllied(player, data.getRelationshipTracker()),
         false,
         isCheckingEnemyAttacks,
         false);
@@ -710,7 +710,8 @@ public class ProTerritoryManager {
     final List<Map<Territory, ProTerritory>> enemyMoveMaps = new ArrayList<>();
     final List<Territory> clearedTerritories =
         CollectionUtils.getMatches(
-            data.getMap().getTerritories(), Matches.isTerritoryAllied(player, data));
+            data.getMap().getTerritories(),
+            Matches.isTerritoryAllied(player, data.getRelationshipTracker()));
 
     // Loop through each enemy to determine the maximum number of enemy units that can defend each
     // territory
@@ -1002,7 +1003,8 @@ public class ProTerritoryManager {
         }
       }
       for (final Territory t : data.getMap().getTerritories()) {
-        if (t.getUnitCollection().anyMatch(Matches.unitIsAlliedCarrier(player, data))) {
+        if (t.getUnitCollection()
+            .anyMatch(Matches.unitIsAlliedCarrier(player, data.getRelationshipTracker()))) {
           possibleCarrierTerritories.add(t);
         }
       }
