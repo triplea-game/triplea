@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -120,7 +121,7 @@ public final class ProPurchaseValidationUtils {
 
   public static void removeInvalidPurchaseOptions(
       final GamePlayer player,
-      final GameData data,
+      final GameState data,
       final List<ProPurchaseOption> purchaseOptions,
       final ProResourceTracker resourceTracker,
       final int remainingUnitProduction,
@@ -141,7 +142,7 @@ public final class ProPurchaseValidationUtils {
   /** Removes any invalid purchase options from {@code purchaseOptions}. */
   public static void removeInvalidPurchaseOptions(
       final GamePlayer player,
-      final GameData data,
+      final GameState data,
       final List<ProPurchaseOption> purchaseOptions,
       final ProResourceTracker resourceTracker,
       final int remainingUnitProduction,
@@ -176,7 +177,7 @@ public final class ProPurchaseValidationUtils {
   private static boolean hasReachedMaxUnitBuiltPerPlayer(
       final ProPurchaseOption purchaseOption,
       final GamePlayer player,
-      final GameData data,
+      final GameState data,
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
@@ -211,7 +212,7 @@ public final class ProPurchaseValidationUtils {
 
   private static boolean hasReachedConstructionLimits(
       final ProPurchaseOption purchaseOption,
-      final GameData data,
+      final GameState data,
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Territory territory) {
@@ -261,7 +262,7 @@ public final class ProPurchaseValidationUtils {
   }
 
   private static int findMaxConstructionTypeAllowed(
-      final ProPurchaseOption purchaseOption, final GameData data, final Territory territory) {
+      final ProPurchaseOption purchaseOption, final GameState data, final Territory territory) {
 
     int maxConstructionType = purchaseOption.getMaxConstructionType();
     final String constructionType = purchaseOption.getConstructionType();

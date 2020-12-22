@@ -80,7 +80,7 @@ public class CasualtySelector {
             ? extraHits
             : dice.getHits();
 
-    if (BaseEditDelegate.getEditMode(data)) {
+    if (BaseEditDelegate.getEditMode(data.getProperties())) {
       return tripleaPlayer.selectCasualties(
           targetsToPickFrom,
           dependents,

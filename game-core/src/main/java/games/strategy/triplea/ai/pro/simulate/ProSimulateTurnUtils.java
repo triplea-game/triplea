@@ -3,6 +3,7 @@ package games.strategy.triplea.ai.pro.simulate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -112,7 +113,7 @@ public final class ProSimulateTurnUtils {
   public static Map<Territory, ProTerritory> transferMoveMap(
       final ProData proData,
       final Map<Territory, ProTerritory> moveMap,
-      final GameData toData,
+      final GameState toData,
       final GamePlayer player) {
 
     ProLogger.info("Transferring move map");
@@ -222,7 +223,7 @@ public final class ProSimulateTurnUtils {
 
   private static boolean checkIfCapturedTerritoryIsAlliedCapital(
       final Territory t,
-      final GameData data,
+      final GameState data,
       final GamePlayer player,
       final IDelegateBridge delegateBridge) {
 
@@ -264,7 +265,7 @@ public final class ProSimulateTurnUtils {
       final Unit u,
       final Map<Unit, Territory> unitTerritoryMap,
       final List<Unit> usedUnits,
-      final GameData toData,
+      final GameState toData,
       final GamePlayer player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(u);
@@ -289,7 +290,7 @@ public final class ProSimulateTurnUtils {
       final List<Unit> transportingUnits,
       final Map<Unit, Territory> unitTerritoryMap,
       final List<Unit> usedUnits,
-      final GameData toData,
+      final GameState toData,
       final GamePlayer player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(transport);

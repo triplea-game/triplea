@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
 
@@ -26,7 +26,7 @@ class AttachmentPropertyResetUndo extends Change {
   }
 
   @Override
-  public void perform(final GameData data) {
+  public void perform(final GameState data) {
     final IAttachment attachment = attachedTo.getAttachment(attachmentName);
     try {
       attachment.getPropertyOrThrow(property).setValue(newValue);

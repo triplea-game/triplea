@@ -4,6 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -38,7 +39,7 @@ public class AirThatCantLandUtil {
 
   void removeAirThatCantLand(
       final GamePlayer player, final boolean spareAirInSeaZonesBesideFactories) {
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     final GameMap map = data.getMap();
     for (final Territory current : getTerritoriesWhereAirCantLand(player)) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.alliedUnit(player, data));

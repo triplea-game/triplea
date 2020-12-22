@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.util.BreadthFirstSearch;
@@ -31,7 +32,7 @@ public final class ProTerritoryValueUtils {
    */
   public static double findTerritoryAttackValue(
       final ProData proData, final GamePlayer player, final Territory t) {
-    final GameData data = proData.getData();
+    final GameState data = proData.getData();
     final int isEnemyFactory =
         ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
@@ -104,7 +105,7 @@ public final class ProTerritoryValueUtils {
 
     // Determine value for water territories
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
-    final GameData data = player.getData();
+    final GameState data = player.getData();
     for (final Territory t : territoriesToCheck) {
       if (!territoriesThatCantBeHeld.contains(t)
           && t.isWater()
@@ -177,7 +178,7 @@ public final class ProTerritoryValueUtils {
   }
 
   protected static int findMaxLandMassSize(final GamePlayer player) {
-    final GameData data = player.getData();
+    final GameState data = player.getData();
     final Predicate<Territory> cond =
         ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
 
@@ -214,7 +215,7 @@ public final class ProTerritoryValueUtils {
 
     // Get all enemy factories and capitals (check if most territories have factories and if so
     // remove them)
-    final GameData data = player.getData();
+    final GameState data = player.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
     final Set<Territory> enemyCapitalsAndFactories =
         new HashSet<>(
@@ -379,7 +380,7 @@ public final class ProTerritoryValueUtils {
       final List<Territory> territoriesToAttack,
       final Map<Territory, Double> territoryValueMap) {
 
-    final GameData data = proData.getData();
+    final GameState data = proData.getData();
     if (territoriesThatCantBeHeld.contains(t)
         || data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
       return 0.0;

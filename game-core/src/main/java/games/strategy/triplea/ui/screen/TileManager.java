@@ -2,6 +2,7 @@ package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -248,7 +249,7 @@ public class TileManager {
   }
 
   private void drawTerritory(
-      final Territory territory, final GameData data, final MapData mapData) {
+      final Territory territory, final GameState data, final MapData mapData) {
     final Set<Tile> drawnOn = new HashSet<>();
     final Set<IDrawable> drawing = new HashSet<>();
     if (territoryOverlays.get(territory.getName()) != null) {

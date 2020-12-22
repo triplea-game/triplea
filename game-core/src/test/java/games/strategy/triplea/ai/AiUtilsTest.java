@@ -2,8 +2,8 @@ package games.strategy.triplea.ai;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -15,7 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class AiUtilsTest {
-  private GameData gameData = TestMapGameData.REVISED.getGameData();
+  private GameState gameData = TestMapGameData.REVISED.getGameData();
 
   @Test
   void testCost() {

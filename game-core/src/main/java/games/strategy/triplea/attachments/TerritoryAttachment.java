@@ -9,6 +9,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -481,7 +482,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       final String encodedCaptureOwnershipChange) {
     final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
     assert tokens.length == 2;
-    final GameData gameData = getData();
+    final GameState gameData = getData();
     return new CaptureOwnershipChange(
         gameData.getPlayerList().getPlayerId(tokens[0]),
         gameData.getPlayerList().getPlayerId(tokens[1]));
@@ -606,7 +607,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * route.
    */
   public static Collection<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
-      final Territory territory, final GameData data) {
+      final Territory territory, final GameState data) {
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta == null || !ta.getConvoyRoute()) {
       return new HashSet<>();
@@ -754,7 +755,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) {}
+  public void validate(final GameState data) {}
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {

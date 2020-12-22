@@ -5,6 +5,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -214,7 +215,7 @@ public class PlayerAttachment extends DefaultAttachment {
       final Collection<Unit> unitsMoving,
       final Territory toMoveInto,
       final GamePlayer owner,
-      final GameData data) {
+      final GameState data) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);
     if (pa == null) {
       return true;
@@ -525,7 +526,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) {}
+  public void validate(final GameState data) {}
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {

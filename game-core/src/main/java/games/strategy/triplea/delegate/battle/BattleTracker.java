@@ -7,6 +7,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
@@ -137,7 +138,7 @@ public class BattleTracker implements Serializable {
   }
 
   public boolean didAllThesePlayersJustGoToWarThisTurn(
-      final GamePlayer p1, final Collection<Unit> enemyUnits, final GameData data) {
+      final GamePlayer p1, final Collection<Unit> enemyUnits, final GameState data) {
     final Set<GamePlayer> enemies = new HashSet<>();
     for (final Unit u : CollectionUtils.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1))) {
       enemies.add(u.getOwner());
@@ -906,7 +907,7 @@ public class BattleTracker implements Serializable {
       final GamePlayer newOwner,
       final IDelegateBridge bridge,
       final UndoableMove changeTracker) {
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data.getProperties())) {
       final Predicate<Unit> enemyToBeDestroyed =
@@ -1264,7 +1265,7 @@ public class BattleTracker implements Serializable {
     }
   }
 
-  private static boolean isPacificTheater(final GameData data) {
+  private static boolean isPacificTheater(final GameState data) {
     return data.getProperties().get(Constants.PACIFIC_THEATER, false);
   }
 

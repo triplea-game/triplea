@@ -1,8 +1,8 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 
 class PlayerWhoAmIChange extends Change {
   private static final long serialVersionUID = -1486914230174337300L;
@@ -24,7 +24,7 @@ class PlayerWhoAmIChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameState data) {
     final GamePlayer player = data.getPlayerList().getPlayerId(playerName);
     player.setWhoAmI(endWhoAmI);
   }

@@ -4,6 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -161,7 +162,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * @param paa the politicalActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
-    final GameData data = getData();
+    final GameState data = getData();
     final Predicate<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
         Matches.politicalActionIsRelationshipChangeOf(
                 null,
@@ -663,7 +664,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   private static void givesBackOriginalTerritories(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     final Collection<GamePlayer> players = data.getPlayerList().getPlayers();
     for (final GamePlayer p1 : players) {

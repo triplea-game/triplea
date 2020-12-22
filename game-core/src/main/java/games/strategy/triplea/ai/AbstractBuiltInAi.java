@@ -2,6 +2,7 @@ package games.strategy.triplea.ai;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -323,7 +324,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final List<Territory> territoryChoices,
       final List<Unit> unitChoices,
       final int unitsPerPick) {
-    final GameData data = getGameData();
+    final GameState data = getGameData();
     final GamePlayer me = this.getGamePlayer();
     final Territory picked;
     if (territoryChoices == null || territoryChoices.isEmpty()) {
@@ -573,7 +574,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
    * @param player - the player to place for
    */
   protected abstract void place(
-      boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, GamePlayer player);
+      boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameState data, GamePlayer player);
 
   /**
    * No need to override this.

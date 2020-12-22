@@ -61,7 +61,7 @@ public class PlayerManager {
    * Get a player from an opposing side, if possible, else get a player playing at a remote
    * computer, if possible.
    */
-  public GamePlayer getRemoteOpponent(final INode localNode, final GameData data) {
+  public GamePlayer getRemoteOpponent(final INode localNode, final GameState data) {
     // find a local player
     final GamePlayer local =
         playerMapping.entrySet().stream()
