@@ -2194,13 +2194,13 @@ public final class Matches {
    * @param player CAN be null
    * @param currentRelation cannot be null
    * @param newRelation cannot be null
-   * @param data cannot be null
+   * @param relationshipTracker cannot be null
    */
   public static Predicate<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(
-      final GamePlayer player,
+      @Nullable final GamePlayer player,
       final Predicate<RelationshipType> currentRelation,
       final Predicate<RelationshipType> newRelation,
-      final GameState data) {
+      final RelationshipTracker relationshipTracker) {
     return paa -> {
       for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
           paa.getRelationshipChanges()) {
@@ -2209,8 +2209,7 @@ public final class Matches {
         if (player != null && !(p1.equals(player) || p2.equals(player))) {
           continue;
         }
-        final RelationshipType currentType =
-            data.getRelationshipTracker().getRelationshipType(p1, p2);
+        final RelationshipType currentType = relationshipTracker.getRelationshipType(p1, p2);
         final RelationshipType newType = relationshipChange.relationshipType;
         if (currentRelation.test(currentType) && newRelation.test(newType)) {
           return true;

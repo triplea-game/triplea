@@ -168,19 +168,19 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
                 null,
                 Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().negate(),
                 Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether(),
-                data)
+                data.getRelationshipTracker())
             .or(
                 Matches.politicalActionIsRelationshipChangeOf(
                     null,
                     Matches.relationshipTypeIsAtWar().negate(),
                     Matches.relationshipTypeIsAtWar(),
-                    data))
+                    data.getRelationshipTracker()))
             .or(
                 Matches.politicalActionIsRelationshipChangeOf(
                     null,
                     Matches.relationshipTypeIsAtWar(),
                     Matches.relationshipTypeIsAtWar().negate(),
-                    data));
+                    data.getRelationshipTracker()));
     if (!Properties.getAlliancesCanChainTogether(data.getProperties())
         || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {
       for (final GamePlayer player : paa.getActionAccept()) {
