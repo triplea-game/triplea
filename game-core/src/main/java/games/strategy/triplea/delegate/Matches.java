@@ -10,6 +10,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.RelationshipTypeList;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -2046,9 +2047,9 @@ public final class Matches {
     return relationship -> relationship.getRelationshipTypeAttachment().canRocketsFlyOver();
   }
 
-  public static Predicate<String> isValidRelationshipName(final GameState data) {
-    return relationshipName ->
-        data.getRelationshipTypeList().getRelationshipType(relationshipName) != null;
+  public static Predicate<String> isValidRelationshipName(
+      final RelationshipTypeList relationshipTypeList) {
+    return relationshipName -> relationshipTypeList.getRelationshipType(relationshipName) != null;
   }
 
   public static Predicate<GamePlayer> isAtWar(

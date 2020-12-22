@@ -116,7 +116,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
               + getName()
               + thisErrorMsg());
     }
-    if (!Matches.isValidRelationshipName(getData()).test(s[2])) {
+    if (!Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2])) {
       throw new GameParseException(
           "Invalid relationshipChange declaration: "
               + relChange
