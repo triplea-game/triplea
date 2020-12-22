@@ -1976,15 +1976,14 @@ public final class Matches {
 
   /** If the territory is not land, returns true. Else, tests relationship of the owners. */
   public static Predicate<Territory> territoryAllowsCanMoveLandUnitsOverOwnedLand(
-      final GamePlayer ownerOfUnitsMoving, final GameState data) {
+      final GamePlayer ownerOfUnitsMoving, final RelationshipTracker relationshipTracker) {
     return t -> {
       if (!territoryIsLand().test(t)) {
         return true;
       }
       final GamePlayer territoryOwner = t.getOwner();
       return territoryOwner == null
-          || data.getRelationshipTracker()
-              .canMoveLandUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
+          || relationshipTracker.canMoveLandUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
     };
   }
 

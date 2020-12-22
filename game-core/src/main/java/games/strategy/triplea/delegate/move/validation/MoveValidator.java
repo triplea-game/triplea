@@ -1725,7 +1725,10 @@ public class MoveValidator {
                 Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))
             .and(Matches.territoryEffectsAllowUnits(units))
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))
-            .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data))
+            .andIf(
+                hasLand,
+                Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(
+                    player, data.getRelationshipTracker()))
             .andIf(isNeutralsImpassable, noNeutral)
             .build();
 
