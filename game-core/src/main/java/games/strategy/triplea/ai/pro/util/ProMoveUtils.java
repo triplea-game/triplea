@@ -200,7 +200,9 @@ public final class ProMoveUtils {
         while (movesLeft >= 0) {
 
           // Load adjacent units if no enemies present in transport territory
-          if (Matches.territoryHasEnemyUnits(player, data).negate().test(transportTerritory)) {
+          if (Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker())
+              .negate()
+              .test(transportTerritory)) {
             final var unitsToRemove = new ArrayList<Unit>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
               final Territory unitTerritory = proData.getUnitTerritory(amphibUnit);

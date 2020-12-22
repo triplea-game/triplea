@@ -1100,7 +1100,7 @@ public class BattleTracker implements Serializable {
       site = route.getStart();
     }
     // this will be taken care of by the non fighting battle
-    if (!Matches.territoryHasEnemyUnits(gamePlayer, data).test(site)) {
+    if (!Matches.territoryHasEnemyUnits(gamePlayer, data.getRelationshipTracker()).test(site)) {
       return ChangeFactory.EMPTY_CHANGE;
     }
     // if just an enemy factory &/or AA then no battle

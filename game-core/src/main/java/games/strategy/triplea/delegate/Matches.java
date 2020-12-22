@@ -1460,8 +1460,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasEnemyUnits(
-      final GamePlayer player, final GameState data) {
-    return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data.getRelationshipTracker()));
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> t.getUnitCollection().anyMatch(enemyUnit(player, relationshipTracker));
   }
 
   public static Predicate<Territory> territoryIsNotUnownedWater() {

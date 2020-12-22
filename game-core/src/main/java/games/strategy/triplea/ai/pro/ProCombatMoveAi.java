@@ -1853,7 +1853,7 @@ public class ProCombatMoveAi {
 
     for (final Territory t : proData.getMyUnitTerritories()) {
       if (t.isWater()
-          && Matches.territoryHasEnemyUnits(player, data).test(t)
+          && Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).test(t)
           && (attackMap.get(t) == null || attackMap.get(t).getUnits().isEmpty())) {
 
         // Move into random adjacent safe sea territory

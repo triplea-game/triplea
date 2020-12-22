@@ -252,13 +252,13 @@ public final class ProMatches {
       final GamePlayer player,
       final GameState data,
       final List<Territory> territoriesThatCantBeHeld) {
-    return Matches.territoryHasEnemyUnits(player, data)
+    return Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker())
         .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
   }
 
   public static Predicate<Territory> territoryHasPotentialEnemyUnits(
       final GamePlayer player, final GameState data, final List<GamePlayer> players) {
-    return Matches.territoryHasEnemyUnits(player, data)
+    return Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker())
         .or(Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(players)));
   }
 
@@ -273,7 +273,7 @@ public final class ProMatches {
       final GameState data,
       final List<Territory> territoriesThatCantBeHeld) {
     return Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
-        .or(Matches.territoryHasEnemyUnits(player, data))
+        .or(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()))
         .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
   }
 

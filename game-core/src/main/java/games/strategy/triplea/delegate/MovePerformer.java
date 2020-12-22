@@ -292,7 +292,8 @@ public class MovePerformer implements Serializable {
                                 gamePlayer)
                             .and(Matches.territoryIsBlitzable(gamePlayer, data)))) {
                   if (Matches.isTerritoryEnemy(gamePlayer, data).test(t)
-                      || Matches.territoryHasEnemyUnits(gamePlayer, data).test(t)) {
+                      || Matches.territoryHasEnemyUnits(gamePlayer, data.getRelationshipTracker())
+                          .test(t)) {
                     continue;
                   }
                   if ((t.equals(route.getEnd())

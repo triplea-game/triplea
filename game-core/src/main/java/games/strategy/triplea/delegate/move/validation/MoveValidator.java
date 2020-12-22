@@ -1195,7 +1195,7 @@ public class MoveValidator {
               .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
       for (final Unit transport : transports) {
         if (!isNonCombat) {
-          if (Matches.territoryHasEnemyUnits(player, data).test(routeEnd)
+          if (Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).test(routeEnd)
               || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(routeEnd)) {
             // this is an amphibious assault
             if (subsPreventUnescortedAmphibAssaults

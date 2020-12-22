@@ -320,7 +320,7 @@ public class WeakAi extends AbstractBuiltInAi {
       final GamePlayer player) {
     final Predicate<Territory> routeCond =
         Matches.territoryIsWater()
-            .and(Matches.territoryHasEnemyUnits(player, data).negate())
+            .and(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).negate())
             .and(Matches.territoryHasNonAllowedCanal(player, data).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
     if (r == null || r.hasNoSteps() || !routeCond.test(destination)) {

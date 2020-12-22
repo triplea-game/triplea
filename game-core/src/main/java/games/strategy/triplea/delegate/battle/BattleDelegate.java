@@ -412,7 +412,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
     // we want to match all sea zones with our units and enemy units
     final Predicate<Territory> anyTerritoryWithOwnAndEnemy =
-        Matches.territoryHasUnitsOwnedBy(player).and(Matches.territoryHasEnemyUnits(player, data));
+        Matches.territoryHasUnitsOwnedBy(player)
+            .and(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()));
     final Predicate<Territory> enemyTerritoryAndOwnUnits =
         Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
             .and(Matches.territoryHasUnitsOwnedBy(player));
@@ -1523,7 +1524,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     canNotLand.addAll(battleTracker.getPendingBattleSites(false));
     canNotLand.addAll(
         CollectionUtils.getMatches(
-            data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer, data)));
+            data.getMap().getTerritories(),
+            Matches.territoryHasEnemyUnits(alliedPlayer, data.getRelationshipTracker())));
     final Collection<Territory> possibleTerrs =
         new ArrayList<>(
             data.getMap()
