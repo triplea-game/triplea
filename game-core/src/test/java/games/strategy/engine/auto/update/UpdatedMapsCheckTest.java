@@ -105,16 +105,25 @@ final class UpdatedMapsCheckTest {
         Map.of("map_name.properties", new Version(3, 0, 0)));
   }
 
-  @Test
-  void localMapsOutOfDate() {
-    final Map<String, Version> localOutOfDateMap =
-        Map.of("map_name.zip.properties", new Version(1, 0, 0));
+  @ParameterizedTest
+  @MethodSource
+  void localMapsOutOfDate(final Map<String, Version> localMaps) {
     final Map<String, Version> availableMaps = Map.of("Map Name", new Version(2, 0, 0));
 
     final Collection<String> result =
-        UpdatedMapsCheck.computeOutOfDateMaps(localOutOfDateMap, availableMaps);
+        UpdatedMapsCheck.computeOutOfDateMaps(localMaps, availableMaps);
 
     assertThat("Version value of available map is greater than local map", result, hasSize(1));
     assertThat(result.iterator().next(), is("Map Name"));
+  }
+
+  static List<Map<String, Version>> localMapsOutOfDate() {
+    return List.of(
+        // version is less than 2.0.0 and is '0'
+        Map.of("map_name.zip.properties", new Version(0, 0, 0)),
+        // version is less than 2.0.0 and is '1'
+        Map.of("map_name.zip.properties", new Version(1, 0, 0)),
+        // alternative spelling of the map zip file with the -master suffix
+        Map.of("map_name-master.zip.properties", new Version(1, 0, 0)));
   }
 }
