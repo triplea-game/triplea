@@ -1313,7 +1313,9 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player,
+      final GameProperties properties,
+      final RelationshipTracker relationshipTracker) {
     return t -> {
       if (t.getOwner().equals(player)) {
         return false;
@@ -1324,8 +1326,8 @@ public final class Matches {
       if (t.getOwner().equals(GamePlayer.NULL_PLAYERID) && t.isWater()) {
         return false;
       }
-      return territoryIsPassableAndNotRestricted(player, data.getProperties()).test(t)
-          && data.getRelationshipTracker().isAtWar(player, t.getOwner());
+      return territoryIsPassableAndNotRestricted(player, properties).test(t)
+          && relationshipTracker.isAtWar(player, t.getOwner());
     };
   }
 

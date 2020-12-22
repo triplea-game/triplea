@@ -431,7 +431,7 @@ public class BattleTracker implements Serializable {
         Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(gamePlayer)
             .or(
                 Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
-                    gamePlayer, data));
+                    gamePlayer, data.getProperties(), data.getRelationshipTracker()));
     final Predicate<Territory> conquerable =
         Matches.territoryIsEmptyOfCombatUnits(data.getRelationshipTracker(), gamePlayer)
             .and(passableLandAndNotRestricted);
