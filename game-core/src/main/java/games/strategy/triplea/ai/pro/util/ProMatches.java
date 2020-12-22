@@ -41,7 +41,14 @@ public final class ProMatches {
         Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
             .and(
                 Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                    player, data, isCombatMove, false, false, true, true))
+                    player,
+                    data.getProperties(),
+                    data.getRelationshipTracker(),
+                    isCombatMove,
+                    false,
+                    false,
+                    true,
+                    true))
             .and(Matches.territoryIsInList(enemyTerritories).negate());
     if (!isCombatMove) {
       match =
@@ -60,7 +67,14 @@ public final class ProMatches {
     return Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
         .and(
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                player, data, isCombatMove, false, false, true, false));
+                player,
+                data.getProperties(),
+                data.getRelationshipTracker(),
+                isCombatMove,
+                false,
+                false,
+                true,
+                false));
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveAirUnits(
@@ -82,7 +96,14 @@ public final class ProMatches {
           Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
               .and(
                   Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                      player, data, isCombatMove, true, false, false, false));
+                      player,
+                      data.getProperties(),
+                      data.getRelationshipTracker(),
+                      isCombatMove,
+                      true,
+                      false,
+                      false,
+                      false));
       final Predicate<Unit> unitMatch =
           Matches.unitIsOfTypes(
                   TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t))
@@ -110,7 +131,14 @@ public final class ProMatches {
     return Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
         .and(
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                player, data, isCombatMove, true, false, false, false));
+                player,
+                data.getProperties(),
+                data.getRelationshipTracker(),
+                isCombatMove,
+                true,
+                false,
+                false,
+                false));
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveLandUnits(
@@ -203,7 +231,14 @@ public final class ProMatches {
           Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
               .and(
                   Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                      player, data, isCombatMove, false, true, false, false));
+                      player,
+                      data.getProperties(),
+                      data.getRelationshipTracker(),
+                      isCombatMove,
+                      false,
+                      true,
+                      false,
+                      false));
       return match.test(t);
     };
   }

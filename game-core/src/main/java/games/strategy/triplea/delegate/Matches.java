@@ -1087,15 +1087,16 @@ public final class Matches {
    */
   public static Predicate<Territory> territoryIsPassableAndNotRestrictedAndOkByRelationships(
       final GamePlayer playerWhoOwnsAllTheUnitsMoving,
-      final GameState data,
+      final GameProperties properties,
+      final RelationshipTracker relationshipTracker,
       final boolean isCombatMovePhase,
       final boolean hasLandUnitsNotBeingTransportedOrBeingLoaded,
       final boolean hasSeaUnitsNotBeingTransported,
       final boolean hasAirUnitsNotBeingTransported,
       final boolean isLandingZoneOnLandForAirUnits) {
-    final boolean neutralsPassable = !Properties.getNeutralsImpassable(data.getProperties());
+    final boolean neutralsPassable = !Properties.getNeutralsImpassable(properties);
     final boolean areNeutralsPassableByAir =
-        neutralsPassable && Properties.getNeutralFlyoverAllowed(data.getProperties());
+        neutralsPassable && Properties.getNeutralFlyoverAllowed(properties);
     return t -> {
       if (territoryIsImpassable().test(t)) {
         return false;
@@ -1104,7 +1105,7 @@ public final class Matches {
           && territoryIsNeutralButNotWater().test(t)) {
         return false;
       }
-      if (Properties.getMovementByTerritoryRestricted(data.getProperties())) {
+      if (Properties.getMovementByTerritoryRestricted(properties)) {
         final RulesAttachment ra =
             (RulesAttachment)
                 playerWhoOwnsAllTheUnitsMoving.getAttachment(Constants.RULES_ATTACHMENT_NAME);
@@ -1127,22 +1128,22 @@ public final class Matches {
       }
       if (isLand) {
         if (hasLandUnitsNotBeingTransportedOrBeingLoaded
-            && !data.getRelationshipTracker()
-                .canMoveLandUnitsOverOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
+            && !relationshipTracker.canMoveLandUnitsOverOwnedLand(
+                playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
           return false;
         }
         if (hasAirUnitsNotBeingTransported
-            && !data.getRelationshipTracker()
-                .canMoveAirUnitsOverOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
+            && !relationshipTracker.canMoveAirUnitsOverOwnedLand(
+                playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
           return false;
         }
       }
       return (!isLandingZoneOnLandForAirUnits
-              || data.getRelationshipTracker()
-                  .canLandAirUnitsOnOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
+              || relationshipTracker.canLandAirUnitsOnOwnedLand(
+                  playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
           && !(isCombatMovePhase
-              && !data.getRelationshipTracker()
-                  .canMoveIntoDuringCombatMove(playerWhoOwnsAllTheUnitsMoving, t.getOwner()));
+              && !relationshipTracker.canMoveIntoDuringCombatMove(
+                  playerWhoOwnsAllTheUnitsMoving, t.getOwner()));
     };
   }
 
