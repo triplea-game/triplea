@@ -238,7 +238,9 @@ final class ProTechAi {
               availOther += other;
             }
             final Set<Territory> transNeighbors =
-                data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer, data));
+                data.getMap()
+                    .getNeighbors(
+                        t4, Matches.isTerritoryAllied(enemyPlayer, data.getRelationshipTracker()));
             for (final Territory transNeighbor : transNeighbors) {
               final List<Unit> transUnits =
                   transNeighbor.getUnitCollection().getMatches(enemyTransportable);
@@ -504,7 +506,7 @@ final class ProTechAi {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
           if (lz == null
-              && Matches.isTerritoryAllied(player, data).test(neighbor)
+              && Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(neighbor)
               && !neighbor.isWater()) {
             lz = neighbor;
           }
@@ -593,7 +595,7 @@ final class ProTechAi {
     final List<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {
-      if (Matches.isTerritoryAllied(player, data).test(t)
+      if (Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(t)
           && Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties()).test(t)) {
         territories.add(t);
       }

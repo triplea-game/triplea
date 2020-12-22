@@ -598,7 +598,8 @@ public class BattleTracker implements Serializable {
         final GamePlayer convoyOwner = convoy.getOwner();
         if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
           if (CollectionUtils.getMatches(
-                      cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
+                      cta.getConvoyAttached(),
+                      Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
                   .size()
               <= 0) {
             bridge
@@ -614,7 +615,8 @@ public class BattleTracker implements Serializable {
           }
         } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
             && CollectionUtils.getMatches(
-                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
+                        cta.getConvoyAttached(),
+                        Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
                     .size()
                 == 1) {
           bridge
@@ -868,7 +870,8 @@ public class BattleTracker implements Serializable {
           OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
           CollectionUtils.getMatches(
-              originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+              originallyOwned,
+              Matches.isTerritoryAllied(terrOrigOwner, data.getRelationshipTracker()));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner().equals(terrOrigOwner)) {

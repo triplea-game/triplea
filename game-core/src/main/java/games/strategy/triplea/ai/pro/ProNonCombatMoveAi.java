@@ -558,7 +558,7 @@ class ProNonCombatMoveAi {
             data.getMap().getNeighbors(t, Matches.territoryIsLand());
         for (final Territory neighbor : landNeighbors) {
           double neighborProduction = TerritoryAttachment.getProduction(neighbor);
-          if (Matches.isTerritoryAllied(player, data).test(neighbor)) {
+          if (Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(neighbor)) {
             neighborProduction = 0.1 * neighborProduction;
           }
           neighborValue += neighborProduction;

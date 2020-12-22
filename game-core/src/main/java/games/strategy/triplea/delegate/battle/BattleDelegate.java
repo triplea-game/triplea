@@ -939,7 +939,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Territory landingTerr = null;
         final String historyText;
         if (!mustReturnToBase
-            || !Matches.isTerritoryAllied(u.getOwner(), data).test(u.getOriginatedFrom())) {
+            || !Matches.isTerritoryAllied(u.getOwner(), data.getRelationshipTracker())
+                .test(u.getOriginatedFrom())) {
           final Collection<Territory> possible =
               whereCanAirLand(u, t, u.getOwner(), data, battleTracker, carrierCostOfCurrentTerr);
           if (possible.size() > 1) {
@@ -1547,7 +1548,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         new HashSet<>(
             CollectionUtils.getMatches(
                 possibleTerrs,
-                Matches.isTerritoryAllied(alliedPlayer, data).and(Matches.territoryIsLand())));
+                Matches.isTerritoryAllied(alliedPlayer, data.getRelationshipTracker())
+                    .and(Matches.territoryIsLand())));
     availableLand.removeAll(canNotLand);
     final Set<Territory> whereCanLand = new HashSet<>(availableLand);
     // now for carrier-air-landing validation

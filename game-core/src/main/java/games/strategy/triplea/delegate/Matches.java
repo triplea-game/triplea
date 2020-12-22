@@ -968,7 +968,7 @@ public final class Matches {
   static Predicate<Territory> territoryHasAlliedIsFactoryOrCanProduceUnits(
       final GameState data, final GamePlayer player) {
     return t ->
-        isTerritoryAllied(player, data).test(t)
+        isTerritoryAllied(player, data.getRelationshipTracker()).test(t)
             && t.getUnitCollection().anyMatch(unitCanProduceUnits());
   }
 
@@ -1244,8 +1244,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryAllied(
-      final GamePlayer player, final GameState data) {
-    return t -> data.getRelationshipTracker().isAllied(player, t.getOwner());
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> relationshipTracker.isAllied(player, t.getOwner());
   }
 
   public static Predicate<Territory> isTerritoryOwnedBy(final GamePlayer player) {

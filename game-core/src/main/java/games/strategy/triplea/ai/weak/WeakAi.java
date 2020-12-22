@@ -500,7 +500,7 @@ public class WeakAi extends AbstractBuiltInAi {
     // this works because we are on the server
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final Predicate<Territory> canLand =
-        Matches.isTerritoryAllied(player, data)
+        Matches.isTerritoryAllied(player, data.getRelationshipTracker())
             .and(o -> !delegate.getBattleTracker().wasConquered(o));
     final Predicate<Territory> routeCondition =
         Matches.territoryHasEnemyAaForFlyOver(player, data)
