@@ -1641,7 +1641,7 @@ public class MoveValidator {
     // we want to get all air units that are owned by our allies but not us that can land on a
     // carrier
     final Predicate<Unit> friendlyNotOwnedAir =
-        Matches.alliedUnit(player, data)
+        Matches.alliedUnit(player, data.getRelationshipTracker())
             .and(Matches.unitIsOwnedBy(player).negate())
             .and(Matches.unitCanLandOnCarrier());
     final Collection<Unit> alliedAir = CollectionUtils.getMatches(startUnits, friendlyNotOwnedAir);
@@ -1651,7 +1651,7 @@ public class MoveValidator {
     // remove air that can be carried by allied
     final Predicate<Unit> friendlyNotOwnedCarrier =
         Matches.unitIsCarrier()
-            .and(Matches.alliedUnit(player, data))
+            .and(Matches.alliedUnit(player, data.getRelationshipTracker()))
             .and(Matches.unitIsOwnedBy(player).negate());
     final Collection<Unit> alliedCarrier =
         CollectionUtils.getMatches(startUnits, friendlyNotOwnedCarrier);
@@ -1692,7 +1692,8 @@ public class MoveValidator {
         if ((carrier.getAlreadyMoved().compareTo(plane.getAlreadyMoved()) == 0)
             || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
             || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).negate().test(plane)
-                && Matches.alliedUnit(playerWhoIsDoingTheMovement, data).test(plane))) {
+                && Matches.alliedUnit(playerWhoIsDoingTheMovement, data.getRelationshipTracker())
+                    .test(plane))) {
           available -= cost;
           canCarry.add(plane);
         }

@@ -83,11 +83,14 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea()))
         && units.stream().anyMatch(Matches.unitIsLand())) {
       // this should be exact same as the one in the EditValidator
-      if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
+      if (units.isEmpty()
+          || !units.stream().allMatch(Matches.alliedUnit(player, data.getRelationshipTracker()))) {
         return "Can't add mixed nationality units to water";
       }
       final Predicate<Unit> friendlySeaTransports =
-          Matches.unitIsTransport().and(Matches.unitIsSea()).and(Matches.alliedUnit(player, data));
+          Matches.unitIsTransport()
+              .and(Matches.unitIsSea())
+              .and(Matches.alliedUnit(player, data.getRelationshipTracker()));
       final Collection<Unit> seaTransports =
           CollectionUtils.getMatches(units, friendlySeaTransports);
       final Collection<Unit> landUnitsToAdd =

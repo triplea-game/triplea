@@ -1068,10 +1068,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           CollectionUtils.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
       // Set up match criteria for allied carriers
       final Predicate<Unit> alliedCarrier =
-          Matches.unitIsCarrier().and(Matches.alliedUnit(defender, data));
+          Matches.unitIsCarrier().and(Matches.alliedUnit(defender, data.getRelationshipTracker()));
       // Set up match criteria for allied planes
       final Predicate<Unit> alliedPlane =
-          Matches.unitIsAir().and(Matches.alliedUnit(defender, data));
+          Matches.unitIsAir().and(Matches.alliedUnit(defender, data.getRelationshipTracker()));
       // See if neighboring carriers have any capacity available
       for (final Territory currentTerritory : areSeaNeighbors) {
         // get the capacity of the carriers and cost of fighters
@@ -1585,7 +1585,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   t.getUnitCollection()
                       .getMatches(
                           Matches.unitCanLandOnCarrier()
-                              .and(Matches.alliedUnit(alliedPlayer, data))));
+                              .and(
+                                  Matches.alliedUnit(
+                                      alliedPlayer, data.getRelationshipTracker()))));
         } else {
           carrierCapacity -= carrierCostForCurrentTerr;
         }

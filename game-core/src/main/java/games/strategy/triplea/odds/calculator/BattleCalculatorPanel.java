@@ -1113,7 +1113,9 @@ class BattleCalculatorPanel extends JPanel {
         setAttackingUnits(
             location.getUnitCollection().getMatches(Matches.unitIsOwnedBy(getAttacker())));
         setDefendingUnits(
-            location.getUnitCollection().getMatches(Matches.alliedUnit(getDefender(), data)));
+            location
+                .getUnitCollection()
+                .getMatches(Matches.alliedUnit(getDefender(), data.getRelationshipTracker())));
       } finally {
         data.releaseReadLock();
       }

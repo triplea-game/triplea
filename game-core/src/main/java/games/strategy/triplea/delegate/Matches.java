@@ -1393,10 +1393,10 @@ public final class Matches {
     };
   }
 
-  public static Predicate<Unit> alliedUnit(final GamePlayer player, final GameState data) {
+  public static Predicate<Unit> alliedUnit(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return unit ->
-        unit.getOwner().equals(player)
-            || data.getRelationshipTracker().isAllied(player, unit.getOwner());
+        unit.getOwner().equals(player) || relationshipTracker.isAllied(player, unit.getOwner());
   }
 
   public static Predicate<Unit> alliedUnitOfAnyOfThesePlayers(
@@ -1437,7 +1437,7 @@ public final class Matches {
 
   public static Predicate<Territory> territoryHasAlliedUnits(
       final GamePlayer player, final GameState data) {
-    return t -> t.getUnitCollection().anyMatch(alliedUnit(player, data));
+    return t -> t.getUnitCollection().anyMatch(alliedUnit(player, data.getRelationshipTracker()));
   }
 
   static Predicate<Territory> territoryHasNonSubmergedEnemyUnits(
@@ -1595,7 +1595,7 @@ public final class Matches {
         unitIsTransportButNotCombatTransport().negate().and(unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(unitIsInfrastructure().negate())
-            .and(alliedUnit(player, data).negate())
+            .and(alliedUnit(player, data.getRelationshipTracker()).negate())
             .and(unitCanBeMovedThroughByEnemies().negate())
             .andIf(Properties.getIgnoreTransportInMovement(data.getProperties()), transport)
             .build();
@@ -1667,7 +1667,7 @@ public final class Matches {
         return false;
       }
       final Predicate<Unit> repairUnit =
-          alliedUnit(player, data)
+          alliedUnit(player, data.getRelationshipTracker())
               .and(unitCanRepairOthers())
               .and(unitCanRepairThisUnit(damagedUnit, territory));
       if (territory.getUnitCollection().anyMatch(repairUnit)) {
@@ -1678,7 +1678,7 @@ public final class Matches {
             new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitLand =
-              alliedUnit(player, data)
+              alliedUnit(player, data.getRelationshipTracker())
                   .and(unitCanRepairOthers())
                   .and(unitCanRepairThisUnit(damagedUnit, current))
                   .and(unitIsLand());
@@ -1691,7 +1691,7 @@ public final class Matches {
             new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsWater()));
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitSea =
-              alliedUnit(player, data)
+              alliedUnit(player, data.getRelationshipTracker())
                   .and(unitCanRepairOthers())
                   .and(unitCanRepairThisUnit(damagedUnit, current))
                   .and(unitIsSea());
@@ -1739,7 +1739,8 @@ public final class Matches {
       final Territory territory, final GamePlayer player, final GameState data) {
     return unitWhichWillGetBonus -> {
       final Predicate<Unit> givesBonusUnit =
-          alliedUnit(player, data).and(unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
+          alliedUnit(player, data.getRelationshipTracker())
+              .and(unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
       if (territory.getUnitCollection().anyMatch(givesBonusUnit)) {
         return true;
       }

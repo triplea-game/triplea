@@ -844,7 +844,9 @@ public final class AirMovementValidator {
 
   public static Collection<Unit> getFriendly(
       final Territory territory, final GamePlayer player, final GameState data) {
-    return territory.getUnitCollection().getMatches(Matches.alliedUnit(player, data));
+    return territory
+        .getUnitCollection()
+        .getMatches(Matches.alliedUnit(player, data.getRelationshipTracker()));
   }
 
   private static boolean areNeutralsPassableByAir(final GameState data) {
