@@ -755,7 +755,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAlliedWithAnyOfThesePlayers(players, data));
+                    Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
@@ -775,7 +775,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAlliedWithAnyOfThesePlayers(players, data));
+                    Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
@@ -1172,7 +1172,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final Collection<GamePlayer> allies =
         CollectionUtils.getMatches(
             data.getPlayerList().getPlayers(),
-            Matches.isAlliedWithAnyOfThesePlayers(players, data));
+            Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
     for (final Territory listedTerr : listedTerrs) {
       // if the territory owner is an ally
       if (Matches.isTerritoryOwnedBy(allies).test(listedTerr)) {

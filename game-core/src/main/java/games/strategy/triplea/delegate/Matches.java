@@ -2058,8 +2058,8 @@ public final class Matches {
   }
 
   public static Predicate<GamePlayer> isAlliedWithAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameState data) {
-    return player2 -> data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(player2, players);
+      final Collection<GamePlayer> players, final RelationshipTracker relationshipTracker) {
+    return player2 -> relationshipTracker.isAlliedWithAnyOfThesePlayers(player2, players);
   }
 
   public static Predicate<Unit> unitIsOwnedAndIsFactoryOrCanProduceUnits(final GamePlayer player) {
