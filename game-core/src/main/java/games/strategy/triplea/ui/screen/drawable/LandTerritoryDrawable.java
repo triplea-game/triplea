@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -33,7 +33,7 @@ public class LandTerritoryDrawable extends TerritoryDrawable {
   /** Determine territory color and set saturation to then draw the territory. */
   public void draw(
       final Rectangle bounds,
-      final GameDataInjections data,
+      final GameState data,
       final Graphics2D graphics,
       final MapData mapData,
       final float saturation) {

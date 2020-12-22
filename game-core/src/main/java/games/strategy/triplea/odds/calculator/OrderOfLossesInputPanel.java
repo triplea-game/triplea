@@ -4,7 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
@@ -140,7 +140,7 @@ class OrderOfLossesInputPanel extends JPanel {
 
   /** Returns units in the same ordering as the 'order of loss' string passed in. */
   static List<Unit> getUnitListByOrderOfLoss(
-      final String ool, final Collection<Unit> units, final GameDataInjections data) {
+      final String ool, final Collection<Unit> units, final GameState data) {
     if (ool == null || ool.isBlank()) {
       return null;
     }

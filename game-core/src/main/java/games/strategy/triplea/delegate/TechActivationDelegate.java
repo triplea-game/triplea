@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.FireTriggerParams;
@@ -105,7 +105,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     if (shareWith == null || shareWith.isEmpty()) {
       return;
     }
-    final GameDataInjections data = getData();
+    final GameState data = getData();
     final Collection<TechAdvance> currentAdvances =
         TechTracker.getCurrentTechAdvances(player, data);
     for (final GamePlayer p : shareWith) {

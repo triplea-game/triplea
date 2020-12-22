@@ -19,7 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
@@ -72,7 +72,7 @@ class CasualtySelectorTest {
 
   @BeforeEach
   void setUp() {
-    final GameDataInjections data = TestMapGameData.REVISED.getGameData();
+    final GameState data = TestMapGameData.REVISED.getGameData();
     bridge = newDelegateBridge(british(data));
   }
 

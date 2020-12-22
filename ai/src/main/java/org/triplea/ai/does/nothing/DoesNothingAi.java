@@ -2,8 +2,8 @@ package org.triplea.ai.does.nothing;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -55,7 +55,7 @@ public class DoesNothingAi extends AbstractAi {
   protected void place(
       final boolean placeForBid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameDataInjections data,
+      final GameState data,
       final GamePlayer player) {
     // place whatever we have
     if (!player.getUnitCollection().isEmpty()) {

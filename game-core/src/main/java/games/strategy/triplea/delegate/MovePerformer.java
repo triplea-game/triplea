@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
@@ -334,7 +334,7 @@ public class MovePerformer implements Serializable {
   }
 
   private static Predicate<Territory> getMustFightThroughMatch(
-      final GamePlayer gamePlayer, final GameDataInjections data) {
+      final GamePlayer gamePlayer, final GameState data) {
     return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer, data)
         .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer, data))
         .or(

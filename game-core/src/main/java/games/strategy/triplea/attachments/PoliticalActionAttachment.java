@@ -4,8 +4,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -150,7 +150,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
     final String[] tokens = splitOnColon(encodedRelationshipChange);
     assert tokens.length == 3;
-    final GameDataInjections gameData = getData();
+    final GameState gameData = getData();
     return new RelationshipChange(
         gameData.getPlayerList().getPlayerId(tokens[0]),
         gameData.getPlayerList().getPlayerId(tokens[1]),
@@ -173,7 +173,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   public static Collection<PoliticalActionAttachment> getValidActions(
       final GamePlayer player,
       final Map<ICondition, Boolean> testedConditions,
-      final GameDataInjections data) {
+      final GameState data) {
     if (!Properties.getUsePolitics(data.getProperties()) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }
@@ -184,7 +184,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public void validate(final GameDataInjections data) throws GameParseException {
+  public void validate(final GameState data) throws GameParseException {
     super.validate(data);
     if (relationshipChange.isEmpty()) {
       throw new GameParseException("value: relationshipChange can't be empty" + thisErrorMsg());

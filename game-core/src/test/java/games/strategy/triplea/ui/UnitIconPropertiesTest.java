@@ -10,7 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.ui.UnitIconProperties.MalformedUnitIconDescriptorException;
 import games.strategy.triplea.ui.UnitIconProperties.UnitIconDescriptor;
@@ -64,7 +64,7 @@ final class UnitIconPropertiesTest {
     }
 
     private UnitIconProperties.ConditionSupplier givenConditionSupplier(
-        final GameDataInjections gameData, final ICondition... conditions) {
+        final GameState gameData, final ICondition... conditions) {
       final UnitIconProperties.ConditionSupplier conditionSupplier =
           mock(UnitIconProperties.ConditionSupplier.class);
       for (final ICondition condition : conditions) {

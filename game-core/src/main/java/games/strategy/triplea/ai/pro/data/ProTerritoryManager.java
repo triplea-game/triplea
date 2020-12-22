@@ -1,8 +1,8 @@
 package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -151,7 +151,7 @@ public class ProTerritoryManager {
       final boolean isIgnoringRelationships) {
 
     ProLogger.info("Removing territories that can't be conquered");
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     // Determine if territory can be successfully attacked with max possible attackers
     final List<Territory> territoriesToRemove = new ArrayList<>();
@@ -370,7 +370,7 @@ public class ProTerritoryManager {
 
   private void findScrambleOptions(
       final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> moveMap) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
@@ -417,7 +417,7 @@ public class ProTerritoryManager {
       final List<Territory> territoriesToCheck,
       final boolean isCheckingEnemyAttacks,
       final boolean isIgnoringRelationships) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<>();
     final List<Territory> territoriesThatCantBeHeld = new ArrayList<>(enemyTerritories);
@@ -491,7 +491,7 @@ public class ProTerritoryManager {
   }
 
   private ProOtherMoveOptions findAlliedAttackOptions(final GamePlayer player) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     // Get enemy players in order of turn
     final List<GamePlayer> alliedPlayers = ProUtils.getAlliedPlayersInTurnOrder(player);
@@ -532,7 +532,7 @@ public class ProTerritoryManager {
       final GamePlayer player,
       final List<Territory> clearedTerritories,
       final List<Territory> territoriesToCheck) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     // Get enemy players in order of turn
     final List<GamePlayer> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
@@ -583,7 +583,7 @@ public class ProTerritoryManager {
       final Map<Unit, Set<Territory>> transportMoveMap,
       final Map<Unit, Set<Territory>> bombardMap,
       final List<ProTransport> transportMapList) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<>();
     final List<GamePlayer> otherPlayers = ProUtils.getPotentialEnemyPlayers(player);
@@ -703,7 +703,7 @@ public class ProTerritoryManager {
 
   private static ProOtherMoveOptions findEnemyDefendOptions(
       final ProData proData, final GamePlayer player) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     // Get enemy players in order of turn
     final List<GamePlayer> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
@@ -749,7 +749,7 @@ public class ProTerritoryManager {
       final List<Territory> clearedTerritories,
       final boolean isCombatMove,
       final boolean isCheckingEnemyAttacks) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     for (final Territory myUnitTerritory : myUnitTerritories) {
 
@@ -1333,7 +1333,7 @@ public class ProTerritoryManager {
       final Map<Unit, Set<Territory>> bombardMap,
       final List<ProTransport> transportMapList,
       final boolean isCheckingEnemyAttacks) {
-    final GameDataInjections data = proData.getData();
+    final GameState data = proData.getData();
 
     // Find all transport unload from and to territories
     final Set<Territory> unloadFromTerritories = new HashSet<>();

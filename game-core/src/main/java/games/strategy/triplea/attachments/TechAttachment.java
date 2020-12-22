@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
@@ -351,7 +351,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameDataInjections data) {}
+  public void validate(final GameState data) {}
 
   public static boolean isMechanizedInfantry(final GamePlayer player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);

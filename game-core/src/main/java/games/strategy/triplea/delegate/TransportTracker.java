@@ -4,8 +4,8 @@ import com.google.common.collect.Sets;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -250,7 +250,7 @@ public class TransportTracker {
       return false;
     }
     // See if transport has unloaded anywhere yet
-    final GameDataInjections data = transport.getData();
+    final GameState data = transport.getData();
     for (final Unit unit : unloaded) {
       if (Properties.getWW2V2(data.getProperties())
           || Properties.getTransportUnloadRestricted(data.getProperties())) {
@@ -303,7 +303,7 @@ public class TransportTracker {
       final Collection<Unit> attackingUnits,
       final Territory battleSite,
       final GamePlayer attacker,
-      final GameDataInjections data) {
+      final GameState data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held
     // as cargo by an

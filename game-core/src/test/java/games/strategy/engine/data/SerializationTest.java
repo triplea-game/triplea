@@ -19,7 +19,7 @@ import org.triplea.test.common.TestType;
 @Integration(type = TestType.ACCEPTANCE)
 class SerializationTest {
   private GameData gameDataSource = TestMapGameData.TEST.getGameData();
-  private GameDataInjections gameDataSink = TestMapGameData.TEST.getGameData();
+  private GameState gameDataSink = TestMapGameData.TEST.getGameData();
 
   private Object serialize(final Object anObject) throws Exception {
     final byte[] bytes =

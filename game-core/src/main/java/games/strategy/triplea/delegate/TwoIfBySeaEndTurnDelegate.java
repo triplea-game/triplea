@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -18,7 +18,7 @@ public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
 
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
-    final GameDataInjections data = getData();
+    final GameState data = getData();
     final PlayerList playerList = data.getPlayerList();
     final GamePlayer british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
     final GamePlayer japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);

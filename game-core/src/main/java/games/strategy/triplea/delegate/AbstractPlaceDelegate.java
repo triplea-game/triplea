@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -95,7 +95,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   protected void removeAirThatCantLand() {
     // for LHTR type games
-    final GameDataInjections data = getData();
+    final GameState data = getData();
     final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
     util.removeAirThatCantLand(player, false);
     // if edit mode has been on, we need to clean up after all players

@@ -3,9 +3,9 @@ package games.strategy.engine.data.export;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.NamedAttachable;
@@ -101,7 +101,7 @@ public class GameDataExporter {
         .build();
   }
 
-  private static List<Technology.PlayerTech> playertechs(final GameDataInjections data) {
+  private static List<Technology.PlayerTech> playertechs(final GameState data) {
     final List<Technology.PlayerTech> playerTechs = new ArrayList<>();
 
     for (final GamePlayer player : data.getPlayerList()) {
@@ -133,7 +133,7 @@ public class GameDataExporter {
     return playerTechs;
   }
 
-  private static Technology.Technologies technologies(final GameDataInjections data) {
+  private static Technology.Technologies technologies(final GameState data) {
     return Technology.Technologies.builder()
         .techNames(
             data.getTechnologyFrontier().getTechs().stream()
@@ -149,7 +149,7 @@ public class GameDataExporter {
         .build();
   }
 
-  private static PropertyList propertyList(final GameDataInjections data) {
+  private static PropertyList propertyList(final GameState data) {
     final List<PropertyList.Property> properties =
         data.getProperties().getConstantPropertiesByName().entrySet().stream()
             .map(entry -> mapToProperty(entry.getKey(), entry.getValue()))
@@ -204,8 +204,7 @@ public class GameDataExporter {
     }
   }
 
-  private static Initialize.RelationshipInitialize relationshipInitialize(
-      final GameDataInjections data) {
+  private static Initialize.RelationshipInitialize relationshipInitialize(final GameState data) {
     if (data.getRelationshipTypeList().getAllRelationshipTypes().size() <= 4) {
       return null;
     }
@@ -235,7 +234,7 @@ public class GameDataExporter {
     return Initialize.RelationshipInitialize.builder().relationships(relationships).build();
   }
 
-  private static Initialize.ResourceInitialize resourceInitialize(final GameDataInjections data) {
+  private static Initialize.ResourceInitialize resourceInitialize(final GameState data) {
     final List<Initialize.ResourceInitialize.ResourceGiven> resourcesGiven = new ArrayList<>();
 
     for (final GamePlayer player : data.getPlayerList()) {
@@ -253,7 +252,7 @@ public class GameDataExporter {
     return Initialize.ResourceInitialize.builder().resourcesGiven(resourcesGiven).build();
   }
 
-  private static Initialize.UnitInitialize unitInitialize(final GameDataInjections data) {
+  private static Initialize.UnitInitialize unitInitialize(final GameState data) {
     final List<Initialize.UnitInitialize.UnitPlacement> unitPlacements = new ArrayList<>();
 
     for (final Territory terr : data.getMap().getTerritories()) {
@@ -279,7 +278,7 @@ public class GameDataExporter {
     return Initialize.UnitInitialize.builder().unitPlacements(unitPlacements).build();
   }
 
-  private static Initialize.OwnerInitialize ownerInitialize(final GameDataInjections data) {
+  private static Initialize.OwnerInitialize ownerInitialize(final GameState data) {
     return Initialize.OwnerInitialize.builder()
         .territoryOwners(
             data.getMap().getTerritories().stream()
@@ -351,7 +350,7 @@ public class GameDataExporter {
     }
   }
 
-  private static List<Production.RepairRule> repairRules(final GameDataInjections data) {
+  private static List<Production.RepairRule> repairRules(final GameState data) {
 
     return data.getRepairRules().getRepairRules().stream()
         .map(
@@ -379,7 +378,7 @@ public class GameDataExporter {
         .collect(Collectors.toList());
   }
 
-  private static List<Production.RepairFrontier> repairFrontiers(final GameDataInjections data) {
+  private static List<Production.RepairFrontier> repairFrontiers(final GameState data) {
     return data.getRepairFrontierList().getRepairFrontierNames().stream()
         .map(frontierName -> data.getRepairFrontierList().getRepairFrontier(frontierName))
         .map(
@@ -399,7 +398,7 @@ public class GameDataExporter {
         .collect(Collectors.toList());
   }
 
-  private static List<Production.PlayerRepair> playerRepair(final GameDataInjections data) {
+  private static List<Production.PlayerRepair> playerRepair(final GameState data) {
     return data.getPlayerList().stream()
         .filter(player -> player.getRepairFrontier() != null)
         .filter(player -> player.getName() != null)
@@ -412,7 +411,7 @@ public class GameDataExporter {
         .collect(Collectors.toList());
   }
 
-  private static List<Production.PlayerProduction> playerProduction(final GameDataInjections data) {
+  private static List<Production.PlayerProduction> playerProduction(final GameState data) {
     return data.getPlayerList().stream()
         .filter(player -> player.getName() != null)
         .filter(player -> player.getProductionFrontier() != null)
@@ -425,8 +424,7 @@ public class GameDataExporter {
         .collect(Collectors.toList());
   }
 
-  private static List<Production.ProductionFrontier> productionFrontiers(
-      final GameDataInjections data) {
+  private static List<Production.ProductionFrontier> productionFrontiers(final GameState data) {
     return data.getProductionFrontierList().getProductionFrontierNames().stream()
         .map(frontierName -> data.getProductionFrontierList().getProductionFrontier(frontierName))
         .map(
@@ -442,7 +440,7 @@ public class GameDataExporter {
         .collect(Collectors.toList());
   }
 
-  private static List<Production.ProductionRule> productionRules(final GameDataInjections data) {
+  private static List<Production.ProductionRule> productionRules(final GameState data) {
     return data.getProductionRuleList().getProductionRules().stream()
         .map(
             productionRule ->
@@ -488,7 +486,7 @@ public class GameDataExporter {
         .build();
   }
 
-  private static GamePlay.Sequence sequence(final GameDataInjections data) {
+  private static GamePlay.Sequence sequence(final GameState data) {
     final List<GamePlay.Sequence.Step> steps = new ArrayList<>();
 
     for (final GameStep step : data.getSequence()) {
@@ -516,7 +514,7 @@ public class GameDataExporter {
     return GamePlay.Sequence.builder().steps(steps).build();
   }
 
-  private static UnitList unitList(final GameDataInjections data) {
+  private static UnitList unitList(final GameState data) {
     return UnitList.builder()
         .units(
             data.getUnitTypeList().stream()
@@ -526,7 +524,7 @@ public class GameDataExporter {
         .build();
   }
 
-  private static PlayerList playerList(final GameDataInjections data) {
+  private static PlayerList playerList(final GameState data) {
     return PlayerList.builder()
         .players(
             data.getPlayerList().getPlayers().stream()
@@ -556,7 +554,7 @@ public class GameDataExporter {
         .build();
   }
 
-  private static RelationshipTypes relationshipTypeList(final GameDataInjections data) {
+  private static RelationshipTypes relationshipTypeList(final GameState data) {
     final Collection<RelationshipType> types =
         data.getRelationshipTypeList().getAllRelationshipTypes();
     if (types.size() <= 4) {
@@ -578,7 +576,7 @@ public class GameDataExporter {
     return RelationshipTypes.builder().relationshipTypes(relationshipTypes).build();
   }
 
-  private static TerritoryEffectList territoryEffectList(final GameDataInjections data) {
+  private static TerritoryEffectList territoryEffectList(final GameState data) {
     final Collection<TerritoryEffect> types = data.getTerritoryEffectList().values();
     if (types.isEmpty()) {
       return null;
@@ -592,7 +590,7 @@ public class GameDataExporter {
         .build();
   }
 
-  private static ResourceList resourceList(final GameDataInjections data) {
+  private static ResourceList resourceList(final GameState data) {
     return ResourceList.builder()
         .resources(
             data.getResourceList().getResources().stream()
@@ -615,7 +613,7 @@ public class GameDataExporter {
             .collect(Collectors.toList());
   }
 
-  private static org.triplea.map.data.elements.Map map(final GameDataInjections data) {
+  private static org.triplea.map.data.elements.Map map(final GameState data) {
     final List<org.triplea.map.data.elements.Map.Territory> territories =
         data.getMap().getTerritories().stream()
             .map(
@@ -643,7 +641,7 @@ public class GameDataExporter {
   }
 
   private static List<org.triplea.map.data.elements.Map.Connection> connections(
-      final GameDataInjections data) {
+      final GameState data) {
     final List<org.triplea.map.data.elements.Map.Connection> connections = new ArrayList<>();
 
     final GameMap map = data.getMap();

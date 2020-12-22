@@ -1,8 +1,8 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ProductionFrontier;
 
 /** Change a players production frontier. */
@@ -27,7 +27,7 @@ class ProductionFrontierChange extends Change {
   }
 
   @Override
-  protected void perform(final GameDataInjections data) {
+  protected void perform(final GameState data) {
     final GamePlayer player = data.getPlayerList().getPlayerId(playerName);
     final ProductionFrontier frontier =
         data.getProductionFrontierList().getProductionFrontier(endFrontierName);

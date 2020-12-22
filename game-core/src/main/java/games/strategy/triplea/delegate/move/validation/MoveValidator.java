@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.move.validation;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
@@ -533,7 +533,7 @@ public class MoveValidator {
   }
 
   private static boolean nonAirPassingThroughNeutralTerritory(
-      final Route route, final Collection<Unit> units, final GameDataInjections gameData) {
+      final Route route, final Collection<Unit> units, final GameState gameData) {
     return route.hasNeutralBeforeEnd()
         && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
         && !isNeutralsBlitzable(gameData);
@@ -1008,7 +1008,7 @@ public class MoveValidator {
         .anyMatch(current -> current.getUnitCollection().anyMatch(enemyDestroyer));
   }
 
-  private static boolean getEditMode(final GameDataInjections data) {
+  private static boolean getEditMode(final GameState data) {
     return BaseEditDelegate.getEditMode(data.getProperties());
   }
 
@@ -1557,7 +1557,7 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
       final GamePlayer player) {
-    final GameDataInjections data = start.getData();
+    final GameState data = start.getData();
     final List<Unit> sortedUnits = new ArrayList<>(units);
     sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>(transportsMustMoveWith(sortedUnits));
@@ -1616,7 +1616,7 @@ public class MoveValidator {
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
       final Collection<Unit> units,
       final Territory start,
-      final GameDataInjections data,
+      final GameState data,
       final GamePlayer player) {
     return carrierMustMoveWith(units, start.getUnits(), data, player);
   }
@@ -1624,7 +1624,7 @@ public class MoveValidator {
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
       final Collection<Unit> units,
       final Collection<Unit> startUnits,
-      final GameDataInjections data,
+      final GameState data,
       final GamePlayer player) {
     // we want to get all air units that are owned by our allies but not us that can land on a
     // carrier
@@ -1667,7 +1667,7 @@ public class MoveValidator {
       final Unit carrier,
       final Collection<Unit> selectFrom,
       final GamePlayer playerWhoIsDoingTheMovement,
-      final GameDataInjections data) {
+      final GameState data) {
     final UnitAttachment ua = UnitAttachment.get(carrier.getType());
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();
@@ -1842,13 +1842,12 @@ public class MoveValidator {
     return defaultRoute;
   }
 
-  private static boolean isNeutralsBlitzable(final GameDataInjections data) {
+  private static boolean isNeutralsBlitzable(final GameState data) {
     return Properties.getNeutralsBlitzable(data.getProperties())
         && !Properties.getNeutralsImpassable(data.getProperties());
   }
 
-  private static int getNeutralCharge(
-      final GameDataInjections data, final int numberOfTerritories) {
+  private static int getNeutralCharge(final GameState data, final int numberOfTerritories) {
     return numberOfTerritories * Properties.getNeutralCharge(data.getProperties());
   }
 }

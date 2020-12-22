@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -35,7 +35,7 @@ public final class GameDataTestUtil {
    *
    * @return A german PlayerId.
    */
-  public static GamePlayer germans(final GameDataInjections data) {
+  public static GamePlayer germans(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_GERMANS);
   }
 
@@ -44,7 +44,7 @@ public final class GameDataTestUtil {
    *
    * @return A germany PlayerId.
    */
-  public static GamePlayer germany(final GameDataInjections data) {
+  public static GamePlayer germany(final GameState data) {
     return data.getPlayerList().getPlayerId("Germany");
   }
 
@@ -53,11 +53,11 @@ public final class GameDataTestUtil {
    *
    * @return A italian PlayerId.
    */
-  static GamePlayer italians(final GameDataInjections data) {
+  static GamePlayer italians(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_ITALIANS);
   }
 
-  public static GamePlayer italy(final GameDataInjections data) {
+  public static GamePlayer italy(final GameState data) {
     return data.getPlayerList().getPlayerId("Italy");
   }
 
@@ -66,7 +66,7 @@ public final class GameDataTestUtil {
    *
    * @return A russian PlayerId.
    */
-  public static GamePlayer russians(final GameDataInjections data) {
+  public static GamePlayer russians(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
   }
 
@@ -75,7 +75,7 @@ public final class GameDataTestUtil {
    *
    * @return A american PlayerId.
    */
-  public static GamePlayer americans(final GameDataInjections data) {
+  public static GamePlayer americans(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_AMERICANS);
   }
 
@@ -84,7 +84,7 @@ public final class GameDataTestUtil {
    *
    * @return A USA PlayerId.
    */
-  public static GamePlayer usa(final GameDataInjections data) {
+  public static GamePlayer usa(final GameState data) {
     return data.getPlayerList().getPlayerId("Usa");
   }
 
@@ -93,11 +93,11 @@ public final class GameDataTestUtil {
    *
    * @return A british PlayerId.
    */
-  public static GamePlayer british(final GameDataInjections data) {
+  public static GamePlayer british(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_BRITISH);
   }
 
-  public static GamePlayer britain(final GameDataInjections data) {
+  public static GamePlayer britain(final GameState data) {
     return data.getPlayerList().getPlayerId("Britain");
   }
 
@@ -106,7 +106,7 @@ public final class GameDataTestUtil {
    *
    * @return A japanese PlayerId.
    */
-  public static GamePlayer japanese(final GameDataInjections data) {
+  public static GamePlayer japanese(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
   }
 
@@ -115,7 +115,7 @@ public final class GameDataTestUtil {
    *
    * @return A Japan PlayerId.
    */
-  public static GamePlayer japan(final GameDataInjections data) {
+  public static GamePlayer japan(final GameState data) {
     return data.getPlayerList().getPlayerId("Japan");
   }
 
@@ -124,7 +124,7 @@ public final class GameDataTestUtil {
    *
    * @return A chinese PlayerId.
    */
-  public static GamePlayer chinese(final GameDataInjections data) {
+  public static GamePlayer chinese(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_CHINESE);
   }
 
@@ -133,195 +133,195 @@ public final class GameDataTestUtil {
    *
    * @return A Territory matching the given name if present, otherwise throwing an Exception.
    */
-  public static Territory territory(final String name, final GameDataInjections data) {
+  public static Territory territory(final String name, final GameState data) {
     return checkNotNull(data.getMap().getTerritory(name), "No territory:" + name);
   }
 
   /** Returns an armor UnitType object for the specified GameData object. */
-  public static UnitType armour(final GameDataInjections data) {
+  public static UnitType armour(final GameState data) {
     return unitType(Constants.UNIT_TYPE_ARMOUR, data);
   }
 
   /** Returns an aaGun UnitType object for the specified GameData object. */
-  public static UnitType aaGun(final GameDataInjections data) {
+  public static UnitType aaGun(final GameState data) {
     return unitType(Constants.UNIT_TYPE_AAGUN, data);
   }
 
   /** Returns a transport UnitType object for the specified GameData object. */
-  public static UnitType transport(final GameDataInjections data) {
+  public static UnitType transport(final GameState data) {
     return unitType(Constants.UNIT_TYPE_TRANSPORT, data);
   }
 
   /** Returns a battleship UnitType object for the specified GameData object. */
-  public static UnitType battleship(final GameDataInjections data) {
+  public static UnitType battleship(final GameState data) {
     return unitType(Constants.UNIT_TYPE_BATTLESHIP, data);
   }
 
   /** Returns a germanBattleship UnitType object for the specified GameData object. */
-  public static UnitType germanBattleship(final GameDataInjections data) {
+  public static UnitType germanBattleship(final GameState data) {
     return unitType("germanBattleship", data);
   }
 
   /** Returns a carrier UnitType object for the specified GameData object. */
-  public static UnitType carrier(final GameDataInjections data) {
+  public static UnitType carrier(final GameState data) {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
   }
 
   /** Returns a fighter UnitType object for the specified GameData object. */
-  public static UnitType fighter(final GameDataInjections data) {
+  public static UnitType fighter(final GameState data) {
     return unitType(Constants.UNIT_TYPE_FIGHTER, data);
   }
 
   /** Returns a germanFighter UnitType object for the specified GameData object. */
-  public static UnitType germanFighter(final GameDataInjections data) {
+  public static UnitType germanFighter(final GameState data) {
     return unitType("germanFighter", data);
   }
 
   /** Returns a britishFighter UnitType object for the specified GameData object. */
-  public static UnitType britishFighter(final GameDataInjections data) {
+  public static UnitType britishFighter(final GameState data) {
     return unitType("britishFighter", data);
   }
 
   /** Returns a destroyer UnitType object for the specified GameData object. */
-  public static UnitType destroyer(final GameDataInjections data) {
+  public static UnitType destroyer(final GameState data) {
     return unitType(Constants.UNIT_TYPE_DESTROYER, data);
   }
 
   /** Returns a submarine UnitType object for the specified GameData object. */
-  public static UnitType submarine(final GameDataInjections data) {
+  public static UnitType submarine(final GameState data) {
     return unitType(Constants.UNIT_TYPE_SUBMARINE, data);
   }
 
   /** Returns a germanSubmarine UnitType object for the specified GameData object. */
-  public static UnitType germanSubmarine(final GameDataInjections data) {
+  public static UnitType germanSubmarine(final GameState data) {
     return unitType("germanSubmarine", data);
   }
 
   /** Returns a britishSubmarine UnitType object for the specified GameData object. */
-  public static UnitType britishSubmarine(final GameDataInjections data) {
+  public static UnitType britishSubmarine(final GameState data) {
     return unitType("britishSubmarine", data);
   }
 
   /** Returns an infantry UnitType object for the specified GameData object. */
-  public static UnitType infantry(final GameDataInjections data) {
+  public static UnitType infantry(final GameState data) {
     return unitType(Constants.UNIT_TYPE_INFANTRY, data);
   }
 
   /** Returns an artillery UnitType object for the specified GameData object. */
-  public static UnitType artillery(final GameDataInjections data) {
+  public static UnitType artillery(final GameState data) {
     return unitType(Constants.UNIT_TYPE_ARTILLERY, data);
   }
 
   /** Returns a germanInfantry UnitType object for the specified GameData object. */
-  public static UnitType germanInfantry(final GameDataInjections data) {
+  public static UnitType germanInfantry(final GameState data) {
     return unitType("germanInfantry", data);
   }
 
-  public static UnitType italianInfantry(final GameDataInjections data) {
+  public static UnitType italianInfantry(final GameState data) {
     return unitType("italianInfantry", data);
   }
 
-  public static UnitType britishInfantry(final GameDataInjections data) {
+  public static UnitType britishInfantry(final GameState data) {
     return unitType("britishInfantry", data);
   }
 
   /** Returns a bomber UnitType object for the specified GameData object. */
-  public static UnitType bomber(final GameDataInjections data) {
+  public static UnitType bomber(final GameState data) {
     return unitType(Constants.UNIT_TYPE_BOMBER, data);
   }
 
   /** Returns a factory UnitType object for the specified GameData object. */
-  public static UnitType factory(final GameDataInjections data) {
+  public static UnitType factory(final GameState data) {
     return unitType(Constants.UNIT_TYPE_FACTORY, data);
   }
 
   /** Returns a germanFactory UnitType object for the specified GameData object. */
-  public static UnitType germanFactory(final GameDataInjections data) {
+  public static UnitType germanFactory(final GameState data) {
     return unitType("germanFactory", data);
   }
 
-  public static UnitType italianFactory(final GameDataInjections data) {
+  public static UnitType italianFactory(final GameState data) {
     return unitType("italianFactory", data);
   }
 
-  public static UnitType britishFactory(final GameDataInjections data) {
+  public static UnitType britishFactory(final GameState data) {
     return unitType("britishFactory", data);
   }
 
   /** Returns a germanFortification UnitType object for the specified GameData object. */
-  public static UnitType germanFortification(final GameDataInjections data) {
+  public static UnitType germanFortification(final GameState data) {
     return unitType("germanFortification", data);
   }
 
   /** Returns a truck UnitType object for the specified GameData object. */
-  public static UnitType truck(final GameDataInjections data) {
+  public static UnitType truck(final GameState data) {
     return unitType("Truck", data);
   }
 
   /** Returns a large truck UnitType object for the specified GameData object. */
-  public static UnitType largeTruck(final GameDataInjections data) {
+  public static UnitType largeTruck(final GameState data) {
     return unitType("LargeTruck", data);
   }
 
   /** Returns a germanTrain UnitType object for the specified GameData object. */
-  public static UnitType germanTrain(final GameDataInjections data) {
+  public static UnitType germanTrain(final GameState data) {
     return unitType("germanTrain", data);
   }
 
   /** Returns a germanRail UnitType object for the specified GameData object. */
-  public static UnitType germanRail(final GameDataInjections data) {
+  public static UnitType germanRail(final GameState data) {
     return unitType("germanRail", data);
   }
 
   /** Returns a germanMine UnitType object for the specified GameData object. */
-  public static UnitType germanMine(final GameDataInjections data) {
+  public static UnitType germanMine(final GameState data) {
     return unitType("germanMine", data);
   }
 
   /** Returns a germanArtillery UnitType object for the specified GameData object. */
-  public static UnitType germanArtillery(final GameDataInjections data) {
+  public static UnitType germanArtillery(final GameState data) {
     return unitType("germanArtillery", data);
   }
 
   /** Returns a britishArtillery UnitType object for the specified GameData object. */
-  public static UnitType britishArtillery(final GameDataInjections data) {
+  public static UnitType britishArtillery(final GameState data) {
     return unitType("britishArtillery", data);
   }
 
   /** Returns a germanAntiTankGun UnitType object for the specified GameData object. */
-  public static UnitType germanAntiTankGun(final GameDataInjections data) {
+  public static UnitType germanAntiTankGun(final GameState data) {
     return unitType("germanAntiTankGun", data);
   }
 
   /** Returns a germanATSupport UnitType object for the specified GameData object. */
-  public static UnitType germanAtSupport(final GameDataInjections data) {
+  public static UnitType germanAtSupport(final GameState data) {
     return unitType("germanATSupport", data);
   }
 
   /** Returns a americanTank UnitType object for the specified GameData object. */
-  public static UnitType americanAtCounter(final GameDataInjections data) {
+  public static UnitType americanAtCounter(final GameState data) {
     return unitType("americanATCounter", data);
   }
 
   /** Returns a americanTank UnitType object for the specified GameData object. */
-  public static UnitType americanTank(final GameDataInjections data) {
+  public static UnitType americanTank(final GameState data) {
     return unitType("americanTank", data);
   }
 
   /** Returns a americanCruiser UnitType object for the specified GameData object. */
-  public static UnitType americanCruiser(final GameDataInjections data) {
+  public static UnitType americanCruiser(final GameState data) {
     return unitType("americanCruiser", data);
   }
 
   /** Returns a americanStrategicBomber UnitType object for the specified GameData object. */
-  public static UnitType americanStrategicBomber(final GameDataInjections data) {
+  public static UnitType americanStrategicBomber(final GameState data) {
     return unitType("americanStrategicBomber", data);
   }
 
   /**
    * Returns a UnitType object matching the given name for the specified GameData object if present.
    */
-  static UnitType unitType(final String name, final GameDataInjections data) {
+  static UnitType unitType(final String name, final GameState data) {
     return data.getUnitTypeList().getUnitType(name);
   }
 
@@ -431,7 +431,7 @@ public final class GameDataTestUtil {
     return indexOfType;
   }
 
-  public static void setSelectAaCasualties(final GameDataInjections data, final boolean val) {
+  public static void setSelectAaCasualties(final GameState data, final boolean val) {
     for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.CHOOSE_AA)) {
         ((BooleanProperty) property).setValue(val);
@@ -441,7 +441,7 @@ public final class GameDataTestUtil {
     throw new IllegalStateException();
   }
 
-  public static void makeGameLowLuck(final GameDataInjections data) {
+  public static void makeGameLowLuck(final GameState data) {
     for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.LOW_LUCK)) {
         ((BooleanProperty) property).setValue(true);

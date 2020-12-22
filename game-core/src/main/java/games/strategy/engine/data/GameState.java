@@ -3,7 +3,7 @@ package games.strategy.engine.data;
 import games.strategy.engine.data.properties.GameProperties;
 import java.util.Map;
 
-public interface GameDataInjections {
+public interface GameState {
   GameMap getMap();
 
   /** Returns a collection of all units in the game. */

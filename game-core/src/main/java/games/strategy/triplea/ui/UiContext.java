@@ -2,8 +2,8 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Constants;
@@ -89,7 +89,7 @@ public class UiContext {
 
   UiContext() {}
 
-  public static void setResourceLoader(final GameDataInjections gameData) {
+  public static void setResourceLoader(final GameState gameData) {
     resourceLoader = ResourceLoader.getMapResourceLoader(getDefaultMapDir(gameData));
   }
 
@@ -259,7 +259,7 @@ public class UiContext {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
-  private static String getDefaultMapDir(final GameDataInjections data) {
+  private static String getDefaultMapDir(final GameState data) {
     final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
     if (mapName == null || mapName.isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
@@ -396,7 +396,7 @@ public class UiContext {
   }
 
   /** returns the map skins for the game data. returns is a map of display-name -> map directory */
-  public static Map<String, String> getSkins(final GameDataInjections data) {
+  public static Map<String, String> getSkins(final GameState data) {
     final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
     skinsByDisplayName.put("Original", mapName);

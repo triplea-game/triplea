@@ -1,8 +1,8 @@
 package games.strategy.engine.posted.game.pbem;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -67,7 +67,7 @@ public class PbemMessagePoster implements Serializable {
         || gameProperties.get(IEmailSender.SUBJECT) != null;
   }
 
-  public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameDataInjections gameData) {
+  public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameState gameData) {
     return gameData != null
         && (gameData.getProperties().get(IForumPoster.NAME) != null
             || gameData.getProperties().get(IEmailSender.SUBJECT) != null);

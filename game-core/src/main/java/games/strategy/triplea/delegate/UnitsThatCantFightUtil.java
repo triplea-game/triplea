@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import org.triplea.java.PredicateBuilder;
 
 /** Utility for detecting and removing units that can't land at the end of a phase. */
 public class UnitsThatCantFightUtil {
-  private final GameDataInjections gameData;
+  private final GameState gameData;
 
-  public UnitsThatCantFightUtil(final GameDataInjections data) {
+  public UnitsThatCantFightUtil(final GameState data) {
     gameData = data;
   }
 

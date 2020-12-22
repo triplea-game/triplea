@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -69,7 +69,7 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
     // one without game properties.
     forumPosterEditorViewModel =
         Optional.ofNullable(model.getGameData())
-            .map(GameDataInjections::getProperties)
+            .map(GameState::getProperties)
             .map(
                 gameProperties ->
                     new ForumPosterEditorViewModel(this::fireListener, gameProperties))
@@ -170,7 +170,7 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
 
   private void loadAll() {
     Optional.ofNullable(gameSelectorModel.getGameData())
-        .map(GameDataInjections::getProperties)
+        .map(GameState::getProperties)
         .ifPresent(
             properties -> {
               diceServerEditor.populateFromGameProperties(properties);
@@ -196,7 +196,7 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void postStartGame() {
-    final GameDataInjections data = gameSelectorModel.getGameData();
+    final GameState data = gameSelectorModel.getGameData();
 
     Preconditions.checkNotNull(
         data,

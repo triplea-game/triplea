@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class MoveBatcherTest {
-  private final GameDataInjections gameData = TestMapGameData.REVISED.getGameData();
+  private final GameState gameData = TestMapGameData.REVISED.getGameData();
   private final Territory brazil = territory("Brazil", gameData);
   private final Territory sz19 = territory("19 Sea Zone", gameData);
   private final Territory sz18 = territory("18 Sea Zone", gameData);

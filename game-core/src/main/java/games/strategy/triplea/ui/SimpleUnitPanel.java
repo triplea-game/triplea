@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -170,7 +170,7 @@ public class SimpleUnitPanel extends JPanel {
   public void setUnitsFromRepairRuleMap(
       final Map<Unit, IntegerMap<RepairRule>> units,
       final GamePlayer player,
-      final GameDataInjections data) {
+      final GameState data) {
     removeAll();
     final Set<Unit> entries = units.keySet();
     for (final Unit unit : entries) {

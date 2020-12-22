@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -411,8 +411,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return getAvailableTechs(bridge.getGamePlayer(), getData());
   }
 
-  public static List<TechAdvance> getAvailableTechs(
-      final GamePlayer player, final GameDataInjections data) {
+  public static List<TechAdvance> getAvailableTechs(final GamePlayer player, final GameState data) {
     final Collection<TechAdvance> currentAdvances =
         TechTracker.getCurrentTechAdvances(player, data);
     final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);

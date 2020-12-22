@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -46,7 +46,7 @@ public class RocketsFireHelper implements Serializable {
 
   /** Rocket pseudo constructor for better than V1 rockets. */
   public static RocketsFireHelper setUpRockets(final IDelegateBridge bridge) {
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     final RocketsFireHelper helper = new RocketsFireHelper();
     // WW2V2/WW2V3, now fires at the start of the BattleDelegate
     // WW2V1, fires at end of non combat move so does not call here
@@ -220,7 +220,7 @@ public class RocketsFireHelper implements Serializable {
   }
 
   private static Set<Territory> getTargetsWithinRange(
-      final Territory territory, final GameDataInjections data, final GamePlayer player) {
+      final Territory territory, final GameState data, final GamePlayer player) {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
 
     final Set<Territory> hasFactory = new HashSet<>();

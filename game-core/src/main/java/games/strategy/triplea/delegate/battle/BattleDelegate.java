@@ -7,8 +7,8 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
@@ -607,7 +607,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    */
   private static void setupTerritoriesAbandonedToTheEnemy(
       final BattleTracker battleTracker, final IDelegateBridge bridge) {
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     if (!Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data.getProperties())) {
       return;
     }
@@ -987,7 +987,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private static void resetMaxScrambleCount(final IDelegateBridge bridge) {
     // reset the tripleaUnit property for all airbases that were used
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
@@ -1011,7 +1011,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   private void airBattleCleanup() {
-    final GameDataInjections data = getData();
+    final GameState data = getData();
     if (!Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())) {
       return;
     }
@@ -1210,7 +1210,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * The enemies of current player should decide all their attacks before the attacks are rolled.
    */
   private void doKamikazeSuicideAttacks() {
-    final GameDataInjections data = getData();
+    final GameState data = getData();
     if (!Properties.getUseKamikazeSuicideAttacks(data.getProperties())) {
       return;
     }
@@ -1502,7 +1502,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Unit strandedAir,
       final Territory currentTerr,
       final GamePlayer alliedPlayer,
-      final GameDataInjections data,
+      final GameState data,
       final BattleTracker battleTracker,
       final int carrierCostForCurrentTerr) {
     Preconditions.checkNotNull(strandedAir);

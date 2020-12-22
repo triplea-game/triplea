@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui.screen;
 
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
@@ -52,8 +52,7 @@ public class SmallMapImageManager {
   }
 
   /** Redraws the specified territory to reflect any change in ownership. */
-  public void updateTerritoryOwner(
-      final Territory t, final GameDataInjections data, final MapData mapData) {
+  public void updateTerritoryOwner(final Territory t, final GameState data, final MapData mapData) {
     if (t.isWater()) {
       return;
     }

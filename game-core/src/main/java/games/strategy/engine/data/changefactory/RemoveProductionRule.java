@@ -3,7 +3,7 @@ package games.strategy.engine.data.changefactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 
@@ -22,7 +22,7 @@ class RemoveProductionRule extends Change {
   }
 
   @Override
-  public void perform(final GameDataInjections data) {
+  public void perform(final GameState data) {
     frontier.removeRule(rule);
   }
 

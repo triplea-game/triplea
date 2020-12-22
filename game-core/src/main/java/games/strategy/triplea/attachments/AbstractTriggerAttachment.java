@@ -5,8 +5,8 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -274,7 +274,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
-  public void validate(final GameDataInjections data) throws GameParseException {
+  public void validate(final GameState data) throws GameParseException {
     if (conditions == null) {
       throw new GameParseException("must contain at least one condition: " + thisErrorMsg());
     }

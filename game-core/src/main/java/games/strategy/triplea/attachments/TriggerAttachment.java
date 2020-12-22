@@ -8,8 +8,8 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Named;
@@ -1604,7 +1604,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final FireTriggerParams fireTriggerParams,
       final NotificationMessages notificationMessages) {
 
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(satisfiedTriggers, notificationMatch(), fireTriggerParams);
     final Set<String> notifications = new HashSet<>();
@@ -2117,7 +2117,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge,
       final FireTriggerParams fireTriggerParams) {
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(satisfiedTriggers, prodFrontierEditMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
@@ -2408,7 +2408,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final IDelegateBridge bridge,
       final FireTriggerParams fireTriggerParams,
       final StringBuilder endOfTurnReport) {
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(satisfiedTriggers, resourceMatch(), fireTriggerParams);
     final IntegerMap<Resource> resources = new IntegerMap<>();
@@ -2461,7 +2461,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge,
       final FireTriggerParams activateFireTriggerParams) {
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(
             satisfiedTriggers, activateTriggerMatch(), activateFireTriggerParams);

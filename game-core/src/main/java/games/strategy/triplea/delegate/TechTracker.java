@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -19,7 +19,7 @@ public final class TechTracker {
    * may not be in their tech frontier).
    */
   public static Collection<TechAdvance> getCurrentTechAdvances(
-      final GamePlayer gamePlayer, final GameDataInjections data) {
+      final GamePlayer gamePlayer, final GameState data) {
     final Collection<TechAdvance> techAdvances = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(gamePlayer);
     // search all techs

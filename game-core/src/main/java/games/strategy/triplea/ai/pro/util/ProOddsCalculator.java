@@ -1,8 +1,8 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -163,7 +163,7 @@ public class ProOddsCalculator {
   }
 
   private static boolean canSubmergeBeforeBattle(
-      final GameDataInjections data,
+      final GameState data,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
       final boolean checkSubmerge) {

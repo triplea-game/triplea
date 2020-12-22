@@ -58,7 +58,7 @@ import org.triplea.util.Version;
  * <p>Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made
  * through a DelegateBridge or through a History object.
  */
-public class GameData implements Serializable, GameDataInjections {
+public class GameData implements Serializable, GameState {
   private static final long serialVersionUID = -2612710634080125728L;
 
   /** When we load a game from a save file, this property will be the name of that file. */

@@ -2,8 +2,8 @@ package games.strategy.triplea.ai.weak;
 
 import com.google.common.collect.Streams;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
@@ -61,7 +61,7 @@ public class WeakAi extends AbstractBuiltInAi {
   protected void tech(
       final ITechDelegate techDelegate, final GameData data, final GamePlayer player) {}
 
-  private static Route getAmphibRoute(final GamePlayer player, final GameDataInjections data) {
+  private static Route getAmphibRoute(final GamePlayer player, final GameState data) {
     if (!isAmphibAttack(player, data)) {
       return null;
     }
@@ -93,7 +93,7 @@ public class WeakAi extends AbstractBuiltInAi {
     return route;
   }
 
-  private static boolean isAmphibAttack(final GamePlayer player, final GameDataInjections data) {
+  private static boolean isAmphibAttack(final GamePlayer player, final GameState data) {
     final Territory capitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     // we dont own our own capitol
@@ -152,7 +152,7 @@ public class WeakAi extends AbstractBuiltInAi {
   }
 
   private List<MoveDescription> calculateTransportLoad(
-      final GameDataInjections data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     if (!isAmphibAttack(player, data)) {
       return List.of();
     }
@@ -202,7 +202,7 @@ public class WeakAi extends AbstractBuiltInAi {
   }
 
   private static List<MoveDescription> calculateTransportUnloadNonCombat(
-      final GameDataInjections data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     if (amphibRoute == null) {
       return List.of();
@@ -332,7 +332,7 @@ public class WeakAi extends AbstractBuiltInAi {
   }
 
   private static List<MoveDescription> calculateCombatMoveSea(
-      final GameDataInjections data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     final var moves = new ArrayList<MoveDescription>();
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     for (final Territory t : data.getMap()) {
@@ -376,8 +376,7 @@ public class WeakAi extends AbstractBuiltInAi {
   }
 
   // searches for amphibious attack on empty territory
-  private static Route getAlternativeAmphibRoute(
-      final GamePlayer player, final GameDataInjections data) {
+  private static Route getAlternativeAmphibRoute(final GamePlayer player, final GameState data) {
     if (!isAmphibAttack(player, data)) {
       return null;
     }
@@ -527,8 +526,7 @@ public class WeakAi extends AbstractBuiltInAi {
     return moves;
   }
 
-  private List<MoveDescription> calculateCombatMove(
-      final GameDataInjections data, final GamePlayer player) {
+  private List<MoveDescription> calculateCombatMove(final GameState data, final GamePlayer player) {
     final List<MoveDescription> moves = calculateBomberCombat(data, player);
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
@@ -702,7 +700,7 @@ public class WeakAi extends AbstractBuiltInAi {
   }
 
   private static List<MoveDescription> calculateBomberCombat(
-      final GameDataInjections data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     final Predicate<Territory> enemyFactory =
         Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
             data, player, Matches.unitCanProduceUnitsAndCanBeDamaged());
@@ -724,7 +722,7 @@ public class WeakAi extends AbstractBuiltInAi {
     return moves;
   }
 
-  private static int countTransports(final GameDataInjections data, final GamePlayer player) {
+  private static int countTransports(final GameState data, final GamePlayer player) {
     final Predicate<Unit> ownedTransport =
         Matches.unitIsTransport().and(Matches.unitIsOwnedBy(player));
     return Streams.stream(data.getMap())
@@ -733,7 +731,7 @@ public class WeakAi extends AbstractBuiltInAi {
         .sum();
   }
 
-  private static int countLandUnits(final GameDataInjections data, final GamePlayer player) {
+  private static int countLandUnits(final GameState data, final GamePlayer player) {
     final Predicate<Unit> ownedLandUnit = Matches.unitIsLand().and(Matches.unitIsOwnedBy(player));
     return Streams.stream(data.getMap())
         .map(Territory::getUnitCollection)
@@ -1041,7 +1039,7 @@ public class WeakAi extends AbstractBuiltInAi {
   public void place(
       final boolean bid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameDataInjections data,
+      final GameState data,
       final GamePlayer player) {
     if (player.getUnitCollection().isEmpty()) {
       return;
@@ -1064,7 +1062,7 @@ public class WeakAi extends AbstractBuiltInAi {
   }
 
   private static void placeAllWeCanOn(
-      final GameDataInjections data,
+      final GameState data,
       final Territory placeAt,
       final IAbstractPlaceDelegate placeDelegate,
       final GamePlayer player) {

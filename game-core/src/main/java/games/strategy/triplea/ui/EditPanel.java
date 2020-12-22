@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
@@ -1039,7 +1039,7 @@ class EditPanel extends ActionPanel {
     return active;
   }
 
-  private static boolean doesNeutralHaveUnitsOnMap(final GameDataInjections data) {
+  private static boolean doesNeutralHaveUnitsOnMap(final GameState data) {
     final GamePlayer player = GamePlayer.NULL_PLAYERID;
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {

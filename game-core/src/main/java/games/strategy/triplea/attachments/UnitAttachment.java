@@ -6,8 +6,8 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -1170,7 +1170,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(
-      final Collection<Unit> units, final String filterForAbility, final GameDataInjections data) {
+      final Collection<Unit> units, final String filterForAbility, final GameState data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
         getUnitTypesFromUnitList(
@@ -1196,7 +1196,7 @@ public class UnitAttachment extends DefaultAttachment {
    * they are with, or on the same route as, another unit.
    */
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(
-      final Collection<Unit> units, final String filterForAbility, final GameDataInjections data) {
+      final Collection<Unit> units, final String filterForAbility, final GameState data) {
     if (units.stream().noneMatch(Matches.unitCanReceiveAbilityWhenWith())) {
       return new ArrayList<>();
     }
@@ -2134,7 +2134,7 @@ public class UnitAttachment extends DefaultAttachment {
     return bombingTargets;
   }
 
-  public Set<UnitType> getBombingTargets(final GameDataInjections data) {
+  public Set<UnitType> getBombingTargets(final GameState data) {
     if (bombingTargets != null) {
       return bombingTargets;
     }
@@ -2147,7 +2147,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   /** Finds potential unit types which all passed in bombers and rockets can target. */
   public static Set<UnitType> getAllowedBombingTargetsIntersection(
-      final Collection<Unit> bombersOrRockets, final GameDataInjections data) {
+      final Collection<Unit> bombersOrRockets, final GameState data) {
     if (bombersOrRockets.isEmpty()) {
       return new HashSet<>();
     }
@@ -2472,7 +2472,7 @@ public class UnitAttachment extends DefaultAttachment {
     return targetsAa;
   }
 
-  public Set<UnitType> getTargetsAa(final GameDataInjections data) {
+  public Set<UnitType> getTargetsAa(final GameState data) {
     if (targetsAa != null) {
       return targetsAa;
     }
@@ -2699,7 +2699,7 @@ public class UnitAttachment extends DefaultAttachment {
       final UnitType ut,
       final Territory t,
       final GamePlayer owner,
-      final GameDataInjections data) {
+      final GameState data) {
     final UnitAttachment ua = UnitAttachment.get(ut);
     final Tuple<Integer, String> stackingLimit;
     switch (limitType) {
@@ -2748,7 +2748,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameDataInjections data) throws GameParseException {
+  public void validate(final GameState data) throws GameParseException {
     if (isAir) {
       if (isSea
           || transportCost != -1

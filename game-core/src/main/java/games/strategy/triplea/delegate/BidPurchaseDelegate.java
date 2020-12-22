@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -19,12 +19,12 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   private int spent;
   private boolean hasBid = false;
 
-  private static int getBidAmount(final GameDataInjections data, final GamePlayer currentPlayer) {
+  private static int getBidAmount(final GameState data, final GamePlayer currentPlayer) {
     final String propertyName = currentPlayer.getName() + " bid";
     return data.getProperties().get(propertyName, 0);
   }
 
-  public static boolean doesPlayerHaveBid(final GameDataInjections data, final GamePlayer player) {
+  public static boolean doesPlayerHaveBid(final GameState data, final GamePlayer player) {
     return getBidAmount(data, player) != 0;
   }
 

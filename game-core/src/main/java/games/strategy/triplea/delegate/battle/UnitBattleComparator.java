@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle;
 
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
@@ -35,7 +35,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
 
   public UnitBattleComparator(
       final IntegerMap<UnitType> costs,
-      final GameDataInjections data,
+      final GameState data,
       final CombatValue combatValueCalculator,
       final boolean bonus,
       final boolean ignorePrimaryPower) {

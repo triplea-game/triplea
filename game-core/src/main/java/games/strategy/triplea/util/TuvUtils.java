@@ -1,8 +1,8 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -351,7 +351,7 @@ public class TuvUtils {
       final Collection<Unit> units,
       final GamePlayer player,
       final IntegerMap<UnitType> costs,
-      final GameDataInjections data) {
+      final GameState data) {
     final Collection<Unit> playerUnits =
         CollectionUtils.getMatches(units, Matches.alliedUnit(player, data));
     return getTuv(playerUnits, costs);

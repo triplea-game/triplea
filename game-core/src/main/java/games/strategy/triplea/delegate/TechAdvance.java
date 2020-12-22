@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -184,7 +184,7 @@ public abstract class TechAdvance extends NamedAttachable {
    *     instance.
    */
   public static TechAdvance findDefinedAdvanceAndCreateAdvance(
-      final String technologyName, final GameDataInjections data) {
+      final String technologyName, final GameState data) {
     final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(technologyName);
     if (clazz == null) {
       throw new IllegalArgumentException(technologyName + " is not a valid technology");
@@ -199,7 +199,7 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   static TechAdvance findAdvance(
-      final String propertyString, final GameDataInjections data, final GamePlayer player) {
+      final String propertyString, final GameState data, final GamePlayer player) {
     for (final TechAdvance t : getTechAdvances(data, player)) {
       if (t.getProperty().equals(propertyString)) {
         return t;
@@ -251,7 +251,7 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /** Returns all tech advances possible in this game. */
-  public static List<TechAdvance> getTechAdvances(final GameDataInjections data) {
+  public static List<TechAdvance> getTechAdvances(final GameState data) {
     return getTechAdvances(data, null);
   }
 
@@ -259,8 +259,7 @@ public abstract class TechAdvance extends NamedAttachable {
    * Returns all tech advances that this player can possibly research. (Or if Player is null,
    * returns all techs available in the game).
    */
-  public static List<TechAdvance> getTechAdvances(
-      final GameDataInjections data, final GamePlayer player) {
+  public static List<TechAdvance> getTechAdvances(final GameState data, final GamePlayer player) {
     final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
     if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
       return (player != null)

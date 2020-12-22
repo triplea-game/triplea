@@ -1,8 +1,8 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 
 /** Changes ownership of a territory. */
@@ -36,7 +36,7 @@ class OwnerChange extends Change {
     return player.getName();
   }
 
-  private static GamePlayer getPlayerId(final String name, final GameDataInjections data) {
+  private static GamePlayer getPlayerId(final String name, final GameState data) {
     if (name == null) {
       return null;
     }
@@ -49,7 +49,7 @@ class OwnerChange extends Change {
   }
 
   @Override
-  protected void perform(final GameDataInjections data) {
+  protected void perform(final GameState data) {
     // both names could be null
     data.getMap().getTerritory(territoryName).setOwner(getPlayerId(newOwnerName, data));
   }

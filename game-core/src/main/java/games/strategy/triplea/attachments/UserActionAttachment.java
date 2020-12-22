@@ -3,8 +3,8 @@ package games.strategy.triplea.attachments;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -105,7 +105,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       final UserActionAttachment actionAttachment,
       final Map<ICondition, Boolean> testedConditionsSoFar,
       final IDelegateBridge bridge) {
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
       final Optional<TriggerAttachment> optionalTrigger =

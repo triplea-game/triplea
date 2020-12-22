@@ -29,7 +29,7 @@ public class BombingUnitDamageChange extends Change {
   }
 
   @Override
-  protected void perform(final GameDataInjections data) {
+  protected void perform(final GameState data) {
     for (final Unit item : hits.keySet()) {
       item.setUnitDamage(hits.getInt(item));
     }

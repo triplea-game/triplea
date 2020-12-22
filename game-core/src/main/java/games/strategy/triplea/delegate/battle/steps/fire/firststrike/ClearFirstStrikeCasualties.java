@@ -5,7 +5,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -56,7 +56,7 @@ public class ClearFirstStrikeCasualties implements BattleStep {
   private State calculateDefenseState() {
     if (battleState.filterUnits(ALIVE, DEFENSE).stream()
         .anyMatch(Matches.unitIsFirstStrikeOnDefense(battleState.getGameData().getProperties()))) {
-      final GameDataInjections gameData = battleState.getGameData();
+      final GameState gameData = battleState.getGameData();
       // WWW2V2 always gives defending subs sneak attack
       final boolean canSneakAttack =
           battleState.filterUnits(ALIVE, OFFENSE).stream().noneMatch(Matches.unitIsDestroyer())

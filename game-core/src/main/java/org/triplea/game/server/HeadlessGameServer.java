@@ -12,7 +12,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameDataManager;
@@ -153,7 +153,7 @@ public class HeadlessGameServer {
       if (bytes == null || bytes.length == 0) {
         return;
       }
-      final GameDataInjections data = gameSelectorModel.getGameData();
+      final GameState data = gameSelectorModel.getGameData();
       if (data == null) {
         return;
       }

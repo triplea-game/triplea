@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameDataInjections;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
 /**
@@ -9,10 +9,10 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
  */
 public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
   private final IDelegateHistoryWriter delegateHistoryWriter;
-  private final GameDataInjections gameData;
+  private final GameState gameData;
 
   GameDelegateHistoryWriter(
-      final IDelegateHistoryWriter delegateHistoryWriter, final GameDataInjections data) {
+      final IDelegateHistoryWriter delegateHistoryWriter, final GameState data) {
     this.delegateHistoryWriter = delegateHistoryWriter;
     gameData = data;
   }

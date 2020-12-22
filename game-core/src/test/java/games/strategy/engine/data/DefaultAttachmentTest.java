@@ -42,7 +42,7 @@ final class DefaultAttachmentTest {
       }
 
       @Override
-      public void validate(final GameDataInjections data) {}
+      public void validate(final GameState data) {}
 
       @Override
       public Map<String, MutableProperty<?>> getPropertyMap() {

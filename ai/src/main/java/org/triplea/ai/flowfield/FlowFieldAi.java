@@ -1,8 +1,8 @@
 package org.triplea.ai.flowfield;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -38,6 +38,6 @@ public class FlowFieldAi extends AbstractAi {
   protected void place(
       final boolean placeForBid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameDataInjections data,
+      final GameState data,
       final GamePlayer player) {}
 }

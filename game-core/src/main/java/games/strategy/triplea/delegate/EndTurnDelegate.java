@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
@@ -73,7 +73,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
 
   private String createUnits(final IDelegateBridge bridge) {
     final StringBuilder endTurnReport = new StringBuilder();
-    final GameDataInjections data = getData();
+    final GameState data = getData();
     final GamePlayer player = data.getSequence().getStep().getPlayerId();
     final Predicate<Unit> myCreatorsMatch =
         Matches.unitIsOwnedBy(player).and(Matches.unitCreatesUnits());
@@ -286,7 +286,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
 
   /** Determine if National Objectives have been met, and then do them. */
   private String determineNationalObjectives(final IDelegateBridge bridge) {
-    final GameDataInjections data = getData();
+    final GameState data = getData();
     final GamePlayer player = data.getSequence().getStep().getPlayerId();
 
     // Find and test all the conditions for triggers and national objectives
@@ -354,7 +354,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
 
   private static Map<ICondition, Boolean> testNationalObjectivesAndTriggers(
       final GamePlayer player,
-      final GameDataInjections data,
+      final GameState data,
       final IDelegateBridge bridge,
       final Set<TriggerAttachment> triggers,
       final List<RulesAttachment> objectives) {
@@ -394,7 +394,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   @Override
   protected String addOtherResources(final IDelegateBridge bridge) {
     final StringBuilder endTurnReport = new StringBuilder();
-    final GameDataInjections data = bridge.getData();
+    final GameState data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
     final IntegerMap<Resource> production = getResourceProduction(territories, data);
@@ -432,7 +432,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    * we will now figure out the total production of non-PUs resources.
    */
   public static IntegerMap<Resource> getResourceProduction(
-      final Collection<Territory> territories, final GameDataInjections data) {
+      final Collection<Territory> territories, final GameState data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);

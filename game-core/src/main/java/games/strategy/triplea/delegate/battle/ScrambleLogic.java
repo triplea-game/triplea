@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -27,7 +27,7 @@ import org.triplea.util.Tuple;
  * given territory.
  */
 public class ScrambleLogic {
-  private final GameDataInjections data;
+  private final GameState data;
   private final GamePlayer player;
   private final Set<Territory> territoriesWithBattles;
   private BattleTracker battleTracker;
@@ -35,20 +35,17 @@ public class ScrambleLogic {
   private final Predicate<Territory> canScrambleFromPredicate;
   private final int maxScrambleDistance;
 
-  public ScrambleLogic(
-      final GameDataInjections data, final GamePlayer player, final Territory territory) {
+  public ScrambleLogic(final GameState data, final GamePlayer player, final Territory territory) {
     this(data, player, Set.of(territory));
   }
 
   public ScrambleLogic(
-      final GameDataInjections data,
-      final GamePlayer player,
-      final Set<Territory> territoriesWithBattles) {
+      final GameState data, final GamePlayer player, final Set<Territory> territoriesWithBattles) {
     this(data, player, territoriesWithBattles, new BattleTracker());
   }
 
   public ScrambleLogic(
-      final GameDataInjections data,
+      final GameState data,
       final GamePlayer player,
       final Set<Territory> territoriesWithBattles,
       final BattleTracker battleTracker) {
@@ -79,7 +76,7 @@ public class ScrambleLogic {
     this.maxScrambleDistance = computeMaxScrambleDistance(data);
   }
 
-  private static int computeMaxScrambleDistance(final GameDataInjections data) {
+  private static int computeMaxScrambleDistance(final GameState data) {
     int maxScrambleDistance = 0;
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = UnitAttachment.get(unitType);

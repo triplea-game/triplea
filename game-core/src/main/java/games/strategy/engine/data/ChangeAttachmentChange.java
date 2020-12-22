@@ -80,7 +80,7 @@ public class ChangeAttachmentChange extends Change {
   }
 
   @Override
-  public void perform(final GameDataInjections data) {
+  public void perform(final GameState data) {
     final IAttachment attachment = attachedTo.getAttachment(attachmentName);
     final MutableProperty<?> attachmentProperty = attachment.getPropertyOrThrow(property);
     if (clearFirst) {

@@ -4,9 +4,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataInjections;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
@@ -169,7 +169,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return gameProperty;
   }
 
-  boolean getGamePropertyState(final GameDataInjections data) {
+  boolean getGamePropertyState(final GameState data) {
     return gameProperty != null && data.getProperties().get(gameProperty, false);
   }
 
@@ -223,7 +223,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     turns = null;
   }
 
-  protected boolean checkTurns(final GameDataInjections data) {
+  protected boolean checkTurns(final GameState data) {
     final int turn = data.getSequence().getRound();
     for (final int t : turns.keySet()) {
       if (turn >= t && turn <= turns.get(t)) {
@@ -238,7 +238,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * "all", "map", and turns it into an actual list of territories. Also sets territoryCount.
    */
   private Set<Territory> getTerritoriesBasedOnStringName(
-      final String name, final Collection<GamePlayer> players, final GameDataInjections data) {
+      final String name, final Collection<GamePlayer> players, final GameState data) {
     final GameMap gameMap = data.getMap();
     switch (name) {
       case "original":
@@ -309,7 +309,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * territoryCount.
    */
   protected Set<Territory> getTerritoryListBasedOnInputFromXml(
-      final String[] terrs, final Collection<GamePlayer> players, final GameDataInjections data) {
+      final String[] terrs, final Collection<GamePlayer> players, final GameState data) {
     // If there's only 1, it might be a 'group' (original, controlled, controlledNoWater, all)
     if (terrs.length == 1) {
       return getTerritoriesBasedOnStringName(terrs[0], players, data);
