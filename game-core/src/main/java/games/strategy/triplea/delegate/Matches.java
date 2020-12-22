@@ -2051,10 +2051,10 @@ public final class Matches {
     return player2 -> relationshipTracker.isAtWarWithAnyOfThesePlayers(player2, players);
   }
 
-  public static Predicate<GamePlayer> isAllied(final GamePlayer player, final GameState data) {
+  public static Predicate<GamePlayer> isAllied(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return player2 ->
-        relationshipTypeIsAllied()
-            .test(data.getRelationshipTracker().getRelationshipType(player, player2));
+        relationshipTypeIsAllied().test(relationshipTracker.getRelationshipType(player, player2));
   }
 
   public static Predicate<GamePlayer> isAlliedWithAnyOfThesePlayers(
