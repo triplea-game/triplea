@@ -1294,7 +1294,7 @@ class ProPurchaseAi {
       final int production = TerritoryAttachment.get(t).getProduction();
       final double value = territoryValueMap.get(t) * production + 0.1 * production;
       final boolean isAdjacentToSea =
-          Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);
+          Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater()).test(t);
       final Set<Territory> nearbyLandTerritories =
           data.getMap()
               .getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));

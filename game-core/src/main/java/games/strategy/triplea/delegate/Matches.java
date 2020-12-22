@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
@@ -912,8 +913,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasNeighborMatching(
-      final GameState data, final Predicate<Territory> match) {
-    return t -> !data.getMap().getNeighbors(t, match).isEmpty();
+      final GameMap gameMap, final Predicate<Territory> match) {
+    return t -> !gameMap.getNeighbors(t, match).isEmpty();
   }
 
   public static Predicate<Territory> territoryIsInList(final Collection<Territory> list) {

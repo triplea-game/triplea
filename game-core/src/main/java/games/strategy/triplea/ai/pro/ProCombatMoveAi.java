@@ -1358,7 +1358,8 @@ public class ProCombatMoveAi {
           final boolean isEnemyCapital = ProUtils.getLiveEnemyCapitals(data, player).contains(t);
           final boolean isAdjacentToAlliedCapital =
               Matches.territoryHasNeighborMatching(
-                      data, Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player)))
+                      data.getMap(),
+                      Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player)))
                   .test(t);
           final int range = unit.getMovementLeft().intValue();
           final int distance =
@@ -1426,7 +1427,8 @@ public class ProCombatMoveAi {
           // location
           final boolean isAdjacentToAlliedFactory =
               Matches.territoryHasNeighborMatching(
-                      data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
+                      data.getMap(),
+                      ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
                   .test(t);
           final int range = unit.getMovementLeft().intValue();
           final int distance =
@@ -1985,7 +1987,7 @@ public class ProCombatMoveAi {
   private boolean canAirSafelyLandAfterAttack(final Unit unit, final Territory t) {
     final boolean isAdjacentToAlliedFactory =
         Matches.territoryHasNeighborMatching(
-                data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
+                data.getMap(), ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
             .test(t);
     final int range = unit.getMovementLeft().intValue();
     final int distance =

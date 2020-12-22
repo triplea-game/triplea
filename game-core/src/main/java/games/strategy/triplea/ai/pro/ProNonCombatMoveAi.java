@@ -1524,7 +1524,8 @@ class ProNonCombatMoveAi {
                   .getDistanceIgnoreEndForCondition(
                       currentTerritory, t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
           final boolean hasSeaNeighbor =
-              Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);
+              Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater())
+                  .test(t);
           final boolean hasFactory =
               ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).test(t);
           if (!t.isWater()
