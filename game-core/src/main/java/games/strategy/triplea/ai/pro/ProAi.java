@@ -1,8 +1,8 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
 
 public class ProAi extends AbstractProAi {
@@ -11,12 +11,9 @@ public class ProAi extends AbstractProAi {
 
   public ProAi(final String name) {
     super(name, concurrentCalc, new ProData());
-  }
-
-  public static void gameOverClearCache() {
-    // Are static, clear so that we don't keep the data around after a game is exited
-    concurrentCalc.setGameData(null);
-    ProLogUi.clearCachedInstances();
+    // cuncurrentCalc is static so that it can be shared across all ProAi instances
+    // at the end of a game, it needs to be cleared up
+    GameShutdownRegistry.registerShutdownAction(() -> concurrentCalc.setGameData(null));
   }
 
   @Override
