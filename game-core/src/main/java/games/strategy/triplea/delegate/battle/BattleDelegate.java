@@ -415,7 +415,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Matches.territoryHasUnitsOwnedBy(player)
             .and(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()));
     final Predicate<Territory> enemyTerritoryAndOwnUnits =
-        Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
+        Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
             .and(Matches.territoryHasUnitsOwnedBy(player));
     final Predicate<Territory> enemyUnitsOrEnemyTerritory =
         anyTerritoryWithOwnAndEnemy.or(enemyTerritoryAndOwnUnits);

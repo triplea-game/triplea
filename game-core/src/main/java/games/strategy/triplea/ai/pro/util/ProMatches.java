@@ -195,7 +195,8 @@ public final class ProMatches {
                   data.getProperties());
       if (!isCombatMove
           && navalMayNotNonComIntoControlled
-          && Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)) {
+          && Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
+              .test(t)) {
         return false;
       }
       final Predicate<Territory> match =
@@ -272,7 +273,7 @@ public final class ProMatches {
       final GamePlayer player,
       final GameState data,
       final List<Territory> territoriesThatCantBeHeld) {
-    return Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
+    return Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
         .or(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()))
         .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
   }
@@ -418,13 +419,13 @@ public final class ProMatches {
       final GamePlayer player,
       final GameState data,
       final List<Territory> territoriesThatCantBeHeld) {
-    return Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
+    return Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
         .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
   }
 
   public static Predicate<Territory> territoryIsPotentialEnemy(
       final GamePlayer player, final GameState data, final List<GamePlayer> players) {
-    return Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
+    return Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
         .or(Matches.isTerritoryOwnedBy(players));
   }
 

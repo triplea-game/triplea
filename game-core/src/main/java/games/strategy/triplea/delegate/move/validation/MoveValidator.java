@@ -802,7 +802,7 @@ public class MoveValidator {
             units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
     for (final Territory t : route.getSteps()) {
       final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
-      if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)
+      if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker()).test(t)
           || t.getUnitCollection()
               .anyMatch(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))) {
         for (final Unit unit : unitsWithStackingLimits) {
@@ -1199,7 +1199,8 @@ public class MoveValidator {
       for (final Unit transport : transports) {
         if (!isNonCombat) {
           if (Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).test(routeEnd)
-              || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(routeEnd)) {
+              || Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
+                  .test(routeEnd)) {
             // this is an amphibious assault
             if (subsPreventUnescortedAmphibAssaults
                 && !Matches.territoryHasUnitsThatMatch(ownedSeaNonTransportMatch).test(routeStart)

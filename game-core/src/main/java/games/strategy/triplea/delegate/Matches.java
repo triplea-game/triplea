@@ -1296,14 +1296,14 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWater(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     // if we look at territory attachments, may have funny results for blockades or other things
     // that are passable
     // and not owned. better to check them by alliance. (veqryn)
     return t ->
         !t.getOwner().equals(player)
             && ((!t.getOwner().equals(GamePlayer.NULL_PLAYERID) || !t.isWater())
-                && data.getRelationshipTracker().isAtWar(player, t.getOwner()));
+                && relationshipTracker.isAtWar(player, t.getOwner()));
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
