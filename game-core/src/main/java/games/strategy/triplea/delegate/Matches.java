@@ -1482,7 +1482,8 @@ public final class Matches {
                       .and(unitIsNotInfrastructure()));
       final Collection<GamePlayer> enemyPlayers =
           enemyUnits.stream().map(Unit::getOwner).collect(Collectors.toSet());
-      return isAtWarWithAnyOfThesePlayers(enemyPlayers, gameData).test(t.getOwner());
+      return isAtWarWithAnyOfThesePlayers(enemyPlayers, gameData.getRelationshipTracker())
+          .test(t.getOwner());
     };
   }
 
@@ -2046,8 +2047,8 @@ public final class Matches {
   }
 
   public static Predicate<GamePlayer> isAtWarWithAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameState data) {
-    return player2 -> data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(player2, players);
+      final Collection<GamePlayer> players, final RelationshipTracker relationshipTracker) {
+    return player2 -> relationshipTracker.isAtWarWithAnyOfThesePlayers(player2, players);
   }
 
   public static Predicate<GamePlayer> isAllied(final GamePlayer player, final GameState data) {

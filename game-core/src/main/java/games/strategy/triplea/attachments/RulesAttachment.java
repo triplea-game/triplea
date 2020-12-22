@@ -762,7 +762,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
           default:
@@ -782,7 +782,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
           default:
@@ -804,7 +804,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
                   data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
@@ -814,7 +814,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
                   data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
