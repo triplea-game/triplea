@@ -621,7 +621,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             Matches.territoryIsNotUnownedWater()
                 .and(
                     Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
-                        player, data)));
+                        player, data.getRelationshipTracker())));
     // all territories that contain enemy units, where the territory is owned by an enemy of these
     // units
     for (final Territory territory : battleTerritories) {

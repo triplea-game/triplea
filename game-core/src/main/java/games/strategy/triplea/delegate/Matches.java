@@ -1472,18 +1472,17 @@ public final class Matches {
    * ally, but not necessarily so in an FFA type game).
    */
   public static Predicate<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
-      final GamePlayer player, final GameState gameData) {
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return t -> {
       final List<Unit> enemyUnits =
           t.getUnitCollection()
               .getMatches(
-                  enemyUnit(player, gameData.getRelationshipTracker())
+                  enemyUnit(player, relationshipTracker)
                       .and(unitIsNotAir())
                       .and(unitIsNotInfrastructure()));
       final Collection<GamePlayer> enemyPlayers =
           enemyUnits.stream().map(Unit::getOwner).collect(Collectors.toSet());
-      return isAtWarWithAnyOfThesePlayers(enemyPlayers, gameData.getRelationshipTracker())
-          .test(t.getOwner());
+      return isAtWarWithAnyOfThesePlayers(enemyPlayers, relationshipTracker).test(t.getOwner());
     };
   }
 
