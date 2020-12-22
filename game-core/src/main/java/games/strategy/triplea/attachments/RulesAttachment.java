@@ -1002,7 +1002,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         case "allied":
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         case "enemy":
           allUnits.retainAll(
@@ -1087,7 +1088,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                   allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         case "direct":
           allUnits.removeAll(

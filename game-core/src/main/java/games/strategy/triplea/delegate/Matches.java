@@ -1400,11 +1400,10 @@ public final class Matches {
   }
 
   public static Predicate<Unit> alliedUnitOfAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameState data) {
+      final Collection<GamePlayer> players, final RelationshipTracker relationshipTracker) {
     return unit ->
         unitIsOwnedByOfAnyOfThesePlayers(players).test(unit)
-            || data.getRelationshipTracker()
-                .isAlliedWithAnyOfThesePlayers(unit.getOwner(), players);
+            || relationshipTracker.isAlliedWithAnyOfThesePlayers(unit.getOwner(), players);
   }
 
   public static Predicate<Territory> territoryIs(final Territory test) {
