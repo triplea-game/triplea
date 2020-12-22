@@ -126,13 +126,4 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
 
     assertThat(outOfDate, is(List.of(download2)));
   }
-
-  @Test
-  void testIsInstalled() {
-    when(strategy.getMapVersion(any())).thenReturn(Optional.of(MAP_VERSION));
-    final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
-
-    assertThat(testObj.isInstalled(TEST_MAP), is(true));
-    assertThat(testObj.isInstalled(newDownloadWithUrl("url1")), is(false));
-  }
 }

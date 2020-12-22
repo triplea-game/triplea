@@ -66,8 +66,4 @@ class MapDownloadList {
       final Collection<DownloadFileDescription> excluded) {
     return outOfDate.stream().filter(not(excluded::contains)).collect(Collectors.toList());
   }
-
-  boolean isInstalled(final DownloadFileDescription download) {
-    return installed.contains(download);
-  }
 }
