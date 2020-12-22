@@ -935,8 +935,8 @@ public final class Matches {
             .isEmpty();
   }
 
-  public static Predicate<Territory> territoryHasWaterNeighbor(final GameState data) {
-    return t -> !data.getMap().getNeighbors(t, territoryIsWater()).isEmpty();
+  public static Predicate<Territory> territoryHasWaterNeighbor(final GameMap gameMap) {
+    return t -> !gameMap.getNeighbors(t, territoryIsWater()).isEmpty();
   }
 
   public static Predicate<Territory> territoryIsOwnedAndHasOwnedUnitMatching(

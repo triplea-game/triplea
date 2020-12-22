@@ -194,7 +194,7 @@ final class ProTechAi {
       final List<Unit> attackPlanes =
           findPlaneAttackersThatCanLand(location, maxFighterDistance, enemyPlayer, data, checked);
       final float airStrength = allAirStrength(attackPlanes);
-      if (Matches.territoryHasWaterNeighbor(data).test(location)
+      if (Matches.territoryHasWaterNeighbor(data.getMap()).test(location)
           && Matches.territoryIsLand().test(location)) {
         for (final Territory t4 : data.getMap().getNeighbors(location, maxTransportDistance)) {
           if (!t4.isWater()) {
