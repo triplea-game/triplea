@@ -907,7 +907,8 @@ public final class Matches {
           return false;
         }
       }
-      return !(contestedDoNotProduce && !territoryHasNoEnemyUnits(player, data).test(t));
+      return !(contestedDoNotProduce
+          && !territoryHasNoEnemyUnits(player, data.getRelationshipTracker()).test(t));
     };
   }
 
@@ -1430,8 +1431,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasNoEnemyUnits(
-      final GamePlayer player, final GameState data) {
-    return t -> !t.getUnitCollection().anyMatch(enemyUnit(player, data.getRelationshipTracker()));
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> !t.getUnitCollection().anyMatch(enemyUnit(player, relationshipTracker));
   }
 
   public static Predicate<Territory> territoryHasAlliedUnits(

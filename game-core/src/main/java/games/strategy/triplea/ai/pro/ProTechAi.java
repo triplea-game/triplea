@@ -389,7 +389,7 @@ final class ProTechAi {
     final Predicate<Unit> blitzUnit =
         Matches.unitIsOwnedBy(enemyPlayer).and(Matches.unitCanBlitz()).and(Matches.unitCanMove());
     final Predicate<Territory> validBlitzRoute =
-        Matches.territoryHasNoEnemyUnits(enemyPlayer, data)
+        Matches.territoryHasNoEnemyUnits(enemyPlayer, data.getRelationshipTracker())
             .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data.getProperties()));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =

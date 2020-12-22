@@ -144,7 +144,8 @@ public class DefensiveSubsRetreat implements BattleStep {
         Matches.territoryIsWater()
             .and(
                 Matches.territoryHasNoEnemyUnits(
-                    battleState.getPlayer(DEFENSE), battleState.getGameData()))
+                    battleState.getPlayer(DEFENSE),
+                    battleState.getGameData().getRelationshipTracker()))
             .and(canalMatch);
     return CollectionUtils.getMatches(possible, match);
   }

@@ -139,7 +139,7 @@ public final class ProMatches {
           && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
         final Predicate<Territory> alliedWithNoEnemiesMatch =
             Matches.isTerritoryAllied(player, data.getRelationshipTracker())
-                .and(Matches.territoryHasNoEnemyUnits(player, data));
+                .and(Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()));
         final Predicate<Territory> alliedOrBlitzableMatch =
             alliedWithNoEnemiesMatch.or(territoryIsBlitzable(player, data, u));
         return ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u)
@@ -149,7 +149,7 @@ public final class ProMatches {
       }
       return ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u)
           .and(Matches.isTerritoryAllied(player, data.getRelationshipTracker()))
-          .and(Matches.territoryHasNoEnemyUnits(player, data))
+          .and(Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()))
           .and(Matches.territoryIsInList(enemyTerritories).negate())
           .test(t);
     };
@@ -244,7 +244,7 @@ public final class ProMatches {
               .or(Matches.unitCanBeMovedThroughByEnemies())
               .or(Matches.enemyUnit(player, data.getRelationshipTracker()).negate());
       return t.getUnitCollection().allMatch(subOnly)
-          || Matches.territoryHasNoEnemyUnits(player, data).test(t);
+          || Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()).test(t);
     };
   }
 
@@ -264,7 +264,7 @@ public final class ProMatches {
 
   public static Predicate<Territory> territoryHasNoEnemyUnitsOrCleared(
       final GamePlayer player, final GameState data, final List<Territory> clearedTerritories) {
-    return Matches.territoryHasNoEnemyUnits(player, data)
+    return Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker())
         .or(Matches.territoryIsInList(clearedTerritories));
   }
 

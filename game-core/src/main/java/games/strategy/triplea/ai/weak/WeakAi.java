@@ -79,7 +79,8 @@ public class WeakAi extends AbstractBuiltInAi {
               && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
         };
     final Predicate<Territory> routeCond =
-        Matches.territoryIsWater().and(Matches.territoryHasNoEnemyUnits(player, data));
+        Matches.territoryIsWater()
+            .and(Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()));
     final @Nullable Route withNoEnemy = Utils.findNearest(ourCapitol, endMatch, routeCond, data);
     if (withNoEnemy != null && withNoEnemy.numberOfSteps() > 0) {
       return withNoEnemy;
@@ -382,7 +383,8 @@ public class WeakAi extends AbstractBuiltInAi {
       return null;
     }
     final Predicate<Territory> routeCondition =
-        Matches.territoryIsWater().and(Matches.territoryHasNoEnemyUnits(player, data));
+        Matches.territoryIsWater()
+            .and(Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()));
     // should select all territories with loaded transports
     final Predicate<Territory> transportOnSea =
         Matches.territoryIsWater().and(Matches.territoryHasLandUnitsOwnedBy(player));
