@@ -462,7 +462,7 @@ public class MoveValidator {
             UnitAttachment.getUnitsWhichReceivesAbilityWhenWith(units, "canBlitz", data));
         final Predicate<Territory> territoryIsNotEnd = Matches.territoryIs(route.getEnd()).negate();
         final Predicate<Territory> nonFriendlyTerritories =
-            Matches.isTerritoryFriendly(player, data).negate();
+            Matches.isTerritoryFriendly(player, data.getRelationshipTracker()).negate();
         final Predicate<Territory> notEndOrFriendlyTerrs =
             nonFriendlyTerritories.and(territoryIsNotEnd);
         final Predicate<Territory> foughtOver =
@@ -1491,12 +1491,12 @@ public class MoveValidator {
         if (paratroop.hasMoved()) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
-        if (Matches.isTerritoryFriendly(player, data).test(routeEnd)
+        if (Matches.isTerritoryFriendly(player, data.getRelationshipTracker()).test(routeEnd)
             && !Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
           result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
         }
         if (!nonCombat
-            && Matches.isTerritoryFriendly(player, data).test(routeEnd)
+            && Matches.isTerritoryFriendly(player, data.getRelationshipTracker()).test(routeEnd)
             && Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
           result.addDisallowedUnit(
               "Paratroops may only airlift during Non-Combat Movement Phase", paratroop);

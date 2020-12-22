@@ -1274,11 +1274,11 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryFriendly(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return t ->
         t.isWater()
             || t.getOwner().equals(player)
-            || data.getRelationshipTracker().isAllied(player, t.getOwner());
+            || relationshipTracker.isAllied(player, t.getOwner());
   }
 
   private static Predicate<Unit> unitIsEnemyAaForFlyOver(
