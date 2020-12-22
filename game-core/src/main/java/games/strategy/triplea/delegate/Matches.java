@@ -714,8 +714,8 @@ public final class Matches {
       final Predicate<Unit> typeOfAa,
       final int battleRoundNumber,
       final boolean defending,
-      final GameState data) {
-    return enemyUnit(playerMovingOrAttacking, data.getRelationshipTracker())
+      final RelationshipTracker relationshipTracker) {
+    return enemyUnit(playerMovingOrAttacking, relationshipTracker)
         .and(unitIsBeingTransported().negate())
         .and(
             unitIsAaThatCanHitTheseUnits(

@@ -105,7 +105,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                             Matches.unitIsAaForBombingThisUnitOnly(),
                             round,
                             true,
-                            gameData)));
+                            gameData.getRelationshipTracker())));
     if (targets.isEmpty()) {
       defendingUnits = CollectionUtils.getMatches(battleSite.getUnits(), defenders);
     } else {
@@ -119,7 +119,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   Matches.unitIsAaForBombingThisUnitOnly(),
                   round,
                   true,
-                  gameData));
+                  gameData.getRelationshipTracker()));
       targets.addAll(this.targets.keySet());
       defendingUnits = targets;
     }
@@ -213,7 +213,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                     Matches.unitIsAaForBombingThisUnitOnly(),
                     round,
                     true,
-                    gameData));
+                    gameData.getRelationshipTracker()));
     aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // reverse since stacks are in reverse order
     Collections.reverse(aaTypes);
