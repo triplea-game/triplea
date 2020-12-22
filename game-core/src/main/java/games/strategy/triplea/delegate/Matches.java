@@ -2220,16 +2220,16 @@ public final class Matches {
   }
 
   public static Predicate<PoliticalActionAttachment> politicalActionAffectsAtLeastOneAlivePlayer(
-      final GamePlayer currentPlayer, final GameState data) {
+      final GamePlayer currentPlayer, final GameMap gameMap) {
     return paa -> {
       for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
           paa.getRelationshipChanges()) {
         final GamePlayer p1 = relationshipChange.player1;
         final GamePlayer p2 = relationshipChange.player2;
-        if (!currentPlayer.equals(p1) && p1.amNotDeadYet(data)) {
+        if (!currentPlayer.equals(p1) && p1.amNotDeadYet(gameMap)) {
           return true;
         }
-        if (!currentPlayer.equals(p2) && p2.amNotDeadYet(data)) {
+        if (!currentPlayer.equals(p2) && p2.amNotDeadYet(gameMap)) {
           return true;
         }
       }

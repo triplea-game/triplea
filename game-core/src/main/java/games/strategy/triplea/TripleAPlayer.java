@@ -250,7 +250,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       final String acceptanceQuestion,
       final boolean politics) {
     final GameState data = getGameData();
-    return !this.getGamePlayer().amNotDeadYet(data)
+    return !this.getGamePlayer().amNotDeadYet(data.getMap())
         || getPlayerBridge().isGameOver()
         || ui.acceptAction(
             playerSendingProposal,
