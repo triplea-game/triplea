@@ -774,7 +774,7 @@ public class MoveValidator {
       }
       for (final Territory t : route.getAllTerritories()) {
         if (!requiresUnitsToMoveList.stream()
-            .allMatch(Matches.unitHasRequiredUnitsToMove(t, data))) {
+            .allMatch(Matches.unitHasRequiredUnitsToMove(t, data.getRelationshipTracker()))) {
           return result.setErrorReturnResult(
               t.getName()
                   + " doesn't have the required units to allow moving the selected units into it");

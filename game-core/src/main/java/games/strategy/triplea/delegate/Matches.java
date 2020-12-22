@@ -1869,7 +1869,7 @@ public final class Matches {
 
   /** Check if unit meets requiredUnitsToMove criteria and can move into territory. */
   public static Predicate<Unit> unitHasRequiredUnitsToMove(
-      final Territory t, final GameState data) {
+      final Territory t, final RelationshipTracker relationshipTracker) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua == null
@@ -1879,7 +1879,7 @@ public final class Matches {
       }
 
       final Predicate<Unit> unitIsOwnedByAndNotDisabled =
-          isUnitAllied(unit.getOwner(), data.getRelationshipTracker()).and(unitIsNotDisabled());
+          isUnitAllied(unit.getOwner(), relationshipTracker).and(unitIsNotDisabled());
       final List<Unit> units =
           CollectionUtils.getMatches(t.getUnits(), unitIsOwnedByAndNotDisabled);
       for (final String[] array : ua.getRequiresUnitsToMove()) {
@@ -1901,7 +1901,8 @@ public final class Matches {
 
   public static Predicate<Territory> territoryHasRequiredUnitsToMove(
       final Collection<Unit> units, final GameState data) {
-    return t -> units.stream().allMatch(unitHasRequiredUnitsToMove(t, data));
+    return t ->
+        units.stream().allMatch(unitHasRequiredUnitsToMove(t, data.getRelationshipTracker()));
   }
 
   static Predicate<Territory> territoryIsBlockadeZone() {
