@@ -1007,7 +1007,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         case "enemy":
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         default:
           return false;
@@ -1096,13 +1097,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         case "enemy": // any enemy units in the territory
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         case "enemy_surface": // any enemy sea units (not trn/sub) in the territory
           allUnits.retainAll(
               CollectionUtils.getMatches(
                   allUnits,
-                  Matches.enemyUnitOfAnyOfThesePlayers(players, data)
+                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())
                       .and(Matches.unitIsSea())
                       .and(Matches.unitCanEvade().negate())
                       .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));

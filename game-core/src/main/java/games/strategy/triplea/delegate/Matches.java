@@ -1374,9 +1374,8 @@ public final class Matches {
   }
 
   public static Predicate<Unit> enemyUnitOfAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameState data) {
-    return unit ->
-        data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(unit.getOwner(), players);
+      final Collection<GamePlayer> players, final RelationshipTracker relationshipTracker) {
+    return unit -> relationshipTracker.isAtWarWithAnyOfThesePlayers(unit.getOwner(), players);
   }
 
   public static Predicate<Unit> unitOwnedBy(final GamePlayer player) {
