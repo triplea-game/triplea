@@ -234,7 +234,7 @@ public class MustFightBattle extends DependentBattle
     if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
       // allied air can not participate in the battle so set transportedBy on each allied air unit
       // and remove them from the attacking units
-      MoveValidator.carrierMustMoveWith(units, units, gameData, attacker)
+      MoveValidator.carrierMustMoveWith(units, units, gameData.getRelationshipTracker(), attacker)
           .forEach(
               (carrier, dependencies) -> {
                 final UnitAttachment ua = UnitAttachment.get(carrier.getType());
