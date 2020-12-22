@@ -558,10 +558,11 @@ public final class Matches {
     return t -> t.getUnitCollection().anyMatch(unitIsOwnedBy(player).and(unitIsCarrier()));
   }
 
-  public static Predicate<Unit> unitIsAlliedCarrier(final GamePlayer player, final GameState data) {
+  public static Predicate<Unit> unitIsAlliedCarrier(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return unit ->
         UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
-            && data.getRelationshipTracker().isAllied(player, unit.getOwner());
+            && relationshipTracker.isAllied(player, unit.getOwner());
   }
 
   public static Predicate<Unit> unitCanBeTransported() {

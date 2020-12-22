@@ -1557,7 +1557,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               CollectionUtils.getMatches(
                   possibleTerrs,
                   Matches.territoryHasUnitsThatMatch(
-                          Matches.unitIsAlliedCarrier(alliedPlayer, data))
+                          Matches.unitIsAlliedCarrier(alliedPlayer, data.getRelationshipTracker()))
                       .and(Matches.territoryIsWater())));
       availableWater.removeAll(battleTracker.getPendingBattleSites(false));
       // simple calculation, either we can take all the air, or we can't, nothing in the middle
@@ -1567,7 +1567,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final Territory t = waterIter.next();
         int carrierCapacity =
             AirMovementValidator.carrierCapacity(
-                t.getUnitCollection().getMatches(Matches.unitIsAlliedCarrier(alliedPlayer, data)),
+                t.getUnitCollection()
+                    .getMatches(
+                        Matches.unitIsAlliedCarrier(alliedPlayer, data.getRelationshipTracker())),
                 t);
         if (!t.equals(currentTerr)) {
           carrierCapacity -=

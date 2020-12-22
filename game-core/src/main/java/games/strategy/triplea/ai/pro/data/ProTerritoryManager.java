@@ -1002,7 +1002,8 @@ public class ProTerritoryManager {
         }
       }
       for (final Territory t : data.getMap().getTerritories()) {
-        if (t.getUnitCollection().anyMatch(Matches.unitIsAlliedCarrier(player, data))) {
+        if (t.getUnitCollection()
+            .anyMatch(Matches.unitIsAlliedCarrier(player, data.getRelationshipTracker()))) {
           possibleCarrierTerritories.add(t);
         }
       }
