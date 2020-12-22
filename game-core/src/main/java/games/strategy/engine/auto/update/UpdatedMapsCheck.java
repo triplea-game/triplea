@@ -118,12 +118,12 @@ class UpdatedMapsCheck {
 
     // Loop over all available maps, check if we have that map present by comparing
     // normalized names, if so, check versions and remember any that are out of date.
-    for (final Map.Entry<String, Version> availableMap :
-        availableToDownloadMapVersions.entrySet()) {
-      final String availableMapName = normalizeName(availableMap.getKey());
+    for (final Map.Entry<String, Version> installedMap : installedMapVersions.entrySet()) {
+      final String installedMapName = normalizeName(installedMap.getKey());
 
-      for (final Map.Entry<String, Version> installedMap : installedMapVersions.entrySet()) {
-        final String installedMapName = normalizeName(installedMap.getKey());
+      for (final Map.Entry<String, Version> availableMap :
+          availableToDownloadMapVersions.entrySet()) {
+        final String availableMapName = normalizeName(availableMap.getKey());
         if (installedMapName.equals(availableMapName)) {
 
           if (availableMap.getValue().isGreaterThan(installedMap.getValue())) {
