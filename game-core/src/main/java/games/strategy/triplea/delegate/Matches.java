@@ -1030,14 +1030,17 @@ public final class Matches {
   }
 
   public static Predicate<Territory> airCanFlyOver(
-      final GamePlayer player, final GameState data, final boolean areNeutralsPassableByAir) {
+      final GamePlayer player,
+      final GameProperties properties,
+      final RelationshipTracker relationshipTracker,
+      final boolean areNeutralsPassableByAir) {
     return t -> {
       if (!areNeutralsPassableByAir && territoryIsNeutralButNotWater().test(t)) {
         return false;
       }
-      return territoryIsPassableAndNotRestricted(player, data.getProperties()).test(t)
+      return territoryIsPassableAndNotRestricted(player, properties).test(t)
           && !(territoryIsLand().test(t)
-              && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()));
+              && !relationshipTracker.canMoveAirUnitsOverOwnedLand(player, t.getOwner()));
     };
   }
 

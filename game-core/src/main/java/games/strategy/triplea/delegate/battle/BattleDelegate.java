@@ -1535,7 +1535,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                     currentTerr,
                     strandedAir,
                     new BigDecimal(maxDistance),
-                    Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir)));
+                    Matches.airCanFlyOver(
+                        alliedPlayer,
+                        data.getProperties(),
+                        data.getRelationshipTracker(),
+                        areNeutralsPassableByAir)));
     final Iterator<Territory> possibleIter = possibleTerrs.iterator();
     while (possibleIter.hasNext()) {
       final Route route =
@@ -1543,7 +1547,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               .getRouteForUnit(
                   currentTerr,
                   possibleIter.next(),
-                  Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir),
+                  Matches.airCanFlyOver(
+                      alliedPlayer,
+                      data.getProperties(),
+                      data.getRelationshipTracker(),
+                      areNeutralsPassableByAir),
                   strandedAir,
                   alliedPlayer);
       if ((route == null)
