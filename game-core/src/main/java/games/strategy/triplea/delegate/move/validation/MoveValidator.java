@@ -1805,7 +1805,8 @@ public class MoveValidator {
 
     // These are the conditions we would like the route to satisfy, starting with the most important
     final Predicate<Territory> hasRequiredUnitsToMove =
-        Matches.territoryHasRequiredUnitsToMove(unitsWhichAreNotBeingTransportedOrDependent, data);
+        Matches.territoryHasRequiredUnitsToMove(
+            unitsWhichAreNotBeingTransportedOrDependent, data.getRelationshipTracker());
     final Predicate<Territory> notEnemyOwned =
         Matches.isTerritoryEnemy(player, data.getRelationshipTracker())
             .negate()

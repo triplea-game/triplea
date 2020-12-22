@@ -1900,9 +1900,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasRequiredUnitsToMove(
-      final Collection<Unit> units, final GameState data) {
-    return t ->
-        units.stream().allMatch(unitHasRequiredUnitsToMove(t, data.getRelationshipTracker()));
+      final Collection<Unit> units, final RelationshipTracker relationshipTracker) {
+    return t -> units.stream().allMatch(unitHasRequiredUnitsToMove(t, relationshipTracker));
   }
 
   static Predicate<Territory> territoryIsBlockadeZone() {
