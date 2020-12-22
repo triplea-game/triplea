@@ -226,7 +226,8 @@ public class RocketsFireHelper implements Serializable {
 
     final Set<Territory> hasFactory = new HashSet<>();
     final Predicate<Territory> allowed =
-        PredicateBuilder.of(Matches.territoryAllowsRocketsCanFlyOver(player, data))
+        PredicateBuilder.of(
+                Matches.territoryAllowsRocketsCanFlyOver(player, data.getRelationshipTracker()))
             .andIf(
                 !Properties.getRocketsCanFlyOverImpassables(data.getProperties()),
                 Matches.territoryIsNotImpassable())

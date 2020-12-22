@@ -2258,7 +2258,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryAllowsRocketsCanFlyOver(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return t -> {
       if (!territoryIsLand().test(t)) {
         return true;
@@ -2267,8 +2267,7 @@ public final class Matches {
       if (owner == null || owner.isNull()) {
         return true;
       }
-      final RelationshipTracker rt = data.getRelationshipTracker();
-      return rt.rocketsCanFlyOver(player, owner);
+      return relationshipTracker.rocketsCanFlyOver(player, owner);
     };
   }
 
