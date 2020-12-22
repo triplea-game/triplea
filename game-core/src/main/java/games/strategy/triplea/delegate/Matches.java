@@ -877,9 +877,11 @@ public final class Matches {
    * will also remove any contested territories.
    */
   public static Predicate<Territory> territoryCanCollectIncomeFrom(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player,
+      final GameProperties properties,
+      final RelationshipTracker relationshipTracker) {
     final boolean contestedDoNotProduce =
-        Properties.getContestedTerritoriesProduceNoIncome(data.getProperties());
+        Properties.getContestedTerritoriesProduceNoIncome(properties);
     return t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (ta == null) {
@@ -899,7 +901,7 @@ public final class Matches {
         // Determine if at least one part of the convoy route is owned by us or an ally
         boolean atLeastOne = false;
         for (final Territory convoy : ta.getConvoyAttached()) {
-          if (data.getRelationshipTracker().isAllied(convoy.getOwner(), player)
+          if (relationshipTracker.isAllied(convoy.getOwner(), player)
               && TerritoryAttachment.get(convoy).getConvoyRoute()) {
             atLeastOne = true;
           }
@@ -909,7 +911,7 @@ public final class Matches {
         }
       }
       return !(contestedDoNotProduce
-          && !territoryHasNoEnemyUnits(player, data.getRelationshipTracker()).test(t));
+          && !territoryHasNoEnemyUnits(player, relationshipTracker).test(t));
     };
   }
 
