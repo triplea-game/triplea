@@ -461,7 +461,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
                     .getMatches(
                         damagedUnitsOwned.and(
                             Matches.unitCanBeRepairedByFacilitiesInItsTerritory(
-                                current, player, data))));
+                                current, player, data.getRelationshipTracker(), data.getMap()))));
       }
       if (!damaged.isEmpty()) {
         damagedMap.put(current, damaged);

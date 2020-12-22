@@ -1665,10 +1665,12 @@ public final class Matches {
    *
    * @param territory referring territory
    * @param player referring player
-   * @param data game data
    */
   public static Predicate<Unit> unitCanBeRepairedByFacilitiesInItsTerritory(
-      final Territory territory, final GamePlayer player, final GameState data) {
+      final Territory territory,
+      final GamePlayer player,
+      final RelationshipTracker relationshipTracker,
+      final GameMap gameMap) {
     return damagedUnit -> {
       final Predicate<Unit> damaged =
           unitHasMoreThanOneHitPointTotal().and(unitHasTakenSomeDamage());
@@ -1676,7 +1678,7 @@ public final class Matches {
         return false;
       }
       final Predicate<Unit> repairUnit =
-          alliedUnit(player, data.getRelationshipTracker())
+          alliedUnit(player, relationshipTracker)
               .and(unitCanRepairOthers())
               .and(unitCanRepairThisUnit(damagedUnit, territory));
       if (territory.getUnitCollection().anyMatch(repairUnit)) {
@@ -1684,10 +1686,10 @@ public final class Matches {
       }
       if (unitIsSea().test(damagedUnit)) {
         final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
+            new ArrayList<>(gameMap.getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitLand =
-              alliedUnit(player, data.getRelationshipTracker())
+              alliedUnit(player, relationshipTracker)
                   .and(unitCanRepairOthers())
                   .and(unitCanRepairThisUnit(damagedUnit, current))
                   .and(unitIsLand());
@@ -1697,10 +1699,10 @@ public final class Matches {
         }
       } else if (unitIsLand().test(damagedUnit)) {
         final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsWater()));
+            new ArrayList<>(gameMap.getNeighbors(territory, territoryIsWater()));
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitSea =
-              alliedUnit(player, data.getRelationshipTracker())
+              alliedUnit(player, relationshipTracker)
                   .and(unitCanRepairOthers())
                   .and(unitCanRepairThisUnit(damagedUnit, current))
                   .and(unitIsSea());
