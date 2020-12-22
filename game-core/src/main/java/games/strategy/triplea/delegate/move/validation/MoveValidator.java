@@ -796,7 +796,8 @@ public class MoveValidator {
     for (final Territory t : route.getSteps()) {
       final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)
-          || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(data, player))) {
+          || t.getUnitCollection()
+              .anyMatch(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))) {
         for (final Unit unit : unitsWithStackingLimits) {
           final UnitType ut = unit.getType();
           int maxAllowed =
@@ -1182,7 +1183,8 @@ public class MoveValidator {
       final boolean subsPreventUnescortedAmphibAssaults =
           Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data.getProperties());
       final Predicate<Unit> enemySubMatch =
-          Matches.unitIsEnemyOf(data, player).and(Matches.unitCanBeMovedThroughByEnemies());
+          Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
+              .and(Matches.unitCanBeMovedThroughByEnemies());
       final Predicate<Unit> ownedSeaNonTransportMatch =
           Matches.unitIsOwnedBy(player)
               .and(Matches.unitIsSea())

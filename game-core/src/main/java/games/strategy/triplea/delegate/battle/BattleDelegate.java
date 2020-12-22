@@ -647,7 +647,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               .map(Unit::getOwner)
               .map(
                   p ->
-                      Matches.unitIsEnemyOf(data, p)
+                      Matches.unitIsEnemyOf(data.getRelationshipTracker(), p)
                           .and(Matches.unitIsNotAir())
                           .and(Matches.unitIsNotInfrastructure()))
               .map(territory.getUnitCollection()::getMatches)

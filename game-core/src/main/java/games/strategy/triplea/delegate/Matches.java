@@ -245,8 +245,9 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getDefense(unit.getOwner()) >= defendValue;
   }
 
-  public static Predicate<Unit> unitIsEnemyOf(final GameState data, final GamePlayer player) {
-    return unit -> data.getRelationshipTracker().isAtWar(unit.getOwner(), player);
+  public static Predicate<Unit> unitIsEnemyOf(
+      final RelationshipTracker relationshipTracker, final GamePlayer player) {
+    return unit -> relationshipTracker.isAtWar(unit.getOwner(), player);
   }
 
   public static Predicate<Unit> unitIsNotSea() {
