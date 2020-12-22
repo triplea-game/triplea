@@ -480,7 +480,10 @@ public class WeakAi extends AbstractBuiltInAi {
         @Nullable
         Route newRoute =
             Utils.findNearest(
-                t, Matches.territoryHasEnemyLandUnits(player, data), routeCondition, data);
+                t,
+                Matches.territoryHasEnemyLandUnits(player, data.getRelationshipTracker()),
+                routeCondition,
+                data);
         // move to any enemy territory
         if (newRoute == null) {
           newRoute =
@@ -685,7 +688,10 @@ public class WeakAi extends AbstractBuiltInAi {
             // 2) we can potentially attack another territory
             if (!owned.isWater()
                 && data.getMap()
-                        .getNeighbors(owned, Matches.territoryHasEnemyLandUnits(player, data))
+                        .getNeighbors(
+                            owned,
+                            Matches.territoryHasEnemyLandUnits(
+                                player, data.getRelationshipTracker()))
                         .size()
                     > 1) {
               units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units);
