@@ -271,7 +271,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     if (steps.isEmpty()
         || !steps.stream()
-            .allMatch(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
+            .allMatch(
+                Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(
+                    player, data.getRelationshipTracker()))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
     final boolean someLand = airborne.stream().anyMatch(Matches.unitIsLand());
