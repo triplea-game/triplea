@@ -974,14 +974,15 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
-      final GameState data, final GamePlayer player, final Predicate<Unit> unitMatch) {
+      final RelationshipTracker relationshipTracker,
+      final GamePlayer player,
+      final Predicate<Unit> unitMatch) {
     return t -> {
-      if (!data.getRelationshipTracker().isAtWar(player, t.getOwner())) {
+      if (!relationshipTracker.isAtWar(player, t.getOwner())) {
         return false;
       }
       return !t.getOwner().isNull()
-          && t.getUnitCollection()
-              .anyMatch(enemyUnit(player, data.getRelationshipTracker()).and(unitMatch));
+          && t.getUnitCollection().anyMatch(enemyUnit(player, relationshipTracker).and(unitMatch));
     };
   }
 

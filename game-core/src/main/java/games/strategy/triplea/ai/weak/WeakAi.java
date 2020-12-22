@@ -712,7 +712,7 @@ public class WeakAi extends AbstractBuiltInAi {
       final GameState data, final GamePlayer player) {
     final Predicate<Territory> enemyFactory =
         Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
-            data, player, Matches.unitCanProduceUnitsAndCanBeDamaged());
+            data.getRelationshipTracker(), player, Matches.unitCanProduceUnitsAndCanBeDamaged());
     final Predicate<Unit> ownBomber =
         Matches.unitIsStrategicBomber().and(Matches.unitIsOwnedBy(player));
     final var moves = new ArrayList<MoveDescription>();

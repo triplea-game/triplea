@@ -669,7 +669,7 @@ public class ProCombatMoveAi {
               .getNeighbors(
                   t,
                   Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
-                      data,
+                      data.getRelationshipTracker(),
                       player,
                       Matches.unitIsLand()
                           .and(Matches.unitIsNotInfrastructure())
