@@ -1744,13 +1744,15 @@ public final class Matches {
    *
    * @param territory referring territory
    * @param player referring player
-   * @param data game data
    */
   public static Predicate<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-      final Territory territory, final GamePlayer player, final GameState data) {
+      final Territory territory,
+      final GamePlayer player,
+      final RelationshipTracker relationshipTracker,
+      final GameMap gameMap) {
     return unitWhichWillGetBonus -> {
       final Predicate<Unit> givesBonusUnit =
-          alliedUnit(player, data.getRelationshipTracker())
+          alliedUnit(player, relationshipTracker)
               .and(unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
       if (territory.getUnitCollection().anyMatch(givesBonusUnit)) {
         return true;
@@ -1758,7 +1760,7 @@ public final class Matches {
       if (unitIsSea().test(unitWhichWillGetBonus)) {
         final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(unitIsLand());
         final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
+            new ArrayList<>(gameMap.getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
           if (current.getUnitCollection().anyMatch(givesBonusUnitLand)) {
             return true;

@@ -779,7 +779,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(mySeaUnit)) {
             range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
@@ -1027,7 +1027,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(myAirUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(myAirUnit)) {
             range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
@@ -1155,7 +1155,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           movesLeft = UnitAttachment.get(myTransportUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(myTransportUnit)) {
             movesLeft++; // assumes bonus of +1 for now
           }
@@ -1363,7 +1363,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(mySeaUnit)) {
             range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
