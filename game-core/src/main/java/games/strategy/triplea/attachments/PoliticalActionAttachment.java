@@ -174,12 +174,12 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       final GamePlayer player,
       final Map<ICondition, Boolean> testedConditions,
       final GameState data) {
-    if (!Properties.getUsePolitics(data.getProperties()) || !player.amNotDeadYet(data)) {
+    if (!Properties.getUsePolitics(data.getProperties()) || !player.amNotDeadYet(data.getMap())) {
       return new ArrayList<>();
     }
     return CollectionUtils.getMatches(
         getPoliticalActionAttachments(player),
-        Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)
+        Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data.getMap())
             .and(Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
 

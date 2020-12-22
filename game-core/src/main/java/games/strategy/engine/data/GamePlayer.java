@@ -176,8 +176,8 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
    * If I have no units with movement, And I own zero factories or have have no owned land, then I
    * am basically dead, and therefore should not participate in things like politics.
    */
-  public boolean amNotDeadYet(final GameState data) {
-    for (final Territory t : data.getMap().getTerritories()) {
+  public boolean amNotDeadYet(final GameMap gameMap) {
+    for (final Territory t : gameMap.getTerritories()) {
       if (t.getUnitCollection()
           .anyMatch(
               Matches.unitIsOwnedBy(this)
