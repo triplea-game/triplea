@@ -185,7 +185,8 @@ final class ProTechAi {
                 enemyPlayer,
                 data,
                 enemyShip,
-                Matches.territoryIsBlockedSea(enemyPlayer, data),
+                Matches.territoryIsBlockedSea(
+                    enemyPlayer, data.getProperties(), data.getRelationshipTracker()),
                 r,
                 true);
         secondStrength = strength(ships, true, true, transportsFirst);

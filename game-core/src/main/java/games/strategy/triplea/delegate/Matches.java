@@ -1597,14 +1597,16 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsBlockedSea(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player,
+      final GameProperties properties,
+      final RelationshipTracker relationshipTracker) {
     final Predicate<Unit> transport =
         unitIsTransportButNotCombatTransport().negate().and(unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(unitIsInfrastructure().negate())
-            .and(alliedUnit(player, data.getRelationshipTracker()).negate())
+            .and(alliedUnit(player, relationshipTracker).negate())
             .and(unitCanBeMovedThroughByEnemies().negate())
-            .andIf(Properties.getIgnoreTransportInMovement(data.getProperties()), transport)
+            .andIf(Properties.getIgnoreTransportInMovement(properties), transport)
             .build();
     return territoryHasUnitsThatMatch(unitCond).negate().and(territoryIsWater());
   }
