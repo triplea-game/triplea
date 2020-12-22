@@ -1435,8 +1435,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasAlliedUnits(
-      final GamePlayer player, final GameState data) {
-    return t -> t.getUnitCollection().anyMatch(alliedUnit(player, data.getRelationshipTracker()));
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> t.getUnitCollection().anyMatch(alliedUnit(player, relationshipTracker));
   }
 
   static Predicate<Territory> territoryHasNonSubmergedEnemyUnits(

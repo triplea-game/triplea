@@ -1062,7 +1062,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           CollectionUtils.getMatches(neighbors, alliedLandTerritories);
       // Get all sea territories where there are allies
       final Predicate<Territory> neighboringSeaZonesWithAlliedUnits =
-          Matches.territoryIsWater().and(Matches.territoryHasAlliedUnits(defender, data));
+          Matches.territoryIsWater().and(Matches.territoryHasAlliedUnits(defender, data.getRelationshipTracker()));
       // Get those that are neighbors
       final Collection<Territory> areSeaNeighbors =
           CollectionUtils.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
