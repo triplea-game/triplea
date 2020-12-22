@@ -1454,10 +1454,9 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasEnemySeaUnits(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return t ->
-        t.getUnitCollection()
-            .anyMatch(enemyUnit(player, data.getRelationshipTracker()).and(unitIsSea()));
+        t.getUnitCollection().anyMatch(enemyUnit(player, relationshipTracker).and(unitIsSea()));
   }
 
   public static Predicate<Territory> territoryHasEnemyUnits(
