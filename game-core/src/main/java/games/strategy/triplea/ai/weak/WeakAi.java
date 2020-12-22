@@ -509,7 +509,7 @@ public class WeakAi extends AbstractBuiltInAi {
         Matches.isTerritoryAllied(player, data.getRelationshipTracker())
             .and(o -> !delegate.getBattleTracker().wasConquered(o));
     final Predicate<Territory> routeCondition =
-        Matches.territoryHasEnemyAaForFlyOver(player, data)
+        Matches.territoryHasEnemyAaForFlyOver(player, data.getRelationshipTracker())
             .negate()
             .and(Matches.territoryIsImpassable().negate());
     final var moves = new ArrayList<MoveDescription>();
@@ -722,7 +722,7 @@ public class WeakAi extends AbstractBuiltInAi {
         continue;
       }
       final Predicate<Territory> routeCond =
-          Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
+          Matches.territoryHasEnemyAaForFlyOver(player, data.getRelationshipTracker()).negate();
       final @Nullable Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
       if (bombRoute != null) {
         moves.add(new MoveDescription(bombers, bombRoute));

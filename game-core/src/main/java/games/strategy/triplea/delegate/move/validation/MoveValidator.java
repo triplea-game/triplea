@@ -1809,7 +1809,8 @@ public class MoveValidator {
                     .negate());
     final Predicate<Territory> noEnemyUnits =
         Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker());
-    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
+    final Predicate<Territory> noAa =
+        Matches.territoryHasEnemyAaForFlyOver(player, data.getRelationshipTracker()).negate();
     final List<Predicate<Territory>> prioritizedMovePreferences =
         new ArrayList<>(
             List.of(

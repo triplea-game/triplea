@@ -1280,8 +1280,8 @@ public final class Matches {
   }
 
   private static Predicate<Unit> unitIsEnemyAaForFlyOver(
-      final GamePlayer player, final GameState data) {
-    return unitIsAaForFlyOverOnly().and(enemyUnit(player, data.getRelationshipTracker()));
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return unitIsAaForFlyOverOnly().and(enemyUnit(player, relationshipTracker));
   }
 
   public static Predicate<Unit> unitIsInTerritory(final Territory territory) {
@@ -1425,8 +1425,9 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasEnemyAaForFlyOver(
-      final GamePlayer player, final GameState data) {
-    return t -> t.getUnitCollection().anyMatch(unitIsEnemyAaForFlyOver(player, data));
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t ->
+        t.getUnitCollection().anyMatch(unitIsEnemyAaForFlyOver(player, relationshipTracker));
   }
 
   public static Predicate<Territory> territoryHasNoEnemyUnits(

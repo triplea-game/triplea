@@ -72,7 +72,7 @@ public final class ProMatches {
   public static Predicate<Territory> territoryCanMoveAirUnitsAndNoAa(
       final GamePlayer player, final GameState data, final boolean isCombatMove) {
     return ProMatches.territoryCanMoveAirUnits(player, data, isCombatMove)
-        .and(Matches.territoryHasEnemyAaForFlyOver(player, data).negate());
+        .and(Matches.territoryHasEnemyAaForFlyOver(player, data.getRelationshipTracker()).negate());
   }
 
   public static Predicate<Territory> territoryCanMoveSpecificLandUnit(
