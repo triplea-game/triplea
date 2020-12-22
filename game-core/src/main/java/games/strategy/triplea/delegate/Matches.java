@@ -2175,10 +2175,10 @@ public final class Matches {
   }
 
   static Predicate<GamePlayer> isAlliedAndAlliancesCanChainTogether(
-      final GamePlayer player, final GameState data) {
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return player2 ->
         relationshipTypeIsAlliedAndAlliancesCanChainTogether()
-            .test(data.getRelationshipTracker().getRelationshipType(player, player2));
+            .test(relationshipTracker.getRelationshipType(player, player2));
   }
 
   public static Predicate<RelationshipType> relationshipTypeIsAlliedAndAlliancesCanChainTogether() {

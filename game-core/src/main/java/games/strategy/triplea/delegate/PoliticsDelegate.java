@@ -200,12 +200,13 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       playersWhoNeedToAccept.addAll(
           CollectionUtils.getMatches(
               data.getPlayerList().getPlayers(),
-              Matches.isAlliedAndAlliancesCanChainTogether(player, data)));
+              Matches.isAlliedAndAlliancesCanChainTogether(player, data.getRelationshipTracker())));
       for (final GamePlayer player : paa.getActionAccept()) {
         playersWhoNeedToAccept.addAll(
             CollectionUtils.getMatches(
                 data.getPlayerList().getPlayers(),
-                Matches.isAlliedAndAlliancesCanChainTogether(player, data)));
+                Matches.isAlliedAndAlliancesCanChainTogether(
+                    player, data.getRelationshipTracker())));
       }
       playersWhoNeedToAccept.removeAll(paa.getActionAccept());
       for (final GamePlayer player : playersWhoNeedToAccept) {
@@ -466,7 +467,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final Collection<GamePlayer> players = data.getPlayerList().getPlayers();
     final Collection<GamePlayer> p1AlliedWith =
         CollectionUtils.getMatches(
-            players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
+            players,
+            Matches.isAlliedAndAlliancesCanChainTogether(player, data.getRelationshipTracker()));
     p1AlliedWith.remove(player);
     final CompositeChange change = new CompositeChange();
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
@@ -522,7 +524,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final Collection<GamePlayer> players = data.getPlayerList().getPlayers();
     final Collection<GamePlayer> p1AlliedWith =
         CollectionUtils.getMatches(
-            players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
+            players,
+            Matches.isAlliedAndAlliancesCanChainTogether(player, data.getRelationshipTracker()));
     final CompositeChange change = new CompositeChange();
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
         paa.getRelationshipChanges()) {
@@ -539,7 +542,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
           && Matches.relationshipTypeIsAtWar().negate().test(newType)) {
         final Collection<GamePlayer> otherPlayersAlliedWith =
             CollectionUtils.getMatches(
-                players, Matches.isAlliedAndAlliancesCanChainTogether(otherPlayer, data));
+                players,
+                Matches.isAlliedAndAlliancesCanChainTogether(
+                    otherPlayer, data.getRelationshipTracker()));
         if (!otherPlayersAlliedWith.contains(otherPlayer)) {
           otherPlayersAlliedWith.add(otherPlayer);
         }
@@ -599,11 +604,13 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       final Set<GamePlayer> p1NewAllies = new HashSet<>();
       final Collection<GamePlayer> p1AlliedWith =
           CollectionUtils.getMatches(
-              players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
+              players,
+              Matches.isAlliedAndAlliancesCanChainTogether(p1, data.getRelationshipTracker()));
       for (final GamePlayer p2 : p1AlliedWith) {
         p1NewAllies.addAll(
             CollectionUtils.getMatches(
-                players, Matches.isAlliedAndAlliancesCanChainTogether(p2, data)));
+                players,
+                Matches.isAlliedAndAlliancesCanChainTogether(p2, data.getRelationshipTracker())));
       }
       p1NewAllies.removeAll(p1AlliedWith);
       p1NewAllies.remove(p1);
@@ -636,7 +643,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
           CollectionUtils.getMatches(players, Matches.isAtWar(p1, data.getRelationshipTracker()));
       final Collection<GamePlayer> p1AlliedWith =
           CollectionUtils.getMatches(
-              players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
+              players,
+              Matches.isAlliedAndAlliancesCanChainTogether(p1, data.getRelationshipTracker()));
       for (final GamePlayer p2 : p1AlliedWith) {
         p1NewWar.addAll(
             CollectionUtils.getMatches(
