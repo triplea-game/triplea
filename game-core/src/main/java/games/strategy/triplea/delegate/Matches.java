@@ -2039,10 +2039,10 @@ public final class Matches {
         data.getRelationshipTypeList().getRelationshipType(relationshipName) != null;
   }
 
-  public static Predicate<GamePlayer> isAtWar(final GamePlayer player, final GameState data) {
+  public static Predicate<GamePlayer> isAtWar(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return player2 ->
-        relationshipTypeIsAtWar()
-            .test(data.getRelationshipTracker().getRelationshipType(player, player2));
+        relationshipTypeIsAtWar().test(relationshipTracker.getRelationshipType(player, player2));
   }
 
   public static Predicate<GamePlayer> isAtWarWithAnyOfThesePlayers(

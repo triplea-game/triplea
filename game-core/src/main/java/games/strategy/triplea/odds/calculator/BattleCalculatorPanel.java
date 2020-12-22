@@ -1086,7 +1086,7 @@ class BattleCalculatorPanel extends JPanel {
         if (!location.isWater()) {
           defenderCombo.setSelectedItem(location.getOwner());
           for (final GamePlayer player : players) {
-            if (Matches.isAtWar(getDefender(), data).test(player)) {
+            if (Matches.isAtWar(getDefender(), data.getRelationshipTracker()).test(player)) {
               attackerCombo.setSelectedItem(player);
               break;
             }
@@ -1101,7 +1101,7 @@ class BattleCalculatorPanel extends JPanel {
             } else {
               attackerCombo.setSelectedItem(players.get(0));
               for (final GamePlayer player : players) {
-                if (Matches.isAtWar(getAttacker(), data).test(player)) {
+                if (Matches.isAtWar(getAttacker(), data.getRelationshipTracker()).test(player)) {
                   defenderCombo.setSelectedItem(player);
                   break;
                 }
