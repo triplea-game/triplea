@@ -2,19 +2,9 @@ package games.strategy.engine.framework.map.download;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.swing.SwingComponents;
-import org.triplea.util.Version;
 
 /** Controller for in-game map download actions. */
 @Slf4j

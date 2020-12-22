@@ -44,8 +44,6 @@ class UpdatedMapsCheck {
     return lastCheck.isBefore(cutOff);
   }
 
-
-
   /** Prompts user to download map updates if maps are out of date. */
   public static void checkDownloadedMapsAreLatest() {
     // {map name -> version}
@@ -70,24 +68,24 @@ class UpdatedMapsCheck {
 
   private static Map<String, Version> readMapPropertyFilesForInstalledMapVersions() {
     return
-        // get all .property files in the downloads folder
-        Arrays.stream(ClientFileSystemHelper.getUserMapsFolder().listFiles())
-            .filter(file -> file.getName().endsWith(".properties"))
-            // Read each property file to find map version
-            // Create map of {property file name -> optional<version>}
-            .collect(Collectors.toMap(File::getName, UpdatedMapsCheck::readVersionFromPropertyFile))
-            // loop back over the map
-            .entrySet()
-            .stream()
-            // Keep only entries that have a version (optional is present)
-            .filter(entry -> entry.getValue().isPresent())
-            // Now that all optionals are guaranteed to hold a value, unwrap them &
-            // normalize the map names.
-            // Convert from:
-            //     {property file name -> Optional<Version>}
-            //    to:
-            //     {property file name -> Version}
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get()));
+    // get all .property files in the downloads folder
+    Arrays.stream(ClientFileSystemHelper.getUserMapsFolder().listFiles())
+        .filter(file -> file.getName().endsWith(".zip.properties"))
+        // Read each property file to find map version
+        // Create map of {property file name -> optional<version>}
+        .collect(Collectors.toMap(File::getName, UpdatedMapsCheck::readVersionFromPropertyFile))
+        // loop back over the map
+        .entrySet()
+        .stream()
+        // Keep only entries that have a version (optional is present)
+        .filter(entry -> entry.getValue().isPresent())
+        // Now that all optionals are guaranteed to hold a value, unwrap them &
+        // normalize the map names.
+        // Convert from:
+        //     {property file name -> Optional<Version>}
+        //    to:
+        //     {property file name -> Version}
+        .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get()));
   }
 
   private static Optional<Version> readVersionFromPropertyFile(final File propertyFile) {
@@ -107,7 +105,8 @@ class UpdatedMapsCheck {
     }
   }
 
-  private static Collection<String> computeOutOfDateMaps(
+  @VisibleForTesting
+  static Collection<String> computeOutOfDateMaps(
       final Map<String, Version> installedMapVersions,
       final Map<String, Version> availableToDownloadMapVersions) {
 
@@ -139,8 +138,8 @@ class UpdatedMapsCheck {
    */
   private static String normalizeName(final String inputName) {
     String normalizedName = inputName;
-    if (inputName.endsWith(".properties")) {
-      normalizedName = inputName.substring(0, inputName.indexOf(".properties"));
+    if (inputName.endsWith(".zip.properties")) {
+      normalizedName = inputName.substring(0, inputName.indexOf(".zip.properties"));
     }
 
     normalizedName = normalizedName.replaceAll(" ", "_");

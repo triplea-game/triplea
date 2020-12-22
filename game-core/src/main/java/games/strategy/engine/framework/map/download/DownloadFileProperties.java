@@ -39,7 +39,6 @@ public class DownloadFileProperties {
     return downloadFileProperties;
   }
 
-
   void saveForZip(final File zipFile) {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.store(fos, null);
