@@ -45,8 +45,7 @@ public final class DebugMenu extends JMenu {
     menuCallbacks.put(name, callback);
   }
 
-  public static void unregisterMenuCallback(
-      final String name, final Function<TripleAFrame, Collection<JMenuItem>> callback) {
-    menuCallbacks.remove(name, callback);
+  public static void unregisterMenuCallback(final String name) {
+    menuCallbacks.remove(name);
   }
 }
