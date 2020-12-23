@@ -1,17 +1,23 @@
 package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.player.Player;
-import games.strategy.engine.player.PlayerDebug;
 import games.strategy.triplea.ai.pro.AbstractProAi;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.event.KeyEvent;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.function.Function;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import org.triplea.swing.SwingAction;
 
-final class DebugMenu extends JMenu {
+public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
+
+  private static final Map<String, Function<TripleAFrame, Collection<JMenuItem>>> menuCallbacks =
+      new TreeMap<>();
 
   DebugMenu(final TripleAFrame frame) {
     super("Debug");
@@ -26,16 +32,21 @@ final class DebugMenu extends JMenu {
           .setMnemonic(KeyEvent.VK_X);
     }
 
-    players.stream()
-        .filter(PlayerDebug.class::isInstance)
-        .forEach(
-            player -> {
-              final JMenu playerDebugMenu = new JMenu(player.getName());
-              add(playerDebugMenu);
-              ((PlayerDebug) player).addDebugMenuItems(frame).forEach(playerDebugMenu::add);
-            });
+    menuCallbacks.forEach(
+        (name, callback) -> {
+          final JMenu playerDebugMenu = new JMenu(name);
+          add(playerDebugMenu);
+          callback.apply(frame).forEach(playerDebugMenu::add);
+        });
+  }
 
-    add(SwingAction.of("Show Console", () -> ClientSetting.showConsole.setValueAndFlush(true)))
-        .setMnemonic(KeyEvent.VK_C);
+  public static void registerMenuCallback(
+      final String name, final Function<TripleAFrame, Collection<JMenuItem>> callback) {
+    menuCallbacks.put(name, callback);
+  }
+
+  public static void unregisterMenuCallback(
+      final String name, final Function<TripleAFrame, Collection<JMenuItem>> callback) {
+    menuCallbacks.remove(name, callback);
   }
 }
