@@ -67,7 +67,7 @@ class PlacementUnitsCollapsiblePanel {
         return false;
       }
 
-      if (GameStep.isPurchase(previousStep.getName())) {
+      if (GameStep.isPurchaseStep(previousStep.getName())) {
         return true;
       }
     }
