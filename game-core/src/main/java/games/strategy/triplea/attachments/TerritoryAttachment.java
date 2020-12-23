@@ -7,7 +7,9 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -61,10 +63,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static boolean doWeHaveEnoughCapitalsToProduce(
-      final GamePlayer player, final GameData data) {
-    final List<Territory> capitalsListOriginal = TerritoryAttachment.getAllCapitals(player, data);
+      final GamePlayer player, final GameMap gameMap) {
+    final List<Territory> capitalsListOriginal =
+        TerritoryAttachment.getAllCapitals(player, gameMap);
     final List<Territory> capitalsListOwned =
-        TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
+        TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, gameMap);
     final PlayerAttachment pa = PlayerAttachment.get(player);
 
     if (pa == null) {
@@ -78,19 +81,15 @@ public class TerritoryAttachment extends DefaultAttachment {
    * we find that we don't own. If a capital has no neighbor connections, it will be sent last.
    */
   public static @Nullable Territory getFirstOwnedCapitalOrFirstUnownedCapital(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     final List<Territory> noNeighborCapitals = new ArrayList<>();
-    for (final Territory current : data.getMap().getTerritories()) {
+    for (final Territory current : gameMap.getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final GamePlayer whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
-        if (whoseCapital == null) {
-          throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-        }
-        if (player.equals(whoseCapital)) {
+        if (player.getName().equals(ta.getCapital())) {
           if (player.equals(current.getOwner())) {
-            if (!data.getMap().getNeighbors(current).isEmpty()) {
+            if (!gameMap.getNeighbors(current).isEmpty()) {
               return current;
             }
             noNeighborCapitals.add(current);
@@ -114,16 +113,12 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /** will return empty list if none controlled, never returns null. */
-  public static List<Territory> getAllCapitals(final GamePlayer player, final GameData data) {
+  public static List<Territory> getAllCapitals(final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
-    for (final Territory current : data.getMap().getTerritories()) {
+    for (final Territory current : gameMap.getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final GamePlayer whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
-        if (whoseCapital == null) {
-          throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-        }
-        if (player.equals(whoseCapital)) {
+        if (player.getName().equals(ta.getCapital())) {
           capitals.add(current);
         }
       }
@@ -140,16 +135,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /** will return empty list if none controlled, never returns null. */
   public static List<Territory> getAllCurrentlyOwnedCapitals(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
-    for (final Territory current : data.getMap().getTerritories()) {
+    for (final Territory current : gameMap.getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final GamePlayer whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
-        if (whoseCapital == null) {
-          throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-        }
-        if (player.equals(whoseCapital) && player.equals(current.getOwner())) {
+        if (player.getName().equals(ta.getCapital()) && player.equals(current.getOwner())) {
           capitals.add(current);
         }
       }
@@ -287,7 +278,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return capital != null;
   }
 
-  public String getCapital() {
+  public @Nullable String getCapital() {
     return capital;
   }
 
@@ -491,7 +482,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       final String encodedCaptureOwnershipChange) {
     final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
     assert tokens.length == 2;
-    final GameData gameData = getData();
+    final GameState gameData = getData();
     return new CaptureOwnershipChange(
         gameData.getPlayerList().getPlayerId(tokens[0]),
         gameData.getPlayerList().getPlayerId(tokens[1]));
@@ -616,7 +607,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * route.
    */
   public static Collection<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
-      final Territory territory, final GameData data) {
+      final Territory territory, final GameState data) {
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta == null || !ta.getConvoyRoute()) {
       return new HashSet<>();
@@ -764,7 +755,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) {}
+  public void validate(final GameState data) {}
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {

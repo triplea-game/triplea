@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -61,7 +62,7 @@ final class UnitComparatorTest {
 
     @Test
     void unitsOfSameTypeAreSortedTogether() throws Exception {
-      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final GameState gameData = TestMapGameData.REVISED.getGameData();
 
       final List<Unit> units = new ArrayList<>();
       for (int i = 0; i < 10; i++) {

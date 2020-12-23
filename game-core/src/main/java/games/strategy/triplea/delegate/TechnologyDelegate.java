@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -125,7 +126,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (!Properties.getTechDevelopment(getData().getProperties())) {
       return false;
     }
-    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData())) {
+    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData().getMap())) {
       return false;
     }
     if (Properties.getWW2V3TechModel(getData().getProperties())) {
@@ -193,7 +194,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     int techHits;
     int remainder = 0;
     final int diceSides = data.getDiceSides();
-    if (BaseEditDelegate.getEditMode(data)) {
+    if (BaseEditDelegate.getEditMode(data.getProperties())) {
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(techRolls, diceSides, annotation, diceSides);
       techHits = getTechHits(random);
@@ -373,7 +374,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final String annotation = player.getName() + " rolling to see what tech advances are acquired";
     final int[] random;
     if (Properties.getSelectableTechRoll(getData().getProperties())
-        || BaseEditDelegate.getEditMode(getData())) {
+        || BaseEditDelegate.getEditMode(getData().getProperties())) {
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, annotation, available.size());
     } else {
@@ -410,7 +411,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return getAvailableTechs(bridge.getGamePlayer(), getData());
   }
 
-  public static List<TechAdvance> getAvailableTechs(final GamePlayer player, final GameData data) {
+  public static List<TechAdvance> getAvailableTechs(final GamePlayer player, final GameState data) {
     final Collection<TechAdvance> currentAdvances =
         TechTracker.getCurrentTechAdvances(player, data);
     final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);

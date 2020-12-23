@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -18,17 +18,17 @@ public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
 
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
-    final GameData data = getData();
+    final GameState data = getData();
     final PlayerList playerList = data.getPlayerList();
     final GamePlayer british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
     final GamePlayer japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
     // Quick check to see who still owns their own capital
     final boolean britain =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data)
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data.getMap())
             .getOwner()
             .equals(british);
     final boolean japan =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data)
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data.getMap())
             .getOwner()
             .equals(japanese);
     if (!gameOver) {

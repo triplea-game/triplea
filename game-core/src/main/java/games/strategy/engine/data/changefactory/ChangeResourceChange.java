@@ -1,8 +1,8 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 
@@ -33,7 +33,7 @@ class ChangeResourceChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameState data) {
     final Resource resource = data.getResourceList().getResource(resourceName);
     final ResourceCollection resources =
         data.getPlayerList().getPlayerId(playerName).getResources();

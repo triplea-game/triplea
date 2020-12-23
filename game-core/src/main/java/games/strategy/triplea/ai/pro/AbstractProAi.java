@@ -2,13 +2,14 @@ package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -49,7 +50,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
 /** Pro AI. */
-public abstract class AbstractProAi extends AbstractAi {
+public abstract class AbstractProAi extends AbstractBuiltInAi {
 
   private final ProOddsCalculator calc;
   @Getter private final ProData proData;
@@ -267,7 +268,7 @@ public abstract class AbstractProAi extends AbstractAi {
   protected void place(
       final boolean bid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameData data,
+      final GameState data,
       final GamePlayer player) {
     final long start = System.currentTimeMillis();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());

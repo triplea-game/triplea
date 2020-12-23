@@ -5,8 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class ProTerritoryValueUtilsTest {
-  private final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+  private final GameState gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
   private final Territory swUsa = territory("Southwestern United States", gameData);
   private final Territory england = territory("England", gameData);
   private final Territory northJapan = territory("Northern Japan", gameData);
@@ -78,7 +78,7 @@ public class ProTerritoryValueUtilsTest {
   @Test
   @DisplayName("checks the computation of the max land mass size on revised")
   void testFindMaxLandSizeRevised() {
-    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    final GameState gameData = TestMapGameData.REVISED.getGameData();
     for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
       assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(37));
     }
@@ -87,7 +87,7 @@ public class ProTerritoryValueUtilsTest {
   @Test
   @DisplayName("checks the computation of the max land mass size on minimap (single continent)")
   void testFindMaxLandSizeMinimap() {
-    final GameData gameData = TestMapGameData.MINIMAP.getGameData();
+    final GameState gameData = TestMapGameData.MINIMAP.getGameData();
     for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
       assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(14));
     }

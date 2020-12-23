@@ -102,7 +102,7 @@ class ProRetreatAi {
       Territory retreatTerritory = null;
       double maxStrength = Double.NEGATIVE_INFINITY;
       final Territory myCapital =
-          TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+          TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
       for (final Territory t : possibleTerritories) {
         if (t.equals(myCapital)) {
           retreatTerritory = t;

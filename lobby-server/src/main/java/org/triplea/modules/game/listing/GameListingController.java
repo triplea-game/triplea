@@ -1,12 +1,8 @@
 package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
-import es.moki.ratelimij.dropwizard.annotation.Rate;
-import es.moki.ratelimij.dropwizard.annotation.RateLimited;
-import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,9 +34,6 @@ public class GameListingController extends HttpController {
   }
 
   /** Returns a listing of the current games. */
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @GET
   @Path(GameListingClient.FETCH_GAMES_PATH)
   @RolesAllowed(UserRole.ANONYMOUS)
@@ -49,9 +42,6 @@ public class GameListingController extends HttpController {
   }
 
   /** Moderator action to remove a game. */
-  @RateLimited(
-      keys = {KeyPart.IP},
-      rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(GameListingClient.BOOT_GAME_PATH)
   @RolesAllowed(UserRole.MODERATOR)

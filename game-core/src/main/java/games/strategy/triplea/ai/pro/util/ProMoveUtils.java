@@ -3,11 +3,12 @@ package games.strategy.triplea.ai.pro.util;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
@@ -322,7 +323,7 @@ public final class ProMoveUtils {
       final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap) {
 
-    final GameData data = proData.getData();
+    final GameState data = proData.getData();
     final GameMap map = data.getMap();
 
     final var moves = new ArrayList<MoveDescription>();
@@ -376,7 +377,7 @@ public final class ProMoveUtils {
       final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap) {
 
-    final GameData data = proData.getData();
+    final GameState data = proData.getData();
     final GameMap map = data.getMap();
 
     final var moves = new ArrayList<MoveDescription>();
@@ -420,7 +421,7 @@ public final class ProMoveUtils {
    */
   public static void doMove(
       final ProData proData, final List<MoveDescription> moves, final IMoveDelegate moveDel) {
-    final GameData data = proData.getData();
+    final GameState data = proData.getData();
 
     // Group non-amphib units of the same type moving on the same route
     // TODO: #5499 Use MoveBatcher here - or ideally at the time the moves are being generated.
@@ -460,7 +461,7 @@ public final class ProMoveUtils {
                 + result);
       }
       if (!proData.isSimulation()) {
-        AbstractAi.movePause();
+        AbstractBuiltInAi.movePause();
       }
     }
   }

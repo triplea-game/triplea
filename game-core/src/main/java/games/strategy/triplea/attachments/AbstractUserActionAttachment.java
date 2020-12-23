@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -204,7 +205,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {
+  public void validate(final GameState data) throws GameParseException {
     if (text.trim().length() <= 0) {
       throw new GameParseException("value: text can't be empty" + thisErrorMsg());
     }

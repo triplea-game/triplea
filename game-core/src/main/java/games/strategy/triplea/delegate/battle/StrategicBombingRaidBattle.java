@@ -452,7 +452,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
+      final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData().getProperties());
       for (final String currentTypeAa : aaTypes) {
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
@@ -716,7 +716,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         return;
       }
       dice = new int[rollCount];
-      final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
+      final boolean isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
       if (isEditMode) {
         final String annotation =
             attacker.getName()

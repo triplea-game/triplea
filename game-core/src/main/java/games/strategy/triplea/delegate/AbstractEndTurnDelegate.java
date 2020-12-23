@@ -6,6 +6,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
@@ -51,8 +52,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   private boolean needToInitialize = true;
   private boolean hasPostedTurnSummary = false;
 
-  private static boolean canPlayerCollectIncome(final GamePlayer player, final GameData data) {
-    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
+  private static boolean canPlayerCollectIncome(final GamePlayer player, final GameMap gameMap) {
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, gameMap);
   }
 
   /**
@@ -100,7 +101,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     hasPostedTurnSummary = false;
     final PlayerAttachment pa = PlayerAttachment.get(player);
     // can't collect unless you own your own capital
-    if (!canPlayerCollectIncome(player, data)) {
+    if (!canPlayerCollectIncome(player, data.getMap())) {
       endTurnReport.append(rollWarBondsForFriends(bridge, player, data));
       // we do not collect any income this turn
     } else {
@@ -282,7 +283,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private int rollWarBonds(
-      final IDelegateBridge delegateBridge, final GamePlayer player, final GameData data) {
+      final IDelegateBridge delegateBridge, final GamePlayer player, final GameState data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -303,7 +304,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private String rollWarBondsForFriends(
-      final IDelegateBridge delegateBridge, final GamePlayer player, final GameData data) {
+      final IDelegateBridge delegateBridge, final GamePlayer player, final GameState data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -328,7 +329,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       // if both are zero, then it must mean we did not share our war bonds tech with them, even
       // though we are sharing
       // all tech (because they cannot have this tech)
-      if (diceSides <= 0 && diceCount <= 0 && canPlayerCollectIncome(p, data)) {
+      if (diceSides <= 0 && diceCount <= 0 && canPlayerCollectIncome(p, data.getMap())) {
         giveWarBondsTo = p;
         break;
       }
@@ -438,7 +439,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   /** Returns the total production value of the specified territories. */
-  public static int getProduction(final Collection<Territory> territories, final GameData data) {
+  public static int getProduction(final Collection<Territory> territories, final GameState data) {
     int value = 0;
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);
@@ -456,7 +457,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   // finds losses due to blockades, positive value returned.
   private int getBlockadeProductionLoss(
       final GamePlayer player,
-      final GameData data,
+      final GameState data,
       final IDelegateBridge bridge,
       final StringBuilder endTurnReport) {
     final PlayerAttachment playerRules = PlayerAttachment.get(player);

@@ -29,7 +29,7 @@ import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.message.RemoteName;
@@ -109,7 +109,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   private ChatModel chatModel;
   private Runnable chatModelCancel;
   private ChatController chatController;
-  private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
+  private final Map<String, PlayerTypes.Type> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
@@ -306,7 +306,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     remoteModelListener = Optional.ofNullable(listener).orElse(IRemoteModelListener.NULL_LISTENER);
   }
 
-  public synchronized void setLocalPlayerType(final String player, final PlayerType type) {
+  public synchronized void setLocalPlayerType(final String player, final PlayerTypes.Type type) {
     localPlayerTypes.put(player, type);
   }
 
@@ -321,10 +321,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
         for (final GamePlayer player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
-          if (!HeadlessGameServer.headless()) {
+          if (HeadlessGameServer.headless()) {
             if (player.getIsDisabled()) {
               playersToNodeListing.put(name, messengers.getLocalNode().getName());
-              localPlayerTypes.put(name, PlayerType.WEAK_AI);
+              localPlayerTypes.put(name, PlayerTypes.WEAK_AI);
             } else {
               // we generally do not want a headless host bot to be doing any AI turns, since that
               // is taxing on the system
@@ -545,7 +545,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         if (enabled) {
           playersToNodeListing.put(playerName, null);
         } else {
-          localPlayerTypes.put(playerName, PlayerType.WEAK_AI);
+          localPlayerTypes.put(playerName, PlayerTypes.WEAK_AI);
         }
       }
     }
@@ -670,14 +670,15 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     removeConnectionsLatch = null;
   }
 
-  private Map<String, PlayerType> getLocalPlayerTypes() {
+  private Map<String, PlayerTypes.Type> getLocalPlayerTypes() {
     if (data == null) {
       return Map.of();
     }
 
-    final Map<String, PlayerType> localPlayerMappings = new HashMap<>();
+    final Map<String, PlayerTypes.Type> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerType defaultLocalType = ui == null ? PlayerType.WEAK_AI : PlayerType.HUMAN_PLAYER;
+    final PlayerTypes.Type defaultLocalType =
+        ui == null ? PlayerTypes.WEAK_AI : PlayerTypes.HUMAN_PLAYER;
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();

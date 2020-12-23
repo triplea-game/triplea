@@ -1,7 +1,7 @@
 package games.strategy.triplea.printgenerator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ class PuInfo {
   private final Map<GamePlayer, Map<Resource, Integer>> infoMap = new HashMap<>();
 
   void saveToFile(final PrintGenerationData printData) {
-    final GameData gameData = printData.getData();
+    final GameState gameData = printData.getData();
     for (final GamePlayer currentPlayer : gameData.getPlayerList()) {
       infoMap.put(
           currentPlayer,

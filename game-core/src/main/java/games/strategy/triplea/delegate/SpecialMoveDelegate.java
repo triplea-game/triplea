@@ -5,6 +5,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -95,7 +96,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     if (!allowAirborne(player, getData())) {
       return "No Airborne Movement Allowed Yet";
     }
-    final GameData data = getData();
+    final GameState data = getData();
     final Collection<Unit> units = move.getUnits();
     final Route route = move.getRoute();
     // there reason we use this, is because if we are in edit mode, we may have a different unit
@@ -313,7 +314,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Predicate<Unit> getAirborneBaseMatch(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return getAirborneMatch(
         TechAbilityAttachment.getAirborneBases(player, data),
         data.getRelationshipTracker().getAllies(player, true));
@@ -332,7 +333,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       final int initialNewNumberLaunched,
       final Collection<Unit> bases,
       final GamePlayer player,
-      final GameData data) {
+      final GameState data) {
     final CompositeChange launchedChange = new CompositeChange();
     int newNumberLaunched = initialNewNumberLaunched;
     if (newNumberLaunched <= 0) {
@@ -357,7 +358,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return launchedChange;
   }
 
-  private static boolean allowAirborne(final GamePlayer player, final GameData data) {
+  private static boolean allowAirborne(final GamePlayer player, final GameState data) {
     if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
       return false;
     }
@@ -378,8 +379,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return !territoriesWeCanLaunchFrom.isEmpty();
   }
 
-  private static boolean getEditMode(final GameData data) {
-    return BaseEditDelegate.getEditMode(data);
+  private static boolean getEditMode(final GameState data) {
+    return BaseEditDelegate.getEditMode(data.getProperties());
   }
 
   @Override

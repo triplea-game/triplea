@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.gameparser.GameParseException;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class AbstractConditionsAttachmentTest {
         private static final long serialVersionUID = -40443726954483090L;
 
         @Override
-        public void validate(final GameData data) {}
+        public void validate(final GameState data) {}
       };
 
   @Test

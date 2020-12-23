@@ -376,7 +376,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     disabled = value;
   }
 
-  private void setTransportedBy(final Unit transportedBy) {
+  @VisibleForTesting
+  public void setTransportedBy(final Unit transportedBy) {
     this.transportedBy = transportedBy;
   }
 
@@ -418,7 +419,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return unloaded;
   }
 
-  private void setUnloaded(final List<Unit> unloaded) {
+  @VisibleForTesting
+  public void setUnloaded(final List<Unit> unloaded) {
     if (unloaded == null || unloaded.isEmpty()) {
       this.unloaded = List.of();
     } else {

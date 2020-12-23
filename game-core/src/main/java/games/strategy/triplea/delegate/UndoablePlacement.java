@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -42,7 +42,7 @@ public class UndoablePlacement extends AbstractUndoableMove {
 
   @Override
   protected final void undoSpecific(final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     final AbstractPlaceDelegate currentDelegate =
         (AbstractPlaceDelegate) data.getSequence().getStep().getDelegate();
     final Map<Territory, Collection<Unit>> produced = currentDelegate.getProduced();

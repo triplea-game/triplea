@@ -4,6 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
@@ -838,9 +839,9 @@ public class AirBattle extends AbstractBattle {
   }
 
   public static Predicate<Unit> defendingGroundSeaBattleInterceptors(
-      final GamePlayer attacker, final GameData data) {
+      final GamePlayer attacker, final GameState data) {
     return PredicateBuilder.of(Matches.unitCanAirBattle())
-        .and(Matches.unitIsEnemyOf(data, attacker))
+        .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker))
         .and(Matches.unitWasInAirBattle().negate())
         .andIf(
             !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
@@ -853,17 +854,17 @@ public class AirBattle extends AbstractBattle {
    * air base requirements.
    */
   public static Predicate<Unit> defendingBombingRaidInterceptors(
-      final Territory territory, final GamePlayer attacker, final GameData data) {
+      final Territory territory, final GamePlayer attacker, final GameState data) {
     final Predicate<Unit> canIntercept =
         PredicateBuilder.of(Matches.unitCanIntercept())
-            .and(Matches.unitIsEnemyOf(data, attacker))
+            .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker))
             .and(Matches.unitWasInAirBattle().negate())
             .andIf(
                 !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
                 Matches.unitWasScrambled().negate())
             .build();
     final Predicate<Unit> airbasesCanIntercept =
-        Matches.unitIsEnemyOf(data, attacker)
+        Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker)
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());
@@ -877,7 +878,7 @@ public class AirBattle extends AbstractBattle {
   public static boolean territoryCouldPossiblyHaveAirBattleDefenders(
       final Territory territory,
       final GamePlayer attacker,
-      final GameData data,
+      final GameState data,
       final boolean bombing) {
     final boolean canScrambleToAirBattle =
         Properties.getCanScrambleIntoAirBattles(data.getProperties());

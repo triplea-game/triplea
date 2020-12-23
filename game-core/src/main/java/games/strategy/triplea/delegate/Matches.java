@@ -4,6 +4,7 @@ import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
@@ -244,8 +245,9 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getDefense(unit.getOwner()) >= defendValue;
   }
 
-  public static Predicate<Unit> unitIsEnemyOf(final GameData data, final GamePlayer player) {
-    return unit -> data.getRelationshipTracker().isAtWar(unit.getOwner(), player);
+  public static Predicate<Unit> unitIsEnemyOf(
+      final RelationshipTracker relationshipTracker, final GamePlayer player) {
+    return unit -> relationshipTracker.isAtWar(unit.getOwner(), player);
   }
 
   public static Predicate<Unit> unitIsNotSea() {
@@ -556,10 +558,11 @@ public final class Matches {
     return t -> t.getUnitCollection().anyMatch(unitIsOwnedBy(player).and(unitIsCarrier()));
   }
 
-  public static Predicate<Unit> unitIsAlliedCarrier(final GamePlayer player, final GameData data) {
+  public static Predicate<Unit> unitIsAlliedCarrier(
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
     return unit ->
         UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
-            && data.getRelationshipTracker().isAllied(player, unit.getOwner());
+            && relationshipTracker.isAllied(player, unit.getOwner());
   }
 
   public static Predicate<Unit> unitCanBeTransported() {
@@ -657,7 +660,7 @@ public final class Matches {
 
   /** Checks if the unit type can be hit with AA fire by one of the firingUnits */
   private static Predicate<UnitType> unitTypeCanBeHitByAaFire(
-      final Collection<UnitType> firingUnits, final GameData gameData, final int battleRound) {
+      final Collection<UnitType> firingUnits, final GameState gameData, final int battleRound) {
     // make sure the aa firing units are valid for combat and during this round
     final Collection<UnitType> aaFiringUnits =
         CollectionUtils.getMatches(
@@ -711,7 +714,7 @@ public final class Matches {
       final Predicate<Unit> typeOfAa,
       final int battleRoundNumber,
       final boolean defending,
-      final GameData data) {
+      final GameState data) {
     return enemyUnit(playerMovingOrAttacking, data)
         .and(unitIsBeingTransported().negate())
         .and(
@@ -873,7 +876,7 @@ public final class Matches {
    * will also remove any contested territories.
    */
   public static Predicate<Territory> territoryCanCollectIncomeFrom(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     final boolean contestedDoNotProduce =
         Properties.getContestedTerritoriesProduceNoIncome(data.getProperties());
     return t -> {
@@ -909,7 +912,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasNeighborMatching(
-      final GameData data, final Predicate<Territory> match) {
+      final GameState data, final Predicate<Territory> match) {
     return t -> !data.getMap().getNeighbors(t, match).isEmpty();
   }
 
@@ -931,7 +934,7 @@ public final class Matches {
             .isEmpty();
   }
 
-  public static Predicate<Territory> territoryHasWaterNeighbor(final GameData data) {
+  public static Predicate<Territory> territoryHasWaterNeighbor(final GameState data) {
     return t -> !data.getMap().getNeighbors(t, territoryIsWater()).isEmpty();
   }
 
@@ -963,14 +966,14 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryHasAlliedIsFactoryOrCanProduceUnits(
-      final GameData data, final GamePlayer player) {
+      final RelationshipTracker relationshipTracker, final GamePlayer player) {
     return t ->
-        isTerritoryAllied(player, data).test(t)
+        isTerritoryAllied(player, relationshipTracker).test(t)
             && t.getUnitCollection().anyMatch(unitCanProduceUnits());
   }
 
   public static Predicate<Territory> territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
-      final GameData data, final GamePlayer player, final Predicate<Unit> unitMatch) {
+      final GameState data, final GamePlayer player, final Predicate<Unit> unitMatch) {
     return t -> {
       if (!data.getRelationshipTracker().isAtWar(player, t.getOwner())) {
         return false;
@@ -981,7 +984,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsEmptyOfCombatUnits(
-      final GameData data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     return t ->
         t.getUnitCollection().allMatch(unitIsInfrastructure().or(enemyUnit(player, data).negate()));
   }
@@ -1020,7 +1023,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> airCanFlyOver(
-      final GamePlayer player, final GameData data, final boolean areNeutralsPassableByAir) {
+      final GamePlayer player, final GameState data, final boolean areNeutralsPassableByAir) {
     return t -> {
       if (!areNeutralsPassableByAir && territoryIsNeutralButNotWater().test(t)) {
         return false;
@@ -1074,7 +1077,7 @@ public final class Matches {
    */
   public static Predicate<Territory> territoryIsPassableAndNotRestrictedAndOkByRelationships(
       final GamePlayer playerWhoOwnsAllTheUnitsMoving,
-      final GameData data,
+      final GameState data,
       final boolean isCombatMovePhase,
       final boolean hasLandUnitsNotBeingTransportedOrBeingLoaded,
       final boolean hasSeaUnitsNotBeingTransported,
@@ -1241,8 +1244,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryAllied(
-      final GamePlayer player, final GameData data) {
-    return t -> data.getRelationshipTracker().isAllied(player, t.getOwner());
+      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+    return t -> relationshipTracker.isAllied(player, t.getOwner());
   }
 
   public static Predicate<Territory> isTerritoryOwnedBy(final GamePlayer player) {
@@ -1260,12 +1263,12 @@ public final class Matches {
     };
   }
 
-  public static Predicate<Unit> isUnitAllied(final GamePlayer player, final GameData data) {
+  public static Predicate<Unit> isUnitAllied(final GamePlayer player, final GameState data) {
     return t -> data.getRelationshipTracker().isAllied(player, t.getOwner());
   }
 
   public static Predicate<Territory> isTerritoryFriendly(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t ->
         t.isWater()
             || t.getOwner().equals(player)
@@ -1273,7 +1276,7 @@ public final class Matches {
   }
 
   private static Predicate<Unit> unitIsEnemyAaForFlyOver(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return unitIsAaForFlyOverOnly().and(enemyUnit(player, data));
   }
 
@@ -1282,13 +1285,13 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryEnemy(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t ->
         !t.getOwner().equals(player) && data.getRelationshipTracker().isAtWar(player, t.getOwner());
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWater(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     // if we look at territory attachments, may have funny results for blockades or other things
     // that are passable
     // and not owned. better to check them by alliance. (veqryn)
@@ -1299,7 +1302,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> {
       if (t.getOwner().equals(player)) {
         return false;
@@ -1360,12 +1363,12 @@ public final class Matches {
             || Properties.getNeutralCharge(properties) <= 0;
   }
 
-  public static Predicate<Unit> enemyUnit(final GamePlayer player, final GameData data) {
+  public static Predicate<Unit> enemyUnit(final GamePlayer player, final GameState data) {
     return unit -> data.getRelationshipTracker().isAtWar(player, unit.getOwner());
   }
 
   public static Predicate<Unit> enemyUnitOfAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameData data) {
+      final Collection<GamePlayer> players, final GameState data) {
     return unit ->
         data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(unit.getOwner(), players);
   }
@@ -1385,14 +1388,14 @@ public final class Matches {
     };
   }
 
-  public static Predicate<Unit> alliedUnit(final GamePlayer player, final GameData data) {
+  public static Predicate<Unit> alliedUnit(final GamePlayer player, final GameState data) {
     return unit ->
         unit.getOwner().equals(player)
             || data.getRelationshipTracker().isAllied(player, unit.getOwner());
   }
 
   public static Predicate<Unit> alliedUnitOfAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameData data) {
+      final Collection<GamePlayer> players, final GameState data) {
     return unit ->
         unitIsOwnedByOfAnyOfThesePlayers(players).test(unit)
             || data.getRelationshipTracker()
@@ -1417,38 +1420,38 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasEnemyAaForFlyOver(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> t.getUnitCollection().anyMatch(unitIsEnemyAaForFlyOver(player, data));
   }
 
   public static Predicate<Territory> territoryHasNoEnemyUnits(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> !t.getUnitCollection().anyMatch(enemyUnit(player, data));
   }
 
   public static Predicate<Territory> territoryHasAlliedUnits(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> t.getUnitCollection().anyMatch(alliedUnit(player, data));
   }
 
   static Predicate<Territory> territoryHasNonSubmergedEnemyUnits(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     final Predicate<Unit> match = enemyUnit(player, data).and(unitIsSubmerged().negate());
     return t -> t.getUnitCollection().anyMatch(match);
   }
 
   public static Predicate<Territory> territoryHasEnemyLandUnits(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data).and(unitIsLand()));
   }
 
   public static Predicate<Territory> territoryHasEnemySeaUnits(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data).and(unitIsSea()));
   }
 
   public static Predicate<Territory> territoryHasEnemyUnits(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> t.getUnitCollection().anyMatch(enemyUnit(player, data));
   }
 
@@ -1461,7 +1464,7 @@ public final class Matches {
    * ally, but not necessarily so in an FFA type game).
    */
   public static Predicate<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
-      final GamePlayer player, final GameData gameData) {
+      final GamePlayer player, final GameState gameData) {
     return t -> {
       final List<Unit> enemyUnits =
           t.getUnitCollection()
@@ -1509,7 +1512,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
       final Collection<Unit> units,
       final GamePlayer currentPlayer,
-      final GameData data,
+      final GameState data,
       final boolean forceLoadParatroopersIfPossible) {
     final Map<Unit, Unit> paratrooperMap =
         forceLoadParatroopersIfPossible ? TransportUtils.mapParatroopers(units) : Map.of();
@@ -1576,7 +1579,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsBlockedSea(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     final Predicate<Unit> transport =
         unitIsTransportButNotCombatTransport().negate().and(unitIsLand().negate());
     final Predicate<Unit> unitCond =
@@ -1611,7 +1614,8 @@ public final class Matches {
         boolean atLeastOnePlayerOwnsCapital = false;
         for (final GamePlayer player : players) {
           final boolean ownCapital =
-              TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, damagedUnit.getData());
+              TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
+                  player, damagedUnit.getData().getMap());
           atLeastOnePlayerOwnsCapital = atLeastOnePlayerOwnsCapital || ownCapital;
           if (!ownCapital && territoryOfRepairUnit.getOwner().equals(player)) {
             return false;
@@ -1624,7 +1628,7 @@ public final class Matches {
 
         // Damaged units can only be repaired by facilities if the unit owner controls their capital
         if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
-            damagedUnit.getOwner(), damagedUnit.getData())) {
+            damagedUnit.getOwner(), damagedUnit.getData().getMap())) {
           return false;
         }
       }
@@ -1644,7 +1648,7 @@ public final class Matches {
    * @param data game data
    */
   public static Predicate<Unit> unitCanBeRepairedByFacilitiesInItsTerritory(
-      final Territory territory, final GamePlayer player, final GameData data) {
+      final Territory territory, final GamePlayer player, final GameState data) {
     return damagedUnit -> {
       final Predicate<Unit> damaged =
           unitHasMoreThanOneHitPointTotal().and(unitHasTakenSomeDamage());
@@ -1721,7 +1725,7 @@ public final class Matches {
    * @param data game data
    */
   public static Predicate<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-      final Territory territory, final GamePlayer player, final GameData data) {
+      final Territory territory, final GamePlayer player, final GameState data) {
     return unitWhichWillGetBonus -> {
       final Predicate<Unit> givesBonusUnit =
           alliedUnit(player, data).and(unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
@@ -1853,7 +1857,8 @@ public final class Matches {
   }
 
   /** Check if unit meets requiredUnitsToMove criteria and can move into territory. */
-  public static Predicate<Unit> unitHasRequiredUnitsToMove(final Territory t, final GameData data) {
+  public static Predicate<Unit> unitHasRequiredUnitsToMove(
+      final Territory t, final GameState data) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua == null
@@ -1884,7 +1889,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasRequiredUnitsToMove(
-      final Collection<Unit> units, final GameData data) {
+      final Collection<Unit> units, final GameState data) {
     return t -> units.stream().allMatch(unitHasRequiredUnitsToMove(t, data));
   }
 
@@ -1960,7 +1965,7 @@ public final class Matches {
 
   /** If the territory is not land, returns true. Else, tests relationship of the owners. */
   public static Predicate<Territory> territoryAllowsCanMoveLandUnitsOverOwnedLand(
-      final GamePlayer ownerOfUnitsMoving, final GameData data) {
+      final GamePlayer ownerOfUnitsMoving, final GameState data) {
     return t -> {
       if (!territoryIsLand().test(t)) {
         return true;
@@ -1979,7 +1984,7 @@ public final class Matches {
 
   /** If the territory is not land, returns true. Else, tests relationship of the owners. */
   public static Predicate<Territory> territoryAllowsCanMoveAirUnitsOverOwnedLand(
-      final GamePlayer ownerOfUnitsMoving, final GameData data) {
+      final GamePlayer ownerOfUnitsMoving, final GameState data) {
     return t -> {
       if (!territoryIsLand().test(t)) {
         return true;
@@ -2018,30 +2023,30 @@ public final class Matches {
     return relationship -> relationship.getRelationshipTypeAttachment().canRocketsFlyOver();
   }
 
-  public static Predicate<String> isValidRelationshipName(final GameData data) {
+  public static Predicate<String> isValidRelationshipName(final GameState data) {
     return relationshipName ->
         data.getRelationshipTypeList().getRelationshipType(relationshipName) != null;
   }
 
-  public static Predicate<GamePlayer> isAtWar(final GamePlayer player, final GameData data) {
+  public static Predicate<GamePlayer> isAtWar(final GamePlayer player, final GameState data) {
     return player2 ->
         relationshipTypeIsAtWar()
             .test(data.getRelationshipTracker().getRelationshipType(player, player2));
   }
 
   public static Predicate<GamePlayer> isAtWarWithAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameData data) {
+      final Collection<GamePlayer> players, final GameState data) {
     return player2 -> data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(player2, players);
   }
 
-  public static Predicate<GamePlayer> isAllied(final GamePlayer player, final GameData data) {
+  public static Predicate<GamePlayer> isAllied(final GamePlayer player, final GameState data) {
     return player2 ->
         relationshipTypeIsAllied()
             .test(data.getRelationshipTracker().getRelationshipType(player, player2));
   }
 
   public static Predicate<GamePlayer> isAlliedWithAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final GameData data) {
+      final Collection<GamePlayer> players, final GameState data) {
     return player2 -> data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(player2, players);
   }
 
@@ -2161,7 +2166,7 @@ public final class Matches {
   }
 
   static Predicate<GamePlayer> isAlliedAndAlliancesCanChainTogether(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return player2 ->
         relationshipTypeIsAlliedAndAlliancesCanChainTogether()
             .test(data.getRelationshipTracker().getRelationshipType(player, player2));
@@ -2186,7 +2191,7 @@ public final class Matches {
       final GamePlayer player,
       final Predicate<RelationshipType> currentRelation,
       final Predicate<RelationshipType> newRelation,
-      final GameData data) {
+      final GameState data) {
     return paa -> {
       for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
           paa.getRelationshipChanges()) {
@@ -2207,7 +2212,7 @@ public final class Matches {
   }
 
   public static Predicate<PoliticalActionAttachment> politicalActionAffectsAtLeastOneAlivePlayer(
-      final GamePlayer currentPlayer, final GameData data) {
+      final GamePlayer currentPlayer, final GameState data) {
     return paa -> {
       for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
           paa.getRelationshipChanges()) {
@@ -2245,7 +2250,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryAllowsRocketsCanFlyOver(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player, final GameState data) {
     return t -> {
       if (!territoryIsLand().test(t)) {
         return true;

@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.triplea.delegate.data.BattleRecords;
 import java.util.Map;
 
@@ -12,7 +12,7 @@ class AddBattleRecordsChange extends Change {
   private final BattleRecords recordsToAdd;
   private final int round;
 
-  AddBattleRecordsChange(final BattleRecords battleRecords, final GameData data) {
+  AddBattleRecordsChange(final BattleRecords battleRecords, final GameState data) {
     round = data.getSequence().getRound();
     // make a copy because this is only done once, and only externally from battle
     // tracker, and the source will be cleared (battle tracker clears out the records each turn)
@@ -28,7 +28,7 @@ class AddBattleRecordsChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameState data) {
     final Map<Integer, BattleRecords> currentRecords =
         data.getBattleRecordsList().getBattleRecordsMap();
     // make a copy because otherwise ours will be cleared when we RemoveBattleRecordsChange

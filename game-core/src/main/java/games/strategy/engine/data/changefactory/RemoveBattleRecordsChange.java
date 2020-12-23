@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.triplea.delegate.data.BattleRecords;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ class RemoveBattleRecordsChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameState data) {
     final Map<Integer, BattleRecords> currentRecords =
         data.getBattleRecordsList().getBattleRecordsMap();
     // make a copy else we will get a concurrent modification error

@@ -3,6 +3,7 @@ package games.strategy.triplea.ai.weak;
 import com.google.common.collect.Streams;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
@@ -12,11 +13,11 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
-import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -45,27 +46,27 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** A very weak ai, based on some simple rules. */
-public class WeakAi extends AbstractAi {
+public class WeakAi extends AbstractBuiltInAi {
 
   public WeakAi(final String name) {
     super(name);
   }
 
   @Override
-  public PlayerType getPlayerType() {
-    return PlayerType.WEAK_AI;
+  public PlayerTypes.Type getPlayerType() {
+    return PlayerTypes.WEAK_AI;
   }
 
   @Override
   protected void tech(
       final ITechDelegate techDelegate, final GameData data, final GamePlayer player) {}
 
-  private static Route getAmphibRoute(final GamePlayer player, final GameData data) {
+  private static Route getAmphibRoute(final GamePlayer player, final GameState data) {
     if (!isAmphibAttack(player, data)) {
       return null;
     }
     final Territory ourCapitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     if (ourCapitol == null) {
       return null;
     }
@@ -92,9 +93,9 @@ public class WeakAi extends AbstractAi {
     return route;
   }
 
-  private static boolean isAmphibAttack(final GamePlayer player, final GameData data) {
+  private static boolean isAmphibAttack(final GamePlayer player, final GameState data) {
     final Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     // we dont own our own capitol
     if (capitol == null || !capitol.getOwner().equals(player)) {
       return false;
@@ -151,12 +152,12 @@ public class WeakAi extends AbstractAi {
   }
 
   private List<MoveDescription> calculateTransportLoad(
-      final GameData data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     if (!isAmphibAttack(player, data)) {
       return List.of();
     }
     final Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     if (capitol == null || !capitol.getOwner().equals(player)) {
       return List.of();
     }
@@ -201,7 +202,7 @@ public class WeakAi extends AbstractAi {
   }
 
   private static List<MoveDescription> calculateTransportUnloadNonCombat(
-      final GameData data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     if (amphibRoute == null) {
       return List.of();
@@ -331,7 +332,7 @@ public class WeakAi extends AbstractAi {
   }
 
   private static List<MoveDescription> calculateCombatMoveSea(
-      final GameData data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     final var moves = new ArrayList<MoveDescription>();
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     for (final Territory t : data.getMap()) {
@@ -375,7 +376,7 @@ public class WeakAi extends AbstractAi {
   }
 
   // searches for amphibious attack on empty territory
-  private static Route getAlternativeAmphibRoute(final GamePlayer player, final GameData data) {
+  private static Route getAlternativeAmphibRoute(final GamePlayer player, final GameState data) {
     if (!isAmphibAttack(player, data)) {
       return null;
     }
@@ -449,7 +450,8 @@ public class WeakAi extends AbstractAi {
       // find the nearest enemy owned capital
       for (final GamePlayer otherPlayer : data.getPlayerList().getPlayers()) {
         final Territory capitol =
-            TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(otherPlayer, data);
+            TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                otherPlayer, data.getMap());
         if (capitol != null
             && !data.getRelationshipTracker().isAllied(player, capitol.getOwner())) {
           final Route route = data.getMap().getRoute(t, capitol, moveThrough);
@@ -498,7 +500,7 @@ public class WeakAi extends AbstractAi {
     // this works because we are on the server
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final Predicate<Territory> canLand =
-        Matches.isTerritoryAllied(player, data)
+        Matches.isTerritoryAllied(player, data.getRelationshipTracker())
             .and(o -> !delegate.getBattleTracker().wasConquered(o));
     final Predicate<Territory> routeCondition =
         Matches.territoryHasEnemyAaForFlyOver(player, data)
@@ -524,7 +526,7 @@ public class WeakAi extends AbstractAi {
     return moves;
   }
 
-  private List<MoveDescription> calculateCombatMove(final GameData data, final GamePlayer player) {
+  private List<MoveDescription> calculateCombatMove(final GameState data, final GamePlayer player) {
     final List<MoveDescription> moves = calculateBomberCombat(data, player);
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
@@ -698,7 +700,7 @@ public class WeakAi extends AbstractAi {
   }
 
   private static List<MoveDescription> calculateBomberCombat(
-      final GameData data, final GamePlayer player) {
+      final GameState data, final GamePlayer player) {
     final Predicate<Territory> enemyFactory =
         Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
             data, player, Matches.unitCanProduceUnitsAndCanBeDamaged());
@@ -720,7 +722,7 @@ public class WeakAi extends AbstractAi {
     return moves;
   }
 
-  private static int countTransports(final GameData data, final GamePlayer player) {
+  private static int countTransports(final GameState data, final GamePlayer player) {
     final Predicate<Unit> ownedTransport =
         Matches.unitIsTransport().and(Matches.unitIsOwnedBy(player));
     return Streams.stream(data.getMap())
@@ -729,7 +731,7 @@ public class WeakAi extends AbstractAi {
         .sum();
   }
 
-  private static int countLandUnits(final GameData data, final GamePlayer player) {
+  private static int countLandUnits(final GameState data, final GamePlayer player) {
     final Predicate<Unit> ownedLandUnit = Matches.unitIsLand().and(Matches.unitIsOwnedBy(player));
     return Streams.stream(data.getMap())
         .map(Territory::getUnitCollection)
@@ -803,7 +805,7 @@ public class WeakAi extends AbstractAi {
     final int totalPu = player.getResources().getQuantity(pus);
     int leftToSpend = totalPu;
     final @Nullable Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
     final List<RepairRule> repairRules;
@@ -1037,13 +1039,13 @@ public class WeakAi extends AbstractAi {
   public void place(
       final boolean bid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameData data,
+      final GameState data,
       final GamePlayer player) {
     if (player.getUnitCollection().isEmpty()) {
       return;
     }
     final @Nullable Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     if (capitol != null) {
       // place in capitol first
       placeAllWeCanOn(data, capitol, placeDelegate, player);
@@ -1060,7 +1062,7 @@ public class WeakAi extends AbstractAi {
   }
 
   private static void placeAllWeCanOn(
-      final GameData data,
+      final GameState data,
       final Territory placeAt,
       final IAbstractPlaceDelegate placeDelegate,
       final GamePlayer player) {

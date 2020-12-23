@@ -37,6 +37,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   private JButton alliances;
   private final Collection<String> disableable;
   private final SetupPanel parent;
+  private final PlayerTypes playerTypesProvider;
 
   PlayerSelectorRow(
       final List<PlayerSelectorRow> playerRows,
@@ -46,12 +47,14 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       final Map<String, Boolean> playersEnablementListing,
       final Collection<String> playerAlliances,
       final SetupPanel parent,
-      final GameProperties gameProperties) {
+      final GameProperties gameProperties,
+      final PlayerTypes playerTypes) {
     this.disableable = disableable;
     this.parent = parent;
     playerName = player.getName();
     this.player = player;
     name = new JLabel(playerName + ":");
+    this.playerTypesProvider = playerTypes;
 
     enabledCheckBox = new JCheckBox();
     final ActionListener disablePlayerActionListener =
@@ -61,11 +64,11 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
             if (enabledCheckBox.isSelected()) {
               enabled = true;
               // the 1st in the list should be human
-              playerTypes.setSelectedItem(PlayerType.HUMAN_PLAYER);
+              PlayerSelectorRow.this.playerTypes.setSelectedItem(PlayerTypes.HUMAN_PLAYER);
             } else {
               enabled = false;
               // the 2nd in the list should be Weak AI
-              playerTypes.setSelectedItem(PlayerType.WEAK_AI);
+              PlayerSelectorRow.this.playerTypes.setSelectedItem(PlayerTypes.WEAK_AI);
             }
             setWidgetActivation();
           }
@@ -74,13 +77,13 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
     enabledCheckBox.setEnabled(disableable.contains(playerName));
 
-    playerTypes = new JComboBox<>(PlayerType.playerTypes());
+    this.playerTypes = new JComboBox<>(this.playerTypesProvider.getAvailablePlayerLabels());
     String previousSelection = reloadSelections.get(playerName);
     if (previousSelection.equalsIgnoreCase("Client")) {
-      previousSelection = PlayerType.HUMAN_PLAYER.name();
+      previousSelection = PlayerTypes.HUMAN_PLAYER.getLabel();
     }
-    if (List.of(PlayerType.playerTypes()).contains(previousSelection)) {
-      playerTypes.setSelectedItem(previousSelection);
+    if (List.of(this.playerTypesProvider.getAvailablePlayerLabels()).contains(previousSelection)) {
+      this.playerTypes.setSelectedItem(previousSelection);
     } else {
       setDefaultPlayerType();
     }
@@ -90,7 +93,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       final String alliancesLabelText = playerAlliances.toString();
       alliances = new JButton(alliancesLabelText);
       alliances.setToolTipText(
-          "Set all " + alliancesLabelText + " to " + PlayerType.HUMAN_PLAYER.getLabel());
+          "Set all " + alliancesLabelText + " to " + PlayerTypes.HUMAN_PLAYER.getLabel());
       alliances.addActionListener(
           e ->
               playerRows.stream()
@@ -98,7 +101,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
                       row ->
                           row.alliances != null
                               && row.alliances.getText().equals(alliancesLabelText))
-                  .forEach(row -> row.setPlayerType(PlayerType.HUMAN_PLAYER.getLabel())));
+                  .forEach(row -> row.setPlayerType(PlayerTypes.HUMAN_PLAYER.getLabel())));
     }
 
     incomePercentage =
@@ -249,11 +252,11 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
   void setDefaultPlayerType() {
     if (player.isDefaultTypeAi()) {
-      playerTypes.setSelectedItem(PlayerType.PRO_AI.getLabel());
+      playerTypes.setSelectedItem(PlayerTypes.PRO_AI.getLabel());
     } else if (player.isDefaultTypeDoesNothing()) {
-      playerTypes.setSelectedItem(PlayerType.DOES_NOTHING_AI.getLabel());
+      playerTypes.setSelectedItem(PlayerTypes.DOES_NOTHING_PLAYER_LABEL);
     } else {
-      playerTypes.setSelectedItem(PlayerType.HUMAN_PLAYER.getLabel());
+      playerTypes.setSelectedItem(PlayerTypes.HUMAN_PLAYER.getLabel());
     }
   }
 
@@ -263,8 +266,8 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   }
 
   @Override
-  public PlayerType getPlayerType() {
-    return PlayerType.fromLabel(String.valueOf(playerTypes.getSelectedItem()));
+  public PlayerTypes.Type getPlayerType() {
+    return this.playerTypesProvider.fromLabel(String.valueOf(this.playerTypes.getSelectedItem()));
   }
 
   @Override

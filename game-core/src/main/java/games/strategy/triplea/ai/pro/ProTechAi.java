@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -42,7 +43,7 @@ final class ProTechAi {
       return;
     }
     final Territory myCapitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength =
         (myCapitol == null || myCapitol.getUnitCollection() == null)
@@ -237,7 +238,9 @@ final class ProTechAi {
               availOther += other;
             }
             final Set<Territory> transNeighbors =
-                data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer, data));
+                data.getMap()
+                    .getNeighbors(
+                        t4, Matches.isTerritoryAllied(enemyPlayer, data.getRelationshipTracker()));
             for (final Territory transNeighbor : transNeighbors) {
               final List<Unit> transUnits =
                   transNeighbor.getUnitCollection().getMatches(enemyTransportable);
@@ -360,7 +363,7 @@ final class ProTechAi {
   }
 
   /** Returns a list of all enemy players. */
-  private static List<GamePlayer> getEnemyPlayers(final GameData data, final GamePlayer player) {
+  private static List<GamePlayer> getEnemyPlayers(final GameState data, final GamePlayer player) {
     final List<GamePlayer> enemyPlayers = new ArrayList<>();
     for (final GamePlayer players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
@@ -473,7 +476,7 @@ final class ProTechAi {
       final Territory start,
       final int maxDistance,
       final GamePlayer player,
-      final GameData data,
+      final GameState data,
       final List<Territory> checked) {
 
     if (checked.isEmpty()) {
@@ -503,7 +506,7 @@ final class ProTechAi {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
           if (lz == null
-              && Matches.isTerritoryAllied(player, data).test(neighbor)
+              && Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(neighbor)
               && !neighbor.isWater()) {
             lz = neighbor;
           }
@@ -548,7 +551,7 @@ final class ProTechAi {
   }
 
   private static Route getMaxSeaRoute(
-      final GameData data,
+      final GameState data,
       final Territory start,
       final Territory destination,
       final Collection<Unit> units,
@@ -588,11 +591,11 @@ final class ProTechAi {
    * Matches.isTerritoryAllied(player, data))
    */
   private static List<Territory> getNeighboringLandTerritories(
-      final GameData data, final GamePlayer player, final Territory check) {
+      final GameState data, final GamePlayer player, final Territory check) {
     final List<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {
-      if (Matches.isTerritoryAllied(player, data).test(t)
+      if (Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(t)
           && Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties()).test(t)) {
         territories.add(t);
       }
@@ -601,7 +604,8 @@ final class ProTechAi {
   }
 
   /** Gets the neighbors which are one territory away. */
-  private static List<Territory> getExactNeighbors(final Territory territory, final GameData data) {
+  private static List<Territory> getExactNeighbors(
+      final Territory territory, final GameState data) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are comfortable all calls to this function conform.
     final Predicate<Territory> endCond =
@@ -623,7 +627,7 @@ final class ProTechAi {
       final Territory start,
       final Predicate<Territory> endCondition,
       final Predicate<Territory> routeCondition,
-      final GameData data) {
+      final GameState data) {
     final Predicate<Territory> canGo = endCondition.or(routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
     final List<Territory> frontier = new ArrayList<>();
@@ -661,7 +665,7 @@ final class ProTechAi {
    * because it doesn't require the units be owned.
    */
   private static List<Territory> findUnitTerr(
-      final GameData data, final Predicate<Unit> unitCondition) {
+      final GameState data, final Predicate<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> neighbors = data.getMap().getTerritories();

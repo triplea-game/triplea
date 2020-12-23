@@ -89,10 +89,6 @@ public final class LobbyMenu extends JMenuBar {
                 "Send Bug Report",
                 'B',
                 () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))
-            .addMenuItem(
-                "Open Debug Console", //
-                'C',
-                () -> ClientSetting.showConsole.setValueAndFlush(true))
             .build());
   }
 }

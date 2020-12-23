@@ -2,6 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.ProductionRule;
@@ -248,7 +249,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       final GamePlayer playerSendingProposal,
       final String acceptanceQuestion,
       final boolean politics) {
-    final GameData data = getGameData();
+    final GameState data = getGameData();
     return !this.getGamePlayer().amNotDeadYet(data)
         || getPlayerBridge().isGameOver()
         || ui.acceptAction(
@@ -566,7 +567,6 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final GameData data = getGameData();
     // play a sound for this phase
     final IAbstractForumPosterDelegate endTurnDelegate;
     try {
@@ -581,7 +581,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       throw new IllegalStateException(errorContext, e);
     }
     if (!soundPlayedAlreadyEndTurn
-        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(this.getGamePlayer(), data)) {
+        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
+            this.getGamePlayer(), getGameData().getMap())) {
       // do not play if we are reloading a savegame from pbem (gets annoying)
       if (!endTurnDelegate.getHasPostedTurnSummary()) {
         ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, this.getGamePlayer());

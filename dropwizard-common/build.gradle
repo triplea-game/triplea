@@ -1,7 +1,5 @@
 dependencies {
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
-    implementation "es.moki.ratelimitj:ratelimitj-dropwizard:$rateLimitjVersion"
-    implementation "es.moki.ratelimitj:ratelimitj-inmemory:$rateLimitjVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.weak;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -32,7 +32,7 @@ final class Utils {
     return unitsUpToStrength;
   }
 
-  static float getStrengthOfPotentialAttackers(final Territory location, final GameData data) {
+  static float getStrengthOfPotentialAttackers(final Territory location, final GameState data) {
     float strength = 0;
     for (final Territory t :
         data.getMap()
@@ -50,7 +50,7 @@ final class Utils {
       final Territory start,
       final Predicate<Territory> endCondition,
       final Predicate<Territory> routeCondition,
-      final GameData data) {
+      final GameState data) {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.test(t)) {
@@ -65,11 +65,11 @@ final class Utils {
   }
 
   static boolean hasLandRouteToEnemyOwnedCapitol(
-      final Territory t, final GamePlayer us, final GameData data) {
+      final Territory t, final GamePlayer us, final GameState data) {
     for (final GamePlayer player :
         CollectionUtils.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
       for (final Territory capital :
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data.getMap())) {
         if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {
           return true;
         }
@@ -89,7 +89,7 @@ final class Utils {
    * Return Territories containing any unit depending on unitCondition Differs from findCertainShips
    * because it doesn't require the units be owned.
    */
-  static List<Territory> findUnitTerr(final GameData data, final Predicate<Unit> unitCondition) {
+  static List<Territory> findUnitTerr(final GameState data, final Predicate<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> neighbors = data.getMap().getTerritories();

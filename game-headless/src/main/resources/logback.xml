@@ -1,0 +1,20 @@
+<configuration>
+    <appender name="chatMessage" class="org.triplea.game.server.debug.ChatAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="chatMessage"/>
+        <appender-ref ref="console"/>
+    </root>
+    <logger name="org.triplea.game.server.debug.ChatAppender" level="warn"/>
+</configuration>

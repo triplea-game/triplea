@@ -1,13 +1,13 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerSelectorRow;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import org.triplea.injection.Injections;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -152,7 +153,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   private void loadAll() {
     Optional.ofNullable(gameSelectorModel.getGameData())
-        .map(GameData::getProperties)
+        .map(GameState::getProperties)
         .ifPresent(
             properties -> {
               diceServerEditor.populateFromGameProperties(properties);
@@ -179,7 +180,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void postStartGame() {
-    final GameData data = gameSelectorModel.getGameData();
+    final GameState data = gameSelectorModel.getGameData();
 
     Preconditions.checkNotNull(
         data,
@@ -226,7 +227,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     }
 
     final PbemDiceRoller randomSource = new PbemDiceRoller(diceServerEditor.newDiceServer());
-    final Map<String, PlayerType> playerTypes = new HashMap<>();
+    final Map<String, PlayerTypes.Type> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
@@ -246,6 +247,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             null,
             null);
     return Optional.of(
-        new LocalLauncher(gameSelectorModel, randomSource, pl, this, new HeadedLaunchAction(this)));
+        new LocalLauncher(
+            gameSelectorModel,
+            randomSource,
+            pl,
+            this,
+            new HeadedLaunchAction(this),
+            new PlayerTypes(Injections.getInstance().getPlayerTypes())));
   }
 }

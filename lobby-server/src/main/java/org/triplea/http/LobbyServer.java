@@ -78,15 +78,10 @@ public class LobbyServer extends Application<LobbyServerConfig> {
 
     serverConfiguration.enableEnvironmentVariablesInConfig();
     serverConfiguration.enableBetterJdbiExceptions();
-    serverConfiguration.enableEndpointRateLimiting();
   }
 
   @Override
   public void run(final LobbyServerConfig configuration, final Environment environment) {
-    if (configuration.isLogRequestAndResponses()) {
-      serverConfiguration.enableRequestResponseLogging(environment);
-    }
-
     final Jdbi jdbi =
         new JdbiFactory()
             .build(environment, configuration.getDatabase(), "postgresql-connection-pool");

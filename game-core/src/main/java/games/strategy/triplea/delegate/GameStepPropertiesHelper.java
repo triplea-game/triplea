@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Splitter;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.triplea.Properties;
 import java.util.HashSet;
@@ -314,29 +315,29 @@ public final class GameStepPropertiesHelper {
     }
   }
 
-  private static boolean isNonCombatDelegate(final GameData data) {
+  private static boolean isNonCombatDelegate(final GameState data) {
     return data.getSequence().getStep().getName().endsWith("NonCombatMove");
   }
 
-  private static boolean isCombatDelegate(final GameData data) {
+  private static boolean isCombatDelegate(final GameState data) {
     // NonCombatMove endsWith CombatMove so check for NCM first
     return !data.getSequence().getStep().getName().endsWith("NonCombatMove")
         && data.getSequence().getStep().getName().endsWith("CombatMove");
   }
 
-  private static boolean isAirborneDelegate(final GameData data) {
+  private static boolean isAirborneDelegate(final GameState data) {
     return data.getSequence().getStep().getName().endsWith("AirborneCombatMove");
   }
 
-  private static boolean isBidPurchaseDelegate(final GameData data) {
+  private static boolean isBidPurchaseDelegate(final GameState data) {
     return data.getSequence().getStep().getName().endsWith("Bid");
   }
 
-  private static boolean isBidPlaceDelegate(final GameData data) {
+  private static boolean isBidPlaceDelegate(final GameState data) {
     return data.getSequence().getStep().getName().endsWith("BidPlace");
   }
 
-  private static boolean isPurchaseDelegate(final GameData data) {
+  private static boolean isPurchaseDelegate(final GameState data) {
     return data.getSequence().getStep().getName().endsWith("Purchase");
   }
 }

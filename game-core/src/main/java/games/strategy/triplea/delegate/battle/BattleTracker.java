@@ -7,6 +7,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
@@ -137,9 +138,11 @@ public class BattleTracker implements Serializable {
   }
 
   public boolean didAllThesePlayersJustGoToWarThisTurn(
-      final GamePlayer p1, final Collection<Unit> enemyUnits, final GameData data) {
+      final GamePlayer p1, final Collection<Unit> enemyUnits, final GameState data) {
     final Set<GamePlayer> enemies = new HashSet<>();
-    for (final Unit u : CollectionUtils.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1))) {
+    for (final Unit u :
+        CollectionUtils.getMatches(
+            enemyUnits, Matches.unitIsEnemyOf(data.getRelationshipTracker(), p1))) {
       enemies.add(u.getOwner());
     }
     for (final GamePlayer e : enemies) {
@@ -595,7 +598,8 @@ public class BattleTracker implements Serializable {
         final GamePlayer convoyOwner = convoy.getOwner();
         if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
           if (CollectionUtils.getMatches(
-                      cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
+                      cta.getConvoyAttached(),
+                      Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
                   .size()
               <= 0) {
             bridge
@@ -611,7 +615,8 @@ public class BattleTracker implements Serializable {
           }
         } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
             && CollectionUtils.getMatches(
-                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
+                        cta.getConvoyAttached(),
+                        Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
                     .size()
                 == 1) {
           bridge
@@ -684,7 +689,7 @@ public class BattleTracker implements Serializable {
       final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
       final List<Territory> capitalsList =
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data);
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data.getMap());
       // we are losing one right now, so it is < not <=
       if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
         // do nothing, we keep our money since we still control enough capitals
@@ -765,12 +770,13 @@ public class BattleTracker implements Serializable {
         && relationshipTracker.isAllied(terrOrigOwner, gamePlayer)
         && !terrOrigOwner.equals(territory.getOwner())) {
       final List<Territory> capitalsListOwned =
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data);
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data.getMap());
       if (!capitalsListOwned.isEmpty()) {
         newOwner = terrOrigOwner;
       } else {
         newOwner = gamePlayer;
-        for (final Territory current : TerritoryAttachment.getAllCapitals(terrOrigOwner, data)) {
+        for (final Territory current :
+            TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap())) {
           if (territory.equals(current) || current.getOwner().equals(GamePlayer.NULL_PLAYERID)) {
             // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
             newOwner = terrOrigOwner;
@@ -829,7 +835,9 @@ public class BattleTracker implements Serializable {
     // TODO: see if necessary
     if (territory
         .getUnitCollection()
-        .anyMatch(Matches.unitIsEnemyOf(data, gamePlayer).and(Matches.unitCanBeDamaged()))) {
+        .anyMatch(
+            Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
+                .and(Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -855,14 +863,15 @@ public class BattleTracker implements Serializable {
     if (isTerritoryOwnerAnEnemy
         && terrOrigOwner != null
         && ta.getCapital() != null
-        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
+        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap()).contains(territory)
         && relationshipTracker.isAllied(terrOrigOwner, gamePlayer)) {
       // if it is give it back to the original owner
       final Collection<Territory> originallyOwned =
           OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
           CollectionUtils.getMatches(
-              originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+              originallyOwned,
+              Matches.isTerritoryAllied(terrOrigOwner, data.getRelationshipTracker()));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner().equals(terrOrigOwner)) {
@@ -905,7 +914,7 @@ public class BattleTracker implements Serializable {
       final GamePlayer newOwner,
       final IDelegateBridge bridge,
       final UndoableMove changeTracker) {
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data.getProperties())) {
       final Predicate<Unit> enemyToBeDestroyed =
@@ -1263,7 +1272,7 @@ public class BattleTracker implements Serializable {
     }
   }
 
-  private static boolean isPacificTheater(final GameData data) {
+  private static boolean isPacificTheater(final GameState data) {
     return data.getProperties().get(Constants.PACIFIC_THEATER, false);
   }
 

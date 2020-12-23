@@ -346,7 +346,7 @@ public class MapPanel extends ImageScrollerLargeView {
     // use GameData from mapPanel since it will follow current history node
     gameData.acquireReadLock();
     try {
-      isEditMode = BaseEditDelegate.getEditMode(gameData);
+      isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
     } finally {
       gameData.releaseReadLock();
     }

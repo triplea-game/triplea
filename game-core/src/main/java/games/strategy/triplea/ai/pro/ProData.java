@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -69,7 +70,8 @@ public final class ProData {
       winPercentage = 90;
       minWinPercentage = 65;
     }
-    myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+    myCapital =
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     myUnitTerritories =
         CollectionUtils.getMatches(
             data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
@@ -79,7 +81,7 @@ public final class ProData {
     minCostPerHitPoint = getMinCostPerHitPoint(purchaseOptions.getLandOptions());
   }
 
-  private static Map<Unit, Territory> newUnitTerritoryMap(final GameData data) {
+  private static Map<Unit, Territory> newUnitTerritoryMap(final GameState data) {
     final Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit u : t.getUnits()) {

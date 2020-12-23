@@ -3,17 +3,18 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.IGameModifiedChannel;
-import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -154,7 +155,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
         final boolean loadedFromSavedGame) {}
   }
 
-  static class ObjectivePanelDummyPlayer extends AbstractAi {
+  static class ObjectivePanelDummyPlayer extends AbstractBuiltInAi {
     ObjectivePanelDummyPlayer(final String name) {
       super(name);
     }
@@ -172,7 +173,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     protected void place(
         final boolean placeForBid,
         final IAbstractPlaceDelegate placeDelegate,
-        final GameData data,
+        final GameState data,
         final GamePlayer player) {
       throw new UnsupportedOperationException();
     }
@@ -268,8 +269,8 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     }
 
     @Override
-    public PlayerType getPlayerType() {
-      return PlayerType.BATTLE_CALC_DUMMY;
+    public PlayerTypes.Type getPlayerType() {
+      return PlayerTypes.BATTLE_CALC_DUMMY;
     }
   }
 }

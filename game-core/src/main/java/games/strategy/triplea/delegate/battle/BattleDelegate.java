@@ -8,6 +8,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
@@ -606,7 +607,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    */
   private static void setupTerritoriesAbandonedToTheEnemy(
       final BattleTracker battleTracker, final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     if (!Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data.getProperties())) {
       return;
     }
@@ -646,7 +647,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               .map(Unit::getOwner)
               .map(
                   p ->
-                      Matches.unitIsEnemyOf(data, p)
+                      Matches.unitIsEnemyOf(data.getRelationshipTracker(), p)
                           .and(Matches.unitIsNotAir())
                           .and(Matches.unitIsNotInfrastructure()))
               .map(territory.getUnitCollection()::getMatches)
@@ -938,7 +939,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Territory landingTerr = null;
         final String historyText;
         if (!mustReturnToBase
-            || !Matches.isTerritoryAllied(u.getOwner(), data).test(u.getOriginatedFrom())) {
+            || !Matches.isTerritoryAllied(u.getOwner(), data.getRelationshipTracker())
+                .test(u.getOriginatedFrom())) {
           final Collection<Territory> possible =
               whereCanAirLand(u, t, u.getOwner(), data, battleTracker, carrierCostOfCurrentTerr);
           if (possible.size() > 1) {
@@ -986,7 +988,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private static void resetMaxScrambleCount(final IDelegateBridge bridge) {
     // reset the tripleaUnit property for all airbases that were used
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
@@ -1010,7 +1012,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   private void airBattleCleanup() {
-    final GameData data = getData();
+    final GameState data = getData();
     if (!Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())) {
       return;
     }
@@ -1209,7 +1211,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * The enemies of current player should decide all their attacks before the attacks are rolled.
    */
   private void doKamikazeSuicideAttacks() {
-    final GameData data = getData();
+    final GameState data = getData();
     if (!Properties.getUseKamikazeSuicideAttacks(data.getProperties())) {
       return;
     }
@@ -1501,7 +1503,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Unit strandedAir,
       final Territory currentTerr,
       final GamePlayer alliedPlayer,
-      final GameData data,
+      final GameState data,
       final BattleTracker battleTracker,
       final int carrierCostForCurrentTerr) {
     Preconditions.checkNotNull(strandedAir);
@@ -1546,7 +1548,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         new HashSet<>(
             CollectionUtils.getMatches(
                 possibleTerrs,
-                Matches.isTerritoryAllied(alliedPlayer, data).and(Matches.territoryIsLand())));
+                Matches.isTerritoryAllied(alliedPlayer, data.getRelationshipTracker())
+                    .and(Matches.territoryIsLand())));
     availableLand.removeAll(canNotLand);
     final Set<Territory> whereCanLand = new HashSet<>(availableLand);
     // now for carrier-air-landing validation
@@ -1556,7 +1559,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               CollectionUtils.getMatches(
                   possibleTerrs,
                   Matches.territoryHasUnitsThatMatch(
-                          Matches.unitIsAlliedCarrier(alliedPlayer, data))
+                          Matches.unitIsAlliedCarrier(alliedPlayer, data.getRelationshipTracker()))
                       .and(Matches.territoryIsWater())));
       availableWater.removeAll(battleTracker.getPendingBattleSites(false));
       // simple calculation, either we can take all the air, or we can't, nothing in the middle
@@ -1566,7 +1569,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final Territory t = waterIter.next();
         int carrierCapacity =
             AirMovementValidator.carrierCapacity(
-                t.getUnitCollection().getMatches(Matches.unitIsAlliedCarrier(alliedPlayer, data)),
+                t.getUnitCollection()
+                    .getMatches(
+                        Matches.unitIsAlliedCarrier(alliedPlayer, data.getRelationshipTracker())),
                 t);
         if (!t.equals(currentTerr)) {
           carrierCapacity -=
