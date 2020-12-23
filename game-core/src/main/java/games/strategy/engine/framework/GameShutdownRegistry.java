@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Adds callbacks to be run when a game is ending.
+ *
+ * <p>Useful for cleaning up static resources that are only needed while a game is running.
+ *
+ * <p>All callbacks are removed when the game ends.
+ */
 @UtilityClass
 public class GameShutdownRegistry {
 
