@@ -4,6 +4,7 @@ import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -302,7 +303,7 @@ public class UnitsDrawer extends AbstractDrawable {
     }
   }
 
-  Tuple<Territory, List<Unit>> getUnits(final GameData data) {
+  Tuple<Territory, List<Unit>> getUnits(final GameState data) {
     // note - it may be the case where the territory is being changed as a result to a mouse click,
     // and the map units
     // haven't updated yet, so the unit count from the territory wont match the units in count

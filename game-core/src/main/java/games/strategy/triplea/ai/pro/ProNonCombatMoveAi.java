@@ -558,7 +558,7 @@ class ProNonCombatMoveAi {
             data.getMap().getNeighbors(t, Matches.territoryIsLand());
         for (final Territory neighbor : landNeighbors) {
           double neighborProduction = TerritoryAttachment.getProduction(neighbor);
-          if (Matches.isTerritoryAllied(player, data).test(neighbor)) {
+          if (Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(neighbor)) {
             neighborProduction = 0.1 * neighborProduction;
           }
           neighborValue += neighborProduction;
@@ -1524,7 +1524,8 @@ class ProNonCombatMoveAi {
                   .getDistanceIgnoreEndForCondition(
                       currentTerritory, t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
           final boolean hasSeaNeighbor =
-              Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);
+              Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater())
+                  .test(t);
           final boolean hasFactory =
               ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).test(t);
           if (!t.isWater()

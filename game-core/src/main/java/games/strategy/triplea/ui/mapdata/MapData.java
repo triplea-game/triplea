@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.mapdata;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -510,14 +510,14 @@ public class MapData {
         .collect(Collectors.toSet());
   }
 
-  public void verify(final GameData data) {
+  public void verify(final GameState data) {
     verifyKeys(data, centers.keySet(), "centers");
     verifyKeys(data, polys.keySet(), "polygons");
     verifyKeys(data, place.keySet(), "place");
   }
 
   private static void verifyKeys(
-      final GameData data, final Set<String> keys, final String dataTypeForErrorMessage) {
+      final GameState data, final Set<String> keys, final String dataTypeForErrorMessage) {
     final StringBuilder errors = new StringBuilder();
 
     // This block ignores mismatched territory data and the result of removing

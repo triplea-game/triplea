@@ -6,6 +6,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -447,7 +448,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) {}
+  public void validate(final GameState data) {}
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {

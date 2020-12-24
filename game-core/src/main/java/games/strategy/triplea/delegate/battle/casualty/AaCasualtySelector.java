@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -45,12 +45,12 @@ public class AaCasualtySelector {
     if (planes.isEmpty()) {
       return new CasualtyDetails();
     }
-    final GameData data = bridge.getData();
+    final GameState data = bridge.getData();
     final boolean allowMultipleHitsPerUnit =
         !defendingAa.isEmpty()
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (BaseEditDelegate.getEditMode(data)
+    if (BaseEditDelegate.getEditMode(data.getProperties())
         || Properties.getChooseAaCasualties(data.getProperties())) {
       return CasualtySelector.selectCasualties(
           hitPlayer,

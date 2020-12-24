@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -27,7 +27,7 @@ import org.triplea.util.Tuple;
  * given territory.
  */
 public class ScrambleLogic {
-  private final GameData data;
+  private final GameState data;
   private final GamePlayer player;
   private final Set<Territory> territoriesWithBattles;
   private BattleTracker battleTracker;
@@ -35,17 +35,17 @@ public class ScrambleLogic {
   private final Predicate<Territory> canScrambleFromPredicate;
   private final int maxScrambleDistance;
 
-  public ScrambleLogic(final GameData data, final GamePlayer player, final Territory territory) {
+  public ScrambleLogic(final GameState data, final GamePlayer player, final Territory territory) {
     this(data, player, Set.of(territory));
   }
 
   public ScrambleLogic(
-      final GameData data, final GamePlayer player, final Set<Territory> territoriesWithBattles) {
+      final GameState data, final GamePlayer player, final Set<Territory> territoriesWithBattles) {
     this(data, player, territoriesWithBattles, new BattleTracker());
   }
 
   public ScrambleLogic(
-      final GameData data,
+      final GameState data,
       final GamePlayer player,
       final Set<Territory> territoriesWithBattles,
       final BattleTracker battleTracker) {
@@ -57,7 +57,7 @@ public class ScrambleLogic {
     this.territoriesWithBattles = territoriesWithBattles;
     this.battleTracker = battleTracker;
     this.airbaseThatCanScramblePredicate =
-        Matches.unitIsEnemyOf(data, player)
+        Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());
@@ -66,7 +66,7 @@ public class ScrambleLogic {
             .and(
                 Matches.territoryHasUnitsThatMatch(
                     Matches.unitCanScramble()
-                        .and(Matches.unitIsEnemyOf(data, player))
+                        .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))
                         .and(Matches.unitIsNotDisabled())))
             .and(Matches.territoryHasUnitsThatMatch(airbaseThatCanScramblePredicate))
             .andIf(
@@ -76,7 +76,7 @@ public class ScrambleLogic {
     this.maxScrambleDistance = computeMaxScrambleDistance(data);
   }
 
-  private static int computeMaxScrambleDistance(final GameData data) {
+  private static int computeMaxScrambleDistance(final GameState data) {
     int maxScrambleDistance = 0;
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = UnitAttachment.get(unitType);
@@ -168,7 +168,7 @@ public class ScrambleLogic {
       return Map.of();
     }
     final Predicate<Unit> unitCanScramble =
-        Matches.unitIsEnemyOf(data, player)
+        Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitWasScrambled().negate());

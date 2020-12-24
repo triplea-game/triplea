@@ -1,8 +1,8 @@
 package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
@@ -44,7 +44,7 @@ class PlayerOwnerChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameState data) {
     for (final UUID id : newOwnerNamesByUnitId.keySet()) {
       final Unit unit = data.getUnits().get(id);
       if (!oldOwnerNamesByUnitId.get(id).equals(unit.getOwner().getName())) {

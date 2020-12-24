@@ -5,7 +5,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
 
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -69,7 +69,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
   }
 
   private boolean canAttackerRetreatAmphibPlanes() {
-    final GameData gameData = battleState.getGameData();
+    final GameState gameData = battleState.getGameData();
     return (Properties.getWW2V2(gameData.getProperties())
             || Properties.getAttackerRetreatPlanes(gameData.getProperties())
             || Properties.getPartialAmphibiousRetreat(gameData.getProperties()))

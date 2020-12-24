@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
@@ -55,7 +56,7 @@ class ProPurchaseAi {
   private final ProOddsCalculator calc;
   private final ProData proData;
   private GameData data;
-  private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
+  private GameState startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
   private GamePlayer player;
   private ProResourceTracker resourceTracker;
   private ProTerritoryManager territoryManager;
@@ -140,7 +141,7 @@ class ProPurchaseAi {
    * started with a unit in said territory or sea zone prior to placing the bid.
    */
   Map<Territory, ProPurchaseTerritory> bid(
-      final int pus, final IPurchaseDelegate purchaseDelegate, final GameData startOfTurnData) {
+      final int pus, final IPurchaseDelegate purchaseDelegate, final GameState startOfTurnData) {
 
     // Current data fields
     data = proData.getData();
@@ -257,7 +258,7 @@ class ProPurchaseAi {
   }
 
   Map<Territory, ProPurchaseTerritory> purchase(
-      final IPurchaseDelegate purchaseDelegate, final GameData startOfTurnData) {
+      final IPurchaseDelegate purchaseDelegate, final GameState startOfTurnData) {
 
     // Current data fields
     data = proData.getData();
@@ -1293,7 +1294,7 @@ class ProPurchaseAi {
       final int production = TerritoryAttachment.get(t).getProduction();
       final double value = territoryValueMap.get(t) * production + 0.1 * production;
       final boolean isAdjacentToSea =
-          Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);
+          Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater()).test(t);
       final Set<Territory> nearbyLandTerritories =
           data.getMap()
               .getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));

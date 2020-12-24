@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
@@ -29,13 +30,13 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     return true;
   }
 
-  public static boolean getEditMode(final GameData data) {
-    final Object editMode = data.getProperties().get(Constants.EDIT_MODE);
+  public static boolean getEditMode(final GameProperties properties) {
+    final Object editMode = properties.get(Constants.EDIT_MODE);
     return editMode instanceof Boolean && (boolean) editMode;
   }
 
   public boolean getEditMode() {
-    return getEditMode(getData());
+    return getEditMode(getData().getProperties());
   }
 
   private String checkPlayerId() {
@@ -51,7 +52,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     if (null != result) {
       return result;
     }
-    if (!getEditMode(getData())) {
+    if (!getEditMode(getData().getProperties())) {
       return "Edit mode is not enabled";
     }
     return null;

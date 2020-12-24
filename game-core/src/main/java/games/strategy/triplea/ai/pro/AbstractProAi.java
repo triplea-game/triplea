@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -267,7 +268,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
   protected void place(
       final boolean bid,
       final IAbstractPlaceDelegate placeDelegate,
-      final GameData data,
+      final GameState data,
       final GamePlayer player) {
     final long start = System.currentTimeMillis();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());

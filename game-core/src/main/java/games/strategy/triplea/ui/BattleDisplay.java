@@ -522,7 +522,7 @@ public class BattleDisplay extends JPanel {
     final CountDownLatch continueLatch = new CountDownLatch(1);
     SwingUtilities.invokeLater(
         () -> {
-          final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
+          final boolean isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
           if (!isEditMode) {
             dicePanel.setDiceRoll(dice);
             casualties.setVisible(false);

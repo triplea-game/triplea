@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.IAttachment;
 
 class AddAttachmentChange extends Change {
@@ -24,7 +24,7 @@ class AddAttachmentChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameState data) {
     attachable.addAttachment(name, attachment);
     attachment.setName(name);
     attachment.setAttachedTo(attachable);

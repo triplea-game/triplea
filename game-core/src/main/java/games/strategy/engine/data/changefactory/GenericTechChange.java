@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.triplea.attachments.TechAttachment;
 
 class GenericTechChange extends Change {
@@ -41,7 +41,7 @@ class GenericTechChange extends Change {
   }
 
   @Override
-  public void perform(final GameData data) {
+  public void perform(final GameState data) {
     final TechAttachment attachment = (TechAttachment) attachedTo.getAttachment(attachmentName);
     attachment.setGenericTech(property, newValue);
   }

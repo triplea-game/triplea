@@ -176,7 +176,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
    * If I have no units with movement, And I own zero factories or have have no owned land, then I
    * am basically dead, and therefore should not participate in things like politics.
    */
-  public boolean amNotDeadYet(final GameData data) {
+  public boolean amNotDeadYet(final GameState data) {
     for (final Territory t : data.getMap().getTerritories()) {
       if (t.getUnitCollection()
           .anyMatch(
@@ -195,7 +195,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     return false;
   }
 
-  public static Map<String, String> currentPlayers(final GameData data) {
+  public static Map<String, String> currentPlayers(final GameState data) {
     final LinkedHashMap<String, String> currentPlayers = new LinkedHashMap<>();
     if (data == null) {
       return currentPlayers;

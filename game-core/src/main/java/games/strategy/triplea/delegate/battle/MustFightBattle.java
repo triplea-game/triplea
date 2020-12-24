@@ -13,6 +13,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -154,7 +155,7 @@ public class MustFightBattle extends DependentBattle
             : Properties.getLandBattleRounds(data.getProperties());
   }
 
-  void resetDefendingUnits(final GamePlayer attacker, final GameData data) {
+  void resetDefendingUnits(final GamePlayer attacker, final GameState data) {
     defendingUnits.clear();
     defendingUnits.addAll(
         battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));

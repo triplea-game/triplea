@@ -4,6 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
@@ -333,7 +334,7 @@ public class MovePerformer implements Serializable {
   }
 
   private static Predicate<Territory> getMustFightThroughMatch(
-      final GamePlayer gamePlayer, final GameData data) {
+      final GamePlayer gamePlayer, final GameState data) {
     return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer, data)
         .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer, data))
         .or(
@@ -386,7 +387,9 @@ public class MovePerformer implements Serializable {
         && GameStepPropertiesHelper.isNonCombatMove(data, false)
         && routeEnd
             .getUnitCollection()
-            .anyMatch(Matches.unitIsEnemyOf(data, gamePlayer).and(Matches.unitIsDestroyer()))) {
+            .anyMatch(
+                Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
+                    .and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we
       // want to make sure we
       // can't keep moving them if there is an enemy destroyer there

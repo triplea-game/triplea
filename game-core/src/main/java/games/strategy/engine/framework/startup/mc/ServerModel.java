@@ -321,7 +321,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
         for (final GamePlayer player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
-          if (!HeadlessGameServer.headless()) {
+          if (HeadlessGameServer.headless()) {
             if (player.getIsDisabled()) {
               playersToNodeListing.put(name, messengers.getLocalNode().getName());
               localPlayerTypes.put(name, PlayerTypes.WEAK_AI);

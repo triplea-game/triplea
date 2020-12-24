@@ -1,7 +1,7 @@
 package games.strategy.engine.data.changefactory.units;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
@@ -42,7 +42,7 @@ public class BombingUnitDamageChange extends Change {
   }
 
   @Override
-  protected void perform(final GameData data) {
+  protected void perform(final GameState data) {
     newDamage
         .keySet()
         .forEach(
