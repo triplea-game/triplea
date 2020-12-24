@@ -1,7 +1,6 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import java.util.Collection;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.injection.Injections;
 
@@ -21,11 +20,8 @@ public final class HeadlessGameRunner {
   private static Injections constructInjections() {
     return Injections.builder()
         .engineVersion(new ProductVersionReader().getVersion())
-        .playerTypes(gatherPlayerTypes())
+        .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
         .build();
   }
 
-  private static Collection<PlayerTypes.Type> gatherPlayerTypes() {
-    return PlayerTypes.getBuiltInPlayerTypes();
-  }
 }
