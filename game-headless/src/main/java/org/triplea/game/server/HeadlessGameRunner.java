@@ -2,10 +2,6 @@ package org.triplea.game.server;
 
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.triplea.ai.does.nothing.DoesNothingAiProvider;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.injection.Injections;
 
@@ -30,10 +26,6 @@ public final class HeadlessGameRunner {
   }
 
   private static Collection<PlayerTypes.Type> gatherPlayerTypes() {
-    return Stream.of(
-            PlayerTypes.getBuiltInPlayerTypes(),
-            List.of(new PlayerTypes.AiType(new DoesNothingAiProvider())))
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+    return PlayerTypes.getBuiltInPlayerTypes();
   }
 }
