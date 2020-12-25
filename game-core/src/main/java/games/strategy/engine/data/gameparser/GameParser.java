@@ -316,7 +316,6 @@ public final class GameParser {
 
   private void parseInfo(final Info info) {
     data.setGameName(info.getName());
-    data.setGameVersion(new Version(info.getVersion()));
   }
 
   private void parseTerritories(

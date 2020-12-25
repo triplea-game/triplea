@@ -53,13 +53,7 @@ public class PbemMessagePoster implements Serializable {
     this.currentPlayer = currentPlayer;
     this.roundNumber = roundNumber;
     gameProperties = gameData.getProperties();
-    gameNameAndInfo =
-        "TripleA "
-            + title
-            + " for game: "
-            + gameData.getGameName()
-            + ", version: "
-            + gameData.getGameVersion();
+    gameNameAndInfo = "TripleA " + title + " for game: " + gameData.getGameName();
   }
 
   public boolean hasMessengers() {

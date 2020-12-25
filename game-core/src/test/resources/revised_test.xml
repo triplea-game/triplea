@@ -3,8 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="World War II Revised Test" version="1.4"/>
-        
+        <info name="World War II Revised Test"/>
 
         <map>
                 <!-- Territory Definitions -->

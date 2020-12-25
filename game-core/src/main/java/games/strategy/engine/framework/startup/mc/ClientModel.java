@@ -402,8 +402,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private void internalPlayerListingChanged(final PlayerListing listing) {
-    gameSelectorModel.clearDataButKeepGameInfo(
-        listing.getGameName(), listing.getGameRound(), listing.getGameVersion().toString());
+    gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound());
     synchronized (this) {
       playersToNodes = listing.getPlayerToNodeListing();
       playersEnabledListing = listing.getPlayersEnabledListing();

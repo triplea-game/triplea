@@ -66,10 +66,6 @@ class LobbyGamePanel extends JPanel {
         .getColumnModel()
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
         .setPreferredWidth(12);
-    gameTable
-        .getColumnModel()
-        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
-        .setPreferredWidth(32);
     if (lobbyClient.isModerator()) {
       gameTable
           .getColumnModel()

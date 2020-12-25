@@ -2,9 +2,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-
-    <info name="Classic: Iron Blitz 3rd Edition Test" version="1.9"/>
-
+    <info name="Classic: Iron Blitz 3rd Edition Test"/>
 
     <triplea minimumVersion="1.6.1"/>
 

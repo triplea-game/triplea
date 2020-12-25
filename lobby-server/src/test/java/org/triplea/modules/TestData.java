@@ -23,7 +23,6 @@ public class TestData {
           .playerCount(3)
           .gameRound(1)
           .epochMilliTimeStarted(Instant.now().toEpochMilli())
-          .mapVersion("1")
           .passworded(false)
           .status("Waiting For Players")
           .comments("comments")

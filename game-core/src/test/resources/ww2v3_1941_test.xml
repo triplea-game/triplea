@@ -3,8 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="World War II v3 1941 Test" version="1.7"/>
-
+        <info name="World War II v3 1941 Test"/>
 
         <triplea minimumVersion="1.7"/>
 

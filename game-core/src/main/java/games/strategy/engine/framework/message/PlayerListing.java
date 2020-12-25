@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import org.triplea.util.Version;
 
 /**
  * Data from the server indicating what players are available to be taken, and what players are
@@ -35,7 +34,6 @@ public class PlayerListing implements Serializable {
   @Getter private final Map<String, Boolean> playersEnabledListing;
   @Getter private final Map<String, String> localPlayerTypes;
   @Getter private final Collection<String> playersAllowedToBeDisabled;
-  @Getter private final Version gameVersion;
   @Getter private final String gameName;
   @Getter private final String gameRound;
   @Getter private final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder;
@@ -43,27 +41,17 @@ public class PlayerListing implements Serializable {
   public PlayerListing(
       final Map<String, Boolean> playersEnabledListing,
       final Map<String, PlayerTypes.Type> localPlayerTypes,
-      final Version gameVersion,
       final String gameName,
       final String gameRound) {
     // we don't need the playerToNode list, the disable-able players, or the alliances list, for a
     // local game
-    this(
-        null,
-        playersEnabledListing,
-        localPlayerTypes,
-        gameVersion,
-        gameName,
-        gameRound,
-        null,
-        null);
+    this(null, playersEnabledListing, localPlayerTypes, gameName, gameRound, null, null);
   }
 
   public PlayerListing(
       final Map<String, String> playerToNodeListing,
       final Map<String, Boolean> playersEnabledListing,
       final Map<String, PlayerTypes.Type> localPlayerTypes,
-      final Version gameVersion,
       final String gameName,
       final String gameRound,
       final Collection<String> playersAllowedToBeDisabled,
@@ -80,7 +68,6 @@ public class PlayerListing implements Serializable {
         localPlayerTypes.entrySet().stream()
             // convert Map<String,PlayerType> -> Map<String,String>
             .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getLabel()));
-    this.gameVersion = gameVersion;
     this.gameName = gameName;
     this.gameRound = gameRound;
     this.playersAllowedToBeDisabled =

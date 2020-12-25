@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.SwingUtilities;
 import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
@@ -67,7 +68,7 @@ public class GameData implements Serializable, GameState {
   private transient ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
-  private Version gameVersion;
+  @RemoveOnNextMajorRelease @Deprecated private Version gameVersion;
   private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
@@ -293,14 +294,6 @@ public class GameData implements Serializable, GameState {
 
   public IGameLoader getGameLoader() {
     return loader;
-  }
-
-  public void setGameVersion(final Version gameVersion) {
-    this.gameVersion = gameVersion;
-  }
-
-  public Version getGameVersion() {
-    return gameVersion;
   }
 
   @VisibleForTesting

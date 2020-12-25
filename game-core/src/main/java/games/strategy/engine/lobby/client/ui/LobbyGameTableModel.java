@@ -24,7 +24,6 @@ class LobbyGameTableModel extends AbstractTableModel {
   enum Column {
     Host,
     Name,
-    GV,
     Round,
     Players,
     P,
@@ -162,8 +161,6 @@ class LobbyGameTableModel extends AbstractTableModel {
         return description.getPlayerCount();
       case P:
         return (description.getPassworded() ? "*" : "");
-      case GV:
-        return description.getMapVersion();
       case Status:
         // Note, we update status client side to avoid a headless game from reporting
         // a new status when players leave or join. We expect a player count of 0 in

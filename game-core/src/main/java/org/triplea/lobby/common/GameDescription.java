@@ -52,7 +52,6 @@ public class GameDescription implements Serializable {
   @With private final GameStatus status;
   @With private final String comment;
   @With private final boolean passworded;
-  @With private final String gameVersion;
 
   public boolean isBot() {
     return hostedBy.getName().startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
@@ -73,7 +72,6 @@ public class GameDescription implements Serializable {
                   lobbyGame.getHostPort()))
           .startDateTime(Instant.ofEpochMilli(lobbyGame.getEpochMilliTimeStarted()))
           .gameName(lobbyGame.getMapName())
-          .gameVersion(lobbyGame.getMapVersion())
           .status(
               Arrays.stream(GameStatus.values())
                   .filter(s -> s.toString().equals(lobbyGame.getStatus()))
@@ -100,7 +98,6 @@ public class GameDescription implements Serializable {
         .hostPort(hostedBy.getPort())
         .epochMilliTimeStarted(startDateTime.toEpochMilli())
         .mapName(gameName)
-        .mapVersion(gameVersion)
         .status(status.toString())
         .passworded(passworded)
         .playerCount(playerCount)

@@ -3,8 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="victory test" version="3.3"/>
-
+        <info name="victory test"/>
 
         <diceSides value="6"/>
 

@@ -179,8 +179,6 @@ final class ExportMenu extends JMenu {
       writer.append(Injections.getInstance().getEngineVersion().toString()).println(',');
       writer.append("Game Name: ,");
       writer.append(gameData.getGameName()).println(',');
-      writer.append("Game Version: ,");
-      writer.append(gameData.getGameVersion().toString()).println(',');
       writer.println();
       writer.append("Current Round: ,");
       writer.print(currentRound);

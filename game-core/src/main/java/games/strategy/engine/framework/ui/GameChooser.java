@@ -187,10 +187,14 @@ public class GameChooser extends JDialog {
 
     final StringBuilder notes = new StringBuilder();
     notes.append("<h1>").append(shallowParsedGame.getInfo().getName()).append("</h1>");
-    appendListItem(
-        "Number Of Players", shallowParsedGame.getPlayerList().getPlayers().size() + "", notes);
-    appendListItem("Version", shallowParsedGame.getInfo().getVersion() + "", notes);
-    notes.append("<p></p>");
+    notes
+        .append("<b>")
+        .append("Number Of Players")
+        .append("</b>")
+        .append(": ")
+        .append(shallowParsedGame.getPlayerList().getPlayers().size())
+        .append("<br>")
+        .append("<p></p>");
 
     extractGameNotes(shallowParsedGame)
         .ifPresent(

@@ -80,7 +80,6 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
-import org.triplea.util.Version;
 
 /** Represents a network-aware game server to which multiple clients may connect. */
 @Slf4j
@@ -501,7 +500,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             new HashMap<>(),
             new HashMap<>(playersEnabledListing),
             getLocalPlayerTypes(),
-            new Version(0, 0, 0),
             gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound(),
             new HashSet<>(playersAllowedToBeDisabled),
@@ -511,7 +509,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           new HashMap<>(playersToNodeListing),
           new HashMap<>(playersEnabledListing),
           getLocalPlayerTypes(),
-          data.getGameVersion(),
           data.getGameName(),
           data.getSequence().getRound() + "",
           new HashSet<>(playersAllowedToBeDisabled),

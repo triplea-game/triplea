@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Big World : 1942" version="2.5"/>
+        <info name="Big World : 1942"/>
 
         <triplea minimumVersion="1.5"/>
 

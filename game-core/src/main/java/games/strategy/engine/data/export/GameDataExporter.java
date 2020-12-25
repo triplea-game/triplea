@@ -663,9 +663,6 @@ public class GameDataExporter {
   }
 
   private static Info info(final GameData data) {
-    return Info.builder()
-        .name(data.getGameName())
-        .version(data.getGameVersion().toString())
-        .build();
+    return Info.builder().name(data.getGameName()).build();
   }
 }

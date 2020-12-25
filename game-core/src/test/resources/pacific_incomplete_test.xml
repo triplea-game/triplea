@@ -12,10 +12,9 @@ Coded by Iron__Cross
 -->
 
 <game>
-    <info name="pacific test" version="1.4"/>
+    <info name="pacific test"/>
 
     <map>
-        
         <!-- Territory Definitions -->
         
         <!-- Australia -->

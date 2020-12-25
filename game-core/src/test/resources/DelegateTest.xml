@@ -2,10 +2,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-
-    <info name="delegateTest" version="1" />
-
-
+    <info name="delegateTest"/>
 
     <map>
         <territory name="Afghanistan"/>
