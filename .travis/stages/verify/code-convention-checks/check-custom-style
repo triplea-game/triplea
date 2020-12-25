@@ -58,7 +58,7 @@ function displayResult() {
 }
 
 function favorJava9CollectionsApi() {
-  title "Verifying preference to use List.of(), Map.of() and Set.of() compaboldRed to java.util.Collections.*"
+  title "Verifying preference to use List.of(), Map.of() and Set.of() compared to java.util.Collections.*"
   example "instead of 'Collections.singleton(value)', use 'Set.of(value)'"
   local found=0
 
