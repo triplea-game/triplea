@@ -48,7 +48,14 @@ public final class PlayerColors {
         "Illegal player name: %s, use the method 'getImpassableColor()' instead",
         playerName);
 
-    return playerColors.computeIfAbsent(playerName, this::computePlayerColor);
+    // NOTE: we do *not* use computeIfAbsent here to avoid
+    // 'java.util.ConcurrentModificationException'
+    Color playerColor = playerColors.get(playerName);
+    if (playerColor == null) {
+      playerColor = computePlayerColor(playerName);
+      playerColors.put(playerName, playerColor);
+    }
+    return playerColor;
   }
 
   private Color computePlayerColor(final String playerName) {
