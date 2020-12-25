@@ -396,16 +396,9 @@ public class UiContext {
   }
 
   /** returns the map skins for the game data. returns is a map of display-name -> map directory */
-  public static Map<String, String> getSkins(final GameState data) {
-    final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
+  public static Map<String, String> getSkins(final String mapName) {
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
     skinsByDisplayName.put("Original", mapName);
-    skinsByDisplayName.putAll(getSkins(mapName));
-    return skinsByDisplayName;
-  }
-
-  private static Map<String, String> getSkins(final String mapName) {
-    final Map<String, String> skinsByDisplayName = new HashMap<>();
     for (final File f : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
       if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
         final String displayName =
