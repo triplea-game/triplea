@@ -15,7 +15,7 @@ import org.triplea.util.Version;
 /** Properties file used to know which map versions have been installed. */
 @Slf4j
 @NoArgsConstructor
-class DownloadFileProperties {
+public class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
@@ -24,14 +24,17 @@ class DownloadFileProperties {
   }
 
   static DownloadFileProperties loadForZip(final File zipFile) {
-    if (!fromZip(zipFile).exists()) {
-      return new DownloadFileProperties();
-    }
+    return fromZip(zipFile).exists()
+        ? loadForZipPropertyFile(fromZip(zipFile))
+        : new DownloadFileProperties();
+  }
+
+  public static DownloadFileProperties loadForZipPropertyFile(final File propertyFile) {
     final DownloadFileProperties downloadFileProperties = new DownloadFileProperties();
-    try (InputStream fis = new FileInputStream(fromZip(zipFile))) {
+    try (InputStream fis = new FileInputStream(propertyFile)) {
       downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
-      log.error("Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.error("Failed to read property file: " + propertyFile.getAbsolutePath(), e);
     }
     return downloadFileProperties;
   }
@@ -48,7 +51,7 @@ class DownloadFileProperties {
     return new File(zipFile.getAbsolutePath() + ".properties");
   }
 
-  Optional<Version> getVersion() {
+  public Optional<Version> getVersion() {
     return Optional.ofNullable(props.getProperty(VERSION_PROPERTY)).map(Version::new);
   }
 }
