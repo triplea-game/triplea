@@ -131,7 +131,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     ui.requiredTurnSeries(this.getGamePlayer());
     enableEditModeMenu();
     boolean badStep = false;
-    if (name.endsWith("Tech")) {
+    if (GameStep.isTechStep(name)) {
       tech();
     } else if (GameStep.isPurchaseOrBidStep(name)) {
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
@@ -139,22 +139,22 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
-    } else if (name.endsWith("Move")) {
+    } else if (GameStep.isMoveStep(name)) {
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
       move(nonCombat, name);
       if (!nonCombat) {
         ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
-    } else if (name.endsWith("Battle")) {
+    } else if (GameStep.isBattleStep(name)) {
       battle();
     } else if (GameStep.isPlaceStep(name)) {
       place();
-    } else if (name.endsWith("Politics")) {
+    } else if (GameStep.isPoliticsStep(name)) {
       politics(true);
-    } else if (name.endsWith("UserActions")) {
+    } else if (GameStep.isUserActionsStep(name)) {
       userActions(true);
-    } else if (name.endsWith("EndTurn")) {
+    } else if (GameStep.isEndTurnStep(name)) {
       endTurn();
       // reset our sounds
       soundPlayedAlreadyCombatMove = false;
@@ -165,7 +165,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       soundPlayedAlreadyEndTurn = false;
       soundPlayedAlreadyPlacement = false;
     } else {
-      badStep = !name.endsWith("TechActivation");
+      badStep = !GameStep.isTechActivationStep(name);
     }
     disableEditModeMenu();
     if (badStep) {
