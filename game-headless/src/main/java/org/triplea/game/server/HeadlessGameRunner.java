@@ -23,5 +23,4 @@ public final class HeadlessGameRunner {
         .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
         .build();
   }
-
 }
