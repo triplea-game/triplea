@@ -78,8 +78,6 @@ public class DownloadMapsWindow extends JFrame {
       findMap(mapName, allDownloads)
           .ifPresentOrElse(pendingDownloads::add, () -> unknownMapNames.add(mapName));
     }
-    final Collection<String> installedMapNames = removeInstalledDownloads(pendingDownloads);
-
     if (!pendingDownloads.isEmpty()) {
       progressPanel.download(pendingDownloads);
     }
@@ -90,9 +88,8 @@ public class DownloadMapsWindow extends JFrame {
             .map(DownloadFile::getDownload)
             .collect(Collectors.toList()));
 
-    if (!unknownMapNames.isEmpty() || !installedMapNames.isEmpty()) {
-      SwingComponents.newMessageDialog(
-          formatIgnoredPendingMapsMessage(unknownMapNames, installedMapNames));
+    if (!unknownMapNames.isEmpty()) {
+      SwingComponents.newMessageDialog(formatIgnoredPendingMapsMessage(unknownMapNames));
     }
 
     final Optional<String> selectedMapName = pendingDownloadMapNames.stream().findFirst();
@@ -261,19 +258,7 @@ public class DownloadMapsWindow extends JFrame {
     }
   }
 
-  private static Collection<String> removeInstalledDownloads(
-      final Collection<DownloadFileDescription> downloads) {
-    final MapDownloadList mapList = new MapDownloadList(downloads);
-    final Collection<DownloadFileDescription> installedDownloads =
-        downloads.stream().filter(mapList::isInstalled).collect(Collectors.toList());
-    downloads.removeAll(installedDownloads);
-    return installedDownloads.stream()
-        .map(DownloadFileDescription::getMapName)
-        .collect(Collectors.toList());
-  }
-
-  private static String formatIgnoredPendingMapsMessage(
-      final Collection<String> unknownMapNames, final Collection<String> installedMapNames) {
+  private static String formatIgnoredPendingMapsMessage(final Collection<String> unknownMapNames) {
     final StringBuilder sb = new StringBuilder();
     sb.append("<html>");
     sb.append("Some maps were not downloaded.<br>");
@@ -283,16 +268,6 @@ public class DownloadMapsWindow extends JFrame {
       sb.append("Could not find the following map(s):<br>");
       sb.append("<ul>");
       for (final String mapName : unknownMapNames) {
-        sb.append("<li>").append(mapName).append("</li>");
-      }
-      sb.append("</ul>");
-    }
-
-    if (!installedMapNames.isEmpty()) {
-      sb.append("<br>");
-      sb.append("The following map(s) are already installed:<br>");
-      sb.append("<ul>");
-      for (final String mapName : installedMapNames) {
         sb.append("<li>").append(mapName).append("</li>");
       }
       sb.append("</ul>");
