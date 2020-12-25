@@ -29,7 +29,7 @@ function main() {
   favorJava9CollectionsApi
   #referToCollectionsByInterfaceType
   removeUnusedLogAnnotations
-  preferSlf4jOverJavaLogging  
+  #preferSlf4jOverJavaLogging  
   databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
