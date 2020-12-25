@@ -470,7 +470,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     if (blockable.isEmpty()) {
       return 0;
     }
-    final Predicate<Unit> enemyUnits = Matches.enemyUnit(player, data);
+    final Predicate<Unit> enemyUnits = Matches.enemyUnit(player, data.getRelationshipTracker());
     int totalLoss = 0;
     final boolean rollDiceForBlockadeDamage =
         Properties.getConvoyBlockadesRollDiceForCost(data.getProperties());

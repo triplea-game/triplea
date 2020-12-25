@@ -633,7 +633,7 @@ public class MovePanel extends AbstractMovePanel {
           final GamePlayer player = getCurrentPlayer();
           return Matches.territoryHasUnitsOwnedBy(player)
               .negate()
-              .and(Matches.territoryHasEnemyUnits(player, getData()))
+              .and(Matches.territoryHasEnemyUnits(player, getData().getRelationshipTracker()))
               .test(territory);
         }
 

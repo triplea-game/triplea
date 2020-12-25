@@ -2322,7 +2322,7 @@ class ProNonCombatMoveAi {
         final int numSeaAttackTerritories =
             CollectionUtils.countMatches(
                 possibleAttackTerritories,
-                Matches.territoryHasEnemySeaUnits(player, data)
+                Matches.territoryHasEnemySeaUnits(player, data.getRelationshipTracker())
                     .and(
                         Matches.territoryHasUnitsThatMatch(
                             Matches.unitHasSubBattleAbilities().negate())));

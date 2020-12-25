@@ -154,7 +154,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       bridge.addChange(ChangeFactory.changeOwner(units, player, territory));
     } else {
       final Predicate<Unit> enemyNonCom =
-          Matches.unitIsInfrastructure().and(Matches.enemyUnit(player, data));
+          Matches.unitIsInfrastructure()
+              .and(Matches.enemyUnit(player, data.getRelationshipTracker()));
       final Collection<Unit> units = territory.getUnitCollection().getMatches(enemyNonCom);
       // mark no movement for enemy units
       bridge.addChange(ChangeFactory.markNoMovementChange(units));

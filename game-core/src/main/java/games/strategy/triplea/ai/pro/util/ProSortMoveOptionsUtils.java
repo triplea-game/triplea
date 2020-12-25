@@ -200,7 +200,8 @@ public final class ProSortMoveOptionsUtils {
     int minPower = Integer.MAX_VALUE;
     for (final Territory t : territories) {
       final List<Unit> defendingUnits =
-          t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
+          t.getUnitCollection()
+              .getMatches(Matches.enemyUnit(player, data.getRelationshipTracker()));
       final Collection<Unit> attackingUnits = new ArrayList<>(attackMap.get(t).getUnits());
       // Compare the difference in total power when including the unit or not.
       int powerDifference = 0;

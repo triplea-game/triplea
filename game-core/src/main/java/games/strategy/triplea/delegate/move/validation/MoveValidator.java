@@ -580,7 +580,9 @@ public class MoveValidator {
     // units that can enter
     // territories with enemy units during NCM
     if (end.getUnitCollection()
-            .anyMatch(Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate()))
+            .anyMatch(
+                Matches.enemyUnit(player, data.getRelationshipTracker())
+                    .and(Matches.unitIsSubmerged().negate()))
         && !onlyIgnoredUnitsOnPath(route, player, false)
         && !(end.isWater() && units.stream().allMatch(Matches.unitIsAir()))
         && !(Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
@@ -706,7 +708,9 @@ public class MoveValidator {
     if (!isEditMode) {
 
       // Make sure all units are at least friendly
-      for (final Unit unit : CollectionUtils.getMatches(units, Matches.enemyUnit(player, data))) {
+      for (final Unit unit :
+          CollectionUtils.getMatches(
+              units, Matches.enemyUnit(player, data.getRelationshipTracker()))) {
         result.addDisallowedUnit("Can only move friendly units", unit);
       }
 
@@ -951,7 +955,7 @@ public class MoveValidator {
   private boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final GamePlayer player) {
     final Predicate<Unit> alliedOrNonCombat =
         Matches.unitIsInfrastructure()
-            .or(Matches.enemyUnit(player, data).negate())
+            .or(Matches.enemyUnit(player, data.getRelationshipTracker()).negate())
             .or(Matches.unitIsSubmerged());
     // Submerged units do not interfere with movement
     return route.getMiddleSteps().stream()
@@ -968,11 +972,11 @@ public class MoveValidator {
         Matches.unitIsInfrastructure()
             .or(Matches.unitIsTransportButNotCombatTransport())
             .or(Matches.unitIsLand())
-            .or(Matches.enemyUnit(player, data).negate());
+            .or(Matches.enemyUnit(player, data.getRelationshipTracker()).negate());
     final Predicate<Unit> subOnly =
         Matches.unitIsInfrastructure()
             .or(Matches.unitCanBeMovedThroughByEnemies())
-            .or(Matches.enemyUnit(player, data).negate());
+            .or(Matches.enemyUnit(player, data.getRelationshipTracker()).negate());
     final Predicate<Unit> transportOrSubOnly = transportOnly.or(subOnly);
     final boolean getIgnoreTransportInMovement =
         Properties.getIgnoreTransportInMovement(data.getProperties());
@@ -1004,7 +1008,7 @@ public class MoveValidator {
 
   private boolean enemyDestroyerOnPath(final Route route, final GamePlayer player) {
     final Predicate<Unit> enemyDestroyer =
-        Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data));
+        Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data.getRelationshipTracker()));
     return route.getMiddleSteps().stream()
         .anyMatch(current -> current.getUnitCollection().anyMatch(enemyDestroyer));
   }
@@ -1191,7 +1195,7 @@ public class MoveValidator {
               .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
       for (final Unit transport : transports) {
         if (!isNonCombat) {
-          if (Matches.territoryHasEnemyUnits(player, data).test(routeEnd)
+          if (Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).test(routeEnd)
               || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(routeEnd)) {
             // this is an amphibious assault
             if (subsPreventUnescortedAmphibAssaults
@@ -1207,7 +1211,8 @@ public class MoveValidator {
           } else if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(routeEnd)) {
             // this is an unload to a friendly territory
             if (isScramblingOrKamikazeAttacksEnabled
-                || !Matches.territoryIsEmptyOfCombatUnits(data, player).test(routeStart)) {
+                || !Matches.territoryIsEmptyOfCombatUnits(data.getRelationshipTracker(), player)
+                    .test(routeStart)) {
               // Unloading a transport from a sea zone with a battle, to a friendly land territory,
               // during combat move phase, is illegal and in addition to being illegal, it is also
               // causing problems if
@@ -1304,7 +1309,8 @@ public class MoveValidator {
         return result.setErrorReturnResult("Units cannot move before loading onto transports");
       }
       final Predicate<Unit> enemyNonSubmerged =
-          Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate());
+          Matches.enemyUnit(player, data.getRelationshipTracker())
+              .and(Matches.unitIsSubmerged().negate());
       if (!Properties.getUnitsCanLoadInHostileSeaZones(data.getProperties())
           && route.getEnd().getUnitCollection().anyMatch(enemyNonSubmerged)
           && nonParatroopersPresent(player, landAndAir)
@@ -1801,8 +1807,10 @@ public class MoveValidator {
             .and(
                 Matches.territoryWasFoughtOver(AbstractMoveDelegate.getBattleTracker(data))
                     .negate());
-    final Predicate<Territory> noEnemyUnits = Matches.territoryHasNoEnemyUnits(player, data);
-    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
+    final Predicate<Territory> noEnemyUnits =
+        Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker());
+    final Predicate<Territory> noAa =
+        Matches.territoryHasEnemyAaForFlyOver(player, data.getRelationshipTracker()).negate();
     final List<Predicate<Territory>> prioritizedMovePreferences =
         new ArrayList<>(
             List.of(

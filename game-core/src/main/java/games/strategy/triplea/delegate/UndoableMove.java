@@ -121,7 +121,7 @@ public class UndoableMove extends AbstractUndoableMove {
             final Collection<Unit> enemyTargetsTotal =
                 end.getUnitCollection()
                     .getMatches(
-                        Matches.enemyUnit(bridge.getGamePlayer(), data)
+                        Matches.enemyUnit(bridge.getGamePlayer(), data.getRelationshipTracker())
                             .and(Matches.unitCanBeDamaged())
                             .and(Matches.unitIsBeingTransported().negate()));
             final Collection<Unit> enemyTargets =

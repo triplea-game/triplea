@@ -148,7 +148,9 @@ public class MustFightBattle extends DependentBattle
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
     defendingUnits.addAll(
-        this.battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));
+        this.battleSite
+            .getUnitCollection()
+            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
     maxRounds =
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
@@ -158,7 +160,9 @@ public class MustFightBattle extends DependentBattle
   void resetDefendingUnits(final GamePlayer attacker, final GameState data) {
     defendingUnits.clear();
     defendingUnits.addAll(
-        battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));
+        battleSite
+            .getUnitCollection()
+            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
   }
 
   /** Used for head-less battles. */
@@ -300,7 +304,8 @@ public class MustFightBattle extends DependentBattle
       remaining.addAll(
           CollectionUtils.getMatches(
               unitsLeftInTerritory,
-              Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker, gameData))));
+              Matches.unitIsOwnedBy(defender)
+                  .or(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))));
     }
     return new ArrayList<>(remaining);
   }
@@ -876,7 +881,7 @@ public class MustFightBattle extends DependentBattle
     // there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
     final Predicate<Unit> enemyUnitsThatPreventRetreat =
-        PredicateBuilder.of(Matches.enemyUnit(attacker, gameData))
+        PredicateBuilder.of(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))
             .and(Matches.unitIsNotInfrastructure())
             .and(Matches.unitIsBeingTransported().negate())
             .and(Matches.unitIsSubmerged().negate())

@@ -412,7 +412,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
     // we want to match all sea zones with our units and enemy units
     final Predicate<Territory> anyTerritoryWithOwnAndEnemy =
-        Matches.territoryHasUnitsOwnedBy(player).and(Matches.territoryHasEnemyUnits(player, data));
+        Matches.territoryHasUnitsOwnedBy(player)
+            .and(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()));
     final Predicate<Territory> enemyTerritoryAndOwnUnits =
         Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
             .and(Matches.territoryHasUnitsOwnedBy(player));
@@ -441,7 +442,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // add the dependants to the attacking list
       attackingUnits.addAll(dependants);
       final List<Unit> enemyUnits =
-          territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
+          territory
+              .getUnitCollection()
+              .getMatches(Matches.enemyUnit(player, data.getRelationshipTracker()));
       final IBattle bombingBattle = battleTracker.getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         // we need to remove any units which are participating in bombing raids
@@ -623,7 +626,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // units
     for (final Territory territory : battleTerritories) {
       final List<Unit> abandonedToUnits =
-          territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
+          territory
+              .getUnitCollection()
+              .getMatches(Matches.enemyUnit(player, data.getRelationshipTracker()));
       final GamePlayer abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(abandonedToUnits);
 
       // now make sure to add any units that must move with these units, so that they get included
@@ -1519,7 +1524,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     canNotLand.addAll(battleTracker.getPendingBattleSites(false));
     canNotLand.addAll(
         CollectionUtils.getMatches(
-            data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer, data)));
+            data.getMap().getTerritories(),
+            Matches.territoryHasEnemyUnits(alliedPlayer, data.getRelationshipTracker())));
     final Collection<Territory> possibleTerrs =
         new ArrayList<>(
             data.getMap()

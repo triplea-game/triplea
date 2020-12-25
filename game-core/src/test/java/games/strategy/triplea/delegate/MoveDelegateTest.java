@@ -841,12 +841,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits =
         new ArrayList<>(
-            finlandNorway.getUnitCollection().getMatches(Matches.enemyUnit(germans, gameData)));
+            finlandNorway
+                .getUnitCollection()
+                .getMatches(Matches.enemyUnit(germans, gameData.getRelationshipTracker())));
     final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     final List<Unit> defendingLandUnits =
         new ArrayList<>(
-            finlandNorway.getUnitCollection().getMatches(Matches.enemyUnit(british, gameData)));
+            finlandNorway
+                .getUnitCollection()
+                .getMatches(Matches.enemyUnit(british, gameData.getRelationshipTracker())));
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
@@ -918,12 +922,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits =
         new ArrayList<>(
-            finlandNorway.getUnitCollection().getMatches(Matches.enemyUnit(germans, gameData)));
+            finlandNorway
+                .getUnitCollection()
+                .getMatches(Matches.enemyUnit(germans, gameData.getRelationshipTracker())));
     final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     final List<Unit> defendingLandUnits =
         new ArrayList<>(
-            finlandNorway.getUnitCollection().getMatches(Matches.enemyUnit(british, gameData)));
+            finlandNorway
+                .getUnitCollection()
+                .getMatches(Matches.enemyUnit(british, gameData.getRelationshipTracker())));
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =

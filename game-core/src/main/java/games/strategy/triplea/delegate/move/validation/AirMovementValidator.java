@@ -625,7 +625,10 @@ public final class AirMovementValidator {
 
     // Remove suicide units if combat move and any enemy units at destination
     final Collection<Unit> enemyUnitsAtEnd =
-        route.getEnd().getUnitCollection().getMatches(Matches.enemyUnit(player, player.getData()));
+        route
+            .getEnd()
+            .getUnitCollection()
+            .getMatches(Matches.enemyUnit(player, player.getData().getRelationshipTracker()));
     if (!enemyUnitsAtEnd.isEmpty() && GameStepPropertiesHelper.isCombatMove(player.getData())) {
       ownedAir.removeIf(Matches.unitIsSuicideOnAttack());
     }

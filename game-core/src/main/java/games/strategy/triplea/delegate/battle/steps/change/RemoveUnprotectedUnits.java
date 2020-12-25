@@ -121,7 +121,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
   private Collection<Unit> getEnemyUnitsThatCanFire(final GamePlayer player) {
     final Predicate<Unit> enemyUnitsMatch =
         Matches.unitIsNotLand()
-            .and(Matches.enemyUnit(player, battleState.getGameData()))
+            .and(Matches.enemyUnit(player, battleState.getGameData().getRelationshipTracker()))
             .and(Matches.unitIsSubmerged().negate())
             .and(Matches.unitCanAttack(player));
     return CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), enemyUnitsMatch);

@@ -40,7 +40,8 @@ final class Utils {
                 location,
                 location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
       final List<Unit> enemies =
-          t.getUnitCollection().getMatches(Matches.enemyUnit(location.getOwner(), data));
+          t.getUnitCollection()
+              .getMatches(Matches.enemyUnit(location.getOwner(), data.getRelationshipTracker()));
       strength += AiUtils.strength(enemies, true, location.isWater());
     }
     return strength;
