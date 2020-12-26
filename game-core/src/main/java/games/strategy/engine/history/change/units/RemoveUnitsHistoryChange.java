@@ -24,18 +24,18 @@ import org.triplea.java.collections.IntegerMap;
 /**
  * Removes a set of units in a location and adds a history event
  *
- * <p>Transforms units to other units if needed. See {@link TransformDamagedUnits}
+ * <p>Transforms units to other units if needed. See {@link TransformDamagedUnitsHistoryChange}
  */
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode
-public class RemoveUnits implements HistoryChange {
+public class RemoveUnitsHistoryChange implements HistoryChange {
 
   CompositeChange change = new CompositeChange();
   Territory location;
   Collection<Unit> killedUnits;
   Map<Territory, Collection<Unit>> unloadedUnits = new HashMap<>();
-  TransformDamagedUnits transformDamagedUnits;
+  TransformDamagedUnitsHistoryChange transformDamagedUnitsHistoryChange;
   String messageTemplate;
   /** Units that were killed */
   Collection<Unit> oldUnits = new ArrayList<>();
@@ -43,7 +43,7 @@ public class RemoveUnits implements HistoryChange {
   Collection<Unit> newUnits = new ArrayList<>();
 
   /** @param messageTemplate ${units} and ${territory} will be replaced in this template */
-  public RemoveUnits(
+  public RemoveUnitsHistoryChange(
       final Territory location, final Collection<Unit> killedUnits, final String messageTemplate) {
     this.location = location;
     this.messageTemplate = messageTemplate;
@@ -57,7 +57,8 @@ public class RemoveUnits implements HistoryChange {
           unit.setHits(unit.getUnitAttachment().getHitPoints());
         });
 
-    transformDamagedUnits = new TransformDamagedUnits(location, killedUnits);
+    transformDamagedUnitsHistoryChange =
+        new TransformDamagedUnitsHistoryChange(location, killedUnits);
 
     killedUnits.forEach(
         unit -> {
@@ -83,7 +84,7 @@ public class RemoveUnits implements HistoryChange {
               oldUnits.add(unloadedUnit);
             });
 
-    newUnits.addAll(transformDamagedUnits.getNewUnits());
+    newUnits.addAll(transformDamagedUnitsHistoryChange.getNewUnits());
 
     final Collection<Unit> allUnloadedUnits =
         unloadedUnits.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
@@ -91,14 +92,14 @@ public class RemoveUnits implements HistoryChange {
     // it should also not include unloaded units as they are handled separately
     this.killedUnits =
         oldUnits.stream()
-            .filter(unit -> !transformDamagedUnits.getOldUnits().contains(unit))
+            .filter(unit -> !transformDamagedUnitsHistoryChange.getOldUnits().contains(unit))
             .filter(Predicate.not(allUnloadedUnits::contains))
             .collect(Collectors.toList());
   }
 
   @Override
   public void perform(final IDelegateBridge bridge) {
-    transformDamagedUnits.perform(bridge);
+    transformDamagedUnitsHistoryChange.perform(bridge);
 
     final Collection<Unit> allKilledUnits = new ArrayList<>();
 

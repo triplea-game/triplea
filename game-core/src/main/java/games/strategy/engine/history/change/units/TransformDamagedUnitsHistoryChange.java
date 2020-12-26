@@ -30,7 +30,7 @@ import org.triplea.util.Tuple;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode
-public class TransformDamagedUnits implements HistoryChange {
+public class TransformDamagedUnitsHistoryChange implements HistoryChange {
 
   CompositeChange change = new CompositeChange();
   Territory location;
@@ -39,7 +39,8 @@ public class TransformDamagedUnits implements HistoryChange {
 
   CompositeChange attributeChanges = new CompositeChange();
 
-  public TransformDamagedUnits(final Territory location, final Collection<Unit> damagedUnits) {
+  public TransformDamagedUnitsHistoryChange(
+      final Territory location, final Collection<Unit> damagedUnits) {
     this.location = location;
 
     // check if each of the damaged units are supposed to change when they take damage

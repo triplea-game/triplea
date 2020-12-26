@@ -13,7 +13,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.change.HistoryChangeFactory;
-import games.strategy.engine.history.change.units.RemoveUnits;
+import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -912,9 +912,9 @@ public class AirBattle extends AbstractBattle {
       return;
     }
     final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
-    final RemoveUnits removeUnits =
+    final RemoveUnitsHistoryChange removeUnitsHistoryChange =
         HistoryChangeFactory.removeUnitsFromTerritory(battleSite, killed);
-    removeUnits.perform(bridge);
+    removeUnitsHistoryChange.perform(bridge);
 
     final Collection<IBattle> dependentBattles = battleTracker.getBlocked(AirBattle.this);
     removeFromDependents(killed, bridge, dependentBattles, false);

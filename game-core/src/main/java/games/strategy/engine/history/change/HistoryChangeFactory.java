@@ -2,27 +2,27 @@ package games.strategy.engine.history.change;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.history.change.units.RemoveUnits;
-import games.strategy.engine.history.change.units.TransformDamagedUnits;
+import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
+import games.strategy.engine.history.change.units.TransformDamagedUnitsHistoryChange;
 import java.util.Collection;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class HistoryChangeFactory {
 
-  public TransformDamagedUnits transformDamagedUnits(
+  public TransformDamagedUnitsHistoryChange transformDamagedUnits(
       final Territory location, final Collection<Unit> damagedUnits) {
-    return new TransformDamagedUnits(location, damagedUnits);
+    return new TransformDamagedUnitsHistoryChange(location, damagedUnits);
   }
 
-  public RemoveUnits removeUnitsFromTerritory(
+  public RemoveUnitsHistoryChange removeUnitsFromTerritory(
       final Territory location, final Collection<Unit> killedUnits) {
-    return new RemoveUnits(location, killedUnits, "${units} lost in ${territory}");
+    return new RemoveUnitsHistoryChange(location, killedUnits, "${units} lost in ${territory}");
   }
 
-  public RemoveUnits removeUnitsWithAa(
+  public RemoveUnitsHistoryChange removeUnitsWithAa(
       final Territory location, final Collection<Unit> killedUnits, final String aaType) {
-    return new RemoveUnits(
+    return new RemoveUnitsHistoryChange(
         location, killedUnits, "${units} killed by " + aaType + " in ${territory}");
   }
 }
