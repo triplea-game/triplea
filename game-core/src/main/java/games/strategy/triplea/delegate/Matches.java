@@ -698,7 +698,7 @@ public final class Matches {
     };
   }
 
-  private static Predicate<Unit> unitIsAaThatCanFireOnRound(final int battleRoundNumber) {
+  public static Predicate<Unit> unitIsAaThatCanFireOnRound(final int battleRoundNumber) {
     return obj -> unitTypeIsAaThatCanFireOnRound(battleRoundNumber).test(obj.getType());
   }
 
@@ -780,14 +780,14 @@ public final class Matches {
     return obj -> unitTypeMayOverStackAa().test(obj.getType());
   }
 
-  static Predicate<Unit> unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
+  public static Predicate<Unit> unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
       return ua.getAttackAa(obj.getOwner()) > 0 && ua.getMaxAaAttacks() != 0;
     };
   }
 
-  static Predicate<Unit> unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
+  public static Predicate<Unit> unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
       return ua.getOffensiveAttackAa(obj.getOwner()) > 0 && ua.getMaxAaAttacks() != 0;

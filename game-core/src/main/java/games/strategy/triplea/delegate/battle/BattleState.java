@@ -34,6 +34,12 @@ public interface BattleState {
     }
   }
 
+  enum FireType {
+    AA,
+    NORMAL,
+    BOMBARDMENT,
+  }
+
   enum UnitBattleStatus {
     // units that are either undamaged or damaged
     ALIVE,
