@@ -150,11 +150,10 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
     final String[] tokens = splitOnColon(encodedRelationshipChange);
     assert tokens.length == 3;
-    final GameState gameData = getData();
     return new RelationshipChange(
-        gameData.getPlayerList().getPlayerId(tokens[0]),
-        gameData.getPlayerList().getPlayerId(tokens[1]),
-        gameData.getRelationshipTypeList().getRelationshipType(tokens[2]));
+        getData().getPlayerList().getPlayerId(tokens[0]),
+        getData().getPlayerList().getPlayerId(tokens[1]),
+        getData().getRelationshipTypeList().getRelationshipType(tokens[2]));
   }
 
   /** Returns a set of all other players involved in this PoliticalAction. */
