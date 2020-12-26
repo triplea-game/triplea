@@ -221,9 +221,4 @@ public class GameChooser extends JDialog {
                     .map(PropertyList.Property::getValueProperty)
                     .map(PropertyList.Property.Value::getData));
   }
-
-  private static void appendListItem(
-      final String title, final String value, final StringBuilder builder) {
-    builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
-  }
 }
