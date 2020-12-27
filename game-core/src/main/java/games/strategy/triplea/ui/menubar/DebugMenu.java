@@ -16,6 +16,7 @@ import org.triplea.swing.SwingAction;
 public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
 
+  /** Maps the debug menu title to the function that will create the sub menu items */
   private static final Map<String, Function<TripleAFrame, Collection<JMenuItem>>> menuCallbacks =
       new TreeMap<>();
 
