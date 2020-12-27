@@ -15,7 +15,9 @@ public final class ProLogUi {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
     }
-    settingsWindow = new ProLogWindow(frame);
+    if (settingsWindow == null) {
+      settingsWindow = new ProLogWindow(frame);
+    }
   }
 
   public static void clearCachedInstances() {

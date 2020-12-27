@@ -38,15 +38,19 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.menubar.DebugMenu;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.swing.JMenuItem;
 import lombok.Getter;
 import org.triplea.injection.Injections;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
 /** Pro AI. */
@@ -86,24 +90,35 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
     storedPurchaseTerritories = null;
     storedPoliticalActions = null;
     storedStrafingTerritories = new ArrayList<>();
+
+    // in case there are multiple Pro AIs running at the same time, unregister the one
+    // created before creating one so that there is only one menu item for all of the ProAI
+    DebugMenu.unregisterMenuCallback("Hard AI");
+    DebugMenu.registerMenuCallback("Hard AI", this::initialize);
   }
 
   @Override
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
     calc.stop();
+
+    DebugMenu.unregisterMenuCallback("Hard AI");
   }
 
   public ProOddsCalculator getCalc() {
     return calc;
   }
 
-  public static void initialize(final TripleAFrame frame) {
+  private Collection<JMenuItem> initialize(final TripleAFrame frame) {
     ProLogUi.initialize(frame);
     ProLogger.info("Initialized Hard AI");
+    final JMenuItem logMenuItem =
+        new JMenuItem(SwingAction.of("Show Logs", AbstractProAi::showSettingsWindow));
+    logMenuItem.setMnemonic(KeyEvent.VK_X);
+    return List.of(logMenuItem);
   }
 
-  public static void showSettingsWindow() {
+  private static void showSettingsWindow() {
     ProLogger.info("Showing Hard AI settings window");
     ProLogUi.showSettingsWindow();
   }
