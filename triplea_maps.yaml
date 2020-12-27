@@ -2159,7 +2159,7 @@
 - mapName: Aggression 1941
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/aggression_1941/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/master/description/mapimage.png
   description: |
    <br>A WWII scenario loosely based on 1941, inspired of AA50 Anniversary and Big World.
