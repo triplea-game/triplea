@@ -1,10 +1,11 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
@@ -56,7 +57,7 @@ final class ViewMenu extends JMenu {
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
-  private final GameState gameData;
+  private final List<Territory> gameMapTerritories;
   private final TripleAFrame frame;
   private final UiContext uiContext;
 
@@ -65,7 +66,7 @@ final class ViewMenu extends JMenu {
 
     this.frame = frame;
     this.uiContext = frame.getUiContext();
-    gameData = frame.getGame().getData();
+    gameMapTerritories = frame.getGame().getData().getMap().getTerritories();
 
     setMnemonic(KeyEvent.VK_V);
 
@@ -241,7 +242,9 @@ final class ViewMenu extends JMenu {
     mapSubMenu.setMnemonic(KeyEvent.VK_K);
     add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
-    final Map<String, String> skins = UiContext.getSkins(frame.getGame().getData());
+    final Map<String, String> skins =
+        UiContext.getSkins(
+            frame.getGame().getData().getProperties().get(Constants.MAP_NAME).toString());
     mapSubMenu.setEnabled(skins.size() > 1);
     for (final String key : skins.keySet()) {
       final JMenuItem mapMenuItem = new JRadioButtonMenuItem(key);
@@ -276,7 +279,7 @@ final class ViewMenu extends JMenu {
           }
           TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
           new Thread(
-                  () -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
+                  () -> frame.getMapPanel().updateCountries(gameMapTerritories),
                   "Show map details thread")
               .start();
         });
@@ -304,7 +307,7 @@ final class ViewMenu extends JMenu {
           TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
           TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
           new Thread(
-                  () -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
+                  () -> frame.getMapPanel().updateCountries(gameMapTerritories),
                   "Show map Blends thread")
               .start();
         });
