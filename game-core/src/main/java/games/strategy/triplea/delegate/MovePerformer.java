@@ -336,7 +336,8 @@ public class MovePerformer implements Serializable {
 
   private static Predicate<Territory> getMustFightThroughMatch(
       final GamePlayer gamePlayer, final GameState data) {
-    return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer, data)
+    return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+            gamePlayer, data.getProperties(), data.getRelationshipTracker())
         .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer, data.getRelationshipTracker()))
         .or(
             Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(

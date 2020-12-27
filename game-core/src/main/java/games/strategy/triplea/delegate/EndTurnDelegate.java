@@ -444,7 +444,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         continue;
       }
       // Match will check if territory is originally owned convoy center, or if contested
-      if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).test(current)) {
+      if (Matches.territoryCanCollectIncomeFrom(
+              current.getOwner(), data.getProperties(), data.getRelationshipTracker())
+          .test(current)) {
         resources.add(toAdd.getResourcesCopy());
       }
     }

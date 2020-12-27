@@ -447,7 +447,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
         throw new IllegalStateException("No attachment for owned territory:" + current.getName());
       }
       // Match will Check if territory is originally owned convoy center, or if it is contested
-      if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).test(current)) {
+      if (Matches.territoryCanCollectIncomeFrom(
+              current.getOwner(), data.getProperties(), data.getRelationshipTracker())
+          .test(current)) {
         value += attachment.getProduction();
       }
     }
@@ -483,7 +485,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
           CollectionUtils.getMatches(
               map.getNeighbors(b),
               Matches.isTerritoryOwnedBy(player)
-                  .and(Matches.territoryCanCollectIncomeFrom(player, data)));
+                  .and(
+                      Matches.territoryCanCollectIncomeFrom(
+                          player, data.getProperties(), data.getRelationshipTracker())));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {
         continue;

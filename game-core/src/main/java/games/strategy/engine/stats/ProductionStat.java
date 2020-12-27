@@ -18,7 +18,9 @@ public class ProductionStat implements IStat {
     final int production =
         data.getMap().getTerritories().stream()
             .filter(place -> place.getOwner().equals(player))
-            .filter(Matches.territoryCanCollectIncomeFrom(player, data))
+            .filter(
+                Matches.territoryCanCollectIncomeFrom(
+                    player, data.getProperties(), data.getRelationshipTracker()))
             .mapToInt(TerritoryAttachment::getProduction)
             .sum();
     /*

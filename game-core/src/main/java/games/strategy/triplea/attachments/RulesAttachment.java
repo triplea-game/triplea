@@ -268,7 +268,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-        || Matches.isValidRelationshipName(getData()).test(s[2]))) {
+        || Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2]))) {
       throw new GameParseException(
           "relationship: "
               + s[2]

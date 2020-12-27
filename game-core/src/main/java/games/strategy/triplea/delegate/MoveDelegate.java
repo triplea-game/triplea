@@ -393,7 +393,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final GamePlayer player, final GameState data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits()) {
-      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
+      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+              t, player, data.getRelationshipTracker(), data.getMap())
+          .test(u)) {
         if (!Matches.isUnitAllied(player, data.getRelationshipTracker()).test(u)) {
           continue;
         }
@@ -461,7 +463,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
                     .getMatches(
                         damagedUnitsOwned.and(
                             Matches.unitCanBeRepairedByFacilitiesInItsTerritory(
-                                current, player, data))));
+                                current, player, data.getRelationshipTracker(), data.getMap()))));
       }
       if (!damaged.isEmpty()) {
         damagedMap.put(current, damaged);

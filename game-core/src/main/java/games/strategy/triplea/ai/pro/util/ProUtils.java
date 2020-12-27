@@ -119,7 +119,9 @@ public final class ProUtils {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea
       // Zone, or if contested
       if (place.getOwner().equals(player)
-          && Matches.territoryCanCollectIncomeFrom(player, data).test(place)) {
+          && Matches.territoryCanCollectIncomeFrom(
+                  player, data.getProperties(), data.getRelationshipTracker())
+              .test(place)) {
         production += TerritoryAttachment.getProduction(place);
       }
     }
