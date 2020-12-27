@@ -28,6 +28,7 @@ import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -41,7 +42,6 @@ import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -773,7 +773,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       historySyncher.deactivate();
       historySyncher = null;
     }
-    ProAi.gameOverClearCache();
+    GameShutdownRegistry.runShutdownActions();
   }
 
   /**

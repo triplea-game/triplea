@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
+import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.triplea.ui.TripleAFrame;
 import javax.swing.SwingUtilities;
 
@@ -16,6 +17,7 @@ public final class ProLogUi {
       throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
     }
     settingsWindow = new ProLogWindow(frame);
+    GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);
   }
 
   public static void clearCachedInstances() {
