@@ -15,6 +15,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -663,7 +664,9 @@ public final class Matches {
 
   /** Checks if the unit type can be hit with AA fire by one of the firingUnits */
   private static Predicate<UnitType> unitTypeCanBeHitByAaFire(
-      final Collection<UnitType> firingUnits, final GameState gameData, final int battleRound) {
+      final Collection<UnitType> firingUnits,
+      final UnitTypeList unitTypeList,
+      final int battleRound) {
     // make sure the aa firing units are valid for combat and during this round
     final Collection<UnitType> aaFiringUnits =
         CollectionUtils.getMatches(
@@ -674,7 +677,7 @@ public final class Matches {
             .anyMatch(
                 type -> {
                   final UnitAttachment attachment = UnitAttachment.get(type);
-                  return attachment.getTargetsAa(gameData.getUnitTypeList()).contains(unitType);
+                  return attachment.getTargetsAa(unitTypeList).contains(unitType);
                 });
   }
 
@@ -2390,7 +2393,9 @@ public final class Matches {
         PredicateBuilder.of(unitTypeIsInfrastructure().negate())
             .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
             .or(unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)))
-            .or(unitTypeCanBeHitByAaFire(firingUnits, player.getData(), battleRound));
+            .or(
+                unitTypeCanBeHitByAaFire(
+                    firingUnits, player.getData().getUnitTypeList(), battleRound));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {
