@@ -11,6 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -299,14 +300,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               final List<Unit> suicideUnits =
                   CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack());
               attackingUnits.removeAll(suicideUnits);
-              final Change removeSuicide = ChangeFactory.removeUnits(battleSite, suicideUnits);
-              final String transcriptText =
-                  MyFormatter.unitsToText(suicideUnits) + " lost in " + battleSite.getName();
+
+              HistoryChangeFactory.removeUnitsFromTerritory(battleSite, suicideUnits)
+                  .perform(bridge);
+
               final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
               final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, costs, gameData);
               attackerLostTuv += tuvLostAttacker;
-              bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
-              bridge.addChange(removeSuicide);
             }
             // kill any units that can die if they have reached max damage (veqryn)
             if (targets.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
@@ -318,14 +318,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                       unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(battleSite)));
               if (!unitsCanDie.isEmpty()) {
                 // targets.removeAll(unitsCanDie);
-                final Change removeDead = ChangeFactory.removeUnits(battleSite, unitsCanDie);
-                final String transcriptText =
-                    MyFormatter.unitsToText(unitsCanDie) + " lost in " + battleSite.getName();
+                HistoryChangeFactory.removeUnitsFromTerritory(battleSite, unitsCanDie)
+                    .perform(bridge);
                 final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(defender, gameData);
                 final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, defender, costs, gameData);
                 defenderLostTuv += tuvLostDefender;
-                bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
-                bridge.addChange(removeDead);
               }
             }
           }
@@ -663,18 +660,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IDelegateBridge bridge, final CasualtyDetails casualties, final String currentTypeAa) {
     final List<Unit> killed = casualties.getKilled();
     if (!killed.isEmpty()) {
-      bridge
-          .getHistoryWriter()
-          .addChildToEvent(
-              MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAa,
-              new ArrayList<>(killed));
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
       final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
       attackerLostTuv += tuvLostAttacker;
       // attackingUnits.removeAll(casualties);
       removeAttackers(killed, false);
-      final Change remove = ChangeFactory.removeUnits(battleSite, killed);
-      bridge.addChange(remove);
+      HistoryChangeFactory.removeUnitsWithAa(battleSite, killed, currentTypeAa).perform(bridge);
     }
   }
 
