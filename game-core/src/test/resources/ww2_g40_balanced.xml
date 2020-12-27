@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-  <info name="World War II G40 Balanced" version="2.0"/>
+  <info name="World War II G40 Balanced"/>
   <triplea minimumVersion="1.8"/>
   <diceSides value="6"/>
   <map>

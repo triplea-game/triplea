@@ -26,7 +26,6 @@ public class LobbyGame {
   private Integer playerCount;
   private Integer gameRound;
   private Long epochMilliTimeStarted;
-  private String mapVersion;
   private Boolean passworded;
   private String status;
   @With private String comments;

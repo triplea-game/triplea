@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <game>
-    <info name="info-tag-test" version="123.xyz"/>
+    <info name="info-tag-test"/>
 </game>

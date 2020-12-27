@@ -12,6 +12,5 @@ class InfoTest {
     final Info info = parseMapXml("info.xml").getInfo();
 
     assertThat(info.getName(), is("info-tag-test"));
-    assertThat(info.getVersion(), is("123.xyz"));
   }
 }

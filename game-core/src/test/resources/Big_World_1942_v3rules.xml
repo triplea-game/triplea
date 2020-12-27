@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Big World : 1942 v3 Rules" version="3.8"/>
+        <info name="Big World : 1942 v3 Rules"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
     

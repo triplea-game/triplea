@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2 Test" version="3.6"/>
+        <info name="Pact of Steel 2 Test"/>
         <triplea minimumVersion="1.7"/>
         <diceSides value="6"/>
         <map>

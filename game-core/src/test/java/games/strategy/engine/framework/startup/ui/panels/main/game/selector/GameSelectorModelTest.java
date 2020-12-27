@@ -21,11 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 class GameSelectorModelTest extends AbstractClientSettingTestCase {
-  private static final String fakeGameVersion = "12.34.56";
   private static final String fakeGameRound = "3";
   private static final String fakeGameName = "_fakeGameName_";
 
@@ -53,7 +51,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   private static void assertHasFakeTestData(final GameSelectorModel objectToCheck) {
     assertThat(objectToCheck.getGameName(), is(fakeGameName));
     assertThat(objectToCheck.getGameRound(), is(fakeGameRound));
-    assertThat(objectToCheck.getGameVersion(), is(fakeGameVersion));
   }
 
   @BeforeEach
@@ -88,7 +85,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   private void prepareMockGameDataExpectations() {
-    when(mockGameData.getGameVersion()).thenReturn(new Version(fakeGameVersion));
     when(mockGameData.getSequence()).thenReturn(mockSequence);
     when(mockSequence.getRound()).thenReturn(Integer.valueOf(fakeGameRound));
     when(mockGameData.getGameName()).thenReturn(fakeGameName);
@@ -109,14 +105,12 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
     final String newGameName = " 123";
     final String newGameRound = "gameRound xyz";
-    final String newGameVersion = "gameVersion abc";
 
-    testObj.clearDataButKeepGameInfo(newGameName, newGameRound, newGameVersion);
+    testObj.clearDataButKeepGameInfo(newGameName, newGameRound);
     verifyTestObjectObserverUpdateSent();
     assertThat(testObj.getGameData(), nullValue());
     assertThat(testObj.getGameName(), is(newGameName));
     assertThat(testObj.getGameRound(), is(newGameRound));
-    assertThat(testObj.getGameVersion(), is(newGameVersion));
   }
 
   @Test
@@ -155,11 +149,5 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   void testGetGameRound() {
     this.testObjectSetMockGameData();
     assertThat(testObj.getGameRound(), is(fakeGameRound));
-  }
-
-  @Test
-  void testGetGameVersion() {
-    this.testObjectSetMockGameData();
-    assertThat(testObj.getGameVersion(), is(fakeGameVersion));
   }
 }

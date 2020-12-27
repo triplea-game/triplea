@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-  <info name="Total World War: December 1941" version="2.7.7.2"/>
+  <info name="Total World War: December 1941"/>
   <triplea minimumVersion="1.8"/>
   <diceSides value="12"/>
   <variableList>

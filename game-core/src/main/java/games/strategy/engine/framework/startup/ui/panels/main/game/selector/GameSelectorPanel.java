@@ -55,7 +55,6 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
   private final JLabel nameText = new JLabel();
-  private final JLabel versionText = new JLabel();
   private final JLabel saveGameText = new JLabel();
   private final JLabel roundText = new JLabel();
   private final JButton loadSavedGame =
@@ -116,10 +115,6 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
     add(new JLabel("Game Name:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
     add(nameText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
-    row++;
-
-    add(new JLabel("Game Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
-    add(versionText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
     row++;
 
     add(new JLabel("Game Round:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
@@ -314,7 +309,6 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     SwingAction.invokeNowOrLater(
         () -> {
           nameText.setText(model.getGameName());
-          versionText.setText(model.getGameVersion());
           roundText.setText(model.getGameRound());
           saveGameText.setText(model.getFileName());
 

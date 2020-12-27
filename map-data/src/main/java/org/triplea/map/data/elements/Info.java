@@ -13,5 +13,4 @@ import org.triplea.generic.xml.reader.annotations.Attribute;
 @AllArgsConstructor
 public class Info {
   @XmlAttribute @Attribute private String name;
-  @XmlAttribute @Attribute private String version;
 }

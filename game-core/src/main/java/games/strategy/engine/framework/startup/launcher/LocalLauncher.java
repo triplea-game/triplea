@@ -126,7 +126,6 @@ public class LocalLauncher implements ILauncher {
         new PlayerListing(
             playersEnabled,
             playerTypes,
-            gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound());
     return new LocalLauncher(

@@ -266,7 +266,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             null,
             playersEnabled,
             playerTypes,
-            gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound(),
             null,

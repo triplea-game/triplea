@@ -6,7 +6,7 @@
 <!ELEMENT info EMPTY>
 <!ATTLIST info
 	name CDATA #REQUIRED
-	version CDATA #REQUIRED
+	version CDATA #IMPLIED
 >
 
 <!-- javaClass must implement the IGameLoader interface -->

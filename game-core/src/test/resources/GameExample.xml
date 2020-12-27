@@ -2,10 +2,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-
-    <info name="gameExample" version="1.0" />
-
-
+    <info name="gameExample"/>
 
     <map>
         <territory name="canada"/>

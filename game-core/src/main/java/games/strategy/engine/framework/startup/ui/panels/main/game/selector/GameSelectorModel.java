@@ -44,7 +44,6 @@ public class GameSelectorModel extends Observable implements GameSelector {
   private GameData gameData = null;
 
   @Getter private String gameName = "-";
-  @Getter private String gameVersion = "-";
   @Getter private String gameRound = "-";
   @Nullable private String fileName;
   @Getter private boolean canSelect = true;
@@ -154,13 +153,11 @@ public class GameSelectorModel extends Observable implements GameSelector {
    * We don't have a game data (i.e. we are a remote player and the data has not been sent yet), but
    * we still want to display game info.
    */
-  public void clearDataButKeepGameInfo(
-      final String gameName, final String gameRound, final String gameVersion) {
+  public void clearDataButKeepGameInfo(final String gameName, final String gameRound) {
     synchronized (this) {
       gameData = null;
       this.gameName = gameName;
       this.gameRound = gameRound;
-      this.gameVersion = gameVersion;
     }
     notifyObs();
   }
@@ -172,11 +169,10 @@ public class GameSelectorModel extends Observable implements GameSelector {
   public void setGameData(final GameData data) {
     synchronized (this) {
       if (data == null) {
-        gameName = gameRound = gameVersion = "-";
+        gameName = gameRound = "-";
       } else {
         gameName = data.getGameName();
         gameRound = "" + data.getSequence().getRound();
-        gameVersion = data.getGameVersion().toString();
       }
       gameData = data;
     }

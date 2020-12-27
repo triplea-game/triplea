@@ -43,7 +43,6 @@ final class GameParserTest {
     assertThat(gameData.getDiceSides(), is(notNullValue()));
     assertThat(gameData.getGameLoader(), is(notNullValue()));
     assertThat(gameData.getGameName(), is(notNullValue()));
-    assertThat(gameData.getGameVersion(), is(notNullValue()));
     assertThat(gameData.getHistory().getActivePlayer(), is(notNullValue()));
     assertThat(gameData.getHistory().getLastNode(), is(notNullValue()));
     assertThat(gameData.getMap().getTerritories(), is(notNullValue()));

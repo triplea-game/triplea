@@ -105,7 +105,6 @@ public class InGameLobbyWatcher {
             .round(gameRound)
             .comment(SystemPropertyReader.gameComments())
             .passworded(passworded)
-            .gameVersion("0")
             .build();
 
     final GamePostingResponse gamePostingResponse =
@@ -212,10 +211,7 @@ public class InGameLobbyWatcher {
   }
 
   private void gameSelectorModelUpdated() {
-    postUpdate(
-        gameDescription
-            .withGameName(gameSelectorModel.getGameName())
-            .withGameVersion(gameSelectorModel.getGameVersion()));
+    postUpdate(gameDescription.withGameName(gameSelectorModel.getGameName()));
   }
 
   public void setGameSelectorModel(@Nullable final GameSelectorModel model) {

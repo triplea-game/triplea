@@ -241,7 +241,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             null,
             playersEnabled,
             playerTypes,
-            gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound(),
             null,
