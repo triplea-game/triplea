@@ -934,7 +934,8 @@ public class ProTerritoryManager {
             continue;
           }
           if (myRoute.hasMoreThenOneStep()
-              && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player, data))
+              && myRoute.getMiddleSteps().stream()
+                  .anyMatch(Matches.isTerritoryEnemy(player, data.getRelationshipTracker()))
               && Matches.unitIsOfTypes(
                       TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
                   .test(myLandUnit)) {

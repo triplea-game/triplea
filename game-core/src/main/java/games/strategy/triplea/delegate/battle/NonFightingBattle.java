@@ -83,7 +83,7 @@ public class NonFightingBattle extends DependentBattle {
 
   boolean hasAttackingUnits() {
     final Predicate<Unit> attackingLand =
-        Matches.alliedUnit(attacker, gameData).and(Matches.unitIsLand());
+        Matches.alliedUnit(attacker, gameData.getRelationshipTracker()).and(Matches.unitIsLand());
     return battleSite.getUnitCollection().anyMatch(attackingLand);
   }
 

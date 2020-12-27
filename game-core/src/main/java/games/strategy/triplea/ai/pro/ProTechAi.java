@@ -566,7 +566,7 @@ final class ProTechAi {
         Matches.unitIsTransport().negate().and(Matches.unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
-            .and(Matches.alliedUnit(player, data).negate())
+            .and(Matches.alliedUnit(player, data.getRelationshipTracker()).negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
             .andIf(Properties.getIgnoreTransportInMovement(data.getProperties()), transport)
             .build();

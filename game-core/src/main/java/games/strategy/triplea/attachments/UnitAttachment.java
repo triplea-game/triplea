@@ -2736,7 +2736,9 @@ public class UnitAttachment extends DefaultAttachment {
         stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
         break;
       case "allied":
-        stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner, data));
+        stackingMatch =
+            Matches.unitIsOfType(ut)
+                .and(Matches.isUnitAllied(owner, data.getRelationshipTracker()));
         break;
       default:
         stackingMatch = Matches.unitIsOfType(ut);

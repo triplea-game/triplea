@@ -415,7 +415,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Matches.territoryHasUnitsOwnedBy(player)
             .and(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()));
     final Predicate<Territory> enemyTerritoryAndOwnUnits =
-        Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
+        Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
             .and(Matches.territoryHasUnitsOwnedBy(player));
     final Predicate<Territory> enemyUnitsOrEnemyTerritory =
         anyTerritoryWithOwnAndEnemy.or(enemyTerritoryAndOwnUnits);
@@ -621,7 +621,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             Matches.territoryIsNotUnownedWater()
                 .and(
                     Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
-                        player, data)));
+                        player, data.getRelationshipTracker())));
     // all territories that contain enemy units, where the territory is owned by an enemy of these
     // units
     for (final Territory territory : battleTerritories) {
@@ -1062,16 +1062,17 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           CollectionUtils.getMatches(neighbors, alliedLandTerritories);
       // Get all sea territories where there are allies
       final Predicate<Territory> neighboringSeaZonesWithAlliedUnits =
-          Matches.territoryIsWater().and(Matches.territoryHasAlliedUnits(defender, data));
+          Matches.territoryIsWater()
+              .and(Matches.territoryHasAlliedUnits(defender, data.getRelationshipTracker()));
       // Get those that are neighbors
       final Collection<Territory> areSeaNeighbors =
           CollectionUtils.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
       // Set up match criteria for allied carriers
       final Predicate<Unit> alliedCarrier =
-          Matches.unitIsCarrier().and(Matches.alliedUnit(defender, data));
+          Matches.unitIsCarrier().and(Matches.alliedUnit(defender, data.getRelationshipTracker()));
       // Set up match criteria for allied planes
       final Predicate<Unit> alliedPlane =
-          Matches.unitIsAir().and(Matches.alliedUnit(defender, data));
+          Matches.unitIsAir().and(Matches.alliedUnit(defender, data.getRelationshipTracker()));
       // See if neighboring carriers have any capacity available
       for (final Territory currentTerritory : areSeaNeighbors) {
         // get the capacity of the carriers and cost of fighters
@@ -1225,7 +1226,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // do attacks
     final Collection<GamePlayer> enemies =
         CollectionUtils.getMatches(
-            data.getPlayerList().getPlayers(), Matches.isAtWar(player, data));
+            data.getPlayerList().getPlayers(),
+            Matches.isAtWar(player, data.getRelationshipTracker()));
     if (enemies.isEmpty()) {
       return;
     }
@@ -1585,7 +1587,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   t.getUnitCollection()
                       .getMatches(
                           Matches.unitCanLandOnCarrier()
-                              .and(Matches.alliedUnit(alliedPlayer, data))));
+                              .and(
+                                  Matches.alliedUnit(
+                                      alliedPlayer, data.getRelationshipTracker()))));
         } else {
           carrierCapacity -= carrierCostForCurrentTerr;
         }

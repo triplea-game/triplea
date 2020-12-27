@@ -176,7 +176,7 @@ final class MovableUnitsFilter {
   private boolean isInvading() {
     return !nonCombat
         && route.isUnload()
-        && Matches.isTerritoryEnemy(player, data).test(route.getEnd());
+        && Matches.isTerritoryEnemy(player, data.getRelationshipTracker()).test(route.getEnd());
   }
 
   // Whether the two units are equivalent for the purposes of movement.
@@ -190,7 +190,8 @@ final class MovableUnitsFilter {
     // TODO kev check for already loaded airTransports
     if (MoveValidator.isLoad(units, dependentUnits, route, player)) {
       final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
-      return unitsAtEnd.getMatches(Matches.unitIsTransport().and(Matches.alliedUnit(player, data)));
+      return unitsAtEnd.getMatches(
+          Matches.unitIsTransport().and(Matches.alliedUnit(player, data.getRelationshipTracker())));
     }
     return List.of();
   }

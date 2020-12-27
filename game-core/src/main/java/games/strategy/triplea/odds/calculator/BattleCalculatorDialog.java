@@ -113,7 +113,9 @@ public class BattleCalculatorDialog extends JDialog {
     final BattleCalculatorDialog currentDialog = instances.get(instances.size() - 1);
     currentDialog.panel.addDefendingUnits(
         t.getUnitCollection()
-            .getMatches(Matches.alliedUnit(currentDialog.panel.getDefender(), t.getData())));
+            .getMatches(
+                Matches.alliedUnit(
+                    currentDialog.panel.getDefender(), t.getData().getRelationshipTracker())));
     currentDialog.pack();
   }
 

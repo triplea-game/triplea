@@ -1469,7 +1469,8 @@ public class MustFightBattle extends DependentBattle
 
     // do we need to change ownership
     if (attackingUnits.stream().anyMatch(Matches.unitIsNotAir())) {
-      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker, gameData).test(battleSite)) {
+      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker, gameData.getRelationshipTracker())
+          .test(battleSite)) {
         battleTracker.addToConquered(battleSite);
       }
       battleTracker.takeOver(battleSite, attacker, bridge, null, attackingUnits);

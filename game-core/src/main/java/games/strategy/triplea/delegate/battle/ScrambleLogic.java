@@ -62,7 +62,9 @@ public class ScrambleLogic {
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());
     this.canScrambleFromPredicate =
-        PredicateBuilder.of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player, data)))
+        PredicateBuilder.of(
+                Matches.territoryIsWater()
+                    .or(Matches.isTerritoryEnemy(player, data.getRelationshipTracker())))
             .and(
                 Matches.territoryHasUnitsThatMatch(
                     Matches.unitCanScramble()
