@@ -45,7 +45,8 @@ public class FiringGroupSplitterAa
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         side == DEFENSE
             ? TechAbilityAttachment.getAirborneTargettedByAa(
-                battleState.getPlayer(side.getOpposite()), battleState.getGameData())
+                battleState.getPlayer(side.getOpposite()),
+                battleState.getGameData().getTechnologyFrontier())
             : Map.of();
 
     final Collection<Unit> aaUnits =

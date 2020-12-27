@@ -219,7 +219,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
   private static void initTech(final IDelegateBridge bridge) {
     final GameState data = bridge.getData();
     for (final GamePlayer player : data.getPlayerList().getPlayers()) {
-      final Collection<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data);
+      final Collection<TechAdvance> advances =
+          TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier());
       if (!advances.isEmpty()) {
         bridge
             .getHistoryWriter()

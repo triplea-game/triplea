@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -178,7 +177,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       currTokens = player.getResources().getQuantity(Constants.TECH_TOKENS);
     }
     final GameData data = getData();
-    if (getAvailableTechs(player, data).isEmpty()) {
+    if (getAvailableTechs(player, data.getTechnologyFrontier()).isEmpty()) {
       if (Properties.getWW2V3TechModel(getData().getProperties())) {
         final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
         final String transcriptText = player.getName() + " No more available tech advances.";
@@ -408,19 +407,22 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private List<TechAdvance> getAvailableAdvances() {
-    return getAvailableTechs(bridge.getGamePlayer(), getData());
+    return getAvailableTechs(bridge.getGamePlayer(), getData().getTechnologyFrontier());
   }
 
-  public static List<TechAdvance> getAvailableTechs(final GamePlayer player, final GameState data) {
+  public static List<TechAdvance> getAvailableTechs(
+      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
     final Collection<TechAdvance> currentAdvances =
-        TechTracker.getCurrentTechAdvances(player, data);
-    final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);
+        TechTracker.getCurrentTechAdvances(player, technologyFrontier);
+    final Collection<TechAdvance> allAdvances =
+        TechAdvance.getTechAdvances(technologyFrontier, player);
     return CollectionUtils.difference(allAdvances, currentAdvances);
   }
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
     final Collection<TechAdvance> playersAdvances =
-        TechTracker.getCurrentTechAdvances(bridge.getGamePlayer(), getData());
+        TechTracker.getCurrentTechAdvances(
+            bridge.getGamePlayer(), getData().getTechnologyFrontier());
     return CollectionUtils.difference(techCategory.getTechs(), playersAdvances);
   }
 

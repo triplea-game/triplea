@@ -175,7 +175,8 @@ class TechAbilityAttachmentTest {
         .when(mapper)
         .apply(attachment);
     final int result =
-        TechAbilityAttachment.sumIntegerMap(mapper, dummyUnitType, mock(GamePlayer.class), data);
+        TechAbilityAttachment.sumIntegerMap(
+            mapper, dummyUnitType, mock(GamePlayer.class), data.getTechnologyFrontier());
     assertEquals(319, result);
   }
 
@@ -190,7 +191,7 @@ class TechAbilityAttachmentTest {
             },
             "NamedAttachable{name=test}",
             mock(GamePlayer.class),
-            data);
+            data.getTechnologyFrontier());
     assertEquals(101, result);
   }
 }

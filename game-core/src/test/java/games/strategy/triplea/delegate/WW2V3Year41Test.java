@@ -421,7 +421,8 @@ class WW2V3Year41Test {
     techDelegate.start();
     final TechnologyFrontier mech = new TechnologyFrontier("", gameData);
     mech.addAdvance(
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, gameData, null));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, gameData.getTechnologyFrontier(), null));
     // Add tech token
     gameData.performChange(
         ChangeFactory.changeResourcesChange(
@@ -672,7 +673,10 @@ class WW2V3Year41Test {
     TechTracker.addAdvance(
         germans,
         delegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, gameData, germans));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY,
+            gameData.getTechnologyFrontier(),
+            germans));
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     advanceToStep(delegateBridge, "CombatMove");
@@ -720,7 +724,8 @@ class WW2V3Year41Test {
     TechTracker.addAdvance(
         germans,
         delegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_JET_POWER, gameData, germans));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_JET_POWER, gameData.getTechnologyFrontier(), germans));
     // Set up the territories
     final Territory poland = territory("Poland", gameData);
     final Territory eastPoland = territory("East Poland", gameData);
@@ -1803,7 +1808,9 @@ class WW2V3Year41Test {
         germans,
         delegateBridge,
         TechAdvance.findAdvance(
-            TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, gameData, germans));
+            TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION,
+            gameData.getTechnologyFrontier(),
+            germans));
     // damage a factory
     startHits = new IntegerMap<>();
     startHits.put(factory, 2);

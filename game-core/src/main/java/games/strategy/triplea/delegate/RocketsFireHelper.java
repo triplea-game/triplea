@@ -104,7 +104,8 @@ public class RocketsFireHelper implements Serializable {
     final Map<Territory, Integer> previouslyAttackedTerritories = new LinkedHashMap<>();
     for (final Territory attackFrom : getTerritoriesWithRockets(data, player)) {
       final Set<Territory> targets = getTargetsWithinRange(attackFrom, data, player);
-      final int maxAttacks = TechAbilityAttachment.getRocketNumberPerTerritory(player, data);
+      final int maxAttacks =
+          TechAbilityAttachment.getRocketNumberPerTerritory(player, data.getTechnologyFrontier());
       for (final Territory t : previouslyAttackedTerritories.keySet()) {
         // negative Rocket Number per Territory == unlimited
         if (maxAttacks >= 0 && maxAttacks <= previouslyAttackedTerritories.get(t)) {
@@ -222,7 +223,8 @@ public class RocketsFireHelper implements Serializable {
 
   private static Set<Territory> getTargetsWithinRange(
       final Territory territory, final GameState data, final GamePlayer player) {
-    final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
+    final int maxDistance =
+        TechAbilityAttachment.getRocketDistance(player, data.getTechnologyFrontier());
 
     final Set<Territory> hasFactory = new HashSet<>();
     final Predicate<Territory> allowed =
@@ -290,8 +292,9 @@ public class RocketsFireHelper implements Serializable {
           new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
       numberOfAttacks =
           Math.min(
-              TechAbilityAttachment.getRocketNumberPerTerritory(player, data),
-              TechAbilityAttachment.getRocketDiceNumber(rockets, data));
+              TechAbilityAttachment.getRocketNumberPerTerritory(
+                  player, data.getTechnologyFrontier()),
+              TechAbilityAttachment.getRocketDiceNumber(rockets, data.getTechnologyFrontier()));
     }
     if (numberOfAttacks <= 0) {
       return;

@@ -855,7 +855,8 @@ public class WeakAi extends AbstractBuiltInAi {
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
-                data,
+                data.getTechnologyFrontier(),
+                data.getProperties(),
                 false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
@@ -863,13 +864,25 @@ public class WeakAi extends AbstractBuiltInAi {
         if (fixTerr.equals(capitol)) {
           capProduction =
               UnitUtils.getHowMuchCanUnitProduce(
-                  possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
+                  possibleFactoryNeedingRepair,
+                  fixTerr,
+                  player,
+                  data.getTechnologyFrontier(),
+                  data.getProperties(),
+                  true,
+                  true);
           capUnit = possibleFactoryNeedingRepair;
           capUnitTerritory = fixTerr;
         }
         currentProduction +=
             UnitUtils.getHowMuchCanUnitProduce(
-                possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
+                possibleFactoryNeedingRepair,
+                fixTerr,
+                player,
+                data.getTechnologyFrontier(),
+                data.getProperties(),
+                true,
+                true);
       }
       repairFactories.remove(capitol);
       unitsThatCanProduceNeedingRepair.remove(capUnit);
@@ -896,7 +909,13 @@ public class WeakAi extends AbstractBuiltInAi {
           diff = capUnit.getUnitDamage();
           final int unitProductionAllowNegative =
               UnitUtils.getHowMuchCanUnitProduce(
-                      capUnit, capUnitTerritory, player, data, false, true)
+                      capUnit,
+                      capUnitTerritory,
+                      player,
+                      data.getTechnologyFrontier(),
+                      data.getProperties(),
+                      false,
+                      true)
                   - diff;
           if (!repairFactories.isEmpty()) {
             diff = Math.min(diff, (maxUnits / 2 - unitProductionAllowNegative) + 1);
@@ -946,7 +965,8 @@ public class WeakAi extends AbstractBuiltInAi {
                         fixUnit,
                         unitsThatCanProduceNeedingRepair.get(fixUnit),
                         player,
-                        data,
+                        data.getTechnologyFrontier(),
+                        data.getProperties(),
                         false,
                         true)
                     - diff;

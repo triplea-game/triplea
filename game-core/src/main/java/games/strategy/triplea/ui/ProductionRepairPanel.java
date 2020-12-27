@@ -241,7 +241,8 @@ class ProductionRepairPanel extends JPanel {
     for (final Rule current : rules) {
       spent.add(current.getCost(), current.getQuantity());
     }
-    final double discount = TechAbilityAttachment.getRepairDiscount(gamePlayer, data);
+    final double discount =
+        TechAbilityAttachment.getRepairDiscount(gamePlayer, data.getTechnologyFrontier());
     if (discount != 1.0D) {
       spent.discount(discount);
     }

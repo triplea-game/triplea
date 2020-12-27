@@ -10,6 +10,8 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceList;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -102,7 +104,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     final PlayerAttachment pa = PlayerAttachment.get(player);
     // can't collect unless you own your own capital
     if (!canPlayerCollectIncome(player, data.getMap())) {
-      endTurnReport.append(rollWarBondsForFriends(bridge, player, data));
+      endTurnReport.append(
+          rollWarBondsForFriends(
+              bridge, player, data.getTechnologyFrontier(), data.getMap(), data.getResourceList()));
       // we do not collect any income this turn
     } else {
       // just collect resources
@@ -138,7 +142,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       bridge.getHistoryWriter().startEvent(transcriptText);
       endTurnReport.append(transcriptText).append("<br />");
       // do war bonds
-      final int bonds = rollWarBonds(bridge, player, data);
+      final int bonds = rollWarBonds(bridge, player, data.getTechnologyFrontier());
       if (bonds > 0) {
         total += bonds;
         toAdd += bonds;
@@ -283,9 +287,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private int rollWarBonds(
-      final IDelegateBridge delegateBridge, final GamePlayer player, final GameState data) {
-    final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
-    final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
+      final IDelegateBridge delegateBridge,
+      final GamePlayer player,
+      final TechnologyFrontier technologyFrontier) {
+    final int count = TechAbilityAttachment.getWarBondDiceNumber(player, technologyFrontier);
+    final int sides = TechAbilityAttachment.getWarBondDiceSides(player, technologyFrontier);
     if (sides <= 0 || count <= 0) {
       return 0;
     }
@@ -304,9 +310,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private String rollWarBondsForFriends(
-      final IDelegateBridge delegateBridge, final GamePlayer player, final GameState data) {
-    final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
-    final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
+      final IDelegateBridge delegateBridge,
+      final GamePlayer player,
+      final TechnologyFrontier technologyFrontier,
+      final GameMap gameMap,
+      final ResourceList resourceList) {
+    final int count = TechAbilityAttachment.getWarBondDiceNumber(player, technologyFrontier);
+    final int sides = TechAbilityAttachment.getWarBondDiceSides(player, technologyFrontier);
     if (sides <= 0 || count <= 0) {
       return "";
     }
@@ -324,12 +334,12 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     // take first one
     GamePlayer giveWarBondsTo = null;
     for (final GamePlayer p : shareWith) {
-      final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
-      final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
+      final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, technologyFrontier);
+      final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, technologyFrontier);
       // if both are zero, then it must mean we did not share our war bonds tech with them, even
       // though we are sharing
       // all tech (because they cannot have this tech)
-      if (diceSides <= 0 && diceCount <= 0 && canPlayerCollectIncome(p, data.getMap())) {
+      if (diceSides <= 0 && diceCount <= 0 && canPlayerCollectIncome(p, gameMap)) {
         giveWarBondsTo = p;
         break;
       }
@@ -349,7 +359,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     for (int i = 0; i < dice.size(); i++) {
       totalWarBonds += dice.getDie(i).getValue() + 1;
     }
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = resourceList.getResource(Constants.PUS);
     final int currentPUs = giveWarBondsTo.getResources().getQuantity(pus);
     final String transcriptText =
         player.getName()

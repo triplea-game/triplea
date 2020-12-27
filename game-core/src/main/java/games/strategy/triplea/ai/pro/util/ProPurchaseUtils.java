@@ -226,7 +226,13 @@ public final class ProPurchaseUtils {
       return Integer.MAX_VALUE;
     }
     return UnitUtils.getProductionPotentialOfTerritory(
-        territory.getUnits(), territory, player, data, true, true);
+        territory.getUnits(),
+        territory,
+        player,
+        data.getTechnologyFrontier(),
+        data.getProperties(),
+        true,
+        true);
   }
 
   /**

@@ -3,10 +3,11 @@ package games.strategy.triplea;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -32,14 +33,22 @@ public class UnitUtils {
       final Collection<Unit> unitsAtStartOfStepInTerritory,
       final Territory producer,
       final GamePlayer player,
-      final GameState data,
+      final TechnologyFrontier technologyFrontier,
+      final GameProperties properties,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     return getHowMuchCanUnitProduce(
-        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage),
+        getBiggestProducer(
+            unitsAtStartOfStepInTerritory,
+            producer,
+            player,
+            technologyFrontier,
+            properties,
+            accountForDamage),
         producer,
         player,
-        data,
+        technologyFrontier,
+        properties,
         accountForDamage,
         mathMaxZero);
   }
@@ -55,7 +64,8 @@ public class UnitUtils {
       final Collection<Unit> units,
       final Territory producer,
       final GamePlayer player,
-      final GameState data,
+      final TechnologyFrontier technologyFrontier,
+      final GameProperties properties,
       final boolean accountForDamage) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
@@ -70,7 +80,8 @@ public class UnitUtils {
     int highestCapacity = Integer.MIN_VALUE;
     for (final Unit u : factories) {
       final int capacity =
-          getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage, false);
+          getHowMuchCanUnitProduce(
+              u, producer, player, technologyFrontier, properties, accountForDamage, false);
       productionPotential.put(u, capacity);
       if (capacity > highestCapacity) {
         highestCapacity = capacity;
@@ -92,7 +103,8 @@ public class UnitUtils {
       final Unit unit,
       final Territory producer,
       final GamePlayer player,
-      final GameState data,
+      final TechnologyFrontier technologyFrontier,
+      final GameProperties properties,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     if (unit == null) {
@@ -111,7 +123,7 @@ public class UnitUtils {
     }
     int productionCapacity;
     if (accountForDamage) {
-      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(properties)) {
         if (ua.getCanProduceXUnits() < 0) {
           // we could use territoryUnitProduction OR
           // territoryProduction if we wanted to, however we should
@@ -124,36 +136,31 @@ public class UnitUtils {
         productionCapacity = territoryProduction;
         if (productionCapacity < 1) {
           productionCapacity =
-              (Properties.getWW2V2(data.getProperties())
-                      || Properties.getWW2V3(data.getProperties()))
-                  ? 0
-                  : 1;
+              (Properties.getWW2V2(properties) || Properties.getWW2V3(properties)) ? 0 : 1;
         }
       }
     } else {
       if (ua.getCanProduceXUnits() < 0
-          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
-              data.getProperties())) {
+          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(properties)) {
         productionCapacity = territoryProduction;
       } else if (ua.getCanProduceXUnits() < 0
-          && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
+          && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(properties)) {
         productionCapacity = territoryUnitProduction;
       } else {
         productionCapacity = ua.getCanProduceXUnits();
       }
       if (productionCapacity < 1
-          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
-              data.getProperties())) {
+          && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(properties)) {
         productionCapacity =
-            (Properties.getWW2V2(data.getProperties()) || Properties.getWW2V3(data.getProperties()))
-                ? 0
-                : 1;
+            (Properties.getWW2V2(properties) || Properties.getWW2V3(properties)) ? 0 : 1;
       }
     }
     // Increase production if have industrial technology
     if (territoryProduction
-        >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(player, data)) {
-      productionCapacity += TechAbilityAttachment.getProductionBonus(unit.getType(), player, data);
+        >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(
+            player, technologyFrontier)) {
+      productionCapacity +=
+          TechAbilityAttachment.getProductionBonus(unit.getType(), player, technologyFrontier);
     }
     return mathMaxZero ? Math.max(0, productionCapacity) : productionCapacity;
   }

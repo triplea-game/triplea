@@ -167,7 +167,8 @@ final class EditValidator {
       if (tech == null) {
         return "No tech selected";
       }
-      if (!TechnologyDelegate.getAvailableTechs(player, data).contains(tech)) {
+      if (!TechnologyDelegate.getAvailableTechs(player, data.getTechnologyFrontier())
+          .contains(tech)) {
         return "Technology not available for this player";
       }
     }
@@ -190,7 +191,8 @@ final class EditValidator {
       if (tech == null) {
         return "No tech selected";
       }
-      if (!TechTracker.getCurrentTechAdvances(player, data).contains(tech)) {
+      if (!TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier())
+          .contains(tech)) {
         return "Player does not have this tech";
       }
       if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY)) {
