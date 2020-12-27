@@ -482,10 +482,9 @@ public class TerritoryAttachment extends DefaultAttachment {
       final String encodedCaptureOwnershipChange) {
     final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
     assert tokens.length == 2;
-    final GameState gameData = getData();
     return new CaptureOwnershipChange(
-        gameData.getPlayerList().getPlayerId(tokens[0]),
-        gameData.getPlayerList().getPlayerId(tokens[1]));
+        getData().getPlayerList().getPlayerId(tokens[0]),
+        getData().getPlayerList().getPlayerId(tokens[1]));
   }
 
   private void setTerritoryEffect(final String value) throws GameParseException {

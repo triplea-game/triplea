@@ -779,7 +779,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(mySeaUnit)) {
             range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
@@ -934,7 +934,8 @@ public class ProTerritoryManager {
             continue;
           }
           if (myRoute.hasMoreThenOneStep()
-              && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player, data))
+              && myRoute.getMiddleSteps().stream()
+                  .anyMatch(Matches.isTerritoryEnemy(player, data.getRelationshipTracker()))
               && Matches.unitIsOfTypes(
                       TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
                   .test(myLandUnit)) {
@@ -1026,7 +1027,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(myAirUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(myAirUnit)) {
             range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
@@ -1154,7 +1155,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           movesLeft = UnitAttachment.get(myTransportUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(myTransportUnit)) {
             movesLeft++; // assumes bonus of +1 for now
           }
@@ -1189,7 +1190,7 @@ public class ProTerritoryManager {
             final Set<Territory> myUnitsToLoadTerritories = new HashSet<>();
             if (TransportTracker.isTransporting(myTransportUnit)) {
               units.addAll(TransportTracker.transporting(myTransportUnit));
-            } else if (Matches.territoryHasEnemySeaUnits(player, data)
+            } else if (Matches.territoryHasEnemySeaUnits(player, data.getRelationshipTracker())
                 .negate()
                 .test(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories =
@@ -1362,7 +1363,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                  myUnitTerritory, player, data)
+                  myUnitTerritory, player, data.getRelationshipTracker(), data.getMap())
               .test(mySeaUnit)) {
             range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }

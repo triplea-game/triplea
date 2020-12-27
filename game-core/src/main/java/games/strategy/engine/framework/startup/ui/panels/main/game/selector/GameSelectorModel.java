@@ -7,9 +7,9 @@ import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.GameParsingValidation;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
-import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.IOException;
@@ -194,7 +194,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   public void onGameEnded() {
     // clear out ai cached properties (this ended up being the best place to put it,
     // as we have definitely left a game at this point)
-    ProAi.gameOverClearCache();
+    GameShutdownRegistry.runShutdownActions();
     new Thread(this::loadDefaultGameSameThread).start();
   }
 

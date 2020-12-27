@@ -9,10 +9,13 @@ checks:
       threshold: 5
   method-complexity:
     config:
-      threshold: 7
+      threshold: 25
   method-lines:
     config:
       threshold: 50
+  file-lines:
+    config:
+      threshold: 1000
   similar-code:
     config:
       threshold: 80

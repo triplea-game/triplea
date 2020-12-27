@@ -165,15 +165,51 @@ public class GameStep extends GameDataComponent {
         || name.endsWith("NonCombatMove");
   }
 
-  public static boolean isPurchaseOrBidStep(final String stepName) {
-    return stepName.endsWith("Bid") || isPurchase(stepName);
+  public static boolean isTechStep(final String stepName) {
+    return stepName.endsWith("Tech");
   }
 
-  public static boolean isPurchase(final String stepName) {
+  public static boolean isMoveStep(final String stepName) {
+    return stepName.endsWith("Move");
+  }
+
+  public static boolean isNonCombatMoveStep(final String stepName) {
+    return stepName.endsWith("NonCombatMove");
+  }
+
+  public static boolean isBattleStep(final String stepName) {
+    return stepName.endsWith("Battle");
+  }
+
+  public static boolean isPoliticsStep(final String stepName) {
+    return stepName.endsWith("Politics");
+  }
+
+  public static boolean isUserActionsStep(final String stepName) {
+    return stepName.endsWith("UserActions");
+  }
+
+  public static boolean isEndTurnStep(final String stepName) {
+    return stepName.endsWith("EndTurn");
+  }
+
+  public static boolean isPurchaseOrBidStep(final String stepName) {
+    return isBidStep(stepName) || isPurchaseStep(stepName);
+  }
+
+  public static boolean isPurchaseStep(final String stepName) {
     return stepName.endsWith("Purchase");
+  }
+
+  public static boolean isBidStep(final String stepName) {
+    return stepName.endsWith("Bid");
   }
 
   public static boolean isPlaceStep(final String stepName) {
     return stepName.endsWith("Place");
+  }
+
+  public static boolean isTechActivationStep(final String stepName) {
+    return stepName.endsWith("TechActivation");
   }
 }

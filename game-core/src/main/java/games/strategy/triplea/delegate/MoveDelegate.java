@@ -346,7 +346,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final IDelegateBridge bridge, final GamePlayer player) {
     final GameState data = bridge.getData();
     final Predicate<Unit> crippledAlliedCarriersMatch =
-        Matches.isUnitAllied(player, data)
+        Matches.isUnitAllied(player, data.getRelationshipTracker())
             .and(Matches.unitIsOwnedBy(player).negate())
             .and(Matches.unitIsCarrier())
             .and(
@@ -393,13 +393,16 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final GamePlayer player, final GameState data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits()) {
-      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
-        if (!Matches.isUnitAllied(player, data).test(u)) {
+      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+              t, player, data.getRelationshipTracker(), data.getMap())
+          .test(u)) {
+        if (!Matches.isUnitAllied(player, data.getRelationshipTracker()).test(u)) {
           continue;
         }
         int bonusMovement = Integer.MIN_VALUE;
         final Predicate<Unit> givesBonusUnit =
-            Matches.alliedUnit(player, data).and(Matches.unitCanGiveBonusMovementToThisUnit(u));
+            Matches.alliedUnit(player, data.getRelationshipTracker())
+                .and(Matches.unitCanGiveBonusMovementToThisUnit(u));
         final Collection<Unit> givesBonusUnits =
             new ArrayList<>(CollectionUtils.getMatches(t.getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
@@ -460,7 +463,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
                     .getMatches(
                         damagedUnitsOwned.and(
                             Matches.unitCanBeRepairedByFacilitiesInItsTerritory(
-                                current, player, data))));
+                                current, player, data.getRelationshipTracker(), data.getMap()))));
       }
       if (!damaged.isEmpty()) {
         damagedMap.put(current, damaged);
@@ -568,7 +571,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     final GamePlayer owner = unitToBeRepaired.getOwner();
     final Predicate<Unit> repairUnit =
-        Matches.alliedUnit(owner, data)
+        Matches.alliedUnit(owner, data.getRelationshipTracker())
             .and(Matches.unitCanRepairOthers())
             .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
     final Set<Unit> repairUnitsForThisUnit =
@@ -578,7 +581,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitLand =
-            Matches.alliedUnit(owner, data)
+            Matches.alliedUnit(owner, data.getRelationshipTracker())
                 .and(Matches.unitCanRepairOthers())
                 .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
                 .and(Matches.unitIsLand());
@@ -590,7 +593,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
               data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitSea =
-            Matches.alliedUnit(owner, data)
+            Matches.alliedUnit(owner, data.getRelationshipTracker())
                 .and(Matches.unitCanRepairOthers())
                 .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
                 .and(Matches.unitIsSea());

@@ -17,7 +17,6 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.MainFrame;
-import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.File;
@@ -74,7 +73,7 @@ public final class GameRunner {
    * lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
-    ProAi.gameOverClearCache();
+    GameShutdownRegistry.runShutdownActions();
 
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
       MainFrame.show();

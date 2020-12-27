@@ -3,6 +3,7 @@ package games.strategy.triplea.ai;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -13,6 +14,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -217,7 +219,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final String acceptanceQuestion,
       final boolean politics) {
     // we are dead, just accept
-    if (!this.getGamePlayer().amNotDeadYet(getGameData())) {
+    if (!this.getGamePlayer().amNotDeadYet(getGameData().getMap())) {
       return true;
     }
     // not related to politics? just accept i guess
@@ -225,7 +227,8 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       return true;
     }
     // politics from ally? accept
-    if (Matches.isAllied(this.getGamePlayer(), getGameData()).test(playerSendingProposal)) {
+    if (Matches.isAllied(this.getGamePlayer(), getGameData().getRelationshipTracker())
+        .test(playerSendingProposal)) {
       return true;
     }
     // would we normally be allies?
@@ -494,35 +497,35 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
   public final void start(final String name) {
     super.start(name);
     final GamePlayer gamePlayer = this.getGamePlayer();
-    if (name.endsWith("Bid")) {
+    if (GameStep.isBidStep(name)) {
       final IPurchaseDelegate purchaseDelegate =
           (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final String propertyName = gamePlayer.getName() + " bid";
       final int bidAmount = getGameData().getProperties().get(propertyName, 0);
       purchase(true, bidAmount, purchaseDelegate, getGameData(), gamePlayer);
-    } else if (name.endsWith("Purchase")) {
+    } else if (GameStep.isPurchaseStep(name)) {
       final IPurchaseDelegate purchaseDelegate =
           (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final Resource pus = getGameData().getResourceList().getResource(Constants.PUS);
       final int leftToSpend = gamePlayer.getResources().getQuantity(pus);
       purchase(false, leftToSpend, purchaseDelegate, getGameData(), gamePlayer);
-    } else if (name.endsWith("Tech")) {
+    } else if (GameStep.isTechStep(name)) {
       final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
       tech(techDelegate, getGameData(), gamePlayer);
-    } else if (name.endsWith("Move")) {
+    } else if (GameStep.isMoveStep(name)) {
       final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
-      if (!name.endsWith("AirborneCombatMove")) {
-        move(name.endsWith("NonCombatMove"), moveDel, getGameData(), gamePlayer);
+      if (!GameStepPropertiesHelper.isAirborneMove(getGameData())) {
+        move(GameStep.isNonCombatMoveStep(name), moveDel, getGameData(), gamePlayer);
       }
-    } else if (name.endsWith("Battle")) {
+    } else if (GameStep.isBattleStep(name)) {
       battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate());
-    } else if (name.endsWith("Politics")) {
+    } else if (GameStep.isPoliticsStep(name)) {
       politicalActions();
-    } else if (name.endsWith("Place")) {
+    } else if (GameStep.isPlaceStep(name)) {
       final IAbstractPlaceDelegate placeDel =
           (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      place(name.contains("Bid"), placeDel, getGameData(), gamePlayer);
-    } else if (name.endsWith("EndTurn")) {
+      place(GameStep.isBidStep(name), placeDel, getGameData(), gamePlayer);
+    } else if (GameStep.isEndTurnStep(name)) {
       endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), gamePlayer);
     }
   }

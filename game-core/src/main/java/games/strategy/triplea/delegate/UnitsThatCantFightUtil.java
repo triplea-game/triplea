@@ -19,7 +19,8 @@ public class UnitsThatCantFightUtil {
 
   Collection<Territory> getTerritoriesWhereUnitsCantFight(final GamePlayer player) {
     final Predicate<Unit> enemyAttackUnits =
-        Matches.enemyUnit(player, gameData).and(Matches.unitCanAttack(player));
+        Matches.enemyUnit(player, gameData.getRelationshipTracker())
+            .and(Matches.unitCanAttack(player));
     final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : gameData.getMap()) {
       final Predicate<Unit> ownedUnitsMatch =

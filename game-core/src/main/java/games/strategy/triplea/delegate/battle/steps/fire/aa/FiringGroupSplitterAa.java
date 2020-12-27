@@ -58,7 +58,7 @@ public class FiringGroupSplitterAa
                 Matches.unitIsAaForCombatOnly(),
                 battleState.getStatus().getRound(),
                 side == DEFENSE,
-                battleState.getGameData()));
+                battleState.getGameData().getRelationshipTracker()));
 
     final List<String> typeAas = UnitAttachment.getAllOfTypeAas(aaUnits);
 

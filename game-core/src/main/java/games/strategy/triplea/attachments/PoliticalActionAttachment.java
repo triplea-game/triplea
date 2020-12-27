@@ -116,7 +116,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
               + getName()
               + thisErrorMsg());
     }
-    if (!Matches.isValidRelationshipName(getData()).test(s[2])) {
+    if (!Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2])) {
       throw new GameParseException(
           "Invalid relationshipChange declaration: "
               + relChange
@@ -150,11 +150,10 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
     final String[] tokens = splitOnColon(encodedRelationshipChange);
     assert tokens.length == 3;
-    final GameState gameData = getData();
     return new RelationshipChange(
-        gameData.getPlayerList().getPlayerId(tokens[0]),
-        gameData.getPlayerList().getPlayerId(tokens[1]),
-        gameData.getRelationshipTypeList().getRelationshipType(tokens[2]));
+        getData().getPlayerList().getPlayerId(tokens[0]),
+        getData().getPlayerList().getPlayerId(tokens[1]),
+        getData().getRelationshipTypeList().getRelationshipType(tokens[2]));
   }
 
   /** Returns a set of all other players involved in this PoliticalAction. */
@@ -174,12 +173,12 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       final GamePlayer player,
       final Map<ICondition, Boolean> testedConditions,
       final GameState data) {
-    if (!Properties.getUsePolitics(data.getProperties()) || !player.amNotDeadYet(data)) {
+    if (!Properties.getUsePolitics(data.getProperties()) || !player.amNotDeadYet(data.getMap())) {
       return new ArrayList<>();
     }
     return CollectionUtils.getMatches(
         getPoliticalActionAttachments(player),
-        Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)
+        Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data.getMap())
             .and(Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
 

@@ -8,9 +8,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.BattleRecord;
-import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -83,7 +83,7 @@ public class NonFightingBattle extends DependentBattle {
 
   boolean hasAttackingUnits() {
     final Predicate<Unit> attackingLand =
-        Matches.alliedUnit(attacker, gameData).and(Matches.unitIsLand());
+        Matches.alliedUnit(attacker, gameData.getRelationshipTracker()).and(Matches.unitIsLand());
     return battleSite.getUnitCollection().anyMatch(attackingLand);
   }
 
@@ -128,11 +128,7 @@ public class NonFightingBattle extends DependentBattle {
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
     if (!lost.isEmpty()) {
-      final String transcriptText =
-          MyFormatter.unitsToText(lost) + " lost in " + battleSite.getName();
-      bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);
-      final Change change = ChangeFactory.removeUnits(battleSite, lost);
-      bridge.addChange(change);
+      HistoryChangeFactory.removeUnitsFromTerritory(battleSite, lost).perform(bridge);
     }
   }
 }

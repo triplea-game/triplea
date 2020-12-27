@@ -42,7 +42,8 @@ public class AirThatCantLandUtil {
     final GameState data = bridge.getData();
     final GameMap map = data.getMap();
     for (final Territory current : getTerritoriesWhereAirCantLand(player)) {
-      final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.alliedUnit(player, data));
+      final Predicate<Unit> ownedAir =
+          Matches.unitIsAir().and(Matches.alliedUnit(player, data.getRelationshipTracker()));
       final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
           map.getNeighbors(
@@ -68,7 +69,9 @@ public class AirThatCantLandUtil {
     } else { // on water we may just no have enough carriers
       // find the carrier capacity
       final Collection<Unit> carriers =
-          territory.getUnitCollection().getMatches(Matches.alliedUnit(player, bridge.getData()));
+          territory
+              .getUnitCollection()
+              .getMatches(Matches.alliedUnit(player, bridge.getData().getRelationshipTracker()));
       int capacity = AirMovementValidator.carrierCapacity(carriers, territory);
       for (final Unit unit : airUnits) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());

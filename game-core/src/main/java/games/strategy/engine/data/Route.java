@@ -415,7 +415,7 @@ public class Route implements Serializable, Iterable<Territory> {
               units,
               Matches.unitIsOwnedBy(player)
                   .negate()
-                  .and(Matches.isUnitAllied(player, data))
+                  .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
                   .and(Matches.unitCanLandOnCarrier()));
       canLandOnCarrierUnits.addAll(
           CollectionUtils.getMatches(

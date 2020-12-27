@@ -656,7 +656,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-        || Matches.isValidRelationshipName(getData()).test(s[2]))) {
+        || Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2]))) {
       throw new GameParseException(
           "Invalid relationshipChange declaration: "
               + relChange
@@ -665,7 +665,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + " unknown "
               + thisErrorMsg());
     }
-    if (Matches.isValidRelationshipName(getData()).negate().test(s[3])) {
+    if (Matches.isValidRelationshipName(getData().getRelationshipTypeList()).negate().test(s[3])) {
       throw new GameParseException(
           "Invalid relationshipChange declaration: "
               + relChange

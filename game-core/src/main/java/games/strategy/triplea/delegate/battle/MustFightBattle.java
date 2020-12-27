@@ -24,9 +24,11 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.engine.history.change.HistoryChangeFactory;
+import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
+import games.strategy.engine.history.change.units.TransformDamagedUnitsHistoryChange;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
@@ -80,7 +82,6 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
 import org.triplea.sound.SoundUtils;
-import org.triplea.util.Tuple;
 
 /** Handles logic for battles in which fighting actually occurs. */
 @Slf4j
@@ -112,7 +113,7 @@ public class MustFightBattle extends DependentBattle
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> killed = new ArrayList<>();
   // keep track of all the units that die this round to see if they change into another unit
-  private final List<Unit> killedDuringCurrentRound = new ArrayList<>();
+  @RemoveOnNextMajorRelease private final List<Unit> killedDuringCurrentRound = new ArrayList<>();
   // Our current execution state, we keep a stack of executables, this allows us to save our state
   // and resume while in the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
@@ -148,7 +149,9 @@ public class MustFightBattle extends DependentBattle
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
     defendingUnits.addAll(
-        this.battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));
+        this.battleSite
+            .getUnitCollection()
+            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
     maxRounds =
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
@@ -158,7 +161,9 @@ public class MustFightBattle extends DependentBattle
   void resetDefendingUnits(final GamePlayer attacker, final GameState data) {
     defendingUnits.clear();
     defendingUnits.addAll(
-        battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));
+        battleSite
+            .getUnitCollection()
+            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
   }
 
   /** Used for head-less battles. */
@@ -300,7 +305,8 @@ public class MustFightBattle extends DependentBattle
       remaining.addAll(
           CollectionUtils.getMatches(
               unitsLeftInTerritory,
-              Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker, gameData))));
+              Matches.unitIsOwnedBy(defender)
+                  .or(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))));
     }
     return new ArrayList<>(remaining);
   }
@@ -530,17 +536,15 @@ public class MustFightBattle extends DependentBattle
       final IDelegateBridge bridge, final BattleState.Side... sides) {
     for (final Side side : sides) {
       if (side == OFFENSE) {
-        removeUnits(attackingWaitingToDie, bridge, battleSite, side);
-        attackingWaitingToDie.clear();
         damagedChangeInto(
             attacker,
             attackingUnits,
             CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
             bridge,
             side);
+        removeUnits(attackingWaitingToDie, bridge, battleSite, side);
+        attackingWaitingToDie.clear();
       } else {
-        removeUnits(defendingWaitingToDie, bridge, battleSite, side);
-        defendingWaitingToDie.clear();
         damagedChangeInto(
             defender,
             defendingUnits,
@@ -548,58 +552,45 @@ public class MustFightBattle extends DependentBattle
                 killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
             bridge,
             side);
+        removeUnits(defendingWaitingToDie, bridge, battleSite, side);
+        defendingWaitingToDie.clear();
       }
     }
     killedDuringCurrentRound.clear();
   }
 
+  @RemoveOnNextMajorRelease("unitsKilledDuringRound can be removed as a parameter")
   private void damagedChangeInto(
       final GamePlayer player,
       final Collection<Unit> units,
-      final Collection<Unit> killedUnits,
+      final Collection<Unit> unitsKilledDuringRound,
       final IDelegateBridge bridge,
       final Side side) {
-    final List<Unit> damagedUnits =
+
+    final List<Unit> unitsThatMightTransform =
         CollectionUtils.getMatches(
             units,
             Matches.unitWhenHitPointsDamagedChangesInto().and(Matches.unitHasTakenSomeDamage()));
-    damagedUnits.addAll(
-        CollectionUtils.getMatches(killedUnits, Matches.unitAtMaxHitPointDamageChangesInto()));
-    final CompositeChange changes = new CompositeChange();
-    final List<Unit> unitsToRemove = new ArrayList<>();
-    final List<Unit> unitsToAdd = new ArrayList<>();
-    for (final Unit unit : damagedUnits) {
-      final Map<Integer, Tuple<Boolean, UnitType>> map =
-          UnitAttachment.get(unit.getType()).getWhenHitPointsDamagedChangesInto();
-      if (map.containsKey(unit.getHits())) {
-        final boolean translateAttributes = map.get(unit.getHits()).getFirst();
-        final UnitType unitType = map.get(unit.getHits()).getSecond();
-        final List<Unit> toAdd = unitType.create(1, unit.getOwner());
-        if (translateAttributes) {
-          final Change translate =
-              UnitUtils.translateAttributesToOtherUnits(unit, toAdd, battleSite);
-          changes.add(translate);
-        }
-        unitsToAdd.addAll(toAdd);
-        if (!killedUnits.contains(unit)) {
-          unitsToRemove.add(unit);
-        }
-      }
-    }
-    if (!unitsToAdd.isEmpty()) {
-      changes.add(
-          ChangeFactory.addUnits(battleSite, unitsToAdd),
-          ChangeFactory.markNoMovementChange(unitsToAdd));
-      bridge.addChange(changes);
-      removeUnits(unitsToRemove, bridge, battleSite, side);
-      final String transcriptText =
-          MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
-      bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
-      units.addAll(unitsToAdd);
-      bridge
-          .getDisplayChannelBroadcaster()
-          .changedUnitsNotification(battleId, player, unitsToRemove, unitsToAdd, null);
-    }
+    unitsThatMightTransform.addAll(
+        CollectionUtils.getMatches(
+            unitsKilledDuringRound, Matches.unitAtMaxHitPointDamageChangesInto()));
+    final TransformDamagedUnitsHistoryChange transformDamagedUnitsHistoryChange =
+        HistoryChangeFactory.transformDamagedUnits(battleSite, unitsThatMightTransform);
+    transformDamagedUnitsHistoryChange.perform(bridge);
+
+    cleanupKilledUnits(
+        bridge,
+        side,
+        transformDamagedUnitsHistoryChange.getOldUnits(),
+        transformDamagedUnitsHistoryChange.getNewUnits());
+    bridge
+        .getDisplayChannelBroadcaster()
+        .changedUnitsNotification(
+            battleId,
+            player,
+            transformDamagedUnitsHistoryChange.getOldUnits(),
+            transformDamagedUnitsHistoryChange.getNewUnits(),
+            null);
   }
 
   @Override
@@ -626,63 +617,39 @@ public class MustFightBattle extends DependentBattle
     if (killedUnits.isEmpty()) {
       return;
     }
-    final Collection<Unit> killed = getUnitsWithDependents(killedUnits);
+    final RemoveUnitsHistoryChange removeUnitsHistoryChange =
+        HistoryChangeFactory.removeUnitsFromTerritory(battleSite, killedUnits);
 
-    // Remove units
-    final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
-    this.killed.addAll(killed);
-    killedDuringCurrentRound.addAll(killed);
-    final String transcriptText =
-        MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
-    bridge.addChange(killedChange);
+    final Collection<Unit> killedUnitsIncludingDependents = removeUnitsHistoryChange.getOldUnits();
+    final Collection<Unit> transformedUnits = removeUnitsHistoryChange.getNewUnits();
+    removeUnitsHistoryChange.perform(bridge);
 
-    // Set max damage for any units that will change into another unit
-    final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();
-    for (final Unit unit :
-        CollectionUtils.getMatches(killed, Matches.unitAtMaxHitPointDamageChangesInto())) {
-      lethallyDamagedMap.put(unit, unit.getUnitAttachment().getHitPoints());
-    }
-    final Change lethallyDamagedChange =
-        ChangeFactory.unitsHit(lethallyDamagedMap, List.of(battleSite));
-    bridge.addChange(lethallyDamagedChange);
+    cleanupKilledUnits(bridge, side, killedUnitsIncludingDependents, transformedUnits);
+  }
 
+  private void cleanupKilledUnits(
+      final IDelegateBridge bridge,
+      final Side side,
+      final Collection<Unit> killedUnits,
+      final Collection<Unit> transformedUnits) {
     final Collection<IBattle> dependentBattles = battleTracker.getBlocked(this);
-    // If there are NO dependent battles, check for unloads in allied territories
-    if (dependentBattles.isEmpty()) {
-      removeFromNonCombatLandings(killed, bridge);
-      // otherwise remove them and the units involved
-    } else {
-      removeFromDependents(killed, bridge, dependentBattles);
+    if (!dependentBattles.isEmpty()) {
+      // check dependent battles to see if there are dependent units there that need to die
+      removeFromDependentBattles(killedUnits, bridge, dependentBattles);
     }
 
     if (side == DEFENSE) {
-      defendingUnits.removeAll(killed);
-      defendingWaitingToDie.removeAll(killed);
+      defendingUnits.addAll(transformedUnits);
+      defendingUnits.removeAll(killedUnits);
+      defendingWaitingToDie.removeAll(killedUnits);
     } else {
-      attackingUnits.removeAll(killed);
-      attackingWaitingToDie.removeAll(killed);
+      attackingUnits.addAll(transformedUnits);
+      attackingUnits.removeAll(killedUnits);
+      attackingWaitingToDie.removeAll(killedUnits);
     }
   }
 
-  // Remove landed units from allied territory when their transport sinks
-  private void removeFromNonCombatLandings(
-      final Collection<Unit> units, final IDelegateBridge bridge) {
-    for (final Unit transport : CollectionUtils.getMatches(units, Matches.unitIsTransport())) {
-      final Collection<Unit> lost = getTransportDependents(Set.of(transport));
-      if (lost.isEmpty()) {
-        continue;
-      }
-      final Territory landedTerritory =
-          TransportTracker.getTerritoryTransportHasUnloadedTo(transport);
-      if (landedTerritory == null) {
-        throw new IllegalStateException("not unloaded?:" + units);
-      }
-      removeUnits(lost, bridge, landedTerritory, OFFENSE);
-    }
-  }
-
-  private static void removeFromDependents(
+  private static void removeFromDependentBattles(
       final Collection<Unit> units,
       final IDelegateBridge bridge,
       final Collection<IBattle> dependents) {
@@ -876,7 +843,7 @@ public class MustFightBattle extends DependentBattle
     // there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
     final Predicate<Unit> enemyUnitsThatPreventRetreat =
-        PredicateBuilder.of(Matches.enemyUnit(attacker, gameData))
+        PredicateBuilder.of(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))
             .and(Matches.unitIsNotInfrastructure())
             .and(Matches.unitIsBeingTransported().negate())
             .and(Matches.unitIsSubmerged().negate())
@@ -904,7 +871,8 @@ public class MustFightBattle extends DependentBattle
 
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
     final Predicate<Territory> conqueuredOrEnemy =
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker, gameData)
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+                attacker, gameData.getProperties(), gameData.getRelationshipTracker())
             .or(Matches.territoryIsWater().and(Matches.territoryWasFoughtOver(battleTracker)));
     possible.removeAll(CollectionUtils.getMatches(possible, conqueuredOrEnemy));
 
@@ -1502,7 +1470,8 @@ public class MustFightBattle extends DependentBattle
 
     // do we need to change ownership
     if (attackingUnits.stream().anyMatch(Matches.unitIsNotAir())) {
-      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker, gameData).test(battleSite)) {
+      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker, gameData.getRelationshipTracker())
+          .test(battleSite)) {
         battleTracker.addToConquered(battleSite);
       }
       battleTracker.takeOver(battleSite, attacker, bridge, null, attackingUnits);

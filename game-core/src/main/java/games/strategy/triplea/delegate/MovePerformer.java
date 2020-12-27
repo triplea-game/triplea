@@ -180,7 +180,7 @@ public class MovePerformer implements Serializable {
                   route
                       .getEnd()
                       .getUnitCollection()
-                      .getMatches(Matches.enemyUnit(gamePlayer, data));
+                      .getMatches(Matches.enemyUnit(gamePlayer, data.getRelationshipTracker()));
               final Collection<Unit> enemyTargetsTotal =
                   CollectionUtils.getMatches(
                       enemyUnits,
@@ -291,8 +291,9 @@ public class MovePerformer implements Serializable {
                             .terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
                                 gamePlayer)
                             .and(Matches.territoryIsBlitzable(gamePlayer, data)))) {
-                  if (Matches.isTerritoryEnemy(gamePlayer, data).test(t)
-                      || Matches.territoryHasEnemyUnits(gamePlayer, data).test(t)) {
+                  if (Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker()).test(t)
+                      || Matches.territoryHasEnemyUnits(gamePlayer, data.getRelationshipTracker())
+                          .test(t)) {
                     continue;
                   }
                   if ((t.equals(route.getEnd())
@@ -335,8 +336,9 @@ public class MovePerformer implements Serializable {
 
   private static Predicate<Territory> getMustFightThroughMatch(
       final GamePlayer gamePlayer, final GameState data) {
-    return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer, data)
-        .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer, data))
+    return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+            gamePlayer, data.getProperties(), data.getRelationshipTracker())
+        .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer, data.getRelationshipTracker()))
         .or(
             Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
                 gamePlayer));
@@ -487,7 +489,8 @@ public class MovePerformer implements Serializable {
             && transportedBy != null
             && Matches.unitIsAirTransport().test(transportedBy)
             && GameStepPropertiesHelper.isCombatMove(data)
-            && Matches.territoryHasNonSubmergedEnemyUnits(player, data).test(route.getEnd())) {
+            && Matches.territoryHasNonSubmergedEnemyUnits(player, data.getRelationshipTracker())
+                .test(route.getEnd())) {
           continue;
         }
         // unload the transports

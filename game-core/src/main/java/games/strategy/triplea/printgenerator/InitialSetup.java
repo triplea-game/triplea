@@ -1,6 +1,5 @@
 package games.strategy.triplea.printgenerator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.history.HistoryNode;
@@ -15,17 +14,16 @@ class InitialSetup {
   private final Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
 
   protected void run(final PrintGenerationData printData, final boolean useOriginalState) {
-    final GameData gameData = printData.getData();
     if (useOriginalState) {
-      final HistoryNode root = (HistoryNode) gameData.getHistory().getRoot();
-      gameData.getHistory().gotoNode(root);
+      final HistoryNode root = (HistoryNode) printData.getData().getHistory().getRoot();
+      printData.getData().getHistory().gotoNode(root);
     }
-    for (final UnitType currentType : gameData.getUnitTypeList()) {
+    for (final UnitType currentType : printData.getData().getUnitTypeList()) {
       final UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
     new UnitInformation().saveToFile(printData, unitInfoMap);
-    for (final GamePlayer currentPlayer : gameData.getPlayerList()) {
+    for (final GamePlayer currentPlayer : printData.getData().getPlayerList()) {
       new CountryChart().saveToFile(currentPlayer, printData);
     }
     new PuInfo().saveToFile(printData);

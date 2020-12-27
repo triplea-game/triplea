@@ -98,8 +98,8 @@ public final class GameDataManager {
                   + "please visit: <a href=\"%s\">%s</a>",
               Injections.getInstance().getEngineVersion(),
               ((games.strategy.util.Version) version).getExactVersion(),
-              UrlConstants.OLD_DOWNLOADS_WEBSITE,
-              UrlConstants.OLD_DOWNLOADS_WEBSITE));
+              UrlConstants.RELEASE_NOTES,
+              UrlConstants.RELEASE_NOTES));
       return false;
     } else if (!(version instanceof Version)) {
       log.warn(

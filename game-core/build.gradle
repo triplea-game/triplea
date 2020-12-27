@@ -16,6 +16,7 @@ dependencies {
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     implementation "org.knowm.xchart:xchart:$xchartVersion"
     implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
+    implementation "org.apache.commons:commons-text:$commonsTextVersion"
     implementation project(":domain-data")
     implementation project(":http-clients")
     implementation project(":java-extras")

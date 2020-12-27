@@ -74,7 +74,7 @@ public final class AirMovementValidator {
     final Predicate<Unit> airAlliedNotOwned =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsAir())
             .and(Matches.unitCanLandOnCarrier());
     final Set<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
@@ -139,7 +139,11 @@ public final class AirMovementValidator {
                 routeEnd,
                 maxMovementLeftForTheseAirUnitsBeingValidated,
                 // where can we fly to?
-                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir(data))));
+                Matches.airCanFlyOver(
+                    player,
+                    data.getProperties(),
+                    data.getRelationshipTracker(),
+                    areNeutralsPassableByAir(data))));
     // we only want to consider
     landingSpots.removeAll(
         CollectionUtils.getMatches(
@@ -208,7 +212,7 @@ public final class AirMovementValidator {
     final Predicate<Unit> carrierAlliedNotOwned =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsCarrier());
     final boolean landAirOnNewCarriers =
         Properties.getLhtrCarrierProductionRules(data.getProperties())
@@ -263,13 +267,13 @@ public final class AirMovementValidator {
     final Predicate<Unit> alliedNotOwnedAirMatch =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsAir())
             .and(Matches.unitCanLandOnCarrier());
     final Predicate<Unit> alliedNotOwnedCarrierMatch =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data))
+            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
             .and(Matches.unitIsCarrier());
     final Territory routeEnd = route.getEnd();
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
@@ -625,7 +629,10 @@ public final class AirMovementValidator {
 
     // Remove suicide units if combat move and any enemy units at destination
     final Collection<Unit> enemyUnitsAtEnd =
-        route.getEnd().getUnitCollection().getMatches(Matches.enemyUnit(player, player.getData()));
+        route
+            .getEnd()
+            .getUnitCollection()
+            .getMatches(Matches.enemyUnit(player, player.getData().getRelationshipTracker()));
     if (!enemyUnitsAtEnd.isEmpty() && GameStepPropertiesHelper.isCombatMove(player.getData())) {
       ownedAir.removeIf(Matches.unitIsSuicideOnAttack());
     }
@@ -653,7 +660,11 @@ public final class AirMovementValidator {
             .getRouteForUnit(
                 currentSpot,
                 landingSpot,
-                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir),
+                Matches.airCanFlyOver(
+                    player,
+                    data.getProperties(),
+                    data.getRelationshipTracker(),
+                    areNeutralsPassableByAir),
                 unit,
                 player);
     return (route != null)
@@ -700,7 +711,11 @@ public final class AirMovementValidator {
                     current,
                     unit,
                     movementLeft,
-                    Matches.airCanFlyOver(player, data, areNeutralsPassableByAir)),
+                    Matches.airCanFlyOver(
+                        player,
+                        data.getProperties(),
+                        data.getRelationshipTracker(),
+                        areNeutralsPassableByAir)),
             Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
     for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(
@@ -841,7 +856,9 @@ public final class AirMovementValidator {
 
   public static Collection<Unit> getFriendly(
       final Territory territory, final GamePlayer player, final GameState data) {
-    return territory.getUnitCollection().getMatches(Matches.alliedUnit(player, data));
+    return territory
+        .getUnitCollection()
+        .getMatches(Matches.alliedUnit(player, data.getRelationshipTracker()));
   }
 
   private static boolean areNeutralsPassableByAir(final GameState data) {

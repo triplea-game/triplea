@@ -146,7 +146,14 @@ public final class ProPurchaseUtils {
         CollectionUtils.getMatches(
             ownedOrHasUnitTerritories,
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                player, data, false, false, false, false, false));
+                player,
+                data.getProperties(),
+                data.getRelationshipTracker(),
+                false,
+                false,
+                false,
+                false,
+                false));
 
     // Create purchase territory holder for each factory territory
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();

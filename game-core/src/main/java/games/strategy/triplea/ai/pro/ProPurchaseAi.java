@@ -523,7 +523,8 @@ class ProPurchaseAi {
       for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories()) {
         final Territory t = placeTerritory.getTerritory();
         final List<Unit> units =
-            t.getUnitCollection().getMatches(Matches.isUnitAllied(player, data));
+            t.getUnitCollection()
+                .getMatches(Matches.isUnitAllied(player, data.getRelationshipTracker()));
         placeTerritory.setDefendingUnits(units);
         ProLogger.debug(t + " has numDefenders=" + units.size());
       }
@@ -1226,7 +1227,8 @@ class ProPurchaseAi {
 
         // Find current battle result
         final List<Unit> defenders =
-            t.getUnitCollection().getMatches(Matches.isUnitAllied(player, data));
+            t.getUnitCollection()
+                .getMatches(Matches.isUnitAllied(player, data.getRelationshipTracker()));
         final Set<Unit> enemyAttackingUnits =
             new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
@@ -1294,13 +1296,14 @@ class ProPurchaseAi {
       final int production = TerritoryAttachment.get(t).getProduction();
       final double value = territoryValueMap.get(t) * production + 0.1 * production;
       final boolean isAdjacentToSea =
-          Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);
+          Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater()).test(t);
       final Set<Territory> nearbyLandTerritories =
           data.getMap()
               .getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
       final int numNearbyEnemyTerritories =
           CollectionUtils.countMatches(
-              nearbyLandTerritories, Matches.isTerritoryEnemy(player, data));
+              nearbyLandTerritories,
+              Matches.isTerritoryEnemy(player, data.getRelationshipTracker()));
       ProLogger.trace(
           t
               + ", strategic value="

@@ -57,13 +57,15 @@ final class EditValidator {
     if (territory.isWater()) {
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
         if (units.stream().anyMatch(Matches.unitIsLand())) {
-          if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
+          if (units.isEmpty()
+              || !units.stream()
+                  .allMatch(Matches.alliedUnit(player, data.getRelationshipTracker()))) {
             return "Can't add mixed nationality units to water";
           }
           final Predicate<Unit> friendlySeaTransports =
               Matches.unitIsTransport()
                   .and(Matches.unitIsSea())
-                  .and(Matches.alliedUnit(player, data));
+                  .and(Matches.alliedUnit(player, data.getRelationshipTracker()));
           final Collection<Unit> seaTransports =
               CollectionUtils.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd =
@@ -89,9 +91,10 @@ final class EditValidator {
           }
           // Set up matches
           final Predicate<Unit> friendlyCarriers =
-              Matches.unitIsCarrier().and(Matches.alliedUnit(player, data));
+              Matches.unitIsCarrier()
+                  .and(Matches.alliedUnit(player, data.getRelationshipTracker()));
           final Predicate<Unit> friendlyAirUnits =
-              Matches.unitIsAir().and(Matches.alliedUnit(player, data));
+              Matches.unitIsAir().and(Matches.alliedUnit(player, data.getRelationshipTracker()));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(

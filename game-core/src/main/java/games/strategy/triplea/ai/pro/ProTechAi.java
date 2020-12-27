@@ -185,7 +185,8 @@ final class ProTechAi {
                 enemyPlayer,
                 data,
                 enemyShip,
-                Matches.territoryIsBlockedSea(enemyPlayer, data),
+                Matches.territoryIsBlockedSea(
+                    enemyPlayer, data.getProperties(), data.getRelationshipTracker()),
                 r,
                 true);
         secondStrength = strength(ships, true, true, transportsFirst);
@@ -194,7 +195,7 @@ final class ProTechAi {
       final List<Unit> attackPlanes =
           findPlaneAttackersThatCanLand(location, maxFighterDistance, enemyPlayer, data, checked);
       final float airStrength = allAirStrength(attackPlanes);
-      if (Matches.territoryHasWaterNeighbor(data).test(location)
+      if (Matches.territoryHasWaterNeighbor(data.getMap()).test(location)
           && Matches.territoryIsLand().test(location)) {
         for (final Territory t4 : data.getMap().getNeighbors(location, maxTransportDistance)) {
           if (!t4.isWater()) {
@@ -389,7 +390,7 @@ final class ProTechAi {
     final Predicate<Unit> blitzUnit =
         Matches.unitIsOwnedBy(enemyPlayer).and(Matches.unitCanBlitz()).and(Matches.unitCanMove());
     final Predicate<Territory> validBlitzRoute =
-        Matches.territoryHasNoEnemyUnits(enemyPlayer, data)
+        Matches.territoryHasNoEnemyUnits(enemyPlayer, data.getRelationshipTracker())
             .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data.getProperties()));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
@@ -566,7 +567,7 @@ final class ProTechAi {
         Matches.unitIsTransport().negate().and(Matches.unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
-            .and(Matches.alliedUnit(player, data).negate())
+            .and(Matches.alliedUnit(player, data.getRelationshipTracker()).negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
             .andIf(Properties.getIgnoreTransportInMovement(data.getProperties()), transport)
             .build();
