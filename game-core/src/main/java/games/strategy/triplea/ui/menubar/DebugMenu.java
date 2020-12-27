@@ -13,28 +13,28 @@ public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
 
   /** Maps the debug menu title to the function that will create the sub menu items */
-  private static final Map<String, Function<TripleAFrame, Collection<JMenuItem>>> menuCallbacks =
-      new TreeMap<>();
+  private static final Map<String, Function<TripleAFrame, Collection<JMenuItem>>>
+      menuItemsAndFactories = new TreeMap<>();
 
   DebugMenu(final TripleAFrame frame) {
     super("Debug");
 
     setMnemonic(KeyEvent.VK_D);
 
-    menuCallbacks.forEach(
-        (name, callback) -> {
+    menuItemsAndFactories.forEach(
+        (name, factory) -> {
           final JMenu playerDebugMenu = new JMenu(name);
           add(playerDebugMenu);
-          callback.apply(frame).forEach(playerDebugMenu::add);
+          factory.apply(frame).forEach(playerDebugMenu::add);
         });
   }
 
   public static void registerMenuCallback(
-      final String name, final Function<TripleAFrame, Collection<JMenuItem>> callback) {
-    menuCallbacks.put(name, callback);
+      final String name, final Function<TripleAFrame, Collection<JMenuItem>> factory) {
+    menuItemsAndFactories.put(name, factory);
   }
 
   public static void unregisterMenuCallback(final String name) {
-    menuCallbacks.remove(name);
+    menuItemsAndFactories.remove(name);
   }
 }
