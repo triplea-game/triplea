@@ -95,7 +95,8 @@ class AaInMoveUtil implements Serializable {
       final Collection<Unit> currentPossibleAa =
           CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
       final Set<UnitType> targetUnitTypesForThisTypeAa =
-          UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAa(getData());
+          UnitAttachment.get(currentPossibleAa.iterator().next().getType())
+              .getTargetsAa(getData().getUnitTypeList());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
           CollectionUtils.getMatches(

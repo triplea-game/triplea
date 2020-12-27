@@ -9,12 +9,15 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
@@ -34,7 +37,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -1170,7 +1172,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(
-      final Collection<Unit> units, final String filterForAbility, final GameState data) {
+      final Collection<Unit> units,
+      final String filterForAbility,
+      final UnitTypeList unitTypeList) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
         getUnitTypesFromUnitList(
@@ -1185,7 +1189,7 @@ public class UnitAttachment extends DefaultAttachment {
         map.put(
             Tuple.of(s[0], s[1]),
             CollectionUtils.countMatches(
-                units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
+                units, Matches.unitIsOfType(unitTypeList.getUnitType(s[1]))));
       }
     }
     return map;
@@ -1196,14 +1200,16 @@ public class UnitAttachment extends DefaultAttachment {
    * they are with, or on the same route as, another unit.
    */
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(
-      final Collection<Unit> units, final String filterForAbility, final GameState data) {
+      final Collection<Unit> units,
+      final String filterForAbility,
+      final UnitTypeList unitTypeList) {
     if (units.stream().noneMatch(Matches.unitCanReceiveAbilityWhenWith())) {
       return new ArrayList<>();
     }
     final Collection<Unit> unitsCopy = new ArrayList<>(units);
     final Set<Unit> whichReceiveNoDuplicates = new HashSet<>();
     final IntegerMap<Tuple<String, String>> whichGive =
-        getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
+        getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, unitTypeList);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
       final Collection<Unit> receives =
           CollectionUtils.getNMatches(
@@ -2134,11 +2140,11 @@ public class UnitAttachment extends DefaultAttachment {
     return bombingTargets;
   }
 
-  public Set<UnitType> getBombingTargets(final GameState data) {
+  public Set<UnitType> getBombingTargets(final UnitTypeList unitTypeList) {
     if (bombingTargets != null) {
       return bombingTargets;
     }
-    return new HashSet<>(data.getUnitTypeList().getAllUnitTypes());
+    return new HashSet<>(unitTypeList.getAllUnitTypes());
   }
 
   private void resetBombingTargets() {
@@ -2147,14 +2153,14 @@ public class UnitAttachment extends DefaultAttachment {
 
   /** Finds potential unit types which all passed in bombers and rockets can target. */
   public static Set<UnitType> getAllowedBombingTargetsIntersection(
-      final Collection<Unit> bombersOrRockets, final GameState data) {
+      final Collection<Unit> bombersOrRockets, final UnitTypeList unitTypeList) {
     if (bombersOrRockets.isEmpty()) {
       return new HashSet<>();
     }
-    Collection<UnitType> allowedTargets = data.getUnitTypeList().getAllUnitTypes();
+    Collection<UnitType> allowedTargets = unitTypeList.getAllUnitTypes();
     for (final Unit u : bombersOrRockets) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
-      final Set<UnitType> bombingTargets = ua.getBombingTargets(data);
+      final Set<UnitType> bombingTargets = ua.getBombingTargets(unitTypeList);
       if (bombingTargets != null) {
         allowedTargets = CollectionUtils.intersection(allowedTargets, bombingTargets);
       }
@@ -2472,11 +2478,11 @@ public class UnitAttachment extends DefaultAttachment {
     return targetsAa;
   }
 
-  public Set<UnitType> getTargetsAa(final GameState data) {
+  public Set<UnitType> getTargetsAa(final UnitTypeList unitTypeList) {
     if (targetsAa != null) {
       return targetsAa;
     }
-    return StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
+    return unitTypeList.stream()
         .filter(ut -> UnitAttachment.get(ut).getIsAir())
         .collect(Collectors.toSet());
   }
@@ -2699,7 +2705,8 @@ public class UnitAttachment extends DefaultAttachment {
       final UnitType ut,
       final Territory t,
       final GamePlayer owner,
-      final GameState data) {
+      final RelationshipTracker relationshipTracker,
+      final GameProperties properties) {
     final UnitAttachment ua = UnitAttachment.get(ut);
     final Tuple<Integer, String> stackingLimit;
     switch (limitType) {
@@ -2724,9 +2731,9 @@ public class UnitAttachment extends DefaultAttachment {
     // under certain rules (classic rules) there can only be 1 aa gun in a territory.
     if (max == Integer.MAX_VALUE
         && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())
-        && !(Properties.getWW2V2(data.getProperties())
-            || Properties.getWW2V3(data.getProperties())
-            || Properties.getMultipleAaPerTerritory(data.getProperties()))) {
+        && !(Properties.getWW2V2(properties)
+            || Properties.getWW2V3(properties)
+            || Properties.getMultipleAaPerTerritory(properties))) {
       max = 1;
     }
     final Predicate<Unit> stackingMatch;
@@ -2737,8 +2744,7 @@ public class UnitAttachment extends DefaultAttachment {
         break;
       case "allied":
         stackingMatch =
-            Matches.unitIsOfType(ut)
-                .and(Matches.isUnitAllied(owner, data.getRelationshipTracker()));
+            Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner, relationshipTracker));
         break;
       default:
         stackingMatch = Matches.unitIsOfType(ut);
@@ -2860,7 +2866,7 @@ public class UnitAttachment extends DefaultAttachment {
         && !canInvadeOnlyFrom[0].equals("all")
         && !canInvadeOnlyFrom[0].equals("none")) {
       for (final String transport : canInvadeOnlyFrom) {
-        final UnitType ut = getData().getUnitTypeList().getUnitType(transport);
+        final UnitType ut = data.getUnitTypeList().getUnitType(transport);
         if (ut == null) {
           throw new GameParseException("No unit called:" + transport + thisErrorMsg());
         }
@@ -2886,7 +2892,7 @@ public class UnitAttachment extends DefaultAttachment {
           throw new GameParseException(
               "receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
         }
-        if (getData().getUnitTypeList().getUnitType(s[1]) == null) {
+        if (data.getUnitTypeList().getUnitType(s[1]) == null) {
           throw new GameParseException(
               "receivesAbilityWhenWith, unit does not exist, name:" + s[1] + thisErrorMsg());
         }

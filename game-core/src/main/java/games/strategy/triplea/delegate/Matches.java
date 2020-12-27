@@ -15,6 +15,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -383,7 +384,8 @@ public final class Matches {
   public static Predicate<Unit> unitIsLegalBombingTargetBy(final Unit bomberOrRocket) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
-      final Set<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
+      final Set<UnitType> allowedTargets =
+          ua.getBombingTargets(bomberOrRocket.getData().getUnitTypeList());
       return allowedTargets == null || allowedTargets.contains(unit.getType());
     };
   }
@@ -648,7 +650,7 @@ public final class Matches {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      final Set<UnitType> targetsAa = ua.getTargetsAa(obj.getData());
+      final Set<UnitType> targetsAa = ua.getTargetsAa(obj.getData().getUnitTypeList());
       for (final Unit u : targets) {
         if (targetsAa.contains(u.getType())) {
           return true;
@@ -662,7 +664,9 @@ public final class Matches {
 
   /** Checks if the unit type can be hit with AA fire by one of the firingUnits */
   private static Predicate<UnitType> unitTypeCanBeHitByAaFire(
-      final Collection<UnitType> firingUnits, final GameState gameData, final int battleRound) {
+      final Collection<UnitType> firingUnits,
+      final UnitTypeList unitTypeList,
+      final int battleRound) {
     // make sure the aa firing units are valid for combat and during this round
     final Collection<UnitType> aaFiringUnits =
         CollectionUtils.getMatches(
@@ -673,7 +677,7 @@ public final class Matches {
             .anyMatch(
                 type -> {
                   final UnitAttachment attachment = UnitAttachment.get(type);
-                  return attachment.getTargetsAa(gameData).contains(unitType);
+                  return attachment.getTargetsAa(unitTypeList).contains(unitType);
                 });
   }
 
@@ -2390,7 +2394,9 @@ public final class Matches {
         PredicateBuilder.of(unitTypeIsInfrastructure().negate())
             .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
             .or(unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)))
-            .or(unitTypeCanBeHitByAaFire(firingUnits, player.getData(), battleRound));
+            .or(
+                unitTypeCanBeHitByAaFire(
+                    firingUnits, player.getData().getUnitTypeList(), battleRound));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {

@@ -172,7 +172,7 @@ class WW2V3Year41Test {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", gameData),
@@ -241,7 +241,7 @@ class WW2V3Year41Test {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", gameData),
@@ -314,7 +314,7 @@ class WW2V3Year41Test {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", gameData),

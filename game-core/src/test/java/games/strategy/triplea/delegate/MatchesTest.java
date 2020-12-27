@@ -279,6 +279,7 @@ final class MatchesTest {
     @BeforeEach
     void setupGameData() {
       gameData = givenGameData().build();
+      when(player.getData()).thenReturn(gameData);
     }
 
     @Test

@@ -109,7 +109,7 @@ public class FireAa implements IExecutable {
       for (final Collection<Unit> firingGroup : firingGroups) {
         final Set<UnitType> validTargetTypes =
             UnitAttachment.get(firingGroup.iterator().next().getType())
-                .getTargetsAa(bridge.getData());
+                .getTargetsAa(bridge.getData().getUnitTypeList());
         final Set<UnitType> airborneTypesTargeted =
             defending
                 ? TechAbilityAttachment.getAirborneTargettedByAa(hitPlayer, bridge.getData())

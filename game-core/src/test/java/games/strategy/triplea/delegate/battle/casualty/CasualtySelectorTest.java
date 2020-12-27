@@ -176,7 +176,7 @@ class CasualtySelectorTest {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(data))),
+                        .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", data),
@@ -239,7 +239,7 @@ class CasualtySelectorTest {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(data))),
+                        .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", data),
@@ -303,7 +303,7 @@ class CasualtySelectorTest {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(data))),
+                        .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", data),
@@ -367,7 +367,7 @@ class CasualtySelectorTest {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(data))),
+                        .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", data),
@@ -431,7 +431,7 @@ class CasualtySelectorTest {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(data))),
+                        .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", data),
@@ -501,7 +501,7 @@ class CasualtySelectorTest {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(data))),
+                        .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", data),
@@ -566,7 +566,7 @@ class CasualtySelectorTest {
                 planes,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(defendingAa.iterator().next().getType())
-                        .getTargetsAa(data))),
+                        .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
             territory("Germany", data),

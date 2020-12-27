@@ -859,7 +859,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       typesAlreadyChecked.add(ut);
       final int maxForThisType =
           UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-              "placementLimit", ut, to, player, getData());
+              "placementLimit",
+              ut,
+              to,
+              player,
+              getData().getRelationshipTracker(),
+              getData().getProperties());
       if (CollectionUtils.countMatches(units, Matches.unitIsOfType(ut)) > maxForThisType) {
         return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
       }
@@ -1019,7 +1024,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           CollectionUtils.getNMatches(
               placeableUnits,
               UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "placementLimit", ut, to, player, getData()),
+                  "placementLimit",
+                  ut,
+                  to,
+                  player,
+                  getData().getRelationshipTracker(),
+                  getData().getProperties()),
               Matches.unitIsOfType(ut)));
     }
     if (!Properties.getUnitPlacementRestrictions(getData().getProperties())) {

@@ -202,7 +202,7 @@ public class MovePerformer implements Serializable {
                       Matches.unitIsOfTypes(
                           UnitAttachment.getAllowedBombingTargetsIntersection(
                               CollectionUtils.getMatches(arrived, Matches.unitIsStrategicBomber()),
-                              data)));
+                              data.getUnitTypeList())));
               final boolean targetsOrEscort =
                   !enemyTargets.isEmpty()
                       || (!enemyTargetsTotal.isEmpty()
