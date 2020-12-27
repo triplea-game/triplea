@@ -461,7 +461,8 @@ public class MoveValidator {
         final Collection<Unit> nonBlitzingUnits = CollectionUtils.getMatches(units, nonBlitzing);
         // remove any units that gain blitz due to certain abilities
         nonBlitzingUnits.removeAll(
-            UnitAttachment.getUnitsWhichReceivesAbilityWhenWith(units, "canBlitz", data));
+            UnitAttachment.getUnitsWhichReceivesAbilityWhenWith(
+                units, "canBlitz", data.getUnitTypeList()));
         final Predicate<Territory> territoryIsNotEnd = Matches.territoryIs(route.getEnd()).negate();
         final Predicate<Territory> nonFriendlyTerritories =
             Matches.isTerritoryFriendly(player, data.getRelationshipTracker()).negate();
@@ -812,7 +813,12 @@ public class MoveValidator {
           final UnitType ut = unit.getType();
           int maxAllowed =
               UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "attackingLimit", ut, t, player, data);
+                  "attackingLimit",
+                  ut,
+                  t,
+                  player,
+                  data.getRelationshipTracker(),
+                  data.getProperties());
           maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
           if (maxAllowed > 0) {
             unitsAllowedSoFar.add(unit);
@@ -830,7 +836,12 @@ public class MoveValidator {
           final UnitType ut = unit.getType();
           int maxAllowed =
               UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "movementLimit", ut, t, player, data);
+                  "movementLimit",
+                  ut,
+                  t,
+                  player,
+                  data.getRelationshipTracker(),
+                  data.getProperties());
           maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
           if (maxAllowed > 0) {
             unitsAllowedSoFar.add(unit);

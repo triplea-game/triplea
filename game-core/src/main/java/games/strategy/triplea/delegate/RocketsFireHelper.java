@@ -139,7 +139,7 @@ public class RocketsFireHelper implements Serializable {
           // Not sure if that comment is still current
           for (final Unit r : rocketTargets) {
             legalTargetsForTheseRockets.addAll(
-                UnitAttachment.get(r.getType()).getBombingTargets(data));
+                UnitAttachment.get(r.getType()).getBombingTargets(data.getUnitTypeList()));
           }
           final Collection<Unit> enemyTargets =
               CollectionUtils.getMatches(

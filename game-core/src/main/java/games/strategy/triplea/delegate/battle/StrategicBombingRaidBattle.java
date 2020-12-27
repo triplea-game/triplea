@@ -455,7 +455,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
             UnitAttachment.get(currentPossibleAa.iterator().next().getType())
-                .getTargetsAa(gameData);
+                .getTargetsAa(gameData.getUnitTypeList());
         final Set<UnitType> airborneTypesTargetedToo =
             TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData).get(currentTypeAa);
         if (determineAttackers) {

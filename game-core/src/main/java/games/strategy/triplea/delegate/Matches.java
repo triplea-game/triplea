@@ -383,7 +383,8 @@ public final class Matches {
   public static Predicate<Unit> unitIsLegalBombingTargetBy(final Unit bomberOrRocket) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
-      final Set<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
+      final Set<UnitType> allowedTargets =
+          ua.getBombingTargets(bomberOrRocket.getData().getUnitTypeList());
       return allowedTargets == null || allowedTargets.contains(unit.getType());
     };
   }
@@ -648,7 +649,7 @@ public final class Matches {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      final Set<UnitType> targetsAa = ua.getTargetsAa(obj.getData());
+      final Set<UnitType> targetsAa = ua.getTargetsAa(obj.getData().getUnitTypeList());
       for (final Unit u : targets) {
         if (targetsAa.contains(u.getType())) {
           return true;
@@ -673,7 +674,7 @@ public final class Matches {
             .anyMatch(
                 type -> {
                   final UnitAttachment attachment = UnitAttachment.get(type);
-                  return attachment.getTargetsAa(gameData).contains(unitType);
+                  return attachment.getTargetsAa(gameData.getUnitTypeList()).contains(unitType);
                 });
   }
 

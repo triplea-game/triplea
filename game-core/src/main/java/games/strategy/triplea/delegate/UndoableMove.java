@@ -131,7 +131,7 @@ public class UndoableMove extends AbstractUndoableMove {
                         UnitAttachment.getAllowedBombingTargetsIntersection(
                             CollectionUtils.getMatches(
                                 Set.of(unit), Matches.unitIsStrategicBomber()),
-                            data)));
+                            data.getUnitTypeList())));
             if (enemyTargets.size() > 1
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
                     data.getProperties())

@@ -172,7 +172,12 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
           CollectionUtils.getNMatches(
               placeableUnits,
               UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "placementLimit", ut, to, player, getData()),
+                  "placementLimit",
+                  ut,
+                  to,
+                  player,
+                  getData().getRelationshipTracker(),
+                  getData().getProperties()),
               Matches.unitIsOfType(ut)));
     }
     return placeableUnits2;

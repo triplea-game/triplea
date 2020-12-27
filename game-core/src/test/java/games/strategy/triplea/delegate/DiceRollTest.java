@@ -499,7 +499,7 @@ class DiceRollTest {
                 fighterList,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(aaGunList.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
             westRussia,
@@ -517,7 +517,7 @@ class DiceRollTest {
                 fighterList,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(aaGunList.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
             westRussia,
@@ -536,7 +536,7 @@ class DiceRollTest {
                 fighterList,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(aaGunList.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
             westRussia,
@@ -570,7 +570,7 @@ class DiceRollTest {
                 fighterList,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(aaGunList.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
             westRussia,
@@ -608,7 +608,7 @@ class DiceRollTest {
                 fighterList,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(aaGunList.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
             finnland,
@@ -626,7 +626,7 @@ class DiceRollTest {
                 fighterList,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(aaGunList.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
             finnland,
@@ -645,7 +645,7 @@ class DiceRollTest {
                 fighterList,
                 Matches.unitIsOfTypes(
                     UnitAttachment.get(aaGunList.iterator().next().getType())
-                        .getTargetsAa(gameData))),
+                        .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
             finnland,
