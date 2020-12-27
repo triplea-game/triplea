@@ -84,7 +84,7 @@ public final class ProMoveUtils {
         if (Matches.unitIsCarrier().test(u)) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
               MoveValidator.carrierMustMoveWith(
-                  startTerritory.getUnits(), startTerritory, data, player);
+                  startTerritory.getUnits(), startTerritory, data.getRelationshipTracker(), player);
           if (carrierMustMoveWith.containsKey(u)) {
             unitList.addAll(carrierMustMoveWith.get(u));
           }

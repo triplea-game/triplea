@@ -3,13 +3,14 @@ package games.strategy.triplea.delegate.move.validation;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.CanalAttachment;
@@ -171,7 +172,7 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (!units.isEmpty() && !getEditMode(data)) {
+    if (!units.isEmpty() && !getEditMode(data.getProperties())) {
       final Collection<Unit> matches =
           CollectionUtils.getMatches(
               units,
@@ -247,7 +248,7 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (getEditMode(data)) {
+    if (getEditMode(data.getProperties())) {
       return result;
     }
     if (!Properties.getUseFuelCost(data.getProperties())) {
@@ -267,7 +268,7 @@ public class MoveValidator {
       final GamePlayer player,
       final Map<Unit, Collection<Unit>> newDependents,
       final MoveValidationResult result) {
-    if (getEditMode(data)) {
+    if (getEditMode(data.getProperties())) {
       return result;
     }
     // TODO: merge validateCanal here and provide granular unit warnings
@@ -377,7 +378,7 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (getEditMode(data)) {
+    if (getEditMode(data.getProperties())) {
       return result;
     }
     for (final Territory t : route.getSteps()) {
@@ -431,7 +432,7 @@ public class MoveValidator {
     }
 
     // If there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
-    if (nonAirPassingThroughNeutralTerritory(route, units, data)) {
+    if (nonAirPassingThroughNeutralTerritory(route, units, data.getProperties())) {
       return result.setErrorReturnResult(
           "Must stop land units when passing through neutral territories");
     }
@@ -537,10 +538,10 @@ public class MoveValidator {
   }
 
   private static boolean nonAirPassingThroughNeutralTerritory(
-      final Route route, final Collection<Unit> units, final GameState gameData) {
+      final Route route, final Collection<Unit> units, final GameProperties properties) {
     return route.hasNeutralBeforeEnd()
         && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
-        && !isNeutralsBlitzable(gameData);
+        && !isNeutralsBlitzable(properties);
   }
 
   private MoveValidationResult validateNonCombat(
@@ -548,7 +549,7 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (getEditMode(data)) {
+    if (getEditMode(data.getProperties())) {
       return result;
     }
     if (route.anyMatch(Matches.territoryIsImpassable())) {
@@ -633,7 +634,7 @@ public class MoveValidator {
   // Added to handle restriction of movement to listed territories
   private MoveValidationResult validateMovementRestrictedByTerritory(
       final Route route, final GamePlayer player, final MoveValidationResult result) {
-    if (getEditMode(data)) {
+    if (getEditMode(data.getProperties())) {
       return result;
     }
     if (!Properties.getMovementByTerritoryRestricted(data.getProperties())) {
@@ -668,7 +669,7 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (getEditMode(data)) {
+    if (getEditMode(data.getProperties())) {
       return result;
     }
     // check to see no enemy units on path
@@ -705,7 +706,7 @@ public class MoveValidator {
       final Map<Unit, Unit> unitToTransport,
       final Map<Unit, Collection<Unit>> newDependents,
       final MoveValidationResult result) {
-    final boolean isEditMode = getEditMode(data);
+    final boolean isEditMode = getEditMode(data.getProperties());
     // make sure transports in the destination
     if (!route.getEnd().getUnitCollection().containsAll(unitToTransport.values())
         && !units.containsAll(unitToTransport.values())) {
@@ -756,7 +757,7 @@ public class MoveValidator {
       }
 
       // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
-      if (nonAirPassingThroughNeutralTerritory(route, units, data)) {
+      if (nonAirPassingThroughNeutralTerritory(route, units, data.getProperties())) {
         return result.setErrorReturnResult(
             "Must stop land units when passing through neutral territories");
       }
@@ -854,7 +855,7 @@ public class MoveValidator {
       return result;
     }
     if (Properties.getNeutralsImpassable(data.getProperties())
-        && !isNeutralsBlitzable(data)
+        && !isNeutralsBlitzable(data.getProperties())
         && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
       return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
     }
@@ -1019,8 +1020,8 @@ public class MoveValidator {
         .anyMatch(current -> current.getUnitCollection().anyMatch(enemyDestroyer));
   }
 
-  private static boolean getEditMode(final GameState data) {
-    return BaseEditDelegate.getEditMode(data.getProperties());
+  private static boolean getEditMode(final GameProperties properties) {
+    return BaseEditDelegate.getEditMode(properties);
   }
 
   private static boolean hasConqueredNonBlitzedNonWaterOnRoute(
@@ -1136,7 +1137,7 @@ public class MoveValidator {
     // neutrals we will overfly in the first place
     final Collection<Territory> neutrals = MoveDelegate.getEmptyNeutral(route);
     final int pus = player.isNull() ? 0 : player.getResources().getQuantity(Constants.PUS);
-    if (pus < getNeutralCharge(data, neutrals.size())) {
+    if (pus < getNeutralCharge(data.getProperties(), neutrals.size())) {
       return result.setErrorReturnResult(TOO_POOR_TO_VIOLATE_NEUTRALITY);
     }
     return result;
@@ -1160,7 +1161,7 @@ public class MoveValidator {
       final GamePlayer player,
       final Map<Unit, Unit> unitsToTransports,
       final MoveValidationResult result) {
-    final boolean isEditMode = getEditMode(data);
+    final boolean isEditMode = getEditMode(data.getProperties());
     if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
       return result;
     }
@@ -1468,7 +1469,7 @@ public class MoveValidator {
     if (nonCombat && !Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
       return result.setErrorReturnResult("Paratroops may not move during NonCombat");
     }
-    if (!getEditMode(data)) {
+    if (!getEditMode(data.getProperties())) {
       // if we can move without using paratroop tech, do so this allows moving a bomber/infantry
       // from one friendly
       // territory to another
@@ -1572,12 +1573,13 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
       final GamePlayer player) {
-    final GameState data = start.getData();
     final List<Unit> sortedUnits = new ArrayList<>(units);
     sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>(transportsMustMoveWith(sortedUnits));
     // Check if there are combined transports (carriers that are transports) and load them.
-    addToMapping(mapping, carrierMustMoveWith(sortedUnits, start, data, player));
+    addToMapping(
+        mapping,
+        carrierMustMoveWith(sortedUnits, start, start.getData().getRelationshipTracker(), player));
     addToMapping(mapping, airTransportsMustMoveWith(sortedUnits, newDependents));
     return mapping;
   }
@@ -1631,20 +1633,20 @@ public class MoveValidator {
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
       final Collection<Unit> units,
       final Territory start,
-      final GameState data,
+      final RelationshipTracker relationshipTracker,
       final GamePlayer player) {
-    return carrierMustMoveWith(units, start.getUnits(), data, player);
+    return carrierMustMoveWith(units, start.getUnits(), relationshipTracker, player);
   }
 
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
       final Collection<Unit> units,
       final Collection<Unit> startUnits,
-      final GameState data,
+      final RelationshipTracker relationshipTracker,
       final GamePlayer player) {
     // we want to get all air units that are owned by our allies but not us that can land on a
     // carrier
     final Predicate<Unit> friendlyNotOwnedAir =
-        Matches.alliedUnit(player, data.getRelationshipTracker())
+        Matches.alliedUnit(player, relationshipTracker)
             .and(Matches.unitIsOwnedBy(player).negate())
             .and(Matches.unitCanLandOnCarrier());
     final Collection<Unit> alliedAir = CollectionUtils.getMatches(startUnits, friendlyNotOwnedAir);
@@ -1654,12 +1656,13 @@ public class MoveValidator {
     // remove air that can be carried by allied
     final Predicate<Unit> friendlyNotOwnedCarrier =
         Matches.unitIsCarrier()
-            .and(Matches.alliedUnit(player, data.getRelationshipTracker()))
+            .and(Matches.alliedUnit(player, relationshipTracker))
             .and(Matches.unitIsOwnedBy(player).negate());
     final Collection<Unit> alliedCarrier =
         CollectionUtils.getMatches(startUnits, friendlyNotOwnedCarrier);
     for (final Unit carrier : alliedCarrier) {
-      final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
+      final Collection<Unit> carrying =
+          getCanCarry(carrier, alliedAir, player, relationshipTracker);
       alliedAir.removeAll(carrying);
     }
     if (alliedAir.isEmpty()) {
@@ -1671,7 +1674,8 @@ public class MoveValidator {
         CollectionUtils.getMatches(
             units, Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player)));
     for (final Unit carrier : ownedCarrier) {
-      final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
+      final Collection<Unit> carrying =
+          getCanCarry(carrier, alliedAir, player, relationshipTracker);
       alliedAir.removeAll(carrying);
       mapping.put(carrier, carrying);
     }
@@ -1682,7 +1686,7 @@ public class MoveValidator {
       final Unit carrier,
       final Collection<Unit> selectFrom,
       final GamePlayer playerWhoIsDoingTheMovement,
-      final GameState data) {
+      final RelationshipTracker relationshipTracker) {
     final UnitAttachment ua = UnitAttachment.get(carrier.getType());
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();
@@ -1695,7 +1699,7 @@ public class MoveValidator {
         if ((carrier.getAlreadyMoved().compareTo(plane.getAlreadyMoved()) == 0)
             || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
             || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).negate().test(plane)
-                && Matches.alliedUnit(playerWhoIsDoingTheMovement, data.getRelationshipTracker())
+                && Matches.alliedUnit(playerWhoIsDoingTheMovement, relationshipTracker)
                     .test(plane))) {
           available -= cost;
           canCarry.add(plane);
@@ -1867,12 +1871,13 @@ public class MoveValidator {
     return defaultRoute;
   }
 
-  private static boolean isNeutralsBlitzable(final GameState data) {
-    return Properties.getNeutralsBlitzable(data.getProperties())
-        && !Properties.getNeutralsImpassable(data.getProperties());
+  private static boolean isNeutralsBlitzable(final GameProperties properties) {
+    return Properties.getNeutralsBlitzable(properties)
+        && !Properties.getNeutralsImpassable(properties);
   }
 
-  private static int getNeutralCharge(final GameState data, final int numberOfTerritories) {
-    return numberOfTerritories * Properties.getNeutralCharge(data.getProperties());
+  private static int getNeutralCharge(
+      final GameProperties properties, final int numberOfTerritories) {
+    return numberOfTerritories * Properties.getNeutralCharge(properties);
   }
 }

@@ -767,7 +767,10 @@ public class ProTerritoryManager {
         if (isCombatMove && !isCheckingEnemyAttacks) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
               MoveValidator.carrierMustMoveWith(
-                  myUnitTerritory.getUnits(), myUnitTerritory, data, player);
+                  myUnitTerritory.getUnits(),
+                  myUnitTerritory,
+                  data.getRelationshipTracker(),
+                  player);
           if (carrierMustMoveWith.containsKey(mySeaUnit)
               && !carrierMustMoveWith.get(mySeaUnit).isEmpty()) {
             continue;

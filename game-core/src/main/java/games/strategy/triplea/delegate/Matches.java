@@ -1543,7 +1543,8 @@ public final class Matches {
       }
       // cargo on a carrier
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-          MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
+          MoveValidator.carrierMustMoveWith(
+              units, units, data.getRelationshipTracker(), currentPlayer);
       if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
         return true;
       }

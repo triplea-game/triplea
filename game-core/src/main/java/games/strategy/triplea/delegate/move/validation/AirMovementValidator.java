@@ -88,7 +88,8 @@ public final class AirMovementValidator {
         CollectionUtils.getMatches(units, Matches.unitIsCarrier());
     if (!movingCarriersAtStartLocationBeingMoved.isEmpty()) {
       final Map<Unit, Collection<Unit>> carrierToAlliedCargo =
-          MoveValidator.carrierMustMoveWith(units, routeStart, data, player);
+          MoveValidator.carrierMustMoveWith(
+              units, routeStart, data.getRelationshipTracker(), player);
       for (final Collection<Unit> alliedAirOnCarrier : carrierToAlliedCargo.values()) {
         airThatMustLandOnCarriersHash.addAll(alliedAirOnCarrier);
       }
@@ -379,7 +380,7 @@ public final class AirMovementValidator {
         final Map<Unit, Collection<Unit>> mustMoveWithMap =
             // this only returns the allied cargo
             MoveValidator.carrierMustMoveWith(
-                ownedCarriersInCarrierSpot, carrierSpot, data, player);
+                ownedCarriersInCarrierSpot, carrierSpot, data.getRelationshipTracker(), player);
         // planes that MUST travel with the carrier
         // get the current capacity for the carrier spot
         int carrierSpotCapacity = landingSpotsWithCarrierCapacity.getInt(carrierSpot);
