@@ -1,7 +1,6 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
@@ -26,12 +25,12 @@ class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
 
   void saveToFile(final GamePlayer player, final PrintGenerationData printData) {
-    final GameState gameData = printData.getData();
     final Collection<Territory> terrCollection =
         CollectionUtils.getMatches(
-            gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+            printData.getData().getMap().getTerritories(),
+            Matches.territoryHasUnitsOwnedBy(player));
     Iterator<Territory> terrIterator = terrCollection.iterator();
-    Iterator<UnitType> availableUnits = gameData.getUnitTypeList().iterator();
+    Iterator<UnitType> availableUnits = printData.getData().getUnitTypeList().iterator();
     while (terrIterator.hasNext()) {
       final Territory currentTerritory = terrIterator.next();
       final UnitCollection unitsHere = currentTerritory.getUnitCollection();
@@ -44,7 +43,7 @@ class CountryChart {
         unitPairs.add(innerMap);
       }
       infoMap.put(currentTerritory, unitPairs);
-      availableUnits = gameData.getUnitTypeList().iterator();
+      availableUnits = printData.getData().getUnitTypeList().iterator();
     }
     final File outFile = new File(printData.getOutDir(), player.getName() + ".csv");
     try (Writer countryFileWriter =
@@ -54,7 +53,7 @@ class CountryChart {
             StandardOpenOption.CREATE,
             StandardOpenOption.APPEND)) {
       // Print Title
-      final int numUnits = gameData.getUnitTypeList().size();
+      final int numUnits = printData.getData().getUnitTypeList().size();
       for (int i = 0; i < numUnits / 2 - 1 + numUnits % 2; i++) {
         countryFileWriter.write(",");
       }
@@ -65,14 +64,15 @@ class CountryChart {
       countryFileWriter.write("\r\n");
       // Print Unit Types
       countryFileWriter.write(",");
-      for (final UnitType currentType : gameData.getUnitTypeList()) {
+      for (final UnitType currentType : printData.getData().getUnitTypeList()) {
         countryFileWriter.write(currentType.getName() + ",");
       }
       countryFileWriter.write("\r\n");
       // Print Territories and Info
       terrIterator =
           CollectionUtils.getMatches(
-                  gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player))
+                  printData.getData().getMap().getTerritories(),
+                  Matches.territoryHasUnitsOwnedBy(player))
               .iterator();
       while (terrIterator.hasNext()) {
         final Territory currentTerritory = terrIterator.next();

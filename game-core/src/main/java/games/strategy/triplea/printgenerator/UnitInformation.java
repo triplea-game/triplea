@@ -22,11 +22,10 @@ import org.triplea.java.StringUtils;
 
 @Slf4j
 class UnitInformation {
-  private GameData data;
+  //  private GameData data;
 
   void saveToFile(
       final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
-    data = printData.getData();
     printData.getOutDir().mkdir();
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
     try (Writer unitInformation =
@@ -53,7 +52,7 @@ class UnitInformation {
         } else {
           unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
         }
-        unitInformation.write(getCostInformation(currentType) + ",");
+        unitInformation.write(getCostInformation(currentType, printData.getData()) + ",");
         unitInformation.write(
             currentAttachment.getMovement(GamePlayer.NULL_PLAYERID)
                 + ","
@@ -110,7 +109,7 @@ class UnitInformation {
     }
   }
 
-  private int getCostInformation(final UnitType type) {
+  private static int getCostInformation(final UnitType type, final GameData data) {
     if (data.getProductionFrontierList().getProductionFrontier("production") != null) {
       final List<ProductionRule> productionRules =
           data.getProductionFrontierList().getProductionFrontier("production").getRules();
