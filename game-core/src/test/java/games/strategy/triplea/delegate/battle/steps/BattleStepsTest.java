@@ -30,6 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -173,6 +174,7 @@ public class BattleStepsTest {
       final BattleState.Side side,
       final String aaType) {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unit.getData()).thenReturn(mock(GameData.class));
     when(unitAndAttachment.unitAttachment.getTypeAa()).thenReturn(aaType);
     when(unitAndAttachment.unitAttachment.getTargetsAa(any())).thenReturn(aaTarget);
     when(unitAndAttachment.unitAttachment.getIsAaForCombatOnly()).thenReturn(true);
