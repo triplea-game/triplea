@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import games.strategy.triplea.player.AbstractBasePlayer;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.experimental.UtilityClass;
@@ -10,8 +11,11 @@ import lombok.experimental.UtilityClass;
  * <p>Useful for cleaning up static resources that are only needed while a game is running.
  *
  * <p>All callbacks are removed when the game ends.
+ *
+ * <p>Use {@link AbstractBasePlayer#stopGame()} instead if possible.
  */
 @UtilityClass
+@Deprecated
 public class GameShutdownRegistry {
 
   private static final Collection<Runnable> shutdownActions = new ArrayList<>();
