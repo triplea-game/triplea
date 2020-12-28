@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.gameparser.ShallowGameParser;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +14,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -22,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.UrlStreams;
 import org.triplea.map.data.elements.PropertyList;
 import org.triplea.map.data.elements.ShallowParsedGame;
@@ -34,29 +39,43 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.util.LocalizeHtml;
 
 /**
- * A modal dialog that prompts the user to select a game (map) from the list of installed games
- * (maps).
+ * Use to display a modal dialog that prompts the user to select a game (map) from the list of
+ * installed games (maps).
  */
-public class GameChooser extends JDialog {
-  private static final long serialVersionUID = -3223711652118741132L;
+@UtilityClass
+public class GameChooser {
 
-  private DefaultGameChooserEntry chosen;
+  /**
+   * Displays the Game Chooser dialog and invokes the gameChosenCallback if a game is selected.
+   * Blocking, blocks until the dialog is closed.
+   *
+   * @param gameChosenCallback The callback invoked when a game is chosen.
+   */
+  public static void chooseGame(
+      final Frame owner,
+      final AvailableGamesList availableGamesList,
+      final String gameName,
+      final Consumer<URI> gameChosenCallback) {
 
-  private GameChooser(
-      final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
-    super(owner, "Select a Game", true);
+    final JDialog dialog = new JDialog(owner, "Select a Game", true);
+    dialog.setLayout(new BorderLayout());
+
+    final DefaultListModel<DefaultGameChooserEntry> gameChooserModel = new DefaultListModel<>();
+    availableGamesList.getSortedGameEntries().forEach(gameChooserModel::addElement);
+
     final JList<DefaultGameChooserEntry> gameList = new JList<>(gameChooserModel);
     if (gameName == null || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
     } else {
-      gameChooserModel
-          .findByName(gameName)
+      IntStream.range(0, gameChooserModel.size())
+          .mapToObj(gameChooserModel::get)
+          .filter(entry -> entry.getGameName().equals(gameName))
+          .findAny()
           .ifPresent(entry -> gameList.setSelectedValue(entry, true));
     }
-    setLayout(new BorderLayout());
 
     final JSplitPane mainSplit = new JSplitPane();
-    add(mainSplit, BorderLayout.CENTER);
+    dialog.add(mainSplit, BorderLayout.CENTER);
     final JPanel leftPanel = new JPanel();
     leftPanel.setLayout(new GridBagLayout());
     leftPanel.add(
@@ -108,14 +127,11 @@ public class GameChooser extends JDialog {
     mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
 
-    final Runnable selectAndReturn =
-        () -> {
-          chosen = gameList.getSelectedValue();
-          setVisible(false);
-        };
+    final Runnable selectAndReturn = () -> dialog.setVisible(false);
 
-    final JButton cancelButton = new JButtonBuilder("Cancel").actionListener(this::dispose).build();
-    SwingKeyBinding.addKeyBinding(cancelButton, KeyCode.ESCAPE, this::dispose);
+    final JButton cancelButton =
+        new JButtonBuilder("Cancel").actionListener(dialog::dispose).build();
+    SwingKeyBinding.addKeyBinding(cancelButton, KeyCode.ESCAPE, dialog::dispose);
 
     final JPanel buttonsPanel =
         new JPanelBuilder()
@@ -126,7 +142,7 @@ public class GameChooser extends JDialog {
             .add(cancelButton)
             .add(Box.createGlue())
             .build();
-    add(buttonsPanel, BorderLayout.SOUTH);
+    dialog.add(buttonsPanel, BorderLayout.SOUTH);
 
     gameList.addListSelectionListener(
         e -> {
@@ -149,20 +165,15 @@ public class GameChooser extends JDialog {
         });
     // scroll to the top of the notes screen
     SwingUtilities.invokeLater(() -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
-  }
 
-  /**
-   * Displays the Game Chooser dialog and returns the game selected by the user or an empty option
-   */
-  public static Optional<URI> chooseGame(
-      final Frame parent, final GameChooserModel gameChooserModel, final String defaultGameName) {
-    final GameChooser chooser = new GameChooser(parent, gameChooserModel, defaultGameName);
-    chooser.setSize(800, 600);
-    chooser.setLocationRelativeTo(parent);
-    chooser.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    chooser.setVisible(true); // Blocking and waits for user action
+    dialog.setSize(800, 600);
+    dialog.setLocationRelativeTo(owner);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    dialog.setVisible(true); // Blocking and waits for user action
 
-    return Optional.ofNullable(chooser.chosen).map(DefaultGameChooserEntry::getUri);
+    Optional.ofNullable(gameList.getSelectedValue())
+        .map(DefaultGameChooserEntry::getUri)
+        .ifPresent(gameChosenCallback);
   }
 
   private static String buildGameNotesText(final URI gameUri) {
