@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

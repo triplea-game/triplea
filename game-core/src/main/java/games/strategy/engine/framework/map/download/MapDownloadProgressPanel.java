@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.collect.Maps;
-import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
