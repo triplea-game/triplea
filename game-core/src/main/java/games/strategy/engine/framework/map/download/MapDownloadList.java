@@ -28,8 +28,7 @@ class MapDownloadList {
       if (download == null) {
         return;
       }
-      final Optional<Version> mapVersion =
-          strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
+      final Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation());
 
       if (mapVersion.isPresent()) {
         installed.add(download);

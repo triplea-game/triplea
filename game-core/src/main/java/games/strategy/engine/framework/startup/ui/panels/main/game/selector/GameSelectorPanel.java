@@ -9,12 +9,12 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
-import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.TaskRunner;
 import games.strategy.triplea.ResourceLoader;
@@ -382,27 +382,32 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
   private void selectGameFile() {
     try {
-      final GameChooserModel gameChooserModel =
-          new GameChooserModel(
-              BackgroundTaskRunner.runInBackgroundAndReturn(
-                  "Loading all available games...", AvailableGamesFileSystemReader::parseMapFiles));
-      final URI gameUri =
-          GameChooser.chooseGame(
-                  JOptionPane.getFrameForComponent(this), gameChooserModel, model.getGameName())
-              .orElse(null);
-      if (gameUri != null) {
-        BackgroundTaskRunner.runInBackground("Loading map...", () -> model.load(gameUri));
-        // warning: NPE check is not to protect against concurrency, another thread could still null
-        // out game data.
-        // The NPE check is to protect against the case where there are errors loading game, in
-        // which case
-        // we'll have a null game data.
-        if (model.getGameData() != null) {
-          setOriginalPropertiesMap(model.getGameData());
-          // only for new games, not saved games, we set the default options, and set them only once
-          // (the first time it is loaded)
-          gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
-        }
+      final AvailableGamesList availableGamesList =
+          BackgroundTaskRunner.runInBackgroundAndReturn(
+              "Loading all available games...", AvailableGamesFileSystemReader::parseMapFiles);
+
+      GameChooser.chooseGame(
+          JOptionPane.getFrameForComponent(this),
+          availableGamesList,
+          model.getGameName(),
+          this::gameSelected);
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  private void gameSelected(final URI gameUri) {
+    try {
+      BackgroundTaskRunner.runInBackground("Loading map...", () -> model.load(gameUri));
+      // warning: NPE check is not to protect against concurrency, another thread could still null
+      // out game data.
+      // The NPE check is to protect against the case where there are errors loading game, in
+      // which case we'll have a null game data.
+      if (model.getGameData() != null) {
+        setOriginalPropertiesMap(model.getGameData());
+        // only for new games, not saved games, we set the default options, and set them only once
+        // (the first time it is loaded)
+        gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
       }
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();

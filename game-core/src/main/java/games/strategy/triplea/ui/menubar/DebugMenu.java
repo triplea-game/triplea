@@ -1,27 +1,36 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.player.Player;
-import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.event.KeyEvent;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Function;
 import javax.swing.JMenu;
-import org.triplea.swing.SwingAction;
+import javax.swing.JMenuItem;
 
-final class DebugMenu extends JMenu {
+public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
+
+  /** Maps the debug menu title to the function that will create the sub menu items */
+  private static final Map<String, Function<TripleAFrame, Collection<JMenuItem>>>
+      menuItemsAndFactories = new TreeMap<>();
 
   DebugMenu(final TripleAFrame frame) {
     super("Debug");
 
     setMnemonic(KeyEvent.VK_D);
 
-    final Set<Player> players = frame.getLocalPlayers().getLocalPlayers();
-    final boolean areThereProAIs = players.stream().anyMatch(AbstractProAi.class::isInstance);
-    if (areThereProAIs) {
-      AbstractProAi.initialize(frame);
-      add(SwingAction.of("Show Hard AI Logs", AbstractProAi::showSettingsWindow))
-          .setMnemonic(KeyEvent.VK_X);
-    }
+    menuItemsAndFactories.forEach(
+        (name, factory) -> {
+          final JMenu playerDebugMenu = new JMenu(name);
+          add(playerDebugMenu);
+          factory.apply(frame).forEach(playerDebugMenu::add);
+        });
+  }
+
+  public static void registerMenuCallback(
+      final String name, final Function<TripleAFrame, Collection<JMenuItem>> factory) {
+    menuItemsAndFactories.put(name, factory);
   }
 }

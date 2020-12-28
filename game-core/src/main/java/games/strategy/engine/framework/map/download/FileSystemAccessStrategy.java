@@ -17,14 +17,12 @@ import org.triplea.util.Version;
 @Slf4j
 class FileSystemAccessStrategy {
 
-  Optional<Version> getMapVersion(final String mapName) {
-    final File potentialFile = new File(mapName);
-
-    if (!potentialFile.exists()) {
+  Optional<Version> getMapVersion(final File mapFile) {
+    if (!mapFile.exists()) {
       return Optional.empty();
     }
 
-    return DownloadFileProperties.loadForZip(potentialFile).getVersion();
+    return DownloadFileProperties.loadForZip(mapFile).getVersion();
   }
 
   static void remove(
