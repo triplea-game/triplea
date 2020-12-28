@@ -56,7 +56,8 @@ class StatPanel extends AbstractStatPanel {
   }
 
   protected void initLayout() {
-    final boolean hasTech = !TechAdvance.getTechAdvances(gameData, null).isEmpty();
+    final boolean hasTech =
+        !TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
     final JTable statsTable = new JTable(dataModel);
@@ -286,9 +287,13 @@ class StatPanel extends AbstractStatPanel {
         gameData.acquireReadLock();
         if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
           useTech = true;
-          data = new String[TechAdvance.getTechAdvances(gameData).size() + 1][colList.length + 2];
+          data =
+              new String[TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size() + 1]
+                  [colList.length + 2];
         } else {
-          data = new String[TechAdvance.getTechAdvances(gameData).size()][colList.length + 1];
+          data =
+              new String[TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size()]
+                  [colList.length + 1];
         }
       } finally {
         gameData.releaseReadLock();
@@ -300,7 +305,8 @@ class StatPanel extends AbstractStatPanel {
         data[row][0] = "Tokens";
         row++;
       }
-      final List<TechAdvance> techAdvances = TechAdvance.getTechAdvances(gameData, null);
+      final List<TechAdvance> techAdvances =
+          TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), null);
       for (final TechAdvance tech : techAdvances) {
         rowMap.put(tech.getName(), row);
         data[row][0] = tech.getName();
@@ -346,8 +352,9 @@ class StatPanel extends AbstractStatPanel {
             data[row][col] = Integer.toString(tokens);
           }
           final List<TechAdvance> advancesAll =
-              TechAdvance.getTechAdvances(StatPanel.this.gameData);
-          final List<TechAdvance> has = TechAdvance.getTechAdvances(StatPanel.this.gameData, pid);
+              TechAdvance.getTechAdvances(StatPanel.this.gameData.getTechnologyFrontier());
+          final List<TechAdvance> has =
+              TechAdvance.getTechAdvances(StatPanel.this.gameData.getTechnologyFrontier(), pid);
           for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
               row = rowMap.get(advance.getName());
@@ -355,7 +362,8 @@ class StatPanel extends AbstractStatPanel {
             }
           }
           for (final TechAdvance advance :
-              TechTracker.getCurrentTechAdvances(pid, StatPanel.this.gameData)) {
+              TechTracker.getCurrentTechAdvances(
+                  pid, StatPanel.this.gameData.getTechnologyFrontier())) {
             row = rowMap.get(advance.getName());
             data[row][col] = "X";
           }

@@ -14,6 +14,7 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -830,7 +831,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
     }
     if (objectiveMet && techs != null) {
-      objectiveMet = checkTechs(playerAttachedTo, data);
+      objectiveMet = checkTechs(playerAttachedTo, data.getTechnologyFrontier());
     }
     // check for relationships
     if (objectiveMet && !relationship.isEmpty()) {
@@ -1238,9 +1239,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return found >= count;
   }
 
-  private boolean checkTechs(final GamePlayer player, final GameState data) {
+  private boolean checkTechs(final GamePlayer player, final TechnologyFrontier technologyFrontier) {
     int found = 0;
-    for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, data)) {
+    for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, technologyFrontier)) {
       if (techs.contains(a)) {
         found++;
       }

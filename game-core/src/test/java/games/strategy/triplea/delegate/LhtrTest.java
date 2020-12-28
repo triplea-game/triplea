@@ -126,7 +126,8 @@ class LhtrTest {
     TechTracker.addAdvance(
         japanese,
         bridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData, japanese));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData.getTechnologyFrontier(), japanese));
     // after tech advance, this is now 3
     assertEquals(3, attachment.getDefense(japanese));
     assertEquals(3, attachment.getAttack(japanese));
@@ -156,7 +157,8 @@ class LhtrTest {
     TechTracker.addAdvance(
         british,
         bridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
     whenGetRandom(bridge).thenAnswer(withValues(2)).thenAnswer(withValues(2, 3));
     final int pusBeforeRaid =
@@ -193,7 +195,8 @@ class LhtrTest {
     TechTracker.addAdvance(
         british,
         bridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
     whenGetRandom(bridge).thenAnswer(withValues(3, 3)).thenAnswer(withValues(2, 3, 0, 1));
     final int pusBeforeRaid =

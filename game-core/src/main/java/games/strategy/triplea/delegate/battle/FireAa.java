@@ -112,7 +112,8 @@ public class FireAa implements IExecutable {
                 .getTargetsAa(bridge.getData().getUnitTypeList());
         final Set<UnitType> airborneTypesTargeted =
             defending
-                ? TechAbilityAttachment.getAirborneTargettedByAa(hitPlayer, bridge.getData())
+                ? TechAbilityAttachment.getAirborneTargettedByAa(
+                        hitPlayer, bridge.getData().getTechnologyFrontier())
                     .get(aaType)
                 : new HashSet<>();
         final Collection<Unit> validTargets =

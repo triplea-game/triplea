@@ -156,9 +156,16 @@ public class PurchasePanel extends ActionPanel {
             CollectionUtils.getMatches(
                 getData().getMap().getTerritories(),
                 Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
+          final GameData data = getData();
           totalProd +=
               UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(), t, getCurrentPlayer(), getData(), true, true);
+                  t.getUnits(),
+                  t,
+                  getCurrentPlayer(),
+                  data.getTechnologyFrontier(),
+                  data.getProperties(),
+                  true,
+                  true);
         }
       } finally {
         getData().releaseReadLock();

@@ -829,7 +829,8 @@ class DiceRollTest {
     TechTracker.addAdvance(
         british,
         testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     final List<Unit> bombers =
         gameData
             .getMap()
@@ -868,7 +869,8 @@ class DiceRollTest {
     TechTracker.addAdvance(
         british,
         testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     final List<Unit> bombers =
         gameData
             .getMap()
@@ -943,7 +945,8 @@ class DiceRollTest {
     TechTracker.addAdvance(
         british,
         testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     final List<Unit> bombers =
         gameData
             .getMap()
@@ -984,7 +987,8 @@ class DiceRollTest {
     TechTracker.addAdvance(
         british,
         testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     final List<Unit> bombers =
         gameData
             .getMap()
@@ -1024,7 +1028,8 @@ class DiceRollTest {
     TechTracker.addAdvance(
         british,
         testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     final List<Unit> bombers =
         gameData
             .getMap()
@@ -1075,7 +1080,8 @@ class DiceRollTest {
     TechTracker.addAdvance(
         british,
         testDelegateBridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     // lhtr hb, 2 for both
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
     assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(2));

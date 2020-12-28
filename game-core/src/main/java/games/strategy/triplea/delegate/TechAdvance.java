@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -198,9 +199,12 @@ public abstract class TechAdvance extends NamedAttachable {
     }
   }
 
+  @VisibleForTesting
   static TechAdvance findAdvance(
-      final String propertyString, final GameState data, final GamePlayer player) {
-    for (final TechAdvance t : getTechAdvances(data, player)) {
+      final String propertyString,
+      final TechnologyFrontier technologyFrontier,
+      final GamePlayer player) {
+    for (final TechAdvance t : getTechAdvances(technologyFrontier, player)) {
       if (t.getProperty().equals(propertyString)) {
         return t;
       }
@@ -251,16 +255,16 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /** Returns all tech advances possible in this game. */
-  public static List<TechAdvance> getTechAdvances(final GameState data) {
-    return getTechAdvances(data, null);
+  public static List<TechAdvance> getTechAdvances(final TechnologyFrontier technologyFrontier) {
+    return getTechAdvances(technologyFrontier, null);
   }
 
   /**
    * Returns all tech advances that this player can possibly research. (Or if Player is null,
    * returns all techs available in the game).
    */
-  public static List<TechAdvance> getTechAdvances(final GameState data, final GamePlayer player) {
-    final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
+  public static List<TechAdvance> getTechAdvances(
+      final TechnologyFrontier technologyFrontier, final GamePlayer player) {
     if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
       return (player != null)
           ? player.getTechnologyFrontierList().getAdvances()

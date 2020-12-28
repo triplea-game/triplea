@@ -93,7 +93,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   protected void updateDefendingUnits() {
     // fill in defenders
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
+        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData.getTechnologyFrontier());
     final Predicate<Unit> defenders =
         Matches.enemyUnit(attacker, gameData.getRelationshipTracker())
             .and(
@@ -202,7 +202,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // TODO: determine if the target has the property, not just any unit with the property
     // isAAforBombingThisUnitOnly
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
+        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData.getTechnologyFrontier());
     defendingAa =
         battleSite
             .getUnitCollection()
@@ -457,7 +457,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             UnitAttachment.get(currentPossibleAa.iterator().next().getType())
                 .getTargetsAa(gameData.getUnitTypeList());
         final Set<UnitType> airborneTypesTargetedToo =
-            TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData).get(currentTypeAa);
+            TechAbilityAttachment.getAirborneTargettedByAa(
+                    attacker, gameData.getTechnologyFrontier())
+                .get(currentTypeAa);
         if (determineAttackers) {
           validAttackingUnitsForThisRoll =
               CollectionUtils.getMatches(
@@ -894,7 +896,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 0,
                 (costThisUnit
                     + TechAbilityAttachment.getBombingBonus(
-                        attacker.getType(), attacker.getOwner(), gameData)));
+                        attacker.getType(),
+                        attacker.getOwner(),
+                        gameData.getTechnologyFrontier())));
         if (limitDamage) {
           costThisUnit = Math.min(costThisUnit, damageLimit);
         }

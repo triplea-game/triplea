@@ -552,7 +552,7 @@ class EditPanel extends ActionPanel {
             getData().acquireReadLock();
             final Collection<TechAdvance> techs;
             try {
-              techs = TechnologyDelegate.getAvailableTechs(player, data);
+              techs = TechnologyDelegate.getAvailableTechs(player, data.getTechnologyFrontier());
             } finally {
               getData().releaseReadLock();
             }
@@ -614,7 +614,7 @@ class EditPanel extends ActionPanel {
             getData().acquireReadLock();
             final Collection<TechAdvance> techs;
             try {
-              techs = TechTracker.getCurrentTechAdvances(player, data);
+              techs = TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier());
               // there is no way to "undo" these two techs, so do not allow them to be removed
               techs.removeIf(
                   ta ->

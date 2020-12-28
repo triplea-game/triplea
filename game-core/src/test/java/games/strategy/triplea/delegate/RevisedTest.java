@@ -169,7 +169,8 @@ class RevisedTest {
     TechTracker.addAdvance(
         japanese,
         bridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData, japanese));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData.getTechnologyFrontier(), japanese));
     // after tech advance, this is now 3
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(3, attachment.getAttack(japanese));
@@ -971,7 +972,8 @@ class RevisedTest {
     TechTracker.addAdvance(
         british,
         bridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3
     whenGetRandom(bridge).thenAnswer(withValues(3)).thenAnswer(withValues(2, 2));
     final int pusBeforeRaid =
@@ -1445,9 +1447,13 @@ class RevisedTest {
     final TechAttachment ta = TechAttachment.get(germans);
     // PlayerAttachment pa = PlayerAttachment.get(germans);
     final TechnologyFrontier rockets = new TechnologyFrontier("", gameData);
-    rockets.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_ROCKETS, gameData, null));
+    rockets.addAdvance(
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_ROCKETS, gameData.getTechnologyFrontier(), null));
     final TechnologyFrontier jet = new TechnologyFrontier("", gameData);
-    jet.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_JET_POWER, gameData, null));
+    jet.addAdvance(
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_JET_POWER, gameData.getTechnologyFrontier(), null));
     // Check to make sure it was successful
     final int initPUs = germans.getResources().getQuantity("PUs");
     whenGetRandom(delegateBridge)

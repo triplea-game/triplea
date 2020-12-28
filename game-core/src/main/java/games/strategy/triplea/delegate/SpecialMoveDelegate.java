@@ -207,12 +207,15 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       final GamePlayer player,
       final MoveValidationResult result) {
     final GameData data = player.getData();
-    if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
+    if (!TechAbilityAttachment.getAllowAirborneForces(player, data.getTechnologyFrontier())) {
       return result.setErrorReturnResult("Do Not Have Airborne Tech");
     }
-    final int airborneDistance = TechAbilityAttachment.getAirborneDistance(player, data);
-    final Set<UnitType> airborneBases = TechAbilityAttachment.getAirborneBases(player, data);
-    final Set<UnitType> airborneTypes = TechAbilityAttachment.getAirborneTypes(player, data);
+    final int airborneDistance =
+        TechAbilityAttachment.getAirborneDistance(player, data.getTechnologyFrontier());
+    final Set<UnitType> airborneBases =
+        TechAbilityAttachment.getAirborneBases(player, data.getTechnologyFrontier());
+    final Set<UnitType> airborneTypes =
+        TechAbilityAttachment.getAirborneTypes(player, data.getTechnologyFrontier());
     if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty()) {
       return result.setErrorReturnResult("Require Airborne Forces And Launch Capacity Tech");
     }
@@ -229,7 +232,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("Require Airborne Base At Originating Territory");
     }
     final int airborneCapacity =
-        TechAbilityAttachment.getAirborneCapacity(basesAtStart, player, data);
+        TechAbilityAttachment.getAirborneCapacity(
+            basesAtStart, player, data.getTechnologyFrontier());
     if (airborneCapacity <= 0) {
       return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
     } else if (airborneCapacity < units.size()) {
@@ -319,7 +323,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private static Predicate<Unit> getAirborneBaseMatch(
       final GamePlayer player, final GameState data) {
     return getAirborneMatch(
-        TechAbilityAttachment.getAirborneBases(player, data),
+        TechAbilityAttachment.getAirborneBases(player, data.getTechnologyFrontier()),
         data.getRelationshipTracker().getAllies(player, true));
   }
 
@@ -343,7 +347,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return launchedChange;
     }
     final IntegerMap<UnitType> capacityMap =
-        TechAbilityAttachment.getAirborneCapacity(player, data);
+        TechAbilityAttachment.getAirborneCapacity(player, data.getTechnologyFrontier());
     for (final Unit u : bases) {
       if (newNumberLaunched <= 0) {
         break;
@@ -362,12 +366,15 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static boolean allowAirborne(final GamePlayer player, final GameState data) {
-    if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
+    if (!TechAbilityAttachment.getAllowAirborneForces(player, data.getTechnologyFrontier())) {
       return false;
     }
-    final int airborneDistance = TechAbilityAttachment.getAirborneDistance(player, data);
-    final Set<UnitType> airborneBases = TechAbilityAttachment.getAirborneBases(player, data);
-    final Set<UnitType> airborneTypes = TechAbilityAttachment.getAirborneTypes(player, data);
+    final int airborneDistance =
+        TechAbilityAttachment.getAirborneDistance(player, data.getTechnologyFrontier());
+    final Set<UnitType> airborneBases =
+        TechAbilityAttachment.getAirborneBases(player, data.getTechnologyFrontier());
+    final Set<UnitType> airborneTypes =
+        TechAbilityAttachment.getAirborneTypes(player, data.getTechnologyFrontier());
     if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty()) {
       return false;
     }
