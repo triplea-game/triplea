@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
+import org.triplea.io.ZipFileUtil;
 
 /**
  * Reads from file system to find all available games. We then shallow parse each available game to
@@ -61,7 +62,7 @@ public class AvailableGamesFileSystemReader {
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(File::isFile)
         .filter(file -> file.getName().toLowerCase().endsWith(ZIP_EXTENSION))
-        .map(ZipFileUtil::findGameXmlFilesInZip)
+        .map(ZipFileUtil::findXmlFilesInZip)
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
   }
@@ -96,7 +97,7 @@ public class AvailableGamesFileSystemReader {
     }
 
     if (installLocation.getName().endsWith(ZIP_EXTENSION)) {
-      mapXmlsGameNamesByUri(ZipFileUtil.findGameXmlFilesInZip(installLocation))
+      mapXmlsGameNamesByUri(ZipFileUtil.findXmlFilesInZip(installLocation))
           .forEach(availableGamesListCache::add);
     }
   }

@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.map.file.system.loader;
+package org.triplea.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,12 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @UtilityClass
 @Slf4j
-class ZipFileUtil {
+public class ZipFileUtil {
 
   /**
    * Finds all game XMLs in a zip file. More specifically, given a zip file, finds all '*.xml' files
    */
-  List<URI> findGameXmlFilesInZip(final File zip) {
+  public List<URI> findXmlFilesInZip(final File zip) {
     final List<URI> zipFiles = new ArrayList<>();
 
     try (ZipFile zipFile = new ZipFile(zip);
