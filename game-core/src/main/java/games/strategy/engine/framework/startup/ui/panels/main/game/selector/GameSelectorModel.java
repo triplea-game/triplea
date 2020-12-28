@@ -5,7 +5,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.GameParsingValidation;
-import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -28,7 +27,6 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the game
@@ -53,14 +51,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
-    this(
-        uri ->
-            GameParser.parse(
-                uri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion()));
-  }
-
-  GameSelectorModel(final Function<URI, Optional<GameData>> gameParser) {
-    this.gameParser = gameParser;
+    this.gameParser = GameParser::parse;
   }
 
   /**
