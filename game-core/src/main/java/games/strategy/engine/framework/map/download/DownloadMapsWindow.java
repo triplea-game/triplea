@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -371,7 +372,10 @@ public class DownloadMapsWindow extends JFrame {
       final List<DownloadFileDescription> unsortedMaps,
       final MapAction action) {
 
-    final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
+    final List<DownloadFileDescription> maps =
+        unsortedMaps.stream()
+            .sorted(Comparator.comparing(lhs -> lhs.getMapName().toUpperCase()))
+            .collect(Collectors.toList());
     final JPanel main = new JPanelBuilder().border(30).borderLayout().build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
