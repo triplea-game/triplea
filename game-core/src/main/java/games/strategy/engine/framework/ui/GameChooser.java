@@ -162,6 +162,15 @@ public class GameChooser extends JDialog {
         });
     // scroll to the top of the notes screen
     SwingUtilities.invokeLater(() -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
+
+    setSize(800, 600);
+    setLocationRelativeTo(owner);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    setVisible(true); // Blocking and waits for user action
+
+    Optional.ofNullable(chosen) //
+        .map(DefaultGameChooserEntry::getUri)
+        .ifPresent(gameChosenCallback);
   }
 
   /**
@@ -172,16 +181,7 @@ public class GameChooser extends JDialog {
       final AvailableGamesList availableGamesList,
       final String defaultGameName,
       final Consumer<URI> gameChosenCallback) {
-    final GameChooser chooser =
-        new GameChooser(parent, availableGamesList, defaultGameName, gameChosenCallback);
-    chooser.setSize(800, 600);
-    chooser.setLocationRelativeTo(parent);
-    chooser.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    chooser.setVisible(true); // Blocking and waits for user action
-
-    Optional.ofNullable(chooser.chosen)
-        .map(DefaultGameChooserEntry::getUri)
-        .ifPresent(gameChosenCallback);
+    new GameChooser(parent, availableGamesList, defaultGameName, gameChosenCallback);
   }
 
   private static String buildGameNotesText(final URI gameUri) {
