@@ -37,7 +37,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.odds.calculator.IBattleCalculator;
-import games.strategy.triplea.ui.TripleAFrame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -86,6 +85,8 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
     storedPurchaseTerritories = null;
     storedPoliticalActions = null;
     storedStrafingTerritories = new ArrayList<>();
+
+    ProLogUi.registerDebugMenu();
   }
 
   @Override
@@ -96,16 +97,6 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
 
   public ProOddsCalculator getCalc() {
     return calc;
-  }
-
-  public static void initialize(final TripleAFrame frame) {
-    ProLogUi.initialize(frame);
-    ProLogger.info("Initialized Hard AI");
-  }
-
-  public static void showSettingsWindow() {
-    ProLogger.info("Showing Hard AI settings window");
-    ProLogUi.showSettingsWindow();
   }
 
   private void initializeData() {
