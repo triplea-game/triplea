@@ -28,24 +28,13 @@ public class AvailableGamesFileSystemReader {
 
   private static final String ZIP_EXTENSION = ".zip";
 
-  private static AvailableGamesList availableGamesListCache;
-
   public static synchronized AvailableGamesList parseMapFiles() {
-    if (availableGamesListCache == null) {
-      final Set<DefaultGameChooserEntry> entries = new HashSet<>();
-      entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
-      entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
-      availableGamesListCache = new AvailableGamesList(entries);
-      entries.forEach(
-          entry -> log.debug("Found game: " + entry.getGameName() + " @ " + entry.getUri()));
-    }
-
-    return availableGamesListCache;
-  }
-
-  public static void refreshMapFileCache() {
-    availableGamesListCache = null;
-    new Thread(AvailableGamesFileSystemReader::parseMapFiles).start();
+    final Set<DefaultGameChooserEntry> entries = new HashSet<>();
+    entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
+    entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
+    entries.forEach(
+        entry -> log.debug("Found game: " + entry.getGameName() + " @ " + entry.getUri()));
+    return new AvailableGamesList(entries);
   }
 
   private Collection<DefaultGameChooserEntry> mapXmlsGameNamesByUri(
@@ -87,17 +76,6 @@ public class AvailableGamesFileSystemReader {
     } catch (final IOException e) {
       log.warn("Unable to read map folder: " + mapDir.getAbsolutePath() + "," + e.getMessage(), e);
       return List.of();
-    }
-  }
-
-  public static void addNewMapToCache(final File installLocation) {
-    if (availableGamesListCache == null) {
-      parseMapFiles();
-    }
-
-    if (installLocation.getName().endsWith(ZIP_EXTENSION)) {
-      mapXmlsGameNamesByUri(MapZipReaderUtil.findGameXmlFilesInZip(installLocation))
-          .forEach(availableGamesListCache::add);
     }
   }
 }

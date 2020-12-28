@@ -111,7 +111,6 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
   public void downloadComplete(final DownloadFileDescription download) {
     SwingUtilities.invokeLater(
         () -> getMapDownloadProgressListenerFor(download).downloadCompleted());
-    AvailableGamesFileSystemReader.addNewMapToCache(download.getInstallLocation());
   }
 
   private MapDownloadProgressListener getMapDownloadProgressListenerFor(

@@ -98,7 +98,6 @@ public final class HeadedGameRunner {
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
     GameRunner.start();
-    AvailableGamesFileSystemReader.refreshMapFileCache();
   }
 
   private static Injections constructInjections() {

@@ -82,8 +82,6 @@ class FileSystemAccessStrategy {
       if (!fails.isEmpty()) {
         showRemoveFailDialog(fails);
         fails.forEach(m -> m.getInstallLocation().deleteOnExit());
-      } else {
-        AvailableGamesFileSystemReader.refreshMapFileCache();
       }
     };
   }
