@@ -9,12 +9,12 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
-import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.TaskRunner;
 import games.strategy.triplea.ResourceLoader;
@@ -382,13 +382,12 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
   private void selectGameFile() {
     try {
-      final GameChooserModel gameChooserModel =
-          new GameChooserModel(
-              BackgroundTaskRunner.runInBackgroundAndReturn(
-                  "Loading all available games...", AvailableGamesFileSystemReader::parseMapFiles));
+      final AvailableGamesList availableGamesList =
+          BackgroundTaskRunner.runInBackgroundAndReturn(
+              "Loading all available games...", AvailableGamesFileSystemReader::parseMapFiles);
       final URI gameUri =
           GameChooser.chooseGame(
-                  JOptionPane.getFrameForComponent(this), gameChooserModel, model.getGameName())
+                  JOptionPane.getFrameForComponent(this), availableGamesList, model.getGameName())
               .orElse(null);
       if (gameUri != null) {
         BackgroundTaskRunner.runInBackground("Loading map...", () -> model.load(gameUri));

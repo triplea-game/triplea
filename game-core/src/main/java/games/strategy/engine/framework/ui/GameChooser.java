@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.gameparser.ShallowGameParser;
+import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,6 +16,7 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -44,8 +46,12 @@ public class GameChooser extends JDialog {
   private DefaultGameChooserEntry chosen;
 
   private GameChooser(
-      final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
+      final Frame owner, final AvailableGamesList availableGamesList, final String gameName) {
     super(owner, "Select a Game", true);
+
+    final DefaultListModel<DefaultGameChooserEntry> gameChooserModel = new DefaultListModel<>();
+    availableGamesList.getSortedGameEntries().forEach(gameChooserModel::addElement);
+
     final JList<DefaultGameChooserEntry> gameList = new JList<>(gameChooserModel);
     if (gameName == null || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
@@ -158,8 +164,10 @@ public class GameChooser extends JDialog {
    * Displays the Game Chooser dialog and returns the game selected by the user or an empty option
    */
   public static Optional<URI> chooseGame(
-      final Frame parent, final GameChooserModel gameChooserModel, final String defaultGameName) {
-    final GameChooser chooser = new GameChooser(parent, gameChooserModel, defaultGameName);
+      final Frame parent,
+      final AvailableGamesList availableGamesList,
+      final String defaultGameName) {
+    final GameChooser chooser = new GameChooser(parent, availableGamesList, defaultGameName);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
