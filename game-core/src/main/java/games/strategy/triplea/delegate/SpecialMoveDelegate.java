@@ -238,7 +238,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
     } else if (airborneCapacity < units.size()) {
       final Collection<Unit> overMax = new ArrayList<>(units);
-      overMax.removeAll(CollectionUtils.getNMatches(units, airborneCapacity, Matches.always()));
+      overMax.removeAll(CollectionUtils.getNMatches(units, airborneCapacity, it -> true));
       for (final Unit u : overMax) {
         result.addDisallowedUnit("Airborne Base Capacity Has Been Reached", u);
       }

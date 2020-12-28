@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai;
 
+import static java.util.function.Predicate.not;
+
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ProductionFrontier;
@@ -138,7 +140,7 @@ public final class AiUtils {
           final int seekedCarrierIndex =
               getIndexOfLastUnitMatching(
                   result,
-                  Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                  Matches.unitIsCarrier().and(not(filledCarriers::contains)),
                   result.size() - 1);
           if (seekedCarrierIndex == -1) {
             // No carriers left
@@ -172,7 +174,7 @@ public final class AiUtils {
             seekedCarrier =
                 getLastUnitMatching(
                     result,
-                    Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                    Matches.unitIsCarrier().and(not(filledCarriers::contains)),
                     result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
@@ -216,7 +218,7 @@ public final class AiUtils {
             seekedCarrier =
                 getLastUnitMatching(
                     result,
-                    Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                    Matches.unitIsCarrier().and(not(filledCarriers::contains)),
                     result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left

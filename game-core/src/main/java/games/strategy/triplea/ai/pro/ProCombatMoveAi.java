@@ -1360,8 +1360,7 @@ public class ProCombatMoveAi {
           final boolean isEnemyCapital = ProUtils.getLiveEnemyCapitals(data, player).contains(t);
           final boolean isAdjacentToAlliedCapital =
               Matches.territoryHasNeighborMatching(
-                      data.getMap(),
-                      Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player)))
+                      data.getMap(), ProUtils.getLiveAlliedCapitals(data, player)::contains)
                   .test(t);
           final int range = unit.getMovementLeft().intValue();
           final int distance =

@@ -1413,7 +1413,7 @@ class WW2V3Year41Test {
     addTo(sz40, carrier(gameData).create(1, germans));
     addTo(sz40, fighter(gameData).create(1, italians(gameData)));
     addTo(madagascar, fighter(gameData).create(2, germans));
-    final Route route = gameData.getMap().getRoute(madagascar, sz40, Matches.always());
+    final Route route = gameData.getMap().getRoute(madagascar, sz40, it -> true);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1706,7 +1706,7 @@ class WW2V3Year41Test {
 
     move(
         uk.getUnitCollection().getMatches(Matches.unitIsAir()),
-        gameData.getMap().getRoute(uk, sz5, Matches.always()));
+        gameData.getMap().getRoute(uk, sz5, it -> true));
     // move units for amphib assault
     moveDelegate(gameData).end();
     advanceToStep(bridge, "Combat");

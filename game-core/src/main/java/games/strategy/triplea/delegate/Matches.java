@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import static java.util.function.Predicate.not;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
@@ -78,14 +76,6 @@ import org.triplea.util.Tuple;
  */
 public final class Matches {
   private Matches() {}
-
-  public static <T> Predicate<T> always() {
-    return it -> true;
-  }
-
-  public static <T> Predicate<T> never() {
-    return it -> false;
-  }
 
   public static Predicate<UnitType> unitTypeHasMoreThanOneHitPointTotal() {
     return ut -> UnitAttachment.get(ut).getHitPoints() > 1;
@@ -923,14 +913,6 @@ public final class Matches {
   public static Predicate<Territory> territoryHasNeighborMatching(
       final GameMap gameMap, final Predicate<Territory> match) {
     return t -> !gameMap.getNeighbors(t, match).isEmpty();
-  }
-
-  public static Predicate<Territory> territoryIsInList(final Collection<Territory> list) {
-    return list::contains;
-  }
-
-  public static Predicate<Territory> territoryIsNotInList(final Collection<Territory> list) {
-    return not(list::contains);
   }
 
   public static Predicate<Territory>
@@ -2422,10 +2404,6 @@ public final class Matches {
 
   public static Predicate<Unit> unitIsAirborne() {
     return Unit::getAirborne;
-  }
-
-  public static <T> Predicate<T> isNotInList(final List<T> list) {
-    return not(list::contains);
   }
 
   /** Ignores units that are submerged or not valid for the specific battle site */

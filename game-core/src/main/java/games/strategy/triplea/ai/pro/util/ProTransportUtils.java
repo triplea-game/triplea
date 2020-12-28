@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static java.util.function.Predicate.not;
+
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -428,7 +430,7 @@ public final class ProTransportUtils {
           final int seekedCarrierIndex =
               AiUtils.getIndexOfLastUnitMatching(
                   result,
-                  Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                  Matches.unitIsCarrier().and(not(filledCarriers::contains)),
                   result.size() - 1);
           if (seekedCarrierIndex == -1) {
             break; // No carriers left
@@ -464,7 +466,7 @@ public final class ProTransportUtils {
             seekedCarrier =
                 AiUtils.getLastUnitMatching(
                     result,
-                    Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                    Matches.unitIsCarrier().and(not(filledCarriers::contains)),
                     result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
@@ -514,7 +516,7 @@ public final class ProTransportUtils {
             seekedCarrier =
                 AiUtils.getLastUnitMatching(
                     result,
-                    Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                    Matches.unitIsCarrier().and(not(filledCarriers::contains)),
                     result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left

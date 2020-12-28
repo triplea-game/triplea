@@ -2,7 +2,6 @@ package games.strategy.engine.data.util;
 
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,7 @@ public final class BreadthFirstSearch {
   }
 
   public BreadthFirstSearch(final Territory startTerritory) {
-    this(startTerritory, Matches.always());
+    this(startTerritory, t -> true);
   }
 
   /**

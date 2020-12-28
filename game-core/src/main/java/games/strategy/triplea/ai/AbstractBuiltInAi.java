@@ -372,8 +372,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
               picked = territoryChoices.get(0);
             } else {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap()
-                      .getDistance(capitals.get(0), doesNotHaveFactoryYet, Matches.always());
+                  data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, it -> true);
               picked = distanceMap.lowestKey();
             }
           }
@@ -387,7 +386,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
           if (!test.isEmpty()) {
             if (test.size() < maxTerritoriesToPopulate) {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(test.get(0), territoryChoices, Matches.always());
+                  data.getMap().getDistance(test.get(0), territoryChoices, it -> true);
               for (int i = 0; i < maxTerritoriesToPopulate; i++) {
                 final Territory choice = distanceMap.lowestKey();
                 distanceMap.removeKey(choice);
@@ -409,7 +408,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
               picked = territoryChoices.get(0);
             } else {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(capitals.get(0), territoryChoices, Matches.always());
+                  data.getMap().getDistance(capitals.get(0), territoryChoices, it -> true);
               if (territoryChoices.contains(capitals.get(0))) {
                 distanceMap.put(capitals.get(0), 0);
               }
@@ -444,7 +443,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
             picked = territoryChoices.get(0);
           } else {
             final IntegerMap<Territory> distanceMap =
-                data.getMap().getDistance(capitals.get(0), notOwned, Matches.always());
+                data.getMap().getDistance(capitals.get(0), notOwned, it -> true);
             picked = distanceMap.lowestKey();
           }
         }

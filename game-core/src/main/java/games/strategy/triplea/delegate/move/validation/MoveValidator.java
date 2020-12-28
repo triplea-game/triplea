@@ -1769,7 +1769,7 @@ public class MoveValidator {
                       : Matches.territoryIsImpassable()));
       // There really is nothing, so just return any route, without conditions
       if (defaultRoute == null) {
-        return data.getMap().getRoute(start, end, Matches.always());
+        return data.getMap().getRoute(start, end, it -> true);
       }
       return defaultRoute;
     }
