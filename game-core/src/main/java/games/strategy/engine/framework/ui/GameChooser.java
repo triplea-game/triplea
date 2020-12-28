@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -49,8 +50,10 @@ public class GameChooser extends JDialog {
     if (gameName == null || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
     } else {
-      gameChooserModel
-          .findByName(gameName)
+      IntStream.range(0, gameChooserModel.size())
+          .mapToObj(gameChooserModel::get)
+          .filter(entry -> entry.getGameName().equals(gameName))
+          .findAny()
           .ifPresent(entry -> gameList.setSelectedValue(entry, true));
     }
     setLayout(new BorderLayout());
