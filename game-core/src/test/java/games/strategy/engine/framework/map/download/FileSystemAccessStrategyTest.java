@@ -1,13 +1,13 @@
 package games.strategy.engine.framework.map.download;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -35,12 +35,11 @@ class FileSystemAccessStrategyTest {
 
   @Test
   void testMapPropertyFileNotFound() {
-    assertThat(testObj.getMapVersion("does_not_exist"), is(Optional.empty()));
+    assertThat(testObj.getMapVersion(new File("does_not_exist")), isEmpty());
   }
 
   @Test
   void testMapFileFound() {
-    assertThat(
-        testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2, 0))));
+    assertThat(testObj.getMapVersion(mapFile), isPresentAndIs(new Version(1, 2, 0)));
   }
 }
