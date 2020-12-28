@@ -44,8 +44,6 @@ import org.triplea.util.LocalizeHtml;
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
-  private DefaultGameChooserEntry chosen;
-
   private GameChooser(
       final Frame owner,
       final AvailableGamesList availableGamesList,
@@ -121,11 +119,7 @@ public class GameChooser extends JDialog {
     mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
 
-    final Runnable selectAndReturn =
-        () -> {
-          chosen = gameList.getSelectedValue();
-          setVisible(false);
-        };
+    final Runnable selectAndReturn = () -> setVisible(false);
 
     final JButton cancelButton = new JButtonBuilder("Cancel").actionListener(this::dispose).build();
     SwingKeyBinding.addKeyBinding(cancelButton, KeyCode.ESCAPE, this::dispose);
@@ -168,7 +162,7 @@ public class GameChooser extends JDialog {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setVisible(true); // Blocking and waits for user action
 
-    Optional.ofNullable(chosen) //
+    Optional.ofNullable(gameList.getSelectedValue())
         .map(DefaultGameChooserEntry::getUri)
         .ifPresent(gameChosenCallback);
   }
