@@ -33,8 +33,4 @@ public final class DebugMenu extends JMenu {
       final String name, final Function<TripleAFrame, Collection<JMenuItem>> factory) {
     menuItemsAndFactories.put(name, factory);
   }
-
-  public static void unregisterMenuCallback(final String name) {
-    menuItemsAndFactories.remove(name);
-  }
 }
