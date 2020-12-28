@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -46,7 +47,10 @@ public class GameChooser extends JDialog {
   private DefaultGameChooserEntry chosen;
 
   private GameChooser(
-      final Frame owner, final AvailableGamesList availableGamesList, final String gameName) {
+      final Frame owner,
+      final AvailableGamesList availableGamesList,
+      final String gameName,
+      final Consumer<URI> gameChosenCallback) {
     super(owner, "Select a Game", true);
 
     final DefaultListModel<DefaultGameChooserEntry> gameChooserModel = new DefaultListModel<>();
@@ -163,17 +167,21 @@ public class GameChooser extends JDialog {
   /**
    * Displays the Game Chooser dialog and returns the game selected by the user or an empty option
    */
-  public static Optional<URI> chooseGame(
+  public static void chooseGame(
       final Frame parent,
       final AvailableGamesList availableGamesList,
-      final String defaultGameName) {
-    final GameChooser chooser = new GameChooser(parent, availableGamesList, defaultGameName);
+      final String defaultGameName,
+      final Consumer<URI> gameChosenCallback) {
+    final GameChooser chooser =
+        new GameChooser(parent, availableGamesList, defaultGameName, gameChosenCallback);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     chooser.setVisible(true); // Blocking and waits for user action
 
-    return Optional.ofNullable(chooser.chosen).map(DefaultGameChooserEntry::getUri);
+    Optional.ofNullable(chooser.chosen)
+        .map(DefaultGameChooserEntry::getUri)
+        .ifPresent(gameChosenCallback);
   }
 
   private static String buildGameNotesText(final URI gameUri) {
