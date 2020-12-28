@@ -24,12 +24,7 @@ public final class GameChooserModel extends DefaultListModel<DefaultGameChooserE
   public GameChooserModel(final AvailableGamesList availableGamesList) {
     availableGamesList.getSortedGameEntries().forEach(this::addElement);
   }
-
-  @Override
-  public DefaultGameChooserEntry get(final int i) {
-    return super.get(i);
-  }
-
+  
   /** Searches for a GameChooserEntry whose gameName matches the input parameter. */
   public Optional<DefaultGameChooserEntry> findByName(final String name) {
     return IntStream.range(0, size())
