@@ -2395,8 +2395,10 @@ public final class Matches {
             .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
             .or(unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)))
             .or(
-                unitTypeCanBeHitByAaFire(
-                    firingUnits, player.getData().getUnitTypeList(), battleRound));
+                unitType ->
+                    unitTypeCanBeHitByAaFire(
+                            firingUnits, unitType.getData().getUnitTypeList(), battleRound)
+                        .test(unitType));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {
