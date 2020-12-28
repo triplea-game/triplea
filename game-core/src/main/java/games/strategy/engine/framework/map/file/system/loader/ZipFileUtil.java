@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @UtilityClass
 @Slf4j
-class MapZipReaderUtil {
+class ZipFileUtil {
 
   /**
    * Finds all game XMLs in a zip file. More specifically, given a zip file, finds all '*.xml' files

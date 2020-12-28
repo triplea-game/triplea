@@ -61,7 +61,7 @@ public class AvailableGamesFileSystemReader {
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(File::isFile)
         .filter(file -> file.getName().toLowerCase().endsWith(ZIP_EXTENSION))
-        .map(MapZipReaderUtil::findGameXmlFilesInZip)
+        .map(ZipFileUtil::findGameXmlFilesInZip)
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
   }
@@ -96,7 +96,7 @@ public class AvailableGamesFileSystemReader {
     }
 
     if (installLocation.getName().endsWith(ZIP_EXTENSION)) {
-      mapXmlsGameNamesByUri(MapZipReaderUtil.findGameXmlFilesInZip(installLocation))
+      mapXmlsGameNamesByUri(ZipFileUtil.findGameXmlFilesInZip(installLocation))
           .forEach(availableGamesListCache::add);
     }
   }
