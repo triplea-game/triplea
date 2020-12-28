@@ -9,16 +9,15 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -92,25 +91,9 @@ public class DownloadMapsWindow extends JFrame {
       SwingComponents.newMessageDialog(formatIgnoredPendingMapsMessage(unknownMapNames));
     }
 
-    final Optional<String> selectedMapName = pendingDownloadMapNames.stream().findFirst();
-
     SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
 
-    final JTabbedPane outerTabs = new JTabbedPane();
-
-    final List<DownloadFileDescription> maps =
-        filterMaps(allDownloads, DownloadFileDescription::isMap);
-    outerTabs.add("Maps", newTabbedPanelForMaps(maps, pendingDownloads));
-
-    final List<DownloadFileDescription> skins =
-        filterMaps(allDownloads, DownloadFileDescription::isMapSkin);
-    outerTabs.add(
-        "Skins", newAvailableInstalledTabbedPanel(selectedMapName, skins, pendingDownloads));
-
-    final List<DownloadFileDescription> tools =
-        filterMaps(allDownloads, DownloadFileDescription::isMapTool);
-    outerTabs.add(
-        "Tools", newAvailableInstalledTabbedPanel(selectedMapName, tools, pendingDownloads));
+    final JTabbedPane outerTabs = newTabbedPanelForMaps(allDownloads, pendingDownloads);
 
     final JSplitPane splitPane =
         new JSplitPane(
@@ -277,7 +260,7 @@ public class DownloadMapsWindow extends JFrame {
     return sb.toString();
   }
 
-  private Component newTabbedPanelForMaps(
+  private JTabbedPane newTabbedPanelForMaps(
       final List<DownloadFileDescription> downloads,
       final Set<DownloadFileDescription> pendingDownloads) {
     final JTabbedPane mapTabs = SwingComponents.newJTabbedPaneWithFixedWidthTabs(900, 600);
@@ -312,15 +295,6 @@ public class DownloadMapsWindow extends JFrame {
 
   private static String normalizeName(final String mapName) {
     return mapName.replace(' ', '_').toLowerCase();
-  }
-
-  private static List<DownloadFileDescription> filterMaps(
-      final List<DownloadFileDescription> maps,
-      final Predicate<DownloadFileDescription> predicate) {
-    return maps.stream()
-        .peek(map -> checkNotNull(map, "Maps list contained null element: " + maps))
-        .filter(predicate)
-        .collect(Collectors.toList());
   }
 
   private JTabbedPane newAvailableInstalledTabbedPanel(
@@ -371,7 +345,10 @@ public class DownloadMapsWindow extends JFrame {
       final List<DownloadFileDescription> unsortedMaps,
       final MapAction action) {
 
-    final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
+    final List<DownloadFileDescription> maps =
+        unsortedMaps.stream()
+            .sorted(Comparator.comparing(lhs -> lhs.getMapName().toUpperCase()))
+            .collect(Collectors.toList());
     final JPanel main = new JPanelBuilder().border(30).borderLayout().build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
@@ -449,16 +426,16 @@ public class DownloadMapsWindow extends JFrame {
           final String mapName = gamesList.getModel().getElementAt(index);
 
           // find the map description by map name and update the map download detail panel
-          final Optional<DownloadFileDescription> map =
-              maps.stream()
-                  .filter(mapDescription -> mapDescription.getMapName().equals(mapName))
-                  .findFirst();
-          if (map.isPresent()) {
-            final String text = map.get().toHtmlString();
-            descriptionPanel.setText(text);
-            descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-            updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
-          }
+          maps.stream()
+              .filter(mapDescription -> mapDescription.getMapName().equals(mapName))
+              .findFirst()
+              .ifPresent(
+                  map -> {
+                    final String text = map.toHtmlString();
+                    descriptionPanel.setText(text);
+                    descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+                    updateMapUrlAndSizeLabel(map, action, mapSizeLabelToUpdate);
+                  });
         }
       }
     };
