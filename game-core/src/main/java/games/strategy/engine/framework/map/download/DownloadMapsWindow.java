@@ -426,16 +426,15 @@ public class DownloadMapsWindow extends JFrame {
           final String mapName = gamesList.getModel().getElementAt(index);
 
           // find the map description by map name and update the map download detail panel
-          final Optional<DownloadFileDescription> map =
               maps.stream()
                   .filter(mapDescription -> mapDescription.getMapName().equals(mapName))
-                  .findFirst();
-          if (map.isPresent()) {
-            final String text = map.get().toHtmlString();
+                  .findFirst()
+              .ifPresent(map -> {
+            final String text = map.toHtmlString();
             descriptionPanel.setText(text);
             descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-            updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
-          }
+            updateMapUrlAndSizeLabel(map, action, mapSizeLabelToUpdate);
+          });
         }
       }
     };
