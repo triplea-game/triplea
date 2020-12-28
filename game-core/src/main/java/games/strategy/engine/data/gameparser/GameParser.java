@@ -93,25 +93,33 @@ public final class GameParser {
   }
 
   /**
-   * Performs a deep parse of the game definition contained in the specified stream.
+   * Performs a deep parse of the game XML file at the specified URI.
    *
-   * @return A complete {@link GameData} instance that can be used to play the game.
+   * @param xmlUri URI of the game XML file to be parsed.
+   * @return A complete {@link GameData} instance that can be used to play the game, otherwise
+   *     returns empty if the file could not parsed or is not valid.
    */
+  public static Optional<GameData> parse(final URI xmlUri) {
+    return GameParser.parse(
+        xmlUri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
+  }
+
+  @VisibleForTesting
   public static Optional<GameData> parse(
-      final URI mapUri,
+      final URI xmlUri,
       final XmlGameElementMapper xmlGameElementMapper,
       final Version engineVersion) {
     return UrlStreams.openStream(
-        mapUri,
+        xmlUri,
         inputStream -> {
           try {
-            return new GameParser(mapUri.toString(), xmlGameElementMapper, engineVersion)
+            return new GameParser(xmlUri.toString(), xmlGameElementMapper, engineVersion)
                 .parse(inputStream);
           } catch (final EngineVersionException e) {
-            log.warn("Game engine not compatible with: " + mapUri, e);
+            log.warn("Game engine not compatible with: " + xmlUri, e);
             return null;
           } catch (final Exception e) {
-            log.error("Could not parse:" + mapUri + ", " + e.getMessage(), e);
+            log.error("Could not parse:" + xmlUri + ", " + e.getMessage(), e);
             return null;
           }
         });
