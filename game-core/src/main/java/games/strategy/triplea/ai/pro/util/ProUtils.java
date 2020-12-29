@@ -253,7 +253,8 @@ public final class ProUtils {
     final List<Territory> enemyOrAdjacentLandTerritories =
         CollectionUtils.getMatches(
             neighborTerritories,
-            ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data));
+            ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(
+                player, data.getMap(), data.getProperties(), data.getRelationshipTracker()));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories) {
       final int distance =

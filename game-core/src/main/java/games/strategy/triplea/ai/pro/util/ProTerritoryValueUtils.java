@@ -34,7 +34,10 @@ public final class ProTerritoryValueUtils {
       final ProData proData, final GamePlayer player, final Territory t) {
     final GameState data = proData.getData();
     final int isEnemyFactory =
-        ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
+        ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data.getRelationshipTracker())
+                .test(t)
+            ? 1
+            : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
@@ -115,18 +118,24 @@ public final class ProTerritoryValueUtils {
         double nearbySeaProductionValue = 0;
         final Set<Territory> nearbySeaTerritories =
             data.getMap()
-                .getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+                .getNeighbors(
+                    t,
+                    4,
+                    ProMatches.territoryCanMoveSeaUnits(
+                        player, data.getProperties(), data.getRelationshipTracker(), true));
         final List<Territory> nearbyEnemySeaTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
-                ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
+                ProMatches.territoryIsEnemyOrCantBeHeld(
+                    player, data.getRelationshipTracker(), territoriesThatCantBeHeld));
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaTerritories) {
           final Route route =
               data.getMap()
                   .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                      ProMatches.territoryCanMoveSeaUnits(
+                          player, data.getProperties(), data.getRelationshipTracker(), true),
                       Set.of(),
                       player);
           if (route == null) {
@@ -151,7 +160,8 @@ public final class ProTerritoryValueUtils {
                   .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                      ProMatches.territoryCanMoveSeaUnits(
+                          player, data.getProperties(), data.getRelationshipTracker(), true),
                       Set.of(),
                       player);
           if (route == null) {
@@ -325,7 +335,8 @@ public final class ProTerritoryValueUtils {
     final List<Territory> nearbyEnemyTerritories =
         CollectionUtils.getMatches(
             nearbyTerritories,
-            ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
+            ProMatches.territoryIsEnemyOrCantBeHeld(
+                player, data.getRelationshipTracker(), territoriesThatCantBeHeld));
     nearbyEnemyTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories) {
       final int distance =
@@ -342,7 +353,8 @@ public final class ProTerritoryValueUtils {
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
           // find neutral value
           value = findTerritoryAttackValue(proData, player, nearbyEnemyTerritory) / 3;
-        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data)
+        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(
+                player, data.getMap(), data.getProperties(), data.getRelationshipTracker())
             .test(nearbyEnemyTerritory)) {
           value *= 0.1; // reduce value for can't hold amphib allied territories
         }
@@ -397,7 +409,8 @@ public final class ProTerritoryValueUtils {
               .getRouteForUnits(
                   t,
                   enemyCapitalOrFactory,
-                  ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                  ProMatches.territoryCanMoveSeaUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), true),
                   Set.of(),
                   player);
       if (route == null) {
@@ -419,7 +432,11 @@ public final class ProTerritoryValueUtils {
     double nearbyLandValue = 0;
     final Set<Territory> nearbyTerritories =
         data.getMap()
-            .getNeighborsIgnoreEnd(t, 3, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+            .getNeighborsIgnoreEnd(
+                t,
+                3,
+                ProMatches.territoryCanMoveSeaUnits(
+                    player, data.getProperties(), data.getRelationshipTracker(), true));
     final List<Territory> nearbyLandTerritories =
         CollectionUtils.getMatches(
             nearbyTerritories,
@@ -431,7 +448,8 @@ public final class ProTerritoryValueUtils {
               .getRouteForUnits(
                   t,
                   nearbyLandTerritory,
-                  ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                  ProMatches.territoryCanMoveSeaUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), true),
                   Set.of(),
                   player);
       if (route == null) {
@@ -439,7 +457,8 @@ public final class ProTerritoryValueUtils {
       }
       final int distance = route.numberOfSteps();
       if (distance > 0 && distance <= 3) {
-        if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld)
+        if (ProMatches.territoryIsEnemyOrCantBeHeld(
+                player, data.getRelationshipTracker(), territoriesThatCantBeHeld)
             .test(nearbyLandTerritory)) {
           double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
           if (ProUtils.isNeutralLand(nearbyLandTerritory)) {

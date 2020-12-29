@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
@@ -1510,14 +1509,14 @@ public final class Matches {
    *
    * @param units Referring unit.
    * @param currentPlayer Current player
-   * @param data Game data.
+   * @param relationshipTracker Relationship Tracker
    * @param forceLoadParatroopersIfPossible Should we load paratroopers? (if not, we assume they are
    *     already loaded).
    */
   public static Predicate<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
       final Collection<Unit> units,
       final GamePlayer currentPlayer,
-      final GameState data,
+      final RelationshipTracker relationshipTracker,
       final boolean forceLoadParatroopersIfPossible) {
     final Map<Unit, Unit> paratrooperMap =
         forceLoadParatroopersIfPossible ? TransportUtils.mapParatroopers(units) : Map.of();
@@ -1529,8 +1528,7 @@ public final class Matches {
       }
       // cargo on a carrier
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-          MoveValidator.carrierMustMoveWith(
-              units, units, data.getRelationshipTracker(), currentPlayer);
+          MoveValidator.carrierMustMoveWith(units, units, relationshipTracker, currentPlayer);
       if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
         return true;
       }

@@ -293,7 +293,8 @@ public final class ProTransportUtils {
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
     final Collection<Unit> airUnits =
-        CollectionUtils.getMatches(units, ProMatches.unitIsAlliedAir(player, data));
+        CollectionUtils.getMatches(
+            units, ProMatches.unitIsAlliedAir(player, data.getRelationshipTracker()));
     final List<Unit> airThatCantLand = new ArrayList<>();
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -322,7 +323,8 @@ public final class ProTransportUtils {
 
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
     final Collection<Unit> airUnits =
-        CollectionUtils.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
+        CollectionUtils.getMatches(
+            existingUnits, ProMatches.unitIsAlliedAir(player, data.getRelationshipTracker()));
     airUnits.add(newUnit);
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -344,7 +346,12 @@ public final class ProTransportUtils {
 
     // Find nearby carrier capacity
     final Set<Territory> nearbyTerritories =
-        data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false));
+        data.getMap()
+            .getNeighbors(
+                t,
+                2,
+                ProMatches.territoryCanMoveAirUnits(
+                    player, data.getProperties(), data.getRelationshipTracker(), false));
     nearbyTerritories.add(t);
     final List<Unit> ownedNearbyUnits = new ArrayList<>();
     int capacity = 0;

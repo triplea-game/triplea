@@ -882,7 +882,10 @@ class ProPurchaseAi {
         if (!t.isWater() && placeTerritory.getStrategicValue() >= 1 && placeTerritory.isCanHold()) {
           final boolean hasEnemyNeighbors =
               !data.getMap()
-                  .getNeighbors(t, ProMatches.territoryIsEnemyLand(player, data))
+                  .getNeighbors(
+                      t,
+                      ProMatches.territoryIsEnemyLand(
+                          player, data.getProperties(), data.getRelationshipTracker()))
                   .isEmpty();
           final Set<Territory> nearbyLandTerritories =
               data.getMap()
@@ -1073,7 +1076,11 @@ class ProPurchaseAi {
       ProLogger.debug(t + ", enemyDistance=" + enemyDistance + ", fodderPercent=" + fodderPercent);
       final Set<Territory> neighbors =
           data.getMap()
-              .getNeighbors(t, 2, ProMatches.territoryCanMoveLandUnits(player, data, false));
+              .getNeighbors(
+                  t,
+                  2,
+                  ProMatches.territoryCanMoveLandUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), false));
       neighbors.add(t);
       final List<Unit> ownedLocalUnits = new ArrayList<>();
       for (final Territory neighbor : neighbors) {
@@ -1300,7 +1307,11 @@ class ProPurchaseAi {
           Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater()).test(t);
       final Set<Territory> nearbyLandTerritories =
           data.getMap()
-              .getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
+              .getNeighbors(
+                  t,
+                  9,
+                  ProMatches.territoryCanMoveLandUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), false));
       final int numNearbyEnemyTerritories =
           CollectionUtils.countMatches(
               nearbyLandTerritories,
@@ -1500,7 +1511,11 @@ class ProPurchaseAi {
       // Find local owned units
       final Set<Territory> neighbors =
           data.getMap()
-              .getNeighbors(t, 2, ProMatches.territoryCanMoveSeaUnits(player, data, false));
+              .getNeighbors(
+                  t,
+                  2,
+                  ProMatches.territoryCanMoveSeaUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), false));
       neighbors.add(t);
       final List<Unit> ownedLocalUnits = new ArrayList<>();
       for (final Territory neighbor : neighbors) {
@@ -1702,7 +1717,10 @@ class ProPurchaseAi {
       final Set<Territory> nearbyTerritories =
           data.getMap()
               .getNeighbors(
-                  t, enemyDistance, ProMatches.territoryCanMoveAirUnits(player, data, false));
+                  t,
+                  enemyDistance,
+                  ProMatches.territoryCanMoveAirUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), false));
       final List<Territory> nearbyLandTerritories =
           CollectionUtils.getMatches(nearbyTerritories, Matches.territoryIsLand());
       final Set<Territory> nearbyEnemySeaTerritories =
@@ -1717,14 +1735,14 @@ class ProPurchaseAi {
         enemyUnitsInLandTerritories.addAll(
             nearbyLandTerritory
                 .getUnitCollection()
-                .getMatches(ProMatches.unitIsEnemyAir(player, data)));
+                .getMatches(ProMatches.unitIsEnemyAir(player, data.getRelationshipTracker())));
       }
       final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
       for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
         final List<Unit> enemySeaUnits =
             nearbySeaTerritory
                 .getUnitCollection()
-                .getMatches(ProMatches.unitIsEnemyNotLand(player, data));
+                .getMatches(ProMatches.unitIsEnemyNotLand(player, data.getRelationshipTracker()));
         if (enemySeaUnits.isEmpty()) {
           continue;
         }
@@ -1879,7 +1897,8 @@ class ProPurchaseAi {
                 .getNeighbors(
                     landTerritory,
                     distance,
-                    ProMatches.territoryCanMoveSeaUnits(player, data, false));
+                    ProMatches.territoryCanMoveSeaUnits(
+                        player, data.getProperties(), data.getRelationshipTracker(), false));
         for (final Territory seaTerritory : seaTerritories) {
           final Set<Territory> territoriesToLoadFrom =
               new HashSet<>(data.getMap().getNeighbors(seaTerritory, distance));
@@ -1928,7 +1947,8 @@ class ProPurchaseAi {
                 .getNeighbors(
                     landTerritory,
                     distance,
-                    ProMatches.territoryCanMoveSeaUnits(player, data, false));
+                    ProMatches.territoryCanMoveSeaUnits(
+                        player, data.getProperties(), data.getRelationshipTracker(), false));
         for (final Territory seaTerritory : seaTerritories) {
           final List<Unit> unitsInTerritory =
               ProPurchaseUtils.getPlaceUnits(seaTerritory, purchaseTerritories);
