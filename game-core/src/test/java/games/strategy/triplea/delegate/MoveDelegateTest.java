@@ -638,8 +638,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(armour, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    assertTrue(DelegateFinder.battleDelegate(gameData).getBattleTracker().wasConquered(westAfrica));
-    assertFalse(DelegateFinder.battleDelegate(gameData).getBattleTracker().wasBlitzed(westAfrica));
+    assertTrue(gameData.getBattleDelegate().getBattleTracker().wasConquered(westAfrica));
+    assertFalse(gameData.getBattleDelegate().getBattleTracker().wasBlitzed(westAfrica));
   }
 
   @Test
@@ -805,19 +805,13 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     final IBattle inBrazil =
-        DelegateFinder.battleDelegate(gameData).getBattleTracker().getPendingBattle(brazil);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(brazil);
     final IBattle inBrazilSea =
-        DelegateFinder.battleDelegate(gameData)
-            .getBattleTracker()
-            .getPendingBattle(southBrazilSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(southBrazilSeaZone);
     assertNotNull(inBrazilSea);
     assertNotNull(inBrazil);
     assertEquals(
-        DelegateFinder.battleDelegate(gameData)
-            .getBattleTracker()
-            .getDependentOn(inBrazil)
-            .iterator()
-            .next(),
+        gameData.getBattleDelegate().getBattleTracker().getDependentOn(inBrazil).iterator().next(),
         inBrazilSea);
   }
 
@@ -854,13 +848,14 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
-        DelegateFinder.battleDelegate(gameData).getBattleTracker().getPendingBattle(finlandNorway);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(finlandNorway);
     final IBattle inBalticSeaZone =
-        DelegateFinder.battleDelegate(gameData).getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     assertNotNull(finlandNorway);
     assertEquals(
-        DelegateFinder.battleDelegate(gameData)
+        gameData
+            .getBattleDelegate()
             .getBattleTracker()
             .getDependentOn(inFinlandNorway)
             .iterator()
@@ -935,13 +930,14 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
-        DelegateFinder.battleDelegate(gameData).getBattleTracker().getPendingBattle(finlandNorway);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(finlandNorway);
     final IBattle inBalticSeaZone =
-        DelegateFinder.battleDelegate(gameData).getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     assertNotNull(finlandNorway);
     assertEquals(
-        DelegateFinder.battleDelegate(gameData)
+        gameData
+            .getBattleDelegate()
             .getBattleTracker()
             .getDependentOn(inFinlandNorway)
             .iterator()
@@ -1016,7 +1012,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
-        DelegateFinder.battleDelegate(gameData).getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);
@@ -1087,7 +1083,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
-        DelegateFinder.battleDelegate(gameData).getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);
@@ -1190,7 +1186,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(armour, 2);
     String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    final BattleTracker tracker = DelegateFinder.battleDelegate(gameData).getBattleTracker();
+    final BattleTracker tracker = gameData.getBattleDelegate().getBattleTracker();
     assertTrue(tracker.wasBlitzed(kenya));
     assertTrue(tracker.wasConquered(kenya));
     map.clear();
@@ -1206,7 +1202,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 1);
     String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    final BattleTracker tracker = DelegateFinder.battleDelegate(gameData).getBattleTracker();
+    final BattleTracker tracker = gameData.getBattleDelegate().getBattleTracker();
     assertFalse(tracker.wasBlitzed(westAfrica));
     assertTrue(tracker.wasConquered(westAfrica));
     map.clear();
@@ -1229,7 +1225,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    final BattleTracker tracker = DelegateFinder.battleDelegate(gameData).getBattleTracker();
+    final BattleTracker tracker = gameData.getBattleDelegate().getBattleTracker();
     assertTrue(tracker.wasBlitzed(libya));
     assertTrue(tracker.wasConquered(libya));
     final Unit factory = factCollection.iterator().next();

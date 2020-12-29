@@ -181,7 +181,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   public static BattleTracker getBattleTracker(final GameData data) {
-    return DelegateFinder.battleDelegate(data).getBattleTracker();
+    return data.getBattleDelegate().getBattleTracker();
   }
 
   @Override

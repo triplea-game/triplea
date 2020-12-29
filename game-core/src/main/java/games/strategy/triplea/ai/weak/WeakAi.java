@@ -21,7 +21,6 @@ import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
@@ -509,7 +508,7 @@ public class WeakAi extends AbstractBuiltInAi {
     // the preferred way to get the delegate
     final IMoveDelegate delegateRemote = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
     // this works because we are on the server
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+    final BattleDelegate delegate = data.getBattleDelegate();
     final Predicate<Territory> canLand =
         Matches.isTerritoryAllied(player, data.getRelationshipTracker())
             .and(o -> !delegate.getBattleTracker().wasConquered(o));

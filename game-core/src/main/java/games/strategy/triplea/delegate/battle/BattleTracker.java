@@ -23,7 +23,6 @@ import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -1271,7 +1270,7 @@ public class BattleTracker implements Serializable {
       pendingBattles.remove(battle);
       foughtBattles.add(battle.getTerritory());
       try {
-        DelegateFinder.battleDelegate(data).clearCurrentBattle(battle);
+        data.getBattleDelegate().clearCurrentBattle(battle);
       } catch (final IllegalStateException e) {
         // ignore as can't find battle delegate
       }

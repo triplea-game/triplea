@@ -88,7 +88,7 @@ public class UndoableMove extends AbstractUndoableMove {
   @Override
   protected void undoSpecific(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
+    final BattleTracker battleTracker = data.getBattleDelegate().getBattleTracker();
     battleTracker.undoBattle(route, units, bridge.getGamePlayer(), bridge);
     // clean up dependencies
     for (final UndoableMove other : dependencies) {
@@ -102,7 +102,7 @@ public class UndoableMove extends AbstractUndoableMove {
       }
       for (final Unit unit : units) {
         final Route routeUnitUsedToMove =
-            DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, route.getStart());
+            data.getMoveDelegate().getRouteUsedToMoveInto(unit, route.getStart());
         if (!battle.getBattleType().isBombingRun()) {
           // route units used to move will be null in the case where an enemy sub is submerged in
           // the territory, and

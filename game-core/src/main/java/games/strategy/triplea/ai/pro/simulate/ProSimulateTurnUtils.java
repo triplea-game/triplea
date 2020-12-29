@@ -16,7 +16,6 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -50,7 +49,7 @@ public final class ProSimulateTurnUtils {
 
     ProLogger.info("Starting battle simulation phase");
 
-    final BattleDelegate battleDelegate = DelegateFinder.battleDelegate(data);
+    final BattleDelegate battleDelegate = data.getBattleDelegate();
     final Map<BattleType, Collection<Territory>> battleTerritories =
         battleDelegate.getBattles().getBattles();
     for (final Entry<BattleType, Collection<Territory>> entry : battleTerritories.entrySet()) {

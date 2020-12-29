@@ -29,7 +29,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
@@ -2245,7 +2244,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(satisfiedTriggers, changeOwnershipMatch(), fireTriggerParams);
-    final BattleTracker bt = DelegateFinder.battleDelegate(data).getBattleTracker();
+    final BattleTracker bt = data.getBattleDelegate().getBattleTracker();
     for (final TriggerAttachment t : trigs) {
       if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;

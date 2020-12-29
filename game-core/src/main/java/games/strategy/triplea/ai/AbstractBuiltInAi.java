@@ -12,7 +12,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
@@ -624,7 +623,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
     final GameData data = getGameData();
     final GamePlayer gamePlayer = this.getGamePlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
-    final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
+    final PoliticsDelegate politicsDelegate = data.getPoliticsDelegate();
     // We want to test the conditions each time to make sure they are still valid
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =

@@ -23,7 +23,6 @@ import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
@@ -192,7 +191,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
       }
       prepareData(dataCopy);
       final GamePlayer playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
-      final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
+      final IMoveDelegate moveDel = dataCopy.getMoveDelegate();
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
 
@@ -242,7 +241,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
           proData.initializeSimulation(this, dataCopy, player);
           // Can only do politics if this player still owns its capital.
           if (proData.getMyCapital() == null || proData.getMyCapital().getOwner().equals(player)) {
-            final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
+            final PoliticsDelegate politicsDelegate = dataCopy.getPoliticsDelegate();
             politicsDelegate.setDelegateBridgeAndPlayer(bridge);
             final List<PoliticalActionAttachment> actions = politicsAi.politicalActions();
             if (storedPoliticalActions == null) {
@@ -287,7 +286,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
     // Get battle data
     final GameData data = getGameData();
     final GamePlayer player = this.getGamePlayer();
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+    final BattleDelegate delegate = data.getBattleDelegate();
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
     // If battle is null or amphibious then don't retreat
@@ -375,7 +374,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
       // Get battle data
       final GameData data = getGameData();
       final GamePlayer player = this.getGamePlayer();
-      final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+      final BattleDelegate delegate = data.getBattleDelegate();
       final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
       // If defender and could lose battle then don't consider unit cost as just trying to survive
@@ -434,7 +433,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
     // Get battle data
     final GameData data = getGameData();
     final GamePlayer player = this.getGamePlayer();
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+    final BattleDelegate delegate = data.getBattleDelegate();
     final IBattle battle =
         delegate.getBattleTracker().getPendingBattle(scrambleTo, BattleType.NORMAL);
 
@@ -465,7 +464,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
     // Get battle data
     final GameData data = getGameData();
     final GamePlayer player = this.getGamePlayer();
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+    final BattleDelegate delegate = data.getBattleDelegate();
     final IBattle battle =
         delegate.getBattleTracker().getPendingBattle(unitTerritory, BattleType.NORMAL);
 

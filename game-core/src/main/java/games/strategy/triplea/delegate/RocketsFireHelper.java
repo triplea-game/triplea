@@ -467,7 +467,7 @@ public class RocketsFireHelper implements Serializable {
       // If we are limiting total PUs lost then take that into account
       if (Properties.getPuCap(data.getProperties())
           || Properties.getLimitRocketDamagePerTurn(data.getProperties())) {
-        final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
+        final int alreadyLost = data.getMoveDelegate().pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);
       }
@@ -476,7 +476,7 @@ public class RocketsFireHelper implements Serializable {
       }
     }
     // Record the PUs lost
-    DelegateFinder.moveDelegate(data).pusLost(attackedTerritory, cost);
+    data.getMoveDelegate().pusLost(attackedTerritory, cost);
     if (damageFromBombingDoneToUnits && unit != null) {
       getRemote(bridge)
           .reportMessage(
