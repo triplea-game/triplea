@@ -92,7 +92,7 @@ class VictoryTest {
     moveDelegate.start();
     final String error =
         moveDelegate.move(
-            libya.getUnits(), gameData.getMap().getRoute(libya, belgianCongo, Matches.always()));
+            libya.getUnits(), gameData.getMap().getRoute(libya, belgianCongo, it -> true));
     moveDelegate.end();
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
@@ -106,7 +106,7 @@ class VictoryTest {
     final String error =
         moveDelegate.move(
             frenchWestAfrica.getUnits(),
-            gameData.getMap().getRoute(frenchWestAfrica, belgianCongo, Matches.always()));
+            gameData.getMap().getRoute(frenchWestAfrica, belgianCongo, it -> true));
     moveDelegate.end();
     assertNull(error);
   }
@@ -151,7 +151,7 @@ class VictoryTest {
     moveDelegate.start();
     final String error =
         moveDelegate.move(
-            libya.getUnits(), gameData.getMap().getRoute(libya, belgianCongo, Matches.always()));
+            libya.getUnits(), gameData.getMap().getRoute(libya, belgianCongo, it -> true));
     moveDelegate.end();
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }

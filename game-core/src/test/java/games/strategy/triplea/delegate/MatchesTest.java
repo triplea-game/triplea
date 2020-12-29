@@ -7,8 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
@@ -37,7 +35,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 final class MatchesTest {
-  private static final Object VALUE = new Object();
 
   private static <T> Matcher<Predicate<T>> matches(final @Nullable T value) {
     return new TypeSafeDiagnosingMatcher<>() {
@@ -73,22 +70,6 @@ final class MatchesTest {
         return true;
       }
     };
-  }
-
-  @Nested
-  final class AlwaysTest {
-    @Test
-    void shouldReturnTrue() {
-      assertTrue(Matches.always().test(VALUE));
-    }
-  }
-
-  @Nested
-  final class NeverTest {
-    @Test
-    void shouldReturnFalse() {
-      assertFalse(Matches.never().test(VALUE));
-    }
   }
 
   @Nested

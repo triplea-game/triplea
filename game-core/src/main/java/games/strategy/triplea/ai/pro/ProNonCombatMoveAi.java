@@ -1571,7 +1571,7 @@ class ProNonCombatMoveAi {
           while (true) {
             final Predicate<Territory> match =
                 ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false)
-                    .and(Matches.territoryIsInList(cantHoldTerritories).negate());
+                    .and(Predicate.not(cantHoldTerritories::contains));
             final Route route =
                 data.getMap()
                     .getRouteForUnits(

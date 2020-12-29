@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static java.util.function.Predicate.not;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -49,7 +51,7 @@ public final class ProMatches {
                     false,
                     true,
                     true))
-            .and(Matches.territoryIsInList(enemyTerritories).negate());
+            .and(not(enemyTerritories::contains));
     if (!isCombatMove) {
       match =
           match.and(
@@ -59,7 +61,7 @@ public final class ProMatches {
                           player, data.getProperties(), data.getRelationshipTracker()))
                   .negate());
     }
-    return Matches.territoryIsInList(alliedTerritories).or(match);
+    return ((Predicate<Territory>) alliedTerritories::contains).or(match);
   }
 
   public static Predicate<Territory> territoryCanMoveAirUnits(
@@ -172,13 +174,13 @@ public final class ProMatches {
             alliedWithNoEnemiesMatch.or(territoryIsBlitzable(player, data, u));
         return ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u)
             .and(alliedOrBlitzableMatch)
-            .and(Matches.territoryIsInList(enemyTerritories).negate())
+            .and(not(enemyTerritories::contains))
             .test(t);
       }
       return ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u)
           .and(Matches.isTerritoryAllied(player, data.getRelationshipTracker()))
           .and(Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()))
-          .and(Matches.territoryIsInList(enemyTerritories).negate())
+          .and(not(enemyTerritories::contains))
           .test(t);
     };
   }
@@ -193,18 +195,18 @@ public final class ProMatches {
       final List<Territory> clearedTerritories) {
     Predicate<Territory> alliedMatch =
         Matches.isTerritoryAllied(player, data.getRelationshipTracker())
-            .or(Matches.territoryIsInList(clearedTerritories));
+            .or(clearedTerritories::contains);
     if (isCombatMove
         && Matches.unitCanBlitz().test(u)
         && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
       alliedMatch =
           Matches.isTerritoryAllied(player, data.getRelationshipTracker())
-              .or(Matches.territoryIsInList(clearedTerritories))
+              .or(clearedTerritories::contains)
               .or(territoryIsBlitzable(player, data, u));
     }
     return ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u)
         .and(alliedMatch)
-        .and(Matches.territoryIsInList(blockedTerritories).negate());
+        .and(not(blockedTerritories::contains));
   }
 
   private static Predicate<Territory> territoryIsBlitzable(
@@ -254,8 +256,7 @@ public final class ProMatches {
       final GameState data,
       final boolean isCombatMove,
       final List<Territory> notTerritories) {
-    return territoryCanMoveSeaUnits(player, data, isCombatMove)
-        .and(Matches.territoryIsNotInList(notTerritories));
+    return territoryCanMoveSeaUnits(player, data, isCombatMove).and(not(notTerritories::contains));
   }
 
   public static Predicate<Territory> territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
@@ -265,11 +266,10 @@ public final class ProMatches {
       final List<Territory> clearedTerritories,
       final List<Territory> notTerritories) {
     final Predicate<Territory> onlyIgnoredOrClearedMatch =
-        territoryHasOnlyIgnoredUnits(player, data)
-            .or(Matches.territoryIsInList(clearedTerritories));
+        territoryHasOnlyIgnoredUnits(player, data).or(clearedTerritories::contains);
     return territoryCanMoveSeaUnits(player, data, isCombatMove)
         .and(onlyIgnoredOrClearedMatch)
-        .and(Matches.territoryIsNotInList(notTerritories));
+        .and(not(notTerritories::contains));
   }
 
   private static Predicate<Territory> territoryHasOnlyIgnoredUnits(
@@ -289,7 +289,7 @@ public final class ProMatches {
       final GameState data,
       final List<Territory> territoriesThatCantBeHeld) {
     return Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker())
-        .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
+        .or(territoriesThatCantBeHeld::contains);
   }
 
   public static Predicate<Territory> territoryHasPotentialEnemyUnits(
@@ -301,7 +301,7 @@ public final class ProMatches {
   public static Predicate<Territory> territoryHasNoEnemyUnitsOrCleared(
       final GamePlayer player, final GameState data, final List<Territory> clearedTerritories) {
     return Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker())
-        .or(Matches.territoryIsInList(clearedTerritories));
+        .or(clearedTerritories::contains);
   }
 
   public static Predicate<Territory> territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(
@@ -310,7 +310,7 @@ public final class ProMatches {
       final List<Territory> territoriesThatCantBeHeld) {
     return Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
         .or(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()))
-        .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
+        .or(territoriesThatCantBeHeld::contains);
   }
 
   public static Predicate<Territory> territoryHasInfraFactoryAndIsLand() {
@@ -330,8 +330,7 @@ public final class ProMatches {
       final List<GamePlayer> players,
       final List<Territory> territoriesThatCantBeHeld) {
     final Predicate<Territory> ownedAndCantBeHeld =
-        Matches.isTerritoryOwnedBy(player)
-            .and(Matches.territoryIsInList(territoriesThatCantBeHeld));
+        Matches.isTerritoryOwnedBy(player).and(territoriesThatCantBeHeld::contains);
     final Predicate<Territory> enemyOrOwnedCantBeHeld =
         Matches.isTerritoryOwnedBy(players).or(ownedAndCantBeHeld);
     return territoryHasInfraFactoryAndIsLand().and(enemyOrOwnedCantBeHeld);
@@ -455,7 +454,7 @@ public final class ProMatches {
       final GameState data,
       final List<Territory> territoriesThatCantBeHeld) {
     return Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
-        .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
+        .or(territoriesThatCantBeHeld::contains);
   }
 
   public static Predicate<Territory> territoryIsPotentialEnemy(

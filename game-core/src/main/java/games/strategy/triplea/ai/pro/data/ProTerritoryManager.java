@@ -1060,7 +1060,7 @@ public class ProTerritoryManager {
         if (!isCombatMove && Matches.unitCanLandOnCarrier().test(myAirUnit)) {
           potentialTerritories.addAll(
               CollectionUtils.getMatches(
-                  possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
+                  possibleMoveTerritories, possibleCarrierTerritories::contains));
         }
 
         for (final Territory potentialTerritory : potentialTerritories) {
@@ -1100,8 +1100,7 @@ public class ProTerritoryManager {
             if (Matches.unitCanLandOnCarrier().test(myAirUnit)) {
               carrierTerritories =
                   CollectionUtils.getMatches(
-                      possibleLandingTerritories,
-                      Matches.territoryIsInList(possibleCarrierTerritories));
+                      possibleLandingTerritories, possibleCarrierTerritories::contains);
             }
             if (landingTerritories.isEmpty() && carrierTerritories.isEmpty()) {
               continue;

@@ -1264,7 +1264,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   void testRoute() {
-    final Route route = gameData.getMap().getRoute(angola, russia, Matches.always());
+    final Route route = gameData.getMap().getRoute(angola, russia, it -> true);
     assertNotNull(route);
     assertEquals(route.getEnd(), russia);
   }
