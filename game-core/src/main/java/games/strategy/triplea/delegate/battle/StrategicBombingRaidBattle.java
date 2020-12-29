@@ -21,7 +21,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
@@ -910,7 +909,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       // Limit PUs lost if we would like to cap PUs lost at territory value
       if (Properties.getPuCap(gameData.getProperties())
           || Properties.getLimitSbrDamagePerTurn(gameData.getProperties())) {
-        final int alreadyLost = DelegateFinder.moveDelegate(gameData).pusAlreadyLost(battleSite);
+        final int alreadyLost = gameData.getMoveDelegate().pusAlreadyLost(battleSite);
         final int limit = Math.max(0, damageLimit - alreadyLost);
         cost = Math.min(cost, limit);
         if (!targets.isEmpty()) {
@@ -947,7 +946,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 .playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, attacker);
           }
           // Record production lost
-          DelegateFinder.moveDelegate(gameData).pusLost(battleSite, currentUnitCost);
+          gameData.getMoveDelegate().pusLost(battleSite, currentUnitCost);
           // apply the hits to the targets
           final IntegerMap<Unit> damageMap = new IntegerMap<>();
           damageMap.put(current, totalDamage);
@@ -980,7 +979,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
       } else {
         // Record PUs lost
-        DelegateFinder.moveDelegate(gameData).pusLost(battleSite, cost);
+        gameData.getMoveDelegate().pusLost(battleSite, cost);
         cost *= Properties.getPuMultiplier(gameData.getProperties());
         bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
         if (cost > 0) {

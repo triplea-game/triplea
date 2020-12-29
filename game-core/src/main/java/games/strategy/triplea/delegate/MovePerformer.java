@@ -54,7 +54,7 @@ public class MovePerformer implements Serializable {
   MovePerformer() {}
 
   private BattleTracker getBattleTracker() {
-    return DelegateFinder.battleDelegate(bridge.getData()).getBattleTracker();
+    return bridge.getData().getBattleDelegate().getBattleTracker();
   }
 
   void initialize(final AbstractMoveDelegate delegate) {

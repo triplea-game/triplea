@@ -1755,7 +1755,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   protected boolean wasConquered(final Territory t) {
-    final BattleTracker tracker = DelegateFinder.battleDelegate(getData()).getBattleTracker();
+    final BattleTracker tracker = getData().getBattleDelegate().getBattleTracker();
     return tracker.wasConquered(t);
   }
 

@@ -11,6 +11,10 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.TripleA;
+import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.TechnologyDelegate;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -396,6 +400,34 @@ public class GameData implements Serializable, GameState {
   @Override
   public BattleRecordsList getBattleRecordsList() {
     return battleRecordsList;
+  }
+
+  @Override
+  public PoliticsDelegate getPoliticsDelegate() {
+    return (PoliticsDelegate) findDelegate("politics");
+  }
+
+  private IDelegate findDelegate(final String delegateName) {
+    final IDelegate delegate = this.getDelegate(delegateName);
+    if (delegate == null) {
+      throw new IllegalStateException(delegateName + " delegate not found");
+    }
+    return delegate;
+  }
+
+  @Override
+  public BattleDelegate getBattleDelegate() {
+    return (BattleDelegate) findDelegate("battle");
+  }
+
+  @Override
+  public AbstractMoveDelegate getMoveDelegate() {
+    return (AbstractMoveDelegate) findDelegate("move");
+  }
+
+  @Override
+  public TechnologyDelegate getTechDelegate() {
+    return (TechnologyDelegate) findDelegate("tech");
   }
 
   /**

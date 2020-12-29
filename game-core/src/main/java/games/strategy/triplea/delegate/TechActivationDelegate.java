@@ -31,8 +31,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     // Activate techs
-    final Map<GamePlayer, Collection<TechAdvance>> techMap =
-        DelegateFinder.techDelegate(data).getAdvances();
+    final Map<GamePlayer, Collection<TechAdvance>> techMap = data.getTechDelegate().getAdvances();
     final Collection<TechAdvance> advances = techMap.get(player);
     if (advances != null && !advances.isEmpty()) {
       // Start event

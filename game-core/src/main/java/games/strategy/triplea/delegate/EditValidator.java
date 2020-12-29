@@ -28,7 +28,7 @@ final class EditValidator {
 
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
     // territory cannot be in an UndoableMove route
-    final List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();
+    final List<UndoableMove> moves = data.getMoveDelegate().getMovesMade();
     for (final UndoableMove move : moves) {
       if (move.getRoute().getStart().equals(territory)
           || move.getRoute().getEnd().equals(territory)) {

@@ -10,7 +10,6 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ class ProPoliticsAi {
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final double round = data.getSequence().getRound();
     final ProTerritoryManager territoryManager = new ProTerritoryManager(calc, proData);
-    final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
+    final PoliticsDelegate politicsDelegate = data.getPoliticsDelegate();
     ProLogger.info("Politics for " + player.getName());
 
     // Find valid war actions
@@ -184,7 +183,7 @@ class ProPoliticsAi {
 
   void doActions(final List<PoliticalActionAttachment> actions) {
     final GameData data = proData.getData();
-    final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
+    final PoliticsDelegate politicsDelegate = data.getPoliticsDelegate();
     for (final PoliticalActionAttachment action : actions) {
       ProLogger.debug("Performing action: " + action);
       politicsDelegate.attemptAction(action);

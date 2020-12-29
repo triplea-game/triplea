@@ -10,7 +10,6 @@ import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle;
@@ -54,7 +53,7 @@ class ProRetreatAi {
     // Get battle data
     final GameData data = proData.getData();
     final GamePlayer player = proData.getPlayer();
-    final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+    final BattleDelegate delegate = data.getBattleDelegate();
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
     // Get units and determine if attacker

@@ -1,6 +1,10 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.TechnologyDelegate;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
 import java.util.Map;
 
 public interface GameState {
@@ -54,4 +58,12 @@ public interface GameState {
   Map<String, TerritoryEffect> getTerritoryEffectList();
 
   BattleRecordsList getBattleRecordsList();
+
+  BattleDelegate getBattleDelegate();
+
+  PoliticsDelegate getPoliticsDelegate();
+
+  AbstractMoveDelegate getMoveDelegate();
+
+  TechnologyDelegate getTechDelegate();
 }

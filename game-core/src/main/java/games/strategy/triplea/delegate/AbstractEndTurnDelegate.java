@@ -259,7 +259,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   public void end() {
     super.end();
     needToInitialize = true;
-    DelegateFinder.battleDelegate(getData()).getBattleTracker().clear();
+    getData().getBattleDelegate().getBattleTracker().clear();
   }
 
   @Override

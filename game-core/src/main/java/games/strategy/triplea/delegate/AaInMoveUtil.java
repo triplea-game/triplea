@@ -287,7 +287,7 @@ class AaInMoveUtil implements Serializable {
   }
 
   private BattleTracker getBattleTracker() {
-    return DelegateFinder.battleDelegate(getData()).getBattleTracker();
+    return getData().getBattleDelegate().getBattleTracker();
   }
 
   private GamePlayer movingPlayer(final Collection<Unit> units) {
