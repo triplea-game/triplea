@@ -182,20 +182,29 @@ public final class ProBattleUtils {
       // Find enemy strength
       final Set<Territory> nearbyTerritoriesForEnemy =
           data.getMap()
-              .getNeighbors(t, i, ProMatches.territoryCanMoveLandUnits(player, data, false));
+              .getNeighbors(
+                  t,
+                  i,
+                  ProMatches.territoryCanMoveLandUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), false));
       nearbyTerritoriesForEnemy.add(t);
       final List<Unit> enemyUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
         enemyUnits.addAll(
             nearbyTerritory
                 .getUnitCollection()
-                .getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
+                .getMatches(
+                    ProMatches.unitIsEnemyNotNeutral(player, data.getRelationshipTracker())));
       }
 
       // Find allied strength
       final Set<Territory> nearbyTerritoriesForAllied =
           data.getMap()
-              .getNeighbors(t, i - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
+              .getNeighbors(
+                  t,
+                  i - 1,
+                  ProMatches.territoryCanMoveLandUnits(
+                      player, data.getProperties(), data.getRelationshipTracker(), false));
       nearbyTerritoriesForAllied.add(t);
       final List<Unit> alliedUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
@@ -247,21 +256,28 @@ public final class ProBattleUtils {
     // Find enemy strength
     final Set<Territory> nearbyTerritoriesForEnemy =
         data.getMap()
-            .getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(player, data, false));
+            .getNeighbors(
+                t,
+                distance,
+                ProMatches.territoryCanMoveLandUnits(
+                    player, data.getProperties(), data.getRelationshipTracker(), false));
     nearbyTerritoriesForEnemy.add(t);
     final List<Unit> enemyUnits = new ArrayList<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
       enemyUnits.addAll(
           nearbyTerritory
               .getUnitCollection()
-              .getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
+              .getMatches(ProMatches.unitIsEnemyNotNeutral(player, data.getRelationshipTracker())));
     }
 
     // Find allied strength
     final Set<Territory> nearbyTerritoriesForAllied =
         data.getMap()
             .getNeighbors(
-                t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
+                t,
+                distance - 1,
+                ProMatches.territoryCanMoveLandUnits(
+                    player, data.getProperties(), data.getRelationshipTracker(), false));
     nearbyTerritoriesForAllied.add(t);
     final Set<Unit> alliedUnits = new HashSet<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
@@ -322,14 +338,14 @@ public final class ProBattleUtils {
       enemyUnitsInLandTerritories.addAll(
           nearbyLandTerritory
               .getUnitCollection()
-              .getMatches(ProMatches.unitIsEnemyAir(player, data)));
+              .getMatches(ProMatches.unitIsEnemyAir(player, data.getRelationshipTracker())));
     }
     final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
     for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
       final List<Unit> enemySeaUnits =
           nearbySeaTerritory
               .getUnitCollection()
-              .getMatches(ProMatches.unitIsEnemyNotLand(player, data));
+              .getMatches(ProMatches.unitIsEnemyNotLand(player, data.getRelationshipTracker()));
       if (enemySeaUnits.isEmpty()) {
         continue;
       }
@@ -359,7 +375,7 @@ public final class ProBattleUtils {
       alliedUnitsInSeaTerritories.addAll(
           nearbySeaTerritory
               .getUnitCollection()
-              .getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
+              .getMatches(ProMatches.unitIsAlliedNotOwned(player, data.getRelationshipTracker())));
     }
     ProLogger.trace(
         t

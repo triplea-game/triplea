@@ -99,7 +99,8 @@ public final class ProMoveUtils {
               map.getRouteForUnit(
                   startTerritory,
                   t,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove),
+                  ProMatches.territoryCanMoveSeaUnitsThrough(
+                      player, data.getProperties(), data.getRelationshipTracker(), isCombatMove),
                   u,
                   player);
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsLand())) {
@@ -135,7 +136,8 @@ public final class ProMoveUtils {
               map.getRouteForUnit(
                   startTerritory,
                   t,
-                  ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove),
+                  ProMatches.territoryCanMoveAirUnitsAndNoAa(
+                      player, data.getProperties(), data.getRelationshipTracker(), isCombatMove),
                   u,
                   player);
         }
@@ -232,7 +234,8 @@ public final class ProMoveUtils {
             final Set<Territory> neighbors =
                 map.getNeighbors(
                     transportTerritory,
-                    ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                    ProMatches.territoryCanMoveSeaUnitsThrough(
+                        player, data.getProperties(), data.getRelationshipTracker(), isCombatMove));
             Territory territoryToMoveTo = null;
             int minUnitDistance = Integer.MAX_VALUE;
             int maxDistanceFromEnd =
@@ -249,13 +252,21 @@ public final class ProMoveUtils {
                     map.getDistanceIgnoreEndForCondition(
                         neighbor,
                         unloadTerritory,
-                        ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                        ProMatches.territoryCanMoveSeaUnitsThrough(
+                            player,
+                            data.getProperties(),
+                            data.getRelationshipTracker(),
+                            isCombatMove));
               }
               int neighborDistanceFromEnd =
                   map.getDistanceIgnoreEndForCondition(
                       neighbor,
                       t,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                      ProMatches.territoryCanMoveSeaUnitsThrough(
+                          player,
+                          data.getProperties(),
+                          data.getRelationshipTracker(),
+                          isCombatMove));
               if (t.isWater()) {
                 neighborDistanceFromEnd++;
               }
@@ -357,7 +368,8 @@ public final class ProMoveUtils {
               map.getRouteForUnit(
                   startTerritory,
                   bombardFromTerritory,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true),
+                  ProMatches.territoryCanMoveSeaUnitsThrough(
+                      player, data.getProperties(), data.getRelationshipTracker(), true),
                   u,
                   player);
         }
@@ -407,7 +419,8 @@ public final class ProMoveUtils {
               map.getRouteForUnit(
                   startTerritory,
                   t,
-                  ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true),
+                  ProMatches.territoryCanMoveAirUnitsAndNoAa(
+                      player, data.getProperties(), data.getRelationshipTracker(), true),
                   u,
                   player);
         }
