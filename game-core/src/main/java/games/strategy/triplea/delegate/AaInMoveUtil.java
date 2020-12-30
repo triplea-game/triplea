@@ -73,9 +73,10 @@ class AaInMoveUtil implements Serializable {
       return;
     }
     final GamePlayer movingPlayer = movingPlayer(units);
+
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(
-            movingPlayer, getData().getTechnologyFrontier());
+            TechTracker.getCurrentTechAdvances(movingPlayer, getData().getTechnologyFrontier()));
     final List<Unit> defendingAa =
         territory
             .getUnitCollection()
@@ -244,8 +245,10 @@ class AaInMoveUtil implements Serializable {
     // can't rely on player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
     final GamePlayer movingPlayer = movingPlayer(units);
+
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, data.getTechnologyFrontier());
+        TechAbilityAttachment.getAirborneTargettedByAa(
+            TechTracker.getCurrentTechAdvances(movingPlayer, data.getTechnologyFrontier()));
     // don't iterate over the end
     // that will be a battle and handled else where in this tangled mess
     final Predicate<Unit> hasAa =
