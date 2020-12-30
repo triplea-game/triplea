@@ -1,4 +1,4 @@
-package org.triplea.ai.flowfield.map;
+package org.triplea.ai.flowfield.diffusion;
 
 import games.strategy.engine.data.Territory;
 import java.util.Map;

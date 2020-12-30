@@ -3,11 +3,11 @@ package org.triplea.ai.flowfield;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
-import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.IPlayerBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -15,27 +15,29 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.DebugMenu;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import lombok.Getter;
-import org.triplea.ai.flowfield.map.DiffusionMap;
-import org.triplea.ai.flowfield.map.DiffusionType;
-import org.triplea.ai.flowfield.map.TerritoryDebugUiAction;
-import org.triplea.ai.flowfield.map.offense.EnemyCapitals;
-import org.triplea.ai.flowfield.map.offense.ResourceToGet;
+import org.triplea.ai.flowfield.diffusion.DiffusionMap;
+import org.triplea.ai.flowfield.diffusion.DiffusionMapBuilder;
+import org.triplea.ai.flowfield.diffusion.TerritoryDebugUiAction;
+import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
+import org.triplea.ai.flowfield.neighbors.NeighborGetter;
 import org.triplea.ai.flowfield.odds.LanchesterDebugUiAction;
 import org.triplea.swing.SwingAction;
 
 public class FlowFieldAi extends AbstractAi {
 
-  @Getter private final Map<String, DiffusionMap> diffusions = new HashMap<>();
+  @Getter private Collection<DiffusionMap> diffusions = new ArrayList<>();
   private int round = -1;
 
   public FlowFieldAi(final String name, final PlayerTypes.AiType playerType) {
@@ -47,20 +49,7 @@ public class FlowFieldAi extends AbstractAi {
     super.initialize(playerBridge, gamePlayer);
     DebugMenu.registerMenuCallback(getName(), this::addDebugMenuItems);
 
-    final DiffusionType enemyCapitals =
-        EnemyCapitals.build(getGamePlayer(), getGameData().getPlayerList(), getGameData().getMap());
-    diffusions.put(
-        enemyCapitals.getName(),
-        new DiffusionMap(
-            enemyCapitals, territory -> getGameData().getMap().getNeighbors(territory)));
-    final Resource pus = getGameData().getResourceList().getResource(Constants.PUS);
-    final DiffusionType resourcesToGet =
-        ResourceToGet.build(
-            getGamePlayer(), getGameData().getRelationshipTracker(), getGameData().getMap(), pus);
-    diffusions.put(
-        resourcesToGet.getName(),
-        new DiffusionMap(
-            resourcesToGet, territory -> getGameData().getMap().getNeighbors(territory)));
+    setupDiffusionMaps();
   }
 
   private Collection<JMenuItem> addDebugMenuItems(final TripleAFrame frame) {
@@ -97,11 +86,11 @@ public class FlowFieldAi extends AbstractAi {
 
     // add a button for each of the maps
     diffusions.forEach(
-        (name, diffusion) -> {
+        (diffusion) -> {
           final TerritoryDebugUiAction action =
               new TerritoryDebugUiAction(frame, diffusion, getGameData().getMap());
           final JRadioButtonMenuItem menuItem =
-              new JRadioButtonMenuItem(SwingAction.of(name, action));
+              new JRadioButtonMenuItem(SwingAction.of(diffusion.getName(), action));
           actions.put(menuItem, action);
           menuItem.addItemListener(
               e ->
@@ -172,5 +161,36 @@ public class FlowFieldAi extends AbstractAi {
     }
   }
 
-  private void calculateTurn() {}
+  private void calculateTurn() {
+    setupDiffusionMaps();
+  }
+
+  private void setupDiffusionMaps() {
+    final DiffusionMapBuilder diffusionMapBuilder =
+        DiffusionMapBuilder.setup()
+            .gamePlayer(getGamePlayer())
+            .playerList(getGameData().getPlayerList())
+            .relationshipTracker(getGameData().getRelationshipTracker())
+            .resourceList(getGameData().getResourceList())
+            .gameMap(getGameData().getMap())
+            .build();
+
+    diffusions =
+        getGamePlayer().getProductionFrontier().getRules().stream()
+            .map(rule -> rule.getResults().entrySet())
+            .flatMap(Collection::stream)
+            .map(Map.Entry::getKey)
+            .filter(UnitType.class::isInstance)
+            .map(UnitType.class::cast)
+            .filter(unitType -> UnitAttachment.get(unitType).getMovement(getGamePlayer()) > 0)
+            .map(
+                unitType ->
+                    diffusionMapBuilder.buildMaps(
+                        unitType.getName(),
+                        new MapWithNeighbors(
+                            getGameData().getMap().getTerritories(),
+                            new NeighborGetter(unitType, getGameData().getMap()))))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+  }
 }

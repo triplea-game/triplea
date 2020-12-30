@@ -1,4 +1,4 @@
-package org.triplea.ai.flowfield.map.offense;
+package org.triplea.ai.flowfield.diffusion.offense;
 
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import org.triplea.ai.flowfield.map.DiffusionType;
+import org.triplea.ai.flowfield.diffusion.DiffusionType;
 
 /** Finds all of the enemy capitals and assigns them a value and diffusion rate */
 @UtilityClass
@@ -24,6 +24,6 @@ public class EnemyCapitals {
             .map(player -> TerritoryAttachment.getAllCapitals(player, gameMap))
             .flatMap(Collection::stream)
             .collect(Collectors.toMap(Function.identity(), territory -> 100L));
-    return new DiffusionType("Other Capitals", 0.30, territoryValuations);
+    return new DiffusionType("Other Capitals", 0.70, territoryValuations);
   }
 }

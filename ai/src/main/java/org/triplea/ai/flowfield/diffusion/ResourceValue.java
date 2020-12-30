@@ -1,4 +1,4 @@
-package org.triplea.ai.flowfield.map;
+package org.triplea.ai.flowfield.diffusion;
 
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -17,7 +17,7 @@ public class ResourceValue {
    * <p>The PUS resource is read from the `production` attribute instead of the `resources`. If the
    * territory has no resources or the resource doesn't exist, then 0 is returned.
    */
-  public Function<Territory, Long> mapTerritoryToResource(final Resource resource) {
+  public Function<Territory, Long> territoryToResourceValue(final Resource resource) {
     return territory -> {
       if (resource.getName().equals(Constants.PUS)) {
         return Optional.ofNullable(TerritoryAttachment.get(territory))
