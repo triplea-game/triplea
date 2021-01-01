@@ -40,7 +40,7 @@ import org.triplea.swing.SwingComponents;
 @Slf4j
 public class ResourceLoader implements Closeable {
   public static final String ASSETS_FOLDER = "assets";
-  // All maps must have at least a "baseTiles" folder
+  // All maps must have at least a "baseTiles" folder.
   private static final String REQUIRED_ASSET_EXAMPLE_FOLDER = "baseTiles/";
 
   private final URLClassLoader loader;
@@ -130,6 +130,8 @@ public class ResourceLoader implements Closeable {
     final List<String> dirs = new ArrayList<>();
     dirs.add(dir.get());
 
+    // Add the assets folder from the game installation path. This assets folder supplements
+    // any map and resources not found in the map are searched for in this folder.
     findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
         .map(File::getAbsolutePath)
         .ifPresent(dirs::add);
