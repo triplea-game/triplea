@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.steps.fire.FireRoundState;
 import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
@@ -110,10 +111,12 @@ public class FireAa implements IExecutable {
         final Set<UnitType> validTargetTypes =
             UnitAttachment.get(firingGroup.iterator().next().getType())
                 .getTargetsAa(bridge.getData().getUnitTypeList());
+
         final Set<UnitType> airborneTypesTargeted =
             defending
                 ? TechAbilityAttachment.getAirborneTargettedByAa(
-                        hitPlayer, bridge.getData().getTechnologyFrontier())
+                        TechTracker.getCurrentTechAdvances(
+                            hitPlayer, bridge.getData().getTechnologyFrontier()))
                     .get(aaType)
                 : new HashSet<>();
         final Collection<Unit> validTargets =

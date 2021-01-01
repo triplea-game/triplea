@@ -9,6 +9,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
 import java.io.Serializable;
@@ -42,11 +43,13 @@ public class FiringGroupSplitterAa
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {
     // only defense can fire at special airborne units (old "paratroopers")
+
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         side == DEFENSE
             ? TechAbilityAttachment.getAirborneTargettedByAa(
-                battleState.getPlayer(side.getOpposite()),
-                battleState.getGameData().getTechnologyFrontier())
+                TechTracker.getCurrentTechAdvances(
+                    battleState.getPlayer(side.getOpposite()),
+                    battleState.getGameData().getTechnologyFrontier()))
             : Map.of();
 
     final Collection<Unit> aaUnits =

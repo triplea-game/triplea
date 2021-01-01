@@ -125,9 +125,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   static int sumIntegerMap(
       final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
       final UnitType ut,
-      final GamePlayer player,
-      final TechnologyFrontier technologyFrontier) {
-    return TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+      final Collection<TechAdvance> techAdvances) {
+    return techAdvances.stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
         .map(mapper)
@@ -139,9 +138,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   static int sumNumbers(
       final ToIntFunction<TechAbilityAttachment> mapper,
       final String attachmentType,
-      final GamePlayer player,
-      final TechnologyFrontier technologyFrontier) {
-    return TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+      final Collection<TechAdvance> techAdvances) {
+    return techAdvances.stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
         .filter(i -> i.getAttachedTo().toString().equals(attachmentType))
@@ -176,9 +174,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return attackBonus;
   }
 
-  static int getAttackBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getAttackBonus, ut, player, technologyFrontier);
+  static int getAttackBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getAttackBonus, ut, techAdvances);
   }
 
   private void resetAttackBonus() {
@@ -197,9 +194,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return defenseBonus;
   }
 
-  static int getDefenseBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getDefenseBonus, ut, player, technologyFrontier);
+  static int getDefenseBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getDefenseBonus, ut, techAdvances);
   }
 
   private void resetDefenseBonus() {
@@ -218,9 +214,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return movementBonus;
   }
 
-  static int getMovementBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getMovementBonus, ut, player, technologyFrontier);
+  static int getMovementBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getMovementBonus, ut, techAdvances);
   }
 
   private void resetMovementBonus() {
@@ -239,9 +234,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return radarBonus;
   }
 
-  static int getRadarBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getRadarBonus, ut, player, technologyFrontier);
+  static int getRadarBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getRadarBonus, ut, techAdvances);
   }
 
   private void resetRadarBonus() {
@@ -260,9 +254,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airAttackBonus;
   }
 
-  static int getAirAttackBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getAirAttackBonus, ut, player, technologyFrontier);
+  static int getAirAttackBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getAirAttackBonus, ut, techAdvances);
   }
 
   private void resetAirAttackBonus() {
@@ -281,9 +274,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airDefenseBonus;
   }
 
-  static int getAirDefenseBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getAirDefenseBonus, ut, player, technologyFrontier);
+  static int getAirDefenseBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getAirDefenseBonus, ut, techAdvances);
   }
 
   private void resetAirDefenseBonus() {
@@ -303,8 +295,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getProductionBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getProductionBonus, ut, player, technologyFrontier);
+      final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getProductionBonus, ut, techAdvances);
   }
 
   private void resetProductionBonus() {
@@ -326,10 +318,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getMinimumTerritoryValueForProductionBonus(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+      final Collection<TechAdvance> techAdvances) {
     return Math.max(
         0,
-        TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+        techAdvances.stream()
             .map(TechAbilityAttachment::get)
             .filter(Objects::nonNull)
             .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
@@ -354,12 +346,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return repairDiscount;
   }
 
-  public static double getRepairDiscount(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+  public static double getRepairDiscount(final Collection<TechAdvance> techAdvances) {
     return Math.max(
         0,
         1.0
-            - TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+            - techAdvances.stream()
                 .map(TechAbilityAttachment::get)
                 .filter(Objects::nonNull)
                 .mapToInt(TechAbilityAttachment::getRepairDiscount)
@@ -384,13 +375,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return warBondDiceSides;
   }
 
-  public static int getWarBondDiceSides(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+  public static int getWarBondDiceSides(final Collection<TechAdvance> techAdvances) {
     return sumNumbers(
-        TechAbilityAttachment::getWarBondDiceSides,
-        TechAdvance.TECH_NAME_WAR_BONDS,
-        player,
-        technologyFrontier);
+        TechAbilityAttachment::getWarBondDiceSides, TechAdvance.TECH_NAME_WAR_BONDS, techAdvances);
   }
 
   private void resetWarBondDiceSides() {
@@ -409,13 +396,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return warBondDiceNumber;
   }
 
-  public static int getWarBondDiceNumber(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+  public static int getWarBondDiceNumber(final Collection<TechAdvance> techAdvances) {
     return sumNumbers(
-        TechAbilityAttachment::getWarBondDiceNumber,
-        TechAdvance.TECH_NAME_WAR_BONDS,
-        player,
-        technologyFrontier);
+        TechAbilityAttachment::getWarBondDiceNumber, TechAdvance.TECH_NAME_WAR_BONDS, techAdvances);
   }
 
   private void resetWarBondDiceNumber() {
@@ -439,16 +422,18 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private static int getRocketDiceNumber(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(
-        TechAbilityAttachment::getRocketDiceNumber, ut, player, technologyFrontier);
+      final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getRocketDiceNumber, ut, techAdvances);
   }
 
   public static int getRocketDiceNumber(
       final Collection<Unit> rockets, final TechnologyFrontier technologyFrontier) {
     int rocketDiceNumber = 0;
     for (final Unit u : rockets) {
-      rocketDiceNumber += getRocketDiceNumber(u.getType(), u.getOwner(), technologyFrontier);
+
+      rocketDiceNumber +=
+          getRocketDiceNumber(
+              u.getType(), TechTracker.getCurrentTechAdvances(u.getOwner(), technologyFrontier));
     }
     return rocketDiceNumber;
   }
@@ -469,13 +454,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rocketDistance;
   }
 
-  public static int getRocketDistance(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+  public static int getRocketDistance(final Collection<TechAdvance> techAdvances) {
     return sumNumbers(
-        TechAbilityAttachment::getRocketDistance,
-        TechAdvance.TECH_NAME_ROCKETS,
-        player,
-        technologyFrontier);
+        TechAbilityAttachment::getRocketDistance, TechAdvance.TECH_NAME_ROCKETS, techAdvances);
   }
 
   private void resetRocketDistance() {
@@ -494,13 +475,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rocketNumberPerTerritory;
   }
 
-  public static int getRocketNumberPerTerritory(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+  public static int getRocketNumberPerTerritory(final Collection<TechAdvance> techAdvances) {
     return sumNumbers(
         TechAbilityAttachment::getRocketNumberPerTerritory,
         TechAdvance.TECH_NAME_ROCKETS,
-        player,
-        technologyFrontier);
+        techAdvances);
   }
 
   private void resetRocketNumberPerTerritory() {
@@ -545,10 +524,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public static boolean getUnitAbilitiesGained(
       final String filterForAbility,
       final UnitType ut,
-      final GamePlayer player,
-      final TechnologyFrontier technologyFrontier) {
+      final Collection<TechAdvance> techAdvances) {
     Preconditions.checkNotNull(filterForAbility);
-    return TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+    return techAdvances.stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
         .map(TechAbilityAttachment::getUnitAbilitiesGained)
@@ -591,9 +569,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static IntegerMap<UnitType> getAirborneCapacity(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+      final Collection<TechAdvance> techAdvances) {
     final IntegerMap<UnitType> capacityMap = new IntegerMap<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, technologyFrontier)) {
+    for (final TechAdvance ta : techAdvances) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
         capacityMap.add(taa.getAirborneCapacity());
@@ -603,10 +581,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getAirborneCapacity(
-      final Collection<Unit> units,
-      final GamePlayer player,
-      final TechnologyFrontier technologyFrontier) {
-    final IntegerMap<UnitType> capacityMap = getAirborneCapacity(player, technologyFrontier);
+      final Collection<Unit> units, final Collection<TechAdvance> techAdvances) {
+    final IntegerMap<UnitType> capacityMap = getAirborneCapacity(techAdvances);
     int airborneCapacity = 0;
     for (final Unit u : units) {
       airborneCapacity += Math.max(0, (capacityMap.getInt(u.getType()) - u.getLaunched()));
@@ -632,9 +608,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneTypes;
   }
 
-  public static Set<UnitType> getAirborneTypes(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+  public static Set<UnitType> getAirborneTypes(final Collection<TechAdvance> techAdvances) {
+    return techAdvances.stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
         .map(TechAbilityAttachment::getAirborneTypes)
@@ -658,11 +633,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneDistance;
   }
 
-  public static int getAirborneDistance(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+  public static int getAirborneDistance(final Collection<TechAdvance> techAdvances) {
     return Math.max(
         0,
-        TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+        techAdvances.stream()
             .map(TechAbilityAttachment::get)
             .filter(Objects::nonNull)
             .mapToInt(TechAbilityAttachment::getAirborneDistance)
@@ -687,9 +661,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneBases;
   }
 
-  public static Set<UnitType> getAirborneBases(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+  public static Set<UnitType> getAirborneBases(final Collection<TechAdvance> techAdvances) {
+    return techAdvances.stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
         .map(TechAbilityAttachment::getAirborneBases)
@@ -728,9 +701,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
    * key.
    */
   public static Map<String, Set<UnitType>> getAirborneTargettedByAa(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
+      final Collection<TechAdvance> techAdvances) {
     final Map<String, Set<UnitType>> airborneTargettedByAa = new HashMap<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, technologyFrontier)) {
+    for (final TechAdvance ta : techAdvances) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
         final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAa();
@@ -763,10 +736,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return attackRollsBonus;
   }
 
-  static int getAttackRollsBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(
-        TechAbilityAttachment::getAttackRollsBonus, ut, player, technologyFrontier);
+  static int getAttackRollsBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getAttackRollsBonus, ut, techAdvances);
   }
 
   private void resetAttackRollsBonus() {
@@ -785,10 +756,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return defenseRollsBonus;
   }
 
-  static int getDefenseRollsBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(
-        TechAbilityAttachment::getDefenseRollsBonus, ut, player, technologyFrontier);
+  static int getDefenseRollsBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getDefenseRollsBonus, ut, techAdvances);
   }
 
   private void setBombingBonus(final String value) throws GameParseException {
@@ -803,9 +772,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return bombingBonus;
   }
 
-  public static int getBombingBonus(
-      final UnitType ut, final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return sumIntegerMap(TechAbilityAttachment::getBombingBonus, ut, player, technologyFrontier);
+  public static int getBombingBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+    return sumIntegerMap(TechAbilityAttachment::getBombingBonus, ut, techAdvances);
   }
 
   private void resetDefenseRollsBonus() {
@@ -816,9 +784,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     bombingBonus = new IntegerMap<>();
   }
 
-  public static boolean getAllowAirborneForces(
-      final GamePlayer player, final TechnologyFrontier technologyFrontier) {
-    return TechTracker.getCurrentTechAdvances(player, technologyFrontier).stream()
+  public static boolean getAllowAirborneForces(final Collection<TechAdvance> techAdvances) {
+    return techAdvances.stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
         .anyMatch(TechAbilityAttachment::getAirborneForces);
