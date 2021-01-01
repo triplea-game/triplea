@@ -49,26 +49,27 @@ public class ResourceLoader implements Closeable {
   public ResourceLoader(final String mapName) {
     Preconditions.checkNotNull(mapName);
 
-    final Optional<File> mapLocation = getPath(mapName);
-    if (mapLocation.isEmpty()) {
-      SwingComponents.promptUser(
-          "Download Map?",
-          "Map missing: "
-              + mapName
-              + ", could not join game.\nWould you like to download the map now?"
-              + "\nOnce the download completes, you may reconnect to this game.",
-          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+    final File mapLocation =
+        getPath(mapName)
+            .orElseThrow(
+                () -> {
+                  SwingComponents.promptUser(
+                      "Download Map?",
+                      "Map missing: "
+                          + mapName
+                          + ", could not join game.\nWould you like to download the map now?"
+                          + "\nOnce the download completes, you may reconnect to this game.",
+                      () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
 
-      throw new MapNotFoundException(mapName, getCandidatePaths(mapName));
-    }
-
+                  return new MapNotFoundException(mapName, getCandidatePaths(mapName));
+                });
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map and resources not found in the map are searched for in this folder.
     final File gameAssetsDirectory =
         findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
             .orElseThrow(GameAssetsNotFoundException::new);
 
-    mapPrefix = getMapPrefix(mapLocation.get());
+    mapPrefix = getMapPrefix(mapLocation);
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
@@ -76,7 +77,7 @@ public class ResourceLoader implements Closeable {
     try {
       loader =
           new URLClassLoader(
-              new URL[] {mapLocation.get().toURI().toURL(), gameAssetsDirectory.toURI().toURL()});
+              new URL[] {mapLocation.toURI().toURL(), gameAssetsDirectory.toURI().toURL()});
     } catch (final MalformedURLException e) {
       throw new IllegalArgumentException(
           "Error creating file system paths with map: "
@@ -84,7 +85,7 @@ public class ResourceLoader implements Closeable {
               + ", engine assets path: "
               + gameAssetsDirectory.getAbsolutePath()
               + ", and path to map: "
-              + mapLocation.get().getAbsolutePath(),
+              + mapLocation.getAbsolutePath(),
           e);
     }
     this.mapName = mapName;
