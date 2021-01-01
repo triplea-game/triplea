@@ -63,13 +63,13 @@ public class ResourceLoader implements Closeable {
 
                   return new MapNotFoundException(mapName, getCandidatePaths(mapName));
                 });
+    mapPrefix = getMapPrefix(mapLocation);
+
     // Add the assets folder from the game installation path. This assets folder supplements
-    // any map and resources not found in the map are searched for in this folder.
+    // any map resources.
     final File gameAssetsDirectory =
         findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
             .orElseThrow(GameAssetsNotFoundException::new);
-
-    mapPrefix = getMapPrefix(mapLocation);
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
