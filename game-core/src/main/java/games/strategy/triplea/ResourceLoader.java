@@ -49,8 +49,8 @@ public class ResourceLoader implements Closeable {
   public ResourceLoader(final String mapName) {
     Preconditions.checkNotNull(mapName);
 
-    final Optional<String> dir = getPath(mapName);
-    if (dir.isEmpty()) {
+    final Optional<File> mapLocation = getPath(mapName);
+    if (mapLocation.isEmpty()) {
       SwingComponents.promptUser(
           "Download Map?",
           "Map missing: "
@@ -64,29 +64,27 @@ public class ResourceLoader implements Closeable {
 
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map and resources not found in the map are searched for in this folder.
-    final String gameAssetsDirectory =
+    final File gameAssetsDirectory =
         findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
-            .map(File::getAbsolutePath)
             .orElseThrow(GameAssetsNotFoundException::new);
 
-    final File mapFile = new File(mapName);
-    final File assetsFile = new File(gameAssetsDirectory);
-
-    mapPrefix = getMapPrefix(mapFile);
+    mapPrefix = getMapPrefix(mapLocation.get());
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
     try {
-      loader = new URLClassLoader(new URL[] {mapFile.toURI().toURL(), assetsFile.toURI().toURL()});
+      loader =
+          new URLClassLoader(
+              new URL[] {mapLocation.get().toURI().toURL(), gameAssetsDirectory.toURI().toURL()});
     } catch (final MalformedURLException e) {
       throw new IllegalArgumentException(
           "Error creating file system paths with map: "
               + mapName
               + ", engine assets path: "
-              + assetsFile.getAbsolutePath()
+              + gameAssetsDirectory.getAbsolutePath()
               + ", and path to map: "
-              + mapFile.getAbsolutePath(),
+              + mapLocation.get().getAbsolutePath(),
           e);
     }
     this.mapName = mapName;
@@ -211,11 +209,8 @@ public class ResourceLoader implements Closeable {
     return sb.toString();
   }
 
-  private static Optional<String> getPath(final String mapName) {
-    return getCandidatePaths(mapName).stream()
-        .filter(File::exists)
-        .findAny()
-        .map(File::getAbsolutePath);
+  private static Optional<File> getPath(final String mapName) {
+    return getCandidatePaths(mapName).stream().filter(File::exists).findAny();
   }
 
   private static List<File> getCandidatePaths(final String mapName) {
