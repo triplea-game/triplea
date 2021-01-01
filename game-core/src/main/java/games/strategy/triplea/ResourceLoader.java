@@ -25,7 +25,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
@@ -47,12 +46,31 @@ public class ResourceLoader implements Closeable {
   private final String mapPrefix;
   @Getter private final String mapName;
 
-  @Builder
-  private ResourceLoader(
-      final String mapName, final String pathToMap, final String pathToEngineAssets) {
+  public ResourceLoader(final String mapName) {
+    Preconditions.checkNotNull(mapName);
 
-    final File mapFile = new File(pathToMap);
-    final File assetsFile = new File(pathToEngineAssets);
+    final Optional<String> dir = getPath(mapName);
+    if (dir.isEmpty()) {
+      SwingComponents.promptUser(
+          "Download Map?",
+          "Map missing: "
+              + mapName
+              + ", could not join game.\nWould you like to download the map now?"
+              + "\nOnce the download completes, you may reconnect to this game.",
+          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+
+      throw new MapNotFoundException(mapName, getCandidatePaths(mapName));
+    }
+
+    // Add the assets folder from the game installation path. This assets folder supplements
+    // any map and resources not found in the map are searched for in this folder.
+    final String gameAssetsDirectory =
+        findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
+            .map(File::getAbsolutePath)
+            .orElseThrow(GameAssetsNotFoundException::new);
+
+    final File mapFile = new File(mapName);
+    final File assetsFile = new File(gameAssetsDirectory);
 
     mapPrefix = getMapPrefix(mapFile);
 
@@ -66,9 +84,9 @@ public class ResourceLoader implements Closeable {
           "Error creating file system paths with map: "
               + mapName
               + ", engine assets path: "
-              + pathToEngineAssets
+              + assetsFile.getAbsolutePath()
               + ", and path to map: "
-              + pathToMap,
+              + mapFile.getAbsolutePath(),
           e);
     }
     this.mapName = mapName;
@@ -109,33 +127,7 @@ public class ResourceLoader implements Closeable {
 
   /** Returns a resource loader that will find assets in a map directory. */
   public static ResourceLoader getMapResourceLoader(final String mapName) {
-    Preconditions.checkNotNull(mapName);
-
-    final Optional<String> dir = getPath(mapName);
-    if (dir.isEmpty()) {
-      SwingComponents.promptUser(
-          "Download Map?",
-          "Map missing: "
-              + mapName
-              + ", could not join game.\nWould you like to download the map now?"
-              + "\nOnce the download completes, you may reconnect to this game.",
-          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-
-      throw new MapNotFoundException(mapName, getCandidatePaths(mapName));
-    }
-
-    // Add the assets folder from the game installation path. This assets folder supplements
-    // any map and resources not found in the map are searched for in this folder.
-    final String gameAssetsDirectory =
-        findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
-            .map(File::getAbsolutePath)
-            .orElseThrow(GameAssetsNotFoundException::new);
-
-    return ResourceLoader.builder()
-        .mapName(mapName)
-        .pathToEngineAssets(gameAssetsDirectory)
-        .pathToMap(dir.get())
-        .build();
+    return new ResourceLoader(mapName);
   }
 
   private static class GameAssetsNotFoundException extends RuntimeException {
