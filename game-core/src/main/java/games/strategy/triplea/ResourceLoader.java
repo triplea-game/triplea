@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
@@ -26,6 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
@@ -47,52 +47,49 @@ public class ResourceLoader implements Closeable {
   private final String mapPrefix;
   @Getter private final String mapName;
 
-  private ResourceLoader(final String mapName, final String[] paths) {
-    final URL[] urls = new URL[paths.length];
-    for (int i = 0; i < paths.length; i++) {
-      final File f = new File(paths[i]);
-      if (!f.exists()) {
-        log.error(f + " does not exist");
-      }
-      if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
-        log.error(f + " is not a directory or a zip file");
-      }
-      try {
-        urls[i] = f.toURI().toURL();
-      } catch (final MalformedURLException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-    mapPrefix = getMapPrefix(urls);
+  @Builder
+  private ResourceLoader(
+      final String mapName, final String pathToMap, final String pathToEngineAssets) {
+
+    final File mapFile = new File(pathToMap);
+    final File assetsFile = new File(pathToEngineAssets);
+
+    mapPrefix = getMapPrefix(mapFile);
+
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
-    loader = new URLClassLoader(urls);
+    try {
+      loader = new URLClassLoader(new URL[] {mapFile.toURI().toURL(), assetsFile.toURI().toURL()});
+    } catch (final MalformedURLException e) {
+      throw new IllegalArgumentException(
+          "Error creating file system paths with map: "
+              + mapName
+              + ", engine assets path: "
+              + pathToEngineAssets
+              + ", and path to map: "
+              + pathToMap,
+          e);
+    }
     this.mapName = mapName;
   }
 
   /**
-   * Will return an empty string unless a special prefix is needed, in which case that prefix is *
+   * Will return an empty string unless a special prefix is needed, in which case that prefix is
    * constructed based on where the {@code baseTiles} folder is located within the zip.
-   *
-   * @param resourcePaths The list of paths used for a map as resources. From this we can determine
-   *     if the map is being loaded from a zip or a directory, and if zip, if it matches any
-   *     particular naming.
    */
-  private static String getMapPrefix(final URL[] resourcePaths) {
-    for (final URL url : resourcePaths) {
-      try (ZipFile zip = new ZipFile(new File(url.toURI()))) {
-        final Optional<? extends ZipEntry> baseTilesEntry =
-            zip.stream()
-                .filter(entry -> entry.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER))
-                .findAny();
-        if (baseTilesEntry.isPresent()) {
-          final String path = baseTilesEntry.get().getName();
-          return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
-        }
-      } catch (final IOException | URISyntaxException e) {
-        // File is not a zip or can't be opened
+  private static String getMapPrefix(final File mapZip) {
+    try (ZipFile zip = new ZipFile(mapZip)) {
+      final Optional<? extends ZipEntry> baseTilesEntry =
+          zip.stream()
+              .filter(entry -> entry.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER))
+              .findAny();
+      if (baseTilesEntry.isPresent()) {
+        final String path = baseTilesEntry.get().getName();
+        return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
       }
+    } catch (final IOException e) {
+      // File is not a zip or can't be opened
     }
     return "";
   }
@@ -127,16 +124,30 @@ public class ResourceLoader implements Closeable {
       throw new MapNotFoundException(mapName, getCandidatePaths(mapName));
     }
 
-    final List<String> dirs = new ArrayList<>();
-    dirs.add(dir.get());
-
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map and resources not found in the map are searched for in this folder.
-    findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
-        .map(File::getAbsolutePath)
-        .ifPresent(dirs::add);
+    final String gameAssetsDirectory =
+        findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
+            .map(File::getAbsolutePath)
+            .orElseThrow(GameAssetsNotFoundException::new);
 
-    return new ResourceLoader(mapName, dirs.toArray(new String[0]));
+    return ResourceLoader.builder()
+        .mapName(mapName)
+        .pathToEngineAssets(gameAssetsDirectory)
+        .pathToMap(dir.get())
+        .build();
+  }
+
+  private static class GameAssetsNotFoundException extends RuntimeException {
+    private static final long serialVersionUID = -8274500540886412040L;
+
+    GameAssetsNotFoundException() {
+      super(
+          "Unable to find game assets folder starting from location: "
+              + ClientFileSystemHelper.getRootFolder().getAbsolutePath()
+              + "\nThere is a problem with the installation, please report this to TripleA "
+              + "and the path where TripleA is installed.");
+    }
   }
 
   @VisibleForTesting
