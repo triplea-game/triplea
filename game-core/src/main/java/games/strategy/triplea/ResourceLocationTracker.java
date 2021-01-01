@@ -29,8 +29,8 @@ class ResourceLocationTracker {
   static String getMapPrefix(final URL[] resourcePaths) {
     for (final URL url : resourcePaths) {
       try (ZipFile zip = new ZipFile(new File(url.toURI()))) {
-        final Optional<? extends ZipEntry> baseTilesEntry =
-            zip.stream().filter(entry -> entry.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER)).findAny();
+        final Optional<? extends ZipEntry> baseTilesEntry = zip.stream().filter(entry ->
+          entry.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER)).findAny();
         if (baseTilesEntry.isPresent()) {
           final String path = baseTilesEntry.get().getName();
           return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
