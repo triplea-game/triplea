@@ -122,12 +122,7 @@ public class ResourceLoader implements Closeable {
   }
 
   public static ResourceLoader getGameEngineAssetLoader() {
-    return getMapResourceLoader("");
-  }
-
-  /** Returns a resource loader that will find assets in a map directory. */
-  public static ResourceLoader getMapResourceLoader(final String mapName) {
-    return new ResourceLoader(mapName);
+    return new ResourceLoader("");
   }
 
   private static class GameAssetsNotFoundException extends RuntimeException {

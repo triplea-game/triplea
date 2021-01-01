@@ -41,7 +41,7 @@ public final class LocalizeHtml {
   public static String localizeImgLinksInHtml(final String htmlText, final String mapNameDir) {
     return htmlText == null || mapNameDir == null || mapNameDir.isBlank()
         ? htmlText
-        : localizeImgLinksInHtml(htmlText, ResourceLoader.getMapResourceLoader(mapNameDir));
+        : localizeImgLinksInHtml(htmlText, new ResourceLoader(mapNameDir));
   }
 
   @VisibleForTesting
