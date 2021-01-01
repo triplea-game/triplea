@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
@@ -37,6 +40,8 @@ import org.triplea.swing.SwingComponents;
 @Slf4j
 public class ResourceLoader implements Closeable {
   public static final String ASSETS_FOLDER = "assets";
+  // All maps must have at least a "baseTiles" folder
+  private static final String REQUIRED_ASSET_EXAMPLE_FOLDER = "baseTiles/";
 
   private final URLClassLoader loader;
   private final String mapPrefix;
@@ -58,12 +63,38 @@ public class ResourceLoader implements Closeable {
         throw new IllegalStateException(e);
       }
     }
-    mapPrefix = ResourceLocationTracker.getMapPrefix(urls);
+    mapPrefix = getMapPrefix(urls);
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
     loader = new URLClassLoader(urls);
     this.mapName = mapName;
+  }
+
+  /**
+   * Will return an empty string unless a special prefix is needed, in which case that prefix is *
+   * constructed based on where the {@code baseTiles} folder is located within the zip.
+   *
+   * @param resourcePaths The list of paths used for a map as resources. From this we can determine
+   *     if the map is being loaded from a zip or a directory, and if zip, if it matches any
+   *     particular naming.
+   */
+  private static String getMapPrefix(final URL[] resourcePaths) {
+    for (final URL url : resourcePaths) {
+      try (ZipFile zip = new ZipFile(new File(url.toURI()))) {
+        final Optional<? extends ZipEntry> baseTilesEntry =
+            zip.stream()
+                .filter(entry -> entry.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER))
+                .findAny();
+        if (baseTilesEntry.isPresent()) {
+          final String path = baseTilesEntry.get().getName();
+          return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
+        }
+      } catch (final IOException | URISyntaxException e) {
+        // File is not a zip or can't be opened
+      }
+    }
+    return "";
   }
 
   /**
