@@ -15,28 +15,20 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.DebugMenu;
-import java.awt.event.ActionEvent;
+import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.swing.AbstractAction;
-import javax.swing.ButtonGroup;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JRadioButtonMenuItem;
 import lombok.Getter;
 import org.triplea.ai.flowfield.influence.InfluenceMap;
 import org.triplea.ai.flowfield.influence.InfluenceMapBuilder;
-import org.triplea.ai.flowfield.influence.TerritoryDebugUiAction;
+import org.triplea.ai.flowfield.influence.TerritoryDebugAction;
 import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
 import org.triplea.ai.flowfield.neighbors.NeighborGetter;
-import org.triplea.ai.flowfield.odds.LanchesterDebugUiAction;
-import org.triplea.swing.SwingAction;
+import org.triplea.ai.flowfield.odds.LanchesterDebugAction;
 
 public class FlowFieldAi extends AbstractAi {
 
@@ -50,63 +42,46 @@ public class FlowFieldAi extends AbstractAi {
   @Override
   public void initialize(final IPlayerBridge playerBridge, final GamePlayer gamePlayer) {
     super.initialize(playerBridge, gamePlayer);
-    DebugMenu.registerMenuCallback(getName(), this::addDebugMenuItems);
-
     setupDiffusionMaps();
+    DebugMenu.registerDebugOptions(this, buildDebugOptions());
   }
 
-  private Collection<JMenuItem> addDebugMenuItems(final TripleAFrame frame) {
-    final Map<JRadioButtonMenuItem, TerritoryDebugUiAction> actions = new HashMap<>();
-    final JMenu heatmapMenu = new JMenu("HeatMap");
-    final ButtonGroup heatmapGroup = new ButtonGroup();
-
-    // add an entry that will clear the heatmaps and other listeners
-    final JRadioButtonMenuItem clearHeatmap =
-        new JRadioButtonMenuItem(
-            SwingAction.of(
-                "None",
-                new AbstractAction() {
-                  @Override
-                  public void actionPerformed(final ActionEvent e) {
-                    getGameData()
-                        .getMap()
-                        .getTerritories()
-                        .forEach(
-                            territory -> {
-                              frame.getMapPanel().clearTerritoryOverlay(territory);
-                            });
-                    frame.getMapPanel().repaint();
-                  }
-                }));
-    clearHeatmap.setSelected(true);
-    clearHeatmap.addItemListener(
-        e ->
-            actions.entrySet().stream()
-                .filter(entry -> entry.getKey() != e.getSource())
-                .forEach(entry -> entry.getValue().unselect()));
-    heatmapGroup.add(clearHeatmap);
-    heatmapMenu.add(clearHeatmap);
-
-    // add a button for each of the maps
-    diffusions.forEach(
-        (diffusion) -> {
-          final TerritoryDebugUiAction action =
-              new TerritoryDebugUiAction(frame, diffusion, getGameData().getMap());
-          final JRadioButtonMenuItem menuItem =
-              new JRadioButtonMenuItem(SwingAction.of(diffusion.getName(), action));
-          actions.put(menuItem, action);
-          menuItem.addItemListener(
-              e ->
-                  actions.entrySet().stream()
-                      .filter(entry -> entry.getKey() != e.getSource())
-                      .forEach(entry -> entry.getValue().unselect()));
-          heatmapGroup.add(menuItem);
-          heatmapMenu.add(menuItem);
-        });
-
+  private List<AiPlayerDebugOption> buildDebugOptions() {
     return List.of(
-        heatmapMenu,
-        new JMenuItem(SwingAction.of("Lanchester", new LanchesterDebugUiAction(frame, this))));
+        new AiPlayerDebugOption(
+            "HeatMap", AiPlayerDebugOption.ActionType.NORMAL, "", buildHeatmapOptions(), k -> {}),
+        new AiPlayerDebugOption(
+            "Calculate Attrition Factor",
+            AiPlayerDebugOption.ActionType.NORMAL,
+            "",
+            List.of(),
+            new LanchesterDebugAction(this, getGameData().getRelationshipTracker())));
+  }
+
+  private List<AiPlayerDebugOption> buildHeatmapOptions() {
+    final List<AiPlayerDebugOption> options = new ArrayList<>();
+
+    options.add(
+        new AiPlayerDebugOption(
+            "None",
+            AiPlayerDebugOption.ActionType.ON_OFF_EXCLUSIVE,
+            "heatmap",
+            List.of(),
+            k -> {}));
+
+    options.addAll(
+        diffusions.stream()
+            .map(
+                diffusion ->
+                    new AiPlayerDebugOption(
+                        diffusion.getName(),
+                        AiPlayerDebugOption.ActionType.ON_OFF_EXCLUSIVE,
+                        "heatmap",
+                        List.of(),
+                        new TerritoryDebugAction(diffusion, getGameData().getMap())))
+            .collect(Collectors.toList()));
+
+    return options;
   }
 
   @Override

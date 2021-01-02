@@ -1,12 +1,12 @@
 package org.triplea.ai.flowfield.odds;
 
-import static games.strategy.triplea.Constants.PLAYER_NAME_GERMANS;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -17,33 +17,40 @@ import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
-import games.strategy.triplea.ui.TripleAFrame;
-import java.awt.event.ActionEvent;
+import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.swing.AbstractAction;
 import lombok.RequiredArgsConstructor;
 import org.triplea.ai.flowfield.FlowFieldAi;
 
 @RequiredArgsConstructor
-public class LanchesterDebugUiAction extends AbstractAction {
-  private static final long serialVersionUID = -919496373521710039L;
+public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
 
-  private final TripleAFrame frame;
   private final FlowFieldAi ai;
+  private final RelationshipTracker relationshipTracker;
 
   @Override
-  public void actionPerformed(final ActionEvent e) {
+  public void accept(final AiPlayerDebugAction aiPlayerDebugAction) {
     final GameData gameData = ai.getGameData();
-    final Territory france = gameData.getMap().getTerritory("France");
+    final Territory territory =
+        gameData.getMap().getTerritories().stream()
+            .filter(Predicate.not(Territory::isWater))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Land territory is required."));
+    System.out.println("Using territory " + territory.getName());
     final GamePlayer offender = ai.getGamePlayer();
-    final GamePlayer defender = gameData.getPlayerList().getPlayerId(PLAYER_NAME_GERMANS);
+    final GamePlayer defender =
+        relationshipTracker.getEnemies(ai.getGamePlayer()).stream()
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("An enemy is required"));
+    System.out.println("Defender is " + defender.getName());
 
     final List<Unit> attackingUnits = new ArrayList<>();
     final List<Unit> defendingUnits = new ArrayList<>();
@@ -82,7 +89,7 @@ public class LanchesterDebugUiAction extends AbstractAction {
         hardAiCalculator.calculate(
             offender,
             defender,
-            france,
+            territory,
             attackingUnits,
             defendingUnits,
             List.of(),
