@@ -348,8 +348,10 @@ public class PurchaseDelegate extends BaseTripleADelegate
         costs.addMultiple(rule.getCosts(), map.getInt(rule));
       }
     }
+
     final double discount =
-        TechAbilityAttachment.getRepairDiscount(player, getData().getTechnologyFrontier());
+        TechAbilityAttachment.getRepairDiscount(
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
     if (discount != 1.0D) {
       costs.multiplyAllValuesBy(discount);
     }

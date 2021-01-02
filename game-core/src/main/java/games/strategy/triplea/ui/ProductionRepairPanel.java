@@ -13,6 +13,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
@@ -241,8 +242,10 @@ class ProductionRepairPanel extends JPanel {
     for (final Rule current : rules) {
       spent.add(current.getCost(), current.getQuantity());
     }
+
     final double discount =
-        TechAbilityAttachment.getRepairDiscount(gamePlayer, data.getTechnologyFrontier());
+        TechAbilityAttachment.getRepairDiscount(
+            TechTracker.getCurrentTechAdvances(gamePlayer, data.getTechnologyFrontier()));
     if (discount != 1.0D) {
       spent.discount(discount);
     }

@@ -290,8 +290,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       final IDelegateBridge delegateBridge,
       final GamePlayer player,
       final TechnologyFrontier technologyFrontier) {
-    final int count = TechAbilityAttachment.getWarBondDiceNumber(player, technologyFrontier);
-    final int sides = TechAbilityAttachment.getWarBondDiceSides(player, technologyFrontier);
+
+    final int count =
+        TechAbilityAttachment.getWarBondDiceNumber(
+            TechTracker.getCurrentTechAdvances(player, technologyFrontier));
+    final int sides =
+        TechAbilityAttachment.getWarBondDiceSides(
+            TechTracker.getCurrentTechAdvances(player, technologyFrontier));
     if (sides <= 0 || count <= 0) {
       return 0;
     }
@@ -315,8 +320,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       final TechnologyFrontier technologyFrontier,
       final GameMap gameMap,
       final ResourceList resourceList) {
-    final int count = TechAbilityAttachment.getWarBondDiceNumber(player, technologyFrontier);
-    final int sides = TechAbilityAttachment.getWarBondDiceSides(player, technologyFrontier);
+
+    final int count =
+        TechAbilityAttachment.getWarBondDiceNumber(
+            TechTracker.getCurrentTechAdvances(player, technologyFrontier));
+    final int sides =
+        TechAbilityAttachment.getWarBondDiceSides(
+            TechTracker.getCurrentTechAdvances(player, technologyFrontier));
     if (sides <= 0 || count <= 0) {
       return "";
     }
@@ -334,8 +344,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     // take first one
     GamePlayer giveWarBondsTo = null;
     for (final GamePlayer p : shareWith) {
-      final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, technologyFrontier);
-      final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, technologyFrontier);
+
+      final int diceCount =
+          TechAbilityAttachment.getWarBondDiceNumber(
+              TechTracker.getCurrentTechAdvances(p, technologyFrontier));
+      final int diceSides =
+          TechAbilityAttachment.getWarBondDiceSides(
+              TechTracker.getCurrentTechAdvances(p, technologyFrontier));
       // if both are zero, then it must mean we did not share our war bonds tech with them, even
       // though we are sharing
       // all tech (because they cannot have this tech)

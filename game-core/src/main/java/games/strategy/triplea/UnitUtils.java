@@ -12,6 +12,8 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.TechTracker;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +48,7 @@ public class UnitUtils {
             properties,
             accountForDamage),
         producer,
-        player,
-        technologyFrontier,
+        TechTracker.getCurrentTechAdvances(player, technologyFrontier),
         properties,
         accountForDamage,
         mathMaxZero);
@@ -81,7 +82,12 @@ public class UnitUtils {
     for (final Unit u : factories) {
       final int capacity =
           getHowMuchCanUnitProduce(
-              u, producer, player, technologyFrontier, properties, accountForDamage, false);
+              u,
+              producer,
+              TechTracker.getCurrentTechAdvances(player, technologyFrontier),
+              properties,
+              accountForDamage,
+              false);
       productionPotential.put(u, capacity);
       if (capacity > highestCapacity) {
         highestCapacity = capacity;
@@ -102,8 +108,7 @@ public class UnitUtils {
   public static int getHowMuchCanUnitProduce(
       final Unit unit,
       final Territory producer,
-      final GamePlayer player,
-      final TechnologyFrontier technologyFrontier,
+      final Collection<TechAdvance> techAdvances,
       final GameProperties properties,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
@@ -157,10 +162,9 @@ public class UnitUtils {
     }
     // Increase production if have industrial technology
     if (territoryProduction
-        >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(
-            player, technologyFrontier)) {
-      productionCapacity +=
-          TechAbilityAttachment.getProductionBonus(unit.getType(), player, technologyFrontier);
+        >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(techAdvances)) {
+
+      productionCapacity += TechAbilityAttachment.getProductionBonus(unit.getType(), techAdvances);
     }
     return mathMaxZero ? Math.max(0, productionCapacity) : productionCapacity;
   }

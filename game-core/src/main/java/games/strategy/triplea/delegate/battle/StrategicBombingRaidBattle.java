@@ -27,6 +27,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
@@ -91,8 +92,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   protected void updateDefendingUnits() {
     // fill in defenders
+
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData.getTechnologyFrontier());
+        TechAbilityAttachment.getAirborneTargettedByAa(
+            TechTracker.getCurrentTechAdvances(attacker, gameData.getTechnologyFrontier()));
     final Predicate<Unit> defenders =
         Matches.enemyUnit(attacker, gameData.getRelationshipTracker())
             .and(
@@ -200,8 +203,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     CasualtySortingUtil.sortPreBattle(attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property
     // isAAforBombingThisUnitOnly
+
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData.getTechnologyFrontier());
+        TechAbilityAttachment.getAirborneTargettedByAa(
+            TechTracker.getCurrentTechAdvances(attacker, gameData.getTechnologyFrontier()));
     defendingAa =
         battleSite
             .getUnitCollection()
@@ -455,9 +460,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Set<UnitType> targetUnitTypesForThisTypeAa =
             UnitAttachment.get(currentPossibleAa.iterator().next().getType())
                 .getTargetsAa(gameData.getUnitTypeList());
+
         final Set<UnitType> airborneTypesTargetedToo =
             TechAbilityAttachment.getAirborneTargettedByAa(
-                    attacker, gameData.getTechnologyFrontier())
+                    TechTracker.getCurrentTechAdvances(attacker, gameData.getTechnologyFrontier()))
                 .get(currentTypeAa);
         if (determineAttackers) {
           validAttackingUnitsForThisRoll =
@@ -890,14 +896,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             index++;
           }
         }
+
         costThisUnit =
             Math.max(
                 0,
                 (costThisUnit
                     + TechAbilityAttachment.getBombingBonus(
                         attacker.getType(),
-                        attacker.getOwner(),
-                        gameData.getTechnologyFrontier())));
+                        TechTracker.getCurrentTechAdvances(
+                            attacker.getOwner(), gameData.getTechnologyFrontier()))));
         if (limitDamage) {
           costThisUnit = Math.min(costThisUnit, damageLimit);
         }

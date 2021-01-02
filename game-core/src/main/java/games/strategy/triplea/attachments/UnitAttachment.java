@@ -349,13 +349,16 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAirDefense(final GamePlayer player) {
+
     return (Math.min(
         getData().getDiceSides(),
         Math.max(
             0,
             airDefense
                 + TechAbilityAttachment.getAirDefenseBonus(
-                    (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier()))));
+                    (UnitType) this.getAttachedTo(),
+                    TechTracker.getCurrentTechAdvances(
+                        player, getData().getTechnologyFrontier())))));
   }
 
   private void resetAirDefense() {
@@ -376,13 +379,16 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAirAttack(final GamePlayer player) {
+
     return (Math.min(
         getData().getDiceSides(),
         Math.max(
             0,
             airAttack
                 + TechAbilityAttachment.getAirAttackBonus(
-                    (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier()))));
+                    (UnitType) this.getAttachedTo(),
+                    TechTracker.getCurrentTechAdvances(
+                        player, getData().getTechnologyFrontier())))));
   }
 
   private void resetAirAttack() {
@@ -637,12 +643,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBlitz(final GamePlayer player) {
+
     return canBlitz
         || TechAbilityAttachment.getUnitAbilitiesGained(
             TechAbilityAttachment.ABILITY_CAN_BLITZ,
             (UnitType) this.getAttachedTo(),
-            player,
-            getData().getTechnologyFrontier());
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
   }
 
   private void resetCanBlitz() {
@@ -832,12 +838,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBombard(final GamePlayer player) {
+
     return canBombard
         || TechAbilityAttachment.getUnitAbilitiesGained(
             TechAbilityAttachment.ABILITY_CAN_BOMBARD,
             (UnitType) this.getAttachedTo(),
-            player,
-            getData().getTechnologyFrontier());
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
   }
 
   private void resetCanBombard() {
@@ -1514,11 +1520,13 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getMovement(final GamePlayer player) {
+
     return Math.max(
         0,
         movement
             + TechAbilityAttachment.getMovementBonus(
-                (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier()));
+                (UnitType) this.getAttachedTo(),
+                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier())));
   }
 
   private void resetMovement() {
@@ -1543,7 +1551,8 @@ public class UnitAttachment extends DefaultAttachment {
     final int attackValue =
         attack
             + TechAbilityAttachment.getAttackBonus(
-                (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier());
+                (UnitType) this.getAttachedTo(),
+                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
     return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
   }
 
@@ -1566,11 +1575,13 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttackRolls(final GamePlayer player) {
+
     return Math.max(
         0,
         attackRolls
             + TechAbilityAttachment.getAttackRollsBonus(
-                (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier()));
+                (UnitType) this.getAttachedTo(),
+                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier())));
   }
 
   private void resetAttackRolls() {
@@ -1595,7 +1606,8 @@ public class UnitAttachment extends DefaultAttachment {
     int defenseValue =
         defense
             + TechAbilityAttachment.getDefenseBonus(
-                (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier());
+                (UnitType) this.getAttachedTo(),
+                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
     if (defenseValue > 0 && getIsFirstStrike() && TechTracker.hasSuperSubs(player)) {
       final int bonus = Properties.getSuperSubDefenseBonus(getData().getProperties());
       defenseValue += bonus;
@@ -1626,7 +1638,8 @@ public class UnitAttachment extends DefaultAttachment {
         0,
         defenseRolls
             + TechAbilityAttachment.getDefenseRollsBonus(
-                (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier()));
+                (UnitType) this.getAttachedTo(),
+                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier())));
   }
 
   private void resetDefenseRolls() {
@@ -2199,13 +2212,16 @@ public class UnitAttachment extends DefaultAttachment {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
     // other than 6, or it
     // does not divide perfectly into attackAAmaxDieSides
+
     return Math.max(
         0,
         Math.min(
             getAttackAaMaxDieSides(),
             attackAa
                 + TechAbilityAttachment.getRadarBonus(
-                    (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier())));
+                    (UnitType) this.getAttachedTo(),
+                    TechTracker.getCurrentTechAdvances(
+                        player, getData().getTechnologyFrontier()))));
   }
 
   private void resetAttackAa() {
@@ -2230,13 +2246,16 @@ public class UnitAttachment extends DefaultAttachment {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
     // other than 6, or it
     // does not divide perfectly into attackAAmaxDieSides
+
     return Math.max(
         0,
         Math.min(
             getOffensiveAttackAaMaxDieSides(),
             offensiveAttackAa
                 + TechAbilityAttachment.getRadarBonus(
-                    (UnitType) this.getAttachedTo(), player, getData().getTechnologyFrontier())));
+                    (UnitType) this.getAttachedTo(),
+                    TechTracker.getCurrentTechAdvances(
+                        player, getData().getTechnologyFrontier()))));
   }
 
   private void resetOffensiveAttackAa() {
