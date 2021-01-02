@@ -463,24 +463,6 @@
     <br>
     <br>by Veqryn
     <br>With help from Pulicat and Bung
-- mapName: 270BC Variants
-  mapCategory: GOOD
-  url: https://github.com/triplea-maps/270bc_variants/archive/master.zip
-  version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/270bc_variants/master/270bc_variants_mini.png
-  description: |
-    <br>2 Variants of 270BC
-    <br>
-    <br>270BC Cernel Variant (by Cernel)
-    <br>  A low level reworking of 270BC, mainly to rebalance the units and redefine the round 1 gameplay dynamics.
-    <br>  It can be seen as an unofficial new version of 270BC, close to the original.
-    <br>
-    <br>270BC 40% (by Cernel)
-    <br>  A mod of "270BC Cernel Variant" (see above) where starting units, productions and the city cost are decreased to about 40%. The ruleset is, otherwise, the same as "270BC Cernel Variant".
-    <br>  Aims at keeping closely the gameplay of the original, but with fewer units.
-    <br>  It is an easy to learn and play (but not so easy to master) game, with a detailed suggestions section in notes, written to aid new players.
-    <br>  Special thanks to guerrilla_J, Dany, epinikion for high quality testing (hopefully the game is well balanced, both for dice and low luck).
-    <br>
 - mapName: Capture the Flag
   mapCategory: GOOD
   url: https://github.com/triplea-maps/capture_the_flag/archive/master.zip
