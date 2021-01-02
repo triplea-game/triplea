@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
@@ -37,33 +39,76 @@ import org.triplea.swing.SwingComponents;
 @Slf4j
 public class ResourceLoader implements Closeable {
   public static final String ASSETS_FOLDER = "assets";
+  // All maps must have at least a "baseTiles" folder.
+  private static final String REQUIRED_ASSET_EXAMPLE_FOLDER = "baseTiles/";
 
   private final URLClassLoader loader;
   private final String mapPrefix;
   @Getter private final String mapName;
 
-  private ResourceLoader(final String mapName, final String[] paths) {
-    final URL[] urls = new URL[paths.length];
-    for (int i = 0; i < paths.length; i++) {
-      final File f = new File(paths[i]);
-      if (!f.exists()) {
-        log.error(f + " does not exist");
-      }
-      if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
-        log.error(f + " is not a directory or a zip file");
-      }
-      try {
-        urls[i] = f.toURI().toURL();
-      } catch (final MalformedURLException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-    mapPrefix = ResourceLocationTracker.getMapPrefix(urls);
+  public ResourceLoader(final String mapName) {
+    Preconditions.checkNotNull(mapName);
+
+    final File mapLocation =
+        getPath(mapName)
+            .orElseThrow(
+                () -> {
+                  SwingComponents.promptUser(
+                      "Download Map?",
+                      "Map missing: "
+                          + mapName
+                          + ", could not join game.\nWould you like to download the map now?"
+                          + "\nOnce the download completes, you may reconnect to this game.",
+                      () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+
+                  return new MapNotFoundException(mapName, getCandidatePaths(mapName));
+                });
+    mapPrefix = getMapPrefix(mapLocation);
+
+    // Add the assets folder from the game installation path. This assets folder supplements
+    // any map resources.
+    final File gameAssetsDirectory =
+        findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
+            .orElseThrow(GameAssetsNotFoundException::new);
+
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
-    loader = new URLClassLoader(urls);
+    try {
+      loader =
+          new URLClassLoader(
+              new URL[] {mapLocation.toURI().toURL(), gameAssetsDirectory.toURI().toURL()});
+    } catch (final MalformedURLException e) {
+      throw new IllegalArgumentException(
+          "Error creating file system paths with map: "
+              + mapName
+              + ", engine assets path: "
+              + gameAssetsDirectory.getAbsolutePath()
+              + ", and path to map: "
+              + mapLocation.getAbsolutePath(),
+          e);
+    }
     this.mapName = mapName;
+  }
+
+  /**
+   * Will return an empty string unless a special prefix is needed, in which case that prefix is
+   * constructed based on where the {@code baseTiles} folder is located within the zip.
+   */
+  private static String getMapPrefix(final File mapZip) {
+    try (ZipFile zip = new ZipFile(mapZip)) {
+      final Optional<? extends ZipEntry> baseTilesEntry =
+          zip.stream()
+              .filter(entry -> entry.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER))
+              .findAny();
+      if (baseTilesEntry.isPresent()) {
+        final String path = baseTilesEntry.get().getName();
+        return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
+      }
+    } catch (final IOException e) {
+      // File is not a zip or can't be opened
+    }
+    return "";
   }
 
   /**
@@ -76,34 +121,19 @@ public class ResourceLoader implements Closeable {
   }
 
   public static ResourceLoader getGameEngineAssetLoader() {
-    return getMapResourceLoader("");
+    return new ResourceLoader("");
   }
 
-  /** Returns a resource loader that will find assets in a map directory. */
-  public static ResourceLoader getMapResourceLoader(final String mapName) {
-    Preconditions.checkNotNull(mapName);
+  private static class GameAssetsNotFoundException extends RuntimeException {
+    private static final long serialVersionUID = -8274500540886412040L;
 
-    final Optional<String> dir = getPath(mapName);
-    if (dir.isEmpty()) {
-      SwingComponents.promptUser(
-          "Download Map?",
-          "Map missing: "
-              + mapName
-              + ", could not join game.\nWould you like to download the map now?"
-              + "\nOnce the download completes, you may reconnect to this game.",
-          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-
-      throw new MapNotFoundException(mapName, getCandidatePaths(mapName));
+    GameAssetsNotFoundException() {
+      super(
+          "Unable to find game assets folder starting from location: "
+              + ClientFileSystemHelper.getRootFolder().getAbsolutePath()
+              + "\nThere is a problem with the installation, please report this to TripleA "
+              + "and the path where TripleA is installed.");
     }
-
-    final List<String> dirs = new ArrayList<>();
-    dirs.add(dir.get());
-
-    findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
-        .map(File::getAbsolutePath)
-        .ifPresent(dirs::add);
-
-    return new ResourceLoader(mapName, dirs.toArray(new String[0]));
   }
 
   @VisibleForTesting
@@ -180,11 +210,8 @@ public class ResourceLoader implements Closeable {
     return sb.toString();
   }
 
-  private static Optional<String> getPath(final String mapName) {
-    return getCandidatePaths(mapName).stream()
-        .filter(File::exists)
-        .findAny()
-        .map(File::getAbsolutePath);
+  private static Optional<File> getPath(final String mapName) {
+    return getCandidatePaths(mapName).stream().filter(File::exists).findAny();
   }
 
   private static List<File> getCandidatePaths(final String mapName) {

@@ -89,14 +89,14 @@ public class UiContext {
   UiContext() {}
 
   public static void setResourceLoader(final GameState gameData) {
-    resourceLoader = ResourceLoader.getMapResourceLoader(getDefaultMapDir(gameData));
+    resourceLoader = new ResourceLoader(getDefaultMapDir(gameData));
   }
 
   protected void internalSetMapDir(final String dir, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
     }
-    resourceLoader = ResourceLoader.getMapResourceLoader(dir);
+    resourceLoader = new ResourceLoader(dir);
     mapData = new MapData(dir);
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
@@ -267,7 +267,7 @@ public class UiContext {
     final String mapDir = prefs.get(MAP_SKIN_PREF, mapName);
     // check for existence
     try {
-      ResourceLoader.getMapResourceLoader(mapDir).close();
+      new ResourceLoader(mapDir).close();
     } catch (final RuntimeException re) {
       // an error, clear the skin
       prefs.remove(MAP_SKIN_PREF);

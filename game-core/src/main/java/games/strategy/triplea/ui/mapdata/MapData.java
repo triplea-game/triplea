@@ -130,7 +130,7 @@ public class MapData {
 
   public MapData(final String mapNameDir) {
     this.mapNameDir = mapNameDir;
-    try (ResourceLoader loader = ResourceLoader.getMapResourceLoader(mapNameDir)) {
+    try (ResourceLoader loader = new ResourceLoader(mapNameDir)) {
       try {
         if (loader.getResource(POLYGON_FILE) == null) {
           throw new IllegalStateException(
@@ -769,7 +769,7 @@ public class MapData {
   }
 
   public Optional<Image> getTerritoryEffectImage(final String effectName) {
-    try (ResourceLoader loader = ResourceLoader.getMapResourceLoader(mapNameDir)) {
+    try (ResourceLoader loader = new ResourceLoader(mapNameDir)) {
       // TODO: what does this cache buy us? should we still keep it?
       if (effectImages.get(effectName) != null) {
         return Optional.of(effectImages.get(effectName));
