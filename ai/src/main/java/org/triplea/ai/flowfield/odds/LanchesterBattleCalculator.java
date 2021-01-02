@@ -1,5 +1,6 @@
 package org.triplea.ai.flowfield.odds;
 
+import com.google.common.base.Preconditions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import lombok.Value;
@@ -21,41 +22,47 @@ public class LanchesterBattleCalculator {
   public LanchesterBattleCalculator(
       final TotalPowerAndTotalRolls offense,
       final TotalPowerAndTotalRolls defense,
-      final double attritionOrder) {
-    final double avgOffensePower =
-        offense.getActiveUnits().stream()
-            .mapToDouble(
-                unit ->
-                    unit.getPower()
-                        * (unit.getUnit().getUnitAttachment().getHitPoints()
-                            - unit.getUnit().getHits()))
-            .average()
-            .orElse(0.0);
-    final double avgDefensePower =
-        defense.getActiveUnits().stream()
-            .mapToDouble(
-                unit ->
-                    unit.getPower()
-                        * (unit.getUnit().getUnitAttachment().getHitPoints()
-                            - unit.getUnit().getHits()))
-            .average()
-            .orElse(0.0);
+      final double attritionFactor) {
+    final LanchesterDetails offenseDetails = new LanchesterDetails(offense, attritionFactor);
+    final LanchesterDetails defenseDetails = new LanchesterDetails(defense, attritionFactor);
 
-    final double initialOffense =
-        avgOffensePower * Math.pow(offense.getActiveUnits().size(), attritionOrder);
-    final double initialDefense =
-        avgDefensePower * Math.pow(defense.getActiveUnits().size(), attritionOrder);
-
-    if (initialOffense > initialDefense) {
+    if (offenseDetails.initialTotalPower > defenseDetails.initialTotalPower) {
       won = BattleState.Side.OFFENSE;
-      remainingUnits =
-          Math.round(
-              Math.pow((initialOffense - initialDefense) / avgOffensePower, 1 / attritionOrder));
+      remainingUnits = offenseDetails.calculateRemainingUnits(defenseDetails);
     } else {
       won = BattleState.Side.DEFENSE;
-      remainingUnits =
-          Math.round(
-              Math.pow((initialDefense - initialOffense) / avgDefensePower, 1 / attritionOrder));
+      remainingUnits = defenseDetails.calculateRemainingUnits(offenseDetails);
+    }
+  }
+
+  @Value
+  static class LanchesterDetails {
+    double avgPower;
+    double initialTotalPower;
+    double attritionFactor;
+
+    LanchesterDetails(final TotalPowerAndTotalRolls powerCalculator, final double attritionFactor) {
+      this.attritionFactor = attritionFactor;
+      avgPower =
+          powerCalculator.getActiveUnits().stream()
+              .mapToDouble(
+                  unit ->
+                      unit.getPower()
+                          * (unit.getUnit().getUnitAttachment().getHitPoints()
+                              - unit.getUnit().getHits()))
+              .average()
+              .orElse(0.0);
+
+      initialTotalPower =
+          avgPower * Math.pow(powerCalculator.getActiveUnits().size(), this.attritionFactor);
+    }
+
+    long calculateRemainingUnits(final LanchesterDetails other) {
+      Preconditions.checkArgument(
+          other.attritionFactor == this.attritionFactor,
+          "Both LanchesterDetails need the same attrition factor");
+      return Math.round(
+          Math.pow((initialTotalPower - other.initialTotalPower) / avgPower, 1 / attritionFactor));
     }
   }
 }

@@ -1,4 +1,4 @@
-package org.triplea.ai.flowfield.diffusion.defense;
+package org.triplea.ai.flowfield.influence.defense;
 
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
@@ -10,13 +10,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import org.triplea.ai.flowfield.diffusion.DiffusionType;
-import org.triplea.ai.flowfield.diffusion.ResourceValue;
+import org.triplea.ai.flowfield.influence.InfluenceMapSetup;
+import org.triplea.ai.flowfield.influence.ResourceValue;
 
 @UtilityClass
 public class AllyResourceToProtect {
 
-  public static DiffusionType build(
+  public static InfluenceMapSetup build(
       final GamePlayer gamePlayer,
       final RelationshipTracker relationshipTracker,
       final GameMap gameMap,
@@ -28,7 +28,7 @@ public class AllyResourceToProtect {
             .collect(
                 Collectors.toMap(
                     Function.identity(), ResourceValue.territoryToResourceValue(resource)));
-    return new DiffusionType(
+    return new InfluenceMapSetup(
         "Ally Resource (" + resource.getName() + ") to Protect", 0.20, territoryValuations);
   }
 }

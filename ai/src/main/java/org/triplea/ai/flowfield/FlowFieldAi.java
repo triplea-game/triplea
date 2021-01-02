@@ -6,8 +6,11 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -27,9 +30,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import lombok.Getter;
-import org.triplea.ai.flowfield.diffusion.DiffusionMap;
-import org.triplea.ai.flowfield.diffusion.DiffusionMapBuilder;
-import org.triplea.ai.flowfield.diffusion.TerritoryDebugUiAction;
+import org.triplea.ai.flowfield.influence.InfluenceMap;
+import org.triplea.ai.flowfield.influence.InfluenceMapBuilder;
+import org.triplea.ai.flowfield.influence.TerritoryDebugUiAction;
 import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
 import org.triplea.ai.flowfield.neighbors.NeighborGetter;
 import org.triplea.ai.flowfield.odds.LanchesterDebugUiAction;
@@ -37,7 +40,7 @@ import org.triplea.swing.SwingAction;
 
 public class FlowFieldAi extends AbstractAi {
 
-  @Getter private Collection<DiffusionMap> diffusions = new ArrayList<>();
+  @Getter private Collection<InfluenceMap> diffusions = new ArrayList<>();
   private int round = -1;
 
   public FlowFieldAi(final String name, final PlayerTypes.AiType playerType) {
@@ -166,13 +169,27 @@ public class FlowFieldAi extends AbstractAi {
   }
 
   private void setupDiffusionMaps() {
-    final DiffusionMapBuilder diffusionMapBuilder =
-        DiffusionMapBuilder.setup()
+    final InfluenceMapBuilder influenceMapBuilder =
+        InfluenceMapBuilder.setup()
             .gamePlayer(getGamePlayer())
             .playerList(getGameData().getPlayerList())
             .relationshipTracker(getGameData().getRelationshipTracker())
             .resourceList(getGameData().getResourceList())
             .gameMap(getGameData().getMap())
+            .offenseCombatBuilder(
+                CombatValueBuilder.mainCombatValue()
+                    .side(BattleState.Side.OFFENSE)
+                    .gameDiceSides(getGameData().getDiceSides())
+                    .gameSequence(getGameData().getSequence())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(getGameData().getProperties()))
+                    .supportAttachments(getGameData().getUnitTypeList().getSupportRules()))
+            .defenseCombatBuilder(
+                CombatValueBuilder.mainCombatValue()
+                    .side(BattleState.Side.DEFENSE)
+                    .gameDiceSides(getGameData().getDiceSides())
+                    .gameSequence(getGameData().getSequence())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(getGameData().getProperties()))
+                    .supportAttachments(getGameData().getUnitTypeList().getSupportRules()))
             .build();
 
     diffusions =
@@ -185,7 +202,7 @@ public class FlowFieldAi extends AbstractAi {
             .filter(unitType -> UnitAttachment.get(unitType).getMovement(getGamePlayer()) > 0)
             .map(
                 unitType ->
-                    diffusionMapBuilder.buildMaps(
+                    influenceMapBuilder.buildMaps(
                         unitType.getName(),
                         new MapWithNeighbors(
                             getGameData().getMap().getTerritories(),

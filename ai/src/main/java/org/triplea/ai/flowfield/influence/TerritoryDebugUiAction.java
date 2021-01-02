@@ -1,4 +1,4 @@
-package org.triplea.ai.flowfield.diffusion;
+package org.triplea.ai.flowfield.influence;
 
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
@@ -18,7 +18,7 @@ public class TerritoryDebugUiAction extends AbstractAction {
   private static final long serialVersionUID = -919496373521710039L;
 
   private final TripleAFrame frame;
-  private final DiffusionMap diffusionMap;
+  private final InfluenceMap influenceMap;
   private final GameMap gameMap;
   private final Function<Territory, String> territoryDetailMethod = this::buildTerritoryDetail;
 
@@ -30,9 +30,9 @@ public class TerritoryDebugUiAction extends AbstractAction {
   public void actionPerformed(final ActionEvent e) {
     final MapPanel mapPanel = frame.getMapPanel();
     final LongSummaryStatistics summary =
-        diffusionMap.getTerritories().values().stream()
-            .sorted(Comparator.comparingLong(FieldTerritory::getValue))
-            .mapToLong(FieldTerritory::getValue)
+        influenceMap.getTerritories().values().stream()
+            .sorted(Comparator.comparingLong(InfluenceTerritory::getInfluence))
+            .mapToLong(InfluenceTerritory::getInfluence)
             .summaryStatistics();
     frame.getTerritoryDetails().addAdditionalTerritoryDetailsFunction(territoryDetailMethod);
 
@@ -41,13 +41,13 @@ public class TerritoryDebugUiAction extends AbstractAction {
         .forEach(
             territory -> {
               mapPanel.clearTerritoryOverlay(territory);
-              Optional.ofNullable(diffusionMap.getTerritories().get(territory))
+              Optional.ofNullable(influenceMap.getTerritories().get(territory))
                   .ifPresent(
                       field -> {
-                        if (field.getValue() > 0) {
+                        if (field.getInfluence() > 0) {
                           final Color color =
                               interpolate(
-                                  ((float) (field.getValue() - summary.getMin()))
+                                  ((float) (field.getInfluence() - summary.getMin()))
                                       / (summary.getMax() - summary.getMin()),
                                   Color.BLUE,
                                   Color.RED);
@@ -67,9 +67,9 @@ public class TerritoryDebugUiAction extends AbstractAction {
   }
 
   private String buildTerritoryDetail(final Territory territory) {
-    final FieldTerritory fieldTerritory =
-        diffusionMap.getTerritories().getOrDefault(territory, new FieldTerritory(territory));
+    final InfluenceTerritory influenceTerritory =
+        influenceMap.getTerritories().getOrDefault(territory, new InfluenceTerritory(territory));
 
-    return diffusionMap.getName() + " Value: " + fieldTerritory.getValue();
+    return influenceMap.getName() + " Value: " + influenceTerritory.getInfluence();
   }
 }

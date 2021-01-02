@@ -1,4 +1,4 @@
-package org.triplea.ai.flowfield.diffusion;
+package org.triplea.ai.flowfield.influence;
 
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;

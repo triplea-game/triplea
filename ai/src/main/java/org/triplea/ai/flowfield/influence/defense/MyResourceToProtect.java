@@ -1,4 +1,4 @@
-package org.triplea.ai.flowfield.diffusion.defense;
+package org.triplea.ai.flowfield.influence.defense;
 
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import org.triplea.ai.flowfield.diffusion.DiffusionType;
-import org.triplea.ai.flowfield.diffusion.ResourceValue;
+import org.triplea.ai.flowfield.influence.InfluenceMapSetup;
+import org.triplea.ai.flowfield.influence.ResourceValue;
 
 @UtilityClass
 public class MyResourceToProtect {
 
-  public static DiffusionType build(
+  public static InfluenceMapSetup build(
       final GamePlayer gamePlayer, final GameMap gameMap, final Resource resource) {
     final Map<Territory, Long> territoryValuations =
         gameMap.getTerritories().stream()
@@ -22,7 +22,7 @@ public class MyResourceToProtect {
             .collect(
                 Collectors.toMap(
                     Function.identity(), ResourceValue.territoryToResourceValue(resource)));
-    return new DiffusionType(
+    return new InfluenceMapSetup(
         "My Resource (" + resource.getName() + ") to Protect", 0.25, territoryValuations);
   }
 }
