@@ -21,6 +21,7 @@ public class AiPlayerDebugAction {
   Collection<Territory> territoriesRendered = new ArrayList<>();
   Collection<Function<Territory, String>> territoryDetailsRendered = new ArrayList<>();
 
+  /** Gives the debug option methods to draw on the rendered map */
   public class DebugMapRenderer {
     public void colorOnTerritory(
         final Territory territory, final Color color, final double transparency) {
@@ -33,16 +34,31 @@ public class AiPlayerDebugAction {
     }
   }
 
+  /**
+   * Allows debug options to draw on the rendered map
+   *
+   * @param mapRenderer The debug option uses the DebugMapRenderer to draw on the rendered map
+   */
   public void renderOnMap(final Consumer<DebugMapRenderer> mapRenderer) {
     mapRenderer.accept(new DebugMapRenderer());
     mapPanel.repaint();
   }
 
+  /**
+   * Allows the debug option to add additional text to the territory details panel
+   *
+   * @param territoryDetailsGetter Takes a territory and returns the additional text for the panel
+   */
   public void renderInTerritoryDetails(final Function<Territory, String> territoryDetailsGetter) {
     territoryDetails.addAdditionalTerritoryDetailsFunction(territoryDetailsGetter);
     territoryDetailsRendered.add(territoryDetailsGetter);
   }
 
+  /**
+   * Undoes the changes that the debug option caused.
+   *
+   * <p>This should not be called by the debug option.
+   */
   public void deselect() {
     territoriesRendered.forEach(mapPanel::clearTerritoryOverlay);
     territoryDetailsRendered.forEach(territoryDetails::removeAdditionalTerritoryDetailsFunction);

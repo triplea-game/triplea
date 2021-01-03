@@ -48,37 +48,33 @@ public class FlowFieldAi extends AbstractAi {
 
   private List<AiPlayerDebugOption> buildDebugOptions() {
     return List.of(
-        new AiPlayerDebugOption(
-            "HeatMap", AiPlayerDebugOption.ActionType.NORMAL, "", buildHeatmapOptions(), k -> {}),
-        new AiPlayerDebugOption(
-            "Calculate Attrition Factor",
-            AiPlayerDebugOption.ActionType.NORMAL,
-            "",
-            List.of(),
-            new LanchesterDebugAction(this, getGameData().getRelationshipTracker())));
+        AiPlayerDebugOption.builder().title("HeatMap").subOptions(buildHeatmapOptions()).build(),
+        AiPlayerDebugOption.builder()
+            .title("Calculate Attrition Factor")
+            .actionListener(new LanchesterDebugAction(this, getGameData().getRelationshipTracker()))
+            .build());
   }
 
   private List<AiPlayerDebugOption> buildHeatmapOptions() {
     final List<AiPlayerDebugOption> options = new ArrayList<>();
 
     options.add(
-        new AiPlayerDebugOption(
-            "None",
-            AiPlayerDebugOption.ActionType.ON_OFF_EXCLUSIVE,
-            "heatmap",
-            List.of(),
-            k -> {}));
+        AiPlayerDebugOption.builder()
+            .title("None")
+            .optionType(AiPlayerDebugOption.OptionType.ON_OFF_EXCLUSIVE)
+            .exclusiveGroup("heatmap")
+            .build());
 
     options.addAll(
         diffusions.stream()
             .map(
                 diffusion ->
-                    new AiPlayerDebugOption(
-                        diffusion.getName(),
-                        AiPlayerDebugOption.ActionType.ON_OFF_EXCLUSIVE,
-                        "heatmap",
-                        List.of(),
-                        new TerritoryDebugAction(diffusion, getGameData().getMap())))
+                    AiPlayerDebugOption.builder()
+                        .title(diffusion.getName())
+                        .optionType(AiPlayerDebugOption.OptionType.ON_OFF_EXCLUSIVE)
+                        .exclusiveGroup("heatmap")
+                        .actionListener(new TerritoryDebugAction(diffusion, getGameData().getMap()))
+                        .build())
             .collect(Collectors.toList()));
 
     return options;
