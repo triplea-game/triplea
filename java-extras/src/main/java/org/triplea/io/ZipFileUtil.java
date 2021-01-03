@@ -6,9 +6,9 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import lombok.experimental.UtilityClass;
@@ -26,20 +26,19 @@ public class ZipFileUtil {
 
     try (ZipFile zipFile = new ZipFile(zip);
         URLClassLoader loader = new URLClassLoader(new URL[] {zip.toURI().toURL()})) {
-
-      final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-      while (entries.hasMoreElements()) {
-        final ZipEntry entry = entries.nextElement();
-
-        if (entry.getName().toLowerCase().endsWith(".xml")) {
-          Optional.ofNullable(loader.getResource(entry.getName()))
-              .map(url -> URI.create(url.toString().replace(" ", "%20")))
-              .ifPresent(zipFiles::add);
-        }
-      }
+      
+      return zipFile.stream()
+        .map(ZipEntry::getName)
+        .filter(name -> name.toLowerCase().endsWith(".xml"))
+        .map(loader::getResource)
+        .filter(Objects::nonNull)
+        .map(URL::toString)
+        .map(string -> string.replace(" ", "%20"))
+        .map(URI::create)
+        .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error("Error reading zip file in: " + zip.getAbsolutePath(), e);
     }
-    return zipFiles;
+    return new ArrayList<>();
   }
 }
