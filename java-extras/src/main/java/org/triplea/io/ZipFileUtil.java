@@ -3,6 +3,7 @@ package org.triplea.io;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -30,9 +31,13 @@ public class ZipFileUtil {
           .filter(name -> name.toLowerCase().endsWith(".xml"))
           .map(loader::getResource)
           .filter(Objects::nonNull)
-          .map(URL::toString)
-          .map(string -> string.replace(" ", "%20"))
-          .map(URI::create)
+          .map(url -> {
+            try {
+              return url.toURI();
+            } catch (final URISyntaxException e) {
+              throw new RuntimeException(e);
+            }
+          })
           .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error("Error reading zip file in: " + zip.getAbsolutePath(), e);
