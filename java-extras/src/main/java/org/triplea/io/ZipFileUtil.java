@@ -26,16 +26,16 @@ public class ZipFileUtil {
 
     try (ZipFile zipFile = new ZipFile(zip);
         URLClassLoader loader = new URLClassLoader(new URL[] {zip.toURI().toURL()})) {
-      
+
       return zipFile.stream()
-        .map(ZipEntry::getName)
-        .filter(name -> name.toLowerCase().endsWith(".xml"))
-        .map(loader::getResource)
-        .filter(Objects::nonNull)
-        .map(URL::toString)
-        .map(string -> string.replace(" ", "%20"))
-        .map(URI::create)
-        .collect(Collectors.toList());
+          .map(ZipEntry::getName)
+          .filter(name -> name.toLowerCase().endsWith(".xml"))
+          .map(loader::getResource)
+          .filter(Objects::nonNull)
+          .map(URL::toString)
+          .map(string -> string.replace(" ", "%20"))
+          .map(URI::create)
+          .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error("Error reading zip file in: " + zip.getAbsolutePath(), e);
     }
