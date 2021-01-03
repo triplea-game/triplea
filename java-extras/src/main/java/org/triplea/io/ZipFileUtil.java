@@ -22,8 +22,6 @@ public class ZipFileUtil {
    * Finds all game XMLs in a zip file. More specifically, given a zip file, finds all '*.xml' files
    */
   public List<URI> findXmlFilesInZip(final File zip) {
-    final List<URI> zipFiles = new ArrayList<>();
-
     try (ZipFile zipFile = new ZipFile(zip);
         URLClassLoader loader = new URLClassLoader(new URL[] {zip.toURI().toURL()})) {
 
