@@ -212,6 +212,11 @@ public final class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_ARTILLERY, data);
   }
 
+  /** Returns a mech_infantry UnitType object for the specified GameData object. */
+  public static UnitType mechInfantry(final GameState data) {
+    return unitType("mech_infantry", data);
+  }
+
   /** Returns a germanInfantry UnitType object for the specified GameData object. */
   public static UnitType germanInfantry(final GameState data) {
     return unitType("germanInfantry", data);

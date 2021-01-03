@@ -107,6 +107,7 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
       totalStrengthAndTotalRollsByUnit.put(
           unit,
           UnitPowerStrengthAndRolls.builder()
+              .unit(unit)
               .strengthAndRolls(
                   UnitPowerStrengthAndRolls.StrengthAndRolls.of(
                       strengthCalculator.getStrength(unit), rollCalculator.getRoll(unit)))
