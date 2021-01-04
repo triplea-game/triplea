@@ -31,13 +31,14 @@ public class ZipFileUtil {
           .filter(name -> name.toLowerCase().endsWith(".xml"))
           .map(loader::getResource)
           .filter(Objects::nonNull)
-          .map(url -> {
-            try {
-              return url.toURI();
-            } catch (final URISyntaxException e) {
-              throw new RuntimeException(e);
-            }
-          })
+          .map(
+              url -> {
+                try {
+                  return url.toURI();
+                } catch (final URISyntaxException e) {
+                  throw new RuntimeException(e);
+                }
+              })
           .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error("Error reading zip file in: " + zip.getAbsolutePath(), e);
