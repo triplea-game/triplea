@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.triplea.util.Version;
 
 class MapDownloadList {
 
@@ -28,12 +27,11 @@ class MapDownloadList {
       if (download == null) {
         return;
       }
-      final Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation());
+      final Optional<Integer> mapVersion = strategy.getMapVersion(download.getInstallLocation());
 
       if (mapVersion.isPresent()) {
         installed.add(download);
-        if (download.getVersion() != null
-            && download.getVersion().isGreaterThan(mapVersion.get())) {
+        if (download.getVersion() != null && download.getVersion() > mapVersion.get()) {
           outOfDate.add(download);
         }
       } else {

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import org.junit.jupiter.api.Test;
-import org.triplea.util.Version;
 
 class DownloadFileTest {
   @Test
@@ -16,7 +15,7 @@ class DownloadFileTest {
             "url",
             "description",
             "mapName",
-            new Version(0, 0, 0),
+            0,
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.BEST,
             "");

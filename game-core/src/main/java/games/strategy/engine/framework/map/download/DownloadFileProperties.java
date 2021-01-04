@@ -19,8 +19,8 @@ public class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
-  DownloadFileProperties(final Version mapVersion) {
-    props.put(VERSION_PROPERTY, mapVersion.toString());
+  DownloadFileProperties(final Integer mapVersion) {
+    props.put(VERSION_PROPERTY, String.valueOf(mapVersion));
   }
 
   static DownloadFileProperties loadForZip(final File zipFile) {
@@ -51,7 +51,9 @@ public class DownloadFileProperties {
     return new File(zipFile.getAbsolutePath() + ".properties");
   }
 
-  public Optional<Version> getVersion() {
-    return Optional.ofNullable(props.getProperty(VERSION_PROPERTY)).map(Version::new);
+  public Optional<Integer> getVersion() {
+    return Optional.ofNullable(props.getProperty(VERSION_PROPERTY))
+        .map(Version::new)
+        .map(Version::getMajor);
   }
 }

@@ -24,7 +24,7 @@ public final class DownloadFileDescription {
   @EqualsAndHashCode.Include private final String url;
   private final String description;
   private final String mapName;
-  private final Version version;
+  private final Integer version;
   private final DownloadType downloadType;
   private final MapCategory mapCategory;
   private final String img;
@@ -69,7 +69,7 @@ public final class DownloadFileDescription {
         .url(mapDownloadListing.getUrl())
         .description(mapDownloadListing.getDescription())
         .mapName(mapDownloadListing.getMapName())
-        .version(new Version(mapDownloadListing.getVersion()))
+        .version(new Version(mapDownloadListing.getVersion()).getMajor())
         .downloadType(DownloadType.MAP)
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
         .img(mapDownloadListing.getPreviewImage())
@@ -82,7 +82,7 @@ public final class DownloadFileDescription {
         .url(skin.getUrl())
         .description(skin.getDescription())
         .mapName(skin.getSkinName())
-        .version(new Version(skin.getVersion()))
+        .version(new Version(skin.getVersion()).getMajor())
         .downloadType(DownloadType.MAP_SKIN)
         .mapCategory(MapCategory.fromString(mapCategory))
         .img(skin.getPreviewImageUrl())

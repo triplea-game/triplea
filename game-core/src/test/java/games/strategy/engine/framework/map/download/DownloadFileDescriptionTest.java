@@ -9,7 +9,6 @@ import java.io.File;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.util.Version;
 
 class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   @Test
@@ -19,7 +18,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0, 0),
+            0,
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.EXPERIMENTAL,
             "");
@@ -33,7 +32,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0, 0),
+            0,
             DownloadFileDescription.DownloadType.MAP_SKIN,
             DownloadFileDescription.MapCategory.EXPERIMENTAL,
             "");
@@ -47,7 +46,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0, 0),
+            0,
             DownloadFileDescription.DownloadType.MAP_TOOL,
             DownloadFileDescription.MapCategory.EXPERIMENTAL,
             "");
@@ -62,7 +61,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             mapName,
-            new Version(0, 0, 0),
+            0,
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.EXPERIMENTAL,
             "");
@@ -76,7 +75,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0, 0),
+            0,
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.BEST,
             "");
@@ -110,7 +109,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
         inputUrl,
         "",
         "",
-        new Version(0, 0, 0),
+        0,
         DownloadFileDescription.DownloadType.MAP,
         DownloadFileDescription.MapCategory.EXPERIMENTAL,
         "");
@@ -140,7 +139,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             inputUrl,
             "",
             mapName,
-            new Version(0, 0, 0),
+            0,
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.EXPERIMENTAL,
             "");

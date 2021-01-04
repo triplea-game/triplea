@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.Version;
 
 @UtilityClass
 @Slf4j
@@ -51,7 +50,7 @@ class UpdatedMapsCheck {
     }
 
     // {map name -> version}
-    final Map<String, Version> availableToDownloadMapVersions =
+    final Map<String, Integer> availableToDownloadMapVersions =
         downloadAvailableMapsListAndComputeAvailableVersions();
 
     if (availableToDownloadMapVersions.isEmpty()) {
@@ -60,7 +59,7 @@ class UpdatedMapsCheck {
     }
 
     // {property file name -> version}
-    final Map<String, Version> installedMapVersions = readMapPropertyFilesForInstalledMapVersions();
+    final Map<String, Integer> installedMapVersions = readMapPropertyFilesForInstalledMapVersions();
 
     final Collection<String> outOfDateMapNames =
         computeOutOfDateMaps(installedMapVersions, availableToDownloadMapVersions);
@@ -70,7 +69,7 @@ class UpdatedMapsCheck {
     }
   }
 
-  private static Map<String, Version> readMapPropertyFilesForInstalledMapVersions() {
+  private static Map<String, Integer> readMapPropertyFilesForInstalledMapVersions() {
     return
     // get all .property files in the downloads folder
     Arrays.stream(ClientFileSystemHelper.getUserMapsFolder().listFiles())
@@ -92,11 +91,11 @@ class UpdatedMapsCheck {
         .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get()));
   }
 
-  private static Optional<Version> readVersionFromPropertyFile(final File propertyFile) {
+  private static Optional<Integer> readVersionFromPropertyFile(final File propertyFile) {
     return DownloadFileProperties.loadForZipPropertyFile(propertyFile).getVersion();
   }
 
-  private static Map<String, Version> downloadAvailableMapsListAndComputeAvailableVersions() {
+  private static Map<String, Integer> downloadAvailableMapsListAndComputeAvailableVersions() {
     try {
       return MapListingFetcher.getMapDownloadList().stream()
           .collect(
@@ -111,22 +110,22 @@ class UpdatedMapsCheck {
 
   @VisibleForTesting
   static Collection<String> computeOutOfDateMaps(
-      final Map<String, Version> installedMapVersions,
-      final Map<String, Version> availableToDownloadMapVersions) {
+      final Map<String, Integer> installedMapVersions,
+      final Map<String, Integer> availableToDownloadMapVersions) {
 
     final Collection<String> outOfDateMapNames = new ArrayList<>();
 
     // Loop over all available maps, check if we have that map present by comparing
     // normalized names, if so, check versions and remember any that are out of date.
-    for (final Map.Entry<String, Version> installedMap : installedMapVersions.entrySet()) {
+    for (final Map.Entry<String, Integer> installedMap : installedMapVersions.entrySet()) {
       final String installedMapName = normalizeName(installedMap.getKey());
 
-      for (final Map.Entry<String, Version> availableMap :
+      for (final Map.Entry<String, Integer> availableMap :
           availableToDownloadMapVersions.entrySet()) {
         final String availableMapName = normalizeName(availableMap.getKey());
         if (installedMapName.equals(availableMapName)) {
 
-          if (availableMap.getValue().isGreaterThan(installedMap.getValue())) {
+          if (availableMap.getValue() > installedMap.getValue()) {
             outOfDateMapNames.add(availableMap.getKey());
           }
           break;
