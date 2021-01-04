@@ -85,10 +85,8 @@ final class DownloadFile {
             return;
           }
 
-          if (download.getVersion() != null) {
-            new DownloadFileProperties(download.getVersion())
-                .saveForZip(download.getInstallLocation());
-          }
+          new DownloadFileProperties(download.getVersion())
+              .saveForZip(download.getInstallLocation());
 
           downloadListener.downloadComplete(download);
         });
