@@ -57,7 +57,7 @@ class UserBanDaoTest extends LobbyServerTest {
       assertThat(result.get(0).getSystemId(), is("system-id2"));
       assertThat(result.get(0).getUsername(), is("username2"));
 
-      assertThat(result.get(1).getBanExpiry(), isInstant(2021, 1, 1, 23, 59, 59));
+      assertThat(result.get(1).getBanExpiry(), isInstant(2200, 1, 1, 23, 59, 59));
       assertThat(result.get(1).getDateCreated(), isInstant(2010, 1, 1, 23, 59, 59));
       assertThat(result.get(1).getIp(), is("127.0.0.1"));
       assertThat(result.get(1).getPublicBanId(), is("public-id1"));
