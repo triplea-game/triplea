@@ -42,7 +42,7 @@ public class DownloadFileProperties {
   void saveForZip(final File zipFile) {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.store(fos, null);
-    } catch (final IOException e) {
+    } catch (final IllegalArgumentException | IOException e) {
       log.error("Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
     }
   }
