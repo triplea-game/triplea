@@ -3,12 +3,12 @@ package org.triplea.io;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import lombok.experimental.UtilityClass;
@@ -22,24 +22,18 @@ public class ZipFileUtil {
    * Finds all game XMLs in a zip file. More specifically, given a zip file, finds all '*.xml' files
    */
   public List<URI> findXmlFilesInZip(final File zip) {
-    final List<URI> zipFiles = new ArrayList<>();
-
     try (ZipFile zipFile = new ZipFile(zip);
-        URLClassLoader loader = new URLClassLoader(new URL[] {zip.toURI().toURL()})) {
+        FileSystem fileSystem = FileSystems.newFileSystem(zip.toPath(), null)) {
 
-      final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-      while (entries.hasMoreElements()) {
-        final ZipEntry entry = entries.nextElement();
-
-        if (entry.getName().toLowerCase().endsWith(".xml")) {
-          Optional.ofNullable(loader.getResource(entry.getName()))
-              .map(url -> URI.create(url.toString().replace(" ", "%20")))
-              .ifPresent(zipFiles::add);
-        }
-      }
+      return zipFile.stream()
+          .map(ZipEntry::getName)
+          .filter(name -> name.toLowerCase().endsWith(".xml"))
+          .map(fileSystem::getPath)
+          .map(Path::toUri)
+          .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error("Error reading zip file in: " + zip.getAbsolutePath(), e);
     }
-    return zipFiles;
+    return new ArrayList<>();
   }
 }
