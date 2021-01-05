@@ -18,7 +18,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.util.Version;
 
 @SuppressWarnings("unused")
 @ExtendWith(MockitoExtension.class)
@@ -75,19 +74,19 @@ final class UpdatedMapsCheckTest {
 
   @Test
   void shouldSkipCheckWhenNoAvailableDownloadsFound() {
-    final Map<String, Version> availableMapVersions = Map.of();
+    final Map<String, Integer> availableMapVersions = Map.of();
 
     final Collection<String> result =
         UpdatedMapsCheck.computeOutOfDateMaps(
-            Map.of("installed_map.properties", new Version(1, 0, 0)), availableMapVersions);
+            Map.of("installed_map.properties", 1), availableMapVersions);
 
     assertThat(result, is(empty()));
   }
 
   @ParameterizedTest
   @MethodSource
-  void localMapsNotOutOfDate(final Map<String, Version> localMaps) {
-    final Map<String, Version> availableMaps = Map.of("map name", new Version(2, 0, 0));
+  void localMapsNotOutOfDate(final Map<String, Integer> localMaps) {
+    final Map<String, Integer> availableMaps = Map.of("map name", 2);
 
     final Collection<String> result =
         UpdatedMapsCheck.computeOutOfDateMaps(localMaps, availableMaps);
@@ -95,20 +94,20 @@ final class UpdatedMapsCheckTest {
     assertThat(result, is(empty()));
   }
 
-  static List<Map<String, Version>> localMapsNotOutOfDate() {
+  static List<Map<String, Integer>> localMapsNotOutOfDate() {
     return List.of(
         // no local maps
         Map.of(),
         // local map is current
-        Map.of("map_name.properties", new Version(2, 0, 0)),
+        Map.of("map_name.properties", 2),
         // local map is more recent
-        Map.of("map_name.properties", new Version(3, 0, 0)));
+        Map.of("map_name.properties", 3));
   }
 
   @ParameterizedTest
   @MethodSource
-  void localMapsOutOfDate(final Map<String, Version> localMaps) {
-    final Map<String, Version> availableMaps = Map.of("Map Name", new Version(2, 0, 0));
+  void localMapsOutOfDate(final Map<String, Integer> localMaps) {
+    final Map<String, Integer> availableMaps = Map.of("Map Name", 2);
 
     final Collection<String> result =
         UpdatedMapsCheck.computeOutOfDateMaps(localMaps, availableMaps);
@@ -117,13 +116,13 @@ final class UpdatedMapsCheckTest {
     assertThat(result.iterator().next(), is("Map Name"));
   }
 
-  static List<Map<String, Version>> localMapsOutOfDate() {
+  static List<Map<String, Integer>> localMapsOutOfDate() {
     return List.of(
         // version is less than 2.0.0 and is '0'
-        Map.of("map_name.zip.properties", new Version(0, 0, 0)),
+        Map.of("map_name.zip.properties", 0),
         // version is less than 2.0.0 and is '1'
-        Map.of("map_name.zip.properties", new Version(1, 0, 0)),
+        Map.of("map_name.zip.properties", 1),
         // alternative spelling of the map zip file with the -master suffix
-        Map.of("map_name-master.zip.properties", new Version(1, 0, 0)));
+        Map.of("map_name-master.zip.properties", 1));
   }
 }

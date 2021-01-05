@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.triplea.util.Version;
 
 /**
  * For transition reasons we use a DownloadFileProperties to read a properties file for each map
@@ -40,6 +39,6 @@ class FileSystemAccessStrategyTest {
 
   @Test
   void testMapFileFound() {
-    assertThat(testObj.getMapVersion(mapFile), isPresentAndIs(new Version(1, 2, 0)));
+    assertThat(testObj.getMapVersion(mapFile), isPresentAndIs(1));
   }
 }

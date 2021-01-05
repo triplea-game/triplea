@@ -11,12 +11,11 @@ import javax.swing.DefaultListModel;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.Version;
 
 @Slf4j
 class FileSystemAccessStrategy {
 
-  Optional<Version> getMapVersion(final File mapFile) {
+  Optional<Integer> getMapVersion(final File mapFile) {
     if (!mapFile.exists()) {
       return Optional.empty();
     }

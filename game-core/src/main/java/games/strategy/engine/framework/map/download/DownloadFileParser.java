@@ -12,7 +12,6 @@ import lombok.experimental.UtilityClass;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
-import org.triplea.util.Version;
 
 /**
  * Utility class to parse an available map list file config file - used to determine which maps are
@@ -53,8 +52,7 @@ final class DownloadFileParser {
                   (String) checkNotNull(yaml.get(Tags.description.toString()));
               final String mapName = (String) checkNotNull(yaml.get(Tags.mapName.toString()));
 
-              final Version version =
-                  new Version(checkNotNull((Integer) yaml.get(Tags.version.toString())), 0, 0);
+              final Integer version = (Integer) yaml.get(Tags.version.toString());
               final DownloadFileDescription.DownloadType downloadType =
                   optEnum(
                       yaml,
