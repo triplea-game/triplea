@@ -119,7 +119,7 @@ public class UiContext {
     // avoids the pause where sounds dont load right away
     // change the resource loader (this allows us to play sounds the map folder, rather than just
     // default sounds)
-    new Thread(() -> ClipPlayer.getInstance(resourceLoader), "TripleA sound loader").start();
+    new Thread(() -> ClipPlayer.setResourceLoader(resourceLoader), "TripleA sound loader").start();
     // load a new cursor
     cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
