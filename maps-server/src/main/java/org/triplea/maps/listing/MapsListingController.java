@@ -22,9 +22,8 @@ public class MapsListingController {
 
   public static MapsListingController build(final Jdbi jdbi) {
     return new MapsListingController(
-        new MapsListingModule(
-            jdbi.onDemand(MapListingDao.class), //
-            jdbi.onDemand(MapSkinsListingDao.class)));
+        new MapsListingModule( //
+            jdbi.onDemand(MapListingDao.class)));
   }
 
   @GET

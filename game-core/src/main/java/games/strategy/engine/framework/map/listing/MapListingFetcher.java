@@ -5,7 +5,6 @@ import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.engine.framework.system.DevOverrides;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
@@ -43,28 +42,8 @@ public class MapListingFetcher {
   private static List<DownloadFileDescription> convertDownloadListings(
       final List<MapDownloadListing> downloadListings) {
 
-    final List<DownloadFileDescription> mapDownloads =
-        downloadListings.stream()
-            .map(DownloadFileDescription::ofMapDownloadListing)
-            .collect(Collectors.toList());
-
-    final List<DownloadFileDescription> mapSkins =
-        downloadListings.stream()
-            .map(MapListingFetcher::convertMapSkinListingsToDownloadFileDescriptions)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
-
-    mapDownloads.addAll(mapSkins);
-    return mapDownloads;
-  }
-
-  private static List<DownloadFileDescription> convertMapSkinListingsToDownloadFileDescriptions(
-      final MapDownloadListing mapDownloadListing) {
-    // convert each map skin in the map download listing into its own DownloadFileDescription
-    return mapDownloadListing.getMapsSkins().stream()
-        .map(
-            skin ->
-                DownloadFileDescription.ofMapSkinListing(skin, mapDownloadListing.getMapCategory()))
+    return downloadListings.stream()
+        .map(DownloadFileDescription::ofMapDownloadListing)
         .collect(Collectors.toList());
   }
 }

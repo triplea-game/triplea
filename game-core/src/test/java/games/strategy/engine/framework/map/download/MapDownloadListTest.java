@@ -29,7 +29,6 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
           "",
           MAP_NAME,
           MAP_VERSION,
-          DownloadFileDescription.DownloadType.MAP,
           DownloadFileDescription.MapCategory.EXPERIMENTAL,
           "");
 
@@ -73,7 +72,6 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
         "description",
         "mapName" + url,
         MAP_VERSION,
-        DownloadFileDescription.DownloadType.MAP,
         DownloadFileDescription.MapCategory.BEST,
         "");
   }

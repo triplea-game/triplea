@@ -16,6 +16,4 @@ public class MapDownloadListing {
   @Nonnull private final String version;
   @Nonnull private final String mapCategory;
   private final String previewImage;
-
-  private final Set<MapSkinListing> mapsSkins;
 }

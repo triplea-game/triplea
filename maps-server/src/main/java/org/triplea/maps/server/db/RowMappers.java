@@ -6,14 +6,11 @@ import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.triplea.maps.listing.MapListingRecord;
-import org.triplea.maps.listing.MapSkinRecord;
 
 @UtilityClass
 public class RowMappers {
 
   public Collection<RowMapperFactory> rowMappers() {
-    return List.of(
-        ConstructorMapper.factory(MapListingRecord.class),
-        ConstructorMapper.factory(MapSkinRecord.class));
+    return List.of(ConstructorMapper.factory(MapListingRecord.class));
   }
 }

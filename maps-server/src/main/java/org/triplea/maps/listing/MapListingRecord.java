@@ -1,7 +1,5 @@
 package org.triplea.maps.listing;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
@@ -35,7 +33,7 @@ public class MapListingRecord {
     this.previewImageUrl = previewImageUrl;
   }
 
-  MapDownloadListing toMapDownloadListing(final Collection<MapSkinRecord> mapSkinRecords) {
+  MapDownloadListing toMapDownloadListing() {
     return MapDownloadListing.builder()
         .url(url)
         .mapName(name)
@@ -43,10 +41,6 @@ public class MapListingRecord {
         .version(version)
         .mapCategory(categoryName)
         .previewImage(previewImageUrl)
-        .mapsSkins(
-            mapSkinRecords.stream()
-                .map(MapSkinRecord::toMapSkinListing)
-                .collect(Collectors.toSet()))
         .build();
   }
 }

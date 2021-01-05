@@ -21,7 +21,6 @@ final class DownloadFileParser {
 
   enum Tags {
     url,
-    mapType,
     version,
     mapName,
     description,
@@ -51,12 +50,6 @@ final class DownloadFileParser {
               final String mapName = (String) checkNotNull(yaml.get(Tags.mapName.toString()));
 
               final Integer version = (Integer) yaml.get(Tags.version.toString());
-              final DownloadFileDescription.DownloadType downloadType =
-                  optEnum(
-                      yaml,
-                      DownloadFileDescription.DownloadType.class,
-                      Tags.mapType.toString(),
-                      DownloadFileDescription.DownloadType.MAP);
 
               final DownloadFileDescription.MapCategory mapCategory =
                   optEnum(
@@ -67,8 +60,7 @@ final class DownloadFileParser {
 
               final String img = Strings.nullToEmpty((String) yaml.get(Tags.img.toString()));
               final DownloadFileDescription dl =
-                  new DownloadFileDescription(
-                      url, description, mapName, version, downloadType, mapCategory, img);
+                  new DownloadFileDescription(url, description, mapName, version, mapCategory, img);
               downloads.add(dl);
             });
     return downloads;

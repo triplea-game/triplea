@@ -12,73 +12,18 @@ import org.junit.jupiter.api.Test;
 
 class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   @Test
-  void testIsMap() {
-    final DownloadFileDescription testObj =
-        new DownloadFileDescription(
-            "",
-            "",
-            "",
-            0,
-            DownloadFileDescription.DownloadType.MAP,
-            DownloadFileDescription.MapCategory.EXPERIMENTAL,
-            "");
-    assertThat(testObj.isMap(), is(true));
-  }
-
-  @Test
-  void testIsSkin() {
-    final DownloadFileDescription testObj =
-        new DownloadFileDescription(
-            "",
-            "",
-            "",
-            0,
-            DownloadFileDescription.DownloadType.MAP_SKIN,
-            DownloadFileDescription.MapCategory.EXPERIMENTAL,
-            "");
-    assertThat(testObj.isMapSkin(), is(true));
-  }
-
-  @Test
-  void testIsTool() {
-    final DownloadFileDescription testObj =
-        new DownloadFileDescription(
-            "",
-            "",
-            "",
-            0,
-            DownloadFileDescription.DownloadType.MAP_TOOL,
-            DownloadFileDescription.MapCategory.EXPERIMENTAL,
-            "");
-    assertThat(testObj.isMapTool(), is(true));
-  }
-
-  @Test
   void testGetMapName() {
     final String mapName = "abc";
     final DownloadFileDescription testObj =
         new DownloadFileDescription(
-            "",
-            "",
-            mapName,
-            0,
-            DownloadFileDescription.DownloadType.MAP,
-            DownloadFileDescription.MapCategory.EXPERIMENTAL,
-            "");
+            "", "", mapName, 0, DownloadFileDescription.MapCategory.EXPERIMENTAL, "");
     assertThat(testObj.getMapName(), is(mapName));
   }
 
   @Test
   void testGetMapType() {
     final DownloadFileDescription testObj =
-        new DownloadFileDescription(
-            "",
-            "",
-            "",
-            0,
-            DownloadFileDescription.DownloadType.MAP,
-            DownloadFileDescription.MapCategory.BEST,
-            "");
+        new DownloadFileDescription("", "", "", 0, DownloadFileDescription.MapCategory.BEST, "");
     assertThat(testObj.getMapCategory(), is(DownloadFileDescription.MapCategory.BEST));
   }
 
@@ -106,13 +51,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
 
   private static DownloadFileDescription testObjFromUrl(final String inputUrl) {
     return new DownloadFileDescription(
-        inputUrl,
-        "",
-        "",
-        0,
-        DownloadFileDescription.DownloadType.MAP,
-        DownloadFileDescription.MapCategory.EXPERIMENTAL,
-        "");
+        inputUrl, "", "", 0, DownloadFileDescription.MapCategory.EXPERIMENTAL, "");
   }
 
   @Test
@@ -136,13 +75,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
       final String inputUrl, final String mapName, final File expected) {
     final DownloadFileDescription testObj =
         new DownloadFileDescription(
-            inputUrl,
-            "",
-            mapName,
-            0,
-            DownloadFileDescription.DownloadType.MAP,
-            DownloadFileDescription.MapCategory.EXPERIMENTAL,
-            "");
+            inputUrl, "", mapName, 0, DownloadFileDescription.MapCategory.EXPERIMENTAL, "");
 
     assertThat(testObj.getInstallLocation().getAbsolutePath(), is(expected.getAbsolutePath()));
   }
