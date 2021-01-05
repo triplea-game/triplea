@@ -18,7 +18,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -118,10 +117,6 @@ public class ResourceLoader implements Closeable {
    */
   public static Image loadImageAssert(final Path path) {
     return ImageLoader.getImage(Path.of(ASSETS_FOLDER).resolve(path).toFile());
-  }
-
-  public static ResourceLoader getGameEngineAssetLoader() {
-    return new ResourceLoader("");
   }
 
   private static class GameAssetsNotFoundException extends RuntimeException {
@@ -266,15 +261,7 @@ public class ResourceLoader implements Closeable {
   }
 
   private Optional<URL> findResource(final String searchPath) {
-    return getMatchingResources(searchPath).stream().findFirst();
-  }
-
-  private List<URL> getMatchingResources(final String path) {
-    try {
-      return Collections.list(loader.getResources(path));
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    }
+    return loader.resources(searchPath).findFirst();
   }
 
   /**
