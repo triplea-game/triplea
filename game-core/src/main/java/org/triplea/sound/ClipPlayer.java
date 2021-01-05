@@ -224,7 +224,8 @@ public class ClipPlayer {
   public static void play(final String clipPath, final GamePlayer gamePlayer) {
     final ClipPlayer result;
     synchronized (ClipPlayer.class) {
-      result = Optional.ofNullable(clipPlayer)
+      result =
+          Optional.ofNullable(clipPlayer)
               .orElseThrow(() -> new IllegalStateException("No resource loader has been set"));
     }
     result.playClip(clipPath, gamePlayer);
@@ -335,7 +336,7 @@ public class ClipPlayer {
     try {
       thisSoundPath = Path.of(thisSoundUrl.toURI());
     } catch (final URISyntaxException e) {
-      throw new RuntimeException(e);
+      throw new IllegalStateException("Invalid URL format", e);
     }
 
     if (Files.isDirectory(thisSoundPath)) {
