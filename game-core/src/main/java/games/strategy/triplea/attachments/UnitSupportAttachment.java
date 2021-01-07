@@ -9,6 +9,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.io.Serializable;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
@@ -28,6 +28,8 @@ import lombok.Value;
 /**
  * An attachment for instances of {@link UnitType} that defines properties for unit types that
  * support other units.
+ *
+ * <p>The set of UnitSupportAttachments do not change during a game.
  */
 public class UnitSupportAttachment extends DefaultAttachment {
   public static final String BONUS = "bonus";
@@ -92,16 +94,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return getAttachment(u, nameOfAttachment, UnitSupportAttachment.class);
   }
 
-  public static Set<UnitSupportAttachment> get(final GameData data) {
-    data.acquireReadLock();
-    try {
-      return StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
-          .map(UnitSupportAttachment::get)
-          .flatMap(Collection::stream)
-          .collect(Collectors.toSet());
-    } finally {
-      data.releaseReadLock();
-    }
+  public static Set<UnitSupportAttachment> get(final UnitTypeList unitTypeList) {
+    return unitTypeList.stream()
+        .map(UnitSupportAttachment::get)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   private void setUnitType(final String names) throws GameParseException {
@@ -390,16 +387,16 @@ public class UnitSupportAttachment extends DefaultAttachment {
     rule.setImpArtTech(true);
     rule.setNumber(first ? 0 : 1);
     rule.setSide("offence");
-    rule.addUnitTypes(first ? Set.of(type) : getTargets(data));
+    rule.addUnitTypes(first ? Set.of(type) : getTargets(data.getUnitTypeList()));
     if (!first) {
       rule.setPlayers(new ArrayList<>(data.getPlayerList().getPlayers()));
     }
     type.addAttachment(attachmentName, rule);
   }
 
-  private static Set<UnitType> getTargets(final GameData data) {
+  private static Set<UnitType> getTargets(final UnitTypeList unitTypeList) {
     Set<UnitType> types = null;
-    for (final UnitSupportAttachment rule : get(data)) {
+    for (final UnitSupportAttachment rule : get(unitTypeList)) {
       if (rule.getBonusType().isOldArtilleryRule()) {
         types = rule.getUnitType();
         if (rule.getName().startsWith(Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST)) {
@@ -424,8 +421,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
     unitType.addAll(types);
   }
 
-  static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
-    for (final UnitSupportAttachment rule : get(data)) {
+  static void setOldSupportCount(
+      final UnitType type, final UnitTypeList unitTypeList, final String count) {
+    for (final UnitSupportAttachment rule : get(unitTypeList)) {
       if (rule.getBonusType().isOldArtilleryRule() && rule.getAttachedTo() == type) {
         rule.setNumber(count);
       }
@@ -434,7 +432,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   static void addTarget(final UnitType type, final GameData data) throws GameParseException {
     boolean first = true;
-    for (final UnitSupportAttachment rule : get(data)) {
+    for (final UnitSupportAttachment rule : get(data.getUnitTypeList())) {
       if (rule.getBonusType().isOldArtilleryRule()) {
         rule.addUnitTypes(Set.of(type));
         first = false;

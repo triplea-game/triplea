@@ -212,6 +212,12 @@ public class GameData implements Serializable, GameState {
     return sequence;
   }
 
+  /**
+   * UnitTypeList is a collection of all of the unit types in the game
+   *
+   * <p>It is a read-only data structure and so doesn't require a lock to read it. It is only
+   * modified during the initial parsing of the game data.
+   */
   @Override
   public UnitTypeList getUnitTypeList() {
     return unitTypeList;

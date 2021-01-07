@@ -1479,12 +1479,14 @@ public class UnitAttachment extends DefaultAttachment {
 
   public void setUnitSupportCount(final String s) {
     unitSupportCount = getInt(s);
-    UnitSupportAttachment.setOldSupportCount((UnitType) getAttachedTo(), getData(), s);
+    UnitSupportAttachment.setOldSupportCount(
+        (UnitType) getAttachedTo(), getData().getUnitTypeList(), s);
   }
 
   private void setUnitSupportCount(final Integer s) {
     unitSupportCount = s;
-    UnitSupportAttachment.setOldSupportCount((UnitType) getAttachedTo(), getData(), s.toString());
+    UnitSupportAttachment.setOldSupportCount(
+        (UnitType) getAttachedTo(), getData().getUnitTypeList(), s.toString());
   }
 
   private int getUnitSupportCount() {
@@ -3375,7 +3377,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (supports.size() > 3) {
       tuples.add(Tuple.of("Can Provide Support to Units", ""));
     } else if (!supports.isEmpty()) {
-      final boolean moreThanOneSupportType = UnitSupportAttachment.get(getData()).size() > 1;
+      final boolean moreThanOneSupportType =
+          UnitSupportAttachment.get(getData().getUnitTypeList()).size() > 1;
       for (final UnitSupportAttachment support : supports) {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
           continue;

@@ -575,7 +575,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         s[i] = s[i].substring(1);
       }
       boolean found = false;
-      for (final UnitSupportAttachment support : UnitSupportAttachment.get(getData())) {
+      for (final UnitSupportAttachment support :
+          UnitSupportAttachment.get(getData().getUnitTypeList())) {
         if (support.getName().equals(s[i])) {
           found = true;
           if (this.support == null) {
@@ -2190,7 +2191,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       for (final GamePlayer player : t.getPlayers()) {
         for (final String usaString : t.getSupport().keySet()) {
           UnitSupportAttachment usa = null;
-          for (final UnitSupportAttachment support : UnitSupportAttachment.get(data)) {
+          for (final UnitSupportAttachment support :
+              UnitSupportAttachment.get(data.getUnitTypeList())) {
             if (support.getName().equals(usaString)) {
               usa = support;
               break;
