@@ -12,10 +12,6 @@ import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.Value;
 
-/**
- * TODO: In a battle group, the suicide/non suicide units need to be separated during the actual
- * battle, and not before
- */
 @Value
 @Builder
 public class BattleGroup {

@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.fire.battlegroup;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
-
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -111,7 +109,7 @@ class AaBattleGroups {
               .orElse(Set.of());
 
       final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-          side == DEFENSE
+          side == BattleState.Side.DEFENSE
               ? TechAbilityAttachment.getAirborneTargettedByAa(
                   TechTracker.getCurrentTechAdvances(
                       targetUnitFilterData.getTargetUnit().getOwner(), technologyFrontier))

@@ -136,10 +136,7 @@ class NormalBattleGroups {
 
     final List<FiringSquadron> defenseSquadrons;
     if (Properties.getDefendingSubsSneakAttack(properties)) {
-      defenseSquadrons =
-          Stream.of(firingSquadronsWithFirstStrikeUnits, firingSquadronsWithoutFirstStrikeUnits)
-              .flatMap(Collection::stream)
-              .collect(Collectors.toList());
+      defenseSquadrons = offenseSquadrons;
     } else {
       defenseSquadrons =
           FiringSquadron.createWithTargetInformation(unitTypes).stream()
@@ -153,12 +150,10 @@ class NormalBattleGroups {
               .collect(Collectors.toList());
     }
 
-    final BattleGroup.BattleGroupBuilder battleGroupBuilder =
-        BattleGroup.builder()
-            .offenseSquadrons(offenseSquadrons)
-            .defenseSquadrons(defenseSquadrons)
-            .fireType(BattleState.FireType.NORMAL);
-
-    return battleGroupBuilder.build();
+    return BattleGroup.builder()
+        .offenseSquadrons(offenseSquadrons)
+        .defenseSquadrons(defenseSquadrons)
+        .fireType(BattleState.FireType.NORMAL)
+        .build();
   }
 }
