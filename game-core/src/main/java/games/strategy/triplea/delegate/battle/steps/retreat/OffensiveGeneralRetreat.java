@@ -87,11 +87,11 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    retreatUnits(bridge);
+    retreatUnits(stack, bridge);
   }
 
   @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
-  public void retreatUnits(final IDelegateBridge bridge) {
+  public void retreatUnits(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (battleState.getStatus().isOver()) {
       return;
     }
@@ -119,7 +119,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
               getQueryText(retreater.getRetreatType()));
 
       if (retreatTo != null) {
-        retreat(bridge, retreater, retreatTo);
+        retreat(stack, bridge, retreater, retreatTo);
       }
     }
   }
@@ -146,7 +146,10 @@ public class OffensiveGeneralRetreat implements BattleStep {
   }
 
   private void retreat(
-      final IDelegateBridge bridge, final Retreater retreater, final Territory retreatTo) {
+      final ExecutionStack stack,
+      final IDelegateBridge bridge,
+      final Retreater retreater,
+      final Territory retreatTo) {
     final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
 
     SoundUtils.playRetreatType(
@@ -166,6 +169,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
 
     if (battleState.filterUnits(ALIVE, OFFENSE).isEmpty()) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
+      stack.clear();
     } else {
       bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreatUnits);
     }

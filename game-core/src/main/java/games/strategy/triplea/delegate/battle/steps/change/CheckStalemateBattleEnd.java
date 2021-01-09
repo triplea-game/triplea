@@ -29,6 +29,7 @@ public class CheckStalemateBattleEnd extends CheckGeneralBattleEnd {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (!getBattleState().getStatus().isOver() && isStalemate()) {
       getBattleActions().endBattle(IBattle.WhoWon.DRAW, bridge);
+      stack.clear();
     }
   }
 }

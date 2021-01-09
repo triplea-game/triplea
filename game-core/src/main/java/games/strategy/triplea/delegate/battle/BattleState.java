@@ -64,7 +64,12 @@ public interface BattleState {
   class BattleStatus {
     int round;
     int maxRounds;
+
+    @RemoveOnNextMajorRelease(
+        "The ExecutionStack is now being cleared when the battle is over so later battle steps will"
+            + "no longer run and they don't need to check isOver anymore.")
     boolean isOver;
+
     boolean isAmphibious;
     boolean isHeadless;
 

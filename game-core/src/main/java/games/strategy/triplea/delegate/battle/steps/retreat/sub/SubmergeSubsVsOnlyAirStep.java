@@ -66,6 +66,7 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
                     battleState.filterUnits(ALIVE, submergingSide), canNotBeTargetedByAllMatch))
             .side(submergingSide)
             .bridge(bridge)
+            .executionStack(stack)
             .build());
   }
 

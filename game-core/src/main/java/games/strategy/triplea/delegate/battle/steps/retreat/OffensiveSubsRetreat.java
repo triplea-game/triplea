@@ -88,6 +88,7 @@ public class OffensiveSubsRetreat implements BattleStep {
             .side(OFFENSE)
             .bridge(bridge)
             .units(unitsToRetreat)
+            .executionStack(stack)
             .build(),
         Properties.getSubmersibleSubs(battleState.getGameData().getProperties())
             ? List.of(battleState.getBattleSite())

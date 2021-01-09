@@ -54,12 +54,15 @@ public class CheckGeneralBattleEnd implements BattleStep {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (hasSideLost(OFFENSE)) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
+      stack.clear();
 
     } else if (hasSideLost(DEFENSE)) {
       battleActions.endBattle(IBattle.WhoWon.ATTACKER, bridge);
+      stack.clear();
 
     } else if (isStalemate() && !canAttackerRetreatInStalemate()) {
       battleActions.endBattle(IBattle.WhoWon.DRAW, bridge);
+      stack.clear();
     }
   }
 

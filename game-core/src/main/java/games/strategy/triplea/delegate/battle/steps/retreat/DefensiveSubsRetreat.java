@@ -102,6 +102,7 @@ public class DefensiveSubsRetreat implements BattleStep {
             .side(DEFENSE)
             .bridge(bridge)
             .units(unitsToRetreat)
+            .executionStack(stack)
             .build(),
         retreatTerritories,
         getName());

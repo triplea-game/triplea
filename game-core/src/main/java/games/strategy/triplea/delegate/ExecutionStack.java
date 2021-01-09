@@ -51,4 +51,8 @@ public class ExecutionStack implements Serializable {
   public boolean isEmpty() {
     return deque.isEmpty();
   }
+
+  public void clear() {
+    deque.clear();
+  }
 }

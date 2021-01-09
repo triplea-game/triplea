@@ -8,6 +8,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
@@ -30,6 +31,7 @@ public class EvaderRetreat {
     final @NonNull BattleState.Side side;
     final @NonNull IDelegateBridge bridge;
     final @NonNull Collection<Unit> units;
+    final @NonNull ExecutionStack executionStack;
   }
 
   public static void retreatUnits(
@@ -99,12 +101,7 @@ public class EvaderRetreat {
     parameters.battleState.retreatUnits(parameters.side, parameters.units);
 
     addHistoryRetreat(parameters.bridge, parameters.units, " submerged");
-    notifyRetreat(
-        parameters.battleState,
-        parameters.battleActions,
-        parameters.units,
-        parameters.side,
-        parameters.bridge);
+    notifyRetreat(parameters);
   }
 
   private static void addHistoryRetreat(
@@ -113,16 +110,16 @@ public class EvaderRetreat {
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(units));
   }
 
-  private static void notifyRetreat(
-      final BattleState battleState,
-      final BattleActions battleActions,
-      final Collection<Unit> retreating,
-      final BattleState.Side side,
-      final IDelegateBridge bridge) {
-    if (battleState.filterUnits(ALIVE, side).isEmpty()) {
-      battleActions.endBattle(side.getOpposite().getWhoWon(), bridge);
+  private static void notifyRetreat(final Parameters parameters) {
+    if (parameters.battleState.filterUnits(ALIVE, parameters.side).isEmpty()) {
+      parameters.battleActions.endBattle(
+          parameters.side.getOpposite().getWhoWon(), parameters.bridge);
+      parameters.executionStack.clear();
     } else {
-      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreating);
+      parameters
+          .bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(parameters.battleState.getBattleId(), parameters.units);
     }
   }
 
@@ -135,11 +132,6 @@ public class EvaderRetreat {
     parameters.battleState.retreatUnits(parameters.side, parameters.units);
 
     addHistoryRetreat(parameters.bridge, parameters.units, " retreated to " + retreatTo.getName());
-    notifyRetreat(
-        parameters.battleState,
-        parameters.battleActions,
-        parameters.units,
-        parameters.side,
-        parameters.bridge);
+    notifyRetreat(parameters);
   }
 }
