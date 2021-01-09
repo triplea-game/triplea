@@ -19,6 +19,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -1458,12 +1459,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final UnitAttachment ua = UnitAttachment.get(unitUnderFire.getType());
       final int currentHits = unitUnderFire.getHits();
       if (ua.getHitPoints() <= currentHits + hits) {
-        // TODO: kill dependents
-        change.add(ChangeFactory.removeUnits(location, Set.of(unitUnderFire)));
+        HistoryChangeFactory.removeUnitsFromTerritory(location, List.of(unitUnderFire))
+            .perform(bridge);
       } else {
-        final IntegerMap<Unit> hitMap = new IntegerMap<>();
-        hitMap.put(unitUnderFire, hits);
-        change.add(newDamageChange(hitMap, bridge, location));
+        HistoryChangeFactory.damageUnits(location, IntegerMap.of(Map.of(unitUnderFire, hits)))
+            .perform(bridge);
       }
     }
     if (!change.isEmpty()) {
@@ -1490,20 +1490,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Unit u : damaged) {
       damagedMap.add(u, 1);
     }
-    bridge.addChange(newDamageChange(damagedMap, bridge, territory));
-  }
-
-  private static Change newDamageChange(
-      final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge, final Territory territory) {
-    final Set<Unit> units = new HashSet<>(damagedMap.keySet());
-    for (final Unit u : units) {
-      damagedMap.add(u, u.getHits());
-    }
-    final Change damagedChange = ChangeFactory.unitsHit(damagedMap, List.of(territory));
-    bridge
-        .getHistoryWriter()
-        .addChildToEvent("Units damaged: " + MyFormatter.unitsToText(units), units);
-    return damagedChange;
+    HistoryChangeFactory.damageUnits(territory, damagedMap).perform(bridge);
   }
 
   private static Collection<Territory> whereCanAirLand(
