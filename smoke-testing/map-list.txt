@@ -1,8 +1,6 @@
 https://raw.githubusercontent.com/triplea-maps/1914-cow-empires/master/map/games/1914-COW-Empires.xml
 https://raw.githubusercontent.com/triplea-maps/1941/master/map/games/1941.xml
 https://raw.githubusercontent.com/triplea-maps/270bc/master/map/games/270BC.xml
-https://raw.githubusercontent.com/triplea-maps/270bc_variants/master/map/games/270BC_40%25.xml
-https://raw.githubusercontent.com/triplea-maps/270bc_variants/master/map/games/270BC_Cernel.xml
 https://raw.githubusercontent.com/triplea-maps/aa_enhanced_revised/master/map/games/AA_Enhanced_Revised_1.4.xml
 https://raw.githubusercontent.com/triplea-maps/age_of_the_sturlungs/master/map/games/Age_Of_Sturlungs_0.0.2.xml
 https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/map/games/Age_of_Tribes_Classical.xml
