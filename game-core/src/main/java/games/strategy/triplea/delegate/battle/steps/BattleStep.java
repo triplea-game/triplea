@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.battle.steps.change.ClearGeneralCasualtie
 import games.strategy.triplea.delegate.battle.steps.change.LandParatroopers;
 import games.strategy.triplea.delegate.battle.steps.change.MarkNoMovementLeft;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatants;
+import games.strategy.triplea.delegate.battle.steps.change.RemoveNonCombatantsBeforeAA;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnits;
 import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnitsGeneral;
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveFirstStrikeSuicide;
@@ -89,6 +90,7 @@ public interface BattleStep extends IExecutable {
 
   static List<BattleStep> getAll(final BattleState battleState, final BattleActions battleActions) {
     return List.of(
+        new RemoveNonCombatantsBeforeAA(battleState, battleActions),
         new OffensiveAaFire(battleState, battleActions),
         new DefensiveAaFire(battleState, battleActions),
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
