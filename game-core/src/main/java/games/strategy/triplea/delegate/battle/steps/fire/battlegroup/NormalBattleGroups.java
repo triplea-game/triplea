@@ -39,41 +39,22 @@ class NormalBattleGroups {
     final List<FiringSquadron> firingSquadrons =
         FiringSquadron.createWithTargetInformation(unitTypes).stream()
             .map(
-                firingSquadron -> {
-                  return createFiringSquadron(
-                          firingSquadron, unitIsFirstStrike(properties), noDestroyerPresent())
-                      .name(FIRST_STRIKE_UNITS)
-                      .build();
-                })
+                firingSquadron ->
+                    firingSquadron.toBuilder()
+                        .firingUnitsAnd(unitIsFirstStrike(properties))
+                        .enemyUnitRequirements(noDestroyerPresent())
+                        .name(FIRST_STRIKE_UNITS)
+                        .build())
             .collect(Collectors.toList());
 
-    final BattleGroup.BattleGroupBuilder battleGroupBuilder =
-        BattleGroup.builder()
-            .offenseSquadrons(firingSquadrons)
-            .fireType(BattleState.FireType.NORMAL)
-            .casualtiesOnDefenseReturnFire(false);
-
-    if (Properties.getDefendingSubsSneakAttack(properties)) {
-      battleGroupBuilder.defenseSquadrons(firingSquadrons).casualtiesOnOffenseReturnFire(false);
-    }
-    return battleGroupBuilder.build();
-  }
-
-  private FiringSquadron.FiringSquadronBuilder createFiringSquadron(
-      final FiringSquadron firingSquadron,
-      final Predicate<FiringSquadron.FiringUnitFilterData> firingUnitPredicate,
-      final Predicate<Collection<Unit>> enemyUnitPredicate) {
-    return firingSquadron.toBuilder()
-        .firingUnits(firingSquadron.getFiringUnits().and(firingUnitPredicate))
-        .targetUnits(
-            firingSquadron
-                .getTargetUnits()
-                .and(FiringSquadron.filterOutSuicideUnits())
-                .and(
-                    targetUnitFilterData ->
-                        Matches.unitIsNotInfrastructure()
-                            .test(targetUnitFilterData.getTargetUnit())))
-        .enemyUnitRequirements(enemyUnitPredicate);
+    return BattleGroup.builder()
+        .fireType(BattleState.FireType.NORMAL)
+        .offenseSquadrons(firingSquadrons)
+        .casualtiesOnDefenseReturnFire(false)
+        .defenseSquadrons(
+            Properties.getDefendingSubsSneakAttack(properties) ? firingSquadrons : List.of())
+        .casualtiesOnOffenseReturnFire(!Properties.getDefendingSubsSneakAttack(properties))
+        .build();
   }
 
   private Predicate<FiringSquadron.FiringUnitFilterData> unitIsFirstStrike(
@@ -106,27 +87,22 @@ class NormalBattleGroups {
     final List<FiringSquadron> firingSquadronsWithoutFirstStrikeUnits =
         FiringSquadron.createWithTargetInformation(unitTypes).stream()
             .map(
-                firingSquadron -> {
-                  return createFiringSquadron(
-                          firingSquadron,
-                          Predicate.not(unitIsFirstStrike(properties)),
-                          noDestroyerPresent())
-                      .name(UNITS)
-                      .build();
-                })
+                firingSquadron ->
+                    firingSquadron.toBuilder()
+                        .firingUnitsAnd(Predicate.not(unitIsFirstStrike(properties)))
+                        .enemyUnitRequirements(noDestroyerPresent())
+                        .name(UNITS)
+                        .build())
             .collect(Collectors.toList());
 
     final List<FiringSquadron> firingSquadronsWithFirstStrikeUnits =
         FiringSquadron.createWithTargetInformation(unitTypes).stream()
             .map(
-                firingSquadron -> {
-                  return createFiringSquadron(
-                          firingSquadron,
-                          firingUnitFilterData -> true,
-                          Predicate.not(noDestroyerPresent()))
-                      .name(UNITS)
-                      .build();
-                })
+                firingSquadron ->
+                    firingSquadron.toBuilder()
+                        .enemyUnitRequirements(Predicate.not(noDestroyerPresent()))
+                        .name(UNITS)
+                        .build())
             .collect(Collectors.toList());
 
     final List<FiringSquadron> offenseSquadrons =
@@ -134,21 +110,12 @@ class NormalBattleGroups {
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
-    final List<FiringSquadron> defenseSquadrons;
-    if (Properties.getDefendingSubsSneakAttack(properties)) {
-      defenseSquadrons = offenseSquadrons;
-    } else {
-      defenseSquadrons =
-          FiringSquadron.createWithTargetInformation(unitTypes).stream()
-              .map(
-                  firingSquadron -> {
-                    return createFiringSquadron(
-                            firingSquadron, firingUnitFilterData -> true, units -> true)
-                        .name(UNITS)
-                        .build();
-                  })
-              .collect(Collectors.toList());
-    }
+    final List<FiringSquadron> defenseSquadrons =
+        Properties.getDefendingSubsSneakAttack(properties)
+            ? offenseSquadrons
+            : FiringSquadron.createWithTargetInformation(unitTypes).stream()
+                .map(firingSquadron -> firingSquadron.toBuilder().name(UNITS).build())
+                .collect(Collectors.toList());
 
     return BattleGroup.builder()
         .offenseSquadrons(offenseSquadrons)

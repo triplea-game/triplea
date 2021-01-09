@@ -8,7 +8,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,72 +27,28 @@ public class FiringSquadron {
   /** Name that will be displayed in the Battle UI */
   @NonNull String name;
   /** Matches the units that will be firing */
-  @Builder.Default
-  Predicate<FiringUnitFilterData> firingUnits = FiringSquadron::defaultFiringUnitPredicate;
+  Predicate<FiringUnitFilterData> firingUnits;
   /** Matches the units that are targeted */
-  @Builder.Default
-  Predicate<TargetUnitFilterData> targetUnits = FiringSquadron::defaultTargetUnitPredicate;
+  Predicate<TargetUnitFilterData> targetUnits;
   /** This FiringSquadron can only fire if the friendly unit requirements are met */
-  @Builder.Default
-  Predicate<Collection<Unit>> friendlyUnitRequirements = FiringSquadron::defaultUnitsRequirements;
+  Predicate<Collection<Unit>> friendlyUnitRequirements;
   /** This FiringSquadron can only fire if the enemy unit requirements are met */
-  @Builder.Default
-  Predicate<Collection<Unit>> enemyUnitRequirements = FiringSquadron::defaultUnitsRequirements;
+  Predicate<Collection<Unit>> enemyUnitRequirements;
   /** This FiringSquadron can only fire if the battle state requirements are met */
-  @Builder.Default
-  Predicate<BattleState> battleStateRequirements = FiringSquadron::defaultBattleStateRequirements;
+  Predicate<BattleState> battleStateRequirements;
 
-  /** ErrorProne static analysis doesn't like lambda style @Builder.Default values */
-  @SuppressWarnings("unused")
-  private static boolean defaultFiringUnitPredicate(final FiringUnitFilterData unused) {
-    return true;
-  }
-
-  /** ErrorProne static analysis doesn't like lambda style @Builder.Default values */
-  @SuppressWarnings("unused")
-  private static boolean defaultTargetUnitPredicate(final TargetUnitFilterData unused) {
-    return true;
-  }
-
-  /** ErrorProne static analysis doesn't like lambda style @Builder.Default values */
-  @SuppressWarnings("unused")
-  private static boolean defaultUnitsRequirements(final Collection<Unit> unused) {
-    return true;
-  }
-
-  /** ErrorProne static analysis doesn't like lambda style @Builder.Default values */
-  @SuppressWarnings("unused")
-  private static boolean defaultBattleStateRequirements(final BattleState unused) {
-    return true;
-  }
-
-  Predicate<FiringUnitFilterData> getFiringUnits() {
+  public Predicate<FiringUnitFilterData> getFiringUnits() {
     // ensure that transported units can not fire
-    return firingUnits.and(
-        firingUnitFilterData ->
-            Matches.unitIsBeingTransported().negate().test(firingUnitFilterData.getFiringUnit()));
+    return firingUnits.and(firingUnitFilterData -> notCargo(firingUnitFilterData.getFiringUnit()));
   }
 
-  Predicate<TargetUnitFilterData> getTargetUnits() {
+  private boolean notCargo(final Unit unit) {
+    return unit.getTransportedBy() == null;
+  }
+
+  public Predicate<TargetUnitFilterData> getTargetUnits() {
     // ensure that transported units can not be targeted
-    return targetUnits.and(
-        targetUnitFilterData ->
-            Predicate.not(Matches.unitIsBeingTransported())
-                .test(targetUnitFilterData.getTargetUnit()));
-  }
-
-  /** Builds a predicate that can be used for targetUnits if suicide units need to be ignored */
-  static Predicate<TargetUnitFilterData> filterOutSuicideUnits() {
-    return targetUnitFilterData ->
-        PredicateBuilder.<Unit>trueBuilder()
-            .andIf(
-                targetUnitFilterData.side == BattleState.Side.OFFENSE,
-                Matches.unitIsSuicideOnDefense().negate())
-            .andIf(
-                targetUnitFilterData.side == BattleState.Side.DEFENSE,
-                Matches.unitIsSuicideOnAttack().negate())
-            .build()
-            .test(targetUnitFilterData.getTargetUnit());
+    return targetUnits.and(targetUnitFilterData -> notCargo(targetUnitFilterData.getTargetUnit()));
   }
 
   @Value
@@ -112,6 +67,24 @@ public class FiringSquadron {
     @NonNull BattleState.Side side;
     @NonNull Collection<Unit> friendlyUnits;
     @NonNull Territory battleSite;
+  }
+
+  /**
+   * Override the Lombok created Builder so that default lambda values can be set and to add the
+   * firingUnitsAnd method.
+   */
+  public static class FiringSquadronBuilder {
+    private Predicate<FiringUnitFilterData> firingUnits = k -> true;
+    private Predicate<TargetUnitFilterData> targetUnits = k -> true;
+    private Predicate<Collection<Unit>> friendlyUnitRequirements = k -> true;
+    private Predicate<Collection<Unit>> enemyUnitRequirements = k -> true;
+    private Predicate<BattleState> battleStateRequirements = k -> true;
+
+    /** Adds additional predicates to the firingUnits predicate. */
+    public FiringSquadronBuilder firingUnitsAnd(final Predicate<FiringUnitFilterData> firingUnits) {
+      this.firingUnits = this.firingUnits.and(firingUnits);
+      return this;
+    }
   }
 
   /**
@@ -169,18 +142,13 @@ public class FiringSquadron {
 
     // create FiringSquadrons for each of the grouped unit types
     return unitTypeTargetDataGroupedByTargets.values().stream()
-        .sorted(
-            Comparator.comparingInt(
-                groupedTargetInformation -> groupedTargetInformation.targetInformation.size()))
         .map(
             groupedTargetInformation ->
                 FiringSquadron.builder()
-                    .firingUnits(
-                        firingUnitFilterData ->
-                            groupedTargetInformation
-                                .getFiringUnitTypes()
-                                .contains(firingUnitFilterData.getFiringUnit().getType()))
-                    .targetUnits(groupedTargetInformation.targetInformation::canTarget)
+                    .firingUnits(groupedTargetInformation::containsUnitType)
+                    .targetUnits(
+                        filterOutNonTargets()
+                            .and(groupedTargetInformation.targetInformation::canTarget))
                     .build())
         .collect(Collectors.toList());
   }
@@ -195,11 +163,6 @@ public class FiringSquadron {
   private static class TargetInformation {
     Collection<UnitType> unitTypesThatCanNotBeTargeted;
     Collection<UnitType> unitTypesThatCanNotBeTargetedUnlessDestroyer;
-
-    int size() {
-      return unitTypesThatCanNotBeTargeted.size()
-          + unitTypesThatCanNotBeTargetedUnlessDestroyer.size();
-    }
 
     /**
      * Determines if the possible target unit is in this target information
@@ -237,5 +200,27 @@ public class FiringSquadron {
       firingUnitTypes.addAll(other.firingUnitTypes);
       return new GroupedTargetInformation(firingUnitTypes, this.targetInformation);
     }
+
+    boolean containsUnitType(final FiringUnitFilterData firingUnitFilterData) {
+      return firingUnitTypes.contains(firingUnitFilterData.getFiringUnit().getType());
+    }
+  }
+
+  /**
+   * Builds a predicate that can be used for targetUnits if suicide units and infrastructure need to
+   * be ignored
+   */
+  static Predicate<TargetUnitFilterData> filterOutNonTargets() {
+    return targetUnitFilterData ->
+        PredicateBuilder.<Unit>trueBuilder()
+            .andIf(
+                targetUnitFilterData.side == BattleState.Side.OFFENSE,
+                Matches.unitIsSuicideOnDefense().negate())
+            .andIf(
+                targetUnitFilterData.side == BattleState.Side.DEFENSE,
+                Matches.unitIsSuicideOnAttack().negate())
+            .and(Matches.unitIsNotInfrastructure())
+            .build()
+            .test(targetUnitFilterData.getTargetUnit());
   }
 }

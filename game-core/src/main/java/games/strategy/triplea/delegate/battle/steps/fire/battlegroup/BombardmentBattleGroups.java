@@ -21,7 +21,7 @@ class BombardmentBattleGroups {
             .firingUnits(unitCanBombard())
             .battleStateRequirements(battleCanHaveBombardment())
             .targetUnits(
-                FiringSquadron.filterOutSuicideUnits()
+                FiringSquadron.filterOutNonTargets()
                     .and(unitIsNotInfrastructureAndNotCapturedOnEntering(properties)))
             .build();
 

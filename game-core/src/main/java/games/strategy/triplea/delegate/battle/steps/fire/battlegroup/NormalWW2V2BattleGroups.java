@@ -32,11 +32,11 @@ class NormalWW2V2BattleGroups {
     final List<FiringSquadron> firingSquadrons =
         FiringSquadron.createWithTargetInformation(unitTypes).stream()
             .map(
-                firingSquadron -> {
-                  return createFiringSquadron(firingSquadron, unitIsFirstStrike(properties))
-                      .name(FIRST_STRIKE_UNITS)
-                      .build();
-                })
+                firingSquadron ->
+                    firingSquadron.toBuilder()
+                        .firingUnitsAnd(unitIsFirstStrike(properties))
+                        .name(FIRST_STRIKE_UNITS)
+                        .build())
             .collect(Collectors.toList());
 
     return BattleGroup.builder()
@@ -46,21 +46,6 @@ class NormalWW2V2BattleGroups {
         .casualtiesOnOffenseReturnFirePredicate(destroyerPresent())
         .casualtiesOnDefenseReturnFirePredicate(destroyerPresent())
         .build();
-  }
-
-  private FiringSquadron.FiringSquadronBuilder createFiringSquadron(
-      final FiringSquadron firingSquadron,
-      final Predicate<FiringSquadron.FiringUnitFilterData> firingUnitPredicate) {
-    return firingSquadron.toBuilder()
-        .firingUnits(firingSquadron.getFiringUnits().and(firingUnitPredicate))
-        .targetUnits(
-            firingSquadron
-                .getTargetUnits()
-                .and(FiringSquadron.filterOutSuicideUnits())
-                .and(
-                    targetUnitFilterData ->
-                        Matches.unitIsNotInfrastructure()
-                            .test(targetUnitFilterData.getTargetUnit())));
   }
 
   private Predicate<FiringSquadron.FiringUnitFilterData> unitIsFirstStrike(
@@ -90,12 +75,11 @@ class NormalWW2V2BattleGroups {
     final List<FiringSquadron> firingSquadrons =
         FiringSquadron.createWithTargetInformation(unitTypes).stream()
             .map(
-                firingSquadron -> {
-                  return createFiringSquadron(
-                          firingSquadron, Predicate.not(unitIsFirstStrike(properties)))
-                      .name(UNITS)
-                      .build();
-                })
+                firingSquadron ->
+                    firingSquadron.toBuilder()
+                        .firingUnitsAnd(Predicate.not(unitIsFirstStrike(properties)))
+                        .name(UNITS)
+                        .build())
             .collect(Collectors.toList());
 
     final BattleGroup.BattleGroupBuilder battleGroupBuilder =
