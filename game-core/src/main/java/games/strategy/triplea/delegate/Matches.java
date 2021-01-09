@@ -2089,17 +2089,15 @@ public final class Matches {
         .and(
             unit -> {
               final int currentDamage = unit.getHits();
-              final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>
-                  whenCombatDamagedList = UnitAttachment.get(unit.getType()).getWhenCombatDamaged();
-              for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key :
-                  whenCombatDamagedList) {
-                final String effect = key.getSecond().getFirst();
-                if (!effect.equals(filterForEffect)) {
+              final List<UnitAttachment.WhenCombatDamaged> whenCombatDamagedList =
+                  UnitAttachment.get(unit.getType()).getWhenCombatDamaged();
+              for (final UnitAttachment.WhenCombatDamaged key : whenCombatDamagedList) {
+                if (!key.getEffect().equals(filterForEffect)) {
                   continue;
                 }
-                final int damagedFrom = key.getFirst().getFirst();
-                final int damagedTo = key.getFirst().getSecond();
-                if (currentDamage >= damagedFrom && currentDamage <= damagedTo) {
+                final int damagedMin = key.getDamageMin();
+                final int damagedMax = key.getDamageMax();
+                if (currentDamage >= damagedMin && currentDamage <= damagedMax) {
                   return true;
                 }
               }

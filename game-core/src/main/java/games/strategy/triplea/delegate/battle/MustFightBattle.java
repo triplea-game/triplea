@@ -234,24 +234,11 @@ public class MustFightBattle extends DependentBattle
     if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
       // allied air can not participate in the battle so set transportedBy on each allied air unit
       // and remove them from the attacking units
-      MoveValidator.carrierMustMoveWith(units, units, gameData.getRelationshipTracker(), attacker)
-          .forEach(
-              (carrier, dependencies) -> {
-                final UnitAttachment ua = UnitAttachment.get(carrier.getType());
-                if (ua.getCarrierCapacity() == -1) {
-                  return;
-                }
-
-                dependencies.stream()
-                    .filter(Matches.unitIsAir())
-                    .forEach(
-                        fighter -> {
-                          change.add(
-                              ChangeFactory.unitPropertyChange(
-                                  fighter, carrier, Unit.TRANSPORTED_BY));
-                          this.attackingUnits.remove(fighter);
-                        });
-              });
+      final TransportTracker.AlliedAirTransportChange alliedAirTransportChange =
+          TransportTracker.markTransportedByForAlliedAirOnCarrier(
+              units, gameData.getRelationshipTracker(), attacker);
+      change.add(alliedAirTransportChange.getChange());
+      this.attackingUnits.removeAll(alliedAirTransportChange.getAlliedAir());
     }
     // mark units with no movement for all but air
     Collection<Unit> nonAir = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotAir());

@@ -810,7 +810,8 @@ public final class AirMovementValidator {
       if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER)
           .test(unit)) {
         // and we must check to make sure we let any allied air that are cargo stay here
-        if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER)
+        if (Matches.unitHasWhenCombatDamagedEffect(
+                UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)
             .test(unit)) {
           int cargo = 0;
           final Collection<Unit> airCargo =

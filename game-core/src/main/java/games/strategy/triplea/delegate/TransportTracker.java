@@ -6,12 +6,14 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -299,6 +302,39 @@ public class TransportTracker {
         && transport.getWasInCombat();
   }
 
+  public static AlliedAirTransportChange markTransportedByForAlliedAirOnCarrier(
+      final Collection<Unit> units,
+      final RelationshipTracker relationshipTracker,
+      final GamePlayer player) {
+    final CompositeChange change = new CompositeChange();
+    final Collection<Unit> alliedAir = new ArrayList<>();
+    MoveValidator.carrierMustMoveWith(units, units, relationshipTracker, player)
+        .forEach(
+            (carrier, dependencies) -> {
+              final UnitAttachment ua = UnitAttachment.get(carrier.getType());
+              if (ua.getCarrierCapacity() == -1) {
+                return;
+              }
+
+              dependencies.stream()
+                  .filter(Matches.unitIsAir())
+                  .forEach(
+                      airUnit -> {
+                        change.add(
+                            ChangeFactory.unitPropertyChange(
+                                airUnit, carrier, Unit.TRANSPORTED_BY));
+                        alliedAir.add(airUnit);
+                      });
+            });
+    return new AlliedAirTransportChange(change, alliedAir);
+  }
+
+  @Value
+  public static class AlliedAirTransportChange {
+    CompositeChange change;
+    Collection<Unit> alliedAir;
+  }
+
   public static CompositeChange clearTransportedByForAlliedAirOnCarrier(
       final Collection<Unit> attackingUnits,
       final Territory battleSite,
@@ -306,8 +342,7 @@ public class TransportTracker {
       final GameState data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held
-    // as cargo by an
-    // carrier unit
+    // as cargo by an carrier unit
     final Collection<Unit> carriers =
         CollectionUtils.getMatches(attackingUnits, Matches.unitIsCarrier());
     if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data.getProperties())) {
@@ -324,7 +359,8 @@ public class TransportTracker {
       for (final Unit fighter : alliedAirInTerr) {
         if (fighter.getTransportedBy() != null) {
           final Unit carrierTransportingThisUnit = fighter.getTransportedBy();
-          if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER)
+          if (!Matches.unitHasWhenCombatDamagedEffect(
+                  UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)
               .test(carrierTransportingThisUnit)) {
             change.add(ChangeFactory.unitPropertyChange(fighter, null, Unit.TRANSPORTED_BY));
           }

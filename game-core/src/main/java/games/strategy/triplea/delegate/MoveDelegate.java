@@ -351,7 +351,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             .and(Matches.unitIsCarrier())
             .and(
                 Matches.unitHasWhenCombatDamagedEffect(
-                    UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+                    UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER));
     final Predicate<Unit> ownedFightersMatch =
         Matches.unitIsOwnedBy(player)
             .and(Matches.unitIsAir())
@@ -505,7 +505,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Collection<Unit> damagedCarriers =
         CollectionUtils.getMatches(
             fullyRepaired.keySet(),
-            Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+            Matches.unitHasWhenCombatDamagedEffect(
+                UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER));
 
     // now cycle through those now-repaired carriers, and remove allied air from being dependent
     final CompositeChange clearAlliedAir = new CompositeChange();
