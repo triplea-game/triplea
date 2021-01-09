@@ -37,6 +37,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.Value;
+import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -44,7 +46,7 @@ import org.triplea.util.Tuple;
 /** Despite the misleading name, this attaches not to individual Units but to UnitTypes. */
 public class UnitAttachment extends DefaultAttachment {
   public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
-  public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
+  public static final String UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER = "unitsMayNotLeaveAlliedCarrier";
 
   public static final String IS_SEA = "isSea";
   public static final String DEFENSE_STRENGTH = "defense";
@@ -235,6 +237,7 @@ public class UnitAttachment extends DefaultAttachment {
   private List<GamePlayer> canBeGivenByTerritoryTo = new ArrayList<>();
   // a set of information for dealing with special abilities or loss of abilities when a unit takes
   // x-y amount of damage
+  @ChangeOnNextMajorRelease("This should be a list of WhenCombatDamaged objects instead of Tuples")
   private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged =
       new ArrayList<>();
   // a kind of support attachment for giving actual unit attachment abilities or other to a unit,
@@ -1148,13 +1151,31 @@ public class UnitAttachment extends DefaultAttachment {
     whenCombatDamaged.add(Tuple.of(fromTo, effectNum));
   }
 
-  private void setWhenCombatDamaged(
-      final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> value) {
-    whenCombatDamaged = value;
+  private void setWhenCombatDamaged(final List<WhenCombatDamaged> value) {
+    whenCombatDamaged = value.stream().map(WhenCombatDamaged::toTuple).collect(Collectors.toList());
   }
 
-  public List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> getWhenCombatDamaged() {
-    return whenCombatDamaged;
+  public List<WhenCombatDamaged> getWhenCombatDamaged() {
+    return whenCombatDamaged.stream().map(WhenCombatDamaged::new).collect(Collectors.toList());
+  }
+
+  @Value
+  public static class WhenCombatDamaged {
+    int damageMin;
+    int damageMax;
+    String effect;
+    String unknown;
+
+    WhenCombatDamaged(final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> tuple) {
+      damageMin = tuple.getFirst().getFirst();
+      damageMax = tuple.getFirst().getSecond();
+      effect = tuple.getSecond().getFirst();
+      unknown = tuple.getSecond().getSecond();
+    }
+
+    Tuple<Tuple<Integer, Integer>, Tuple<String, String>> toTuple() {
+      return Tuple.of(Tuple.of(damageMin, damageMax), Tuple.of(effect, unknown));
+    }
   }
 
   private void resetWhenCombatDamaged() {
@@ -2928,14 +2949,14 @@ public class UnitAttachment extends DefaultAttachment {
         if (obj.equals(UNITSMAYNOTLANDONCARRIER)) {
           continue;
         }
-        if (obj.equals(UNITSMAYNOTLEAVEALLIEDCARRIER)) {
+        if (obj.equals(UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)) {
           continue;
         }
         throw new GameParseException(
             "whenCombatDamaged so far only supports: "
                 + UNITSMAYNOTLANDONCARRIER
                 + ", "
-                + UNITSMAYNOTLEAVEALLIEDCARRIER
+                + UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER
                 + thisErrorMsg());
       }
     }
