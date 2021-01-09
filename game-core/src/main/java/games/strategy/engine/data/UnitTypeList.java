@@ -12,7 +12,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
-/** A collection of unit types. */
+/**
+ * A collection of unit types.
+ *
+ * <p>The content of the UnitTypeList doesn't change during a game.
+ */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
   private static final long serialVersionUID = 9002927658524651749L;
 
@@ -55,7 +59,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   public Set<UnitSupportAttachment> getSupportRules() {
     if (supportRules == null) {
       supportRules =
-          UnitSupportAttachment.get(getData()).stream()
+          UnitSupportAttachment.get(this).stream()
               .filter(usa -> (usa.getRoll() || usa.getStrength()))
               .collect(Collectors.toSet());
     }
@@ -70,7 +74,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   public Set<UnitSupportAttachment> getSupportAaRules() {
     if (supportAaRules == null) {
       supportAaRules =
-          UnitSupportAttachment.get(getData()).stream()
+          UnitSupportAttachment.get(this).stream()
               .filter(usa -> (usa.getAaRoll() || usa.getAaStrength()))
               .collect(Collectors.toSet());
     }
