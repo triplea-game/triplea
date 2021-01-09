@@ -30,7 +30,6 @@ public final class SoundOptions {
   }
 
   private static void showSoundOptions(final JComponent parent) {
-    final ClipPlayer clipPlayer = ClipPlayer.getInstance();
     final String ok = "OK";
     final String cancel = "Cancel";
     final String selectAll = "All";
@@ -62,9 +61,9 @@ public final class SoundOptions {
       }
     }
     for (final SoundOptionCheckBox property : properties) {
-      clipPlayer.setSoundClipMute(property.getClipName(), !property.getValue());
+      ClipPlayer.setSoundClipMute(property.getClipName(), !property.getValue());
     }
-    clipPlayer.saveSoundPreferences();
+    ClipPlayer.saveSoundPreferences();
   }
 
   /** Builds a checkbox menu item to turn sounds on or off. */

@@ -5,33 +5,31 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.stream.Stream;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
 
 /**
@@ -116,18 +114,11 @@ public class ClipPlayer {
   private static final String MP3_SUFFIX = ".mp3";
   private static ClipPlayer clipPlayer;
 
-  protected final Map<String, List<URL>> sounds = new HashMap<>();
-  private final Set<String> mutedClips = new HashSet<>();
+  private static final Set<String> mutedClips = ConcurrentHashMap.newKeySet();
 
-  private final boolean systemHasAudio;
-  private final ResourceLoader resourceLoader;
-
-  private ClipPlayer(final ResourceLoader resourceLoader) {
-    this.resourceLoader = resourceLoader;
+  static {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     final Set<String> choices = SoundPath.getAllSoundOptions();
-
-    systemHasAudio = checkSystemForAudio();
 
     for (final String sound : choices) {
       final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false);
@@ -137,7 +128,15 @@ public class ClipPlayer {
     }
   }
 
-  private static boolean checkSystemForAudio() {
+  protected final Map<String, List<URL>> sounds = new HashMap<>();
+
+  private final ResourceLoader resourceLoader;
+
+  private ClipPlayer(final ResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
+  }
+
+  public static boolean hasAudio() {
     try {
       FactoryRegistry.systemRegistry().createAudioDevice();
       return true;
@@ -147,12 +146,7 @@ public class ClipPlayer {
     }
   }
 
-  static synchronized ClipPlayer getInstance() {
-    return Optional.ofNullable(clipPlayer)
-        .orElseGet(() -> new ClipPlayer(ResourceLoader.getGameEngineAssetLoader()));
-  }
-
-  public static synchronized void getInstance(final ResourceLoader resourceLoader) {
+  public static synchronized void setResourceLoader(final ResourceLoader resourceLoader) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
     if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
       // make a new clip player with our new resource loader
@@ -160,11 +154,7 @@ public class ClipPlayer {
     }
   }
 
-  public static boolean hasAudio() {
-    return getInstance().systemHasAudio;
-  }
-
-  boolean isSoundClipMuted(final String clipName) {
+  static boolean isSoundClipMuted(final String clipName) {
     if (mutedClips.contains(clipName)) {
       return true;
     }
@@ -192,7 +182,7 @@ public class ClipPlayer {
     return false;
   }
 
-  void setSoundClipMute(final String clipName, final boolean value) {
+  static void setSoundClipMute(final String clipName, final boolean value) {
     // we want to avoid unnecessary calls to preferences
     final boolean isCurrentCorrect = mutedClips.contains(clipName) == value;
     if (isCurrentCorrect) {
@@ -211,7 +201,7 @@ public class ClipPlayer {
    * Flushes sounds preferences to persisted data store. This method is *slow* and resource
    * expensive.
    */
-  void saveSoundPreferences() {
+  static void saveSoundPreferences() {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     try {
       prefs.flush();
@@ -232,7 +222,13 @@ public class ClipPlayer {
    * @param gamePlayer - the name of the player, or null
    */
   public static void play(final String clipPath, final GamePlayer gamePlayer) {
-    getInstance().playClip(clipPath, gamePlayer);
+    final ClipPlayer result;
+    synchronized (ClipPlayer.class) {
+      result =
+          Optional.ofNullable(clipPlayer)
+              .orElseThrow(() -> new IllegalStateException("No resource loader has been set"));
+    }
+    result.playClip(clipPath, gamePlayer);
   }
 
   private void playClip(final String clipName, final GamePlayer gamePlayer) {
@@ -332,131 +328,43 @@ public class ClipPlayer {
    * @param resourceAndPathUrl (URL uses '/', not File.separator or '\')
    */
   protected List<URL> findClipFiles(final String resourceAndPathUrl) {
-    final List<URL> availableSounds = new ArrayList<>();
     final URL thisSoundUrl = resourceLoader.getResource(resourceAndPathUrl);
     if (thisSoundUrl == null) {
-      return availableSounds;
+      return List.of();
     }
-    final URI thisSoundUri;
-    File thisSoundFile;
-    // we are checking to see if this is a file, to see if it is a directory, or a sound, or a
-    // zipped directory, or a
-    // zipped sound. There might be a better way to do this...
+    final Path thisSoundPath;
     try {
-      thisSoundUri = thisSoundUrl.toURI();
-      try {
-        thisSoundFile = new File(thisSoundUri);
-      } catch (final Exception e) {
-        try {
-          thisSoundFile = new File(thisSoundUri.getPath());
-        } catch (final Exception e3) {
-          thisSoundFile = new File(thisSoundUrl.getPath());
-        }
-      }
-    } catch (final URISyntaxException e1) {
-      try {
-        thisSoundFile = new File(thisSoundUrl.getPath());
-      } catch (final Exception e4) {
-        thisSoundFile = null;
-      }
-    } catch (final Exception e2) {
-      thisSoundFile = null;
+      thisSoundPath = Path.of(thisSoundUrl.toURI());
+    } catch (final URISyntaxException e) {
+      throw new IllegalStateException("Invalid URL format", e);
     }
 
-    if (thisSoundFile == null || !thisSoundFile.exists()) {
-      // final long startTime = System.currentTimeMillis();
-      // we are probably using zipped sounds. there might be a better way to do this...
-      final String soundFilePath = thisSoundUrl.getPath();
-      if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.contains(".zip!")) {
-        // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you
-        // make a file and test
-        // if it exists, if it starts with that it doesn't exist
-        final int index1 =
-            Math.max(
-                0,
-                Math.min(
-                    soundFilePath.length(),
-                    soundFilePath.contains("file:") ? soundFilePath.indexOf("file:") + 5 : 0));
-        final String zipFilePath =
-            soundFilePath.substring(
-                index1,
-                Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
-        if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
-          // the file path may have spaces, which in a URL are equal to %20, but if we make a file
-          // using that it will fail, so we need to decode
-          final String decoded = URLDecoder.decode(zipFilePath, StandardCharsets.UTF_8);
-
-          try {
-            final File zipFile = new File(decoded);
-            if (zipFile.exists()) {
-              try (ZipFile zf = new ZipFile(zipFile)) {
-                final List<URL> newSounds =
-                    zf.stream()
-                        .filter(zipElement -> isZippedMp3(zipElement, resourceAndPathUrl))
-                        .map(ZipEntry::getName)
-                        .map(
-                            name -> {
-                              try {
-                                return resourceLoader.getResource(name);
-                              } catch (final RuntimeException e) {
-                                log.error("Failed to load sound resource: " + name, e);
-                              }
-                              return null;
-                            })
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-
-                availableSounds.addAll(newSounds);
-              }
-            }
-          } catch (final Exception e) {
-            log.error("Failed to read sound file: " + decoded, e);
-          }
-        }
+    if (Files.isDirectory(thisSoundPath)) {
+      try (Stream<Path> files = Files.list(thisSoundPath)) {
+        return files
+            .filter(ClipPlayer::hasMp3Extension)
+            .flatMap(
+                soundFile -> {
+                  try {
+                    return Stream.of(soundFile.toUri().toURL());
+                  } catch (final MalformedURLException e) {
+                    log.error("Error " + e.getMessage() + " with sound file: " + soundFile, e);
+                    return Stream.empty();
+                  }
+                })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+      } catch (final IOException e) {
+        log.error("Failed to list files in directory " + thisSoundPath, e);
       }
-    } else {
-      // we must be using unzipped sounds
-      if (!thisSoundFile.isDirectory()) {
-        if (!isSoundFileNamed(thisSoundFile)) {
-          return availableSounds;
-        }
-        availableSounds.add(thisSoundUrl);
-      }
+    } else if (hasMp3Extension(thisSoundPath) && Files.isReadable(thisSoundPath)) {
+      return List.of(thisSoundUrl);
     }
 
-    if (thisSoundFile != null) {
-      if (thisSoundFile.isDirectory()) {
-        for (final File soundFile : FileUtils.listFiles(thisSoundFile)) {
-          if (isSoundFileNamed(soundFile)) {
-            try {
-              final URL individualSoundUrl = soundFile.toURI().toURL();
-              availableSounds.add(individualSoundUrl);
-            } catch (final MalformedURLException e) {
-              final String msg =
-                  "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
-              log.error(msg, e);
-            }
-          }
-        }
-      } else {
-        if (!isSoundFileNamed(thisSoundFile)) {
-          return availableSounds;
-        }
-        availableSounds.add(thisSoundUrl);
-      }
-    }
-
-    return availableSounds;
+    return List.of();
   }
 
-  private static boolean isZippedMp3(final ZipEntry zipElement, final String resourceAndPathUrl) {
-    return zipElement != null
-        && zipElement.getName() != null
-        && zipElement.getName().contains(resourceAndPathUrl)
-        && zipElement.getName().endsWith(MP3_SUFFIX);
-  }
-
-  private static boolean isSoundFileNamed(final File soundFile) {
-    return soundFile.getName().endsWith(MP3_SUFFIX);
+  private static boolean hasMp3Extension(final Path soundFile) {
+    return soundFile.toString().endsWith(MP3_SUFFIX);
   }
 }
