@@ -655,8 +655,8 @@ public class MustFightBattle extends DependentBattle
           battleId,
           battleSite,
           getBattleTitle(),
-          removeNonCombatants(attackingUnits, defendingUnits, true, false),
-          removeNonCombatants(defendingUnits, attackingUnits, false, false),
+          calculateCombatants(OFFENSE, false),
+          calculateCombatants(DEFENSE, false),
           killed,
           attackingWaitingToDie,
           defendingWaitingToDie,
@@ -691,8 +691,8 @@ public class MustFightBattle extends DependentBattle
         battleId,
         battleSite,
         getBattleTitle(),
-        removeNonCombatants(attackingUnits, defendingUnits, true, false),
-        removeNonCombatants(defendingUnits, attackingUnits, false, false),
+        calculateCombatants(OFFENSE, false),
+        calculateCombatants(DEFENSE, false),
         killed,
         attackingWaitingToDie,
         defendingWaitingToDie,
@@ -1248,65 +1248,57 @@ public class MustFightBattle extends DependentBattle
    * @return the removed units
    */
   @Override
-  public Collection<Unit> removeNonCombatants(final Side side) {
+  public Collection<Unit> removeNonCombatants(
+      final Side side, final boolean removeAaUnitsThatFireThisRound) {
+    final List<Unit> combatants = calculateCombatants(side, removeAaUnitsThatFireThisRound);
+    final Collection<Unit> nonCombatants;
     if (side == DEFENSE) {
-      final List<Unit> notRemovedDefending =
-          removeNonCombatants(defendingUnits, attackingUnits, false, true);
-      final Collection<Unit> toRemoveDefending =
-          CollectionUtils.difference(defendingUnits, notRemovedDefending);
-      defendingUnits = notRemovedDefending;
-      return toRemoveDefending;
+      nonCombatants = CollectionUtils.difference(defendingUnits, combatants);
+      defendingUnits = combatants;
     } else {
-      final List<Unit> notRemovedAttacking =
-          removeNonCombatants(attackingUnits, defendingUnits, true, true);
-      final Collection<Unit> toRemoveAttacking =
-          CollectionUtils.difference(attackingUnits, notRemovedAttacking);
-      attackingUnits = notRemovedAttacking;
-      return toRemoveAttacking;
+      nonCombatants = CollectionUtils.difference(attackingUnits, combatants);
+      attackingUnits = combatants;
     }
+    return nonCombatants;
   }
 
   /**
-   * Returns only the relevant non-combatant units present in the specified collection.
+   * Returns only relevant combatant units present in the specified collection.
    *
-   * @return a collection containing all the combatants in units non-combatants include such things
-   *     as factories, aa guns, land units in a water battle.
+   * <p>Non-combatants include such things as:
+   *
+   * <ul>
+   *   <li>factories
+   *   <li>aa guns that won't fire any more
+   *   <li>land units in a water battle
+   *   <li>sea units in a land battle
+   *   <li>units that will be captured on entering
+   * </ul>
    */
-  private List<Unit> removeNonCombatants(
-      final Collection<Unit> units,
-      final Collection<Unit> enemyUnits,
-      final boolean attacking,
-      final boolean removeForNextRound) {
-    final List<Unit> unitList = new ArrayList<>(units);
-    if (battleSite.isWater()) {
-      unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitIsLand()));
-    }
-    // still allow infrastructure type units that can provide support have combat abilities
+  private List<Unit> calculateCombatants(
+      final Side side, final boolean removeAaUnitsThatFireThisRound) {
+    final List<Unit> unitList = new ArrayList<>(filterUnits(UnitBattleFilter.ALIVE, side));
+    // still allow infrastructure type units that can provide support or have combat abilities
     // remove infrastructure units that can't take part in combat (air/naval bases, etc...)
     unitList.removeAll(
         CollectionUtils.getMatches(
             unitList,
             Matches.unitCanBeInBattle(
-                    attacking,
+                    side == OFFENSE,
                     !battleSite.isWater(),
-                    (removeForNextRound ? round + 1 : round),
+                    (removeAaUnitsThatFireThisRound ? round + 1 : round),
                     false,
-                    enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet()))
+                    filterUnits(UnitBattleFilter.ALIVE, side.getOpposite()).stream()
+                        .map(Unit::getType)
+                        .collect(Collectors.toSet()))
                 .negate()));
-    // remove capturableOnEntering units (veqryn)
+    // remove capturableOnEntering units
     unitList.removeAll(
         CollectionUtils.getMatches(
             unitList,
             Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
                 attacker, battleSite, gameData.getProperties())));
-    // remove any allied air units that are stuck on damaged carriers (veqryn)
-    unitList.removeAll(
-        CollectionUtils.getMatches(
-            unitList,
-            Matches.unitIsBeingTransported()
-                .and(Matches.unitIsAir())
-                .and(Matches.unitCanLandOnCarrier())));
-    // remove any units that were in air combat (veqryn)
+    // remove any units that were in air combat
     unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitWasInAirBattle()));
     return unitList;
   }

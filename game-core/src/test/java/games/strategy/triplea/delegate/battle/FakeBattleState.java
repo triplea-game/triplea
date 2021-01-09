@@ -159,7 +159,8 @@ public class FakeBattleState implements BattleState {
   }
 
   @Override
-  public Collection<Unit> removeNonCombatants(final Side side) {
+  public Collection<Unit> removeNonCombatants(
+      final Side side, final boolean removeAaUnitsThatFireThisRound) {
     return List.of();
   }
 

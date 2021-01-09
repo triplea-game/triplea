@@ -40,10 +40,10 @@ class RemoveNonCombatantsTest {
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
 
     final Collection<Unit> offenseNonCombatants = List.of(mock(Unit.class));
-    when(battleState.removeNonCombatants(BattleState.Side.OFFENSE))
+    when(battleState.removeNonCombatants(BattleState.Side.OFFENSE, true))
         .thenReturn(offenseNonCombatants);
     final Collection<Unit> defenseNonCombatants = List.of(mock(Unit.class));
-    when(battleState.removeNonCombatants(BattleState.Side.DEFENSE))
+    when(battleState.removeNonCombatants(BattleState.Side.DEFENSE, true))
         .thenReturn(defenseNonCombatants);
 
     when(battleState.getPlayer(BattleState.Side.OFFENSE)).thenReturn(attacker);
@@ -69,10 +69,10 @@ class RemoveNonCombatantsTest {
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
 
     final Collection<Unit> offenseNonCombatants = List.of(mock(Unit.class));
-    when(battleState.removeNonCombatants(BattleState.Side.OFFENSE))
+    when(battleState.removeNonCombatants(BattleState.Side.OFFENSE, true))
         .thenReturn(offenseNonCombatants);
     final Collection<Unit> defenseNonCombatants = List.of();
-    when(battleState.removeNonCombatants(BattleState.Side.DEFENSE))
+    when(battleState.removeNonCombatants(BattleState.Side.DEFENSE, true))
         .thenReturn(defenseNonCombatants);
 
     when(battleState.getPlayer(BattleState.Side.OFFENSE)).thenReturn(attacker);
@@ -94,10 +94,10 @@ class RemoveNonCombatantsTest {
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
 
     final Collection<Unit> offenseNonCombatants = List.of();
-    when(battleState.removeNonCombatants(BattleState.Side.OFFENSE))
+    when(battleState.removeNonCombatants(BattleState.Side.OFFENSE, true))
         .thenReturn(offenseNonCombatants);
     final Collection<Unit> defenseNonCombatants = List.of(mock(Unit.class));
-    when(battleState.removeNonCombatants(BattleState.Side.DEFENSE))
+    when(battleState.removeNonCombatants(BattleState.Side.DEFENSE, true))
         .thenReturn(defenseNonCombatants);
 
     when(battleState.getPlayer(BattleState.Side.DEFENSE)).thenReturn(defender);

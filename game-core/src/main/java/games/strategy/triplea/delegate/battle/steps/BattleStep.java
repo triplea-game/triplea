@@ -44,6 +44,7 @@ import java.util.List;
 public interface BattleStep extends IExecutable {
 
   enum Order {
+    REMOVE_NON_COMBATANTS_INITIAL,
     AA_OFFENSIVE,
     AA_DEFENSIVE,
     AA_REMOVE_CASUALTIES,

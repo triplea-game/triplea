@@ -13,6 +13,11 @@ import java.util.List;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
+/**
+ * Removes non combatants after AA phase
+ *
+ * <p>This also removes AA units that can't fire anymore after this round.
+ */
 public class RemoveNonCombatants implements BattleStep {
 
   private static final long serialVersionUID = 7629566123535773501L;
@@ -44,7 +49,7 @@ public class RemoveNonCombatants implements BattleStep {
   }
 
   private void removeNonCombatants(final BattleState.Side side, final IDelegateBridge bridge) {
-    final Collection<Unit> nonCombatants = battleState.removeNonCombatants(side);
+    final Collection<Unit> nonCombatants = battleState.removeNonCombatants(side, true);
     if (nonCombatants.isEmpty()) {
       return;
     }

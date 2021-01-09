@@ -90,7 +90,10 @@ public interface BattleState {
 
   void retreatUnits(Side side, Collection<Unit> units);
 
-  Collection<Unit> removeNonCombatants(Side side);
+  /**
+   * @param removeAaUnitsThatFireThisRound Should AA units that fire this round be removed or not
+   */
+  Collection<Unit> removeNonCombatants(Side side, boolean removeAaUnitsThatFireThisRound);
 
   /**
    * Mark the units that will be dying
