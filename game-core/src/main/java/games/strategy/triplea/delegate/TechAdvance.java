@@ -5,15 +5,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,22 +49,21 @@ public abstract class TechAdvance extends NamedAttachable {
   public static final String TECH_NAME_DESTROYER_BOMBARD = "Destroyer Bombard";
   public static final String TECH_PROPERTY_DESTROYER_BOMBARD = "destroyerBombard";
   public static final List<String> ALL_PREDEFINED_TECHNOLOGY_NAMES =
-      Collections.unmodifiableList(
-          List.of(
-              TECH_NAME_SUPER_SUBS,
-              TECH_NAME_JET_POWER,
-              TECH_NAME_IMPROVED_SHIPYARDS,
-              TECH_NAME_AA_RADAR,
-              TECH_NAME_LONG_RANGE_AIRCRAFT,
-              TECH_NAME_HEAVY_BOMBER,
-              TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
-              TECH_NAME_ROCKETS,
-              TECH_NAME_PARATROOPERS,
-              TECH_NAME_INCREASED_FACTORY_PRODUCTION,
-              TECH_NAME_WAR_BONDS,
-              TECH_NAME_MECHANIZED_INFANTRY,
-              TECH_NAME_INDUSTRIAL_TECHNOLOGY,
-              TECH_NAME_DESTROYER_BOMBARD));
+      List.of(
+          TECH_NAME_SUPER_SUBS,
+          TECH_NAME_JET_POWER,
+          TECH_NAME_IMPROVED_SHIPYARDS,
+          TECH_NAME_AA_RADAR,
+          TECH_NAME_LONG_RANGE_AIRCRAFT,
+          TECH_NAME_HEAVY_BOMBER,
+          TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
+          TECH_NAME_ROCKETS,
+          TECH_NAME_PARATROOPERS,
+          TECH_NAME_INCREASED_FACTORY_PRODUCTION,
+          TECH_NAME_WAR_BONDS,
+          TECH_NAME_MECHANIZED_INFANTRY,
+          TECH_NAME_INDUSTRIAL_TECHNOLOGY,
+          TECH_NAME_DESTROYER_BOMBARD);
   private static final long serialVersionUID = -1076712297024403156L;
   private static final Class<?>[] preDefinedTechConstructorParameter =
       new Class<?>[] {GameData.class};
@@ -79,24 +75,22 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   private static Map<String, Class<? extends TechAdvance>> newPredefinedTechnologyMap() {
-    final Map<String, Class<? extends TechAdvance>> preDefinedTechMap = new HashMap<>();
-    preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_SHIPYARDS, ImprovedShipyardsAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_AA_RADAR, AaRadarAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_LONG_RANGE_AIRCRAFT, LongRangeAircraftAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_HEAVY_BOMBER, HeavyBomberAdvance.class);
-    preDefinedTechMap.put(
-        TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT, ImprovedArtillerySupportAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_ROCKETS, RocketsAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_PARATROOPERS, ParatroopersAdvance.class);
-    preDefinedTechMap.put(
-        TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, IncreasedFactoryProductionAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_WAR_BONDS, WarBondsAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_MECHANIZED_INFANTRY, MechanizedInfantryAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY, IndustrialTechnologyAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_DESTROYER_BOMBARD, DestroyerBombardTechAdvance.class);
-    return Collections.unmodifiableMap(preDefinedTechMap);
+    return Map.ofEntries(
+        Map.entry(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class),
+        Map.entry(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class),
+        Map.entry(TECH_PROPERTY_IMPROVED_SHIPYARDS, ImprovedShipyardsAdvance.class),
+        Map.entry(TECH_PROPERTY_AA_RADAR, AaRadarAdvance.class),
+        Map.entry(TECH_PROPERTY_LONG_RANGE_AIRCRAFT, LongRangeAircraftAdvance.class),
+        Map.entry(TECH_PROPERTY_HEAVY_BOMBER, HeavyBomberAdvance.class),
+        Map.entry(TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT, ImprovedArtillerySupportAdvance.class),
+        Map.entry(TECH_PROPERTY_ROCKETS, RocketsAdvance.class),
+        Map.entry(TECH_PROPERTY_PARATROOPERS, ParatroopersAdvance.class),
+        Map.entry(
+            TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, IncreasedFactoryProductionAdvance.class),
+        Map.entry(TECH_PROPERTY_WAR_BONDS, WarBondsAdvance.class),
+        Map.entry(TECH_PROPERTY_MECHANIZED_INFANTRY, MechanizedInfantryAdvance.class),
+        Map.entry(TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY, IndustrialTechnologyAdvance.class),
+        Map.entry(TECH_PROPERTY_DESTROYER_BOMBARD, DestroyerBombardTechAdvance.class));
   }
 
   public abstract String getProperty();
@@ -185,7 +179,7 @@ public abstract class TechAdvance extends NamedAttachable {
    *     instance.
    */
   public static TechAdvance findDefinedAdvanceAndCreateAdvance(
-      final String technologyName, final GameState data) {
+      final String technologyName, final GameData data) {
     final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(technologyName);
     if (clazz == null) {
       throw new IllegalArgumentException(technologyName + " is not a valid technology");

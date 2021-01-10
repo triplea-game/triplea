@@ -78,7 +78,7 @@ public class InGameLobbyWatcher {
     final int playerCount =
         Optional.ofNullable(oldGameDescription)
             .map(GameDescription::getPlayerCount)
-            .orElseGet(() -> humanPlayer ? 1 : 0);
+            .orElse(humanPlayer ? 1 : 0);
 
     final GameDescription.GameStatus gameStatus =
         Optional.ofNullable(oldGameDescription)

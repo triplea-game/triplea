@@ -158,11 +158,10 @@ public class OffensiveGeneralRetreat implements BattleStep {
     retreatChanges
         .getHistoryText()
         .forEach(
-            historyChild -> {
-              bridge
-                  .getHistoryWriter()
-                  .addChildToEvent(historyChild.getText(), historyChild.getUnits());
-            });
+            historyChild ->
+                bridge
+                    .getHistoryWriter()
+                    .addChildToEvent(historyChild.getText(), historyChild.getUnits()));
 
     if (battleState.filterUnits(ALIVE, OFFENSE).isEmpty()) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);

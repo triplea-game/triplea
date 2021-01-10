@@ -290,7 +290,7 @@ public final class TransportUtils {
   private static Map<Unit, List<Unit>> sortByTransportOptionsAscending(
       final Map<Unit, List<Unit>> unitToPotentialTransports) {
     return unitToPotentialTransports.entrySet().stream()
-        .sorted(Comparator.comparing(Entry::getValue, Comparator.comparing(List::size)))
+        .sorted(Entry.comparingByValue(Comparator.comparing(List::size)))
         .collect(
             Collectors.toMap(
                 Entry::getKey,

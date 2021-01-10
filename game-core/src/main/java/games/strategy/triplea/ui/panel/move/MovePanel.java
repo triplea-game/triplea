@@ -1429,7 +1429,7 @@ public class MovePanel extends AbstractMovePanel {
     final List<Unit> unitsCopy = new ArrayList<>(units);
     for (final Unit unit : unitsCopy) {
       for (final Unit dependent : mustMoveWithDetails.getMustMoveWithForUnit(unit)) {
-        if (unitsCopy.indexOf(dependent) == -1) {
+        if (!unitsCopy.contains(dependent)) {
           units.add(dependent);
         }
       }

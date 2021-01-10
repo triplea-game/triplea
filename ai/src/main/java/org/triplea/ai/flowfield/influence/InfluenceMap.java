@@ -75,13 +75,12 @@ public class InfluenceMap {
 
     // from each of the initial territories, diffuse their values to all of their neighbors
     fieldTerritories.forEach(
-        territory -> {
-          diffuseValue(
-              territory,
-              diffuseRate,
-              initialTerritories.get(territory.getTerritory()),
-              mapWithNeighbors);
-        });
+        territory ->
+            diffuseValue(
+                territory,
+                diffuseRate,
+                initialTerritories.get(territory.getTerritory()),
+                mapWithNeighbors));
   }
 
   /**

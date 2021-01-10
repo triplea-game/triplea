@@ -32,7 +32,7 @@ public final class DownloadFileDescription {
   enum DownloadType {
     MAP,
     MAP_SKIN,
-    MAP_TOOL;
+    MAP_TOOL
   }
 
   enum MapCategory {

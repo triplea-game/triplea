@@ -65,6 +65,7 @@ class SelectMainBattleCasualtiesTest {
 
   @Test
   @DisplayName("Edit mode always calls the select function")
+  @SuppressWarnings("unchecked")
   void isEditMode() {
     final List<Unit> targetUnits = List.of(givenAnyUnit(), givenAnyUnit());
     when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
@@ -112,6 +113,7 @@ class SelectMainBattleCasualtiesTest {
     @DisplayName(
         "The units have a total of 4 hit points and only take 3 damage so the user needs "
             + "to select some casualties")
+    @SuppressWarnings("unchecked")
     void moreHitPointsThanHits() {
       final List<Unit> targetUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -213,6 +215,7 @@ class SelectMainBattleCasualtiesTest {
     @DisplayName(
         "Non transports have 4 hit points and there is only 3 damages so the player "
             + "needs to select from them, not the transport unit")
+    @SuppressWarnings("unchecked")
     void moreNonTransportsHitPointsThanHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
@@ -312,6 +315,7 @@ class SelectMainBattleCasualtiesTest {
     @DisplayName(
         "Non transports have 2 hit points but there is 4 damages. The player needs "
             + "to select some transport casualties.")
+    @SuppressWarnings("unchecked")
     void lessNonTransportsHitPointsThanHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
@@ -380,6 +384,7 @@ class SelectMainBattleCasualtiesTest {
         "Non transports have 2 hit points but there is 4 damages. The player needs "
             + "to select some transport casualties. Some of the transports are allies so there "
             + "should be enough from all of the allies to cover the casualties.")
+    @SuppressWarnings("unchecked")
     void lessNonTransportsHitPointsThanHitsWithAlliedTransports() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);

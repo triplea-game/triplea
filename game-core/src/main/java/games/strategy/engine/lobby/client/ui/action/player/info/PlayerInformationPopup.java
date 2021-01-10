@@ -18,14 +18,13 @@ class PlayerInformationPopup {
   void showPopup(
       final JFrame parent, final UserName playerName, final PlayerSummary playerSummary) {
     SwingUtilities.invokeLater(
-        () -> {
-          new JDialogBuilder()
-              .parent(parent)
-              .title("Player: " + playerName.getValue())
-              .add(dialog -> PlayerInformationPopup.buildContentPanel(dialog, playerSummary))
-              .escapeKeyCloses()
-              .buildAndShow();
-        });
+        () ->
+            new JDialogBuilder()
+                .parent(parent)
+                .title("Player: " + playerName.getValue())
+                .add(dialog -> PlayerInformationPopup.buildContentPanel(dialog, playerSummary))
+                .escapeKeyCloses()
+                .buildAndShow());
   }
 
   private JPanel buildContentPanel(final JDialog dialog, final PlayerSummary playerSummary) {

@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicates;
 import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -248,7 +247,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return searched; // End condition for recursion
     }
     final Predicate<Territory> neighborCond =
-        (distance == 1) ? Predicates.alwaysTrue() : territoryCondition;
+        (distance == 1) ? territory -> true : territoryCondition;
     final Set<Territory> newFrontier =
         frontier.stream()
             .map(t -> getNeighbors(t, neighborCond))

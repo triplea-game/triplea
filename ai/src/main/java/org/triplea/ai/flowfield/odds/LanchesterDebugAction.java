@@ -70,14 +70,12 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
     for (int i = 0; i < 4; i++) {
       getRandomUnitType(offenseUnitTypes)
           .ifPresent(
-              unitType -> {
-                attackingUnits.addAll(unitType.create(new Random().nextInt(10), offender));
-              });
+              unitType ->
+                  attackingUnits.addAll(unitType.create(new Random().nextInt(10), offender)));
       getRandomUnitType(defenseUnitTypes)
           .ifPresent(
-              unitType -> {
-                defendingUnits.addAll(unitType.create(new Random().nextInt(10), defender));
-              });
+              unitType ->
+                  defendingUnits.addAll(unitType.create(new Random().nextInt(10), defender)));
     }
 
     System.out.println("Attack Units: " + MyFormatter.unitsToText(attackingUnits));

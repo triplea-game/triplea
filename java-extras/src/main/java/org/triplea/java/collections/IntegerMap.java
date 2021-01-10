@@ -1,7 +1,6 @@
 package org.triplea.java.collections;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -84,7 +83,7 @@ public final class IntegerMap<T> implements Serializable {
   /** Will return null if empty. */
   public T lowestKey() {
     return mapValues.entrySet().stream()
-        .min(Comparator.comparing(Map.Entry::getValue))
+        .min(Map.Entry.comparingByValue())
         .map(Map.Entry::getKey)
         .orElse(null);
   }

@@ -321,17 +321,16 @@ class DiceRollTest {
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     attackers.forEach(
-        unit -> {
-          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
-              .ifPresent(
-                  property -> {
-                    try {
-                      property.setValue(true);
-                    } catch (final MutableProperty.InvalidValueException e) {
-                      // ignore
-                    }
-                  });
-        });
+        unit ->
+            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+                .ifPresent(
+                    property -> {
+                      try {
+                        property.setValue(true);
+                      } catch (final MutableProperty.InvalidValueException e) {
+                        // ignore
+                      }
+                    }));
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
     final DiceRoll roll =
@@ -362,17 +361,16 @@ class DiceRollTest {
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(3, americans);
     attackers.forEach(
-        unit -> {
-          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
-              .ifPresent(
-                  property -> {
-                    try {
-                      property.setValue(true);
-                    } catch (final MutableProperty.InvalidValueException e) {
-                      // ignore
-                    }
-                  });
-        });
+        unit ->
+            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+                .ifPresent(
+                    property -> {
+                      try {
+                        property.setValue(true);
+                      } catch (final MutableProperty.InvalidValueException e) {
+                        // ignore
+                      }
+                    }));
     final IDelegateBridge bridge = newDelegateBridge(americans);
     final DiceRoll roll =
         RollDiceFactory.rollBattleDice(
@@ -402,17 +400,16 @@ class DiceRollTest {
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     attackers.forEach(
-        unit -> {
-          unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
-              .ifPresent(
-                  property -> {
-                    try {
-                      property.setValue(false);
-                    } catch (final MutableProperty.InvalidValueException e) {
-                      // ignore
-                    }
-                  });
-        });
+        unit ->
+            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+                .ifPresent(
+                    property -> {
+                      try {
+                        property.setValue(false);
+                      } catch (final MutableProperty.InvalidValueException e) {
+                        // ignore
+                      }
+                    }));
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
     final DiceRoll roll =

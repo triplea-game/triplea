@@ -209,7 +209,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasMoved() {
-    return unit -> unit.hasMoved();
+    return Unit::hasMoved;
   }
 
   public static Predicate<Unit> unitHasNotMoved() {

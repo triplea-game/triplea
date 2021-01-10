@@ -46,10 +46,9 @@ class TargetGroup {
   public static List<TargetGroup> newTargetGroups(
       final Collection<Unit> units, final Collection<Unit> enemyUnits) {
 
-    final Set<UnitType> unitTypes =
-        units.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
+    final Set<UnitType> unitTypes = units.stream().map(Unit::getType).collect(Collectors.toSet());
     final Set<UnitType> enemyUnitTypes =
-        enemyUnits.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
+        enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet());
     final List<TargetGroup> targetGroups = new ArrayList<>();
     for (final UnitType unitType : unitTypes) {
       final Set<UnitType> targets = findTargets(unitType, unitTypes, enemyUnitTypes);
