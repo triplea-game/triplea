@@ -17,6 +17,10 @@ import lombok.AllArgsConstructor;
 public class AvailableGamesList {
   private final Set<DefaultGameChooserEntry> availableGames;
 
+  public static synchronized AvailableGamesList parseMapFiles() {
+    return AvailableGamesFileSystemReader.parseMapFiles();
+  }
+
   public List<String> getSortedGameList() {
     return availableGames.stream()
         .map(DefaultGameChooserEntry::getGameName)

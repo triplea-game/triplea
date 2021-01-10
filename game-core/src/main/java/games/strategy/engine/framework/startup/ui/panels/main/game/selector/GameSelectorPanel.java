@@ -8,7 +8,6 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.map.file.system.loader.AvailableGamesFileSystemReader;
 import games.strategy.engine.framework.map.file.system.loader.AvailableGamesList;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
@@ -381,7 +380,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     try {
       final AvailableGamesList availableGamesList =
           BackgroundTaskRunner.runInBackgroundAndReturn(
-              "Loading all available games...", AvailableGamesFileSystemReader::parseMapFiles);
+              "Loading all available games...", AvailableGamesList::parseMapFiles);
 
       GameChooser.chooseGame(
           JOptionPane.getFrameForComponent(this),

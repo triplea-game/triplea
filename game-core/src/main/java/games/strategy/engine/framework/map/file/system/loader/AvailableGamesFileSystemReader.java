@@ -25,11 +25,11 @@ import org.triplea.io.ZipFileUtil;
  */
 @UtilityClass
 @Slf4j
-public class AvailableGamesFileSystemReader {
+class AvailableGamesFileSystemReader {
 
   private static final String ZIP_EXTENSION = ".zip";
 
-  public static synchronized AvailableGamesList parseMapFiles() {
+  static synchronized AvailableGamesList parseMapFiles() {
     final Set<DefaultGameChooserEntry> entries = new HashSet<>();
     entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
     entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
