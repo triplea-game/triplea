@@ -15,14 +15,14 @@ import lombok.AllArgsConstructor;
  * onto their hard drive.
  */
 @AllArgsConstructor
-public class AvailableGamesList {
+public class DownloadedMaps {
   private final Set<DefaultGameChooserEntry> availableGames;
 
   /**
    * Reads the downloaded maps folder contents, parses those contents to find available games, and
    * returns the list of available games found.
    */
-  public static synchronized AvailableGamesList parseMapFiles() {
+  public static synchronized DownloadedMaps parseMapFiles() {
     return AvailableGamesFileSystemReader.parseMapFiles();
   }
 
