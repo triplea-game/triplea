@@ -47,8 +47,4 @@ public class AvailableGamesList {
         .findAny()
         .map(DefaultGameChooserEntry::getUri);
   }
-
-  void add(final DefaultGameChooserEntry defaultGameChooserEntry) {
-    availableGames.add(defaultGameChooserEntry);
-  }
 }
