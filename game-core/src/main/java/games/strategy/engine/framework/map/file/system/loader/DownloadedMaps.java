@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
+import java.io.File;
 import java.net.URI;
 import java.util.Comparator;
 import java.util.List;
@@ -17,8 +18,21 @@ import lombok.AllArgsConstructor;
 public class AvailableGamesList {
   private final Set<DefaultGameChooserEntry> availableGames;
 
+  /**
+   * Reads the downloaded maps folder contents, parses those contents to find available games, and
+   * returns the list of available games found.
+   */
   public static synchronized AvailableGamesList parseMapFiles() {
     return AvailableGamesFileSystemReader.parseMapFiles();
+  }
+
+  /**
+   * Finds the 'root' of a map folder containing map content files. This will typically be a folder
+   * called something like "downloadedMaps/mapName/map". Returns empty if no map with the given name
+   * is found.
+   */
+  public static Optional<File> findPathToMapFolder(final String mapName) {
+    return FileSystemMapFinder.getPath(mapName);
   }
 
   public List<String> getSortedGameList() {
