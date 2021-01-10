@@ -134,7 +134,7 @@ final class CollectionUtilsTest {
     void iterationOrder() {
       final Collection<Integer> collection =
           CollectionUtils.createSortedCollection(List.of(9, 5, 4, 12), null);
-      assertThat(collection, is(List.of(4, 5, 9, 12)));
+      assertThat(List.copyOf(collection), is(List.of(4, 5, 9, 12)));
     }
   }
 }
