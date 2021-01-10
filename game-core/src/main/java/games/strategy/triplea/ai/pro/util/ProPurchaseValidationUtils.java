@@ -19,7 +19,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -151,17 +150,17 @@ public final class ProPurchaseValidationUtils {
       final int remainingConstructions,
       final Territory territory) {
 
-    for (final Iterator<ProPurchaseOption> it = purchaseOptions.iterator(); it.hasNext(); ) {
-      final ProPurchaseOption purchaseOption = it.next();
-      if (!hasEnoughResourcesAndProduction(
-              purchaseOption, resourceTracker, remainingUnitProduction, remainingConstructions)
-          || hasReachedMaxUnitBuiltPerPlayer(
-              purchaseOption, player, data, unitsToPlace, purchaseTerritories)
-          || hasReachedConstructionLimits(
-              purchaseOption, data, unitsToPlace, purchaseTerritories, territory)) {
-        it.remove();
-      }
-    }
+    purchaseOptions.removeIf(
+        purchaseOption ->
+            !hasEnoughResourcesAndProduction(
+                    purchaseOption,
+                    resourceTracker,
+                    remainingUnitProduction,
+                    remainingConstructions)
+                || hasReachedMaxUnitBuiltPerPlayer(
+                    purchaseOption, player, data, unitsToPlace, purchaseTerritories)
+                || hasReachedConstructionLimits(
+                    purchaseOption, data, unitsToPlace, purchaseTerritories, territory));
   }
 
   private static boolean hasEnoughResourcesAndProduction(
@@ -203,9 +202,7 @@ public final class ProPurchaseValidationUtils {
         }
       }
       final int allowedBuild = maxBuilt - currentlyBuilt;
-      if (allowedBuild - purchaseOption.getQuantity() < 0) {
-        return true;
-      }
+      return allowedBuild - purchaseOption.getQuantity() < 0;
     }
     return false;
   }
@@ -232,9 +229,7 @@ public final class ProPurchaseValidationUtils {
       final int numExistingConstructionType =
           CollectionUtils.countMatches(
               territory.getUnits(), Matches.unitIsOfType(purchaseOption.getUnitType()));
-      if ((numConstructionTypeToPlace + numExistingConstructionType) >= maxConstructionType) {
-        return true;
-      }
+      return (numConstructionTypeToPlace + numExistingConstructionType) >= maxConstructionType;
     }
     return false;
   }

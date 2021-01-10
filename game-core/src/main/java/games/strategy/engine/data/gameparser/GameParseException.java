@@ -23,13 +23,13 @@ public final class GameParseException extends Exception {
     final StringBuilder errorMessage = new StringBuilder();
     parsingErrors.forEach(
         error ->
-            errorMessage.append(
-                "SAXParseException: Line: "
-                    + error.getLineNumber()
-                    + ", column: "
-                    + error.getColumnNumber()
-                    + ", error: "
-                    + error.getMessage()));
+            errorMessage
+                .append("SAXParseException: Line: ")
+                .append(error.getLineNumber())
+                .append(", column: ")
+                .append(error.getColumnNumber())
+                .append(", error: ")
+                .append(error.getMessage()));
     return errorMessage.toString();
   }
 }

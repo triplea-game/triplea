@@ -542,11 +542,7 @@ public final class DecorationPlacer {
         final JRadioButton button =
             new JRadioButton(type.toString() + "      :      " + type.getDescription());
         button.setActionCommand(type.toString());
-        if (imagePointType == type) {
-          button.setSelected(true);
-        } else {
-          button.setSelected(false);
-        }
+        button.setSelected(imagePointType == type);
         group.add(button);
         panel.add(button);
       }

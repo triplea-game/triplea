@@ -79,12 +79,11 @@ public class TransformDamagedUnitsHistoryChange implements HistoryChange {
     // new unit type
     final Map<UnitType, Map<UnitType, GroupedUnits>> groupedByOldAndNewUnitTypes = new HashMap<>();
     transformingUnits.forEach(
-        (oldUnit, newUnit) -> {
-          groupedByOldAndNewUnitTypes
-              .computeIfAbsent(oldUnit.getType(), k -> new HashMap<>())
-              .computeIfAbsent(newUnit.getType(), k -> new GroupedUnits())
-              .addUnits(oldUnit, newUnit);
-        });
+        (oldUnit, newUnit) ->
+            groupedByOldAndNewUnitTypes
+                .computeIfAbsent(oldUnit.getType(), k -> new HashMap<>())
+                .computeIfAbsent(newUnit.getType(), k -> new GroupedUnits())
+                .addUnits(oldUnit, newUnit));
 
     groupedByOldAndNewUnitTypes.values().stream()
         .flatMap(tmp -> tmp.values().stream())

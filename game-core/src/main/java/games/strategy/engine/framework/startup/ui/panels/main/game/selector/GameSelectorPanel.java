@@ -317,14 +317,11 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
           loadNewGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
           // Disable game options if there are none.
-          if (canChangeHostBotGameData
-              || (canSelectGameData
-                  && model.getGameData() != null
-                  && !model.getGameData().getProperties().getEditableProperties().isEmpty())) {
-            mapOptions.setEnabled(true);
-          } else {
-            mapOptions.setEnabled(false);
-          }
+          mapOptions.setEnabled(
+              canChangeHostBotGameData
+                  || (canSelectGameData
+                      && model.getGameData() != null
+                      && !model.getGameData().getProperties().getEditableProperties().isEmpty()));
         });
   }
 

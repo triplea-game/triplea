@@ -9,7 +9,6 @@ import static org.triplea.java.collections.CollectionUtils.getMatches;
 import static org.triplea.java.collections.CollectionUtils.getNMatches;
 import static org.triplea.java.collections.CollectionUtils.haveEqualSizeAndEquivalentElements;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -135,11 +134,7 @@ final class CollectionUtilsTest {
     void iterationOrder() {
       final Collection<Integer> collection =
           CollectionUtils.createSortedCollection(List.of(9, 5, 4, 12), null);
-      final List<Integer> entries = new ArrayList<>();
-      for (final Integer value : collection) {
-        entries.add(value);
-      }
-      assertThat(entries.toArray(), is(new Integer[] {4, 5, 9, 12}));
+      assertThat(List.copyOf(collection), is(List.of(4, 5, 9, 12)));
     }
   }
 }

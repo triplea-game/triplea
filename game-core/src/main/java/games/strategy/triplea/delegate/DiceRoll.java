@@ -92,21 +92,18 @@ public class DiceRoll implements Externalizable {
       final GamePlayer player,
       final Territory territory,
       final int battleRound) {
-    final StringBuilder buffer = new StringBuilder(80);
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player
     // name via the
     // getPlayerNameFromAnnotation() function above. When changing this format, update
     // getPlayerNameFromAnnotation(),
     // preferably in a way that is backwards compatible (can parse previous formats too).
-    buffer
-        .append(player.getName())
-        .append(" roll dice for ")
-        .append(MyFormatter.unitsToTextNoOwner(units))
-        .append(" in ")
-        .append(territory.getName())
-        .append(", round ")
-        .append(battleRound + 1);
-    return buffer.toString();
+    return player.getName()
+        + " roll dice for "
+        + MyFormatter.unitsToTextNoOwner(units)
+        + " in "
+        + territory.getName()
+        + ", round "
+        + (battleRound + 1);
   }
 
   public int getHits() {

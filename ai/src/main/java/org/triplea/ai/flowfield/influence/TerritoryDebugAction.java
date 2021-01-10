@@ -28,15 +28,14 @@ public class TerritoryDebugAction implements Consumer<AiPlayerDebugAction> {
             .summaryStatistics();
 
     aiPlayerDebugAction.renderOnMap(
-        debugMapRenderer -> {
-          gameMap.getTerritories().stream()
-              .map(territory -> influenceMap.getTerritories().get(territory))
-              .filter(Objects::nonNull)
-              .forEach(
-                  influenceTerritory ->
-                      colorOnTerritory(
-                          this.normalize(summary), debugMapRenderer, influenceTerritory));
-        });
+        debugMapRenderer ->
+            gameMap.getTerritories().stream()
+                .map(territory -> influenceMap.getTerritories().get(territory))
+                .filter(Objects::nonNull)
+                .forEach(
+                    influenceTerritory ->
+                        colorOnTerritory(
+                            this.normalize(summary), debugMapRenderer, influenceTerritory)));
   }
 
   private String buildTerritoryDetail(final Territory territory) {

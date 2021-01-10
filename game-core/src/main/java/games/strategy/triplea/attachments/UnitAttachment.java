@@ -1051,11 +1051,11 @@ public class UnitAttachment extends DefaultAttachment {
       return;
     }
     final String[] canOnlyInvadeFrom = splitOnColon(value);
-    if (canOnlyInvadeFrom[0].toLowerCase().equals("none")) {
+    if (canOnlyInvadeFrom[0].equalsIgnoreCase("none")) {
       canInvadeOnlyFrom = new String[] {"none"};
       return;
     }
-    if (canOnlyInvadeFrom[0].toLowerCase().equals("all")) {
+    if (canOnlyInvadeFrom[0].equalsIgnoreCase("all")) {
       canInvadeOnlyFrom = new String[] {"all"};
       return;
     }

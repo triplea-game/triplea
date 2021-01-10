@@ -155,11 +155,10 @@ class RouteFinderTest {
     final RouteFinder routeFinder =
         Mockito.spy(new RouteFinder(map, t -> true, new ArrayList<>(), player));
     doAnswer(
-            invocation -> {
-              return territoriesWithIncreasedCost.contains(invocation.getArgument(0))
-                  ? new BigDecimal(5)
-                  : BigDecimal.ONE;
-            })
+            invocation ->
+                territoriesWithIncreasedCost.contains(invocation.getArgument(0))
+                    ? new BigDecimal(5)
+                    : BigDecimal.ONE)
         .when(routeFinder)
         .getMaxMovementCost(any());
     return routeFinder;

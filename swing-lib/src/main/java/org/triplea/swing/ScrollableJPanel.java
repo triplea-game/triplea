@@ -22,7 +22,7 @@ public class ScrollableJPanel extends JPanel implements Scrollable {
     if (getParent() instanceof JViewport) {
       // When directly inside a viewport, preferred height is the greater of the underlying
       // preferred height or the viewport's size - so that we take the available space.
-      d.height = Math.max(d.height, ((JViewport) getParent()).getHeight());
+      d.height = Math.max(d.height, getParent().getHeight());
     }
     return d;
   }

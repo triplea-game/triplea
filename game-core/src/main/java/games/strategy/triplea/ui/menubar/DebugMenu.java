@@ -100,14 +100,13 @@ public final class DebugMenu extends JMenu {
                   // when a radio button is clicked, go through all of the other radio buttons
                   // in the group and deselect them
                   menuItem.addItemListener(
-                      e -> {
-                        radioButtonDeselectGroups
-                            .get(option.getExclusiveGroup())
-                            .entrySet()
-                            .stream()
-                            .filter(entry -> !entry.getKey().equals(e.getSource()))
-                            .forEach(entry -> entry.getValue().deselect());
-                      });
+                      e ->
+                          radioButtonDeselectGroups
+                              .get(option.getExclusiveGroup())
+                              .entrySet()
+                              .stream()
+                              .filter(entry -> !entry.getKey().equals(e.getSource()))
+                              .forEach(entry -> entry.getValue().deselect()));
                 }
                 // ActionType.NORMAL doesn't use deselect so it doesn't need extra logic
 

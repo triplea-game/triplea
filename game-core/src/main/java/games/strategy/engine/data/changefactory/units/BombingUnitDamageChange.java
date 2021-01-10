@@ -46,13 +46,12 @@ public class BombingUnitDamageChange extends Change {
     newDamage
         .keySet()
         .forEach(
-            unitId -> {
-              data.getUnits().get(UUID.fromString(unitId)).setUnitDamage(newDamage.getInt(unitId));
-            });
+            unitId ->
+                data.getUnits()
+                    .get(UUID.fromString(unitId))
+                    .setUnitDamage(newDamage.getInt(unitId)));
     this.territoriesToNotify.forEach(
-        territory -> {
-          data.getMap().getTerritory(territory).notifyChanged();
-        });
+        territory -> data.getMap().getTerritory(territory).notifyChanged());
   }
 
   @Override

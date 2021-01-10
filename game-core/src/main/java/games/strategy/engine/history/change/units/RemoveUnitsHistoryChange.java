@@ -60,10 +60,7 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
     transformDamagedUnitsHistoryChange =
         new TransformDamagedUnitsHistoryChange(location, killedUnits);
 
-    killedUnits.forEach(
-        unit -> {
-          unit.setHits(originalHits.getInt(unit));
-        });
+    killedUnits.forEach(unit -> unit.setHits(originalHits.getInt(unit)));
 
     oldUnits.addAll(killedUnits);
     // ensure that any units that are being transported are also killed
