@@ -47,7 +47,6 @@ class FileSystemMapFinder {
         new File(userMapsFolder, normalizedMapName));
   }
 
-
   /**
    * Returns a list of candidate zip files from which the specified map may be loaded.
    *
@@ -86,8 +85,4 @@ class FileSystemMapFinder {
     }
     return sb.toString();
   }
-
-
-
-
 }
