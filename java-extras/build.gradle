@@ -5,4 +5,5 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
 
     testImplementation project(':test-common')
+    testImplementation "commons-io:commons-io:$commonsIoVersion"
 }
