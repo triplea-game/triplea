@@ -25,17 +25,17 @@ import org.triplea.io.ZipFileUtil;
  */
 @UtilityClass
 @Slf4j
-public class AvailableGamesFileSystemReader {
+class AvailableGamesFileSystemReader {
 
   private static final String ZIP_EXTENSION = ".zip";
 
-  public static synchronized AvailableGamesList parseMapFiles() {
+  static synchronized DownloadedMaps parseMapFiles() {
     final Set<DefaultGameChooserEntry> entries = new HashSet<>();
     entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
     entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
     entries.forEach(
         entry -> log.debug("Found game: " + entry.getGameName() + " @ " + entry.getUri()));
-    return new AvailableGamesList(entries);
+    return new DownloadedMaps(entries);
   }
 
   private Collection<DefaultGameChooserEntry> mapXmlsGameNamesByUri(
