@@ -135,15 +135,16 @@ public class DownloadMapsWindow extends JFrame {
    *
    * <p>The user will be notified if any of the specified maps are unknown.
    *
-   * @param mapNames The collection containing the names of the maps to download; must not be {@code
-   *     null}.
+   * @param mapNamesToDownload The collection containing the names of the maps to download; must not
+   *     be {@code null}.
    * @throws IllegalStateException If this method is not called from the EDT.
    */
-  public static void showDownloadMapsWindowAndDownload(final Collection<String> mapNames) {
+  public static void showDownloadMapsWindowAndDownload(
+      final Collection<String> mapNamesToDownload) {
     checkState(SwingUtilities.isEventDispatchThread());
-    checkNotNull(mapNames);
+    checkNotNull(mapNamesToDownload);
 
-    SINGLETON_MANAGER.showAndDownload(mapNames);
+    SINGLETON_MANAGER.showAndDownload(mapNamesToDownload);
   }
 
   private static final class SingletonManager {
@@ -167,21 +168,21 @@ public class DownloadMapsWindow extends JFrame {
       window = null;
     }
 
-    void showAndDownload(final Collection<String> mapNames) {
+    void showAndDownload(final Collection<String> mapNamesToDownload) {
       assert SwingUtilities.isEventDispatchThread();
 
       switch (state) {
         case UNINITIALIZED:
-          initialize(mapNames);
+          initialize(mapNamesToDownload);
           break;
 
         case INITIALIZING:
-          logMapDownloadRequestIgnored(mapNames);
+          logMapDownloadRequestIgnored(mapNamesToDownload);
           // do nothing; window will be shown when initialization is complete
           break;
 
         case INITIALIZED:
-          logMapDownloadRequestIgnored(mapNames);
+          logMapDownloadRequestIgnored(mapNamesToDownload);
           show();
           break;
 
@@ -190,7 +191,7 @@ public class DownloadMapsWindow extends JFrame {
       }
     }
 
-    private void initialize(final Collection<String> mapNames) {
+    private void initialize(final Collection<String> mapNamesToDownload) {
       assert SwingUtilities.isEventDispatchThread();
       assert state == State.UNINITIALIZED;
 
@@ -199,7 +200,7 @@ public class DownloadMapsWindow extends JFrame {
           .ifPresent(
               downloads -> {
                 state = State.INITIALIZING;
-                createAndShow(mapNames, downloads);
+                createAndShow(mapNamesToDownload, downloads);
               });
     }
 
@@ -210,12 +211,13 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     private void createAndShow(
-        final Collection<String> mapNames, final List<DownloadFileDescription> downloads) {
+        final Collection<String> mapNamesToDownload,
+        final List<DownloadFileDescription> availableDownloads) {
       assert SwingUtilities.isEventDispatchThread();
       assert state == State.INITIALIZING;
       assert window == null;
 
-      window = new DownloadMapsWindow(mapNames, downloads);
+      window = new DownloadMapsWindow(mapNamesToDownload, availableDownloads);
       SwingComponents.addWindowClosedListener(window, this::uninitialize);
       LookAndFeelSwingFrameListener.register(window);
       state = State.INITIALIZED;
