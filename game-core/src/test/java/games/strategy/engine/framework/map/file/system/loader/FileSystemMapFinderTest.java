@@ -20,7 +20,7 @@ class FileSystemMapFinderTest {
     @Test
     void getMapDirectoryCandidates() {
       final List<File> candidates =
-          FileSystemMapFinder.getMapDirectoryCandidates("MapName", userMapsFolder);
+          FileSystemMapFinder.getCandidatePaths("MapName", userMapsFolder);
 
       assertThat(candidates, hasSize(4));
       assertThat(candidates.get(0), is(newFile("user", "maps", "MapName", "map")));
@@ -36,7 +36,7 @@ class FileSystemMapFinderTest {
     void getMapZipFileCandidatesTest() {
 
       final List<File> candidates =
-          FileSystemMapFinder.getMapZipFileCandidates("MapName", userMapsFolder);
+          FileSystemMapFinder.getCandidatePaths("MapName", userMapsFolder);
 
       assertThat(candidates, hasSize(3));
 

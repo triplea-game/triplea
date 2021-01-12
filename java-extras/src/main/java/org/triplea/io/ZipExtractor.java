@@ -45,6 +45,10 @@ public class ZipExtractor {
     FileSystemException(final String message) {
       super(message);
     }
+
+    public FileSystemException(final String message, final Exception e) {
+      super(message, e);
+    }
   }
 
   /**

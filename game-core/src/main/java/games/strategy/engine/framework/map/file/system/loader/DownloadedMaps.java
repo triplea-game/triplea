@@ -3,10 +3,10 @@ package games.strategy.engine.framework.map.file.system.loader;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
@@ -16,13 +16,14 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public class DownloadedMaps {
-  private final Set<DefaultGameChooserEntry> availableGames;
+  private final Collection<DefaultGameChooserEntry> availableGames;
 
   /**
    * Reads the downloaded maps folder contents, parses those contents to find available games, and
    * returns the list of available games found.
    */
   public static synchronized DownloadedMaps parseMapFiles() {
+    ZippedMapsExtractor.unzipMapFiles();
     return AvailableGamesFileSystemReader.parseMapFiles();
   }
 
