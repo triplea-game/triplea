@@ -24,7 +24,7 @@ class UnitScrollerIcon implements Supplier<Icon> {
   @Override
   public Icon get() {
     return new ImageIcon(
-        ResourceLoader.loadImageAssert(Path.of(UNIT_SCROLLER_IMAGES_FOLDER, imageFile))
+        ResourceLoader.loadImageAsset(Path.of(UNIT_SCROLLER_IMAGES_FOLDER, imageFile))
             .getScaledInstance(25, 25, Image.SCALE_SMOOTH));
   }
 }

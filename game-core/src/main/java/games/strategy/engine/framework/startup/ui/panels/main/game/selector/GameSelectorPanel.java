@@ -89,7 +89,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     final JLabel logoLabel =
         new JLabel(
             new ImageIcon(
-                ResourceLoader.loadImageAssert(Path.of("launch_screens", "triplea-logo.png"))));
+                ResourceLoader.loadImageAsset(Path.of("launch_screens", "triplea-logo.png"))));
 
     int row = 0;
     add(

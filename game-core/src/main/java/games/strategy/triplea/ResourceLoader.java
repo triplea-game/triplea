@@ -114,7 +114,7 @@ public class ResourceLoader implements Closeable {
    * with the game are downloaded to this location. Check the gradle build file download images task
    * for more information on what will be contained in that folder.
    */
-  public static Image loadImageAssert(final Path path) {
+  public static Image loadImageAsset(final Path path) {
     return ImageLoader.getImage(Path.of(ASSETS_FOLDER).resolve(path).toFile());
   }
 
