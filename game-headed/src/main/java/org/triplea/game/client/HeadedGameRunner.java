@@ -3,6 +3,7 @@ package org.triplea.game.client;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.CliProperties;
 import games.strategy.engine.framework.GameRunner;
@@ -99,8 +100,12 @@ public final class HeadedGameRunner {
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
 
-    ZippedMapsExtractor.unzipMapFiles(
-        unzipTask -> BackgroundTaskRunner.runInBackground("Unzipping map files", unzipTask));
+    ZippedMapsExtractor.builder()
+        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder().toPath())
+        .progressIndicator(
+            unzipTask -> BackgroundTaskRunner.runInBackground("Unzipping map files", unzipTask))
+        .build()
+        .unzipMapFiles();
 
     GameRunner.start();
   }
