@@ -25,7 +25,7 @@ import org.triplea.io.FileUtils;
 class AvailableGamesFileSystemReader {
 
   static synchronized DownloadedMaps parseMapFiles() {
-    final List<URI> unzippedXmlFiles = findAllUnZippedXmlFiles();
+    final List<URI> unzippedXmlFiles = findAllGameXmlFiles();
     final Collection<DefaultGameChooserEntry> gameChooserEntries =
         mapXmlsGameNamesByUri(unzippedXmlFiles);
     return new DownloadedMaps(gameChooserEntries);
@@ -41,7 +41,7 @@ class AvailableGamesFileSystemReader {
         .collect(Collectors.toList());
   }
 
-  private static List<URI> findAllUnZippedXmlFiles() {
+  private static List<URI> findAllGameXmlFiles() {
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(File::isDirectory)
         .map(AvailableGamesFileSystemReader::getDirectoryUris)
