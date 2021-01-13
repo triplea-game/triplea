@@ -153,8 +153,6 @@ public class ResourceLoader implements Closeable {
   public @Nullable URL getResource(final String inputPath, final String inputPath2) {
     return findResource(inputPath)
         .or(() -> findResource(inputPath2))
-        .or(() -> findResource(inputPath))
-        .or(() -> findResource(inputPath2))
         .orElse(null);
   }
 
