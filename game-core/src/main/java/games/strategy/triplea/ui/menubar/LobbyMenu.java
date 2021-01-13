@@ -82,7 +82,7 @@ public final class LobbyMenu extends JMenuBar {
                 'U',
                 () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE))
             .addMenuItem(
-                "Vew Forums",
+                "View Forums",
                 'F',
                 () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM))
             .addMenuItem(
