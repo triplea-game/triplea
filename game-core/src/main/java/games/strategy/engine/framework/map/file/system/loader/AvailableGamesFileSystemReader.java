@@ -8,15 +8,12 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
-import org.triplea.io.ZipFileUtil;
 
 /**
  * Reads from file system to find all available games. We then shallow parse each available game to
@@ -27,15 +24,11 @@ import org.triplea.io.ZipFileUtil;
 @Slf4j
 class AvailableGamesFileSystemReader {
 
-  private static final String ZIP_EXTENSION = ".zip";
-
   static synchronized DownloadedMaps parseMapFiles() {
-    final Set<DefaultGameChooserEntry> entries = new HashSet<>();
-    entries.addAll(mapXmlsGameNamesByUri(findAllZippedXmlFiles()));
-    entries.addAll(mapXmlsGameNamesByUri(findAllUnZippedXmlFiles()));
-    entries.forEach(
-        entry -> log.debug("Found game: " + entry.getGameName() + " @ " + entry.getUri()));
-    return new DownloadedMaps(entries);
+    final List<URI> xmlFiles = findAllGameXmlFiles();
+    final Collection<DefaultGameChooserEntry> gameChooserEntries =
+        mapXmlsGameNamesByUri(xmlFiles);
+    return new DownloadedMaps(gameChooserEntries);
   }
 
   private Collection<DefaultGameChooserEntry> mapXmlsGameNamesByUri(
@@ -44,19 +37,11 @@ class AvailableGamesFileSystemReader {
         .map(DefaultGameChooserEntry::newDefaultGameChooserEntry)
         .filter(Optional::isPresent)
         .map(Optional::get)
+        .peek(entry -> log.debug("Found game: " + entry.getGameName() + " @ " + entry.getUri()))
         .collect(Collectors.toList());
   }
 
-  private static List<URI> findAllZippedXmlFiles() {
-    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
-        .filter(File::isFile)
-        .filter(file -> file.getName().toLowerCase().endsWith(ZIP_EXTENSION))
-        .map(ZipFileUtil::findXmlFilesInZip)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
-  }
-
-  private static List<URI> findAllUnZippedXmlFiles() {
+  private static List<URI> findAllGameXmlFiles() {
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(File::isDirectory)
         .map(AvailableGamesFileSystemReader::getDirectoryUris)

@@ -19,8 +19,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
@@ -37,11 +35,8 @@ import org.triplea.swing.SwingComponents;
 @Slf4j
 public class ResourceLoader implements Closeable {
   public static final String ASSETS_FOLDER = "assets";
-  // All maps must have at least a "baseTiles" folder.
-  private static final String REQUIRED_ASSET_EXAMPLE_FOLDER = "baseTiles/";
 
   private final URLClassLoader loader;
-  private final String mapPrefix;
   @Getter private final String mapName;
 
   public ResourceLoader(final String mapName) {
@@ -61,7 +56,6 @@ public class ResourceLoader implements Closeable {
 
                   return new MapNotFoundException(mapName);
                 });
-    mapPrefix = getMapPrefix(mapLocation);
 
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map resources.
@@ -87,26 +81,6 @@ public class ResourceLoader implements Closeable {
           e);
     }
     this.mapName = mapName;
-  }
-
-  /**
-   * Will return an empty string unless a special prefix is needed, in which case that prefix is
-   * constructed based on where the {@code baseTiles} folder is located within the zip.
-   */
-  private static String getMapPrefix(final File mapZip) {
-    try (ZipFile zip = new ZipFile(mapZip)) {
-      final Optional<? extends ZipEntry> baseTilesEntry =
-          zip.stream()
-              .filter(entry -> entry.getName().endsWith(REQUIRED_ASSET_EXAMPLE_FOLDER))
-              .findAny();
-      if (baseTilesEntry.isPresent()) {
-        final String path = baseTilesEntry.get().getName();
-        return path.substring(0, path.length() - REQUIRED_ASSET_EXAMPLE_FOLDER.length());
-      }
-    } catch (final IOException e) {
-      // File is not a zip or can't be opened
-    }
-    return "";
   }
 
   /**
@@ -163,8 +137,9 @@ public class ResourceLoader implements Closeable {
    *     resource. Do not use '\' or File.separator)
    */
   public @Nullable URL getResource(final String inputPath) {
-    final String path = mapPrefix + inputPath;
-    return findResource(path).or(() -> findResource(inputPath)).orElse(null);
+    return findResource(inputPath) //
+        .or(() -> findResource(inputPath))
+        .orElse(null);
   }
 
   /**
@@ -176,11 +151,7 @@ public class ResourceLoader implements Closeable {
    * @param inputPath2 Same as inputPath but this takes second priority when loading
    */
   public @Nullable URL getResource(final String inputPath, final String inputPath2) {
-    final String path = mapPrefix + inputPath;
-    final String path2 = mapPrefix + inputPath2;
-    return findResource(path)
-        .or(() -> findResource(path2))
-        .or(() -> findResource(inputPath))
+    return findResource(inputPath)
         .or(() -> findResource(inputPath2))
         .orElse(null);
   }

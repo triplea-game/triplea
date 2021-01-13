@@ -27,7 +27,10 @@ class MapDownloadList {
       if (download == null) {
         return;
       }
-      final Optional<Integer> mapVersion = strategy.getMapVersion(download.getInstallLocation());
+
+      // note, getParentFile assumes that the folder returned by 'findPathToMapFolder'
+      // is always one folder deep into the map folder (eg: map-name/map)
+      final Optional<Integer> mapVersion = strategy.getMapVersion(download.getMapName());
 
       if (mapVersion.isPresent()) {
         installed.add(download);

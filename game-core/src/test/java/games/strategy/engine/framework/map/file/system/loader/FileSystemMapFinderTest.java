@@ -20,29 +20,13 @@ class FileSystemMapFinderTest {
     @Test
     void getMapDirectoryCandidates() {
       final List<File> candidates =
-          FileSystemMapFinder.getMapDirectoryCandidates("MapName", userMapsFolder);
+          FileSystemMapFinder.getCandidatePaths("MapName", userMapsFolder);
 
       assertThat(candidates, hasSize(4));
       assertThat(candidates.get(0), is(newFile("user", "maps", "MapName", "map")));
       assertThat(candidates.get(1), is(newFile("user", "maps", "MapName")));
       assertThat(candidates.get(2), is(newFile("user", "maps", "map_name-master", "map")));
       assertThat(candidates.get(3), is(newFile("user", "maps", "map_name-master")));
-    }
-  }
-
-  @Nested
-  final class GetMapZipFileCandidatesTest {
-    @Test
-    void getMapZipFileCandidatesTest() {
-
-      final List<File> candidates =
-          FileSystemMapFinder.getMapZipFileCandidates("MapName", userMapsFolder);
-
-      assertThat(candidates, hasSize(3));
-
-      assertThat(candidates.get(0), is(newFile("user", "maps", "MapName.zip")));
-      assertThat(candidates.get(1), is(newFile("user", "maps", "map_name-master.zip")));
-      assertThat(candidates.get(2), is(newFile("user", "maps", "map_name.zip")));
     }
   }
 

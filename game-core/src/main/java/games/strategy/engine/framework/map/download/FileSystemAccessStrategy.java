@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,12 +16,11 @@ import org.triplea.swing.SwingComponents;
 @Slf4j
 class FileSystemAccessStrategy {
 
-  Optional<Integer> getMapVersion(final File mapFile) {
-    if (!mapFile.exists()) {
-      return Optional.empty();
-    }
-
-    return DownloadFileProperties.loadForZip(mapFile).getVersion();
+  Optional<Integer> getMapVersion(final String mapName) {
+    return DownloadedMaps.findPathToMapFolder(mapName)
+        .map(File::getParentFile)
+        .map(DownloadFileProperties::loadForZip)
+        .flatMap(DownloadFileProperties::getVersion);
   }
 
   static void remove(

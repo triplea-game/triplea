@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
+import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,11 +10,13 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background
  * thread, this class ensures N are in progress until all are done.
  */
+@Slf4j
 public final class DownloadCoordinator {
   public static final DownloadCoordinator instance = new DownloadCoordinator();
 
@@ -117,6 +121,16 @@ public final class DownloadCoordinator {
 
     @Override
     public void downloadComplete(final DownloadFileDescription download) {
+      try {
+        ZippedMapsExtractor.unzipMap(download.getInstallLocation());
+      } catch (final IOException e) {
+        log.warn(
+            "Error extracting downloaded map zip (map may need to be re-installed: "
+                + download.getMapName()
+                + ", "
+                + e.getMessage(),
+            e);
+      }
       downloadListeners.forEach(it -> it.downloadComplete(download));
 
       synchronized (lock) {
