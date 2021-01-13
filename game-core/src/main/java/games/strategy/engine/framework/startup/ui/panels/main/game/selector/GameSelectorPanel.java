@@ -393,20 +393,22 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void gameSelected(final URI gameUri) {
-    try {
-      BackgroundTaskRunner.runInBackground("Loading map...", () -> model.load(gameUri));
-      // warning: NPE check is not to protect against concurrency, another thread could still null
-      // out game data.
-      // The NPE check is to protect against the case where there are errors loading game, in
-      // which case we'll have a null game data.
-      if (model.getGameData() != null) {
-        setOriginalPropertiesMap(model.getGameData());
-        // only for new games, not saved games, we set the default options, and set them only once
-        // (the first time it is loaded)
-        gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
-      }
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    BackgroundTaskRunner.runInBackground(
+        "Loading map...",
+        () -> {
+          model.load(gameUri);
+          // warning: NPE check is not to protect against concurrency, another thread could still
+          // null
+          // out game data.
+          // The NPE check is to protect against the case where there are errors loading game, in
+          // which case we'll have a null game data.
+          if (model.getGameData() != null) {
+            setOriginalPropertiesMap(model.getGameData());
+            // only for new games, not saved games, we set the default options, and set them only
+            // once
+            // (the first time it is loaded)
+            gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+          }
+        });
   }
 }

@@ -151,9 +151,7 @@ public class ResourceLoader implements Closeable {
    * @param inputPath2 Same as inputPath but this takes second priority when loading
    */
   public @Nullable URL getResource(final String inputPath, final String inputPath2) {
-    return findResource(inputPath)
-        .or(() -> findResource(inputPath2))
-        .orElse(null);
+    return findResource(inputPath).or(() -> findResource(inputPath2)).orElse(null);
   }
 
   private Optional<URL> findResource(final String searchPath) {

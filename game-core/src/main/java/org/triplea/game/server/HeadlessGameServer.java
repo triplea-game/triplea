@@ -19,6 +19,7 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.triplea.settings.ClientSetting;
@@ -279,6 +280,16 @@ public class HeadlessGameServer {
 
     ArgParser.handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
+    ZippedMapsExtractor.builder()
+        .downloadedMapsFolder(ClientSetting.mapFolderOverride.getValueOrThrow())
+        .progressIndicator(
+            unzipTask -> {
+              log.info("Unzipping map files");
+              unzipTask.run();
+            })
+        .build()
+        .unzipMapFiles();
+
     try {
       new HeadlessGameServer();
     } catch (final Exception e) {

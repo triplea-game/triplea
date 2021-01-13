@@ -12,7 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.Interruptibles;
 import org.triplea.java.function.ThrowingSupplier;
+import org.triplea.swing.SwingAction;
 
 /** Provides methods for running tasks in the background to avoid blocking the UI. */
 @UtilityClass
@@ -37,14 +39,19 @@ public final class BackgroundTaskRunner {
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background
    *     action to complete.
    */
-  public static void runInBackground(final String message, final Runnable backgroundAction)
-      throws InterruptedException {
-    runInBackgroundAndReturn(
-        message,
-        () -> {
-          backgroundAction.run();
-          return null;
-        });
+  public static void runInBackground(final String message, final Runnable backgroundAction) {
+    Interruptibles.await(
+        () ->
+            SwingAction.invokeAndWait(
+                () ->
+                    Interruptibles.await(
+                        () ->
+                            runInBackgroundAndReturn(
+                                message,
+                                () -> {
+                                  backgroundAction.run();
+                                  return null;
+                                }))));
   }
 
   /**

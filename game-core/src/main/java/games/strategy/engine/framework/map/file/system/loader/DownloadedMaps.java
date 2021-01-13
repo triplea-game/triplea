@@ -23,7 +23,6 @@ public class DownloadedMaps {
    * returns the list of available games found.
    */
   public static synchronized DownloadedMaps parseMapFiles() {
-    ZippedMapsExtractor.unzipMapFiles();
     return AvailableGamesFileSystemReader.parseMapFiles();
   }
 
