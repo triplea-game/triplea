@@ -1,12 +1,10 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.injection.Injections;
 
 /** Runs a headless game server. */
-@Slf4j
 public final class HeadlessGameRunner {
   private HeadlessGameRunner() {}
 
