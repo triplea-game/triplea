@@ -8,9 +8,11 @@ import games.strategy.engine.framework.CliProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
@@ -96,6 +98,10 @@ public final class HeadedGameRunner {
 
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
+
+    ZippedMapsExtractor.unzipMapFiles(
+        unzipTask -> BackgroundTaskRunner.runInBackground("Unzipping map files", unzipTask));
+
     GameRunner.start();
   }
 

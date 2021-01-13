@@ -776,49 +776,35 @@ final class SelectionComponentFactory {
             .equals(usernameSetting.getValue().map(String::new).orElse(""))) {
           return;
         }
-        try {
-          BackgroundTaskRunner.runInBackground(
-              "Fetching Login Token...",
-              () -> {
-                final NodeBbTokenGenerator tokenGenerator = new NodeBbTokenGenerator(forumUrl);
-                final Optional<Integer> oldUserId = uidSetting.getValue();
-                final Optional<char[]> oldToken = tokenSetting.getValue();
-                if (!usernameField.getText().isBlank()) {
-                  final TokenInfo tokenInfo =
-                      tokenGenerator.generateToken(
-                          usernameField.getText(),
-                          new String(passwordField.getPassword()),
-                          Strings.emptyToNull(otpField.getText()));
-                  context.setValue(uidSetting, tokenInfo.getUserId());
+        BackgroundTaskRunner.runInBackground(
+            "Fetching Login Token...",
+            () -> {
+              final NodeBbTokenGenerator tokenGenerator = new NodeBbTokenGenerator(forumUrl);
+              final Optional<Integer> oldUserId = uidSetting.getValue();
+              final Optional<char[]> oldToken = tokenSetting.getValue();
+              if (!usernameField.getText().isBlank()) {
+                final TokenInfo tokenInfo =
+                    tokenGenerator.generateToken(
+                        usernameField.getText(),
+                        new String(passwordField.getPassword()),
+                        Strings.emptyToNull(otpField.getText()));
+                context.setValue(uidSetting, tokenInfo.getUserId());
 
-                  context.setValue(tokenSetting, tokenInfo.getToken().toCharArray());
+                context.setValue(tokenSetting, tokenInfo.getToken().toCharArray());
 
-                  context.setValue(usernameSetting, usernameField.getText().toCharArray());
-                  // TODO error reporting
-                } else {
-                  context.setValue(usernameSetting, null);
-                  context.setValue(uidSetting, null);
-                  context.setValue(tokenSetting, null);
-                }
+                context.setValue(usernameSetting, usernameField.getText().toCharArray());
+                // TODO error reporting
+              } else {
+                context.setValue(usernameSetting, null);
+                context.setValue(uidSetting, null);
+                context.setValue(tokenSetting, null);
+              }
 
-                oldUserId.ifPresent(
-                    userId ->
-                        oldToken.ifPresent(
-                            token -> tokenGenerator.revokeToken(new String(token), userId)));
-              });
-        } catch (final InterruptedException e) {
-          Thread.currentThread().interrupt();
-        }
-
-        /*final String username = usernameField.getText();
-        context.setValue(uidSetting, username.isEmpty() ? null : username.toCharArray());
-        withSensitiveArray(
-            passwordField::getPassword,
-            password ->
-                context.setValue(
-                    passwordSetting,
-                    (password.length == 0) ? null : password,
-                    SaveContext.ValueSensitivity.SENSITIVE));*/
+              oldUserId.ifPresent(
+                  userId ->
+                      oldToken.ifPresent(
+                          token -> tokenGenerator.revokeToken(new String(token), userId)));
+            });
       }
 
       @Override

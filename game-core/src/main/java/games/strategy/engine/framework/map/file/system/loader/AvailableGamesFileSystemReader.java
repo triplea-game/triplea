@@ -26,8 +26,7 @@ class AvailableGamesFileSystemReader {
 
   static synchronized DownloadedMaps parseMapFiles() {
     final List<URI> xmlFiles = findAllGameXmlFiles();
-    final Collection<DefaultGameChooserEntry> gameChooserEntries =
-        mapXmlsGameNamesByUri(xmlFiles);
+    final Collection<DefaultGameChooserEntry> gameChooserEntries = mapXmlsGameNamesByUri(xmlFiles);
     return new DownloadedMaps(gameChooserEntries);
   }
 

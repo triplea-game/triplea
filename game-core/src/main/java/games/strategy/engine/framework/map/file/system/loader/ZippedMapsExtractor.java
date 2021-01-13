@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -26,34 +27,43 @@ import org.triplea.io.ZipExtractor.ZipReadException;
 public class ZippedMapsExtractor {
   private static final String ZIP_EXTENSION = ".zip";
 
-  /** Finds all map zips, extracts them and then removes the original zip. */
-  static void unzipMapFiles() {
-    findAllZippedMapFiles()
-        .forEach(
-            mapZip -> {
-              try {
-                unzipMap(mapZip);
-                renameZipPropertiesFile(mapZip);
-                removeMapZip(mapZip);
-              } catch (final ZipReadException zipReadException) {
-                // Problem reading the zip, move it to a folder so that the user does
-                // not repeatedly see an error trying to read this zip.
-                moveBadZip(mapZip)
-                    .ifPresent(
-                        newLocation ->
-                            log.warn(
-                                "Error extracting map zip: "
-                                    + mapZip.getAbsolutePath()
-                                    + ", zip has been moved to: "
-                                    + newLocation.toFile().getAbsolutePath(),
-                                zipReadException));
-              } catch (final FileSystemException | IOException e) {
-                // Thrown if we are are out of disk space or have file system access issues.
-                // Do not move the zip file to a bad-zip folder as that operation could also
-                // fail.
-                log.warn("Error extracting map zip: " + mapZip + ", " + e.getMessage(), e);
-              }
-            });
+  /**
+   * Finds all map zips, extracts them and then removes the original zip. If any zipped files are
+   * found, then the progressIndicator param is invoked with a callback that will execute the unzip
+   * task.
+   */
+  public static void unzipMapFiles(final Consumer<Runnable> progressIndicator) {
+    final Collection<File> zippedMaps = findAllZippedMapFiles();
+    if (zippedMaps.isEmpty()) {
+      return;
+    }
+    progressIndicator.accept(
+        () ->
+            zippedMaps.forEach(
+                mapZip -> {
+                  try {
+                    unzipMap(mapZip);
+                    renameZipPropertiesFile(mapZip);
+                    removeMapZip(mapZip);
+                  } catch (final ZipReadException zipReadException) {
+                    // Problem reading the zip, move it to a folder so that the user does
+                    // not repeatedly see an error trying to read this zip.
+                    moveBadZip(mapZip)
+                        .ifPresent(
+                            newLocation ->
+                                log.warn(
+                                    "Error extracting map zip: "
+                                        + mapZip.getAbsolutePath()
+                                        + ", zip has been moved to: "
+                                        + newLocation.toFile().getAbsolutePath(),
+                                    zipReadException));
+                  } catch (final FileSystemException | IOException e) {
+                    // Thrown if we are are out of disk space or have file system access issues.
+                    // Do not move the zip file to a bad-zip folder as that operation could also
+                    // fail.
+                    log.warn("Error extracting map zip: " + mapZip + ", " + e.getMessage(), e);
+                  }
+                }));
   }
 
   private static Collection<File> findAllZippedMapFiles() {

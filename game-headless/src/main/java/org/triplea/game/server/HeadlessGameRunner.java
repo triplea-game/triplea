@@ -1,10 +1,13 @@
 package org.triplea.game.server;
 
+import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.injection.Injections;
 
 /** Runs a headless game server. */
+@Slf4j
 public final class HeadlessGameRunner {
   private HeadlessGameRunner() {}
 
@@ -14,6 +17,12 @@ public final class HeadlessGameRunner {
    */
   public static void main(final String[] args) {
     Injections.init(constructInjections());
+
+    ZippedMapsExtractor.unzipMapFiles(
+        unzipTask -> {
+          log.info("Unzipping map files");
+          unzipTask.run();
+        });
     HeadlessGameServer.start(args);
   }
 
