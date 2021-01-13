@@ -31,22 +31,6 @@ class FileSystemMapFinderTest {
   }
 
   @Nested
-  final class GetMapZipFileCandidatesTest {
-    @Test
-    void getMapZipFileCandidatesTest() {
-
-      final List<File> candidates =
-          FileSystemMapFinder.getCandidatePaths("MapName", userMapsFolder);
-
-      assertThat(candidates, hasSize(3));
-
-      assertThat(candidates.get(0), is(newFile("user", "maps", "MapName.zip")));
-      assertThat(candidates.get(1), is(newFile("user", "maps", "map_name-master.zip")));
-      assertThat(candidates.get(2), is(newFile("user", "maps", "map_name.zip")));
-    }
-  }
-
-  @Nested
   final class NormalizeMapNameTest {
     @Test
     void shouldNormalizeMapName() {

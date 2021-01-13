@@ -3,8 +3,6 @@ package games.strategy.engine.framework.map.download;
 import static java.util.function.Predicate.not;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,10 +30,7 @@ class MapDownloadList {
 
       // note, getParentFile assumes that the folder returned by 'findPathToMapFolder'
       // is always one folder deep into the map folder (eg: map-name/map)
-      final Optional<Integer> mapVersion =
-          DownloadedMaps.findPathToMapFolder(download.getMapName())
-              .map(File::getParentFile)
-              .flatMap(strategy::getMapVersion);
+      final Optional<Integer> mapVersion = strategy.getMapVersion(download.getMapName());
 
       if (mapVersion.isPresent()) {
         installed.add(download);
