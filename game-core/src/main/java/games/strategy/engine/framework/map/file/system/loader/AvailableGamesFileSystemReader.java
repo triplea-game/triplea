@@ -25,9 +25,9 @@ import org.triplea.io.FileUtils;
 class AvailableGamesFileSystemReader {
 
   static synchronized DownloadedMaps parseMapFiles() {
-    final List<URI> unzippedXmlFiles = findAllGameXmlFiles();
+    final List<URI> xmlFiles = findAllGameXmlFiles();
     final Collection<DefaultGameChooserEntry> gameChooserEntries =
-        mapXmlsGameNamesByUri(unzippedXmlFiles);
+        mapXmlsGameNamesByUri(xmlFiles);
     return new DownloadedMaps(gameChooserEntries);
   }
 
