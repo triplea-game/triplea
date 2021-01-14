@@ -12,6 +12,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
 
+/**
+ * A phase in the battle
+ *
+ * <p>Each phase has a list of abilities that indicate what unit types are allowed to do during the
+ * phase. All of the abilities occur "simultaneously".
+ */
 @Value
 public class BattlePhase {
   String name;

@@ -33,7 +33,7 @@ public class ConvertUnitAbility {
   /** The unitAbility that will be converted */
   @NonNull CombatUnitAbility from;
 
-  /** If to is null, then this just removes the "from" UnitAbility */
+  /** If null, then this just removes the "from" UnitAbility */
   CombatUnitAbility to;
 
   /**

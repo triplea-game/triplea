@@ -9,6 +9,11 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
 
+/**
+ * Stores all of the {@link BattlePhase}s that will be used during a battle
+ *
+ * <p>Also stores the {@link ConvertUnitAbility} that can be used during the battle.
+ */
 @Getter
 public class BattlePhaseList {
 
