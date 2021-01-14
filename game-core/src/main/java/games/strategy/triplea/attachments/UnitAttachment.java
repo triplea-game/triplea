@@ -662,7 +662,8 @@ public class UnitAttachment extends DefaultAttachment {
     setIsSub(getBool(s));
   }
 
-  private void setIsSub(final Boolean s) {
+  @VisibleForTesting
+  public void setIsSub(final Boolean s) {
     isSub = true;
     if (s) {
       canNotTarget = null;
@@ -760,7 +761,8 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCanNotBeTargetedBy(final Set<UnitType> value) {
+  @VisibleForTesting
+  public void setCanNotBeTargetedBy(final Set<UnitType> value) {
     canNotBeTargetedBy = value;
   }
 
@@ -816,7 +818,8 @@ public class UnitAttachment extends DefaultAttachment {
     isDestroyer = getBool(s);
   }
 
-  private void setIsDestroyer(final Boolean s) {
+  @VisibleForTesting
+  public void setIsDestroyer(final Boolean s) {
     isDestroyer = s;
   }
 
@@ -832,7 +835,8 @@ public class UnitAttachment extends DefaultAttachment {
     canBombard = getBool(s);
   }
 
-  private void setCanBombard(final Boolean s) {
+  @VisibleForTesting
+  public void setCanBombard(final Boolean s) {
     canBombard = s;
   }
 
@@ -2470,7 +2474,8 @@ public class UnitAttachment extends DefaultAttachment {
     isRocket = false;
   }
 
-  private void setTypeAa(final String s) {
+  @VisibleForTesting
+  public void setTypeAa(final String s) {
     typeAa = s;
   }
 
@@ -2545,7 +2550,8 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setWillNotFireIfPresent(final Set<UnitType> value) {
+  @VisibleForTesting
+  public void setWillNotFireIfPresent(final Set<UnitType> value) {
     willNotFireIfPresent = value;
   }
 
