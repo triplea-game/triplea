@@ -1,8 +1,6 @@
 package org.triplea.debug.error.reporting;
 
-import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.UiContext;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -35,9 +33,7 @@ class StackTraceReportModel {
         .body(
             ErrorReportBodyFormatter.buildBody(
                 view.readUserDescription(),
-                Optional.ofNullable(UiContext.getResourceLoader())
-                    .map(ResourceLoader::getMapName)
-                    .orElse(null),
+                UiContext.getMapDir(),
                 MemoryUsageReport.getMemory(),
                 stackTraceRecord,
                 engineVersion))
