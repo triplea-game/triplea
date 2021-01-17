@@ -11,6 +11,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingComponents;
@@ -52,7 +54,8 @@ class UpdatedMapsCheck {
       return;
     }
 
-    final Collection<String> outOfDateMapNames = computeOutOfDateMaps(availableToDownloadMaps);
+    final Collection<String> outOfDateMapNames =
+        computeOutOfDateMaps(availableToDownloadMaps, DownloadedMaps::getMapVersionByName);
 
     if (!outOfDateMapNames.isEmpty()) {
       promptUserToUpdateMaps(outOfDateMapNames);
@@ -63,18 +66,22 @@ class UpdatedMapsCheck {
    * Computes maps that are out of date.
    *
    * @param availableToDownloadMaps List of maps that are available for download.
+   * @param mapVersionLookup Function given a map name returns installed map version (or empty if
+   *     the map is not installed).
    * @return Set of map names that are installed where the available version is greater than the
    *     installed version.
    */
-  private static Collection<String> computeOutOfDateMaps(
-      final Collection<DownloadFileDescription> availableToDownloadMaps) {
+  public static Collection<String> computeOutOfDateMaps(
+      final Collection<DownloadFileDescription> availableToDownloadMaps,
+      final Function<String, Optional<Integer>> mapVersionLookup) {
 
     final Collection<String> outOfDateMapNames = new ArrayList<>();
 
     // Loop over all available maps, check if we have that map present, its version,
     // and remember any whose version is less than what is available.
     for (final DownloadFileDescription availableMap : availableToDownloadMaps) {
-      DownloadedMaps.getMapVersionByName(availableMap.getMapName())
+      mapVersionLookup
+          .apply(availableMap.getMapName())
           .ifPresent(
               installedVersion -> {
                 if (installedVersion < availableMap.getVersion()) {
