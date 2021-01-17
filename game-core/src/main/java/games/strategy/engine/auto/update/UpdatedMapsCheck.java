@@ -11,13 +11,12 @@ import java.io.File;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.io.FileUtils;
 import org.triplea.swing.SwingComponents;
 
 @UtilityClass
@@ -49,90 +48,73 @@ class UpdatedMapsCheck {
       return;
     }
 
-    // {map name -> version}
-    final Map<String, Integer> availableToDownloadMapVersions =
-        downloadAvailableMapsListAndComputeAvailableVersions();
+    final List<DownloadFileDescription> availableToDownloadMaps =
+        MapListingFetcher.getMapDownloadList();
 
-    if (availableToDownloadMapVersions.isEmpty()) {
+    if (availableToDownloadMaps.isEmpty()) {
       // A failure happened getting maps. User is already notified.
       return;
     }
 
-    // {property file name -> version}
-    final Map<String, Integer> installedMapVersions = readMapPropertyFilesForInstalledMapVersions();
-
-    final Collection<String> outOfDateMapNames =
-        computeOutOfDateMaps(installedMapVersions, availableToDownloadMapVersions);
+    final Collection<String> outOfDateMapNames = computeOutOfDateMaps(availableToDownloadMaps);
 
     if (!outOfDateMapNames.isEmpty()) {
       promptUserToUpdateMaps(outOfDateMapNames);
     }
   }
 
-  private static Map<String, Integer> readMapPropertyFilesForInstalledMapVersions() {
-    return
-    // get all .property files in the downloads folder
-    Arrays.stream(ClientFileSystemHelper.getUserMapsFolder().listFiles())
-        .filter(file -> file.getName().endsWith(".zip.properties"))
-        // Read each property file to find map version
-        // Create map of {property file name -> optional<version>}
-        .collect(Collectors.toMap(File::getName, UpdatedMapsCheck::readVersionFromPropertyFile))
-        // loop back over the map
-        .entrySet()
-        .stream()
-        // Keep only entries that have a version (optional is present)
-        .filter(entry -> entry.getValue().isPresent())
-        // Now that all optionals are guaranteed to hold a value, unwrap them &
-        // normalize the map names.
-        // Convert from:
-        //     {property file name -> Optional<Version>}
-        //    to:
-        //     {property file name -> Version}
-        .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get()));
+  /**
+   * Computes maps that are out of date.
+   *
+   * @param availableToDownloadMaps List of maps that are available for download.
+   * @return Set of map names that are installed where the available version is greater than the
+   *     installed version.
+   */
+  private static Collection<String> computeOutOfDateMaps(
+      final Collection<DownloadFileDescription> availableToDownloadMaps) {
+
+    final Collection<String> outOfDateMapNames = new ArrayList<>();
+
+    // Loop over all available maps, check if we have that map present, its version,
+    // and remember any whose version is less than what is available.
+    for (final DownloadFileDescription availableMap : availableToDownloadMaps) {
+      getMapVersionByName(availableMap.getMapName())
+          .ifPresent(
+              installedVersion -> {
+                if (installedVersion < availableMap.getVersion()) {
+                  outOfDateMapNames.add(availableMap.getMapName());
+                }
+              });
+    }
+    return outOfDateMapNames;
+  }
+
+  /**
+   * For a given a map name (fuzzy matched), if the map is installed, will return the map version
+   * installed othewrise returns an empty. Fuzzy matching means we will do name normalization and
+   * replace spaces with underscores, convert to lower case, etc.
+   */
+  private static Optional<Integer> getMapVersionByName(final String mapName) {
+    final String normalizedMapName = normalizeName(mapName);
+
+    // see if we have a map folder that matches the target name
+    // if so, check for a .properties file
+    // if that exists, then return the map version value from the properties file
+    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
+        .filter(file -> normalizeName(file.getName()).equals(normalizedMapName))
+        .findAny()
+        .map(
+            file ->
+                ClientFileSystemHelper.getUserMapsFolder()
+                    .toPath()
+                    .resolve(file.getName() + ".properties")
+                    .toFile())
+        .filter(File::exists)
+        .flatMap(UpdatedMapsCheck::readVersionFromPropertyFile);
   }
 
   private static Optional<Integer> readVersionFromPropertyFile(final File propertyFile) {
     return DownloadFileProperties.loadForZipPropertyFile(propertyFile).getVersion();
-  }
-
-  private static Map<String, Integer> downloadAvailableMapsListAndComputeAvailableVersions() {
-    try {
-      return MapListingFetcher.getMapDownloadList().stream()
-          .collect(
-              Collectors.toMap(
-                  downloadFileDescription -> normalizeName(downloadFileDescription.getMapName()),
-                  DownloadFileDescription::getVersion));
-    } catch (final Exception e) {
-      log.warn("Failed to getting list of most recent maps", e);
-      return Map.of();
-    }
-  }
-
-  @VisibleForTesting
-  static Collection<String> computeOutOfDateMaps(
-      final Map<String, Integer> installedMapVersions,
-      final Map<String, Integer> availableToDownloadMapVersions) {
-
-    final Collection<String> outOfDateMapNames = new ArrayList<>();
-
-    // Loop over all available maps, check if we have that map present by comparing
-    // normalized names, if so, check versions and remember any that are out of date.
-    for (final Map.Entry<String, Integer> installedMap : installedMapVersions.entrySet()) {
-      final String installedMapName = normalizeName(installedMap.getKey());
-
-      for (final Map.Entry<String, Integer> availableMap :
-          availableToDownloadMapVersions.entrySet()) {
-        final String availableMapName = normalizeName(availableMap.getKey());
-        if (installedMapName.equals(availableMapName)) {
-
-          if (availableMap.getValue() > installedMap.getValue()) {
-            outOfDateMapNames.add(availableMap.getKey());
-          }
-          break;
-        }
-      }
-    }
-    return outOfDateMapNames;
   }
 
   /**
