@@ -215,7 +215,10 @@ public class GameChooser {
                     .map(PropertyList.Property::getValue)
                     .ifPresent(
                         mapName ->
-                            notes.append(LocalizeHtml.localizeImgLinksInHtml(gameNotes, mapName))));
+                            notes.append(
+                                LocalizeHtml.localizeImgLinksInHtml(
+                                    gameNotes,
+                                    DownloadedMaps.findPathToMapFolderOrElseThrow(mapName)))));
     return notes.toString();
   }
 

@@ -3,6 +3,8 @@ package org.triplea.io;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
@@ -33,5 +35,18 @@ public final class FileUtils {
   public static Collection<File> listFiles(final File directory) {
     checkNotNull(directory);
     return Optional.ofNullable(directory.listFiles()).map(List::of).orElseGet(List::of);
+  }
+
+  public static URL toUrl(final File file) {
+    return toUrl(file.toPath());
+  }
+
+  public static URL toUrl(final Path file) {
+    try {
+      return file.toUri().toURL();
+    } catch (final MalformedURLException e) {
+      throw new IllegalStateException(
+          "Invalid conversion from file to URL, file: " + file.toFile().getAbsolutePath(), e);
+    }
   }
 }
