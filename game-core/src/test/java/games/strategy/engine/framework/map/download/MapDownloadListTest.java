@@ -25,12 +25,7 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
 
   private static final DownloadFileDescription TEST_MAP =
       new DownloadFileDescription(
-          "",
-          "",
-          MAP_NAME,
-          MAP_VERSION,
-          DownloadFileDescription.MapCategory.EXPERIMENTAL,
-          "");
+          "", "", MAP_NAME, MAP_VERSION, DownloadFileDescription.MapCategory.EXPERIMENTAL, "");
 
   @Mock private FileSystemAccessStrategy strategy;
 

@@ -1,6 +1,5 @@
 package org.triplea.http.client.maps.listing;
 
-import java.util.Set;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
