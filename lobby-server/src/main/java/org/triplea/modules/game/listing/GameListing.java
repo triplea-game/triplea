@@ -12,11 +12,11 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
@@ -58,13 +58,13 @@ import org.triplea.web.socket.WebSocketMessagingBus;
 @Builder
 @Slf4j
 public class GameListing {
-  @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
-  @NonNull private final LobbyGameDao lobbyGameDao;
-  @NonNull private final TtlCache<GameId, LobbyGame> games;
-  @NonNull private final WebSocketMessagingBus playerMessagingBus;
+  @Nonnull private final ModeratorAuditHistoryDao auditHistoryDao;
+  @Nonnull private final LobbyGameDao lobbyGameDao;
+  @Nonnull private final TtlCache<GameId, LobbyGame> games;
+  @Nonnull private final WebSocketMessagingBus playerMessagingBus;
 
   /** Map of player names to the games they are in, both observing and playing. */
-  @NonNull private final Multimap<UserName, GameId> playerIsInGames = HashMultimap.create();
+  @Nonnull private final Multimap<UserName, GameId> playerIsInGames = HashMultimap.create();
 
   @AllArgsConstructor
   @EqualsAndHashCode
@@ -72,8 +72,8 @@ public class GameListing {
   @VisibleForTesting
   @ToString
   static class GameId {
-    @NonNull private final ApiKey apiKey;
-    @NonNull private final String id;
+    @Nonnull private final ApiKey apiKey;
+    @Nonnull private final String id;
   }
 
   public static GameListing build(final Jdbi jdbi, final WebSocketMessagingBus playerMessagingBus) {

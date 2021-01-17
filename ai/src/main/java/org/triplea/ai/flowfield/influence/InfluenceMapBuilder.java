@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import org.triplea.ai.flowfield.influence.offense.EnemyCapitals;
 import org.triplea.ai.flowfield.influence.offense.ResourceToGet;
@@ -28,13 +28,13 @@ import org.triplea.ai.flowfield.odds.BattleDetails;
 @Builder(builderMethodName = "setup")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class InfluenceMapBuilder {
-  @NonNull GamePlayer gamePlayer;
-  @NonNull PlayerList playerList;
-  @NonNull ResourceList resourceList;
-  @NonNull RelationshipTracker relationshipTracker;
-  @NonNull GameMap gameMap;
-  @NonNull CombatValueBuilder.MainBuilder offenseCombatBuilder;
-  @NonNull CombatValueBuilder.MainBuilder defenseCombatBuilder;
+  @Nonnull GamePlayer gamePlayer;
+  @Nonnull PlayerList playerList;
+  @Nonnull ResourceList resourceList;
+  @Nonnull RelationshipTracker relationshipTracker;
+  @Nonnull GameMap gameMap;
+  @Nonnull CombatValueBuilder.MainBuilder offenseCombatBuilder;
+  @Nonnull CombatValueBuilder.MainBuilder defenseCombatBuilder;
 
   public Collection<InfluenceMap> buildMaps(
       final String mapGroup, final MapWithNeighbors mapWithNeighbors) {

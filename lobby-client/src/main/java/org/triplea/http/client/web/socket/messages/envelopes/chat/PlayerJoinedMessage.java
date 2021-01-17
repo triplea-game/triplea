@@ -1,7 +1,7 @@
 package org.triplea.http.client.web.socket.messages.envelopes.chat;
 
+import javax.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.MessageType;
@@ -13,7 +13,7 @@ public class PlayerJoinedMessage implements WebSocketMessage {
   public static final MessageType<PlayerJoinedMessage> TYPE =
       MessageType.of(PlayerJoinedMessage.class);
 
-  @NonNull private final String userName;
+  @Nonnull private final String userName;
   private final String playerChatId;
   private final boolean isModerator;
 

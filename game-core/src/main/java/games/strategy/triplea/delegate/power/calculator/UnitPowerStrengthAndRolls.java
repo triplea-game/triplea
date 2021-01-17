@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Value;
 
 /** Stores and computes an individual unit's power, strength and roll */

@@ -13,20 +13,20 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.NonNull;
 
 /** Build the steps for the fire round (roll dice, select casualties, and mark casualties) */
 @Builder
 public class FireRoundStepsFactory {
 
-  @NonNull final BattleState battleState;
-  @NonNull final BattleActions battleActions;
-  @NonNull final Function<BattleState, Collection<FiringGroup>> firingGroupSplitter;
-  @NonNull final BattleState.Side side;
-  @NonNull final MustFightBattle.ReturnFire returnFire;
-  @NonNull final BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> diceRoller;
-  @NonNull final BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> casualtySelector;
+  @Nonnull final BattleState battleState;
+  @Nonnull final BattleActions battleActions;
+  @Nonnull final Function<BattleState, Collection<FiringGroup>> firingGroupSplitter;
+  @Nonnull final BattleState.Side side;
+  @Nonnull final MustFightBattle.ReturnFire returnFire;
+  @Nonnull final BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> diceRoller;
+  @Nonnull final BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> casualtySelector;
 
   public List<BattleStep> createSteps() {
     return firingGroupSplitter.apply(battleState).stream()

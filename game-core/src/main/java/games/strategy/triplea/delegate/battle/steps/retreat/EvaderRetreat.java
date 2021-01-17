@@ -14,8 +14,8 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.triplea.sound.SoundUtils;
 
@@ -25,11 +25,11 @@ public class EvaderRetreat {
 
   @Builder(toBuilder = true)
   public static class Parameters {
-    final @NonNull BattleState battleState;
-    final @NonNull BattleActions battleActions;
-    final @NonNull BattleState.Side side;
-    final @NonNull IDelegateBridge bridge;
-    final @NonNull Collection<Unit> units;
+    final @Nonnull BattleState battleState;
+    final @Nonnull BattleActions battleActions;
+    final @Nonnull BattleState.Side side;
+    final @Nonnull IDelegateBridge bridge;
+    final @Nonnull Collection<Unit> units;
   }
 
   public static void retreatUnits(
