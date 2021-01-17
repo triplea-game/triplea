@@ -2,15 +2,18 @@ package games.strategy.engine.auto.update;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.mockito.Mockito.verify;
 
+import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,51 +81,72 @@ final class UpdatedMapsCheckTest {
 
     final Collection<String> result =
         UpdatedMapsCheck.computeOutOfDateMaps(
-            Map.of("installed_map.properties", 1), availableMapVersions);
+            List.of(buildDownloadDescription("installed_map.properties", 1)),
+            anyMapName -> Optional.empty());
 
     assertThat(result, is(empty()));
   }
 
-  @ParameterizedTest
-  @MethodSource
-  void localMapsNotOutOfDate(final Map<String, Integer> localMaps) {
-    final Map<String, Integer> availableMaps = Map.of("map name", 2);
+  private static DownloadFileDescription buildDownloadDescription(
+      final String mapName, final int version) {
+    return DownloadFileDescription.builder().mapName(mapName).version(version).build();
+  }
+
+  @Test
+  void localMapHasNoVersion() {
+    final var availableMaps = List.of(buildDownloadDescription("map name", 2));
+    final Function<String, Optional<Integer>> mapVersionLookupFunction =
+        anyMapName -> Optional.empty();
 
     final Collection<String> result =
-        UpdatedMapsCheck.computeOutOfDateMaps(localMaps, availableMaps);
+        UpdatedMapsCheck.computeOutOfDateMaps(availableMaps, mapVersionLookupFunction);
 
     assertThat(result, is(empty()));
   }
 
-  static List<Map<String, Integer>> localMapsNotOutOfDate() {
-    return List.of(
-        // no local maps
-        Map.of(),
-        // local map is current
-        Map.of("map_name.properties", 2),
-        // local map is more recent
-        Map.of("map_name.properties", 3));
-  }
-
-  @ParameterizedTest
-  @MethodSource
-  void localMapsOutOfDate(final Map<String, Integer> localMaps) {
-    final Map<String, Integer> availableMaps = Map.of("Map Name", 2);
+  @Test
+  void localMapIsCurrent() {
+    final var availableMaps = List.of(buildDownloadDescription("map name", 2));
+    final Function<String, Optional<Integer>> mapVersionLookupFunction =
+        anyMapName -> Optional.of(2);
 
     final Collection<String> result =
-        UpdatedMapsCheck.computeOutOfDateMaps(localMaps, availableMaps);
+        UpdatedMapsCheck.computeOutOfDateMaps(availableMaps, mapVersionLookupFunction);
 
-    assertThat("Version value of available map is greater than local map", result, hasSize(1));
-    assertThat(result.iterator().next(), is("Map Name"));
+    assertThat(result, is(empty()));
   }
 
-  static List<Map<String, Integer>> localMapsOutOfDate() {
-    return List.of(
-        // version is less than 2.0.0 and is '0'
-        Map.of("map_name.zip.properties", 0),
-        // version is less than 2.0.0 and is '1'
-        Map.of("map_name.zip.properties", 1),
-        // alternative spelling of the map zip file with the -master suffix
-        Map.of("map_name-master.zip.properties", 1));
+  @Test
+  void localMapIsAhead() {
+    final var availableMaps = List.of(buildDownloadDescription("map name", 2));
+    final Function<String, Optional<Integer>> mapVersionLookupFunction =
+        anyMapName -> Optional.of(3);
+
+    final Collection<String> result =
+        UpdatedMapsCheck.computeOutOfDateMaps(availableMaps, mapVersionLookupFunction);
+
+    assertThat(result, is(empty()));
+  }
+
+  @Test
+  void localMapIsOutOfDate() {
+    final var availableMaps =
+        List.of(
+            buildDownloadDescription("isCurrent", 2),
+            buildDownloadDescription("new name version", 2));
+
+    // if version function receives 'isCurrent', we'll return the current version of '2',
+    // otherwise we'll return '1' which is less than the available current version.
+    final Function<String, Optional<Integer>> mapVersionLookupFunction =
+        mapName -> Optional.of(mapName.equals("isCurrent") ? 2 : 1);
+
+    final Collection<String> result =
+        UpdatedMapsCheck.computeOutOfDateMaps(availableMaps, mapVersionLookupFunction);
+
+    assertThat(
+        "we stubbed an old version for the 'new map version', we expect it to"
+            + "be on the return list of out of date maps",
+        result,
+        hasItem("new name version"));
   }
 }
