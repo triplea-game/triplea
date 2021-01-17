@@ -2168,8 +2168,8 @@
   description: |
     <br>A simple symmetrical map made for 4 players.
 - mapName: Over The Top
-  mapCategory: EXPERIMENTAL
-  version: 1
+  mapCategory: GOOD
+  version: 2
   url: https://github.com/triplea-maps/over_the_top/archive/master.zip
   img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/over-the-top.png
   description: |
