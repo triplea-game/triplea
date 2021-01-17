@@ -35,6 +35,11 @@ public class DownloadedMaps {
     return FileSystemMapFinder.getPath(mapName);
   }
 
+  public static File findPathToMapFolderOrElseThrow(final String mapName) {
+    return FileSystemMapFinder.getPath(mapName)
+        .orElseThrow(() -> new IllegalStateException("Unable to find map: " + mapName));
+  }
+
   public List<String> getSortedGameList() {
     return availableGames.stream()
         .map(DefaultGameChooserEntry::getGameName)

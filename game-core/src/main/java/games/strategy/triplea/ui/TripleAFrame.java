@@ -33,6 +33,7 @@ import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.HistoryNode;
@@ -919,7 +920,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   /** We do NOT want to block the next player from beginning their turn. */
   public void notifyError(final String message) {
-    final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
+    final String displayMessage =
+        LocalizeHtml.localizeImgLinksInHtml(
+            message, DownloadedMaps.findPathToMapFolderOrElseThrow(UiContext.getMapDir()));
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -954,7 +957,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         && !getUiContext().getShowEndOfTurnReport()) {
       return;
     }
-    final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
+    final String displayMessage =
+        LocalizeHtml.localizeImgLinksInHtml(
+            message, DownloadedMaps.findPathToMapFolderOrElseThrow(UiContext.getMapDir()));
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(

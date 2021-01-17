@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
 import java.io.IOException;
@@ -54,7 +55,8 @@ public final class TooltipProperties {
   public String getTooltip(final UnitType unitType, final GamePlayer gamePlayer) {
     final String customTip = getToolTip(unitType, gamePlayer, false);
     if (!customTip.isEmpty()) {
-      return LocalizeHtml.localizeImgLinksInHtml(customTip);
+      return LocalizeHtml.localizeImgLinksInHtml(
+          customTip, DownloadedMaps.findPathToMapFolderOrElseThrow(UiContext.getMapDir()));
     }
     final String generated =
         UnitAttachment.get(unitType)
@@ -62,7 +64,9 @@ public final class TooltipProperties {
                 (gamePlayer == null ? GamePlayer.NULL_PLAYERID : gamePlayer));
     final String appendedTip = getToolTip(unitType, gamePlayer, true);
     if (!appendedTip.isEmpty()) {
-      return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
+      return generated
+          + LocalizeHtml.localizeImgLinksInHtml(
+              appendedTip, DownloadedMaps.findPathToMapFolderOrElseThrow(UiContext.getMapDir()));
     }
     return generated;
   }
