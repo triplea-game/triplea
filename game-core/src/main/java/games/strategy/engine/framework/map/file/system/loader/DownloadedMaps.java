@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
+import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.map.download.DownloadFileProperties;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.io.File;
 import java.net.URI;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.triplea.io.FileUtils;
 
 /**
  * Data structure for the list of available games, games that a player has downloaded or installed
@@ -64,5 +67,52 @@ public class DownloadedMaps {
         .filter(entry -> entry.getGameName().equals(gameName))
         .findAny()
         .map(DefaultGameChooserEntry::getUri);
+  }
+
+  /**
+   * For a given a map name (fuzzy matched), if the map is installed, will return the map version
+   * installed othewrise returns an empty. Fuzzy matching means we will do name normalization and
+   * replace spaces with underscores, convert to lower case, etc.
+   */
+  public static Optional<Integer> getMapVersionByName(final String mapName) {
+    final String normalizedMapName = normalizeName(mapName);
+
+    // see if we have a map folder that matches the target name
+    // if so, check for a .properties file
+    // if that exists, then return the map version value from the properties file
+    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
+        .filter(file -> normalizeName(file.getName()).equals(normalizedMapName))
+        .findAny()
+        .map(
+            file ->
+                ClientFileSystemHelper.getUserMapsFolder()
+                    .toPath()
+                    .resolve(file.getName() + ".properties")
+                    .toFile())
+        .filter(File::exists)
+        .flatMap(DownloadedMaps::readVersionFromPropertyFile);
+  }
+
+  private static Optional<Integer> readVersionFromPropertyFile(final File propertyFile) {
+    return DownloadFileProperties.loadForZipPropertyFile(propertyFile).getVersion();
+  }
+
+  /**
+   * Returns a normalized version of the input. Trims off a '.properties' suffix if present,
+   * converts to lower case and replaces all spaces with underscores.
+   */
+  private static String normalizeName(final String inputName) {
+    String normalizedName = inputName;
+    if (inputName.endsWith(".zip.properties")) {
+      normalizedName = inputName.substring(0, inputName.indexOf(".zip.properties"));
+    }
+    if (normalizedName.endsWith("-master")) {
+      normalizedName = inputName.substring(0, inputName.indexOf("-master"));
+    }
+
+    normalizedName = normalizedName.replaceAll(" ", "_");
+    normalizedName = normalizedName.toLowerCase();
+
+    return normalizedName;
   }
 }

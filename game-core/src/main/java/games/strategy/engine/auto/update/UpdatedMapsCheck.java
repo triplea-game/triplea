@@ -1,22 +1,18 @@
 package games.strategy.engine.auto.update;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.DownloadFileProperties;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.io.FileUtils;
 import org.triplea.swing.SwingComponents;
 
 @UtilityClass
@@ -78,7 +74,7 @@ class UpdatedMapsCheck {
     // Loop over all available maps, check if we have that map present, its version,
     // and remember any whose version is less than what is available.
     for (final DownloadFileDescription availableMap : availableToDownloadMaps) {
-      getMapVersionByName(availableMap.getMapName())
+      DownloadedMaps.getMapVersionByName(availableMap.getMapName())
           .ifPresent(
               installedVersion -> {
                 if (installedVersion < availableMap.getVersion()) {
@@ -87,53 +83,6 @@ class UpdatedMapsCheck {
               });
     }
     return outOfDateMapNames;
-  }
-
-  /**
-   * For a given a map name (fuzzy matched), if the map is installed, will return the map version
-   * installed othewrise returns an empty. Fuzzy matching means we will do name normalization and
-   * replace spaces with underscores, convert to lower case, etc.
-   */
-  private static Optional<Integer> getMapVersionByName(final String mapName) {
-    final String normalizedMapName = normalizeName(mapName);
-
-    // see if we have a map folder that matches the target name
-    // if so, check for a .properties file
-    // if that exists, then return the map version value from the properties file
-    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
-        .filter(file -> normalizeName(file.getName()).equals(normalizedMapName))
-        .findAny()
-        .map(
-            file ->
-                ClientFileSystemHelper.getUserMapsFolder()
-                    .toPath()
-                    .resolve(file.getName() + ".properties")
-                    .toFile())
-        .filter(File::exists)
-        .flatMap(UpdatedMapsCheck::readVersionFromPropertyFile);
-  }
-
-  private static Optional<Integer> readVersionFromPropertyFile(final File propertyFile) {
-    return DownloadFileProperties.loadForZipPropertyFile(propertyFile).getVersion();
-  }
-
-  /**
-   * Returns a normalized version of the input. Trims off a '.properties' suffix if present,
-   * converts to lower case and replaces all spaces with underscores.
-   */
-  private static String normalizeName(final String inputName) {
-    String normalizedName = inputName;
-    if (inputName.endsWith(".zip.properties")) {
-      normalizedName = inputName.substring(0, inputName.indexOf(".zip.properties"));
-    }
-    if (normalizedName.endsWith("-master")) {
-      normalizedName = inputName.substring(0, inputName.indexOf("-master"));
-    }
-
-    normalizedName = normalizedName.replaceAll(" ", "_");
-    normalizedName = normalizedName.toLowerCase();
-
-    return normalizedName;
   }
 
   private static void promptUserToUpdateMaps(final Collection<String> outOfDateMapNames) {
