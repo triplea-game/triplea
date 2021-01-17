@@ -9,26 +9,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.triplea.util.Version;
+import org.triplea.yaml.YamlUtils;
 
 public class ServerYamlParser implements Function<InputStream, LiveServers> {
 
   @SuppressWarnings("unchecked")
   @Override
   public LiveServers apply(final InputStream inputStream) {
-    final Load load = new Load(LoadSettings.builder().build());
-    final Map<?, ?> yamlProps;
-    try {
-      yamlProps = (Map<?, ?>) load.loadFromInputStream(inputStream);
-    } catch (final ClassCastException e) {
-      throw new IllegalArgumentException("Invalid yaml format");
-    }
-
-    if (yamlProps == null) {
-      throw new IllegalArgumentException("Invalid yaml file");
-    }
+    final Map<String, Object> yamlProps = YamlUtils.readYaml(inputStream);
 
     final String latest =
         Optional.ofNullable((String) yamlProps.get("latest"))
