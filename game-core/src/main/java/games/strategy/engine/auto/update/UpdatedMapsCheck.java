@@ -14,11 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingComponents;
 
 @UtilityClass
-@Slf4j
 class UpdatedMapsCheck {
 
   static final int THRESHOLD_DAYS = 7;
