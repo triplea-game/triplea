@@ -21,7 +21,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.triplea.yaml.YamlUtils;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 
 /**
  * Helper class containing the necessary logic to fetch and revoke login tokens for NodeBB forum
@@ -30,6 +31,7 @@ import org.triplea.yaml.YamlUtils;
 @AllArgsConstructor
 public class NodeBbTokenGenerator {
   private final String forumUrl;
+  private final Load load = new Load(LoadSettings.builder().build());
 
   /**
    * Data class used to wrap a newly generated token and the {@link #userId} the token was created
@@ -90,7 +92,7 @@ public class NodeBbTokenGenerator {
 
   private int getUserId(final CloseableHttpClient client, final String username)
       throws IOException {
-    final Map<String, Object> jsonObject = queryUserInfo(client, username);
+    final Map<?, ?> jsonObject = queryUserInfo(client, username);
     checkUser(jsonObject, username);
     return (Integer) jsonObject.get("uid");
   }
@@ -107,13 +109,13 @@ public class NodeBbTokenGenerator {
     }
   }
 
-  private Map<String, Object> queryUserInfo(final CloseableHttpClient client, final String username)
+  private Map<?, ?> queryUserInfo(final CloseableHttpClient client, final String username)
       throws IOException {
     final String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
     final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + encodedUsername);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      return YamlUtils.readYaml(EntityUtils.toString(response.getEntity()));
+      return (Map<?, ?>) load.loadFromString(EntityUtils.toString(response.getEntity()));
     }
   }
 
@@ -133,7 +135,7 @@ public class NodeBbTokenGenerator {
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = EntityUtils.toString(response.getEntity());
-      final Map<String, Object> jsonObject = YamlUtils.readYaml(rawJson);
+      final Map<?, ?> jsonObject = (Map<?, ?>) load.loadFromString(rawJson);
       if (jsonObject.containsKey("code")) {
         final String code = (String) Preconditions.checkNotNull(jsonObject.get("code"));
         if (code.equalsIgnoreCase("ok")) {
