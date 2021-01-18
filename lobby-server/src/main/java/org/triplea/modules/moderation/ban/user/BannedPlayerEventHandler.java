@@ -2,8 +2,8 @@ package org.triplea.modules.moderation.ban.user;
 
 import java.net.InetAddress;
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.NonNull;
 import org.triplea.web.socket.SessionSet;
 
 /**
@@ -15,7 +15,7 @@ import org.triplea.web.socket.SessionSet;
 @Builder
 public class BannedPlayerEventHandler {
 
-  @NonNull private final Collection<SessionSet> sessionSets;
+  @Nonnull private final Collection<SessionSet> sessionSets;
 
   public void fireBannedEvent(final InetAddress bannedIp) {
     sessionSets.forEach(sessionSet -> sessionSet.closeSessionsByIp(bannedIp));

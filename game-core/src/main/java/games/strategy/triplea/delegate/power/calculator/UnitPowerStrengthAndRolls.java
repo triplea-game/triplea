@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Value;
 
 /** Stores and computes an individual unit's power, strength and roll */
@@ -17,20 +16,20 @@ public class UnitPowerStrengthAndRolls {
   @Nonnull
   Integer power;
 
-  @NonNull StrengthAndRolls strengthAndRolls;
+  @Nonnull StrengthAndRolls strengthAndRolls;
 
   @Getter(AccessLevel.PUBLIC)
-  @NonNull
+  @Nonnull
   Unit unit;
 
-  @NonNull PowerCalculator powerCalculator;
+  @Nonnull PowerCalculator powerCalculator;
 
   @Getter(AccessLevel.PUBLIC)
-  @NonNull
+  @Nonnull
   Boolean chooseBestRoll;
 
   @Getter(AccessLevel.PUBLIC)
-  @NonNull
+  @Nonnull
   Integer diceSides;
 
   @Value(staticConstructor = "of")

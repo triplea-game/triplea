@@ -15,9 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 
 /**
  * Fake implementation of BattleState for tests to use
@@ -36,29 +36,29 @@ public class FakeBattleState implements BattleState {
   final UUID battleId;
 
   @Getter(onMethod = @__({@Override}))
-  final @NonNull Territory battleSite;
+  final @Nonnull Territory battleSite;
 
   @Getter(onMethod = @__({@Override}))
-  final @NonNull Collection<TerritoryEffect> territoryEffects;
+  final @Nonnull Collection<TerritoryEffect> territoryEffects;
 
-  final @NonNull GamePlayer attacker;
+  final @Nonnull GamePlayer attacker;
 
-  final @NonNull GamePlayer defender;
+  final @Nonnull GamePlayer defender;
 
-  final @NonNull Collection<Unit> attackingUnits;
+  final @Nonnull Collection<Unit> attackingUnits;
 
-  final @NonNull Collection<Unit> attackingWaitingToDie;
+  final @Nonnull Collection<Unit> attackingWaitingToDie;
 
-  final @NonNull Collection<Unit> defendingUnits;
+  final @Nonnull Collection<Unit> defendingUnits;
 
-  final @NonNull Collection<Unit> defendingWaitingToDie;
+  final @Nonnull Collection<Unit> defendingWaitingToDie;
 
-  final @NonNull Collection<Unit> killed;
+  final @Nonnull Collection<Unit> killed;
 
-  final @NonNull Collection<Unit> retreatUnits;
+  final @Nonnull Collection<Unit> retreatUnits;
 
   @Getter(onMethod = @__({@Override}))
-  final @NonNull GameData gameData;
+  final @Nonnull GameData gameData;
 
   final boolean amphibious;
 
@@ -72,7 +72,7 @@ public class FakeBattleState implements BattleState {
   final Collection<Unit> dependentUnits;
 
   @Getter(onMethod = @__({@Override}))
-  final @NonNull Collection<Unit> bombardingUnits;
+  final @Nonnull Collection<Unit> bombardingUnits;
 
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {

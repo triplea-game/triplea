@@ -1,10 +1,10 @@
 package org.triplea.http;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 
 /**
  * Creates a custom http Status Code, mainly used to be able to create a custom reason phrase. This
@@ -14,10 +14,10 @@ import lombok.NonNull;
 @Builder
 public class ResponseStatus implements Response.StatusType {
   @Getter(onMethod_ = @Override)
-  @NonNull
+  @Nonnull
   private final String reasonPhrase;
 
-  @NonNull private final Integer statusCode;
+  @Nonnull private final Integer statusCode;
 
   @Override
   public Family getFamily() {

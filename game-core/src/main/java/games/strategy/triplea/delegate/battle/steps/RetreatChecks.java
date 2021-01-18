@@ -7,17 +7,17 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.function.Supplier;
-import lombok.NonNull;
+import javax.annotation.Nonnull;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class RetreatChecks {
 
   public static boolean canAttackerRetreat(
-      final @NonNull Collection<Unit> defendingUnits,
-      final @NonNull GameState gameData,
-      final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories,
-      final @NonNull Boolean isAmphibious) {
+      final @Nonnull Collection<Unit> defendingUnits,
+      final @Nonnull GameState gameData,
+      final @Nonnull Supplier<Collection<Territory>> getAttackerRetreatTerritories,
+      final @Nonnull Boolean isAmphibious) {
     if (isAmphibious) {
       return false;
     }
@@ -28,7 +28,7 @@ public class RetreatChecks {
   }
 
   public static boolean onlyDefenselessTransportsLeft(
-      final @NonNull Collection<Unit> units, final @NonNull GameState gameData) {
+      final @Nonnull Collection<Unit> units, final @Nonnull GameState gameData) {
     return Properties.getTransportCasualtiesRestricted(gameData.getProperties())
         && !units.isEmpty()
         && units.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());

@@ -5,9 +5,9 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
@@ -21,17 +21,17 @@ import org.triplea.java.collections.IntegerMap;
 @Value
 class AirBattleOffenseCombatValue implements CombatValue {
 
-  @NonNull Integer gameDiceSides;
+  @Nonnull Integer gameDiceSides;
 
-  @NonNull Boolean lhtrHeavyBombers;
+  @Nonnull Boolean lhtrHeavyBombers;
 
   @Getter(onMethod_ = @Override)
-  @NonNull
+  @Nonnull
   @Builder.Default
   Collection<Unit> friendUnits = List.of();
 
   @Getter(onMethod_ = @Override)
-  @NonNull
+  @Nonnull
   @Builder.Default
   Collection<Unit> enemyUnits = List.of();
 
