@@ -5,10 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
@@ -23,7 +24,7 @@ public class ConvertUnitAbility {
     ENEMY
   }
 
-  @NonNull String name;
+  @Nonnull String name;
   /** The unit types that have this ability */
   @NonFinal Collection<UnitType> attachedUnitTypes;
 
@@ -31,10 +32,10 @@ public class ConvertUnitAbility {
   @Builder.Default Collection<Faction> factions = List.of(Faction.ENEMY);
 
   /** The unitAbility that will be converted */
-  @NonNull CombatUnitAbility from;
+  @Nonnull CombatUnitAbility from;
 
   /** If null, then this just removes the "from" UnitAbility */
-  CombatUnitAbility to;
+  @Nullable CombatUnitAbility to;
 
   /**
    * Can the attachedTo from "other" be combined with this?
