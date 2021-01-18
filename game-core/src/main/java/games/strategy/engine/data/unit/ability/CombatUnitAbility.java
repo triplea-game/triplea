@@ -45,8 +45,8 @@ public class CombatUnitAbility {
   @Builder.Default
   Collection<BattleState.Side> sides = List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE);
 
-  /** How many combat rounds this ability can be used. -1 means unlimited */
-  @Builder.Default int round = -1;
+  /** How many combat rounds this ability can be used */
+  @Builder.Default int round = Integer.MAX_VALUE;
 
   /**
    * Can the casualties return fire after the battle phase that this UnitAbility is active?

@@ -170,7 +170,10 @@ public class UnitAbilityFactory {
                 .attachedUnitTypes(List.of(unitType))
                 .diceType(CombatUnitAbility.DiceType.AA)
                 .sides(sides)
-                .round(unitAttachment.getMaxRoundsAa())
+                .round(
+                    unitAttachment.getMaxRoundsAa() == -1
+                        ? Integer.MAX_VALUE
+                        : unitAttachment.getMaxRoundsAa())
                 .targets(aaTargets.get(unitAttachment.getTypeAa()))
                 .returnFire(false)
                 .suicideOnHit(UnitAttachment.get(unitType).getIsSuicideOnHit())
