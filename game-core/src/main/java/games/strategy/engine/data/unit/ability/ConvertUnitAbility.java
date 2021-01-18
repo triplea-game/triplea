@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -34,8 +33,8 @@ public class ConvertUnitAbility {
   /** The unitAbility that will be converted */
   @Nonnull CombatUnitAbility from;
 
-  /** If null, then this just removes the "from" UnitAbility */
-  @Nullable CombatUnitAbility to;
+  /** The unitAbility that will replace the "from" unitAbility */
+  @Builder.Default CombatUnitAbility to = CombatUnitAbility.EMPTY;
 
   /**
    * Can the attachedTo from "other" be combined with this?

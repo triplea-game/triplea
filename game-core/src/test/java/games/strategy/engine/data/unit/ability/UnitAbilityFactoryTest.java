@@ -1116,9 +1116,9 @@ class UnitAbilityFactoryTest {
           convertUnitAbility.getFrom(),
           is(unitAbility));
       assertThat(
-          "The convert ability is removing the AA ability so there is no To ability",
+          "The convert ability is removing the AA ability so the To is EMPTY",
           convertUnitAbility.getTo(),
-          nullValue());
+          is(CombatUnitAbility.EMPTY));
       assertThat(
           "The convert ability should be on the preventsFiringUnitType",
           convertUnitAbility.getAttachedUnitTypes(),

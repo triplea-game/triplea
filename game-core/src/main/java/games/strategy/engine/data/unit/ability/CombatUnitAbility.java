@@ -20,6 +20,8 @@ import lombok.experimental.NonFinal;
 @Builder(toBuilder = true)
 public class CombatUnitAbility {
 
+  public static final CombatUnitAbility EMPTY = CombatUnitAbility.builder().name("Empty").build();
+
   enum DiceType {
     // Use AA dice (attackAA, offensiveAttackAA)
     AA,
@@ -33,10 +35,10 @@ public class CombatUnitAbility {
   @NonNull String name;
 
   /** The unit types that have this ability */
-  @NonFinal Collection<UnitType> attachedUnitTypes;
+  @Builder.Default @NonFinal Collection<UnitType> attachedUnitTypes = List.of();
 
   /** The unit types that can be targeted */
-  @NonNull Collection<UnitType> targets;
+  @Builder.Default Collection<UnitType> targets = List.of();
 
   /** The type of dice that will be rolled. */
   @Builder.Default DiceType diceType = DiceType.NORMAL;
