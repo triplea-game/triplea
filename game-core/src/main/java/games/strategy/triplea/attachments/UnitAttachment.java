@@ -682,7 +682,8 @@ public class UnitAttachment extends DefaultAttachment {
     return canEvade || isSub;
   }
 
-  private void setIsFirstStrike(final Boolean s) {
+  @VisibleForTesting
+  public void setIsFirstStrike(final Boolean s) {
     isFirstStrike = s;
   }
 
@@ -1854,7 +1855,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @Deprecated
-  private void setIsSuicide(final Boolean s) {
+  @VisibleForTesting
+  public void setIsSuicide(final Boolean s) {
     isSuicide = true;
     if (s) {
       canNotTarget = null;
@@ -1868,7 +1870,8 @@ public class UnitAttachment extends DefaultAttachment {
     return isSuicide || isSuicideOnAttack || isSuicideOnDefense;
   }
 
-  private void setIsSuicideOnAttack(final Boolean s) {
+  @VisibleForTesting
+  public void setIsSuicideOnAttack(final Boolean s) {
     isSuicideOnAttack = s;
   }
 
@@ -1876,7 +1879,8 @@ public class UnitAttachment extends DefaultAttachment {
     return isSuicideOnAttack || isSuicide;
   }
 
-  private void setIsSuicideOnDefense(final Boolean s) {
+  @VisibleForTesting
+  public void setIsSuicideOnDefense(final Boolean s) {
     isSuicideOnDefense = s;
   }
 

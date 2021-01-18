@@ -41,11 +41,11 @@ public class ConvertUnitAbility {
    *
    * <p>This is only used to merge auto created ConvertUnitAbilities.
    *
-   * <p>The name and attachedTo is not important in deciding whether the attachedTo can be combined.
+   * <p>ConvertUnitAbilities with different names and attachedUnitTypes can still be merged together
+   * so the equals need to ignore those two attributes. But equals normally still needs to check the
+   * equality of names and attachedUnitTypes so don't modify the equals method itself.
    */
   public boolean canMergeAttachedUnitTypes(final ConvertUnitAbility other) {
-    // build a new ConvertUnitAbility based off of other but with this ConvertUnitAbility's name
-    // and attachedUnitTypes as they are not relevant for merging.
     return equals(
         other.toBuilder().name(this.name).attachedUnitTypes(this.attachedUnitTypes).build());
   }

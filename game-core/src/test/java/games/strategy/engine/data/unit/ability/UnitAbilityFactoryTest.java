@@ -164,6 +164,69 @@ class UnitAbilityFactoryTest {
       }
 
       @Test
+      void unitWithSuicideOnHit() {
+        unitAttachment.setAttack(1);
+        unitAttachment.setIsSuicideOnHit(true);
+
+        UnitAbilityFactory.generate(
+            playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
+
+        assertThat(
+            "Unit has General abilities",
+            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
+            hasSize(1));
+
+        final CombatUnitAbility unitAbility =
+            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
+        assertThat(
+            "isSuicideOnHit translates into commitSuicideAfterSuccesfulHit on both sides",
+            unitAbility.getCommitSuicideAfterSuccessfulHit(),
+            is(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)));
+      }
+
+      @Test
+      void unitWithIsSuicideOnAttack() {
+        unitAttachment.setAttack(1);
+        unitAttachment.setIsSuicideOnAttack(true);
+
+        UnitAbilityFactory.generate(
+            playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
+
+        assertThat(
+            "Unit has General abilities",
+            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
+            hasSize(1));
+
+        final CombatUnitAbility unitAbility =
+            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
+        assertThat(
+            "isSuicideOnAttack translates into commitSuicide on only offense",
+            unitAbility.getCommitSuicide(),
+            is(List.of(BattleState.Side.OFFENSE)));
+      }
+
+      @Test
+      void unitWithIsSuicideOnDefense() {
+        unitAttachment.setDefense(1);
+        unitAttachment.setIsSuicideOnDefense(true);
+
+        UnitAbilityFactory.generate(
+            playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
+
+        assertThat(
+            "Unit has General abilities",
+            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
+            hasSize(1));
+
+        final CombatUnitAbility unitAbility =
+            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
+        assertThat(
+            "isSuicideOnDefense translates into commitSuicide on only defense",
+            unitAbility.getCommitSuicide(),
+            is(List.of(BattleState.Side.DEFENSE)));
+      }
+
+      @Test
       void twoUnitTypesWithSamePropertiesHaveCommonAbility() {
         unitAttachment.setAttack(1);
 
@@ -283,54 +346,6 @@ class UnitAbilityFactoryTest {
             "The ability should be attached to both unit types",
             unitAbility.getAttachedUnitTypes(),
             is(List.of(unitType, otherUnitType)));
-      }
-
-      @Test
-      void suicideOnHitUnitsDoNotCombineAbilities() {
-        unitAttachment.setAttack(1);
-        unitAttachment.setIsSuicideOnHit(true);
-
-        final UnitType otherSuicideUnitType = new UnitType("otherSuicide", gameData);
-        final UnitAttachment otherSuicideUnitAttachment =
-            new UnitAttachment("otherSuicide", otherSuicideUnitType, gameData);
-        otherSuicideUnitType.addAttachment(UNIT_ATTACHMENT_NAME, otherSuicideUnitAttachment);
-        otherSuicideUnitAttachment.setAttack(1);
-        otherSuicideUnitAttachment.setIsSuicideOnHit(true);
-        unitTypeList.addUnitType(otherSuicideUnitType);
-
-        UnitAbilityFactory.generate(
-            playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
-
-        assertThat(
-            "Even though both unitTypes have the same properties, they have their own ability "
-                + "because they are suicideOnHit",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(2));
-
-        assertThat(
-            "Both unit abilities should have only 1 attached unit type",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
-                .filter(combatUnitAbility -> combatUnitAbility.getAttachedUnitTypes().size() == 1)
-                .collect(Collectors.toList()),
-            hasSize(2));
-
-        assertThat(
-            "One unit ability should be attached to unitType",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
-                .filter(
-                    combatUnitAbility ->
-                        combatUnitAbility.getAttachedUnitTypes().contains(unitType))
-                .collect(Collectors.toList()),
-            hasSize(1));
-
-        assertThat(
-            "One unit ability should be attached to otherSuicideUnitType",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
-                .filter(
-                    combatUnitAbility ->
-                        combatUnitAbility.getAttachedUnitTypes().contains(otherSuicideUnitType))
-                .collect(Collectors.toList()),
-            hasSize(1));
       }
 
       @Test
@@ -500,6 +515,41 @@ class UnitAbilityFactoryTest {
 
     @Nested
     class FirstStrike {
+
+      @Test
+      void unitWithIsFirstStrike() {
+        unitAttachment.setAttack(1);
+        unitAttachment.setIsFirstStrike(true);
+
+        UnitAbilityFactory.generate(
+            playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
+
+        assertThat(
+            "Unit has First Strike abilities",
+            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
+            hasSize(1));
+      }
+
+      @Test
+      void unitWithIsSuicide() {
+        unitAttachment.setAttack(1);
+        unitAttachment.setIsSuicide(true);
+
+        UnitAbilityFactory.generate(
+            playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
+
+        assertThat(
+            "isSuicide Unit has First Strike abilities",
+            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
+            hasSize(1));
+
+        final CombatUnitAbility unitAbility =
+            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
+        assertThat(
+            "isSuicide translates into commitSuicide on both sides",
+            unitAbility.getCommitSuicide(),
+            is(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)));
+      }
 
       @Test
       void unitWithIsSub() {
@@ -1039,59 +1089,6 @@ class UnitAbilityFactoryTest {
               + "to be the first set.",
           ability.getTargets(),
           is(targets1));
-    }
-
-    @Test
-    void suicideOnHitUnitsDoNotCombineAbilities() {
-      final Set<UnitType> targets = Set.of(mock(UnitType.class), mock(UnitType.class));
-      unitAttachment.setAttackAa(1);
-      unitAttachment.setIsAaForCombatOnly(true);
-      unitAttachment.setTargetsAa(targets);
-      unitAttachment.setTypeAa("test");
-      unitAttachment.setIsSuicideOnHit(true);
-
-      final UnitType otherSuicideUnitType = new UnitType("otherSuicide", gameData);
-      final UnitAttachment otherSuicideUnitAttachment =
-          new UnitAttachment("otherSuicide", otherSuicideUnitType, gameData);
-      otherSuicideUnitType.addAttachment(UNIT_ATTACHMENT_NAME, otherSuicideUnitAttachment);
-      otherSuicideUnitAttachment.setAttackAa(1);
-      otherSuicideUnitAttachment.setIsAaForCombatOnly(true);
-      otherSuicideUnitAttachment.setTargetsAa(targets);
-      otherSuicideUnitAttachment.setTypeAa("test");
-      otherSuicideUnitAttachment.setIsSuicideOnHit(true);
-      unitTypeList.addUnitType(otherSuicideUnitType);
-
-      UnitAbilityFactory.generate(
-          playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
-
-      assertThat(
-          "Each unit type should have its own ability since they are suicideOnHit",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          hasSize(2));
-
-      assertThat(
-          "Both unit abilities should have only 1 attached unit type",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).stream()
-              .filter(combatUnitAbility -> combatUnitAbility.getAttachedUnitTypes().size() == 1)
-              .collect(Collectors.toList()),
-          hasSize(2));
-
-      assertThat(
-          "One unit ability should be attached to unitType",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).stream()
-              .filter(
-                  combatUnitAbility -> combatUnitAbility.getAttachedUnitTypes().contains(unitType))
-              .collect(Collectors.toList()),
-          hasSize(1));
-
-      assertThat(
-          "One unit ability should be attached to otherSuicideUnitType",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).stream()
-              .filter(
-                  combatUnitAbility ->
-                      combatUnitAbility.getAttachedUnitTypes().contains(otherSuicideUnitType))
-              .collect(Collectors.toList()),
-          hasSize(1));
     }
 
     @Test

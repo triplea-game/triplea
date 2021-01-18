@@ -56,8 +56,21 @@ public class CombatUnitAbility {
    */
   @Builder.Default boolean returnFire = true;
 
-  /** Will these units commit suicide when they have a hit? */
-  @Builder.Default boolean suicideOnHit = false;
+  /**
+   * Does this unit commit suicide after it has fired a shot?
+   *
+   * <p>Whether the shot hit or not doesn't matter.
+   *
+   * <p>It can commit suicide as a defensive unit, offensive unit, or both.
+   */
+  @Builder.Default Collection<BattleState.Side> commitSuicide = List.of();
+
+  /**
+   * Does this unit commit suicide after it has successfully hit a target?
+   *
+   * <p>It can commit suicide as a defensive unit, offensive unit, or both.
+   */
+  @Builder.Default Collection<BattleState.Side> commitSuicideAfterSuccessfulHit = List.of();
 
   public boolean isTarget(final Unit unit) {
     return targets.contains(unit.getType());
@@ -76,20 +89,13 @@ public class CombatUnitAbility {
    *
    * <p>This is only used to merge auto created CombatUnitAbilities.
    *
-   * <p>The name is not important in deciding whether the attachedTo can be combined.
-   *
-   * <p>The attachedTo is only important if this is an suicideOnHit ability. By ensuring that each
-   * CombatUnitAbility is unique per suicideOnHit unitType, this simplifies the logic to determine
-   * which unit should suicide after a hit.
+   * <p>CombatUnitAbility with different names and attachedUnitTypes can still be merged together so
+   * the equals need to ignore those two attributes. But equals normally still needs to check the
+   * equality of names and attachedUnitTypes so don't modify the equals method itself.
    */
   public boolean canMergeAttachedUnitTypes(final CombatUnitAbility other) {
-    // build a new CombatUnitAbility based off of other but with this CombatUnitAbility's name
-    // and attachedUnitTypes (if not suicideOnHit) as they are not relevant for merging.
     return equals(
-        other.toBuilder()
-            .name(this.name)
-            .attachedUnitTypes(suicideOnHit ? other.attachedUnitTypes : this.attachedUnitTypes)
-            .build());
+        other.toBuilder().name(this.name).attachedUnitTypes(this.attachedUnitTypes).build());
   }
 
   /**
