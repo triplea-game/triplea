@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
@@ -57,7 +57,7 @@ public class CombatUnitAbility {
   }
 
   /** The name of this unit ability that will be shown in the Battle UI */
-  @NonNull String name;
+  @Nonnull String name;
 
   /** The unit types that have this ability */
   @Builder.Default @NonFinal Collection<UnitType> attachedUnitTypes = List.of();
