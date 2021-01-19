@@ -14,7 +14,32 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
-/** Unit Ability for combat situations */
+/**
+ * Unit Ability for targeting and causing damage to units
+ *
+ * <p>A unit ability indicates what targets a unit type has, what dice it should roll, whether its
+ * casualties can return fire in a later {@link
+ * games.strategy.engine.data.battle.phase.BattlePhase}.
+ *
+ * <p>Some examples of what this does cover are:
+ *
+ * <ul>
+ *   <li>Instant Kill for a Submarine: It would use the NORMAL dice type, its targets would be sea
+ *       units, and casualties would not return fire.
+ *   <li>Land Mines Explosion: It would use the NORMAL dice type, its targets would be land based,
+ *       it would commit suicide, and the casualties would return fire.
+ *   <li>Depth Charges for Destroyer: It would use the AA dice type, its targets would be
+ *       submarines, and the casualties would return fire.
+ * </ul>
+ *
+ * Some examples of what this doesn't cover are:
+ *
+ * <ul>
+ *   <li>The ability to blitz
+ *   <li>The ability to retreat during a battle
+ *   <li>The ability to create new units
+ * </ul>
+ */
 @Data
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)

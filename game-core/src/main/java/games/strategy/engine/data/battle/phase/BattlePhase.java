@@ -35,7 +35,8 @@ public class BattlePhase {
   }
 
   /**
-   * Adds the unit ability or finds an existing equal ability and merges the onUnitTypes
+   * Adds the unit ability or finds an existing equal ability and merges the {@link
+   * CombatUnitAbility#attachedUnitTypes}
    *
    * @return The passed in unitAbility if it is new or the existing unitAbility
    */
