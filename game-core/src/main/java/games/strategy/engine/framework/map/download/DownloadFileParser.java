@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
-import org.triplea.yaml.YamlUtils;
-import org.triplea.yaml.YamlUtils.InvalidYamlFormatException;
+import org.triplea.yaml.YamlReader;
+import org.triplea.yaml.YamlReader.InvalidYamlFormatException;
 
 /**
  * Utility class to parse an available map list file config file - used to determine which maps are
@@ -38,7 +38,7 @@ final class DownloadFileParser {
   }
 
   private static List<DownloadFileDescription> parseImpl(final InputStream is) {
-    final List<Map<String, Object>> yamlData = YamlUtils.readYaml(is);
+    final List<Map<String, Object>> yamlData = YamlReader.readList(is);
 
     final List<DownloadFileDescription> downloads = new ArrayList<>();
     yamlData.stream()

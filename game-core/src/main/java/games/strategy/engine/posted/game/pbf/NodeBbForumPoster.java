@@ -25,7 +25,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.triplea.awt.OpenFileUtility;
-import org.triplea.yaml.YamlUtils;
+import org.triplea.yaml.YamlReader;
 
 /**
  * Posts turn summaries to a NodeBB based forum of your choice.
@@ -158,7 +158,7 @@ public class NodeBbForumPoster {
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
         final String url =
-            (String) ((List<Map<String, Object>>) YamlUtils.readYaml(json)).get(0).get("url");
+            (String) ((List<Map<String, Object>>) YamlReader.readList(json)).get(0).get("url");
         return "\n[Savegame](" + url + ")";
       }
       throw new IllegalStateException(

@@ -21,7 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.triplea.yaml.YamlUtils;
+import org.triplea.yaml.YamlReader;
 
 /**
  * Helper class containing the necessary logic to fetch and revoke login tokens for NodeBB forum
@@ -113,7 +113,7 @@ public class NodeBbTokenGenerator {
     final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + encodedUsername);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      return YamlUtils.readYaml(EntityUtils.toString(response.getEntity()));
+      return YamlReader.readMap(EntityUtils.toString(response.getEntity()));
     }
   }
 
@@ -133,7 +133,7 @@ public class NodeBbTokenGenerator {
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = EntityUtils.toString(response.getEntity());
-      final Map<String, Object> jsonObject = YamlUtils.readYaml(rawJson);
+      final Map<String, Object> jsonObject = YamlReader.readMap(rawJson);
       if (jsonObject.containsKey("code")) {
         final String code = (String) Preconditions.checkNotNull(jsonObject.get("code"));
         if (code.equalsIgnoreCase("ok")) {

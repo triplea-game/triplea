@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.util.Version;
+import org.triplea.yaml.YamlReader.InvalidYamlFormatException;
 
 class ServerYamlParserTest {
 
@@ -28,7 +29,7 @@ class ServerYamlParserTest {
   @MethodSource
   @ParameterizedTest
   void invalidInputs(final InputStream inputStream) {
-    assertThrows(IllegalArgumentException.class, () -> serverYamlParser.apply(inputStream));
+    assertThrows(InvalidYamlFormatException.class, () -> serverYamlParser.apply(inputStream));
   }
 
   @SuppressWarnings("unused")

@@ -10,14 +10,14 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.triplea.util.Version;
-import org.triplea.yaml.YamlUtils;
+import org.triplea.yaml.YamlReader;
 
 public class ServerYamlParser implements Function<InputStream, LiveServers> {
 
   @SuppressWarnings("unchecked")
   @Override
   public LiveServers apply(final InputStream inputStream) {
-    final Map<String, Object> yamlProps = YamlUtils.readYaml(inputStream);
+    final Map<String, Object> yamlProps = YamlReader.readMap(inputStream);
 
     final String latest =
         Optional.ofNullable((String) yamlProps.get("latest"))
