@@ -24,9 +24,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.yaml.YamlReader;
 
 /**
  * Posts turn summaries to a NodeBB based forum of your choice.
@@ -38,7 +37,6 @@ public class NodeBbForumPoster {
   public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
   public static final String TRIPLEA_FORUM_DISPLAY_NAME = "forums.triplea-game.org";
 
-  private final Load load = new Load(LoadSettings.builder().build());
   private final int topicId;
   private final String token;
   private final String forumUrl;
@@ -160,7 +158,7 @@ public class NodeBbForumPoster {
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
         final String url =
-            (String) ((Map<?, ?>) ((List<?>) load.loadFromString(json)).get(0)).get("url");
+            (String) ((List<Map<String, Object>>) YamlReader.readList(json)).get(0).get("url");
         return "\n[Savegame](" + url + ")";
       }
       throw new IllegalStateException(
