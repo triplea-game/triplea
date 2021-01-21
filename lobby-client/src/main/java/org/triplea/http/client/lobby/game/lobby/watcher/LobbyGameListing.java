@@ -1,9 +1,9 @@
 package org.triplea.http.client.lobby.game.lobby.watcher;
 
+import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.ToString;
 import org.triplea.domain.data.LobbyGame;
 
@@ -16,6 +16,6 @@ import org.triplea.domain.data.LobbyGame;
 @EqualsAndHashCode
 @ToString
 public class LobbyGameListing {
-  @NonNull private final String gameId;
-  @NonNull private final LobbyGame lobbyGame;
+  @Nonnull private final String gameId;
+  @Nonnull private final LobbyGame lobbyGame;
 }

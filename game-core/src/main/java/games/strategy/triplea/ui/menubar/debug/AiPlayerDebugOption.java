@@ -2,8 +2,8 @@ package games.strategy.triplea.ui.menubar.debug;
 
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Value;
 
 @Builder
@@ -23,7 +23,7 @@ public class AiPlayerDebugOption {
   }
 
   /** The menu title */
-  @NonNull String title;
+  @Nonnull String title;
   /**
    * The type of option
    *

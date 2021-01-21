@@ -9,9 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
-import org.snakeyaml.engine.v2.api.Load;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+import org.triplea.yaml.YamlReader;
+import org.triplea.yaml.YamlReader.InvalidYamlFormatException;
 
 /**
  * Utility class to parse an available map list file config file - used to determine which maps are
@@ -32,14 +31,13 @@ final class DownloadFileParser {
   public static List<DownloadFileDescription> parse(final InputStream is) throws IOException {
     try {
       return parseImpl(is);
-    } catch (final YamlEngineException e) {
+    } catch (final InvalidYamlFormatException e) {
       throw new IOException(e);
     }
   }
 
   private static List<DownloadFileDescription> parseImpl(final InputStream is) {
-    final Load load = new Load(LoadSettings.builder().build());
-    final List<?> yamlData = (List<?>) load.loadFromInputStream(is);
+    final List<Map<String, Object>> yamlData = YamlReader.readList(is);
 
     final List<DownloadFileDescription> downloads = new ArrayList<>();
     yamlData.stream()

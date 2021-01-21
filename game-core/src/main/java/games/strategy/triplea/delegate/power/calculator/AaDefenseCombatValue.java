@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
@@ -24,18 +24,18 @@ import org.triplea.java.collections.IntegerMap;
 @Getter(AccessLevel.NONE)
 class AaDefenseCombatValue implements CombatValue {
 
-  @NonNull AvailableSupports strengthSupportFromFriends;
-  @NonNull AvailableSupports strengthSupportFromEnemies;
-  @NonNull AvailableSupports rollSupportFromFriends;
-  @NonNull AvailableSupports rollSupportFromEnemies;
+  @Nonnull AvailableSupports strengthSupportFromFriends;
+  @Nonnull AvailableSupports strengthSupportFromEnemies;
+  @Nonnull AvailableSupports rollSupportFromFriends;
+  @Nonnull AvailableSupports rollSupportFromEnemies;
 
   @Getter(onMethod_ = @Override)
-  @NonNull
+  @Nonnull
   @Builder.Default
   Collection<Unit> friendUnits = List.of();
 
   @Getter(onMethod_ = @Override)
-  @NonNull
+  @Nonnull
   @Builder.Default
   Collection<Unit> enemyUnits = List.of();
 

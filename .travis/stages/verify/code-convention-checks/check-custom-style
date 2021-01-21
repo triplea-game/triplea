@@ -36,6 +36,7 @@ function main() {
   useEmptyOverSizeEqualsZero
   useStaticImportsInTest
   useIsEmptyMatcherOverHasSizeZero
+  useJavaxNonnullInsteadOfLombokNonNull
 }
 
 function title() {
@@ -197,7 +198,19 @@ function useIsEmptyMatcherOverHasSizeZero() {
   displayResult "$found"
 }
 
+function useJavaxNonnullInsteadOfLombokNonNull() {
+  title "Use javax.annotation.Nonnull instead of lombok.NonNull"
+  local found=0
+  while read -r file; do
+    grep --color=auto --with-filename --line-number \
+      "lombok.NonNull" \
+      "$file" \
+     && status=1 && found=1
+  done <<< "$(cat "$javaFiles")"
+
+  displayResult "$found"
+}
+
 main
 
 exit "$status"
-
