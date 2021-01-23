@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
@@ -47,13 +48,16 @@ public class CombatUnitAbility {
 
   public static final CombatUnitAbility EMPTY = CombatUnitAbility.builder().name("Empty").build();
 
-  enum DiceType {
+  @Value
+  static class DiceType {
     // Use AA dice (attackAA, offensiveAttackAA)
-    AA,
+    static final DiceType AA = new DiceType("AA");
     // Use bombard dice (bombard or attack if bombard is empty)
-    BOMBARD,
+    static final DiceType BOMBARD = new DiceType("BOMBARD");
     // Use normal dice (attack, defense)
-    NORMAL
+    static final DiceType NORMAL = new DiceType("NORMAL");
+
+    String type;
   }
 
   enum Suicide {
