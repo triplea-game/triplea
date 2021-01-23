@@ -181,11 +181,11 @@ class UnitAbilityFactoryTest {
         assertThat(
             "isSuicideOnHit translates ONLY_ON_HIT for offense",
             unitAbility.getSuicideOnOffense(),
-            is(CombatUnitAbility.Suicide.ONLY_ON_HIT));
+            is(CombatUnitAbility.Suicide.AFTER_HIT));
         assertThat(
             "isSuicideOnHit translates ONLY_ON_HIT for defense",
             unitAbility.getSuicideOnDefense(),
-            is(CombatUnitAbility.Suicide.ONLY_ON_HIT));
+            is(CombatUnitAbility.Suicide.AFTER_HIT));
       }
 
       @Test
@@ -206,7 +206,7 @@ class UnitAbilityFactoryTest {
         assertThat(
             "isSuicideOnAttack translates into suicide on offense ALWAYS",
             unitAbility.getSuicideOnOffense(),
-            is(CombatUnitAbility.Suicide.ALWAYS));
+            is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnAttack should not cause suicide on defense to have anything",
             unitAbility.getSuicideOnDefense(),
@@ -231,7 +231,7 @@ class UnitAbilityFactoryTest {
         assertThat(
             "isSuicideOnDefense translates into suicide on defense ALWAYS",
             unitAbility.getSuicideOnDefense(),
-            is(CombatUnitAbility.Suicide.ALWAYS));
+            is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnDefense should not cause suicide on offense to have anything",
             unitAbility.getSuicideOnOffense(),
@@ -252,11 +252,11 @@ class UnitAbilityFactoryTest {
         assertThat(
             "isSuicideOnAttack supersedes isSuicideOnHit so offense is ALWAYS",
             unitAbility.getSuicideOnOffense(),
-            is(CombatUnitAbility.Suicide.ALWAYS));
+            is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnHit is by itself on defense so it is ONLY_ON_HIT",
             unitAbility.getSuicideOnDefense(),
-            is(CombatUnitAbility.Suicide.ONLY_ON_HIT));
+            is(CombatUnitAbility.Suicide.AFTER_HIT));
       }
 
       @Test
@@ -581,11 +581,11 @@ class UnitAbilityFactoryTest {
         assertThat(
             "isSuicideOnHit translates ALWAYS for offense",
             unitAbility.getSuicideOnOffense(),
-            is(CombatUnitAbility.Suicide.ALWAYS));
+            is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnHit translates ALWAYS for defense",
             unitAbility.getSuicideOnDefense(),
-            is(CombatUnitAbility.Suicide.ALWAYS));
+            is(CombatUnitAbility.Suicide.AFTER_FIRE));
       }
 
       @Test

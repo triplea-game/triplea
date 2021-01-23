@@ -211,9 +211,9 @@ public class UnitAbilityFactory {
     if (side == BattleState.Side.OFFENSE
         ? unitAttachment.getIsSuicideOnAttack()
         : unitAttachment.getIsSuicideOnDefense()) {
-      return CombatUnitAbility.Suicide.ALWAYS;
+      return CombatUnitAbility.Suicide.AFTER_FIRE;
     } else if (unitAttachment.getIsSuicideOnHit()) {
-      return CombatUnitAbility.Suicide.ONLY_ON_HIT;
+      return CombatUnitAbility.Suicide.AFTER_HIT;
     } else {
       return CombatUnitAbility.Suicide.NONE;
     }

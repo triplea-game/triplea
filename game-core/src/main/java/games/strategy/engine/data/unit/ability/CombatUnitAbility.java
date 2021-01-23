@@ -62,8 +62,10 @@ public class CombatUnitAbility {
 
   enum Suicide {
     NONE,
-    ALWAYS,
-    ONLY_ON_HIT,
+    /** Commit suicide after the units fire? */
+    AFTER_FIRE,
+    /** Commit suicide after the units actually hit a target? */
+    AFTER_HIT,
   }
 
   /** The name of this unit ability that will be shown in the Battle UI */
