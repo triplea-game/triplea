@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -33,29 +36,67 @@ public class UnitAbilityFactory {
 
   private static final String WILL_NOT_FIRE_AA_ABILITY_PREFIX = "willNotFireAa";
 
-  /**
-   * Tracks the typeAa and their targetsAa
-   *
-   * <p>The typeAa and their targetsAa is copied on every single unitAttachment. This means that a
-   * map maker might have different targetsAa in the same typeAa. But that is a typo since the
-   * engine only uses the first targetsAa that it finds. This map keeps track of the typeAa and
-   * targetsAa separately from the unitAttachment so that there is a central place to find them.
-   */
-  private static final Map<String, Collection<UnitType>> aaTargets = new HashMap<>();
+  @RequiredArgsConstructor
+  @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+  private static class Parameters {
 
-  /**
-   * Tracks what unit types a specific unit type can not target without an ally destroyer present
-   *
-   * <p>The deprecated property canNotBeTargetedBy was used to determine if a unit could be targeted
-   * depending on the presence of an isDestroyer. This means that canNotBeTargetedBy is structured
-   * as targeted unit -> firing units. But unitAbilities are structured as firing unit -> targeted
-   * units.
-   *
-   * <p>This map is used to invert that data set at the beginning so that it can be easily looked up
-   * later
-   */
-  private static final Map<UnitType, Collection<UnitType>> unitCanNotTargetWithoutDestroyer =
-      new HashMap<>();
+    UnitTypeList unitTypeList;
+    BattlePhaseList battlePhaseList;
+    GameProperties properties;
+
+    /**
+     * Tracks the typeAa and their targetsAa
+     *
+     * <p>The typeAa and their targetsAa is copied on every single unitAttachment. This means that a
+     * map maker might have different targetsAa in the same typeAa. But that is a typo since the
+     * engine only uses the first targetsAa that it finds. This map keeps track of the typeAa and
+     * targetsAa separately from the unitAttachment so that there is a central place to find them.
+     */
+    Map<String, Collection<UnitType>> aaTargets = new HashMap<>();
+
+    /**
+     * Tracks what unit types a specific unit type can not target without an ally destroyer present
+     *
+     * <p>The deprecated property canNotBeTargetedBy was used to determine if a unit could be
+     * targeted depending on the presence of an isDestroyer. This means that canNotBeTargetedBy is
+     * structured as targeted unit -> firing units. But unitAbilities are structured as firing unit
+     * -> targeted units.
+     *
+     * <p>This map is used to invert that data set at the beginning so that it can be easily looked
+     * up later
+     */
+    Map<UnitType, Collection<UnitType>> unitCanNotTargetWithoutDestroyer = new HashMap<>();
+
+    private void initialize() {
+      initializeTargetsAa();
+      initializeCanNotTargetWithoutDestroyer();
+    }
+
+    private void initializeTargetsAa() {
+      unitTypeList.stream()
+          .map(UnitAttachment::get)
+          .forEach(
+              unitAttachment ->
+                  aaTargets.putIfAbsent(
+                      unitAttachment.getTypeAa(), unitAttachment.getTargetsAa(unitTypeList)));
+    }
+
+    private void initializeCanNotTargetWithoutDestroyer() {
+      unitTypeList.stream()
+          .filter(
+              Predicate.not(
+                  unitType -> UnitAttachment.get(unitType).getCanNotBeTargetedBy().isEmpty()))
+          .forEach(
+              unitType ->
+                  UnitAttachment.get(unitType)
+                      .getCanNotBeTargetedBy()
+                      .forEach(
+                          firingUnitType ->
+                              unitCanNotTargetWithoutDestroyer
+                                  .computeIfAbsent(firingUnitType, u -> new ArrayList<>())
+                                  .add(unitType)));
+    }
+  }
 
   /**
    * Create the default unit abilities at the beginning of the battle step
@@ -73,14 +114,14 @@ public class UnitAbilityFactory {
     // clear out the existing unit abilities so that they can be rebuilt
     clearExistingUnitAbilities(battlePhaseList);
 
+    final Parameters parameters = new Parameters(unitTypeList, battlePhaseList, properties);
     // set up some helper maps
-    initializeTargetsAa(unitTypeList);
-    initializeCanNotTargetWithoutDestroyer(unitTypeList);
+    parameters.initialize();
 
     // create unique unit abilities for each player
     playerList.forEach(
         player -> {
-          generatePerPlayer(unitTypeList, battlePhaseList, properties, player);
+          generatePerPlayer(parameters, player);
         });
   }
 
@@ -89,67 +130,29 @@ public class UnitAbilityFactory {
     battlePhaseList.getPhases().forEach(BattlePhase::clearAbilities);
   }
 
-  private static void initializeTargetsAa(final UnitTypeList unitTypeList) {
-    aaTargets.clear();
-    unitTypeList.stream()
-        .map(UnitAttachment::get)
-        .forEach(
-            unitAttachment ->
-                aaTargets.putIfAbsent(
-                    unitAttachment.getTypeAa(), unitAttachment.getTargetsAa(unitTypeList)));
-  }
-
-  private static void initializeCanNotTargetWithoutDestroyer(final UnitTypeList unitTypeList) {
-    unitCanNotTargetWithoutDestroyer.clear();
-    unitTypeList.stream()
-        .filter(
-            Predicate.not(
-                unitType -> UnitAttachment.get(unitType).getCanNotBeTargetedBy().isEmpty()))
-        .forEach(
-            unitType ->
-                UnitAttachment.get(unitType)
-                    .getCanNotBeTargetedBy()
-                    .forEach(
-                        firingUnitType ->
-                            unitCanNotTargetWithoutDestroyer
-                                .computeIfAbsent(firingUnitType, u -> new ArrayList<>())
-                                .add(unitType)));
-  }
-
   /**
    * Create the default unit abilities at the beginning of the battle step for each player
    *
    * <p>Since a player can have different tech advances, the unit abilities can be unique per player
    */
-  private static void generatePerPlayer(
-      final UnitTypeList unitTypeList,
-      final BattlePhaseList battlePhaseList,
-      final GameProperties properties,
-      final GamePlayer player) {
-    unitTypeList.stream()
-        .forEach(
-            unitType ->
-                generatePerPlayerAndUnit(
-                    unitTypeList, battlePhaseList, properties, player, unitType));
+  private static void generatePerPlayer(final Parameters parameters, final GamePlayer player) {
+    parameters.unitTypeList.stream()
+        .forEach(unitType -> generatePerPlayerAndUnit(parameters, player, unitType));
 
-    createBombardUnitAbilities(unitTypeList, battlePhaseList, properties, player);
+    createBombardUnitAbilities(parameters, player);
   }
 
   private static void generatePerPlayerAndUnit(
-      final UnitTypeList unitTypeList,
-      final BattlePhaseList battlePhaseList,
-      final GameProperties properties,
-      final GamePlayer player,
-      final UnitType unitType) {
+      final Parameters parameters, final GamePlayer player, final UnitType unitType) {
     final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
     if (unitAttachment.getIsAaForCombatOnly()) {
-      createAaUnitAbilities(battlePhaseList, player, unitType);
+      createAaUnitAbilities(parameters, player, unitType);
     }
-    createUnitAbilities(unitTypeList, battlePhaseList, properties, player, unitType);
+    createUnitAbilities(parameters, player, unitType);
   }
 
   private static void createAaUnitAbilities(
-      final BattlePhaseList battlePhaseList, final GamePlayer player, final UnitType unitType) {
+      final Parameters parameters, final GamePlayer player, final UnitType unitType) {
     final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
     final Collection<BattleState.Side> sides = new ArrayList<>();
     if (unitAttachment.getOffensiveAttackAa(player) > 0 && unitAttachment.getMaxAaAttacks() != 0) {
@@ -164,7 +167,7 @@ public class UnitAbilityFactory {
 
     final CombatUnitAbility ability =
         addAbility(
-            battlePhaseList,
+            parameters.battlePhaseList,
             CombatUnitAbility.builder()
                 .name(unitAttachment.getTypeAa())
                 .attachedUnitTypes(List.of(unitType))
@@ -174,7 +177,7 @@ public class UnitAbilityFactory {
                     unitAttachment.getMaxRoundsAa() == -1
                         ? Integer.MAX_VALUE
                         : unitAttachment.getMaxRoundsAa())
-                .targets(aaTargets.get(unitAttachment.getTypeAa()))
+                .targets(parameters.aaTargets.get(unitAttachment.getTypeAa()))
                 .returnFire(false)
                 .commitSuicideAfterSuccessfulHit(getCommitSuicideOnHitSides(unitType))
                 .commitSuicide(getCommitSuicideSides(unitType))
@@ -186,7 +189,7 @@ public class UnitAbilityFactory {
         .map(
             unitTypeThatPreventsFiring ->
                 createWillNotFireIfPresentAbilities(unitTypeThatPreventsFiring, ability))
-        .forEach(antiAbility -> addConvertAbility(battlePhaseList, antiAbility, player));
+        .forEach(antiAbility -> addConvertAbility(parameters.battlePhaseList, antiAbility, player));
   }
 
   private static CombatUnitAbility addAbility(
@@ -238,11 +241,7 @@ public class UnitAbilityFactory {
   }
 
   private static void createUnitAbilities(
-      final UnitTypeList unitTypeList,
-      final BattlePhaseList battlePhaseList,
-      final GameProperties properties,
-      final GamePlayer player,
-      final UnitType unitType) {
+      final Parameters parameters, final GamePlayer player, final UnitType unitType) {
     final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
     final Collection<BattleState.Side> sides = new ArrayList<>();
     if (unitAttachment.getAttack(player) > 0) {
@@ -250,17 +249,10 @@ public class UnitAbilityFactory {
     }
     if (unitAttachment.getDefense(player) > 0) {
       if (unitAttachment.getIsFirstStrike()
-          && !Properties.getDefendingSubsSneakAttack(properties)) {
+          && !Properties.getDefendingSubsSneakAttack(parameters.properties)) {
         // if the defending sub doesn't have sneak attack, then it needs to have a defensive general
         // ability instead
-        createUnitAbilities(
-            unitTypeList,
-            battlePhaseList,
-            properties,
-            player,
-            unitType,
-            List.of(BattleState.Side.DEFENSE),
-            false);
+        createUnitAbilities(parameters, player, unitType, List.of(BattleState.Side.DEFENSE), false);
       } else {
         sides.add(BattleState.Side.DEFENSE);
       }
@@ -269,20 +261,11 @@ public class UnitAbilityFactory {
       return;
     }
 
-    createUnitAbilities(
-        unitTypeList,
-        battlePhaseList,
-        properties,
-        player,
-        unitType,
-        sides,
-        unitAttachment.getIsFirstStrike());
+    createUnitAbilities(parameters, player, unitType, sides, unitAttachment.getIsFirstStrike());
   }
 
   private static void createUnitAbilities(
-      final UnitTypeList unitTypeList,
-      final BattlePhaseList battlePhaseList,
-      final GameProperties properties,
+      final Parameters parameters,
       final GamePlayer player,
       final UnitType unitType,
       final Collection<BattleState.Side> sides,
@@ -293,17 +276,17 @@ public class UnitAbilityFactory {
     // gain a convertUnitAbility so that this unit can have its ability converted when the destroyer
     // is present
     final boolean needsDestroyerToTarget =
-        !unitCanNotTargetWithoutDestroyer.getOrDefault(unitType, List.of()).isEmpty();
+        !parameters.unitCanNotTargetWithoutDestroyer.getOrDefault(unitType, List.of()).isEmpty();
 
     final CombatUnitAbility ability =
         addAbility(
-            battlePhaseList,
+            parameters.battlePhaseList,
             CombatUnitAbility.builder()
                 .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS))
                 .attachedUnitTypes(needsDestroyerToTarget ? List.of() : List.of(unitType))
                 .diceType(CombatUnitAbility.DiceType.NORMAL)
                 .sides(sides)
-                .targets(getTargetsWithDestroyer(unitTypeList, unitType))
+                .targets(getTargetsWithDestroyer(parameters.unitTypeList, unitType))
                 .returnFire(!isFirstStrike)
                 .commitSuicideAfterSuccessfulHit(getCommitSuicideOnHitSides(unitType))
                 .commitSuicide(getCommitSuicideSides(unitType))
@@ -314,19 +297,19 @@ public class UnitAbilityFactory {
                 : BattlePhaseList.DEFAULT_GENERAL_PHASE);
 
     if (isFirstStrike) {
-      createAntiFirstStrikeAbility(unitTypeList, battlePhaseList, properties, ability, player);
+      createAntiFirstStrikeAbility(parameters, ability, player);
     }
 
     if (needsDestroyerToTarget) {
       final CombatUnitAbility abilityWithoutDestroyer =
           addAbility(
-              battlePhaseList,
+              parameters.battlePhaseList,
               CombatUnitAbility.builder()
                   .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS) + " without destroyer")
                   .attachedUnitTypes(List.of(unitType))
                   .diceType(CombatUnitAbility.DiceType.NORMAL)
                   .sides(sides)
-                  .targets(getTargetsWithoutDestroyer(unitTypeList, unitType))
+                  .targets(getTargetsWithoutDestroyer(parameters, unitType))
                   .returnFire(!isFirstStrike)
                   .commitSuicideAfterSuccessfulHit(getCommitSuicideOnHitSides(unitType))
                   .commitSuicide(getCommitSuicideSides(unitType))
@@ -336,19 +319,18 @@ public class UnitAbilityFactory {
                   ? BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE
                   : BattlePhaseList.DEFAULT_GENERAL_PHASE);
 
-      battlePhaseList.addAbilityOrMergeAttached(
+      parameters.battlePhaseList.addAbilityOrMergeAttached(
           player,
           ConvertUnitAbility.builder()
               .name("allow " + unitType.getName() + " to hit more units")
-              .attachedUnitTypes(getIsDestroyerUnitTypes(unitTypeList))
+              .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
               .factions(List.of(ConvertUnitAbility.Faction.ALLIED))
               .from(abilityWithoutDestroyer)
               .to(ability)
               .build());
 
       if (isFirstStrike) {
-        createAntiFirstStrikeAbility(
-            unitTypeList, battlePhaseList, properties, abilityWithoutDestroyer, player);
+        createAntiFirstStrikeAbility(parameters, abilityWithoutDestroyer, player);
       }
     }
   }
@@ -365,12 +347,13 @@ public class UnitAbilityFactory {
   }
 
   private static List<UnitType> getTargetsWithoutDestroyer(
-      final UnitTypeList unitTypeList, final UnitType unitType) {
-    return getTargetsWithDestroyer(unitTypeList, unitType).stream()
+      final Parameters parameters, final UnitType unitType) {
+    return getTargetsWithDestroyer(parameters.unitTypeList, unitType).stream()
         .filter(
             Predicate.not(
                 possibleTarget ->
-                    unitCanNotTargetWithoutDestroyer
+                    parameters
+                        .unitCanNotTargetWithoutDestroyer
                         .computeIfAbsent(unitType, k -> List.of())
                         .contains(possibleTarget)))
         .collect(Collectors.toList());
@@ -382,29 +365,25 @@ public class UnitAbilityFactory {
   }
 
   private static void createAntiFirstStrikeAbility(
-      final UnitTypeList unitTypeList,
-      final BattlePhaseList battlePhaseList,
-      final GameProperties properties,
-      final CombatUnitAbility unitAbility,
-      final GamePlayer player) {
-    if (getIsDestroyerUnitTypes(unitTypeList).isEmpty()) {
+      final Parameters parameters, final CombatUnitAbility unitAbility, final GamePlayer player) {
+    if (getIsDestroyerUnitTypes(parameters.unitTypeList).isEmpty()) {
       return;
     }
 
     final CombatUnitAbility unitAbilityWithReturnFire =
         addAbility(
-            battlePhaseList,
+            parameters.battlePhaseList,
             unitAbility.toBuilder().attachedUnitTypes(List.of()).returnFire(true).build(),
             player,
-            Properties.getWW2V2(properties)
+            Properties.getWW2V2(parameters.properties)
                 ? BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE
                 : BattlePhaseList.DEFAULT_GENERAL_PHASE);
 
-    battlePhaseList.addAbilityOrMergeAttached(
+    parameters.battlePhaseList.addAbilityOrMergeAttached(
         player,
         ConvertUnitAbility.builder()
             .name("neutralize first strike ability")
-            .attachedUnitTypes(getIsDestroyerUnitTypes(unitTypeList))
+            .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
             .factions(List.of(ConvertUnitAbility.Faction.ENEMY))
             .from(unitAbility)
             .to(unitAbilityWithReturnFire)
@@ -418,16 +397,14 @@ public class UnitAbilityFactory {
   }
 
   private static void createBombardUnitAbilities(
-      final UnitTypeList unitTypeList,
-      final BattlePhaseList battlePhaseList,
-      final GameProperties properties,
-      final GamePlayer player) {
+      final Parameters parameters, final GamePlayer player) {
 
-    if (getCanBombardUnitTypes(unitTypeList, player).isEmpty()) {
+    if (getCanBombardUnitTypes(parameters.unitTypeList, player).isEmpty()) {
       return;
     }
 
-    battlePhaseList
+    parameters
+        .battlePhaseList
         .getPhase(BattlePhaseList.DEFAULT_BOMBARD_PHASE)
         .ifPresent(
             phase ->
@@ -435,11 +412,12 @@ public class UnitAbilityFactory {
                     player,
                     CombatUnitAbility.builder()
                         .name(NAVAL_BOMBARD)
-                        .attachedUnitTypes(getCanBombardUnitTypes(unitTypeList, player))
+                        .attachedUnitTypes(getCanBombardUnitTypes(parameters.unitTypeList, player))
                         .diceType(CombatUnitAbility.DiceType.BOMBARD)
                         .round(1)
-                        .returnFire(Properties.getNavalBombardCasualtiesReturnFire(properties))
-                        .targets(getBombardTargetUnitTypes(unitTypeList))
+                        .returnFire(
+                            Properties.getNavalBombardCasualtiesReturnFire(parameters.properties))
+                        .targets(getBombardTargetUnitTypes(parameters.unitTypeList))
                         .build()));
   }
 
