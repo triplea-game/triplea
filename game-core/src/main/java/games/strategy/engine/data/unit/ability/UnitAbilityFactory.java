@@ -304,37 +304,8 @@ public class UnitAbilityFactory {
     }
 
     if (needsDestroyerToTarget) {
-      final CombatUnitAbility abilityWithoutDestroyer =
-          addAbility(
-              parameters.battlePhaseList,
-              CombatUnitAbility.builder()
-                  .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS) + " without destroyer")
-                  .attachedUnitTypes(List.of(unitType))
-                  .combatValueType(CombatUnitAbility.CombatValueType.NORMAL)
-                  .sides(sides)
-                  .targets(getTargetsWithoutDestroyer(parameters, unitType))
-                  .returnFire(!isFirstStrike)
-                  .suicideOnOffense(calculateSuicideType(unitType, BattleState.Side.OFFENSE))
-                  .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
-                  .build(),
-              player,
-              isFirstStrike
-                  ? BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE
-                  : BattlePhaseList.DEFAULT_GENERAL_PHASE);
-
-      parameters.battlePhaseList.addAbilityOrMergeAttached(
-          player,
-          ConvertUnitAbility.builder()
-              .name("allow " + unitType.getName() + " to hit more units")
-              .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
-              .teams(List.of(ConvertUnitAbility.Team.FRIENDLY))
-              .from(abilityWithoutDestroyer)
-              .to(ability)
-              .build());
-
-      if (isFirstStrike) {
-        createAntiFirstStrikeAbility(parameters, abilityWithoutDestroyer, player);
-      }
+      createUnitAbilitiesWhenDestroyerIsNotAround(
+          parameters, player, unitType, sides, isFirstStrike, ability);
     }
   }
 
@@ -397,6 +368,46 @@ public class UnitAbilityFactory {
     return unitTypeList.stream()
         .filter(unitType -> UnitAttachment.get(unitType).getIsDestroyer())
         .collect(Collectors.toList());
+  }
+
+  private static void createUnitAbilitiesWhenDestroyerIsNotAround(
+      final Parameters parameters,
+      final GamePlayer player,
+      final UnitType unitType,
+      final Collection<BattleState.Side> sides,
+      final boolean isFirstStrike,
+      final CombatUnitAbility ability) {
+    final CombatUnitAbility abilityWithoutDestroyer =
+        addAbility(
+            parameters.battlePhaseList,
+            CombatUnitAbility.builder()
+                .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS) + " without destroyer")
+                .attachedUnitTypes(List.of(unitType))
+                .combatValueType(CombatUnitAbility.CombatValueType.NORMAL)
+                .sides(sides)
+                .targets(getTargetsWithoutDestroyer(parameters, unitType))
+                .returnFire(!isFirstStrike)
+                .suicideOnOffense(calculateSuicideType(unitType, BattleState.Side.OFFENSE))
+                .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
+                .build(),
+            player,
+            isFirstStrike
+                ? BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE
+                : BattlePhaseList.DEFAULT_GENERAL_PHASE);
+
+    parameters.battlePhaseList.addAbilityOrMergeAttached(
+        player,
+        ConvertUnitAbility.builder()
+            .name("allow " + unitType.getName() + " to hit more units")
+            .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
+            .teams(List.of(ConvertUnitAbility.Team.FRIENDLY))
+            .from(abilityWithoutDestroyer)
+            .to(ability)
+            .build());
+
+    if (isFirstStrike) {
+      createAntiFirstStrikeAbility(parameters, abilityWithoutDestroyer, player);
+    }
   }
 
   private static void createBombardUnitAbilities(
