@@ -228,7 +228,7 @@ public class UnitAbilityFactory {
     return ConvertUnitAbility.builder()
         .name(WILL_NOT_FIRE_AA_ABILITY_PREFIX + " " + ability.getName())
         .attachedUnitTypes(List.of(unitTypeThatPreventsFiring))
-        .factions(List.of(ConvertUnitAbility.Faction.ENEMY))
+        .teams(List.of(ConvertUnitAbility.Team.FOE))
         .from(ability)
         .build();
   }
@@ -324,7 +324,7 @@ public class UnitAbilityFactory {
           ConvertUnitAbility.builder()
               .name("allow " + unitType.getName() + " to hit more units")
               .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
-              .factions(List.of(ConvertUnitAbility.Faction.ALLIED))
+              .teams(List.of(ConvertUnitAbility.Team.FRIENDLY))
               .from(abilityWithoutDestroyer)
               .to(ability)
               .build());
@@ -384,7 +384,7 @@ public class UnitAbilityFactory {
         ConvertUnitAbility.builder()
             .name("neutralize first strike ability")
             .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
-            .factions(List.of(ConvertUnitAbility.Faction.ENEMY))
+            .teams(List.of(ConvertUnitAbility.Team.FOE))
             .from(unitAbility)
             .to(unitAbilityWithReturnFire)
             .build());

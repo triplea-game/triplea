@@ -18,9 +18,9 @@ import lombok.experimental.NonFinal;
 @Builder(toBuilder = true)
 public class ConvertUnitAbility {
 
-  enum Faction {
-    ALLIED,
-    ENEMY
+  enum Team {
+    FRIENDLY,
+    FOE
   }
 
   @Nonnull String name;
@@ -28,7 +28,7 @@ public class ConvertUnitAbility {
   @NonFinal Collection<UnitType> attachedUnitTypes;
 
   /** Does this affect enemy and/or allied units */
-  @Builder.Default Collection<Faction> factions = List.of(Faction.ENEMY);
+  @Builder.Default Collection<Team> teams = List.of(Team.FOE);
 
   /** The unitAbility that will be converted */
   @Nonnull CombatUnitAbility from;

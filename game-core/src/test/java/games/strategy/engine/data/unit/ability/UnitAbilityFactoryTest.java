@@ -799,7 +799,7 @@ class UnitAbilityFactoryTest {
             battlePhaseList.getConvertAbilities().get(player).stream()
                 .filter(
                     unitAbility ->
-                        unitAbility.getFactions().contains(ConvertUnitAbility.Faction.ALLIED))
+                        unitAbility.getTeams().contains(ConvertUnitAbility.Team.FRIENDLY))
                 .findFirst()
                 .orElseThrow();
 
@@ -811,9 +811,7 @@ class UnitAbilityFactoryTest {
 
         final List<ConvertUnitAbility> enemyUnitAbilities =
             battlePhaseList.getConvertAbilities().get(player).stream()
-                .filter(
-                    unitAbility ->
-                        unitAbility.getFactions().contains(ConvertUnitAbility.Faction.ENEMY))
+                .filter(unitAbility -> unitAbility.getTeams().contains(ConvertUnitAbility.Team.FOE))
                 .collect(Collectors.toList());
 
         final ConvertUnitAbility enemyConvertUnitAbilityWhenFriendlyDestroyerPresent =
@@ -1125,8 +1123,8 @@ class UnitAbilityFactoryTest {
           is(List.of(preventsFiringUnitType)));
       assertThat(
           "The preventsFiringUnitType is preventing an enemy AA unit",
-          convertUnitAbility.getFactions(),
-          is(List.of(ConvertUnitAbility.Faction.ENEMY)));
+          convertUnitAbility.getTeams(),
+          is(List.of(ConvertUnitAbility.Team.FOE)));
     }
 
     @Test
