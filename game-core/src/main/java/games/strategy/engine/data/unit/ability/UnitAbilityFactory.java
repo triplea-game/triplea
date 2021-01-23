@@ -255,7 +255,12 @@ public class UnitAbilityFactory {
           && !Properties.getDefendingSubsSneakAttack(parameters.properties)) {
         // if the defending sub doesn't have sneak attack, then it needs to have a defensive general
         // ability instead
-        createUnitAbilities(parameters, player, unitType, List.of(BattleState.Side.DEFENSE), false);
+        createUnitAbilities(
+            parameters,
+            player,
+            unitType,
+            List.of(BattleState.Side.DEFENSE),
+            BattlePhaseList.DEFAULT_GENERAL_PHASE);
       } else {
         sides.add(BattleState.Side.DEFENSE);
       }
@@ -264,7 +269,14 @@ public class UnitAbilityFactory {
       return;
     }
 
-    createUnitAbilities(parameters, player, unitType, sides, unitAttachment.getIsFirstStrike());
+    createUnitAbilities(
+        parameters,
+        player,
+        unitType,
+        sides,
+        unitAttachment.getIsFirstStrike()
+            ? BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE
+            : BattlePhaseList.DEFAULT_GENERAL_PHASE);
   }
 
   private static void createUnitAbilities(
@@ -272,7 +284,7 @@ public class UnitAbilityFactory {
       final GamePlayer player,
       final UnitType unitType,
       final Collection<BattleState.Side> sides,
-      final boolean isFirstStrike) {
+      final String phase) {
     // if the unit needs a destroyer present to target things, then two abilities will be created.
     // one ability will target everything but will not be attached to this unit and the other
     // ability will only target the units that don't need a destroyer present. The destroyer will
@@ -280,6 +292,7 @@ public class UnitAbilityFactory {
     // is present
     final boolean needsDestroyerToTarget =
         !parameters.unitCanNotTargetWithoutDestroyer.getOrDefault(unitType, List.of()).isEmpty();
+    final boolean isFirstStrike = phase.equals(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE);
 
     final CombatUnitAbility ability =
         addAbility(
@@ -295,17 +308,42 @@ public class UnitAbilityFactory {
                 .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
                 .build(),
             player,
-            isFirstStrike
-                ? BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE
-                : BattlePhaseList.DEFAULT_GENERAL_PHASE);
+            phase);
 
     if (isFirstStrike) {
       createAntiFirstStrikeAbility(parameters, ability, player);
     }
 
     if (needsDestroyerToTarget) {
-      createUnitAbilitiesWhenDestroyerIsNotAround(
-          parameters, player, unitType, sides, isFirstStrike, ability);
+      final CombatUnitAbility abilityWithoutDestroyer =
+          addAbility(
+              parameters.battlePhaseList,
+              CombatUnitAbility.builder()
+                  .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS) + " without destroyer")
+                  .attachedUnitTypes(List.of(unitType))
+                  .combatValueType(CombatUnitAbility.CombatValueType.NORMAL)
+                  .sides(sides)
+                  .targets(getTargetsWithoutDestroyer(parameters, unitType))
+                  .returnFire(!isFirstStrike)
+                  .suicideOnOffense(calculateSuicideType(unitType, BattleState.Side.OFFENSE))
+                  .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
+                  .build(),
+              player,
+              phase);
+
+      if (isFirstStrike) {
+        createAntiFirstStrikeAbility(parameters, abilityWithoutDestroyer, player);
+      }
+
+      parameters.battlePhaseList.addAbilityOrMergeAttached(
+          player,
+          ConvertUnitAbility.builder()
+              .name("allow " + unitType.getName() + " to hit more units")
+              .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
+              .teams(List.of(ConvertUnitAbility.Team.FRIENDLY))
+              .from(abilityWithoutDestroyer)
+              .to(ability)
+              .build());
     }
   }
 
@@ -368,46 +406,6 @@ public class UnitAbilityFactory {
     return unitTypeList.stream()
         .filter(unitType -> UnitAttachment.get(unitType).getIsDestroyer())
         .collect(Collectors.toList());
-  }
-
-  private static void createUnitAbilitiesWhenDestroyerIsNotAround(
-      final Parameters parameters,
-      final GamePlayer player,
-      final UnitType unitType,
-      final Collection<BattleState.Side> sides,
-      final boolean isFirstStrike,
-      final CombatUnitAbility ability) {
-    final CombatUnitAbility abilityWithoutDestroyer =
-        addAbility(
-            parameters.battlePhaseList,
-            CombatUnitAbility.builder()
-                .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS) + " without destroyer")
-                .attachedUnitTypes(List.of(unitType))
-                .combatValueType(CombatUnitAbility.CombatValueType.NORMAL)
-                .sides(sides)
-                .targets(getTargetsWithoutDestroyer(parameters, unitType))
-                .returnFire(!isFirstStrike)
-                .suicideOnOffense(calculateSuicideType(unitType, BattleState.Side.OFFENSE))
-                .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
-                .build(),
-            player,
-            isFirstStrike
-                ? BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE
-                : BattlePhaseList.DEFAULT_GENERAL_PHASE);
-
-    parameters.battlePhaseList.addAbilityOrMergeAttached(
-        player,
-        ConvertUnitAbility.builder()
-            .name("allow " + unitType.getName() + " to hit more units")
-            .attachedUnitTypes(getIsDestroyerUnitTypes(parameters.unitTypeList))
-            .teams(List.of(ConvertUnitAbility.Team.FRIENDLY))
-            .from(abilityWithoutDestroyer)
-            .to(ability)
-            .build());
-
-    if (isFirstStrike) {
-      createAntiFirstStrikeAbility(parameters, abilityWithoutDestroyer, player);
-    }
   }
 
   private static void createBombardUnitAbilities(
