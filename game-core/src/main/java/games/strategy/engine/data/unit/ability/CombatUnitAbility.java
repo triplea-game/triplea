@@ -48,16 +48,6 @@ public class CombatUnitAbility {
 
   public static final CombatUnitAbility EMPTY = CombatUnitAbility.builder().name("Empty").build();
 
-  /** Which {@link games.strategy.triplea.delegate.power.calculator.CombatValue} should be used */
-  @Value
-  static class CombatValueType {
-    static final CombatValueType AA = new CombatValueType("AA");
-    static final CombatValueType BOMBARD = new CombatValueType("BOMBARD");
-    static final CombatValueType NORMAL = new CombatValueType("NORMAL");
-
-    String type;
-  }
-
   enum Suicide {
     NONE,
     /** Commit suicide after the units fire? */
@@ -97,6 +87,16 @@ public class CombatUnitAbility {
   @Builder.Default Suicide suicideOnOffense = Suicide.NONE;
   /** When should this unit commit suicide on defense */
   @Builder.Default Suicide suicideOnDefense = Suicide.NONE;
+
+  /** Which {@link games.strategy.triplea.delegate.power.calculator.CombatValue} should be used */
+  @Value
+  static class CombatValueType {
+    static final CombatValueType AA = new CombatValueType("AA");
+    static final CombatValueType BOMBARD = new CombatValueType("BOMBARD");
+    static final CombatValueType NORMAL = new CombatValueType("NORMAL");
+
+    String type;
+  }
 
   public boolean isTarget(final Unit unit) {
     return targets.contains(unit.getType());
