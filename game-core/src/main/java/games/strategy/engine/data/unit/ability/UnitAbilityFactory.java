@@ -179,8 +179,8 @@ public class UnitAbilityFactory {
                         : unitAttachment.getMaxRoundsAa())
                 .targets(parameters.aaTargets.get(unitAttachment.getTypeAa()))
                 .returnFire(false)
-                .commitSuicideAfterSuccessfulHit(getCommitSuicideOnHitSides(unitType))
-                .commitSuicide(getCommitSuicideSides(unitType))
+                .suicideOnOffense(calculateSuicideType(unitType, BattleState.Side.OFFENSE))
+                .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
                 .build(),
             player,
             BattlePhaseList.DEFAULT_AA_PHASE);
@@ -205,22 +205,18 @@ public class UnitAbilityFactory {
     return battlePhase.addAbilityOrMergeAttached(player, combatUnitAbility);
   }
 
-  private static Collection<BattleState.Side> getCommitSuicideOnHitSides(final UnitType unitType) {
-    return UnitAttachment.get(unitType).getIsSuicideOnHit()
-        ? List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)
-        : List.of();
-  }
-
-  private static Collection<BattleState.Side> getCommitSuicideSides(final UnitType unitType) {
-    final Collection<BattleState.Side> commitSuicideSides = new ArrayList<>();
+  private static CombatUnitAbility.Suicide calculateSuicideType(
+      final UnitType unitType, final BattleState.Side side) {
     final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
-    if (unitAttachment.getIsSuicideOnAttack()) {
-      commitSuicideSides.add(BattleState.Side.OFFENSE);
+    if (side == BattleState.Side.OFFENSE
+        ? unitAttachment.getIsSuicideOnAttack()
+        : unitAttachment.getIsSuicideOnDefense()) {
+      return CombatUnitAbility.Suicide.ALWAYS;
+    } else if (unitAttachment.getIsSuicideOnHit()) {
+      return CombatUnitAbility.Suicide.ONLY_ON_HIT;
+    } else {
+      return CombatUnitAbility.Suicide.NONE;
     }
-    if (unitAttachment.getIsSuicideOnDefense()) {
-      commitSuicideSides.add(BattleState.Side.DEFENSE);
-    }
-    return commitSuicideSides;
   }
 
   private static ConvertUnitAbility createWillNotFireIfPresentAbilities(
@@ -288,8 +284,8 @@ public class UnitAbilityFactory {
                 .sides(sides)
                 .targets(getTargetsWithDestroyer(parameters.unitTypeList, unitType))
                 .returnFire(!isFirstStrike)
-                .commitSuicideAfterSuccessfulHit(getCommitSuicideOnHitSides(unitType))
-                .commitSuicide(getCommitSuicideSides(unitType))
+                .suicideOnOffense(calculateSuicideType(unitType, BattleState.Side.OFFENSE))
+                .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
                 .build(),
             player,
             isFirstStrike
@@ -311,8 +307,8 @@ public class UnitAbilityFactory {
                   .sides(sides)
                   .targets(getTargetsWithoutDestroyer(parameters, unitType))
                   .returnFire(!isFirstStrike)
-                  .commitSuicideAfterSuccessfulHit(getCommitSuicideOnHitSides(unitType))
-                  .commitSuicide(getCommitSuicideSides(unitType))
+                  .suicideOnOffense(calculateSuicideType(unitType, BattleState.Side.OFFENSE))
+                  .suicideOnDefense(calculateSuicideType(unitType, BattleState.Side.DEFENSE))
                   .build(),
               player,
               isFirstStrike

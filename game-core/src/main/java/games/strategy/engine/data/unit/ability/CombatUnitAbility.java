@@ -56,6 +56,12 @@ public class CombatUnitAbility {
     NORMAL
   }
 
+  enum Suicide {
+    NONE,
+    ALWAYS,
+    ONLY_ON_HIT,
+  }
+
   /** The name of this unit ability that will be shown in the Battle UI */
   @Nonnull String name;
 
@@ -83,21 +89,10 @@ public class CombatUnitAbility {
    */
   @Builder.Default boolean returnFire = true;
 
-  /**
-   * Does this unit commit suicide after it has fired a shot?
-   *
-   * <p>Whether the shot hit or not doesn't matter.
-   *
-   * <p>It can commit suicide as a defensive unit, offensive unit, or both.
-   */
-  @Builder.Default Collection<BattleState.Side> commitSuicide = List.of();
-
-  /**
-   * Does this unit commit suicide after it has successfully hit a target?
-   *
-   * <p>It can commit suicide as a defensive unit, offensive unit, or both.
-   */
-  @Builder.Default Collection<BattleState.Side> commitSuicideAfterSuccessfulHit = List.of();
+  /** When should this unit commit suicide on offense */
+  @Builder.Default Suicide suicideOnOffense = Suicide.NONE;
+  /** When should this unit commit suicide on defense */
+  @Builder.Default Suicide suicideOnDefense = Suicide.NONE;
 
   public boolean isTarget(final Unit unit) {
     return targets.contains(unit.getType());

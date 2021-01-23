@@ -179,9 +179,13 @@ class UnitAbilityFactoryTest {
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
         assertThat(
-            "isSuicideOnHit translates into commitSuicideAfterSuccesfulHit on both sides",
-            unitAbility.getCommitSuicideAfterSuccessfulHit(),
-            is(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)));
+            "isSuicideOnHit translates ONLY_ON_HIT for offense",
+            unitAbility.getSuicideOnOffense(),
+            is(CombatUnitAbility.Suicide.ONLY_ON_HIT));
+        assertThat(
+            "isSuicideOnHit translates ONLY_ON_HIT for defense",
+            unitAbility.getSuicideOnDefense(),
+            is(CombatUnitAbility.Suicide.ONLY_ON_HIT));
       }
 
       @Test
@@ -200,9 +204,13 @@ class UnitAbilityFactoryTest {
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
         assertThat(
-            "isSuicideOnAttack translates into commitSuicide on only offense",
-            unitAbility.getCommitSuicide(),
-            is(List.of(BattleState.Side.OFFENSE)));
+            "isSuicideOnAttack translates into suicide on offense ALWAYS",
+            unitAbility.getSuicideOnOffense(),
+            is(CombatUnitAbility.Suicide.ALWAYS));
+        assertThat(
+            "isSuicideOnAttack should not cause suicide on defense to have anything",
+            unitAbility.getSuicideOnDefense(),
+            is(CombatUnitAbility.Suicide.NONE));
       }
 
       @Test
@@ -221,9 +229,34 @@ class UnitAbilityFactoryTest {
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
         assertThat(
-            "isSuicideOnDefense translates into commitSuicide on only defense",
-            unitAbility.getCommitSuicide(),
-            is(List.of(BattleState.Side.DEFENSE)));
+            "isSuicideOnDefense translates into suicide on defense ALWAYS",
+            unitAbility.getSuicideOnDefense(),
+            is(CombatUnitAbility.Suicide.ALWAYS));
+        assertThat(
+            "isSuicideOnDefense should not cause suicide on offense to have anything",
+            unitAbility.getSuicideOnOffense(),
+            is(CombatUnitAbility.Suicide.NONE));
+      }
+
+      @Test
+      void unitWithSuicideOnHitAndSuicideOnAttackAndDefense() {
+        unitAttachment.setAttack(1);
+        unitAttachment.setIsSuicideOnHit(true);
+        unitAttachment.setIsSuicideOnAttack(true);
+
+        UnitAbilityFactory.generate(
+            playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
+
+        final CombatUnitAbility unitAbility =
+            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
+        assertThat(
+            "isSuicideOnAttack supersedes isSuicideOnHit so offense is ALWAYS",
+            unitAbility.getSuicideOnOffense(),
+            is(CombatUnitAbility.Suicide.ALWAYS));
+        assertThat(
+            "isSuicideOnHit is by itself on defense so it is ONLY_ON_HIT",
+            unitAbility.getSuicideOnDefense(),
+            is(CombatUnitAbility.Suicide.ONLY_ON_HIT));
       }
 
       @Test
@@ -546,9 +579,13 @@ class UnitAbilityFactoryTest {
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
         assertThat(
-            "isSuicide translates into commitSuicide on both sides",
-            unitAbility.getCommitSuicide(),
-            is(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)));
+            "isSuicideOnHit translates ALWAYS for offense",
+            unitAbility.getSuicideOnOffense(),
+            is(CombatUnitAbility.Suicide.ALWAYS));
+        assertThat(
+            "isSuicideOnHit translates ALWAYS for defense",
+            unitAbility.getSuicideOnDefense(),
+            is(CombatUnitAbility.Suicide.ALWAYS));
       }
 
       @Test
