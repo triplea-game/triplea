@@ -48,14 +48,12 @@ public class CombatUnitAbility {
 
   public static final CombatUnitAbility EMPTY = CombatUnitAbility.builder().name("Empty").build();
 
+  /** Which {@link games.strategy.triplea.delegate.power.calculator.CombatValue} should be used */
   @Value
-  static class DiceType {
-    // Use AA dice (attackAA, offensiveAttackAA)
-    static final DiceType AA = new DiceType("AA");
-    // Use bombard dice (bombard or attack if bombard is empty)
-    static final DiceType BOMBARD = new DiceType("BOMBARD");
-    // Use normal dice (attack, defense)
-    static final DiceType NORMAL = new DiceType("NORMAL");
+  static class CombatValueType {
+    static final CombatValueType AA = new CombatValueType("AA");
+    static final CombatValueType BOMBARD = new CombatValueType("BOMBARD");
+    static final CombatValueType NORMAL = new CombatValueType("NORMAL");
 
     String type;
   }
@@ -78,7 +76,7 @@ public class CombatUnitAbility {
   @Builder.Default Collection<UnitType> targets = List.of();
 
   /** The type of dice that will be rolled. */
-  @Builder.Default DiceType diceType = DiceType.NORMAL;
+  @Builder.Default CombatValueType combatValueType = CombatValueType.NORMAL;
 
   /** The side(s) that the unit needs to be on to use the ability */
   @Builder.Default

@@ -171,7 +171,7 @@ public class UnitAbilityFactory {
             CombatUnitAbility.builder()
                 .name(unitAttachment.getTypeAa())
                 .attachedUnitTypes(List.of(unitType))
-                .diceType(CombatUnitAbility.DiceType.AA)
+                .combatValueType(CombatUnitAbility.CombatValueType.AA)
                 .sides(sides)
                 .round(
                     unitAttachment.getMaxRoundsAa() == -1
@@ -280,7 +280,7 @@ public class UnitAbilityFactory {
             CombatUnitAbility.builder()
                 .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS))
                 .attachedUnitTypes(needsDestroyerToTarget ? List.of() : List.of(unitType))
-                .diceType(CombatUnitAbility.DiceType.NORMAL)
+                .combatValueType(CombatUnitAbility.CombatValueType.NORMAL)
                 .sides(sides)
                 .targets(getTargetsWithDestroyer(parameters.unitTypeList, unitType))
                 .returnFire(!isFirstStrike)
@@ -303,7 +303,7 @@ public class UnitAbilityFactory {
               CombatUnitAbility.builder()
                   .name((isFirstStrike ? FIRST_STRIKE_UNITS : UNITS) + " without destroyer")
                   .attachedUnitTypes(List.of(unitType))
-                  .diceType(CombatUnitAbility.DiceType.NORMAL)
+                  .combatValueType(CombatUnitAbility.CombatValueType.NORMAL)
                   .sides(sides)
                   .targets(getTargetsWithoutDestroyer(parameters, unitType))
                   .returnFire(!isFirstStrike)
@@ -409,7 +409,7 @@ public class UnitAbilityFactory {
                     CombatUnitAbility.builder()
                         .name(NAVAL_BOMBARD)
                         .attachedUnitTypes(getCanBombardUnitTypes(parameters.unitTypeList, player))
-                        .diceType(CombatUnitAbility.DiceType.BOMBARD)
+                        .combatValueType(CombatUnitAbility.CombatValueType.BOMBARD)
                         .round(1)
                         .returnFire(
                             Properties.getNavalBombardCasualtiesReturnFire(parameters.properties))
