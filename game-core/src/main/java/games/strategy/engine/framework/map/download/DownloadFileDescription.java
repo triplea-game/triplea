@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
-import org.triplea.http.client.maps.listing.MapSkinListing;
 import org.triplea.util.Version;
 
 /**
@@ -25,15 +24,8 @@ public final class DownloadFileDescription {
   private final String description;
   private final String mapName;
   private final Integer version;
-  private final DownloadType downloadType;
   private final MapCategory mapCategory;
   private final String img;
-
-  enum DownloadType {
-    MAP,
-    MAP_SKIN,
-    MAP_TOOL
-  }
 
   enum MapCategory {
     BEST("High Quality"),
@@ -70,35 +62,9 @@ public final class DownloadFileDescription {
         .description(mapDownloadListing.getDescription())
         .mapName(mapDownloadListing.getMapName())
         .version(new Version(mapDownloadListing.getVersion()).getMajor())
-        .downloadType(DownloadType.MAP)
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
         .img(mapDownloadListing.getPreviewImage())
         .build();
-  }
-
-  public static DownloadFileDescription ofMapSkinListing(
-      final MapSkinListing skin, final String mapCategory) {
-    return DownloadFileDescription.builder()
-        .url(skin.getUrl())
-        .description(skin.getDescription())
-        .mapName(skin.getSkinName())
-        .version(new Version(skin.getVersion()).getMajor())
-        .downloadType(DownloadType.MAP_SKIN)
-        .mapCategory(MapCategory.fromString(mapCategory))
-        .img(skin.getPreviewImageUrl())
-        .build();
-  }
-
-  boolean isMap() {
-    return downloadType == DownloadType.MAP;
-  }
-
-  boolean isMapSkin() {
-    return downloadType == DownloadType.MAP_SKIN;
-  }
-
-  boolean isMapTool() {
-    return downloadType == DownloadType.MAP_TOOL;
   }
 
   /** Returns the name of the zip file. */

@@ -21,10 +21,7 @@ public class MapsListingController {
   private final Supplier<List<MapDownloadListing>> downloadListingSupplier;
 
   public static MapsListingController build(final Jdbi jdbi) {
-    return new MapsListingController(
-        new MapsListingModule(
-            jdbi.onDemand(MapListingDao.class), //
-            jdbi.onDemand(MapSkinsListingDao.class)));
+    return new MapsListingController(new MapsListingModule(jdbi.onDemand(MapListingDao.class)));
   }
 
   @GET
