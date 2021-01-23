@@ -201,7 +201,14 @@ public class UnitAbilityFactory {
         battlePhaseList
             .getPhase(phaseName)
             .orElseThrow(
-                () -> new IllegalArgumentException("The phase " + phaseName + " doesn't exist"));
+                () ->
+                    new IllegalArgumentException(
+                        "The phase "
+                            + phaseName
+                            + " doesn't exist. Existing phases are: "
+                            + battlePhaseList.getPhases().stream()
+                                .map(BattlePhase::getName)
+                                .collect(Collectors.joining(", "))));
     return battlePhase.addAbilityOrMergeAttached(player, combatUnitAbility);
   }
 
