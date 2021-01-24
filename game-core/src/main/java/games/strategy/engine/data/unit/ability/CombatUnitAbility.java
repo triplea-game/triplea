@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -84,9 +85,13 @@ public class CombatUnitAbility {
   @Builder.Default boolean returnFire = true;
 
   /** When should this unit commit suicide on offense */
-  @Builder.Default Suicide suicideOnOffense = Suicide.NONE;
+  @Getter(value = AccessLevel.NONE)
+  @Builder.Default
+  Suicide suicideOnOffense = Suicide.NONE;
   /** When should this unit commit suicide on defense */
-  @Builder.Default Suicide suicideOnDefense = Suicide.NONE;
+  @Getter(value = AccessLevel.NONE)
+  @Builder.Default
+  Suicide suicideOnDefense = Suicide.NONE;
 
   /** Which {@link games.strategy.triplea.delegate.power.calculator.CombatValue} should be used */
   @Value
@@ -96,6 +101,10 @@ public class CombatUnitAbility {
     static final CombatValueType NORMAL = new CombatValueType("NORMAL");
 
     String type;
+  }
+
+  public Suicide getSuicide(final BattleState.Side side) {
+    return side == BattleState.Side.OFFENSE ? suicideOnOffense : suicideOnDefense;
   }
 
   public boolean isTarget(final Unit unit) {

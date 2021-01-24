@@ -180,11 +180,11 @@ class UnitAbilityFactoryTest {
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
         assertThat(
             "isSuicideOnHit translates ONLY_ON_HIT for offense",
-            unitAbility.getSuicideOnOffense(),
+            unitAbility.getSuicide(BattleState.Side.OFFENSE),
             is(CombatUnitAbility.Suicide.AFTER_HIT));
         assertThat(
             "isSuicideOnHit translates ONLY_ON_HIT for defense",
-            unitAbility.getSuicideOnDefense(),
+            unitAbility.getSuicide(BattleState.Side.DEFENSE),
             is(CombatUnitAbility.Suicide.AFTER_HIT));
       }
 
@@ -205,11 +205,11 @@ class UnitAbilityFactoryTest {
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
         assertThat(
             "isSuicideOnAttack translates into suicide on offense ALWAYS",
-            unitAbility.getSuicideOnOffense(),
+            unitAbility.getSuicide(BattleState.Side.OFFENSE),
             is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnAttack should not cause suicide on defense to have anything",
-            unitAbility.getSuicideOnDefense(),
+            unitAbility.getSuicide(BattleState.Side.DEFENSE),
             is(CombatUnitAbility.Suicide.NONE));
       }
 
@@ -230,11 +230,11 @@ class UnitAbilityFactoryTest {
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
         assertThat(
             "isSuicideOnDefense translates into suicide on defense ALWAYS",
-            unitAbility.getSuicideOnDefense(),
+            unitAbility.getSuicide(BattleState.Side.DEFENSE),
             is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnDefense should not cause suicide on offense to have anything",
-            unitAbility.getSuicideOnOffense(),
+            unitAbility.getSuicide(BattleState.Side.OFFENSE),
             is(CombatUnitAbility.Suicide.NONE));
       }
 
@@ -251,11 +251,11 @@ class UnitAbilityFactoryTest {
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
         assertThat(
             "isSuicideOnAttack supersedes isSuicideOnHit so offense is ALWAYS",
-            unitAbility.getSuicideOnOffense(),
+            unitAbility.getSuicide(BattleState.Side.OFFENSE),
             is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnHit is by itself on defense so it is ONLY_ON_HIT",
-            unitAbility.getSuicideOnDefense(),
+            unitAbility.getSuicide(BattleState.Side.DEFENSE),
             is(CombatUnitAbility.Suicide.AFTER_HIT));
       }
 
@@ -580,11 +580,11 @@ class UnitAbilityFactoryTest {
             getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
         assertThat(
             "isSuicideOnHit translates ALWAYS for offense",
-            unitAbility.getSuicideOnOffense(),
+            unitAbility.getSuicide(BattleState.Side.OFFENSE),
             is(CombatUnitAbility.Suicide.AFTER_FIRE));
         assertThat(
             "isSuicideOnHit translates ALWAYS for defense",
-            unitAbility.getSuicideOnDefense(),
+            unitAbility.getSuicide(BattleState.Side.DEFENSE),
             is(CombatUnitAbility.Suicide.AFTER_FIRE));
       }
 
