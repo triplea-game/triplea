@@ -27,7 +27,7 @@ function downloadCodeClimateReporter() {
 }
 
 function runTests() {
-  ./gradlew -x :smoke-testing:test -parallel test jacocoTestReport
+  ./gradlew -x :smoke-testing:test test jacocoTestReport
 }
 
 function compileCodeClimateReports() {
