@@ -20,9 +20,10 @@ public class YamlReader {
    *
    * @throws InvalidYamlFormatException Thrown if the YAML is badly formatted.
    */
+  @SuppressWarnings("unchecked")
   public static List<Map<String, Object>> readList(final String input) {
     try {
-      return readYaml(asStream(input));
+      return (List<Map<String, Object>>) readYaml(asStream(input));
     } catch (final YamlEngineException | ClassCastException e) {
       throw new InvalidYamlFormatException(e);
     }
@@ -33,9 +34,10 @@ public class YamlReader {
    *
    * @throws InvalidYamlFormatException Thrown if the YAML is badly formatted.
    */
+  @SuppressWarnings("unchecked")
   public static List<Map<String, Object>> readList(final InputStream input) {
     try {
-      return readYaml(input);
+      return (List<Map<String, Object>>) readYaml(input);
     } catch (final YamlEngineException | ClassCastException e) {
       throw new InvalidYamlFormatException(e);
     }
@@ -46,9 +48,10 @@ public class YamlReader {
    *
    * @throws InvalidYamlFormatException Thrown if the YAML is badly formatted.
    */
+  @SuppressWarnings("unchecked")
   public static Map<String, Object> readMap(final String input) {
     try {
-      return readYaml(asStream(input));
+      return (Map<String, Object>) readYaml(asStream(input));
     } catch (final YamlEngineException | ClassCastException e) {
       throw new InvalidYamlFormatException(e);
     }
@@ -59,9 +62,10 @@ public class YamlReader {
    *
    * @throws InvalidYamlFormatException Thrown if the YAML is badly formatted.
    */
+  @SuppressWarnings("unchecked")
   public static Map<String, Object> readMap(final InputStream input) {
     try {
-      return readYaml(input);
+      return (Map<String, Object>) readYaml(input);
     } catch (final YamlEngineException | ClassCastException e) {
       throw new InvalidYamlFormatException(e);
     }
@@ -72,10 +76,9 @@ public class YamlReader {
         Strings.nullToEmpty(inputString).getBytes(StandardCharsets.UTF_8));
   }
 
-  @SuppressWarnings("unchecked")
-  private static <T> T readYaml(final InputStream inputStream) {
+  private static Object readYaml(final InputStream inputStream) {
     final Load load = new Load(LoadSettings.builder().build());
-    final var result = (T) load.loadFromInputStream(inputStream);
+    final var result = load.loadFromInputStream(inputStream);
     return Optional.ofNullable(result)
         .orElseThrow(() -> new InvalidYamlFormatException("Unable to read yaml data"));
   }
