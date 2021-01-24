@@ -2232,7 +2232,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war_1_end_of_empires/archive/master.zip
   version: 1
-  img: https://github.com/triplea-maps/world_war_1_end_of_empires/blob/master/map/doc/images/world_war_1_end_of_empires_setup.png
+  img: raw.githubusercontent.com/triplea-maps/world_war_1_end_of_empires/master/map/doc/images/world_war_1_end_of_empires_setup.png
   description: |
     <br>It is April 6th, 1917. The United States has just declared war on Germany, bringing her into the war that has engulfed Europe for the past 3 years.
     <br>Germany and Austria-Hungary expand aggressively while the Ottomans struggle just to hold on.
