@@ -20,17 +20,6 @@ import org.triplea.java.function.ThrowingFunction;
 
 final class ClientSettingTest {
   @Nested
-  final class EqualsAndHashCodeTest {
-    @Test
-    void shouldBeEquatableAndHashable() {
-      EqualsVerifier.forClass(ClientSetting.class)
-          .withNonnullFields("name")
-          .withOnlyTheseFields("name")
-          .verify();
-    }
-  }
-
-  @Nested
   final class GetValueTest extends AbstractClientSettingTestCase {
     @Test
     void shouldReturnDefaultValueWhenDecodeValueThrowsException() {
