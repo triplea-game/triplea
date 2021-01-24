@@ -26,6 +26,7 @@ prod2-bot06.triplea-game.org  bot_prefix=6 bot_name=California
 prod2-bot07.triplea-game.org  bot_prefix=7 bot_name=Jersey
 prod2-bot08.triplea-game.org  bot_prefix=8 bot_name=London
 prod2-bot09.triplea-game.org  bot_prefix=9 bot_name=Frankfurt
+prod2-bot10.triplea-game.org  bot_prefix=10 bot_name=Jersey
 
 
 [prod2_bot:children]
