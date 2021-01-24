@@ -5,6 +5,8 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +46,7 @@ class GameRelayServerTest {
 
     webSocketClient.sendMessage(new SampleMessage("test message"));
 
-    Awaitility.await().atMost(3, TimeUnit.SECONDS).until(() -> !receivedMessages.isEmpty());
+    Awaitility.await().atMost(Duration.ofSeconds(3)).until(() -> !receivedMessages.isEmpty());
     assertThat(receivedMessages.get(0).getContents(), is("test message"));
     assertThat(receivedMessages, hasSize(1));
   }
@@ -76,7 +78,7 @@ class GameRelayServerTest {
     webSocketClient1.sendMessage(new SampleMessage("test message"));
 
     Awaitility.await()
-        .atMost(3, TimeUnit.SECONDS)
+        .atMost(Duration.ofSeconds(3))
         .until(
             () ->
                 !receivedMessages1.isEmpty()
