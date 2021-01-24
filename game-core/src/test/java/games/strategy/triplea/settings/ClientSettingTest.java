@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,17 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.function.ThrowingFunction;
 
 final class ClientSettingTest {
-  @Nested
-  final class EqualsAndHashCodeTest {
-    @Test
-    void shouldBeEquatableAndHashable() {
-      EqualsVerifier.forClass(ClientSetting.class)
-          .withNonnullFields("name")
-          .withOnlyTheseFields("name")
-          .verify();
-    }
-  }
-
   @Nested
   final class GetValueTest extends AbstractClientSettingTestCase {
     @Test
