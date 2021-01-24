@@ -3,5 +3,5 @@
 set -eEux
 
 .travis/shared/setup-database
-./gradlew integTest -x :smoke-testing:integTest
+./gradlew --quiet integTest --exclude-task :smoke-testing:integTest
 
