@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eEu
+
+./run_ansible_production --limit botHosts -e update_maps=true
+

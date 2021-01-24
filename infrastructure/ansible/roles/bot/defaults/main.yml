@@ -42,3 +42,7 @@ bot_run_args:
   triplea.name: "Bot{{ bot_prefix }}${BOT_NUMBER}_{{ bot_name }}"
   triplea.lobby.uri: "{{ bot_lobby_uri }}"
   triplea.map.folder: "{{ bot_maps_folder }}"
+
+# When set to true, all maps on the bot server will be updated (overwritten).
+update_maps: false
+

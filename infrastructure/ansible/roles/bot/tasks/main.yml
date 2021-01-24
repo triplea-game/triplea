@@ -35,7 +35,7 @@
     - "{{ bot_maps_folder }}"
 
 - name: download maps on bot server
-  command: "{{ admin_home }}/download-all-maps"
+  command: "{{ admin_home }}/download-all-maps {{ update_maps }}"
 
 - name: deploy jar file if using latest
   when: using_latest
