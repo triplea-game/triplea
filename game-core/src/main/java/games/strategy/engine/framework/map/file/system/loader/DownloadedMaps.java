@@ -79,7 +79,7 @@ public class DownloadedMaps {
    * installed othewrise returns an empty. Fuzzy matching means we will do name normalization and
    * replace spaces with underscores, convert to lower case, etc.
    */
-  public static Optional<Integer> getMapVersionByName(final String mapName) {
+  public Optional<Integer> getMapVersionByName(final String mapName) {
     final String normalizedMapName = normalizeName(mapName);
 
     // see if we have a map folder that matches the target name
