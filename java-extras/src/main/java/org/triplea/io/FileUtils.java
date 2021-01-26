@@ -60,7 +60,6 @@ public final class FileUtils {
     }
   }
 
-  // TODO: test
   /**
    * Searchs a file system for a specific file name starting from a given directory.
    *
