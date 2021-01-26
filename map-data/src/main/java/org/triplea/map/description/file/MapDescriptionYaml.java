@@ -44,6 +44,12 @@ public class MapDescriptionYaml {
   private static final int MAX_GAME_NAME_LENGTH = 64;
   private static final int MAX_MAP_NAME_LENGTH = 64;
 
+
+  @Nonnull private final URI yamlFileLocation;
+  @Nonnull private final String mapName;
+  @Nonnull private final Integer mapVersion;
+  @Nonnull private final List<MapGame> mapGameList;
+
   interface YamlKeys {
     String MAP_NAME = "map_name";
     String VERSION = "version";
@@ -51,11 +57,6 @@ public class MapDescriptionYaml {
     String GAME_NAME = "name";
     String XML_PATH = "xml_path";
   }
-
-  @Nonnull private final URI yamlFileLocation;
-  @Nonnull private final String mapName;
-  @Nonnull private final Integer mapVersion;
-  @Nonnull private final List<MapGame> mapGameList;
 
   /**
    * Represents a single list node describing a game contained in a map. Example structure:
