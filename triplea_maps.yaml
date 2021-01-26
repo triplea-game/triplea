@@ -163,7 +163,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/270bc/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/270bc/master/map/doc/images/mapScreenshot.png
+  img: https://raw.githubusercontent.com/triplea-maps/270bc/master/preview.png
   description: |
     <br>By Doctor Che
     <br>Updated by Redrum
@@ -485,7 +485,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/age_of_tribes/archive/master.zip
   version: 6
-  img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -1482,7 +1482,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/age_of_the_sturlungs/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/age_of_the_sturlungs/master/description/TripleA_age_of_the_sturlungs_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/age_of_the_sturlungs/master/preview.png
   description: |
     <br>
         this scenario loosely based somewhere around  the year 1226.
@@ -1554,7 +1554,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/alagaesia/archive/master.zip
   version: 1
-  img: https://user-images.githubusercontent.com/15109713/40717650-758b3802-640d-11e8-9ace-26be7dab6236.png
+  img: https://raw.githubusercontent.com/triplea-maps/alagaesia/master/preview.png
   description: |
     <br>The Urgals are gathering on a march against Farthen Dûr bound by the spells of the Shade Durza. In the meantime, with the young Dragon Rider Eragon on her side, Nasuada, leader of the Varden, prepares to launch an invasion of the Empire of the evil Rider, King Galbatorix, using Surda as a base. Finally seeing a hope to dethrone the immortal Rider-King, Elves and Dwarves reveal their hidden realms and join forces with the Varden to strike at Galbatorix from all sides...
     <br>
@@ -1575,7 +1575,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/1914-cow-empires/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/1914-cow-empires/master/description/TripleA_1914_cow_empires_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/1914-cow-empires/master/preview.png
   description: |
     <br>Version 1.0, last update 2014.12.07 for engine 1.8.0.3
     <br>Game done by RogerCooper
@@ -2213,7 +2213,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/270bc_wars/archive/master.zip
   version: 1
-  img: https://github.com/triplea-maps/270bc_wars/raw/master/description/TripleA_270bc_wars_mini.png
+  img: https://github.com/triplea-maps/270bc_wars/raw/master/preview.png
   description: |
     <br>By Cernel.
     <br>Original 270BC map and game by Doctor Che.
