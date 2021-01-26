@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.primitives.Ints;
 import games.strategy.engine.ClientFileSystemHelper;
 import java.io.File;
 import java.util.Arrays;
@@ -9,7 +10,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
-import org.triplea.util.Version;
 
 /**
  * This class represents the essential data for downloading a TripleA map. Where to get it, where to
@@ -61,7 +61,7 @@ public final class DownloadFileDescription {
         .url(mapDownloadListing.getUrl())
         .description(mapDownloadListing.getDescription())
         .mapName(mapDownloadListing.getMapName())
-        .version(new Version(mapDownloadListing.getVersion()).getMajor())
+        .version(Ints.tryParse(mapDownloadListing.getVersion()))
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
         .img(mapDownloadListing.getPreviewImage())
         .build();
