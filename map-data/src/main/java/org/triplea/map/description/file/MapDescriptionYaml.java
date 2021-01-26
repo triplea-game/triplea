@@ -44,7 +44,6 @@ public class MapDescriptionYaml {
   private static final int MAX_GAME_NAME_LENGTH = 64;
   private static final int MAX_MAP_NAME_LENGTH = 64;
 
-
   @Nonnull private final URI yamlFileLocation;
   @Nonnull private final String mapName;
   @Nonnull private final Integer mapVersion;
