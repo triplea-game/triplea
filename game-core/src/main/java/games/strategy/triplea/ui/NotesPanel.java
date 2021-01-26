@@ -15,7 +15,7 @@ public class NotesPanel extends JScrollPane {
         createNotesPane(
             LocalizeHtml.localizeImgLinksInHtml(
                 trimmedNotes,
-                DownloadedMaps.findPathToMapFolderOrElseThrow(UiContext.getMapDir()))));
+                DownloadedMaps.findContentRootForMapNameOrElseThrow(UiContext.getMapDir()))));
   }
 
   private static JEditorPane createNotesPane(final String html) {

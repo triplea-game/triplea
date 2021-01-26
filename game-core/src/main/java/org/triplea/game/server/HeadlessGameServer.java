@@ -25,6 +25,7 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +94,11 @@ public class HeadlessGameServer {
     log.info("Requested to change map to: " + gameName);
     // don't change mid-game and only if we have the game
     if (setupPanelModel.getPanel() != null && game == null && availableGames.hasGame(gameName)) {
-      gameSelectorModel.load(availableGames.findGameUriByName(gameName).orElseThrow());
+      gameSelectorModel.load(
+          availableGames
+              .findGameXmlPathByGameName(gameName) //
+              .map(Path::toUri)
+              .orElseThrow());
       log.info("Changed to game map: " + gameName);
     } else {
       log.info(

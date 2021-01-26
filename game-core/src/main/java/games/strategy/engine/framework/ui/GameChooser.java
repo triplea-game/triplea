@@ -12,7 +12,7 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URI;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -27,7 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
-import org.triplea.java.UrlStreams;
+import org.triplea.io.FileUtils;
 import org.triplea.map.data.elements.PropertyList;
 import org.triplea.map.data.elements.ShallowParsedGame;
 import org.triplea.swing.JButtonBuilder;
@@ -55,13 +55,21 @@ public class GameChooser {
       final Frame owner,
       final DownloadedMaps downloadedMaps,
       final String gameName,
-      final Consumer<URI> gameChosenCallback) {
+      final Consumer<Path> gameChosenCallback) {
 
     final JDialog dialog = new JDialog(owner, "Select a Game", true);
     dialog.setLayout(new BorderLayout());
 
     final DefaultListModel<DefaultGameChooserEntry> gameChooserModel = new DefaultListModel<>();
-    downloadedMaps.getSortedGameEntries().forEach(gameChooserModel::addElement);
+    downloadedMaps.getGameNamesToGameLocations().entrySet().stream()
+        .map(
+            entry ->
+                DefaultGameChooserEntry.builder()
+                    .gameName(entry.getKey())
+                    .gameFilePath(entry.getValue())
+                    .build())
+        .sorted()
+        .forEach(gameChooserModel::addElement);
 
     final JList<DefaultGameChooserEntry> gameList = new JList<>(gameChooserModel);
     if (gameName == null || gameName.equals("-")) {
@@ -116,7 +124,10 @@ public class GameChooser {
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
 
-    notesPanel.setText(GameChooser.buildGameNotesText(gameList.getSelectedValue().getUri()));
+    Optional.ofNullable(gameList.getSelectedValue())
+        .map(DefaultGameChooserEntry::getGameFilePath)
+        .map(GameChooser::buildGameNotesText)
+        .ifPresent(notesPanel::setText);
 
     final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -147,8 +158,10 @@ public class GameChooser {
     gameList.addListSelectionListener(
         e -> {
           if (!e.getValueIsAdjusting()) {
-            notesPanel.setText(
-                GameChooser.buildGameNotesText(gameList.getSelectedValue().getUri()));
+            Optional.ofNullable(gameList.getSelectedValue())
+                .map(DefaultGameChooserEntry::getGameFilePath)
+                .map(GameChooser::buildGameNotesText)
+                .ifPresent(notesPanel::setText);
             // scroll to the top of the notes screen
             SwingUtilities.invokeLater(
                 () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
@@ -172,28 +185,32 @@ public class GameChooser {
     dialog.setVisible(true); // Blocking and waits for user action
 
     Optional.ofNullable(gameList.getSelectedValue())
-        .map(DefaultGameChooserEntry::getUri)
+        .map(DefaultGameChooserEntry::getGameFilePath)
         .ifPresent(gameChosenCallback);
   }
 
-  private static String buildGameNotesText(final URI gameUri) {
-    if (gameUri == null) {
+  private static String buildGameNotesText(final Path gameFile) {
+    if (gameFile == null) {
       return "";
     }
 
     final ShallowParsedGame shallowParsedGame =
-        UrlStreams.openStream(
-                gameUri, inputStream -> ShallowGameParser.parseShallow(inputStream).orElse(null))
-            .orElse(null);
+        FileUtils.openInputStream(
+            gameFile.toFile(),
+            inputStream -> ShallowGameParser.parseShallow(inputStream).orElse(null));
 
     if (shallowParsedGame == null
         || shallowParsedGame.getInfo() == null
         || shallowParsedGame.getInfo().getName() == null) {
-      return "Error reading file.. " + gameUri + ", could not parse or missing <info> tag data.";
+      return "Error reading file.. "
+          + gameFile.toFile().getAbsolutePath()
+          + ", could not parse or missing <info> tag data.";
     }
 
     if (shallowParsedGame.getPlayerList() == null) {
-      return "Error reading file.. " + gameUri + ", missing <playerList> tag data.";
+      return "Error reading file.. "
+          + gameFile.toFile().getAbsolutePath()
+          + ", missing <playerList> tag data.";
     }
 
     final StringBuilder notes = new StringBuilder();
@@ -218,7 +235,8 @@ public class GameChooser {
                             notes.append(
                                 LocalizeHtml.localizeImgLinksInHtml(
                                     gameNotes,
-                                    DownloadedMaps.findPathToMapFolderOrElseThrow(mapName)))));
+                                    DownloadedMaps.findContentRootForMapNameOrElseThrow(
+                                        mapName)))));
     return notes.toString();
   }
 

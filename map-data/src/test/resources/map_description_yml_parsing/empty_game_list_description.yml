@@ -1,0 +1,5 @@
+map_name: MapName
+version: 1
+games:
+  - name:
+    xml_path:
