@@ -1,10 +1,10 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -51,8 +51,6 @@ public class ZippedMapsExtractor {
                 mapZip -> {
                   try {
                     unzipMap(mapZip);
-                    renameZipPropertiesFile(mapZip);
-                    removeMapZip(mapZip);
                   } catch (final ZipReadException zipReadException) {
                     // Problem reading the zip, move it to a folder so that the user does
                     // not repeatedly see an error trying to read this zip.
@@ -94,63 +92,55 @@ public class ZippedMapsExtractor {
     Preconditions.checkArgument(mapZip.exists(), mapZip.getAbsolutePath());
     Preconditions.checkArgument(mapZip.getName().endsWith(".zip"), mapZip.getAbsolutePath());
 
-    final Path extractionTarget = ClientFileSystemHelper.getUserMapsFolder().toPath();
+    final String extractionFolderName = createExtractionFolderName(mapZip.getName());
+    final Path extractionTarget =
+        ClientFileSystemHelper.getUserMapsFolder().toPath().resolve(extractionFolderName);
+
+    final boolean mapIsAlreadyExtracted = extractionTarget.toFile().exists();
+    if (mapIsAlreadyExtracted) {
+      // no-op, we would not have expected for the map zip to have exist
+      return;
+    }
 
     log.info(
         "Extracting map zip: {} -> {}",
         mapZip.getAbsolutePath(),
         extractionTarget.toAbsolutePath());
+
+    // extract into a temp folder first
     final Path tempFolder = Files.createTempDirectory("triplea-unzip");
     ZipExtractor.unzipFile(mapZip, tempFolder.toFile());
-    for (final File file : FileUtils.listFiles(tempFolder.toFile())) {
-      final File extractionTargetFile = extractionTarget.resolve(file.getName()).toFile();
-      if (extractionTargetFile.exists() && extractionTargetFile.isDirectory()) {
-        org.apache.commons.io.FileUtils.deleteDirectory(extractionTargetFile);
-      } else if (extractionTargetFile.exists()) {
-        extractionTargetFile.delete();
-      }
 
-      try {
-        Files.move(file.toPath(), extractionTarget.resolve(file.getName()));
-      } catch (final FileAlreadyExistsException e) {
-        log.error(
-            "Error, destination file already exists, failed to overwrite while unzipping map. Map: "
-                + mapZip.getAbsolutePath()
-                + ",file to write "
-                + extractionTargetFile.getAbsolutePath(),
-            e);
-        return;
-      }
+    // extraction done, now move the extracted folder to target location
+    Files.move(tempFolder, extractionTarget);
+
+    // move properties file if it exists
+    final Path propertiesFile = mapZip.toPath().resolveSibling(mapZip.getName() + ".properties");
+    if (propertiesFile.toFile().exists()) {
+      Files.move(
+          propertiesFile, extractionTarget.resolveSibling(extractionFolderName + ".properties"));
+    }
+
+    final boolean successfullyExtracted = extractionTarget.toFile().exists();
+    if (successfullyExtracted) {
+      mapZip.delete();
     }
   }
 
-  /** Find .properties suffixed map files and renames them to match the output map file. */
-  private static void renameZipPropertiesFile(final File mapZip) {
-    final String newName = mapZip.getName().replace(".zip", "") + ".properties";
-
-    final String oldPropertiesFileName = mapZip.getName() + ".properties";
-    final Path oldPropertiesFilePath = mapZip.toPath().getParent().resolve(oldPropertiesFileName);
-    if (oldPropertiesFilePath.toFile().exists()) {
-      final Path newFilePath = mapZip.toPath().getParent().resolve(newName);
-      try {
-        log.info("Renaming {} -> {}", oldPropertiesFilePath, newFilePath);
-        Files.move(oldPropertiesFilePath, newFilePath);
-      } catch (final IOException e) {
-        throw new FileSystemException(
-            "Failed to rename file: " + oldPropertiesFilePath + " to " + newFilePath, e);
-      }
+  /**
+   * Removes the '.zip' or '-master.zip' suffix from map names if present. <br>
+   * EG: 'map-name-master.zip' -> 'map-name'
+   */
+  @VisibleForTesting
+  static String createExtractionFolderName(final String mapZipName) {
+    String newName = mapZipName;
+    if (newName.endsWith(".zip")) {
+      newName = newName.substring(0, newName.length() - ".zip".length());
     }
-  }
-
-  private static void removeMapZip(final File mapZip) {
-    log.info("Removing map zip: {}", mapZip.getAbsolutePath());
-    final boolean removed = mapZip.delete();
-    if (!removed) {
-      log.info(
-          "Failed to remove (extracted) zip file: {}, marking file to be deleted on exit.",
-          mapZip.getAbsolutePath());
-      mapZip.deleteOnExit();
+    if (newName.endsWith("-master")) {
+      newName = newName.substring(0, newName.length() - "-master".length());
     }
+    return newName;
   }
 
   /**
@@ -172,7 +162,6 @@ public class ZippedMapsExtractor {
     try {
       final Path newLocation = badZipFolder.resolve(mapZip.getName());
       Files.move(mapZip.toPath(), newLocation);
-
       return Optional.of(newLocation);
     } catch (final IOException e) {
       log.error(
