@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.triplea.generic.xml.reader.annotations.Tag;
 
 /**
@@ -18,6 +19,7 @@ import org.triplea.generic.xml.reader.annotations.Tag;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Game {
   @XmlElement @Tag private Info info;
   @XmlElement @Tag private Triplea triplea;
