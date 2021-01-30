@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.xml.stream.XMLStreamReader;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.function.ThrowingRunnable;
 
+@Slf4j
 class XmlParser {
   private final String tagName;
   private final Map<String, ThrowingRunnable<?>> childTagHandlers = new HashMap<>();
@@ -27,12 +29,17 @@ class XmlParser {
     StringBuilder textElementBuilder = new StringBuilder();
     while (streamReader.hasNext()) {
       final int event = streamReader.next();
+      log.trace("XML parsing event reached: " + event);
       switch (event) {
         case XMLStreamReader.START_ELEMENT:
           final String childTag = streamReader.getLocalName().toUpperCase();
+          log.trace("XML parsing found child tag: {}", childTag);
           final ThrowingRunnable<?> childTagHandler = childTagHandlers.get(childTag);
           if (childTagHandler != null) {
+            log.trace("XML parsing child tag operation being run");
             childTagHandler.run();
+          } else {
+            log.trace("XML parsing child tag ignored");
           }
           break;
         case XMLStreamReader.CHARACTERS:
@@ -48,6 +55,7 @@ class XmlParser {
           textElementBuilder = new StringBuilder();
 
           final String endTagName = streamReader.getLocalName();
+          log.trace("XML parsing found end tag: {}", endTagName);
           if (endTagName.equalsIgnoreCase(tagName)) {
             return;
           }
