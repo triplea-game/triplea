@@ -2037,7 +2037,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/oztea_1939_global/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/oztea_1939_global/master/description/TripleA_oztea_1939_global_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/oztea_1939_global/master/preview.png
   description:
     <br>
     <br> This is Oztea's 1939 setup for the "Global 40" game.
