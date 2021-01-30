@@ -111,8 +111,15 @@ public class ZippedMapsExtractor {
     final Path tempFolder = Files.createTempDirectory("triplea-unzip");
     ZipExtractor.unzipFile(mapZip, tempFolder.toFile());
 
+    // Check if the zip extracts to a single folder, if so, then to preserve pre-2.6 functionality
+    // we will use that as the map folder.
+    final Path folderToMove =
+        FileUtils.listFiles(tempFolder.toFile()).size() == 1
+            ? FileUtils.listFiles(tempFolder.toFile()).iterator().next().toPath()
+            : tempFolder;
+
     // extraction done, now move the extracted folder to target location
-    Files.move(tempFolder, extractionTarget);
+    Files.move(folderToMove, extractionTarget);
 
     // move properties file if it exists
     final Path propertiesFile = mapZip.toPath().resolveSibling(mapZip.getName() + ".properties");
