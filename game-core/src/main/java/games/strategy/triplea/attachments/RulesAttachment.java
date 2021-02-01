@@ -4,18 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.collect.ImmutableMap;
-import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.BattleRecordsList;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.IAttachment;
-import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.*;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
-import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -53,6 +43,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   // condition for being at war
   private Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
+  // condition for checking resources
+  private String[] haveResources = null;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according
   // to
   // the prices the defender pays for the units]
@@ -148,6 +140,44 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     return natObjs;
   }
+
+  private void setHaveResources(final String value) throws GameParseException {
+    final String[] s = splitOnColon(value);
+    if (s.length <= 1) {
+      throw new GameParseException(
+              "haveResources must have at least 2 fields. Format value=resource1 count=number, or "
+                      + "value=resource1:resource2:resource3 count=number"
+                      + thisErrorMsg());
+    }
+    if ((s.length <= 2) && (s[1].equalsIgnoreCase("sum") || s[1].equalsIgnoreCase("add"))) {
+      throw new GameParseException(
+              "haveResources must have at least 3 fields when used with 'Sum' or 'Add'. Format value=Sum:resource1 "
+                      + "count=number, or value=Sum:resource1:resource2:resource3 count=number"
+                      + thisErrorMsg());
+    }
+    final int n = getInt(s[0]);
+    if (n < 0) {
+      throw new GameParseException("haveResources must be a positive integer" + thisErrorMsg());
+    }
+    for (int i = 1; i < s.length; i++) {
+      // validate that this resource exists in the xml
+      final Resource r = getData().getResourceList().getResource(s[i]);
+      if (r == null && !(s[i].equalsIgnoreCase("sum") || s[i].equalsIgnoreCase("add"))) {
+        throw new GameParseException("No resource called: " + s[i] + thisErrorMsg());
+      }
+    }
+    haveResources = s;
+  }
+
+  private void setHaveResources(final String[] value) {
+    haveResources = value;
+  }
+
+  private String[] getHaveResources() {
+    return haveResources;
+  }
+
+  private void resetHaveResources() { haveResources = null; }
 
   private void setDestroyedTuv(final String value) throws GameParseException {
     if (value == null) {
@@ -267,7 +297,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-        || Matches.isValidRelationshipName(getData()).test(s[2]))) {
+        || Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2]))) {
       throw new GameParseException(
           "relationship: "
               + s[2]
@@ -633,7 +663,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     boolean objectiveMet = true;
     final List<GamePlayer> players = getPlayers();
-    final GameData data = delegateBridge.getData();
+    final GameState data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
     if (!conditions.isEmpty()) {
       final Map<ICondition, Boolean> actualTestedConditions =
@@ -754,14 +784,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAlliedWithAnyOfThesePlayers(players, data));
+                    Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
             final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
           default:
@@ -774,14 +804,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAlliedWithAnyOfThesePlayers(players, data));
+                    Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
             final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
           default:
@@ -803,7 +833,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
                   data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
@@ -813,7 +843,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
                   data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
@@ -829,7 +859,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
     }
     if (objectiveMet && techs != null) {
-      objectiveMet = checkTechs(playerAttachedTo, data);
+      objectiveMet = checkTechs(playerAttachedTo, data.getTechnologyFrontier());
+    }
+    // check for resources
+    if (objectiveMet && haveResources != null) {
+      final boolean toSum = (haveResources[1].equalsIgnoreCase("sum") || haveResources[1].equalsIgnoreCase("add"));
+      int rTotal = 0;
+      for ( int p = 0; p < players.size(); p++) {
+        for ( int i = toSum ? 2 : 1; i < haveResources.length; i++) {
+          final Resource resource = getData().getResourceList().getResource(haveResources[i]);
+          final int rHave = players.get(p).getResources().getQuantity(resource);
+          rTotal = toSum ? rTotal + rHave : rTotal > rHave ? rTotal : rHave;
+        }
+      }
+      objectiveMet = rTotal >= getInt(haveResources[0]);
     }
     // check for relationships
     if (objectiveMet && !relationship.isEmpty()) {
@@ -983,7 +1026,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String exclType,
       final int numberNeeded,
       final List<GamePlayer> players,
-      final GameData data) {
+      final GameState data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
@@ -1001,12 +1044,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         case "allied":
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         case "enemy":
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         default:
           return false;
@@ -1066,7 +1111,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String exclType,
       final int numberNeeded,
       final List<GamePlayer> players,
-      final GameData data) {
+      final GameState data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
@@ -1085,7 +1130,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                   allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         case "direct":
           allUnits.removeAll(
@@ -1095,13 +1141,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         case "enemy": // any enemy units in the territory
           allUnits.retainAll(
               CollectionUtils.getMatches(
-                  allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+                  allUnits,
+                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
           break;
         case "enemy_surface": // any enemy sea units (not trn/sub) in the territory
           allUnits.retainAll(
               CollectionUtils.getMatches(
                   allUnits,
-                  Matches.enemyUnitOfAnyOfThesePlayers(players, data)
+                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())
                       .and(Matches.unitIsSea())
                       .and(Matches.unitCanEvade().negate())
                       .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
@@ -1161,13 +1208,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Collection<Territory> listedTerrs,
       final int numberNeeded,
       final Collection<GamePlayer> players,
-      final GameData data) {
+      final GameState data) {
     int numberMet = 0;
     boolean satisfied = false;
     final Collection<GamePlayer> allies =
         CollectionUtils.getMatches(
             data.getPlayerList().getPlayers(),
-            Matches.isAlliedWithAnyOfThesePlayers(players, data));
+            Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
     for (final Territory listedTerr : listedTerrs) {
       // if the territory owner is an ally
       if (Matches.isTerritoryOwnedBy(allies).test(listedTerr)) {
@@ -1217,7 +1264,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final GamePlayer player,
       final Set<GamePlayer> enemies,
       final int count,
-      final GameData data) {
+      final GameState data) {
     int found = 0;
     for (final GamePlayer e : enemies) {
       if (data.getRelationshipTracker().isAtWar(player, e)) {
@@ -1233,9 +1280,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return found >= count;
   }
 
-  private boolean checkTechs(final GamePlayer player, final GameData data) {
+  private boolean checkTechs(final GamePlayer player, final TechnologyFrontier technologyFrontier) {
     int found = 0;
-    for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, data)) {
+    for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, technologyFrontier)) {
       if (techs.contains(a)) {
         found++;
       }
@@ -1250,7 +1297,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public void validate(final GameData data) {
+  public void validate(final GameState data) {
     validateNames(alliedOwnershipTerritories);
     validateNames(enemyExclusionTerritories);
     validateNames(enemySurfaceExclusionTerritories);
@@ -1285,6 +1332,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 this::getAtWarPlayers,
                 this::resetAtWarPlayers))
         .put("atWarCount", MutableProperty.ofReadOnly(this::getAtWarCount))
+        .put(
+            "haveResources",
+            MutableProperty.of(
+                this::setHaveResources,
+                this::setHaveResources,
+                this::getHaveResources,
+                this::resetHaveResources))
         .put(
             "destroyedTUV",
             MutableProperty.ofString(
