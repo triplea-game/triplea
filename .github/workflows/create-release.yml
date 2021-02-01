@@ -1,0 +1,61 @@
+name: Build and upload Prerelease
+on:
+  push:
+    branches:
+      - master
+      - release/*
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  build:
+    name: Create Prerelease
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: set build version variables
+        run: |
+          echo "base ref = ${{ github.ref }}"
+          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }}.pre)
+              echo "product_version=$BUILD_NUMBER" >> $GITHUB_ENV
+              echo "build_tag=prerelease" >> $GITHUB_ENV
+              echo "is_prerelease=true" >> $GITHUB_ENV
+              echo "release_name=$(date +%Y-%B-%d--%H.%m) - Prerelease - $BUILD_NUMBER" >> $GITHUB_ENV
+          else
+              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
+              echo "product_version=$BUILD_NUMBER" >> $GITHUB_ENV
+              echo "build_tag=$BUILD_NUMBER" >> $GITHUB_ENV
+              echo "is_prerelease=false" >> $GITHUB_ENV
+              echo "release_name=$(date +%Y-%B) - Release - $BUILD_NUMBER" >> $GITHUB_ENV
+          fi
+      - name: echo build version values
+        run: |
+            echo "product_version = ${{ env.product_version }}" 
+            echo "build_tag = ${{ env.build_tag }}" 
+            echo "is_prerelease = ${{ env.is_prerelease }}" 
+            echo "release_name = ${{ env.release_name }}" 
+      - name: Build installers
+        run: .build/build-installer
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+          INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
+      - uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        with:
+          delete_release: true
+          tag_name: ${{ env.build_tag }}
+      - name: Create Github Release
+        uses: actions/create-release@v1
+        with:        
+          tag_name: ${{ env.build_tag }}
+          release_name: ${{ env.release_name }}
+          prerelease: ${{ env.is_prerelease }}
+          draft: false
+      - name: Upload Release Asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.build_tag }}
+          file: build/artifacts/*
+          file_glob: true
+
