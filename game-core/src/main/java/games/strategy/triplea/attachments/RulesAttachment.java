@@ -4,8 +4,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.collect.ImmutableMap;
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.BattleRecordsList;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.IAttachment;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
+import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -863,16 +876,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // check for resources
     if (objectiveMet && haveResources != null) {
-      final boolean toSum = (haveResources[1].equalsIgnoreCase("sum") || haveResources[1].equalsIgnoreCase("add"));
-      int rTotal = 0;
-      for ( int p = 0; p < players.size(); p++) {
-        for ( int i = toSum ? 2 : 1; i < haveResources.length; i++) {
-          final Resource resource = getData().getResourceList().getResource(haveResources[i]);
-          final int rHave = players.get(p).getResources().getQuantity(resource);
-          rTotal = toSum ? rTotal + rHave : rTotal > rHave ? rTotal : rHave;
-        }
-      }
-      objectiveMet = rTotal >= getInt(haveResources[0]);
+      objectiveMet = checkResources();
     }
     // check for relationships
     if (objectiveMet && !relationship.isEmpty()) {
@@ -1294,6 +1298,19 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       eachMultiple = found;
     }
     return found >= techCount;
+  }
+
+  private boolean checkResources() {
+    final boolean toSum = (haveResources[1].equalsIgnoreCase("sum") || haveResources[1].equalsIgnoreCase("add"));
+    int rTotal = 0;
+    for (GamePlayer player : players) {
+      for (int i = toSum ? 2 : 1; i < haveResources.length; i++) {
+        final Resource resource = getData().getResourceList().getResource(haveResources[i]);
+        final int rHave = player.getResources().getQuantity(resource);
+        rTotal = toSum ? rTotal + rHave : Math.max(rTotal, rHave);
+      }
+    }
+    return rTotal >= getInt(haveResources[0]);
   }
 
   @Override
