@@ -11,7 +11,6 @@ import lombok.experimental.UtilityClass;
 /** Internal utility class to find the path of a given map by name. */
 @UtilityClass
 class FileSystemMapFinder {
-
   static Optional<File> getPath(final String mapName) {
     return getCandidatePaths(mapName, ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(File::exists)

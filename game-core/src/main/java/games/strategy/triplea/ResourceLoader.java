@@ -41,7 +41,7 @@ public class ResourceLoader implements Closeable {
     Preconditions.checkNotNull(mapName);
 
     final File mapLocation =
-        DownloadedMaps.findPathToMapFolder(mapName)
+        DownloadedMaps.findContentRootForMapName(mapName)
             .orElseThrow(
                 () -> {
                   SwingComponents.promptUser(

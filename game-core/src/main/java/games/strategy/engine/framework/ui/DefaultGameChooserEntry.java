@@ -1,29 +1,17 @@
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.data.gameparser.ShallowGameParser;
-import java.net.URI;
-import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import java.nio.file.Path;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.triplea.java.UrlStreams;
 
-@EqualsAndHashCode(of = "uri")
+@Builder
+@EqualsAndHashCode(of = "gameFilePath")
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefaultGameChooserEntry implements Comparable<DefaultGameChooserEntry> {
 
-  private final URI uri;
+  private final Path gameFilePath;
   private final String gameName;
-
-  public static Optional<DefaultGameChooserEntry> newDefaultGameChooserEntry(final URI uri) {
-
-    return UrlStreams.openStream(
-            uri,
-            inputStream -> ShallowGameParser.readGameName(uri.toString(), inputStream).orElse(null))
-        .map(gameName -> new DefaultGameChooserEntry(uri, gameName));
-  }
 
   @Override
   public String toString() {

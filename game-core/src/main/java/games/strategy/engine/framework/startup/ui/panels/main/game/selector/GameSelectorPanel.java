@@ -22,7 +22,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -392,11 +391,11 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     }
   }
 
-  private void gameSelected(final URI gameUri) {
+  private void gameSelected(final Path gameFile) {
     BackgroundTaskRunner.runInBackground(
         "Loading map...",
         () -> {
-          model.load(gameUri);
+          model.load(gameFile.toFile().toURI());
           // warning: NPE check is not to protect against concurrency, another thread could still
           // null
           // out game data.

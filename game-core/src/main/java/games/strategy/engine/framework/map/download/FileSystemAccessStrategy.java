@@ -1,27 +1,20 @@
 package games.strategy.engine.framework.map.download;
 
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import javax.swing.DefaultListModel;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingComponents;
 
 @Slf4j
+@UtilityClass
 class FileSystemAccessStrategy {
-
-  Optional<Integer> getMapVersion(final String mapName) {
-    return DownloadedMaps.findPathToMapFolder(mapName)
-        .map(File::getParentFile)
-        .map(DownloadFileProperties::loadForZip)
-        .flatMap(DownloadFileProperties::getVersion);
-  }
 
   static void remove(
       final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.map.description.file.MapDescriptionYaml;
 
 /**
  * Keeps track of the state for a file download from a URL. This class notifies listeners as
@@ -85,8 +86,9 @@ final class DownloadFile {
             return;
           }
 
-          new DownloadFileProperties(download.getVersion())
-              .saveForZip(download.getInstallLocation());
+          if (MapDescriptionYaml.fromMap(download.getInstallLocation()).isEmpty()) {
+            MapDescriptionYaml.generateForMap(download.getInstallLocation());
+          }
 
           downloadListener.downloadComplete(download);
         });
