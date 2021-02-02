@@ -32,22 +32,3 @@ Example format for a very long note:
 <!--RELEASE_NOTE-->FEATURE|This is a very long feature request comment.  This is a very long feature request comment.  This is a very long feature request comment. This is a very long feature request comment. This is a very long feature request comment.<!--END_RELEASE_NOTE-->
 ```
 
-## Release Note Script
-
-Run this script to parse release notes from merged PRs (this script could use some work! YMMV)
-
-```
-#!/bin/bash
-
-for page in $(seq 1 4); do
-curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed&page=$page" \
-  | grep -Eo "merged_at\":|number\":.*|RELEASE_NOTE.*END_RELEASE_NOTE" \
-  | grep -B3 "merged_at\":" \
-  | grep -B1 RELEASE_NOTE  \
-  | sed 's@^number": \([0-9]*\),$@|[#\1](https://github.com/triplea-game/triplea/pull/\1)|@' \
-  | sed 's/RELEASE_NOTE-->//' \
-  | sed 's/<!--END_RELEASE_NOTE$/|/' \
-  | paste -d '' - -
-done >> release-notes
-```
-
