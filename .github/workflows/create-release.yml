@@ -45,17 +45,11 @@ jobs:
           delete_release: true
           tag_name: ${{ env.build_tag }}
       - name: Create Github Release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1
         with:        
-          tag_name: ${{ env.build_tag }}
-          release_name: ${{ env.release_name }}
+          artifact: build/artifacts/*
+          tag: ${{ env.build_tag }} 
+          name: ${{ env.release_name }}
           prerelease: ${{ env.is_prerelease }}
-          draft: false
-      - name: Upload Release Asset
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.build_tag }}
-          file: build/artifacts/*
-          file_glob: true
+          commit: master
 
