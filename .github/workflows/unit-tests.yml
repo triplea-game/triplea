@@ -13,5 +13,5 @@ jobs:
         with:
           java-version: 11
       - name: Run Tests
-        run: .travis/stages/verify/unit-testing/run
+        run: .build/unit-testing/run
 
