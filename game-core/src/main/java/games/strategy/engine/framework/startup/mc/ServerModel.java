@@ -619,12 +619,17 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     if (gameToLobbyConnection != null && lobbyWatcherThread != null) {
       lobbyWatcherThread
           .getGameId()
-          .ifPresent(gameId -> connectionAndGameIdAction.accept(gameToLobbyConnection, gameId));
+          .ifPresent(
+              gameId ->
+                  new Thread(() -> connectionAndGameIdAction.accept(gameToLobbyConnection, gameId))
+                      .start());
     }
   }
 
   @Override
   public void connectionRemoved(final INode node) {
+    notifyLobby(
+        (lobbyConnection, gameId) -> lobbyConnection.playerLeft(gameId, node.getPlayerName()));
     if (removeConnectionsLatch != null) {
       Interruptibles.await(() -> removeConnectionsLatch.await(6, TimeUnit.SECONDS));
     }
@@ -633,8 +638,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       serverLauncher.connectionLost(node);
       return;
     }
-    notifyLobby(
-        (lobbyConnection, gameId) -> lobbyConnection.playerLeft(gameId, node.getPlayerName()));
     // we lost a node. Remove the player they play.
     final List<String> free = new ArrayList<>();
     synchronized (this) {
