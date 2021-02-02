@@ -17,7 +17,7 @@ jobs:
         run: |
           echo "base ref = ${{ github.ref }}"
           if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c 1-10))
+              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }}@$(echo ${{ github.sha }} | cut -c 1-10))
               echo "product_version=$BUILD_NUMBER" >> $GITHUB_ENV
               echo "build_tag=prerelease" >> $GITHUB_ENV
               echo "is_prerelease=true" >> $GITHUB_ENV
