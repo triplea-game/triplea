@@ -52,4 +52,4 @@ jobs:
           name: ${{ env.release_name }}
           prerelease: ${{ env.is_prerelease }}
           commit: master
-
+          token: ${{ secrets.GITHUB_TOKEN }}
