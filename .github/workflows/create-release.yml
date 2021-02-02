@@ -1,4 +1,4 @@
-name: Build and upload Prerelease
+name: Build, Upload, and Deploy Prerelease
 on:
   push:
     branches:
@@ -58,4 +58,11 @@ jobs:
           tag: ${{ env.build_tag }}
           file: build/artifacts/*
           file_glob: true
-
+      - name: Deploy to Prerelease
+        run: .build/deploy-prerelease ${{ env.product_version }}
+        with:
+          ANSIBLE_VAULT_TOKEN: ${{ secrets.ANSIBLE_VAULT_TOKEN }}
+      - name: Update maps on website
+        run: .build/update-maps-on-website/run
+        with:
+          PUSH_TO_WEBSITE_TOKEN: ${{ secrets.PUSH_TO_WEBSITE_TOKEN }}
