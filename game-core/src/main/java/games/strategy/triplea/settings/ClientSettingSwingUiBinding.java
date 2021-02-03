@@ -2,7 +2,6 @@ package games.strategy.triplea.settings;
 
 import static games.strategy.triplea.settings.SelectionComponentFactory.booleanRadioButtons;
 import static games.strategy.triplea.settings.SelectionComponentFactory.diceRollerOverrideSelection;
-import static games.strategy.triplea.settings.SelectionComponentFactory.filePath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
 import static games.strategy.triplea.settings.SelectionComponentFactory.lobbyOverrideSelection;

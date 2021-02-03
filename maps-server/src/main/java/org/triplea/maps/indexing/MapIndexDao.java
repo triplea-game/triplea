@@ -17,4 +17,3 @@ interface MapIndexDao {
   @SqlUpdate("delete from map_index where repo_url not in(<mapUriList>)")
   int removeMapsNotIn(@BindList("mapUriList") List<String> mapUriList);
 }
-

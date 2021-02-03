@@ -8,9 +8,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import org.junit.jupiter.api.Test;
 import org.triplea.maps.server.http.MapServerTest;
 
-@DataSet(
-    value = "map_category.yml,map_index.yml",
-    useSequenceFiltering = false)
+@DataSet(value = "map_category.yml,map_index.yml", useSequenceFiltering = false)
 class MapListingDaoTest extends MapServerTest {
 
   private final MapListingDao mapListingDao;

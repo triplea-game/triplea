@@ -2,8 +2,6 @@ package org.triplea.live.servers;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.system.HttpProxy;
-import org.triplea.io.CloseableDownloader;
-import org.triplea.io.ContentDownloader;
 import games.strategy.triplea.UrlConstants;
 import java.io.IOException;
 import java.net.URI;
@@ -13,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.injection.Injections;
+import org.triplea.io.CloseableDownloader;
+import org.triplea.io.ContentDownloader;
 import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;

@@ -14,7 +14,7 @@ class MapIndexDaoTest extends MapServerTest {
   private final MapIndexDao mapIndexDao;
 
   @Test
-  @ExpectedDataSet(value="expected/map_index_upsert_new.yml", orderBy = "map_name")
+  @ExpectedDataSet(value = "expected/map_index_upsert_new.yml", orderBy = "map_name")
   void upsertCreatesNewRecords() {
     mapIndexDao.upsert(
         MapIndexResult.builder()
@@ -25,7 +25,7 @@ class MapIndexDaoTest extends MapServerTest {
   }
 
   @Test
-  @ExpectedDataSet(value="expected/map_index_upsert_updated.yml", orderBy = "id")
+  @ExpectedDataSet(value = "expected/map_index_upsert_updated.yml", orderBy = "id")
   void upsertUpdatesRecords() {
     mapIndexDao.upsert(
         MapIndexResult.builder()

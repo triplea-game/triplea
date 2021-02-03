@@ -1,12 +1,12 @@
 package org.triplea.http.client.github.issues;
 
-import feign.Param;
-import feign.QueryMap;
-import feign.RequestLine;
 import com.google.common.annotations.VisibleForTesting;
 import feign.FeignException;
 import feign.HeaderMap;
 import feign.Headers;
+import feign.Param;
+import feign.QueryMap;
+import feign.RequestLine;
 import java.util.List;
 import java.util.Map;
 import org.triplea.http.client.HttpConstants;

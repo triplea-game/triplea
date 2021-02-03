@@ -17,7 +17,6 @@ public class MapsConfig extends Configuration {
   @Setter(onMethod_ = {@JsonProperty})
   private String githubMapsOrgName;
 
-
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private String githubApiKey;
