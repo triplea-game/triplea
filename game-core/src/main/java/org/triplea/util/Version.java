@@ -5,13 +5,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.Serializable;
 import java.util.Comparator;
 import javax.annotation.Nonnull;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /** Represents a version string. versions are of the form major.minor.point */
 @Getter
-@AllArgsConstructor
 @EqualsAndHashCode
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;
@@ -20,8 +18,14 @@ public final class Version implements Serializable, Comparable<Version> {
   private final int major;
   /** Indicates engine compatible releases. */
   private final int minor;
-  /** Build identifiers, incremented on each build. */
-  private final int point;
+  /**
+   * Point (build number), unused, kept for serialization compatibility.
+   *
+   * @deprecated Do not use, use 'buildNumber' instead.
+   */
+  @Deprecated private int point;
+
+  private final String buildNumber;
 
   /** version must be of the from xx.xx.xx or xx.xx or xx where xx is a positive integer */
   public Version(final String version) {
@@ -32,7 +36,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
     major = Integer.parseInt(parts[0]);
     minor = parts.length <= 1 ? 0 : Integer.parseInt(parts[1]);
-    point = parts.length <= 2 ? 0 : Integer.parseInt(parts[2]);
+    buildNumber = parts.length <= 2 ? "" : parts[2];
   }
 
   @Override
@@ -41,7 +45,6 @@ public final class Version implements Serializable, Comparable<Version> {
 
     return Comparator.comparingInt(Version::getMajor)
         .thenComparingInt(Version::getMinor)
-        .thenComparingInt(Version::getPoint)
         .compare(this, other);
   }
 
@@ -61,7 +64,8 @@ public final class Version implements Serializable, Comparable<Version> {
   /** Creates a complete version string with '.' as separator. */
   @Override
   public String toString() {
-    return String.join(".", String.valueOf(major), String.valueOf(minor), String.valueOf(point));
+    return String.join(".", String.valueOf(major), String.valueOf(minor))
+        + (buildNumber.isEmpty() ? "" : "." + buildNumber);
   }
 
   /**

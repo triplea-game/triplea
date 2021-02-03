@@ -46,7 +46,7 @@ class FetchingCacheTest extends AbstractClientSettingTestCase {
         FetchingCache.builder()
             .contentDownloader(closeableDownloaderFactory)
             .yamlParser(yamlParser)
-            .engineVersion(new Version(1, 0, 0))
+            .engineVersion(new Version("1.0.0"))
             .build();
   }
 

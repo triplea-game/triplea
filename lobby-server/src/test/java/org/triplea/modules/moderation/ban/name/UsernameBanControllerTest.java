@@ -83,7 +83,8 @@ class UsernameBanControllerTest {
     }
 
     private void givenAddBanResult(final boolean result) {
-      when(bannedNamesService.addBannedUserName(AUTHENTICATED_USER.getUserId(), USERNAME))
+      when(bannedNamesService.addBannedUserName(
+              AUTHENTICATED_USER.getUserId(), USERNAME.toUpperCase()))
           .thenReturn(result);
     }
   }

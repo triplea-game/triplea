@@ -17,6 +17,6 @@ final class ProductVersionReaderTest {
   void getVersion() {
     memoryPropertyReader.setProperty(PropertyKeys.VERSION, "1.6.0");
 
-    assertThat(productVersionReader.getVersion(), is(new Version(1, 6, 0)));
+    assertThat(productVersionReader.getVersion(), is(new Version("1.6.0")));
   }
 }

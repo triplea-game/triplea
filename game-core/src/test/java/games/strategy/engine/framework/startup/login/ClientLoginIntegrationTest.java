@@ -42,7 +42,7 @@ final class ClientLoginIntegrationTest {
 
   private static ILoginValidator newLoginValidator(final IServerMessenger serverMessenger) {
     final ClientLoginValidator clientLoginValidator =
-        new ClientLoginValidator(new Version(2, 0, 0));
+        new ClientLoginValidator(new Version("2.0.00"));
     clientLoginValidator.setServerMessenger(serverMessenger);
     clientLoginValidator.setGamePassword(PASSWORD);
     return clientLoginValidator;
@@ -61,7 +61,7 @@ final class ClientLoginIntegrationTest {
     }
 
     TestConnectionLogin(final String password) {
-      super(null, new Version(2, 0, 0));
+      super(null, new Version("2.0.0"));
 
       this.password = password;
     }
