@@ -1,19 +1,22 @@
 package org.triplea.http.client.github.issues;
 
+import feign.Param;
+import feign.QueryMap;
+import feign.RequestLine;
 import com.google.common.annotations.VisibleForTesting;
 import feign.FeignException;
 import feign.HeaderMap;
 import feign.Headers;
-import feign.Param;
-import feign.RequestLine;
+import java.util.List;
 import java.util.Map;
 import org.triplea.http.client.HttpConstants;
 
 @SuppressWarnings("InterfaceNeverImplemented")
 @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-interface GithubIssueFeignClient {
+interface GithubApiFeignClient {
 
   @VisibleForTesting String CREATE_ISSUE_PATH = "/repos/{org}/{repo}/issues";
+  @VisibleForTesting String LIST_REPOS_PATH = "/orgs/{org}/repos";
 
   /**
    * Creates a new issue on github.com.
@@ -26,4 +29,10 @@ interface GithubIssueFeignClient {
       @Param("org") String org,
       @Param("repo") String repo,
       CreateIssueRequest createIssueRequest);
+
+  @RequestLine("GET " + LIST_REPOS_PATH)
+  List<RepoListingResponse> listRepos(
+      @HeaderMap Map<String, Object> headerMap,
+      @QueryMap Map<String, String> queryParams,
+      @Param("org") String org);
 }

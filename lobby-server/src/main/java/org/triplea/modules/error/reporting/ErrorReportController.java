@@ -17,7 +17,7 @@ import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
-import org.triplea.http.client.github.issues.GithubIssueClient;
+import org.triplea.http.client.github.issues.GithubApiClient;
 
 /** Http controller that binds the error upload endpoint with the error report upload handler. */
 @Builder
@@ -30,12 +30,10 @@ public class ErrorReportController extends HttpController {
       final LobbyServerConfig configuration, final Jdbi jdbi) {
     final boolean isTest = configuration.getGithubApiToken().equals("test");
 
-    final GithubIssueClient githubIssueClient =
-        GithubIssueClient.builder()
+    final GithubApiClient githubApiClient =
+        GithubApiClient.builder()
             .uri(LobbyServerConfig.GITHUB_WEB_SERVICE_API_URL)
             .authToken(configuration.getGithubApiToken())
-            .githubOrg(LobbyServerConfig.GITHUB_ORG)
-            .githubRepo(configuration.getGithubRepo())
             .isTest(isTest)
             .build();
 
@@ -44,7 +42,9 @@ public class ErrorReportController extends HttpController {
     }
 
     return ErrorReportController.builder()
-        .errorReportIngestion(CreateIssueStrategy.build(githubIssueClient, jdbi))
+        .errorReportIngestion(
+            CreateIssueStrategy.build(
+                LobbyServerConfig.GITHUB_ORG, configuration.getGithubRepo(), githubApiClient, jdbi))
         .canReportModule(CanUploadErrorReportStrategy.build(jdbi))
         .build();
   }
