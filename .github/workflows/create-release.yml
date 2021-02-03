@@ -18,13 +18,11 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
               BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }} ${{ github.sha }})
               echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
-              echo "build_tag=prerelease" | tee -a $GITHUB_ENV
               echo "is_prerelease=true" | tee -a $GITHUB_ENV
-              echo "release_name=$(date +%Y-%B-%d--%H.%m) - Prerelease - $BUILD_NUMBER" | tee -a $GITHUB_ENV
+              echo "release_name=$(date +%Y-%B-%d) - Prerelease - $BUILD_NUMBER" | tee -a $GITHUB_ENV
           else
               BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
               echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
-              echo "build_tag=$BUILD_NUMBER" | tee -a $GITHUB_ENV
               echo "is_prerelease=false" | tee -a $GITHUB_ENV
               echo "release_name=$(date +%Y-%B) - Release - $BUILD_NUMBER" | tee -a $GITHUB_ENV
           fi
@@ -33,22 +31,20 @@ jobs:
         env:
           BUILD_NUMBER: ${{ github.run_number }}
           INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
-      - uses: dev-drprasad/delete-tag-and-release@v0.1.2
-        with:
-          delete_release: true
-          tag_name: ${{ env.build_tag }}
       - name: Create Github Release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1
         with:        
-          tag_name: ${{ env.build_tag }}
-          release_name: ${{ env.release_name }}
+          artifact: build/artifacts/*
+          tag: ${{ env.product_version }} 
+          name: ${{ env.release_name }}
           prerelease: ${{ env.is_prerelease }}
-          draft: false
-      - name: Upload Release Asset
-        uses: svenstaro/upload-release-action@v2
+          commit: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to Prerelease
+        run: .build/deploy-prerelease ${{ env.product_version }}
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.build_tag }}
-          file: build/artifacts/*
-          file_glob: true
-
+          ANSIBLE_VAULT_TOKEN: ${{ secrets.ANSIBLE_VAULT_TOKEN }}
+      - name: Update maps on website
+        run: .build/update-maps-on-website/run
+        with:
+          PUSH_TO_WEBSITE_TOKEN: ${{ secrets.PUSH_TO_WEBSITE_TOKEN }}

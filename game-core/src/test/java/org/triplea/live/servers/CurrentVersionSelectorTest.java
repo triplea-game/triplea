@@ -95,7 +95,13 @@ class CurrentVersionSelectorTest {
 
     final Version versionResult = currentVersionSelector.apply(liveServers).getMinEngineVersion();
 
-    assertThat(versionResult, is(expectedVersion));
+    assertThat(
+        "Current version: "
+            + currentVersion
+            + ", latest version: 10.0, expected => "
+            + expectedVersion,
+        versionResult,
+        is(expectedVersion));
   }
 
   /** Each argument is a triplet: {current_version} {test values} {expected_version} */
@@ -121,15 +127,15 @@ class CurrentVersionSelectorTest {
             List.of(
                 serverPropertiesWithVersion("0.0.0"),
                 serverPropertiesWithVersion("9.8.0"),
-                serverPropertiesWithVersion("10.0.1")),
+                serverPropertiesWithVersion("10.1.1")),
             "9.8.0"),
         Arguments.of(
-            "10.0.10",
+            "10.10",
             List.of(
-                serverPropertiesWithVersion("10.0.0"),
-                serverPropertiesWithVersion("10.0.5"),
-                serverPropertiesWithVersion("10.0.20")),
-            "10.0.5"),
+                serverPropertiesWithVersion("10.0"),
+                serverPropertiesWithVersion("10.5"),
+                serverPropertiesWithVersion("10.20")),
+            "10.5"),
         // verify if major version is not matching that we can get a right value
         Arguments.of(
             "10.0.10",
@@ -184,11 +190,11 @@ class CurrentVersionSelectorTest {
             List.of(
                 serverPropertiesWithVersion("0.0"),
                 serverPropertiesWithVersion("99.9.9"),
-                serverPropertiesWithVersion("100.0.1")),
+                serverPropertiesWithVersion("100.1.1")),
             "99.9.9"),
         Arguments.of(
-            "0.0.10",
-            List.of(serverPropertiesWithVersion("0.0"), serverPropertiesWithVersion("0.0.5")),
-            "0.0.5"));
+            "0.10",
+            List.of(serverPropertiesWithVersion("0.0"), serverPropertiesWithVersion("0.5")),
+            "0.5"));
   }
 }

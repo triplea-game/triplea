@@ -12,6 +12,6 @@ final class ProductVersionReaderIntegrationTest {
 
   @Test
   void shouldReadPropertiesFromResource() {
-    assertThat(productVersionReader.getVersion().toString(), matchesPattern("\\d+\\.\\d+\\.\\d+"));
+    assertThat(productVersionReader.getVersion().toString(), matchesPattern("\\d+\\.\\d+"));
   }
 }

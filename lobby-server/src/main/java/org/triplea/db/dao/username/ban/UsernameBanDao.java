@@ -29,6 +29,6 @@ public interface UsernameBanDao {
       "select exists ( "
           + "select * "
           + "from banned_username "
-          + "where username = lower(:playerName))")
+          + "where username = upper(:playerName))")
   boolean nameIsBanned(@Bind("playerName") String playerName);
 }

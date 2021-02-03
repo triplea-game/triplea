@@ -76,7 +76,7 @@ subprojects {
         commonsMathVersion = '3.6.1'
         commonsTextVersion = '1.9'
         databaseRiderVersion = '1.7.3'
-        dropwizardVersion = '2.0.18'
+        dropwizardVersion = '2.0.19'
         dropwizardWebsocketsVersion = '1.3.14'
         equalsVerifierVersion = '3.5.2'
         errorProneVersion = '2.3.4'

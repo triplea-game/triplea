@@ -25,10 +25,10 @@ class UsernameBanDaoTest extends LobbyServerTest {
     final List<UsernameBanRecord> result = usernameBanDao.getBannedUserNames();
     assertThat(result, hasSize(2));
 
-    assertThat(result.get(0).getUsername(), is("username1"));
+    assertThat(result.get(0).getUsername(), is("USERNAME1"));
     assertThat(result.get(0).getDateCreated(), isInstant(2001, 1, 1, 23, 59, 59));
 
-    assertThat(result.get(1).getUsername(), is("username2"));
+    assertThat(result.get(1).getUsername(), is("USERNAME2"));
     assertThat(result.get(1).getDateCreated(), isInstant(2000, 1, 1, 23, 59, 59));
   }
 
