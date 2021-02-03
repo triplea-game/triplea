@@ -45,7 +45,8 @@ public class UsernameBanController extends HttpController {
       @Auth final AuthenticatedUser authenticatedUser, final String username) {
     Preconditions.checkArgument(username != null && !username.isEmpty());
     return Response.status(
-            bannedNamesService.addBannedUserName(authenticatedUser.getUserIdOrThrow(), username)
+            bannedNamesService.addBannedUserName(
+                    authenticatedUser.getUserIdOrThrow(), username.toUpperCase())
                 ? 200
                 : 400)
         .build();
