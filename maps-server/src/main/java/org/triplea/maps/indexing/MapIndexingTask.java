@@ -23,7 +23,7 @@ import org.triplea.http.client.github.issues.GithubApiClient;
  */
 @Builder
 @Slf4j
-public class MapIndexingTask implements Runnable {
+class MapIndexingTask implements Runnable {
 
   @Nonnull private final String githubOrgName;
   @Nonnull private final MapIndexDao mapIndexDao;
@@ -37,9 +37,12 @@ public class MapIndexingTask implements Runnable {
     final long start = System.currentTimeMillis();
 
     // get list of maps
-    final Collection<URI> mapUris = githubApiClient.listRepositories(githubOrgName);
+    final Collection<URI> mapUris =
+        githubApiClient.listRepositories(githubOrgName).stream()
+            .sorted()
+            .collect(Collectors.toList());
 
-    // remove deleted maps
+    // remove deleted maps (before indexing, in case we fail to index a map, we won't delete it)
     final int mapsRemovedCount =
         mapIndexDao.removeMapsNotIn(
             mapUris.stream() //
@@ -58,9 +61,10 @@ public class MapIndexingTask implements Runnable {
     indexedMapData.forEach(mapIndexDao::upsert);
 
     log.info(
-        "Map indexing finished in {} ms, repos indexed: {}, maps deleted: {}",
+        "Map indexing finished in {} ms, repos found: {}, repos with map.yml: {}, maps deleted: {}",
         (System.currentTimeMillis() - start),
         mapUris.size(),
+        indexedMapData.size(),
         mapsRemovedCount);
   }
 }

@@ -5,7 +5,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-public interface MapIndexDao {
+interface MapIndexDao {
 
   @SqlUpdate(
       "insert into map_index(map_name, repo_url, category_id, version)\n"

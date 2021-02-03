@@ -1,10 +1,7 @@
 package games.strategy.engine.framework.map.listing;
 
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.engine.framework.system.DevOverrides;
-import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
@@ -22,21 +19,14 @@ public class MapListingFetcher {
    * remote server.
    */
   public static List<DownloadFileDescription> getMapDownloadList() {
-    if (ClientSetting.useMapsServerBetaFeature.getValue().orElse(false)) {
-      // Get the URI of the maps server (either from override or read it from the servers file) and
-      // then send an API call to it requesting the list of maps available for download.
-      return DevOverrides.readMapServerOverride()
-          .or(() -> new LiveServersFetcher().getMapsServerUri())
-          .map(MapsListingClient::new)
-          .map(MapsListingClient::fetchMapDownloads)
-          .map(MapListingFetcher::convertDownloadListings)
-          .orElseGet(List::of);
-    } else {
-      return ClientSetting.mapListOverride
-          .getValue()
-          .map(DownloadRunnable::readLocalFile)
-          .orElseGet(() -> DownloadRunnable.download(UrlConstants.MAP_DOWNLOAD_LIST));
-    }
+    // Get the URI of the maps server (either from override or read it from the servers file) and
+    // then send an API call to it requesting the list of maps available for download.
+    return DevOverrides.readMapServerOverride()
+        .or(() -> new LiveServersFetcher().getMapsServerUri())
+        .map(MapsListingClient::new)
+        .map(MapsListingClient::fetchMapDownloads)
+        .map(MapListingFetcher::convertDownloadListings)
+        .orElseGet(List::of);
   }
 
   private static List<DownloadFileDescription> convertDownloadListings(

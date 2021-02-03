@@ -132,8 +132,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("USE_WEBSOCKET_NETWORK");
   public static final ClientSetting<Boolean> showSerializeFeatures =
       new BooleanClientSetting("SHOW_SERIALIZE_FEATURES");
-  public static final ClientSetting<Boolean> useMapsServerBetaFeature =
-      new BooleanClientSetting("USE_MAPS_SERVER_BETA_FEATURES");
   public static final BooleanClientSetting showChatTimeSettings =
       new BooleanClientSetting("SHOW_CHAT_TIME");
   public static final BooleanClientSetting showCommentLog =

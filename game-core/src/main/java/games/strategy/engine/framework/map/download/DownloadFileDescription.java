@@ -1,15 +1,22 @@
 package games.strategy.engine.framework.map.download;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.primitives.Ints;
 import games.strategy.engine.ClientFileSystemHelper;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.io.CloseableDownloader;
+import org.triplea.io.ContentDownloader;
 
 /**
  * This class represents the essential data for downloading a TripleA map. Where to get it, where to
@@ -19,13 +26,12 @@ import org.triplea.http.client.maps.listing.MapDownloadListing;
 @Getter
 @Builder
 @AllArgsConstructor
+@Slf4j
 public final class DownloadFileDescription {
   @EqualsAndHashCode.Include private final String url;
-  private final String description;
   private final String mapName;
   private final Integer version;
   private final MapCategory mapCategory;
-  private final String img;
 
   enum MapCategory {
     BEST("High Quality"),
@@ -59,11 +65,9 @@ public final class DownloadFileDescription {
       final MapDownloadListing mapDownloadListing) {
     return DownloadFileDescription.builder()
         .url(mapDownloadListing.getUrl())
-        .description(mapDownloadListing.getDescription())
         .mapName(mapDownloadListing.getMapName())
         .version(Ints.tryParse(mapDownloadListing.getVersion()))
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
-        .img(mapDownloadListing.getPreviewImage())
         .build();
   }
 
@@ -92,11 +96,24 @@ public final class DownloadFileDescription {
   }
 
   String toHtmlString() {
-    String text = "<h1>" + getMapName() + "</h1>\n";
-    if (!img.isEmpty()) {
-      text += "<img src='" + img + "' />\n";
+    final String previewUrl = url + "/preview.png";
+    return "<h1>"
+        + getMapName()
+        + "</h1>\n"
+        + "<img src='"
+        + previewUrl
+        + "' />\n"
+        + downloadDescription();
+  }
+
+  private String downloadDescription() {
+    final String descriptionUri = url + "/description.html";
+    try (CloseableDownloader downloader = new ContentDownloader(URI.create(descriptionUri))) {
+      return IOUtils.toString(downloader.getStream(), Charsets.UTF_8);
+    } catch (final IOException e) {
+      log.warn(
+          "Failed to read map description file at: {}\nError: {}", descriptionUri, e.getMessage());
+      return "";
     }
-    text += getDescription();
-    return text;
   }
 }

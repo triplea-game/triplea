@@ -4,6 +4,7 @@ dependencies {
     errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
+    implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     testImplementation project(':test-common')
     testImplementation "commons-io:commons-io:$commonsIoVersion"
 }

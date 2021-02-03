@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.map.download;
+package org.triplea.io;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsSame.sameInstance;

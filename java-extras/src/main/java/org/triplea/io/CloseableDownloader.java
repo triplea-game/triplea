@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.map.download;
+package org.triplea.io;
 
 import java.io.Closeable;
 import java.io.InputStream;

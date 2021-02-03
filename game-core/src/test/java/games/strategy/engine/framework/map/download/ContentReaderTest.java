@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.io.CloseableDownloader;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 final class ContentReaderTest extends AbstractClientSettingTestCase {

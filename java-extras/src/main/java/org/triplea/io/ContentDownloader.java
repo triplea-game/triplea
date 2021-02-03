@@ -1,6 +1,6 @@
-package games.strategy.engine.framework.map.download;
+package org.triplea.io;
 
-import games.strategy.engine.framework.system.HttpProxy;
+import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -41,7 +41,12 @@ public final class ContentDownloader implements CloseableDownloader {
   private final CloseableHttpResponse response;
 
   public ContentDownloader(final URI uri) throws IOException {
-    this(HttpClients.custom().disableCookieManagement().build(), uri, HttpProxy::addProxy);
+    this(HttpClients.custom().disableCookieManagement().build(), uri, proxyUpdate -> {});
+  }
+
+  public ContentDownloader(final URI uri, final Consumer<HttpGet> proxySettings)
+      throws IOException {
+    this(HttpClients.custom().disableCookieManagement().build(), uri, proxySettings);
   }
 
   /**
@@ -52,6 +57,7 @@ public final class ContentDownloader implements CloseableDownloader {
    * @throws IOException Thrown if there are any communication errors, badly formatted response, or
    *     if the returned status code is not a 200.
    */
+  @VisibleForTesting
   ContentDownloader(
       final CloseableHttpClient httpClient, final URI uri, final Consumer<HttpGet> proxySettings)
       throws IOException {

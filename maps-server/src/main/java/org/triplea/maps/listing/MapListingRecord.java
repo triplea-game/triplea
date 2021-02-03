@@ -12,8 +12,8 @@ public class MapListingRecord {
 
   @Builder
   public MapListingRecord(
-      @ColumnName("name") final String name,
-      @ColumnName("url") final String url,
+      @ColumnName("map_name") final String name,
+      @ColumnName("repo_url") final String url,
       @ColumnName("version") final String version,
       @ColumnName("category_name") final String categoryName) {
     this.url = url;

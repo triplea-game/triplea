@@ -10,7 +10,7 @@ import lombok.Value;
  */
 @Builder
 @Value
-public class MapIndexResult {
+class MapIndexResult {
   @Nonnull String mapName;
   @Nonnull String mapRepoUri;
   @Nonnull Integer mapVersion;

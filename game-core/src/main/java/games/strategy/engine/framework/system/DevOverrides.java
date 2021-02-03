@@ -32,6 +32,7 @@ public class DevOverrides {
     findOverrideFile()
         .ifPresent(
             overrideFile -> {
+              log.info("Loading dev-overrides from: {}", overrideFile.toFile().getAbsolutePath());
               try (InputStream fileInput = Files.newInputStream(overrideFile)) {
                 properties.load(fileInput);
               } catch (final IOException e) {

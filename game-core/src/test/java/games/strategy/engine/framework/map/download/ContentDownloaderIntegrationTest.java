@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.triplea.io.CloseableDownloader;
+import org.triplea.io.ContentDownloader;
 import org.triplea.test.common.Integration;
 
 @Integration
