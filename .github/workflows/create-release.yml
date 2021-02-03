@@ -16,7 +16,7 @@ jobs:
       - name: set build version variables
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }}@$(echo ${{ github.sha }} | cut -c 1-10))
+              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }} ${{ github.sha }})
               echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
               echo "is_prerelease=true" | tee -a $GITHUB_ENV
               echo "release_name=$(date +%Y-%B-%d) - Prerelease - $BUILD_NUMBER" | tee -a $GITHUB_ENV
