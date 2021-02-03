@@ -28,6 +28,11 @@ public class ServerConfiguration<T extends Configuration> {
     private final String path;
   }
 
+  public static <T extends Configuration> ServerConfiguration<T> build(
+      final Bootstrap<T> bootstrap, final WebsocketConfig... websocketConfigs) {
+    return new ServerConfiguration<>(bootstrap, websocketConfigs);
+  }
+
   public ServerConfiguration(
       final Bootstrap<T> bootstrap, final WebsocketConfig... websocketConfigs) {
     this.bootstrap = bootstrap;
@@ -50,10 +55,11 @@ public class ServerConfiguration<T extends Configuration> {
    * This bootstrap will replace ${...} values in YML configuration with environment variable
    * values. Without it, all values in the YML configuration are treated as literals.
    */
-  public void enableEnvironmentVariablesInConfig() {
+  public ServerConfiguration<T> enableEnvironmentVariablesInConfig() {
     bootstrap.setConfigurationSourceProvider(
         new SubstitutingSourceProvider(
             bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
+    return this;
   }
 
   /**
@@ -62,13 +68,15 @@ public class ServerConfiguration<T extends Configuration> {
    * DBIException instances. This is critical for debugging, since otherwise only the common wrapper
    * exception’s stack trace is logged.
    */
-  public void enableBetterJdbiExceptions() {
+  public ServerConfiguration<T> enableBetterJdbiExceptions() {
     bootstrap.addBundle(new JdbiExceptionsBundle());
+    return this;
   }
 
-  public void registerRequestFilter(
+  public ServerConfiguration<T> registerRequestFilter(
       final Environment environment, final ContainerRequestFilter containerRequestFilter) {
     environment.jersey().register(containerRequestFilter);
+    return this;
   }
 
   /**
@@ -78,8 +86,9 @@ public class ServerConfiguration<T extends Configuration> {
    * rather than a status 500 response. Exception mappers can be also be used for common logging or
    * for returning a specific response entity.
    */
-  public void registerExceptionMappers(
+  public ServerConfiguration<T> registerExceptionMappers(
       final Environment environment, final List<Object> exceptionMappers) {
     exceptionMappers.forEach(mapper -> environment.jersey().register(mapper));
+    return this;
   }
 }

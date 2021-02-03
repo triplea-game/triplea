@@ -8,6 +8,7 @@ import io.dropwizard.setup.Environment;
 import java.util.List;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.dropwizard.common.ServerConfiguration;
+import org.triplea.maps.indexing.MapsIndexingSchedule;
 import org.triplea.maps.listing.MapsListingController;
 import org.triplea.maps.server.db.RowMappers;
 
@@ -26,10 +27,9 @@ public class MapsServer extends Application<MapsConfig> {
 
   @Override
   public void initialize(final Bootstrap<MapsConfig> bootstrap) {
-    final ServerConfiguration<MapsConfig> serverConfiguration =
-        new ServerConfiguration<>(bootstrap);
-    serverConfiguration.enableEnvironmentVariablesInConfig();
-    serverConfiguration.enableBetterJdbiExceptions();
+    ServerConfiguration.build(bootstrap)
+        .enableEnvironmentVariablesInConfig()
+        .enableBetterJdbiExceptions();
   }
 
   @Override
@@ -41,5 +41,7 @@ public class MapsServer extends Application<MapsConfig> {
 
     final JerseyEnvironment jerseyEnvironment = environment.jersey();
     List.of(MapsListingController.build(jdbi)).forEach(jerseyEnvironment::register);
+
+    environment.lifecycle().manage(MapsIndexingSchedule.build(configuration, jdbi));
   }
 }

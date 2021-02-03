@@ -19,9 +19,8 @@ create table map_index
     id           serial primary key,
     map_name     varchar(256) not null,
     version      integer      not null check (version > 0),
-    url          varchar(256) not null unique check (url like 'http%'),
+    repo_url     varchar(256) not null unique check (repo_url like 'http%'),
     category_id  integer      not null references map_category (id),
     date_created timestamptz  not null default now(),
     date_updated timestamptz  not null default now()
 );
-

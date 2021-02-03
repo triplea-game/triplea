@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.maps.server.http.MapServerTest;
 
 @DataSet(
-    value = "map_listing/map_category.yml,map_listing/map_index.yml",
+    value = "map_category.yml,map_index.yml",
     useSequenceFiltering = false)
 class MapListingDaoTest extends MapServerTest {
 

@@ -1,0 +1,10 @@
+map_index:
+  - map_name: map-name
+    repo_url: http://map-repo-url
+    version: 100
+  - map_name: map-name-2
+    repo_url: http://map-repo-url-2
+    version: 100
+  - map_name: map-name-3
+    repo_url: http://map-repo-url-3
+    version: 2
