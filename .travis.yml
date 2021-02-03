@@ -8,30 +8,11 @@ install: skip
 env:
   global:
    - REPORT_FAIL=".travis/shared/report-build-status FAILURE"
-   - DEPLOY_PRERELEASE_STAGE=".travis/stages/deploy/prerelease"
    - DEPLOY_PROD_STAGE=".travis/stages/deploy/prod"
 jobs:
   include:
 
     ########################################################################
-
-    - stage: DeployPrerelease
-      name: "Ansible Deploy to Prerelease"
-      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      language: python
-      python: "3.8"
-      addons: { apt: { packages: [ sshpass ] } }
-      install: [ pip install ansible ]
-      script: [ $DEPLOY_PRERELEASE_STAGE/deploy-to-prerelease-servers/run || $REPORT_FAIL "prerelease deployment" ]
-
-
-    ########################################################################
-
-    - stage: DeployProd
-      name: "Push Map Descriptions to Website"
-      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      addons: { apt: { packages: [ python3, python3-yaml ] } }
-      script: [ $DEPLOY_PROD_STAGE/update-maps-on-website/run || $REPORT_FAIL "push maps to website" ]
 
     - stage: DeployProd
       name: "Ansible Deploy to Prod2"
