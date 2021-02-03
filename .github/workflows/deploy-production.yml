@@ -1,0 +1,15 @@
+name: Deploy Production
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run Ansible to Deploy
+        run: .build/deploy-prod2-servers/run
+        with:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
