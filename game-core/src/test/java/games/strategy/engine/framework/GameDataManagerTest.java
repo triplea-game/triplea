@@ -18,10 +18,10 @@ final class GameDataManagerTest {
     void shouldPreserveGameName() throws Exception {
       final GameData data = new GameData();
       final byte[] bytes =
-          IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, new Version(2, 0, 0)));
+          IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, new Version("2.0.0")));
       final GameData loaded =
           IoUtils.readFromMemory(
-                  bytes, input -> GameDataManager.loadGame(new Version(2, 0, 0), input))
+                  bytes, input -> GameDataManager.loadGame(new Version("2.0.0"), input))
               .orElseThrow();
       assertEquals(loaded.getGameName(), data.getGameName());
     }
@@ -33,7 +33,7 @@ final class GameDataManagerTest {
     void shouldCloseOutputStream() throws Exception {
       final OutputStream os = mock(OutputStream.class);
 
-      GameDataManager.saveGame(os, new GameData(), new Version(2, 0, 0));
+      GameDataManager.saveGame(os, new GameData(), new Version("2.0.0"));
 
       verify(os).close();
     }

@@ -28,7 +28,7 @@ final class GameParserTest {
         GameParserTest.class.getClassLoader().getResource("v1_8_map__270BC.xml").toURI();
 
     final GameData gameData =
-        GameParser.parse(mapUri, new XmlGameElementMapper(), new Version(2, 0, 0)).orElseThrow();
+        GameParser.parse(mapUri, new XmlGameElementMapper(), new Version("2.0.0")).orElseThrow();
     assertNotNullGameData(gameData);
 
     verifyLegacyPropertiesAreUpdated(gameData);
