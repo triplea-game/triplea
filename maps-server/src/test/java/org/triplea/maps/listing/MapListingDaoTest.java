@@ -8,7 +8,9 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import org.junit.jupiter.api.Test;
 import org.triplea.maps.server.http.MapServerTest;
 
-@DataSet(value = "map_listing/select_maps.yml", useSequenceFiltering = false)
+@DataSet(
+    value = "map_listing/map_category.yml,map_listing/map_index.yml",
+    useSequenceFiltering = false)
 class MapListingDaoTest extends MapServerTest {
 
   private final MapListingDao mapListingDao;
@@ -19,14 +21,11 @@ class MapListingDaoTest extends MapServerTest {
 
   @Test
   void verifySelect() {
-
     final var results = mapListingDao.fetchMapListings();
 
     assertThat(results, hasSize(1));
     final var mapDownloadListing = results.get(0).toMapDownloadListing();
     assertThat(mapDownloadListing.getMapCategory(), is("category_name"));
-    assertThat(mapDownloadListing.getDescription(), is("description of the map"));
-    assertThat(mapDownloadListing.getPreviewImage(), is("http://map-thumbnail-url"));
     assertThat(mapDownloadListing.getMapName(), is("map-name"));
     assertThat(mapDownloadListing.getUrl(), is("http://map-download-url"));
     assertThat(mapDownloadListing.getVersion(), is("100"));
