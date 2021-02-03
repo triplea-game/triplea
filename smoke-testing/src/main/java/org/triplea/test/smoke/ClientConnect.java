@@ -50,7 +50,7 @@ public final class ClientConnect {
                 .port(4000)
                 .build(),
             new GameObjectStreamFactory(null),
-            new ClientLogin(null, new Version(2, 0, 0)));
+            new ClientLogin(null, new Version("2.0.0")));
     Thread.sleep(500L);
     log.info("Connection to bot server SUCCESSFUL, closing connection");
     messenger.shutDown();

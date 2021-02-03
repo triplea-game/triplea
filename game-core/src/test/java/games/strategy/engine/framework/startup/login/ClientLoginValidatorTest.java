@@ -20,7 +20,7 @@ final class ClientLoginValidatorTest {
   @Nested
   final class AuthenticateTest {
     private final ClientLoginValidator clientLoginValidator =
-        new ClientLoginValidator(new Version(2, 0, 0));
+        new ClientLoginValidator(new Version("2.0.0"));
 
     @BeforeEach
     void givenPasswordSet() {
