@@ -134,13 +134,12 @@ public class MapData {
       try {
         if (loader.getResource(POLYGON_FILE) == null) {
           throw new IllegalStateException(
-              "Error in resource loading. Unable to load expected resource: "
+              "Error in resource loading for map: "
+                  + mapNameDir
+                  + ". Unable to load file: "
                   + POLYGON_FILE
-                  + ", the error"
-                  + " is that either we did not find the correct path to load. Check the resource "
-                  + "loader to make sure the map zip or dir was added. Failing that, the path in "
-                  + "this error message should be available relative to the map folder, or "
-                  + "relative to the root of the map zip");
+                  + ", searched these locations: "
+                  + loader.getSearchUrls());
         }
 
         place.putAll(readPlacementsOneToMany(loader.optionalResource(PLACEMENT_FILE)));

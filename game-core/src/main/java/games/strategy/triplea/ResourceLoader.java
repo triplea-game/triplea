@@ -18,9 +18,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
 import org.triplea.java.UrlStreams;
@@ -36,6 +38,8 @@ public class ResourceLoader implements Closeable {
   public static final String ASSETS_FOLDER = "assets";
 
   private final URLClassLoader loader;
+
+  @Getter private final List<URL> searchUrls;
 
   public ResourceLoader(final String mapName) {
     Preconditions.checkNotNull(mapName);
@@ -65,9 +69,8 @@ public class ResourceLoader implements Closeable {
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
     try {
-      loader =
-          new URLClassLoader(
-              new URL[] {mapLocation.toURI().toURL(), gameAssetsDirectory.toURI().toURL()});
+      searchUrls = List.of(mapLocation.toURI().toURL(), gameAssetsDirectory.toURI().toURL());
+      loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
     } catch (final MalformedURLException e) {
       throw new IllegalArgumentException(
           "Error creating file system paths with map: "
