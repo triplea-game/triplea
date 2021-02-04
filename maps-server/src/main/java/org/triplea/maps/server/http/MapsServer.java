@@ -26,10 +26,9 @@ public class MapsServer extends Application<MapsConfig> {
 
   @Override
   public void initialize(final Bootstrap<MapsConfig> bootstrap) {
-    final ServerConfiguration<MapsConfig> serverConfiguration =
-        new ServerConfiguration<>(bootstrap);
-    serverConfiguration.enableEnvironmentVariablesInConfig();
-    serverConfiguration.enableBetterJdbiExceptions();
+    ServerConfiguration.build(bootstrap)
+        .enableEnvironmentVariablesInConfig()
+        .enableBetterJdbiExceptions();
   }
 
   @Override
