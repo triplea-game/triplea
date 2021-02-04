@@ -1,9 +1,5 @@
 description = 'TripleA core library containing code shared between headed and headless versions'
 
-ext {
-    apacheHttpComponentsVersion = '4.5.13'
-}
-
 dependencies {
     implementation "com.googlecode.soundlibs:jlayer:$jlayerVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
