@@ -140,7 +140,7 @@ class MapDescriptionYamlGenerator {
    */
   private static Optional<String> readMapNameFromXmlTags(final Game game) {
     return game.getPropertyList().getProperties().stream()
-        .filter(prop -> prop.getName().equalsIgnoreCase("mapName"))
+        .filter(prop -> "mapName".equalsIgnoreCase(prop.getName()))
         .map(PropertyList.Property::getValue)
         .findAny();
   }
