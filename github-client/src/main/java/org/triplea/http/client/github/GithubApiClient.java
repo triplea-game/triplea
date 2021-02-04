@@ -1,4 +1,4 @@
-package org.triplea.http.client.github.issues;
+package org.triplea.http.client.github;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.net.URI;
@@ -12,7 +12,7 @@ import org.triplea.http.client.HttpClient;
  * Accumulates required args for making requests to create github issues, and then presents an API
  * to accept user upload data.
  */
-public class GithubIssueClient {
+public class GithubApiClient {
 
   /** If this client is set to 'test' mode, we will return a stubbed response. */
   @VisibleForTesting
@@ -22,7 +22,7 @@ public class GithubIssueClient {
   private final String githubOrg;
   private final String githubRepo;
   private final String authToken;
-  private final GithubIssueFeignClient githubIssueFeignClient;
+  private final GithubApiFeignClient githubApiFeignClient;
   /**
    * For local or integration testing, we may want to have a fake that does not actually call
    * github. This method returns true if we are doing a fake call to github.
@@ -30,13 +30,13 @@ public class GithubIssueClient {
   private final boolean test;
 
   @Builder
-  public GithubIssueClient(
+  public GithubApiClient(
       @Nonnull final URI uri,
       @Nonnull final String githubOrg,
       @Nonnull final String githubRepo,
       @Nonnull final String authToken,
       final boolean isTest) {
-    githubIssueFeignClient = new HttpClient<>(GithubIssueFeignClient.class, uri).get();
+    githubApiFeignClient = new HttpClient<>(GithubApiFeignClient.class, uri).get();
     this.githubOrg = githubOrg;
     this.githubRepo = githubRepo;
     this.authToken = authToken;
@@ -57,6 +57,6 @@ public class GithubIssueClient {
 
     final Map<String, Object> tokens = new HashMap<>();
     tokens.put("Authorization", "token " + authToken);
-    return githubIssueFeignClient.newIssue(tokens, githubOrg, githubRepo, createIssueRequest);
+    return githubApiFeignClient.newIssue(tokens, githubOrg, githubRepo, createIssueRequest);
   }
 }

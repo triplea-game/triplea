@@ -15,8 +15,8 @@ import org.triplea.db.dao.error.reporting.ErrorReportingDao;
 import org.triplea.db.dao.error.reporting.InsertHistoryRecordParams;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
-import org.triplea.http.client.github.issues.CreateIssueResponse;
-import org.triplea.http.client.github.issues.GithubIssueClient;
+import org.triplea.http.client.github.CreateIssueResponse;
+import org.triplea.http.client.github.GithubApiClient;
 
 @ExtendWith(MockitoExtension.class)
 class CreateIssueStrategyTest {
@@ -26,7 +26,7 @@ class CreateIssueStrategyTest {
   private static final String IP = "127.0.1.10";
   private static final String SYSTEM_ID = "system-id";
 
-  @Mock private GithubIssueClient githubIssueClient;
+  @Mock private GithubApiClient githubApiClient;
   @Mock private ErrorReportResponse errorReportResponse;
   @Mock private CreateIssueResponse createIssueResponse;
   @Mock private Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
@@ -36,12 +36,12 @@ class CreateIssueStrategyTest {
   void verifyFlow() {
     final CreateIssueStrategy createIssueStrategy =
         CreateIssueStrategy.builder()
-            .githubIssueClient(githubIssueClient)
+            .githubApiClient(githubApiClient)
             .responseAdapter(responseAdapter)
             .errorReportingDao(errorReportingDao)
             .build();
 
-    when(githubIssueClient.newIssue(any())).thenReturn(createIssueResponse);
+    when(githubApiClient.newIssue(any())).thenReturn(createIssueResponse);
     when(responseAdapter.apply(createIssueResponse)).thenReturn(errorReportResponse);
 
     final ErrorReportResponse response =

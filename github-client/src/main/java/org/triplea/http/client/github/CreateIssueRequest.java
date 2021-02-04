@@ -1,4 +1,4 @@
-package org.triplea.http.client.github.issues;
+package org.triplea.http.client.github;
 
 import com.google.common.base.Ascii;
 import lombok.AllArgsConstructor;
