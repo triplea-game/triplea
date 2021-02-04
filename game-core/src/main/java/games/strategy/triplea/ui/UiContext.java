@@ -259,7 +259,7 @@ public class UiContext {
   }
 
   private static String getDefaultMapDir(final GameState data) {
-    final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
+    final String mapName = String.valueOf(data.getProperties().get(Constants.MAP_NAME));
     if (mapName == null || mapName.isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
