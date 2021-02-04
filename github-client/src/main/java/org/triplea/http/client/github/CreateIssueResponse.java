@@ -1,4 +1,4 @@
-package org.triplea.http.client.github.issues;
+package org.triplea.http.client.github;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
