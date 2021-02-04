@@ -31,7 +31,6 @@ public class ErrorReportBodyFormatter {
   public static String buildBody(
       @Nullable final String userDescription,
       @Nullable final String mapName,
-      final String memoryStatistics,
       final LoggerRecord logRecord,
       final Version engineVersion) {
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
@@ -52,8 +51,6 @@ public class ErrorReportBodyFormatter {
         + "## Operating System\n"
         + SystemProperties.getOperatingSystem()
         + "\n\n"
-        + "## Memory\n"
-        + memoryStatistics
         + (logRecord.getExceptions().isEmpty()
             ? ""
             : "\n\n" + ErrorReportBodyFormatter.throwableToString(logRecord.getExceptions()));
