@@ -71,6 +71,8 @@ public class MapData {
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
 
+  public static final String POLYGON_FILE = "polygons.txt";
+
   private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
   private static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
       "smallMap.territory.saturation";
@@ -86,7 +88,6 @@ public class MapData {
   private static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
 
   private static final String CENTERS_FILE = "centers.txt";
-  private static final String POLYGON_FILE = "polygons.txt";
   private static final String PLACEMENT_FILE = "place.txt";
   private static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
   private static final String MAP_PROPERTIES = "map.properties";
