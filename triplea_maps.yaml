@@ -57,7 +57,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/napoleonic_empires/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/napoleonic_empires/master/map/doc/images/mapScreenshot.png
+  img: https://raw.githubusercontent.com/triplea-maps/napoleonic_empires/master/preview.png
   description: |
     <br>By LSSAH
     <br>Updated by Veqryn and Redrum
@@ -88,7 +88,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/archive/master.zip
   version: 14
-  img: https://raw.githubusercontent.com/triplea-maps/total_world_war/master/description/TripleA_total_world_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/total_world_war/master/preview.png
   description: |
     <br><em><b style="font-size: x-large;">Created by Rolf Larsson and Hepster</b></em>
     <br>
@@ -225,7 +225,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_at_war/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/world_at_war/master/description/TripleA_world_at_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_at_war/master/preview.png
   description: |
     <br> by Sieg
     <br>
@@ -236,7 +236,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/the_rising_sun/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/the_rising_sun/master/description/TripleA_the_rising_sun_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/the_rising_sun/master/preview.png
   description: |
     <br>
     <br>=THE RISING SUN=
@@ -252,7 +252,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
   version: 7
-  img: https://raw.githubusercontent.com/triplea-maps/domination_1914_no_mans_land/master/map/doc/images/mapScreenshot.png
+  img: https://raw.githubusercontent.com/triplea-maps/domination_1914_no_mans_land/master/preview.png
   description: |
     <br>By Imbaked
     <br>Updated by Redrum
@@ -269,7 +269,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_classic/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_classic/master/description/TripleA_ww2v1_classic_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_classic/master/preview.png
   description: |
     <br>
     <br>A classic edition of World War II
@@ -282,7 +282,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_revised/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/description/TripleA_ww2v2_revised_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/preview.png
   description: |
     <br>
     <br>A revised edition of World War II, including artillery support, and destroyer capabilities.
@@ -295,21 +295,21 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v3/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/description/TripleA_ww2v3_1941_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/preview.png
   description: |
     <br>
     <h2>1942</h2>
-    <img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/description/TripleA_ww2v3_1942_mini.png" alt="Thumbnail">
+    <img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/preview.png
     <br>
     <br>A new edition of World War II with new tech and units. Includes the two starting scenarios 1941 and 1942.
 - mapName: World War II v4
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v4/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v4/master/description/TripleA_ww2v4_1942_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v4/master/preview.png
   description: |
     <br>
-    <img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_v4/master/description/TripleA_ww2v4_ffa_mini.png" alt="Thumbnail">
+    <img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_v4/master/preview.png
     <br>
     <br>The latest edition of World War II. Starting in 1942 with the World War II v3 rule set and a map similar to World War II v2 Revised.
     <br>Includes two 6-Army-Free-For-All variants.
@@ -317,7 +317,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_pacific/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/description/TripleA_ww2_pacific_1940_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/preview.png
   description: |
     <br>
     <br>World War II Pacific 1940
@@ -337,7 +337,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_europe/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_europe/master/description/TripleA_ww2_europe_1940_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_europe/master/preview.png
   description: |
     <br>
     <br>World War II Europe 1940
@@ -355,7 +355,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_global/archive/master.zip
   version: 13
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/description/TripleA_ww2_global_1940_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_global/master/preview.png
   description: |
     <br>
     <br>World War II Global 1940
@@ -377,7 +377,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v5_1942/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v5_1942/master/description/TripleA_ww2v5_1942_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v5_1942/master/preview.png
   description: |
     <br>Second edition update of the popular "Spring 1942" game (ww2v4), which itself was an update of "Revised" (ww2v2).
     <br>
@@ -393,7 +393,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v6_1941/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v6_1941/master/description/TripleA_ww2v6_1941_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v6_1941/master/preview.png
   description: |
     <br>Simplified version of the WWIIv5 1942 scenario, with fewer territories, starting units and income.
     <br>Good for an easy game, and great for beginners.
@@ -427,7 +427,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/ww2_path_to_victory/archive/master.zip
   version: 6
-  img: https://raw.githubusercontent.com/triplea-maps/ww2_path_to_victory/master/map/smallMap.png
+  img: https://raw.githubusercontent.com/triplea-maps/ww2_path_to_victory/master/preview.png
   description: |
     <br>A new World War II map, inspired by Global 1940, from the creators of G40 Balanced Mod.
     <br>
@@ -440,7 +440,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/diplomacy/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/diplomacy/master/description/TripleA_diplomacy_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/diplomacy/master/preview.png
   description: |
     <br>An adaptation of the game "Diplomacy" for TripleA.
     <br>Includes 3 Free-For-All (ffa) games, and 1 normal
@@ -502,7 +502,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/another_world/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/another_world/master/map/map_with_sea_zone_names.png
+  img: https://raw.githubusercontent.com/triplea-maps/another_world/master/preview.png
   description: |
     <br><b><em>by BeornTheBold</em></b>
     <br>
@@ -522,7 +522,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/big_world_2/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/big_world_2/master/description/TripleA_big_world2_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_2/master/preview.png
   description: |
     <br>Version 6.1.2, last update 2015.1.2 for engine 1.8.0.5
     <br>Mod done by Prussia.
@@ -557,7 +557,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/ultimate_world/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/ultimate_world/master/description/TripleA_ultimate_world_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/ultimate_world/master/preview.png
   description: |
     <br>
     Ultimate World
@@ -570,7 +570,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/battle_of_jutland/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/battle_of_jutland/master/description/TripleA_battle_of_jutland_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/battle_of_jutland/master/preview.png
   description: |
     <br> <b><em>by Veqryn</em></b>
     <br>
@@ -660,7 +660,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/red_sun_over_china/archive/master.zip
   version: 6
-  img: https://raw.githubusercontent.com/triplea-maps/red_sun_over_china/master/description/TripleA_red_sun_over_china_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/red_sun_over_china/master/preview.png
   description: |
     <br>Red Sun Over China
     <br> by Pulicat
@@ -673,7 +673,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/feudal_japan/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/feudal_japan/master/description/TripleA_feudal_japan_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/feudal_japan/master/preview.png
   description: |
     <br>
     <div style="text-align: center;">
@@ -699,7 +699,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/battle_of_aventurica/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/battle_of_aventurica/master/description/TripleA_battle_of_aventurica_mini2.png
+  img: https://raw.githubusercontent.com/triplea-maps/battle_of_aventurica/master/preview.png
   description: |
     <br> by Nick Taylor
     <br>
@@ -709,7 +709,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/greyhawk_wars/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/greyhawk_wars/master/description/TripleA_greyhawk_wars_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/greyhawk_wars/master/preview.png
   description: |
     <br>by Panguitch
     <br>Version 1.0 for TripleA 1.8.0.5
@@ -728,7 +728,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/caribbean_trade_war/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -746,7 +746,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/domination/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/domination/master/description/TripleA_domination_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/domination/master/preview.png
   description: |
     <br>
         An Anachronistic 20th century scenario based roughly on the years 1890-1914.
@@ -761,7 +761,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
   version: 12
-  img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -781,7 +781,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
   version: 21
-  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -799,7 +799,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/iron_war_europe/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/iron_war_europe/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/iron_war_europe/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -817,7 +817,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/twilight_imperium/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/twilight_imperium/master/description/TripleA_twilight_imperium_mini2.png
+  img: https://raw.githubusercontent.com/triplea-maps/twilight_imperium/master/preview.png
   description: |
     <br> by Geno33 (bpbull@shaw.ca)
     <br>
@@ -833,7 +833,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_trek_dilithium_war/archive/master.zip
   version: 5
-  img: https://raw.githubusercontent.com/triplea-maps/star_trek_dilithium_war/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/star_trek_dilithium_war/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -851,7 +851,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_galactic_war/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/star_wars_galactic_war/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/star_wars_galactic_war/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -869,7 +869,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_tatooine_war/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -887,7 +887,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/pacific_challenge/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/pacific_challenge/master/description/TripleA_pacific_challenge_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/pacific_challenge/master/preview.png
   description: |
     <br>
     <br><b>Pacific_Theater_Solo_Challenge by Zim Xero </b>
@@ -917,7 +917,7 @@
 - mapName: Big World Variations
   url: https://github.com/triplea-maps/big_world_variations/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/big_world_variations/master/description/TripleA_big_world_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_variations/master/preview.png
   description: |
     <br>Variations of BigWorld.
     <br>
@@ -931,7 +931,7 @@
 - mapName: NWO Variants
   url: https://github.com/triplea-maps/nwo_variants/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/nwo_variants/master/description/TripleA_new_world_order_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/nwo_variants/master/preview.png
   description: |
     <br>
     <br>Includes 3 variants of New World Order
@@ -951,7 +951,7 @@
 - mapName: Pact of Steel Variations
   url: https://github.com/triplea-maps/pact_of_steel_variations/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/pact_of_steel_variations/master/description/TripleA_pact_of_steel_china_added_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/pact_of_steel_variations/master/preview.png
   description: |
     <br>
     <br>1. adoy's version of PoS with China added.
@@ -967,10 +967,10 @@
   version: 2
   description: |
     <br>6 army ffa
-    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/description/TripleA_ww2v2_ffa_mini.png" alt="Thumbnail">
+    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/preview.png
     <br>
     <br>7 power ww2v2
-    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/description/TripleA_ww2v2_7power_mini.png" alt="Thumbnail">
+    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/preview.png
     <br>
     <br>
     <br>1. Free-For-All for 6 players
@@ -998,7 +998,7 @@
 - mapName: Classic Variations
   url: https://github.com/triplea-maps/classic_variations/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/classic_variations/master/description/TripleA_ww2v1_classic_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/classic_variations/master/preview.png
   description: |
     <br>
     <br>The mod pack is for the "World War II Classic" map, and you must have that map already installed to be able to use these mods and variants.
@@ -1037,7 +1037,7 @@
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/world_war_ii_global-battlemap_skin/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_global-battlemap_skin/master/description/TripleA_ww2_global_1940_battlemap_skin_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_global-battlemap_skin/master/preview.png
   description: |
     <br>An alternative skin based on the ABattleMap program.
     <br>
@@ -1046,7 +1046,7 @@
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_sieg_2/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_sieg_2/master/description/TripleA_new_world_order_siegSkin2_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_sieg_2/master/preview.png
   description: |
     <div style="text-align: left;">
         <br>
@@ -1060,7 +1060,7 @@
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_pulicat_1/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_pulicat_1/master/description/TripleA_new_world_order_pulicatSkin_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_pulicat_1/master/preview.png
   description: |
     <div style="text-align: left;">
         <br>
@@ -1074,7 +1074,7 @@
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_gudkarma_1/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_gudkarma_1/master/description/TripleA_new_world_order_gudkarmaSkin_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/new_world_order-skin_gudkarma_1/master/preview.png
   description: |
     <div style="text-align: left;">
         <br>
@@ -1088,7 +1088,7 @@
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin1/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/diplomacy-map_skin1/master/description/TripleA_diplomacy_mapskin1_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/diplomacy-map_skin1/master/preview.png
   description: |
     <br>This is a MAP SKIN for "Diplomacy"
     <br>The original relief tiles, in all their glory, made by Veqryn.
@@ -1096,7 +1096,7 @@
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin2/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/diplomacy-map_skin2/master/description/TripleA_diplomacy_mapskin2_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/diplomacy-map_skin2/master/preview.png
   description: |
     <br>This is a MAP SKIN for "Diplomacy"
     <br>Similar style to ww2v3 relief tiles, made by Bung, Veqryn, TripleElk, and Imperious Leader
@@ -1104,7 +1104,7 @@
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin3/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/diplomacy-map_skin3/master/description/TripleA_diplomacy_mapskin3_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/diplomacy-map_skin3/master/preview.png
   description: |
     <br>This is a MAP SKIN for "Diplomacy"
     <br>A very basic style.  I made this one for people who hate the cursive writing of the other 3 skins.  It has a simple font, no textures, and no cursive.
@@ -1112,7 +1112,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/greyhawk/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/greyhawk/master/description/TripleA_greyhawk_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/greyhawk/master/preview.png
   description: |
     <br>by Panguitch
     <br>Version 0.9.9
@@ -1124,7 +1124,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_at_war_variants/archive/master.zip
   version: 4
-  img: https://raw.githubusercontent.com/triplea-maps/world_at_war_variants/master/description/TripleA_world_at_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_at_war_variants/master/preview.png
   description: |
     <br>
     <br>v3 Variants of World At War (original map by Sieg)
@@ -1178,7 +1178,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_rising_sun_variants/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/the_rising_sun_variants/master/description/TripleA_the_rising_sun_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/the_rising_sun_variants/master/preview.png
   description: |
     <br>
     <br>v3 Variants of The Rising Sun (original map by Sieg)
@@ -1225,7 +1225,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/world_war2010/master/description/TripleA_world_war_2010_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war2010/master/preview.png
   description: |
     <br>The year is 2010.
     <br>
@@ -1248,7 +1248,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_war/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/global_war/master/description/TripleA_global_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/global_war/master/preview.png
   description: |
     <br>Global War
     <br>Created by Dagon81
@@ -1264,7 +1264,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_war2/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/global_war2/master/description/TripleA_global_war_2_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/global_war2/master/preview.png
   description: |
     <br>Global War 2
     <br>Created by Dagon81
@@ -1274,7 +1274,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order_lebowski_edition/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/new_world_order_lebowski_edition/master/description/TripleA_nwo_1939_lebowski_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/new_world_order_lebowski_edition/master/preview.png
   description: |
     <br>
     <br>A version of NWO by Lebowski.
@@ -1283,7 +1283,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v3_11n/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/ww2v3_11n/master/description/TripleA_ww2v3_11nation_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/ww2v3_11n/master/preview.png
   description: |
     <br>World War II v3 11 Nation Mod
     <br>A mod of ww2v3 by Furyisback
@@ -1296,7 +1296,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v3_variants/archive/master.zip
   version: 4
-  img: https://raw.githubusercontent.com/triplea-maps/ww2v3_variants/master/description/TripleA_ww2v3_11nation_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/ww2v3_variants/master/preview.png
   description: |
     <br>10 Variants of World War II v3
     <br>
@@ -1335,7 +1335,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/atari/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/atari/master/description/TripleA_atari_mini2.png
+  img: https://raw.githubusercontent.com/triplea-maps/atari/master/preview.png
   description: |
     <br>
     <br>Atari - War in the Pacific
@@ -1346,7 +1346,7 @@
 - url: https://github.com/triplea-maps/ww2_phillipines/archive/master.zip
   mapCategory: EXPERIMENTAL
   mapName: WW2 Phillipines
-  img: https://raw.githubusercontent.com/triplea-maps/ww2_phillipines/master/description/TripleA_atari_mini2.png
+  img: https://raw.githubusercontent.com/triplea-maps/ww2_phillipines/master/preview.png
   description: |
     <br>Created by Marshal
     <br>
@@ -1358,7 +1358,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/eastern_front/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/eastern_front/master/description/TripleA_eastern_front_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/eastern_front/master/preview.png
   description: |
     <br>Eastern Front by RODTHEGOD
     <br>with some help by Veqryn
@@ -1367,7 +1367,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/d-day/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/d-day/master/description/TripleA_d-day_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/d-day/master/preview.png
   description: |
     <br>A map of Normandy on D-Day.
     <br>D-Day Created by Dagon81
@@ -1381,7 +1381,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/d-day2/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/d-day2/master/description/TripleA_d-day_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/d-day2/master/preview.png
   description: |
     <br>A map of Normandy on D-Day.
     <br>D-Day 2 created by Dagon81 and ZjelcoP
@@ -1392,7 +1392,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/arnhem/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/arnhem/master/description/TripleA_arnhem_mini2.png
+  img: https://raw.githubusercontent.com/triplea-maps/arnhem/master/preview.png
   description: |
     <br>Created by Dagon81
     <br>
@@ -1401,11 +1401,11 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/tactics_campaign/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/tactics_campaign/master/description/TripleA_tactics_campaign_mini2.png
+  img: https://raw.githubusercontent.com/triplea-maps/tactics_campaign/master/preview.png
   description: |
     <br> by sieg
     <br>
-    <img src="https://raw.githubusercontent.com/triplea-maps/tactics_campaign/master/description/TripleA_tactics_campaign_alt_mini2.png" alt="Thumbnail">
+    <img src="https://raw.githubusercontent.com/triplea-maps/tactics_campaign/master/preview.png
     <br>
     <br>
     <br>Very flexible package of small tactical hex-maps. Both good for fast games as well as well suited for modding. Only needs better adaption to the new TripleA to be
@@ -1415,7 +1415,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/neuschwabenland/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/neuschwabenland/master/description/TripleA_neuschwabenland_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/neuschwabenland/master/preview.png
   description: |
     <br>A simple map created by Sieg.
     <br>Comes with 4 games, (including 1 mod by DH).
@@ -1426,7 +1426,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/cold_war_asia1948/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/cold_war_asia1948/master/description/TripleA_cold_war_asia_1948_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/cold_war_asia1948/master/preview.png
   description: |
     <br>created by demagogue
     <br>
@@ -1437,7 +1437,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/cold_war/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/cold_war/master/description/TripleA_cold_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/cold_war/master/preview.png
   description: |
     <br>October 1962: Cuban Missle Crisis
     <br>
@@ -1451,7 +1451,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/cold_war_1965/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/cold_war_1965/master/map/doc/images/mapScreenshot.png
+  img: https://raw.githubusercontent.com/triplea-maps/cold_war_1965/master/preview.png
   description: |
     <br>Cold War 1965
     <br>
@@ -1467,7 +1467,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_great_northern_war/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/the_great_northern_war/master/description/TripleA_the_great_northern_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/the_great_northern_war/master/preview.png
   description: |
     <br>Created by Doctor Che
     <br>
@@ -1492,7 +1492,7 @@
 - mapName: First Punic War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/first_punic_war/archive/master.zip
-  img: https://raw.githubusercontent.com/triplea-maps/first_punic_war/master/description/TripleA_first_punic_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/first_punic_war/master/preview.png
   description: |
     <br>
         A map of the First Punic War between Rome and Carthage.
@@ -1501,7 +1501,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ancient_times/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/ancient_times/master/description/TripleA_ancient_times_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/ancient_times/master/preview.png
   description: |
     <br>
     Make War to control ancient europe.
@@ -1509,7 +1509,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/war_of_the_lance/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/war_of_the_lance/master/description/TripleA_war_of_the_lance_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/war_of_the_lance/master/preview.png
   description: |
     <br>
     <br>War of the Lance
@@ -1521,7 +1521,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/rome_total_war/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/rome_total_war/master/description/TripleA_rome_total_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/rome_total_war/master/preview.png
   description: |
     <br>
     <br>Rome Total War
@@ -1595,7 +1595,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/blue_vs_gray/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/blue_vs_gray/master/description/TripleA_blue_vs_gray_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/blue_vs_gray/master/preview.png
   description: |
     <br>Version 1.0.4, last update 2015.01.03 for engine 1.8.0.5
     <br>Game done by humbabba
@@ -1629,7 +1629,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ur_quan_war_masters_edition/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/ur_quan_war_masters_edition/master/description/TripleA_ur-quan_slave_war_masters_edition_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/ur_quan_war_masters_edition/master/preview.png
   description: |
     <br>
     <br>Ur-Quan Slave War: Masters Edition
@@ -1656,7 +1656,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/steampunk/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/steampunk/master/description/TripleA_Steampunk_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/steampunk/master/preview.png
   description: |
     <br>
     <br>Large Map of 1915 Earth with some fictional locations.
@@ -1681,7 +1681,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/steampunk_advanced/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/steampunk_advanced/master/description/TripleA_Steampunk_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/steampunk_advanced/master/preview.png
   description: |
     <br>
     <br>Large Map of 1915 Earth with some fictional locations and many new units from the previous version
@@ -1706,7 +1706,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/invasion_usa/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/invasion_usa/master/description/TripleA_Invasion_USA_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/invasion_usa/master/preview.png
   description: |
     <br>The United States of America, against the advise of the United Nations, has continued their development of Advance Laser Technology.
     <br>As the first tower nears completion, many European, Asian and third world nations begin recalling their diplomats home.
@@ -1736,7 +1736,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/feudal_japan_warlords/master/description/TripleA_feudal_japan_warlords_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/feudal_japan_warlords/master/preview.png
   description: |
     <br>
     <br><b style="font-size: xx-large;"> Feudal Japan Warlords </b>
@@ -1764,7 +1764,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/war_of_the_relics/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/war_of_the_relics/master/description/TripleA_war_of_the_relics_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/war_of_the_relics/master/preview.png
   description: |
     <br>
     <br>Warning: This slow to load (can be ~30seconds per player)
@@ -1780,7 +1780,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/empire/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/empire/master/description/TripleA_empire_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/empire/master/preview.png
   description: |
     <br>
     <br>Empire
@@ -1796,7 +1796,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/total_ancient_war/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/total_ancient_war/master/description/TripleA_total_ancient_war_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/total_ancient_war/master/preview.png
   description: |
     <br>
     <br>Make yourself an empire around the Mediterranean Ocean (the known world), in the era when hellenes, romans and phoenicians ruled.
@@ -1820,7 +1820,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/elemental_forces/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/elemental_forces/master/description/TripleA_elemental_forces_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/elemental_forces/master/preview.png
   description: |
     <br>
     <br>An FFA map with a lot of features, like: terrain, unit classes, regional elements etc.
@@ -1839,7 +1839,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/a_song_of_ice_and_fire/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/a_song_of_ice_and_fire/master/description/TripleA_a_song_of_ice_and_fire_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/a_song_of_ice_and_fire/master/preview.png
   description: |
     <br>
     <br>An FFA map with the background of George R. R. Martins novel: A Song of Ice and Fire. Includes technologies, diplomacy, and many unique units.
@@ -1851,7 +1851,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/game_of_thrones/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/game_of_thrones/master/description/TripleA_game_of_thrones_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/game_of_thrones/master/preview.png
   description: |
     <br>
     <br>An FFA map with the background of George R. R. Martins novel: A Song of Ice and Fire. Simple all war FFA.
@@ -1863,7 +1863,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order1915lebowski/archive/master.zip
   version: 4
-  img: https://raw.githubusercontent.com/triplea-maps/new_world_order1915lebowski/master/description/TripleA_nwo_1915_lebowski_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/new_world_order1915lebowski/master/preview.png
   description: |
     <br>
     <br>WW1 map by Lebowski, based on Siegs New World Order map.
@@ -1874,7 +1874,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/stellar_forces/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/stellar_forces/master/description/TripleA_stellar_forces_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/stellar_forces/master/preview.png
   description: |
     <br>
     <br>A 4 Player FFA map about populating the Galaxy by Zim Xero.
@@ -1886,7 +1886,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/pacific/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/pacific/master/description/TripleA_pacific_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/pacific/master/preview.png
   description: |
     <br>
     <br>WW2 Pacific (WW2 Revised era)
@@ -1898,7 +1898,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/europe/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/europe/master/description/TripleA_europe_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/europe/master/preview.png
   description: |
     <br>
     <br>Original Europe Edition.
@@ -1911,7 +1911,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/zombieland/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/zombieland/master/description/TripleA_zombieland_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/zombieland/master/preview.png
   description: |
     <br>Created by Pulicat
     <br>The zombie apocalypse has arrived!
@@ -1923,7 +1923,7 @@
 - mapName: Hex Globe10
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/hex_globe10/archive/master.zip
-  img: https://raw.githubusercontent.com/triplea-maps/hex_globe10/master/description/TripleA_hexglobe_mini2.png
+  img: https://raw.githubusercontent.com/triplea-maps/hex_globe10/master/preview.png
   description: |
     <br>HexGlobe10 is a 4 player game with no alliances.
     <br>
@@ -1941,7 +1941,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/jurassic/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/jurassic/master/description/TripleA_jurassic_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/jurassic/master/preview.png
   description: |
     <br>
     <p><b>Welcome to the world of dead reptiles and avian ancestors.</b></p>
@@ -1971,7 +1971,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ultimate_world_variants/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/ultimate_world_variants/master/description/TripleA_ultimate_world_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/ultimate_world_variants/master/preview.png
   description: |
     <br>
     Ultimate World Variants
@@ -1980,7 +1980,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/house_of_habsburg/archive/master.zip
   version: 4
-  img: https://raw.githubusercontent.com/triplea-maps/house_of_habsburg/master/description/MapThumbnail.jpg
+  img: https://raw.githubusercontent.com/triplea-maps/house_of_habsburg/master/preview.png
   description: |
     <br>
     House of Habsburg Beta Version
@@ -1996,7 +1996,7 @@
   url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
   version: 1
   mapType: MAP_TOOL
-  img: https://raw.githubusercontent.com/triplea-maps/map_making_tutorial/master/description/MapMakingTutorial_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/map_making_tutorial/master/preview.png
   description: |
     <br>A VERY simple map.
     <br>Purpose: use these files to make your first map.  If you can make a map out of it, then you can do anything.
@@ -2011,7 +2011,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_1940_redesign_house_rules/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/global_1940_redesign_house_rules/master/description/TripleA_ww2_global_1940_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/global_1940_redesign_house_rules/master/preview.png
   description: |
     <br>
     <br>World War II Global 1940 Redesign Maps. Imagine your own combination of house rules for Global!
@@ -2028,7 +2028,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_grand_war/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/the_grand_war/master/map/sampleMapImage.png
+  img: https://raw.githubusercontent.com/triplea-maps/the_grand_war/master/preview.png
   description:
     <br>
     <br>An alternate history World War 2 scenario.
@@ -2055,7 +2055,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/charles_de_gaulle_1939/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/charles_de_gaulle_1939/master/description/TripleA_charles_de_gaulle_1939_global_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/charles_de_gaulle_1939/master/preview.png
   description:
     <br>
     <br> This is the Charles de Gaulle 1939 Mod for the "Global 40" game.
@@ -2064,7 +2064,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/twelve-clans/archive/master.zip
   version: 4
-  img: https://raw.githubusercontent.com/triplea-maps/twelve-clans/master/description/MapDesc.png
+  img: https://raw.githubusercontent.com/triplea-maps/twelve-clans/master/preview.png
   description: |
     <br>by Michael Hoover
     <br>Version 1.3 for TripleA 1.9.0.0.13066
@@ -2093,7 +2093,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/warcraft_war_heroes/archive/master.zip
   version: 6
-  img: https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/preview.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -2106,7 +2106,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/labyrinth/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/labyrinth/master/description/MapThumbnail.png
+  img: https://raw.githubusercontent.com/triplea-maps/labyrinth/master/preview.png
   description: |
     <br>by Michael Hoover
     <br>Version 1.0 for TripleA 2.0
@@ -2130,7 +2130,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/world_war_ii_v3_1941_balanced_mod/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3_1941_balanced_mod/master/description/TripleA_ww2v3_1941_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3_1941_balanced_mod/master/preview.png
   description: |
    <br>A new version of World War II v3 that uses a small, steady flow of cash instead of a large initial bid to balance the game for the Allies.
    <br>New national objectives encourage players to compete in both the Atlantic and Pacific theaters, with front lines appearing in historically plausible regions like the Solomon Islands, Eastern Ukraine, and Norway.
@@ -2142,7 +2142,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/aggression_1941/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/master/description/mapimage.png
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1941/master/preview.png
   description: |
    <br>A WWII scenario loosely based on 1941, inspired of AA50 Anniversary and Big World.
    <br>WARNING! The balance hasn't extensively tested yet. Still progressing...
@@ -2171,7 +2171,7 @@
   mapCategory: GOOD
   version: 2
   url: https://github.com/triplea-maps/over_the_top/archive/master.zip
-  img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/over-the-top.png
+  img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/preview.png
   description: |
     <p style="font-family: 'Garamond' , serif;">
     Welcome to <b>Over the Top</b>, an alternate scenario game loosely based on the
@@ -2199,7 +2199,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/g40_alt_universe/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/g40_alt_universe/master/map/snapshot%20%26%20description/G40_Alt_Universe_Map_Snapshot_Small.png
+  img: https://raw.githubusercontent.com/triplea-maps/g40_alt_universe/master/preview.png
   description: |
     <p style='margin:0cm;font-size:15px;font-family:"Calibri",sans-serif;'><strong>G40 Alt
     Universe is for those who love Axis and Allies 1940 Global, but are looking for a new
@@ -2232,7 +2232,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war_1_end_of_empires/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world_war_1_end_of_empires/master/map/doc/images/world_war_1_end_of_empires_setup.png
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_1_end_of_empires/master/preview.png
   description: |
     <br>It is April 6th, 1917. The United States has just declared war on Germany, bringing her into the war that has engulfed Europe for the past 3 years.
     <br>Germany and Austria-Hungary expand aggressively while the Ottomans struggle just to hold on.
