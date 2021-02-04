@@ -66,6 +66,7 @@ subprojects {
     version = getProductVersion()
 
     ext {
+        apacheHttpComponentsVersion = '4.5.13'
         awaitilityVersion = '4.0.3'
         bcryptVersion = '0.9.0'
         caffeineVersion = '2.8.1'
