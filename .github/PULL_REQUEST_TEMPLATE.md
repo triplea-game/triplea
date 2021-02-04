@@ -1,10 +1,5 @@
 
-<!--
-  Commit comment above summarizing the update.  If multiple commits please
-  summarize the change above.
-  Code standards and PR guidelines can be found at:
-  <https://github.com/triplea-game/triplea/wiki/Contribution-Guidelines>
--->
+<!-- If multiple commits please summarize the change above. -->
 
 ## Testing
 <!-- Describe any manual testing performed below. -->
@@ -20,7 +15,7 @@
 <!--
 Include a release note if there is a bug fix or a visible change for players.
 For format & syntax help, see:
-https://github.com/triplea-game/triplea/blob/master/docs/pr-release-notes.md
+https://github.com/triplea-game/triplea/blob/master/docs/development/reference/pr-release-notes.md
 -->
 
 <!--RELEASE_NOTE--><!--END_RELEASE_NOTE-->
