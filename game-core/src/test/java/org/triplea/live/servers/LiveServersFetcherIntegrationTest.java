@@ -6,7 +6,6 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.triplea.test.common.StringToInputStream.asInputStream;
 
-import games.strategy.engine.framework.map.download.CloseableDownloader;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.config.product.ProductVersionReader;
+import org.triplea.io.CloseableDownloader;
 import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestDataFileReader;
 
