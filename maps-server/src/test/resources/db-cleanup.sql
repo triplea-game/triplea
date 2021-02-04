@@ -1,5 +1,4 @@
 -- Deletes table data in proper order
 
-delete from map_skin;
-delete from map;
-delete from category;
+delete from map_index;
+delete from map_category;

@@ -28,39 +28,29 @@ class MapsListingModuleTest {
         .thenReturn(
             List.of(
                 MapListingRecord.builder()
-                    .id(1)
                     .url("http://map-url-1")
                     .name("map-name-1")
-                    .description("description-1")
                     .version("1")
                     .categoryName("category-1")
-                    .previewImageUrl("http://preview-url-1")
                     .build(),
                 MapListingRecord.builder()
-                    .id(2)
                     .url("http://map-url-2")
                     .name("map-name-2")
-                    .description("description-2")
                     .version("2")
                     .categoryName("category-2")
-                    .previewImageUrl("http://preview-url-2")
                     .build()));
 
     final List<MapDownloadListing> results = mapsListingModule.get();
     assertThat(results, hasSize(2));
     // expected sort by map name, so first map should be id "1"
     assertThat(results.get(0).getMapName(), is("map-name-1"));
-    assertThat(results.get(0).getPreviewImage(), is("http://preview-url-1"));
     assertThat(results.get(0).getVersion(), is("1"));
     assertThat(results.get(0).getUrl(), is("http://map-url-1"));
-    assertThat(results.get(0).getDescription(), is("description-1"));
     assertThat(results.get(0).getMapCategory(), is("category-1"));
 
     assertThat(results.get(1).getMapName(), is("map-name-2"));
-    assertThat(results.get(1).getPreviewImage(), is("http://preview-url-2"));
     assertThat(results.get(1).getVersion(), is("2"));
     assertThat(results.get(1).getUrl(), is("http://map-url-2"));
-    assertThat(results.get(1).getDescription(), is("description-2"));
     assertThat(results.get(1).getMapCategory(), is("category-2"));
   }
 }

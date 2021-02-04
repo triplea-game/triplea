@@ -1,5 +1,0 @@
-map_name: Example Map
-preview_image: map_preview.png
-games:
-  - name: example game
-    path: example.xml

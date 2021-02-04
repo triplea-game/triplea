@@ -6,15 +6,12 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 interface MapListingDao {
   @SqlQuery(
       "select"
-          + "    m.id,"
-          + "    m.url,"
-          + "    m.name,"
-          + "    m.description,"
+          + "    m.map_name,"
+          + "    m.repo_url,"
           + "    m.version,"
-          + "    c.name as category_name,"
-          + "    m.preview_image_url"
-          + "  from map m"
-          + "  join category c on c.id = m.category_id"
-          + "  order by m.name")
+          + "    c.name as category_name"
+          + "  from map_index m"
+          + "  join map_category c on c.id = m.category_id"
+          + "  order by m.map_name")
   List<MapListingRecord> fetchMapListings();
 }
