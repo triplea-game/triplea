@@ -159,7 +159,7 @@ public class ZippedMapsExtractor {
    */
   private Optional<Path> moveBadZip(final File mapZip) {
     final Path badZipFolder = downloadedMapsFolder.resolve("bad-zips");
-    if (!badZipFolder.toFile().mkdirs()) {
+    if (!badZipFolder.toFile().exists() && !badZipFolder.toFile().mkdirs()) {
       log.error(
           "Unable to create folder: "
               + badZipFolder.toFile().getAbsolutePath()
