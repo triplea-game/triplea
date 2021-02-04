@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.io.CloseableDownloader;
 import org.triplea.java.function.ThrowingFunction;
 
 /**
