@@ -1,5 +1,4 @@
 package games.strategy.engine.framework.map.download;
-// TODO: move to package games.strategy.engine.framework.map.download.client
 
 import games.strategy.engine.framework.system.HttpProxy;
 import lombok.experimental.UtilityClass;
