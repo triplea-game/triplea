@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class for creating a class to be executed periodically. Sample usage:
@@ -20,13 +21,14 @@ import lombok.Getter;
  * The scheduled timer can also be started at time of creation:
  *
  * <pre><code>
- *   ScheduledTimer timer = Timers.newFixedRateTimer("thread-name")
+ *   ScheduledTimer timer = Timers.fixedRateTimer("thread-name")
  *      .period(20, TimeUnit.SECONDS)
  *      .task(() -> executeTask())
  *      .start();
  *   timer.cancel();
  * </code></pre>
  */
+@Slf4j
 public class ScheduledTimer {
   private final Runnable task;
   private final long delayMillis;
@@ -56,7 +58,11 @@ public class ScheduledTimer {
         new TimerTask() {
           @Override
           public void run() {
-            task.run();
+            try {
+              task.run();
+            } catch (final Exception e) {
+              log.error("Scheduled task encountered an exception", e);
+            }
           }
         },
         delayMillis,
