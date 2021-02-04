@@ -70,14 +70,13 @@ public class LobbyServer extends Application<LobbyServerConfig> {
   @Override
   public void initialize(final Bootstrap<LobbyServerConfig> bootstrap) {
     serverConfiguration =
-        new ServerConfiguration<>(
-            bootstrap,
-            new WebsocketConfig(GameConnectionWebSocket.class, WebsocketPaths.GAME_CONNECTIONS),
-            new WebsocketConfig(
-                PlayerConnectionWebSocket.class, WebsocketPaths.PLAYER_CONNECTIONS));
-
-    serverConfiguration.enableEnvironmentVariablesInConfig();
-    serverConfiguration.enableBetterJdbiExceptions();
+        ServerConfiguration.build(
+                bootstrap,
+                new WebsocketConfig(GameConnectionWebSocket.class, WebsocketPaths.GAME_CONNECTIONS),
+                new WebsocketConfig(
+                    PlayerConnectionWebSocket.class, WebsocketPaths.PLAYER_CONNECTIONS))
+            .enableEnvironmentVariablesInConfig()
+            .enableBetterJdbiExceptions();
   }
 
   @Override
