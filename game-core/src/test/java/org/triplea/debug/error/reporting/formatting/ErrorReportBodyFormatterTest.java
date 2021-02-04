@@ -32,7 +32,7 @@ class ErrorReportBodyFormatterTest {
   void containsUseSuppliedData() {
     final String body =
         ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", "memoryStats", logRecord, new Version("2.0.0"));
+            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
 
     assertThat(body, containsString(SAMPLE_USER_DESCRIPTION));
   }
@@ -41,7 +41,7 @@ class ErrorReportBodyFormatterTest {
   void containsMapName() {
     final String body =
         ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", "memoryStats", logRecord, new Version("2.0.0"));
+            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
 
     assertThat(body, containsString("mapName"));
   }
@@ -50,7 +50,7 @@ class ErrorReportBodyFormatterTest {
   void containsSystemData() {
     final String body =
         ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", "memoryStats", logRecord, new Version("2.0.0"));
+            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
 
     assertThat(body, containsString(SAMPLE_USER_DESCRIPTION));
     assertThat(body, containsString(SystemProperties.getOperatingSystem()));
@@ -77,7 +77,7 @@ class ErrorReportBodyFormatterTest {
 
     final String body =
         ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", "memoryStats", logRecord, new Version("2.0.0"));
+            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
 
     Stream.of(EXCEPTION_WITH_CAUSE, EXCEPTION_WITH_MESSAGE)
         .map(Throwable::getStackTrace)
@@ -108,7 +108,7 @@ class ErrorReportBodyFormatterTest {
 
     final String body =
         ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", "memoryStats", logRecord, new Version("2.0.0"));
+            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
 
     assertThat(body, containsString(EXCEPTION_WITH_MESSAGE.getClass().getName()));
     assertThat(body, containsString(LOG_MESSAGE));
@@ -123,7 +123,7 @@ class ErrorReportBodyFormatterTest {
 
     final String body =
         ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", "memoryStats", logRecord, new Version("2.0.0"));
+            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
 
     assertThat(body, containsString("NullPointerException"));
   }
