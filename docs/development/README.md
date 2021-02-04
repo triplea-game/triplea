@@ -14,16 +14,6 @@
 
 * Install Docker
 
-## Next Steps
-
-* [dev process & workflow](./dev-process)
-
-* [code-conventions](./code-conventions)
-
-* [pain points](./pain-points.md)
-
-* [areas of need](./areas-of-need.md)
-
  ## Why Work on TripleA?
 
  * If you like the game and want to improve it
