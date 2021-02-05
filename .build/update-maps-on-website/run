@@ -26,7 +26,7 @@ script_dir=$(dirname "$0")
   # a latest remote HEAD. A non-zero-exit in either 'git update-index' or
   # in 'git diff-index' indicates there are changes to commit and push.
   if ! git update-index --refresh || ! git diff-index --quiet HEAD --; then
-    git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
+    git commit -m "Bot: update map files after game engine build ${BUILD_NUMBER}"
     git push -fq origin master
   fi
 )
