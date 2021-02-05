@@ -59,11 +59,9 @@ public final class DownloadFileDescription {
       final MapDownloadListing mapDownloadListing) {
     return DownloadFileDescription.builder()
         .url(mapDownloadListing.getUrl())
-        .description(mapDownloadListing.getDescription())
         .mapName(mapDownloadListing.getMapName())
         .version(Ints.tryParse(mapDownloadListing.getVersion()))
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
-        .img(mapDownloadListing.getPreviewImage())
         .build();
   }
 
