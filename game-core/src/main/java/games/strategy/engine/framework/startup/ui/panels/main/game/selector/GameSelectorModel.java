@@ -11,14 +11,8 @@ import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Optional;
 import java.util.function.Function;
@@ -204,43 +198,18 @@ public class GameSelectorModel extends Observable implements GameSelector {
     if (uri.getScheme() == null) {
       return false;
     }
-    final Path realPath = getDefaultGameRealPath(uri);
-
-    // starts with check is because we don't want to load a game file by default that is not within
-    // the map folders. (ie: if a previous version of triplea was using running a game within its
-    // root folder, we shouldn't open it)
-
-    return realPath.startsWith(ClientFileSystemHelper.getUserRootFolder().toPath())
-        && realPath.toFile().exists();
-  }
-
-  /**
-   * Determine the real path of the default game.
-   *
-   * <p>A default game from a zip file will point to the file inside of the zip file. So, this
-   * method will find the location of the zip file itself.
-   */
-  private static Path getDefaultGameRealPath(final URI defaultGame) {
-    // The file system of the URI needs to be created before Path.of can be called.
-    // So, first see if the file system is already created and if that throws
-    // FileSystemNotFoundException, then try and create it.
     try {
-      FileSystems.getFileSystem(defaultGame);
-    } catch (final FileSystemNotFoundException notFoundException) {
-      try {
-        FileSystems.newFileSystem(defaultGame, Map.of());
-      } catch (final IOException ioException) {
-        // just ignore this error as Path.of() will throw a better error if the file is unable to
-        // be read
-      }
-    } catch (final IllegalArgumentException illegalArgumentException) {
-      // just ignore this error as Path.of() will throw a better error if the file is unable to
-      // be read
+      final File gameFile = new File(uri);
+
+      // starts with check is because we don't want to load a game file by default that is not
+      // within
+      // the map folders. (ie: if a previous version of triplea was using running a game within its
+      // root folder, we shouldn't open it)
+      return gameFile.exists()
+          && gameFile.toPath().startsWith(ClientFileSystemHelper.getUserRootFolder().toPath());
+    } catch (final IllegalArgumentException e) {
+      log.info("Default game uri {} could not be loaded", gameUri, e);
+      return false;
     }
-    final Path defaultGamePath = Path.of(defaultGame);
-    if (defaultGamePath.getFileSystem().getFileStores().iterator().next().type().equals("zipfs")) {
-      return Paths.get(defaultGamePath.getFileSystem().getFileStores().iterator().next().name());
-    }
-    return defaultGamePath;
   }
 }
