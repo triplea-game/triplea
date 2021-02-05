@@ -17,7 +17,7 @@ versionSuffix="$runNumber"
 if [ ! -z "$githubSha" ]; then
   # if githubSha is specified, append the version value with the first 10
   # characters of the SHA
-  versionSuffix="$versionSuffix.$(echo "$githubSha" | cut -c 1-10)"
+  versionSuffix="$versionSuffix@$(echo "$githubSha" | cut -c 1-10)"
 fi
 
 ## Update property file, set build number
