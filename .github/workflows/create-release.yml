@@ -34,7 +34,7 @@ jobs:
       - name: Create Github Release
         uses: ncipollo/release-action@v1
         with:        
-          artifact: build/artifacts/*
+          artifacts: build/artifacts/*
           tag: ${{ env.product_version }} 
           name: ${{ env.release_name }}
           prerelease: ${{ env.is_prerelease }}
@@ -43,7 +43,7 @@ jobs:
       - name: Deploy to Prerelease
         run: .build/deploy-prerelease ${{ env.product_version }}
         env:
-          ANSIBLE_VAULT_TOKEN: ${{ secrets.ANSIBLE_VAULT_TOKEN }}
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_TOKEN }}
       - name: Update maps on website
         run: .build/update-maps-on-website/run
         env:
