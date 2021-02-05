@@ -3,7 +3,7 @@
 set -eEux
 
 ## shellcheck all shell scripts
-find .travis/ -type f -print0 | xargs --null grep -lE "^#\!/bin/bash$" | xargs shellcheck
+find .build/ -type f -print0 | xargs --null grep -lE "^#\!/bin/bash$" | xargs shellcheck
 
 script_dir=$(dirname "$0")
 "$script_dir/check-custom-style"
