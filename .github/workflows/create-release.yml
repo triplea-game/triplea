@@ -47,4 +47,5 @@ jobs:
       - name: Update maps on website
         run: .build/update-maps-on-website/run
         env:
+          BUILD_NUMBER: ${{ github.run_number }}
           PUSH_TO_WEBSITE_TOKEN: ${{ secrets.PUSH_TO_WEBSITE_TOKEN }}
