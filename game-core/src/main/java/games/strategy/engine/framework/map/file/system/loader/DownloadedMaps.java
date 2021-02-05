@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -96,11 +97,31 @@ public class DownloadedMaps {
 
   /**
    * Finds the 'root' of a map folder containing map content files. This will typically be a folder
-   * called something like "downloadedMaps/mapName/map". Returns empty if no map with the given name
-   * is found.
+   * called something like "downloadedMaps/mapName/". Returns empty if no map with the given name is
+   * found.
    */
   public static Optional<File> findContentRootForMapName(final String mapName) {
-    return FileSystemMapFinder.getPath(mapName);
+    // Find a 'map.yml' with the given map name.
+    // Find the parent folder for that 'map.yml'
+    // Search that location and underneath for a 'polygons' file.
+    // If found, that location is our content root.
+    final Path mapYamlParentFolder =
+        new DownloadedMaps()
+            .mapDescriptionYamls.stream()
+                .filter(m -> m.getMapName().equalsIgnoreCase(mapName))
+                .findAny()
+                .map(MapDescriptionYaml::getYamlFileLocation)
+                .map(Path::of)
+                .map(Path::getParent)
+                .orElse(null);
+    if (mapYamlParentFolder == null) {
+      return Optional.empty();
+    }
+
+    return FileUtils.findFile(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+        .map(File::toPath)
+        .map(Path::getParent)
+        .map(Path::toFile);
   }
 
   public static File findContentRootForMapNameOrElseThrow(final String mapName) {

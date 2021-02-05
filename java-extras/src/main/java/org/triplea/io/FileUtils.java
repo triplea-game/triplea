@@ -60,6 +60,11 @@ public final class FileUtils {
     }
   }
 
+  /** Convenience API, see {@link FileUtils#findFile(Path, int, String)} */
+  public Optional<File> findFile(final File searchRoot, final int maxDepth, final String fileName) {
+    return findFile(searchRoot.toPath(), maxDepth, fileName);
+  }
+
   /**
    * Searchs a file system for a specific file name starting from a given directory.
    *
@@ -69,12 +74,12 @@ public final class FileUtils {
    * @param fileName The name of the file to be search for.
    * @return A file matching the given name or empty if not found.
    */
-  public Optional<File> findFile(final File searchRoot, final int maxDepth, final String fileName) {
-    Preconditions.checkArgument(searchRoot.isDirectory());
-    Preconditions.checkArgument(searchRoot.exists());
+  public Optional<File> findFile(final Path searchRoot, final int maxDepth, final String fileName) {
+    Preconditions.checkArgument(searchRoot.toFile().isDirectory());
+    Preconditions.checkArgument(searchRoot.toFile().exists());
     Preconditions.checkArgument(maxDepth > -1);
     Preconditions.checkArgument(!fileName.isBlank());
-    try (Stream<Path> files = Files.walk(searchRoot.toPath(), maxDepth)) {
+    try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
       return files
           .map(Path::toFile)
           .filter(File::isFile)
@@ -82,7 +87,11 @@ public final class FileUtils {
           .findAny();
     } catch (final IOException e) {
       log.error(
-          "Unable to access files in: " + searchRoot.getAbsolutePath() + ", " + e.getMessage(), e);
+          "Unable to access files in: "
+              + searchRoot.toFile().getAbsolutePath()
+              + ", "
+              + e.getMessage(),
+          e);
       return Optional.empty();
     }
   }
