@@ -13,7 +13,7 @@
 
 set -eux
 
-.travis/shared/setup-database
+.build/setup-database
 
 readonly VERSION=$(sed 's/version\s*=\s*//' game-core/src/main/resources/META-INF/triplea/product.properties)
 

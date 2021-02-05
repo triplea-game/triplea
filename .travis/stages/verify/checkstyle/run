@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -eEux
-
-./gradlew --parallel checkstyleMain checkstyleTest 
-
