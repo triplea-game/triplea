@@ -2,6 +2,6 @@
 
 set -eEux
 
-.travis/shared/setup-database
+.build/setup-database
 ./gradlew --quiet integTest --exclude-task :smoke-testing:integTest
 
