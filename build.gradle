@@ -98,7 +98,7 @@ subprojects {
         jaxbImplVersion = '3.0.0'
         jdbiVersion = '3.18.0'
         jlayerVersion = '1.0.1.4'
-        junitJupiterVersion = '5.7.0'
+        junitJupiterVersion = '5.7.1'
         junitPlatformLauncherVersion = '1.7.0'
         logbackClassicVersion = '1.2.3'
         mockitoVersion = '3.7.7'
