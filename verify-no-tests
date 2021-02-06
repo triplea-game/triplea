@@ -7,4 +7,3 @@ normal="\e[0m"
 && .build/code-convention-checks/run \
 && .build/find-unused-or-unmatched-tests/run \
 && echo -e "${boldGreen}SUCCESS${normal}"
-
