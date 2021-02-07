@@ -3,10 +3,10 @@ package org.triplea.modules.moderation.audit.history;
 import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.http.LobbyServerTest;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
 @DataSet(

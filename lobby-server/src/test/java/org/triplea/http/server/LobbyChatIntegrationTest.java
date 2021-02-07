@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
@@ -25,7 +26,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMe
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
-import org.triplea.http.LobbyServerTest;
 
 /**
  * End-to-end test where we go through a chat sequence exercising all chat features. Runs through

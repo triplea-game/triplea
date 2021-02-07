@@ -3,9 +3,9 @@ package org.triplea.modules.moderation.bad.words;
 import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.http.LobbyServerTest;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
 @DataSet(

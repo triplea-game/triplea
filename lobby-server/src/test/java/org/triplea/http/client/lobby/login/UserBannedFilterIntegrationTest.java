@@ -7,10 +7,10 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.SystemIdHeader;
-import org.triplea.http.LobbyServerTest;
 
 /**
  * In this test we'll verify that user-banned filter is configured. We'll do ban by system-id as

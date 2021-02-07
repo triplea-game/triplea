@@ -8,11 +8,11 @@ import static org.hamcrest.core.IsNull.nullValue;
 import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.modules.http.BasicEndpointTest;
-import org.triplea.http.LobbyServerTest;
 
 @DataSet(
     value = LobbyServerTest.LOBBY_USER_DATASET + ", integration/temp_password_request.yml",

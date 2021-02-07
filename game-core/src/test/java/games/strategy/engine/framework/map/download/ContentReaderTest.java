@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.framework.map.download.ContentReader;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.ByteArrayInputStream;
 import java.io.File;

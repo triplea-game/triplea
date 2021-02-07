@@ -12,8 +12,8 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.http.LobbyServerTest;
+import org.triplea.http.client.web.socket.WebsocketPaths;
 
 @Disabled // Disabled until this can be made more reliable, seeing failure listed below
 /*
