@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
+import org.triplea.http.LobbyServerTest;
 
 /** Test to verify endpoints that are publicly accessible and do not require an API key. */
 @AllArgsConstructor

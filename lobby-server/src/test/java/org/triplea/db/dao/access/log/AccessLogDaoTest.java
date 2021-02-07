@@ -11,7 +11,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @RequiredArgsConstructor
 class AccessLogDaoTest extends LobbyServerTest {

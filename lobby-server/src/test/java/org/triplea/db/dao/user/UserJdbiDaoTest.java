@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.db.dao.user.role.UserRoleLookup;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @DataSet(value = "user/user_role.yml,user/lobby_user.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor

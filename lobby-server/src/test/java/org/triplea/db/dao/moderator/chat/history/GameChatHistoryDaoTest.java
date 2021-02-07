@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @DataSet(
     value =

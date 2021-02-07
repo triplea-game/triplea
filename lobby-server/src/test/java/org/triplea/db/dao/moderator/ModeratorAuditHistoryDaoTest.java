@@ -13,7 +13,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.junit.jupiter.api.Test;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @RequiredArgsConstructor
 @DataSet(

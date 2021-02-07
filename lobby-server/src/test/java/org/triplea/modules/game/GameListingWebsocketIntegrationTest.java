@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpConstants;
@@ -33,7 +34,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyG
 import org.triplea.modules.TestData;
 import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.modules.http.LobbyServerTest;
 
 /*
 GameListingWebsocketIntegrationTest > Post a game, verify listener is notified FAILED

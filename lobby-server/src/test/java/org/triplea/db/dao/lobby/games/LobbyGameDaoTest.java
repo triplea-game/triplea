@@ -5,10 +5,10 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.modules.TestData;
-import org.triplea.modules.http.LobbyServerTest;
 
 @RequiredArgsConstructor
 class LobbyGameDaoTest extends LobbyServerTest {
