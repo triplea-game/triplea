@@ -1,29 +1,31 @@
 # map.yml file
 
-This file describes the name and contents of a map and is used
-as of version 2.6 and later. It will be used by both the game-engine
-to know about downloaded maps and also by the maps-server which will
-scan map repositories and read the map.yml to create a map listing index.
+The map.yml file is used to obtain the name of the map and
+the paths and names of the games contained in the map.
+The file is used by both the game engine to know which maps
+are installed and also by the maps-server to index map repositories
+and make those maps available for download.
+
  
 ## map.yml location
 
-The 'map.yml' can be placed anywhere in a map folder, typically it should be
-placed at the 'content root' where all the other map files are located. EG:
+The 'map.yml' should be placed at the top-most directory of a map.
 
 ```
 my-map-folder/
-  |- assets/
-  |- flags/
-  |- reliefTiles/
-  |- units/
-  |- polygons.txt
   |- map.yml  <<<
+  |+map/
+   |- assets/
+   |- flags/
+   |- reliefTiles/
+   |- units/
+   |- polygons.txt
 ```
 
 ## YAML file caution
 
 Be careful to not use tabs, SPACES ONLY! The indentation of the file
-contents matters!
+matters!
 
 ## map.yml contents
 
