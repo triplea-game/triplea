@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -142,6 +143,9 @@ class MapDescriptionYamlGenerator {
   }
 
   private static Optional<String> readGameNameFromXml(final File xmlFile) {
-    return parseXmlTags(xmlFile).map(Game::getInfo).map(Info::getName);
+    return parseXmlTags(xmlFile)
+        .map(Game::getInfo)
+        .map(Info::getName)
+        .filter(Predicate.not(String::isBlank));
   }
 }
