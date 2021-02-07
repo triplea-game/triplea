@@ -8,7 +8,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.modules.TestData;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @RequiredArgsConstructor
 class LobbyGameDaoTest extends LobbyServerTest {

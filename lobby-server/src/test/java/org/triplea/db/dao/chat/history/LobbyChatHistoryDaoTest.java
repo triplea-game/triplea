@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @RequiredArgsConstructor
 class LobbyChatHistoryDaoTest extends LobbyServerTest {

@@ -33,7 +33,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyG
 import org.triplea.modules.TestData;
 import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 /*
 GameListingWebsocketIntegrationTest > Post a game, verify listener is notified FAILED

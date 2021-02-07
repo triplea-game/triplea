@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @DataSet(value = "bad_words/bad_word.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor

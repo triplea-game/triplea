@@ -12,7 +12,7 @@ import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.modules.http.BasicEndpointTest;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 @DataSet(
     value = LobbyServerTest.LOBBY_USER_DATASET + ", integration/temp_password_request.yml",

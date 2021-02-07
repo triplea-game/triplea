@@ -5,7 +5,7 @@ import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
 @DataSet(value = LobbyServerTest.LOBBY_USER_DATASET, useSequenceFiltering = false)

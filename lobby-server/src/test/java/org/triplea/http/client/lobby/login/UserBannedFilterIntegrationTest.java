@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.SystemIdHeader;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 /**
  * In this test we'll verify that user-banned filter is configured. We'll do ban by system-id as

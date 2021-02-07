@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
 @DataSet(

@@ -25,7 +25,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMe
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
-import org.triplea.modules.http.LobbyServerTest;
+import org.triplea.http.LobbyServerTest;
 
 /**
  * End-to-end test where we go through a chat sequence exercising all chat features. Runs through

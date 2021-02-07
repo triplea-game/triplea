@@ -12,6 +12,7 @@ import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
+@SuppressWarnings("UnmatchedTest")
 class MapTest {
   private Territory aa;
   private Territory ab;
