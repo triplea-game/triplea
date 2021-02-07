@@ -97,6 +97,23 @@ public final class FileUtils {
   }
 
   /**
+   * Recursively searches parent folders for a given file name.
+   *
+   * @return Path to file or empty if not found.
+   */
+  public Optional<Path> findFileInParentFolders(final Path searchRoot, final String fileName) {
+    if (searchRoot == null) {
+      return Optional.empty();
+    }
+
+    if (searchRoot.resolve(fileName).toFile().exists()) {
+      return Optional.of(searchRoot.resolve(fileName));
+    } else {
+      return findFileInParentFolders(searchRoot.getParent(), fileName);
+    }
+  }
+
+  /**
    * Method to conveniently open an input stream reading a file and run a function on that input
    * stream producing some return value.
    *

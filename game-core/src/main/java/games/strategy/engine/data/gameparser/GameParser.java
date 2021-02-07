@@ -37,6 +37,7 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 import org.triplea.injection.Injections;
+import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
 import org.triplea.map.data.elements.AttachmentList;
 import org.triplea.map.data.elements.DiceSides;
@@ -68,6 +70,7 @@ import org.triplea.map.data.elements.Technology;
 import org.triplea.map.data.elements.TerritoryEffectList;
 import org.triplea.map.data.elements.Triplea;
 import org.triplea.map.data.elements.UnitList;
+import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
@@ -77,17 +80,17 @@ public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
   @Nonnull private final GameData data;
-  private final String mapName;
+  private final String xmlUri;
   private final XmlGameElementMapper xmlGameElementMapper;
   private final GameDataVariableParser variableParser = new GameDataVariableParser();
   private final Version engineVersion;
 
   private GameParser(
-      final String mapName,
+      final String xmlUri,
       final XmlGameElementMapper xmlGameElementMapper,
       final Version engineVersion) {
     data = new GameData();
-    this.mapName = mapName;
+    this.xmlUri = xmlUri;
     this.xmlGameElementMapper = xmlGameElementMapper;
     this.engineVersion = engineVersion;
   }
@@ -100,8 +103,21 @@ public final class GameParser {
    *     returns empty if the file could not parsed or is not valid.
    */
   public static Optional<GameData> parse(final URI xmlUri) {
-    return GameParser.parse(
-        xmlUri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
+    final Optional<GameData> gameData =
+        GameParser.parse(
+            xmlUri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
+
+    // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
+    // using the 'map name' from 'map.yml'
+    if (gameData.isPresent()) {
+      FileUtils.findFileInParentFolders(Path.of(xmlUri), MapDescriptionYaml.MAP_YAML_FILE_NAME)
+          .map(Path::toFile)
+          .flatMap(MapDescriptionYaml::fromFile)
+          .map(MapDescriptionYaml::getMapName)
+          .ifPresent(mapName -> gameData.get().getProperties().set(Constants.MAP_NAME, mapName));
+    }
+
+    return gameData;
   }
 
   @VisibleForTesting
@@ -115,6 +131,7 @@ public final class GameParser {
           try {
             return new GameParser(xmlUri.toString(), xmlGameElementMapper, engineVersion)
                 .parse(inputStream);
+
           } catch (final EngineVersionException e) {
             log.warn("Game engine not compatible with: " + xmlUri, e);
             return null;
@@ -950,7 +967,7 @@ public final class GameParser {
         throw new GameParseException(
             String.format(
                 "map name: '%s', Unexpected Exception while setting values for attachment: %s, %s",
-                mapName, attachment, e.getMessage()),
+                xmlUri, attachment, e.getMessage()),
             e);
       }
       results.add(Tuple.of(name, finalValue));
