@@ -92,8 +92,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     if (!playerAlliances.contains(playerName)) {
       final String alliancesLabelText = playerAlliances.toString();
       alliances = new JButton(alliancesLabelText);
-      alliances.setToolTipText(
-          "Set all " + alliancesLabelText + " to " + PlayerTypes.HUMAN_PLAYER.getLabel());
+      alliances.setToolTipText("Click to play " + alliancesLabelText);
       alliances.addActionListener(
           e ->
               playerRows.stream()
