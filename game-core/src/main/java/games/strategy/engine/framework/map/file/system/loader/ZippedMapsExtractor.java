@@ -63,7 +63,7 @@ public class ZippedMapsExtractor {
                                         + ", zip has been moved to: "
                                         + newLocation.toFile().getAbsolutePath(),
                                     zipReadException));
-                  } catch (final FileSystemException | IOException e) {
+                  } catch (final FileSystemException e) {
                     // Thrown if we are are out of disk space or have file system access issues.
                     // Do not move the zip file to a bad-zip folder as that operation could also
                     // fail.
@@ -86,8 +86,19 @@ public class ZippedMapsExtractor {
    * for example we run out of disk space while extracting.
    *
    * @param mapZip The map zip file to be extracted to the downloaded maps folder.
+   * @return Returns extracted location (if successful, otherwise empty)
    */
-  public static void unzipMap(final File mapZip) throws IOException {
+  public static Optional<File> unzipMap(final File mapZip) {
+    try {
+      return unzipMapThrowing(mapZip);
+    } catch (final IOException e) {
+      log.warn(
+          "Error extracting file: {}, {}", mapZip.getAbsolutePath() + ", " + e.getMessage(), e);
+      return Optional.empty();
+    }
+  }
+
+  private static Optional<File> unzipMapThrowing(final File mapZip) throws IOException {
     Preconditions.checkArgument(mapZip.isFile(), mapZip.getAbsolutePath());
     Preconditions.checkArgument(mapZip.exists(), mapZip.getAbsolutePath());
     Preconditions.checkArgument(mapZip.getName().endsWith(".zip"), mapZip.getAbsolutePath());
@@ -99,7 +110,7 @@ public class ZippedMapsExtractor {
     final boolean mapIsAlreadyExtracted = extractionTarget.toFile().exists();
     if (mapIsAlreadyExtracted) {
       // no-op, we would not have expected for the map zip to have exist
-      return;
+      return Optional.empty();
     }
 
     log.info(
@@ -131,6 +142,9 @@ public class ZippedMapsExtractor {
     final boolean successfullyExtracted = extractionTarget.toFile().exists();
     if (successfullyExtracted) {
       mapZip.delete();
+      return Optional.of(extractionTarget.toFile());
+    } else {
+      return Optional.empty();
     }
   }
 

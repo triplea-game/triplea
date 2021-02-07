@@ -41,8 +41,8 @@ public class MapDescriptionYaml {
 
   public static final String MAP_YAML_FILE_NAME = "map.yml";
 
-  private static final int MAX_GAME_NAME_LENGTH = 64;
-  private static final int MAX_MAP_NAME_LENGTH = 64;
+  private static final int MAX_GAME_NAME_LENGTH = 70;
+  private static final int MAX_MAP_NAME_LENGTH = 70;
 
   @Nonnull private final URI yamlFileLocation;
   @Nonnull private final String mapName;
@@ -79,6 +79,10 @@ public class MapDescriptionYaml {
   /** Dumps (writes) the current data represented in this object into a YAML formatted string. */
   public String toYamlString() {
     return MapDescriptionYamlWriter.toYamlString(this);
+  }
+
+  public static boolean mapHasYamlDescriptor(final File mapFolder) {
+    return mapFolder.toPath().resolve(MAP_YAML_FILE_NAME).toFile().exists();
   }
 
   public static Optional<MapDescriptionYaml> fromMap(final File mapFolder) {
@@ -127,7 +131,7 @@ public class MapDescriptionYaml {
 
   public Optional<Path> getGameXmlPathByGameName(final String gameName) {
     return mapGameList.stream()
-        .filter(map -> map.getGameName().equals(gameName))
+        .filter(map -> map.getGameName().equalsIgnoreCase(gameName))
         .findAny()
         .map(MapGame::getXmlPath)
         .map(path -> new File(yamlFileLocation).toPath().getParent().resolve(path));

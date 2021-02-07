@@ -11,8 +11,13 @@ class DownloadFileTest {
   @Test
   void testBasicStartCancel() {
     final DownloadFileDescription downloadFileDescription =
-        new DownloadFileDescription(
-            "url", "description", "mapName", 0, DownloadFileDescription.MapCategory.BEST, "");
+        DownloadFileDescription.builder()
+            .url("url")
+            .description("description")
+            .mapName("mapName")
+            .version(0)
+            .mapCategory(DownloadFileDescription.MapCategory.BEST)
+            .build();
     final DownloadFile testObj =
         new DownloadFile(downloadFileDescription, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));

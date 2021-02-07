@@ -2,14 +2,20 @@ package games.strategy.engine.framework.map.download;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.primitives.Ints;
-import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Optional;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.java.Interruptibles;
 
 /**
  * This class represents the essential data for downloading a TripleA map. Where to get it, where to
@@ -19,6 +25,7 @@ import org.triplea.http.client.maps.listing.MapDownloadListing;
 @Getter
 @Builder
 @AllArgsConstructor
+@Slf4j
 public final class DownloadFileDescription {
   @EqualsAndHashCode.Include private final String url;
   private final String description;
@@ -26,6 +33,35 @@ public final class DownloadFileDescription {
   private final Integer version;
   private final MapCategory mapCategory;
   private final String img;
+  @Nullable private final File installLocation;
+
+  boolean delete() {
+    if (installLocation == null) {
+      return true;
+    }
+
+    try {
+      Files.delete(installLocation.toPath());
+    } catch (final IOException e) {
+      log.warn(
+          "Unable to delete maps files.<br>Manual removal may be necessary: {}<br>{}",
+          installLocation.getAbsolutePath(),
+          e.getMessage(),
+          e);
+      return false;
+    }
+
+    // now sleep a short while before we check our work
+    Interruptibles.sleep(10);
+    if (installLocation.exists()) {
+      log.warn(
+          "Unable to delete maps files.<br>Manual removal may be necessary: {}",
+          installLocation.getAbsolutePath());
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   enum MapCategory {
     BEST("High Quality"),
@@ -56,12 +92,14 @@ public final class DownloadFileDescription {
   }
 
   public static DownloadFileDescription ofMapDownloadListing(
-      final MapDownloadListing mapDownloadListing) {
+      final MapDownloadListing mapDownloadListing, final DownloadedMaps downloadedMaps) {
     return DownloadFileDescription.builder()
         .url(mapDownloadListing.getUrl())
         .mapName(mapDownloadListing.getMapName())
         .version(Ints.tryParse(mapDownloadListing.getVersion()))
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
+        .installLocation(
+            downloadedMaps.findMapFolderByName(mapDownloadListing.getMapName()).orElse(null))
         .build();
   }
 
@@ -70,14 +108,9 @@ public final class DownloadFileDescription {
     return (url != null && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1) : "";
   }
 
-  /** File reference for where to install the file. */
-  File getInstallLocation() {
-    final String masterSuffix =
-        getMapZipFileName().toLowerCase().endsWith("master.zip") ? "-master" : "";
-    final String normalizedMapName =
-        getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
-    return new File(
-        ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
+  /** File reference for where to install the file, empty if not installed. */
+  Optional<File> getInstallLocation() {
+    return Optional.ofNullable(installLocation);
   }
 
   @Override

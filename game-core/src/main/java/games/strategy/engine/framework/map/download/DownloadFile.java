@@ -1,8 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.Files;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
@@ -75,27 +75,21 @@ final class DownloadFile {
 
           state = DownloadState.DONE;
 
-          try {
-            Files.move(tempFile, download.getInstallLocation());
-          } catch (final IOException e) {
-            log.error(
-                "Failed to move downloaded file ({}) to: {}",
-                tempFile,
-                download.getInstallLocation(),
-                e);
-            return;
-          }
-
-          if (MapDescriptionYaml.fromMap(download.getInstallLocation()).isEmpty()) {
-            MapDescriptionYaml.generateForMap(download.getInstallLocation());
-          }
+          // extract map, if successful and does not have a 'map.yml' file, generate one.
+          ZippedMapsExtractor.unzipMap(tempFile)
+              .ifPresent(
+                  installedMap -> {
+                    if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {
+                      MapDescriptionYaml.generateForMap(installedMap);
+                    }
+                  });
 
           downloadListener.downloadComplete(download);
         });
   }
 
   private static File newTempFile() {
-    final File file = ClientFileSystemHelper.newTempFile();
+    final File file = ClientFileSystemHelper.newTempFile(".zip");
     file.deleteOnExit();
     return file;
   }

@@ -9,7 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
+@Getter
 class MapDownloadList {
 
   private final List<DownloadFileDescription> available = new ArrayList<>();
@@ -27,13 +29,15 @@ class MapDownloadList {
       if (download == null) {
         return;
       }
-      final Optional<Integer> mapVersion =
-          downloadedMaps.getMapVersionByName(download.getMapName());
 
-      if (mapVersion.isPresent()) {
-        installed.add(download);
-        if (download.getVersion() != null && download.getVersion() > mapVersion.get()) {
+      if (download.getInstallLocation().isPresent()) {
+        final Optional<Integer> mapVersion =
+            downloadedMaps.getMapVersionByName(download.getMapName());
+        if (download.getVersion() != null
+            && (mapVersion.isEmpty() || download.getVersion() > mapVersion.get())) {
           outOfDate.add(download);
+        } else {
+          installed.add(download);
         }
       } else {
         available.add(download);
@@ -41,23 +45,9 @@ class MapDownloadList {
     }
   }
 
-  @VisibleForTesting
-  List<DownloadFileDescription> getAvailable() {
-    return available;
-  }
-
   List<DownloadFileDescription> getAvailableExcluding(
       final Collection<DownloadFileDescription> excluded) {
     return available.stream().filter(not(excluded::contains)).collect(Collectors.toList());
-  }
-
-  List<DownloadFileDescription> getInstalled() {
-    return installed;
-  }
-
-  @VisibleForTesting
-  List<DownloadFileDescription> getOutOfDate() {
-    return outOfDate;
   }
 
   List<DownloadFileDescription> getOutOfDateExcluding(

@@ -19,8 +19,12 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
   private static final int MAP_VERSION = 10;
 
   private static final DownloadFileDescription TEST_MAP =
-      new DownloadFileDescription(
-          "", "", MAP_NAME, MAP_VERSION, DownloadFileDescription.MapCategory.EXPERIMENTAL, "");
+      DownloadFileDescription.builder()
+          .url("")
+          .mapName(MAP_NAME)
+          .version(MAP_VERSION)
+          .mapCategory(DownloadFileDescription.MapCategory.EXPERIMENTAL)
+          .build();
 
   @Test
   void testAvailable() {
@@ -50,21 +54,33 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
   }
 
   private static DownloadFileDescription newDownloadWithUrl(final String url) {
-    return new DownloadFileDescription(
-        url,
-        "description",
-        "mapName " + url,
-        MAP_VERSION,
-        DownloadFileDescription.MapCategory.BEST,
-        "");
+    return DownloadFileDescription.builder()
+        .url(url)
+        .description("description")
+        .mapName("mapName " + url)
+        .version(MAP_VERSION)
+        .mapCategory(DownloadFileDescription.MapCategory.BEST)
+        .build();
+  }
+
+  private static DownloadFileDescription newInstalledDownloadWithUrl(final String url) {
+    return DownloadFileDescription.builder()
+        .url(url)
+        .description("description")
+        .mapName("mapName " + url)
+        .version(MAP_VERSION)
+        .mapCategory(DownloadFileDescription.MapCategory.BEST)
+        .installLocation(new File("/"))
+        .build();
   }
 
   @Test
   void testInstalled() {
     final DownloadedMaps downloadedMaps =
-        buildIndexWithMapVersions(Map.of(TEST_MAP.getMapName(), MAP_VERSION));
+        buildIndexWithMapVersions(Map.of("mapName url", MAP_VERSION));
 
-    final MapDownloadList mapDownloadList = new MapDownloadList(List.of(TEST_MAP), downloadedMaps);
+    final MapDownloadList mapDownloadList =
+        new MapDownloadList(List.of(newInstalledDownloadWithUrl("url")), downloadedMaps);
 
     assertThat(mapDownloadList.getAvailable(), is(empty()));
     assertThat(mapDownloadList.getInstalled(), hasSize(1));
@@ -95,19 +111,20 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
   @Test
   void testOutOfDate() {
     final DownloadedMaps downloadedMaps =
-        buildIndexWithMapVersions(Map.of(TEST_MAP.getMapName(), TEST_MAP.getVersion() - 1));
-    final MapDownloadList mapDownloadList = new MapDownloadList(List.of(TEST_MAP), downloadedMaps);
+        buildIndexWithMapVersions(Map.of("mapName url", MAP_VERSION - 1));
+    final MapDownloadList mapDownloadList =
+        new MapDownloadList(List.of(newInstalledDownloadWithUrl("url")), downloadedMaps);
 
     assertThat(mapDownloadList.getAvailable(), is(empty()));
-    assertThat(mapDownloadList.getInstalled(), hasSize(1));
+    assertThat(mapDownloadList.getInstalled(), is(empty()));
     assertThat(mapDownloadList.getOutOfDate(), hasSize(1));
   }
 
   @Test
   void testOutOfDateExcluding() {
-    final DownloadFileDescription download1 = newDownloadWithUrl("url1");
-    final DownloadFileDescription download2 = newDownloadWithUrl("url2");
-    final DownloadFileDescription download3 = newDownloadWithUrl("url3");
+    final DownloadFileDescription download1 = newInstalledDownloadWithUrl("url1");
+    final DownloadFileDescription download2 = newInstalledDownloadWithUrl("url2");
+    final DownloadFileDescription download3 = newInstalledDownloadWithUrl("url3");
 
     final DownloadedMaps downloadedMaps =
         buildIndexWithMapVersions(

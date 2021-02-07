@@ -366,9 +366,9 @@ public class DownloadMapsWindow extends JFrame {
           newGameSelectionList(mapToSelect, maps, descriptionPane, model);
       gamesList.addListSelectionListener(
           newDescriptionPanelUpdatingSelectionListener(
-              descriptionPane, gamesList, maps, action, mapSizeLabel));
+              descriptionPane, gamesList, maps, mapSizeLabel));
 
-      DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
+      DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, mapSizeLabel);
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
       final JPanel southPanel =
@@ -417,7 +417,6 @@ public class DownloadMapsWindow extends JFrame {
       final JEditorPane descriptionPanel,
       final JList<String> gamesList,
       final List<DownloadFileDescription> maps,
-      final MapAction action,
       final JLabel mapSizeLabelToUpdate) {
     return e -> {
       if (!e.getValueIsAdjusting()) {
@@ -436,7 +435,7 @@ public class DownloadMapsWindow extends JFrame {
                     final String text = map.toHtmlString();
                     descriptionPanel.setText(text);
                     descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-                    updateMapUrlAndSizeLabel(map, action, mapSizeLabelToUpdate);
+                    updateMapUrlAndSizeLabel(map, mapSizeLabelToUpdate);
                   });
         }
       }
@@ -444,17 +443,17 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static void updateMapUrlAndSizeLabel(
-      final DownloadFileDescription map, final MapAction action, final JLabel mapSizeLabel) {
+      final DownloadFileDescription map, final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
     new Thread(
             () -> {
-              final String labelText = newLabelText(action, map);
+              final String labelText = newLabelText(map);
               SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
             })
         .start();
   }
 
-  private static String newLabelText(final MapAction action, final DownloadFileDescription map) {
+  private static String newLabelText(final DownloadFileDescription map) {
     final String doubleSpace = "&nbsp;&nbsp;";
 
     final StringBuilder sb = new StringBuilder();
@@ -464,27 +463,26 @@ public class DownloadMapsWindow extends JFrame {
         .append(" v")
         .append(map.getVersion());
 
-    final Optional<Long> mapSize;
-    if (action == MapAction.INSTALL) {
+    if (map.getInstallLocation().isEmpty()) {
       final String mapUrl = map.getUrl();
-      mapSize =
-          (mapUrl != null)
-              ? DownloadConfiguration.downloadLengthReader().getDownloadLength(mapUrl)
-              : Optional.empty();
+      if (mapUrl != null) {
+        DownloadConfiguration.downloadLengthReader()
+            .getDownloadLength(mapUrl)
+            .ifPresent(
+                downloadSize ->
+                    sb.append(doubleSpace)
+                        .append(" (")
+                        .append(newSizeLabel(downloadSize))
+                        .append(")"));
+      }
     } else {
-      mapSize = Optional.of(map.getInstallLocation().length());
+      sb.append(doubleSpace)
+          .append(" (")
+          .append(newSizeLabel(map.getInstallLocation().get().length()))
+          .append(")");
+      sb.append("<br>").append(map.getInstallLocation().get().getAbsolutePath());
     }
-    mapSize.ifPresent(
-        size -> sb.append(doubleSpace).append(" (").append(newSizeLabel(size)).append(")"));
-
     sb.append("<br>");
-
-    if (action == MapAction.INSTALL) {
-      sb.append(map.getUrl());
-    } else {
-      sb.append(map.getInstallLocation().getAbsolutePath());
-    }
-
     sb.append("</html>");
 
     return sb.toString();

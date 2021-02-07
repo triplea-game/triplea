@@ -922,7 +922,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public void notifyError(final String message) {
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(
-            message, DownloadedMaps.findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
+            message,
+            DownloadedMaps.parseMapFiles()
+                .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -959,7 +961,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(
-            message, DownloadedMaps.findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
+            message,
+            DownloadedMaps.parseMapFiles()
+                .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(

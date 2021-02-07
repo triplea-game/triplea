@@ -19,7 +19,6 @@ import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 import org.triplea.io.FileUtils;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.data.elements.Info;
-import org.triplea.map.data.elements.PropertyList;
 
 /**
  * Builds a MapDescriptionYaml file from scratch by reading an existing map and corresponding
@@ -49,27 +48,19 @@ class MapDescriptionYamlGenerator {
     Preconditions.checkArgument(mapFolder.exists());
     Preconditions.checkArgument(mapFolder.isDirectory());
 
-    final Path contentRoot = determineContentRoot(mapFolder).orElse(null);
-    if (contentRoot == null) {
-      return Optional.empty();
-    }
-
-    final String mapName = findAnyXmlAndReadMapName(contentRoot).orElse(null);
-    if (mapName == null) {
-      return Optional.empty();
-    }
+    final String mapName = mapFolder.getName();
 
     final File propsFile =
         mapFolder.toPath().resolveSibling(mapFolder.getName() + ".properties").toFile();
     final int downloadVersion = propsFile.exists() ? readDownloadVersion(propsFile) : 0;
 
-    final List<MapDescriptionYaml.MapGame> games = readGameInformationFromXmls(contentRoot);
+    final List<MapDescriptionYaml.MapGame> games = readGameInformationFromXmls(mapFolder.toPath());
     if (games.isEmpty()) {
       return Optional.empty();
     }
 
     final Path mapYmlTargetFileLocation =
-        contentRoot.resolve(MapDescriptionYaml.MAP_YAML_FILE_NAME);
+        mapFolder.toPath().resolve(MapDescriptionYaml.MAP_YAML_FILE_NAME);
 
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYaml.builder()
@@ -93,37 +84,6 @@ class MapDescriptionYamlGenerator {
     return writtenYmlFile;
   }
 
-  /**
-   * Given a starting point, determine which subdirectory contains the map contents, the 'content
-   * root'.
-   */
-  private static Optional<Path> determineContentRoot(final File mapFolder) {
-    /*
-     * The polygons file is an expected file within a map that indicates where the map contents are.
-     * A minimum depth is 2, eg: 'map-folder-master/map-folder/map/polygons.txt', we add a bit
-     * extra for flexibility.
-     */
-    final int maxSearchDepthForPolygonsFile = 4;
-    return FileUtils.findFile(mapFolder, maxSearchDepthForPolygonsFile, "polygons.txt")
-        .map(File::toPath)
-        .map(Path::getParent);
-  }
-
-  /**
-   * Looks through the game XMLs, parses them, finds any that have a mapName property and returns
-   * that value.
-   */
-  private static Optional<String> findAnyXmlAndReadMapName(final Path startingPoint) {
-    return FileUtils.findXmlFiles(startingPoint.toFile(), 2).stream()
-        .map(MapDescriptionYamlGenerator::parseXmlTags)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(MapDescriptionYamlGenerator::readMapNameFromXmlTags)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .findAny();
-  }
-
   /** Parses an XML converting the XML tag information into POJO. */
   private static Optional<Game> parseXmlTags(final File xmlFile) {
     try (InputStream inputStream = new FileInputStream(xmlFile)) {
@@ -132,17 +92,6 @@ class MapDescriptionYamlGenerator {
       log.info("Unable to parse XML file: " + xmlFile.getAbsolutePath(), e);
       return Optional.empty();
     }
-  }
-
-  /**
-   * Given a XML tag POJO, reads the property list for mapName attribute and returns that value if
-   * present.
-   */
-  private static Optional<String> readMapNameFromXmlTags(final Game game) {
-    return game.getPropertyList().getProperties().stream()
-        .filter(prop -> "mapName".equalsIgnoreCase(prop.getName()))
-        .map(PropertyList.Property::getValue)
-        .findAny();
   }
 
   /** Reads a properties file for the map version or zero if it cannot be read. */
@@ -174,11 +123,11 @@ class MapDescriptionYamlGenerator {
    * and a relativized path to the Game XML from relative to the maps content root.
    */
   private static List<MapDescriptionYaml.MapGame> readGameInformationFromXmls(
-      final Path contentRoot) {
-    // We expect the needed search depth to be 1, eg: 'contentRoot/games/game.xml'
+      final Path mapFolder) {
+    // We expect the needed search depth to be 2, eg: 'map/contentRoot/games/game.xml'
     // We add a bit extra for flexibility.
-    final int maxXmlSearchDepth = 3;
-    return FileUtils.findXmlFiles(contentRoot.toFile(), maxXmlSearchDepth).stream()
+    final int maxXmlSearchDepth = 4;
+    return FileUtils.findXmlFiles(mapFolder.toFile(), maxXmlSearchDepth).stream()
         .map(
             xmlFile ->
                 readGameNameFromXml(xmlFile)
@@ -186,7 +135,7 @@ class MapDescriptionYamlGenerator {
                         gameName ->
                             MapDescriptionYaml.MapGame.builder()
                                 .gameName(gameName)
-                                .xmlPath(contentRoot.relativize(xmlFile.toPath()).toString())
+                                .xmlPath(mapFolder.relativize(xmlFile.toPath()).toString())
                                 .build())
                     .orElse(null))
         .collect(Collectors.toList());

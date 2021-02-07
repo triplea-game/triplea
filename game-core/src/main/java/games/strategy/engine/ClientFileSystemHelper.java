@@ -124,9 +124,9 @@ public final class ClientFileSystemHelper {
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked. */
-  public static File newTempFile() {
+  public static File newTempFile(final String suffix) {
     try {
-      return File.createTempFile("triplea", "tmp");
+      return File.createTempFile("triplea", suffix);
     } catch (final IOException e) {
       throw new IllegalStateException("Failed to create a temporary file", e);
     }

@@ -323,7 +323,9 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // now tell the HOST, and see if they want to continue the game.
         String displayMessage =
             LocalizeHtml.localizeImgLinksInHtml(
-                status, DownloadedMaps.findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
+                status,
+                DownloadedMaps.parseMapFiles()
+                    .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
         if (displayMessage.endsWith("</body>")) {
           displayMessage =
               displayMessage.substring(0, displayMessage.length() - "</body>".length())
