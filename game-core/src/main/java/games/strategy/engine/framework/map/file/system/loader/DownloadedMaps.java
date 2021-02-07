@@ -20,6 +20,7 @@ import org.triplea.map.description.file.MapDescriptionYaml;
  */
 @AllArgsConstructor
 public class DownloadedMaps {
+  private static final Map<String, Optional<File>> mapNameToContentRootCache = new HashMap<>();
   // The set of all 'map.yml' files found on disk
   private final Collection<MapDescriptionYaml> mapDescriptionYamls;
 
@@ -101,20 +102,27 @@ public class DownloadedMaps {
    * is found.
    */
   public static Optional<File> findContentRootForMapName(final String mapName) {
-    // Find a 'map.yml' with the given map name.
-    // Find the parent folder for that 'map.yml'
-    // Search that location and underneath for a 'polygons' file.
-    // If found, that location is our content root.
-    final Path mapYamlParentFolder =
-        new DownloadedMaps().findMapYamlFileForMapName(mapName).map(Path::getParent).orElse(null);
-    if (mapYamlParentFolder == null) {
-      return Optional.empty();
-    }
+    return mapNameToContentRootCache.computeIfAbsent(
+        mapName,
+        key -> {
+          // Find a 'map.yml' with the given map name.
+          // Find the parent folder for that 'map.yml'
+          // Search that location and underneath for a 'polygons' file.
+          // If found, that location is our content root.
+          final Path mapYamlParentFolder =
+              new DownloadedMaps()
+                  .findMapYamlFileForMapName(mapName)
+                  .map(Path::getParent)
+                  .orElse(null);
+          if (mapYamlParentFolder == null) {
+            return Optional.empty();
+          }
 
-    return FileUtils.findFile(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
-        .map(File::toPath)
-        .map(Path::getParent)
-        .map(Path::toFile);
+          return FileUtils.findFile(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+              .map(File::toPath)
+              .map(Path::getParent)
+              .map(Path::toFile);
+        });
   }
 
   private Optional<Path> findMapYamlFileForMapName(final String mapName) {
