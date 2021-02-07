@@ -14,9 +14,7 @@ import java.io.InputStream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.function.ThrowingSupplier;
-import org.triplea.test.common.ExtendedUnitTest;
 
-@ExtendedUnitTest
 final class AbstractInputStreamPropertyReaderTest {
   @Nested
   final class ReadPropertyInternalTest {

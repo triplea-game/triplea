@@ -1,36 +1,22 @@
 #!/bin/bash
 
-set -ux
+set -u
 
 function main() {
-  runTests
+  .build/setup-database
+  ./gradlew --quiet test jacocoTestReport --exclude-task :smoke-testing:test
   result="$?"
 
   # Run coverage reports only if tests passed
   if [ "$result" = 0 ]; then
-    uploadCoverageReports
+    echo "Uploading test coverage reports"
+    # upload coverage report to codecov - https://github.com/codecov/example-gradle
+    bash <(curl -s https://codecov.io/bash)
   fi
 
   return $result
 }
 
-function runTests() {
-  ./gradlew -x :smoke-testing:test test jacocoTestReport
-}
-
-
-function uploadCoverageReports() {
-  # upload coverage report to codecov - https://github.com/codecov/example-gradle
-  bash <(curl -s https://codecov.io/bash)
-
-  # ID tokens will be defined for branches that are part of the triplea-game repo,
-  # will not be available to branches present on forks.
-  # Travis will have these values defined in the build setting environment variables.
-  if [ -n "${CODACY_PROJECT_TOKEN-}" ]; then
-    # upload coverage report to codacy
-    bash <(curl -Ls https://coverage.codacy.com/get.sh)
-  fi
-}
 
 main
 

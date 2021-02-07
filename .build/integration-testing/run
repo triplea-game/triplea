@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -eEux
-
-.build/setup-database
-./gradlew --quiet integTest --exclude-task :smoke-testing:integTest
-

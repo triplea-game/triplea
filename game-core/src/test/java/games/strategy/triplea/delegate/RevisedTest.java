@@ -86,10 +86,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.test.common.Integration;
-import org.triplea.test.common.TestType;
 
-@Integration(type = TestType.ACCEPTANCE)
 class RevisedTest {
   private final GameData gameData = TestMapGameData.REVISED.getGameData();
 

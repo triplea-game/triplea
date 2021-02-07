@@ -4,10 +4,8 @@ import com.github.database.rider.junit5.DBUnitExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.test.common.Integration;
 
 /** Core configuration for a test that will start a dropwizard server and initialize database. */
-@Integration
 @ExtendWith(value = {LobbyServerExtension.class, DBUnitExtension.class})
 @SuppressWarnings("PrivateConstructorForUtilityClass")
 public abstract class LobbyServerTest {

@@ -23,9 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
-import org.triplea.test.common.Integration;
 
-@Integration
 final class ChatIntegrationTest {
   private static final String CHAT_NAME = TestServerMessenger.CHAT_CHANNEL_NAME;
   private static final int MESSAGE_COUNT = 50;

@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 import org.triplea.io.IoUtils;
-import org.triplea.test.common.ExtendedUnitTest;
 
-@ExtendedUnitTest
 final class AbstractInputStreamPropertyReaderAsPropertyReaderTest
     extends AbstractPropertyReaderTestCase {
   @Override

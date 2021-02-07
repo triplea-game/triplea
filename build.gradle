@@ -203,10 +203,6 @@ subprojects {
         }
     }
 
-    check {
-        dependsOn 'integTest'
-    }
-
     checkstyle {
         toolVersion = "$checkstyleVersion"
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
@@ -258,14 +254,6 @@ subprojects {
     }
 
     test {
-        useJUnitPlatform {
-            excludeTags 'integration'
-        }
-    }
-
-    task integTest(type: Test) {
-        useJUnitPlatform {
-            includeTags 'integration'
-        }
+        useJUnitPlatform {}
     }
 }

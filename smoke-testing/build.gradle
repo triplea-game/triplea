@@ -20,7 +20,6 @@ shadowJar {
     archiveClassifier.set ''
 }
 
-tasks.integTest.dependsOn("downloadXmls", "downloadSaveGames")
 tasks.test.dependsOn("downloadXmls", "downloadSaveGames")
 
 task downloadXmls {

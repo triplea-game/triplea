@@ -10,5 +10,5 @@ jobs:
       with:
         java-version: 11
     - name: Run Compatibility Tests
-      run: ./gradlew :smoke-testing:test :smoke-testing:integTest
+      run: ./gradlew :smoke-testing:test
 

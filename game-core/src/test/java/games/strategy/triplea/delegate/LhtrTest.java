@@ -30,10 +30,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import org.triplea.test.common.Integration;
-import org.triplea.test.common.TestType;
 
-@Integration(type = TestType.ACCEPTANCE)
 class LhtrTest {
   private final GameData gameData = TestMapGameData.LHTR.getGameData();
 

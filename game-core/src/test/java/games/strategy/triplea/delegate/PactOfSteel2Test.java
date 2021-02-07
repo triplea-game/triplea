@@ -15,10 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.test.common.Integration;
-import org.triplea.test.common.TestType;
 
-@Integration(type = TestType.ACCEPTANCE)
 class PactOfSteel2Test {
   private final GameState gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
 

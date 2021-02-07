@@ -3,6 +3,8 @@
 boldGreen="\e[1m\e[92m"
 normal="\e[0m"
 
+database/start_docker_db
+
 ./gradlew --parallel spotlessApply check \
 && .build/code-convention-checks/run \
 && .build/find-unused-or-unmatched-tests/run \
