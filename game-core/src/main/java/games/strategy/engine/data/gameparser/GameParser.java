@@ -133,6 +133,9 @@ public final class GameParser {
 
     // mandatory fields
     // get the name of the map
+    if (game.getInfo() == null || game.getInfo().getName() == null) {
+      throw new GameParseException("<info name=..> is required and was not set");
+    }
     parseInfo(game.getInfo());
 
     // test minimum engine version FIRST
