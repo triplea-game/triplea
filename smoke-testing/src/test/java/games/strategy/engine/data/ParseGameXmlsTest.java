@@ -13,9 +13,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.config.product.ProductVersionReader;
-import org.triplea.test.common.Integration;
 
-@Integration
 class ParseGameXmlsTest {
 
   @ParameterizedTest

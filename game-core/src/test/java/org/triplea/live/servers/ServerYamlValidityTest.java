@@ -14,8 +14,6 @@ import java.net.URI;
 import java.util.Objects;
 import org.hamcrest.core.StringEndsWith;
 import org.junit.jupiter.api.Test;
-import org.triplea.test.common.Integration;
-import org.triplea.test.common.TestType;
 import org.triplea.util.Version;
 
 /**
@@ -30,7 +28,6 @@ import org.triplea.util.Version;
  *   <li>No exact version duplicates
  * </ul>
  */
-@Integration(type = TestType.ACCEPTANCE)
 class ServerYamlValidityTest {
   private static final LiveServers liveServers = new ServerYamlParser().apply(serversYml());
 

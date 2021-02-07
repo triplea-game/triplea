@@ -16,10 +16,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
-import org.triplea.test.common.Integration;
 import org.triplea.util.Version;
 
-@Integration
 final class ClientLoginIntegrationTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";

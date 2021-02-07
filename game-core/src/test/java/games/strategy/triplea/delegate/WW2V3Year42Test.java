@@ -31,10 +31,7 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.test.common.Integration;
-import org.triplea.test.common.TestType;
 
-@Integration(type = TestType.ACCEPTANCE)
 class WW2V3Year42Test {
   private final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
 

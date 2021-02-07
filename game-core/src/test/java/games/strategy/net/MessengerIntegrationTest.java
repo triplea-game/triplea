@@ -17,9 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
 import org.triplea.swing.DialogBuilder;
-import org.triplea.test.common.Integration;
 
-@Integration
 class MessengerIntegrationTest {
   private IServerMessenger serverMessenger;
   private IClientMessenger client1Messenger;

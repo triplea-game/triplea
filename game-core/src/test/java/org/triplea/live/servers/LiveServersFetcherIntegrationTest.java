@@ -15,14 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.io.CloseableDownloader;
-import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestDataFileReader;
 
 /**
  * End-to-end to Parses an example servers.yml file and the current servers.yaml file (from local
  * file system) and verifies we can extract data from it.
  */
-@Integration
 @ExtendWith(MockitoExtension.class)
 class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
 

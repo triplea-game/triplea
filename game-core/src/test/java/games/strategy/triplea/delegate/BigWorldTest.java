@@ -13,10 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.Test;
-import org.triplea.test.common.Integration;
-import org.triplea.test.common.TestType;
 
-@Integration(type = TestType.ACCEPTANCE)
 class BigWorldTest {
   private GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
 

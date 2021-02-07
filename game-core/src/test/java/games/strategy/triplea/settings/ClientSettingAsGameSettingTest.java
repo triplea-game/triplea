@@ -6,9 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
-import org.triplea.test.common.ExtendedUnitTest;
 
-@ExtendedUnitTest
 @Execution(ExecutionMode.SAME_THREAD)
 final class ClientSettingAsGameSettingTest extends AbstractGameSettingTestCase {
   @Override

@@ -13,9 +13,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.triplea.io.CloseableDownloader;
 import org.triplea.io.ContentDownloader;
-import org.triplea.test.common.Integration;
 
-@Integration
 class ContentDownloaderIntegrationTest extends AbstractClientSettingTestCase {
   @Test
   void downloadFile() throws Exception {
