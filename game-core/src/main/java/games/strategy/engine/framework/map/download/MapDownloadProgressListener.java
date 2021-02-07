@@ -73,7 +73,7 @@ final class MapDownloadProgressListener {
   }
 
   void downloadUpdated(final long currentLength) {
-    final String toolTipText = String.format("Installing to: %s", download.getInstallLocation());
+    final String toolTipText = "Installing..";
 
     Optional.ofNullable(downloadLength)
         .ifPresentOrElse(
@@ -89,6 +89,6 @@ final class MapDownloadProgressListener {
 
   void downloadCompleted() {
     updateProgressBarWithPercentComplete(
-        String.format("Installed to: %s", download.getInstallLocation()), MAX_PROGRESS_VALUE);
+        String.format("Installed %s", download.getMapName()), MAX_PROGRESS_VALUE);
   }
 }

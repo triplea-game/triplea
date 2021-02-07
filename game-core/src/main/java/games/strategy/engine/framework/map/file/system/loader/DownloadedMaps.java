@@ -90,15 +90,15 @@ public class DownloadedMaps {
 
   public Optional<Integer> getMapVersionByName(final String mapName) {
     return mapDescriptionYamls.stream()
-        .filter(yaml -> yaml.getMapName().equals(mapName))
+        .filter(yaml -> normalizeName(yaml.getMapName()).equals(normalizeName(mapName)))
         .findAny()
         .map(MapDescriptionYaml::getMapVersion);
   }
 
   /**
    * Finds the 'root' of a map folder containing map content files. This will typically be a folder
-   * called something like "downloadedMaps/mapName/". Returns empty if no map with the given name is
-   * found.
+   * called something like "downloadedMaps/mapName/map". Returns empty if no map with the given name
+   * is found.
    */
   public static Optional<File> findContentRootForMapName(final String mapName) {
     // Find a 'map.yml' with the given map name.
@@ -106,14 +106,7 @@ public class DownloadedMaps {
     // Search that location and underneath for a 'polygons' file.
     // If found, that location is our content root.
     final Path mapYamlParentFolder =
-        new DownloadedMaps()
-            .mapDescriptionYamls.stream()
-                .filter(m -> m.getMapName().equalsIgnoreCase(mapName))
-                .findAny()
-                .map(MapDescriptionYaml::getYamlFileLocation)
-                .map(Path::of)
-                .map(Path::getParent)
-                .orElse(null);
+        new DownloadedMaps().findMapYamlFileForMapName(mapName).map(Path::getParent).orElse(null);
     if (mapYamlParentFolder == null) {
       return Optional.empty();
     }
@@ -124,8 +117,34 @@ public class DownloadedMaps {
         .map(Path::toFile);
   }
 
-  public static File findContentRootForMapNameOrElseThrow(final String mapName) {
+  private Optional<Path> findMapYamlFileForMapName(final String mapName) {
+    return mapDescriptionYamls.stream()
+        .filter(m -> normalizeName(m.getMapName()).equalsIgnoreCase(normalizeName(mapName)))
+        .findAny()
+        .map(MapDescriptionYaml::getYamlFileLocation)
+        .map(Path::of);
+  }
+
+  private static String normalizeName(final String mapName) {
+    return mapName
+        .toLowerCase() //
+        .replaceAll("_", "")
+        .replaceAll(" ", "")
+        .replaceAll("-", "");
+  }
+
+  public File findContentRootForMapNameOrElseThrow(final String mapName) {
     return findContentRootForMapName(mapName)
         .orElseThrow(() -> new IllegalArgumentException("Unable to find map: " + mapName));
+  }
+
+  /**
+   * Finds the map folder storing a given map by name. The map folder is assumed to be the parent
+   * directory of the 'map.yml' file describing that map.
+   */
+  public Optional<File> findMapFolderByName(final String mapName) {
+    return findMapYamlFileForMapName(mapName) //
+        .map(Path::getParent)
+        .map(Path::toFile);
   }
 }

@@ -73,7 +73,7 @@ class MapDescriptionYamlGeneratorTest {
 
     final MapDescriptionYaml mapDescriptionYaml = generateAndReadDescriptionYamlFile();
 
-    assertThat(mapDescriptionYaml.getMapName(), is("example map"));
+    assertThat(mapDescriptionYaml.getMapName(), is("example-map"));
     assertThat(mapDescriptionYaml.getMapVersion(), is(versionValue.isBlank() ? 0 : 2));
     assertThat(mapDescriptionYaml.getMapGameList(), hasSize(2));
 

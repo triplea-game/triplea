@@ -235,8 +235,8 @@ public class GameChooser {
                             notes.append(
                                 LocalizeHtml.localizeImgLinksInHtml(
                                     gameNotes,
-                                    DownloadedMaps.findContentRootForMapNameOrElseThrow(
-                                        mapName)))));
+                                    DownloadedMaps.parseMapFiles()
+                                        .findContentRootForMapNameOrElseThrow(mapName)))));
     return notes.toString();
   }
 
