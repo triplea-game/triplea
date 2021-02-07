@@ -7,8 +7,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Find Unused DbUnit Datasets
       run: .build/find-unused-or-unmatched-tests/find-unused-dbunit-datasets
-    - name: Find Unmatched Test Packages
-      run: .build/find-unused-or-unmatched-tests/find-unmatched-test-packages
     - name: Find Orphaned Tests
       run: .build/find-unused-or-unmatched-tests/find-orphaned-tests
 
