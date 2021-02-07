@@ -103,6 +103,7 @@ public final class GameParser {
    *     returns empty if the file could not parsed or is not valid.
    */
   public static Optional<GameData> parse(final URI xmlUri) {
+    log.debug("Parsing game XML: {}", xmlUri);
     final Optional<GameData> gameData =
         GameParser.parse(
             xmlUri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
