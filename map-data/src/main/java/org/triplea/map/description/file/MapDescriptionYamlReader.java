@@ -42,7 +42,7 @@ class MapDescriptionYamlReader {
   }
 
   /** Factory method, finds the map.yml file in a folder and reads it. */
-  private static Optional<MapDescriptionYaml> readYmlFile(final File ymlFile) {
+  static Optional<MapDescriptionYaml> readYmlFile(final File ymlFile) {
     Preconditions.checkArgument(ymlFile.isFile());
     Preconditions.checkArgument(ymlFile.getName().equals(MapDescriptionYaml.MAP_YAML_FILE_NAME));
 

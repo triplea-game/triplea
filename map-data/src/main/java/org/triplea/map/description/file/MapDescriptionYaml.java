@@ -1,5 +1,6 @@
 package org.triplea.map.description.file;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.net.URI;
@@ -87,6 +88,14 @@ public class MapDescriptionYaml {
 
   public static Optional<MapDescriptionYaml> fromMap(final File mapFolder) {
     return MapDescriptionYamlReader.readFromMap(mapFolder);
+  }
+
+  public static Optional<MapDescriptionYaml> fromFile(final File mapDescriptionYamlFile) {
+    Preconditions.checkArgument(
+        mapDescriptionYamlFile.getName().equals(MAP_YAML_FILE_NAME),
+        mapDescriptionYamlFile.getAbsolutePath());
+
+    return MapDescriptionYamlReader.readYmlFile(mapDescriptionYamlFile);
   }
 
   public static Optional<MapDescriptionYaml> generateForMap(final File mapFolder) {
