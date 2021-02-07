@@ -1,6 +1,5 @@
 package org.triplea.db.dao.lobby.games;
 
-import com.google.common.base.Ascii;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.triplea.db.dao.api.key.ApiKeyHasher;
@@ -8,6 +7,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.java.Postconditions;
+import org.triplea.java.StringUtils;
 
 /**
  * Game chat history table stores chat messages that have happened in games. This data is upload by
@@ -43,7 +43,7 @@ public interface LobbyGameDao {
         insertChatMessage(
             chatMessageUpload.getGameId(),
             chatMessageUpload.getFromPlayer(),
-            Ascii.truncate(chatMessageUpload.getChatMessage(), MESSAGE_COLUMN_LENGTH, ""));
+            StringUtils.truncate(chatMessageUpload.getChatMessage(), MESSAGE_COLUMN_LENGTH));
     Postconditions.assertState(rowInsert == 1, "Failed to insert message: " + chatMessageUpload);
   }
 

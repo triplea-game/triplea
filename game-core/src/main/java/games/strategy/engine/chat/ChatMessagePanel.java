@@ -1,6 +1,5 @@
 package games.strategy.engine.chat;
 
-import com.google.common.base.Ascii;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -27,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.DateTimeUtil;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.StringUtils;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.SwingAction;
@@ -247,7 +247,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   private void addChatMessage(final String originalMessage, final UserName from) {
-    final String message = Ascii.truncate(originalMessage, 200, "...");
+    final String message = StringUtils.truncate(originalMessage, 200);
     final String time = "(" + DateTimeUtil.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {

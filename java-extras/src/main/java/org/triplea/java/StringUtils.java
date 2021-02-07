@@ -2,6 +2,8 @@ package org.triplea.java;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Ascii;
+import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 import lombok.experimental.UtilityClass;
 
@@ -40,5 +42,9 @@ public final class StringUtils {
     }
     final Integer intValue = Ints.tryParse(value.trim());
     return intValue != null && intValue > 0;
+  }
+
+  public static String truncate(final String stringToTruncate, final int maxLength) {
+    return Ascii.truncate(Strings.nullToEmpty(stringToTruncate), maxLength, "...");
   }
 }

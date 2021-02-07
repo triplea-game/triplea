@@ -1,6 +1,5 @@
 package games.strategy.engine.chat;
 
-import com.google.common.base.Ascii;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -29,6 +28,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.java.StringUtils;
 import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
@@ -224,7 +224,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     }
 
     final String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
-    final String status = Ascii.truncate(chat.getStatus(chatParticipant.getUserName()), 25, "");
+    final String status = StringUtils.truncate(chat.getStatus(chatParticipant.getUserName()), 25);
     final String suffix = status.isEmpty() ? "" : " (" + status + ")";
 
     return chatParticipant.getUserName() + extra + suffix;
