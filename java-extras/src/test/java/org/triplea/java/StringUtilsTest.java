@@ -2,6 +2,7 @@ package org.triplea.java;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.java.StringUtils.capitalize;
 
 import org.junit.jupiter.api.Nested;
@@ -70,5 +71,20 @@ final class StringUtilsTest {
     void notPositiveInt(final String notPositiveInt) {
       assertThat(StringUtils.isPositiveInt(notPositiveInt), is(false));
     }
+  }
+
+  @Test
+  void truncate() {
+    assertThat(StringUtils.truncate(null, 3), is(""));
+    assertThat(StringUtils.truncate("1234", 4), is("1234"));
+    assertThat(StringUtils.truncate("12345", 4), is("1..."));
+    assertThat(StringUtils.truncate("1234", 3), is("..."));
+  }
+
+  @Test
+  void truncateIllegalArgs() {
+    // max length must be at least 3, the size of the truncation indicator (ellipses)
+    assertThrows(IllegalArgumentException.class, () -> StringUtils.truncate("123", 2));
+    assertThrows(IllegalArgumentException.class, () -> StringUtils.truncate("123", -1));
   }
 }

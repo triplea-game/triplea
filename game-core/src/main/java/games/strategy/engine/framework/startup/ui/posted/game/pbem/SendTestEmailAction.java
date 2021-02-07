@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
-import com.google.common.base.Ascii;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
 import java.io.File;
@@ -10,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.StringUtils;
 import org.triplea.swing.ProgressWindow;
 
 @Slf4j
@@ -49,7 +49,7 @@ public class SendTestEmailAction {
               } catch (final IOException ioe) {
                 message =
                     "Unable to send email, check SMTP server credentials: "
-                        + Ascii.truncate(ioe.getMessage(), 200, "...");
+                        + StringUtils.truncate(ioe.getMessage(), 200);
                 log.error(message, ioe);
               } finally {
                 // now that we have a result, marshall it back unto the swing thread

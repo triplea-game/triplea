@@ -3,7 +3,6 @@ package org.triplea.web.socket;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Ascii;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -24,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.WebSocket;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
+import org.triplea.java.StringUtils;
 
 /**
  * Extracts common code between websocket server methods. Each websocket endpoint is essentially
@@ -174,7 +174,7 @@ public class GenericWebSocket {
     log.warn(
         "Failed to decode JSON string from IP {}, into a MessageEnvelope: {}",
         inetAddress,
-        Ascii.truncate(message, 500, "..."));
+        StringUtils.truncate(message, 500));
   }
 
   private static void respondWithServerError(

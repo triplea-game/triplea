@@ -17,6 +17,7 @@ import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 import org.triplea.generic.xml.reader.exceptions.JavaDataModelException;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
+import org.triplea.java.StringUtils;
 
 @Slf4j
 public class XmlMapper implements Closeable {
@@ -87,7 +88,7 @@ public class XmlMapper implements Closeable {
             "Mapping class: {}, attributes: {}, to value: {} (casted value == {})",
             pojo.getName(),
             List.of(attributeNames),
-            attributeValue,
+            StringUtils.truncate(attributeValue, 100),
             value);
         field.set(instance, value);
       }

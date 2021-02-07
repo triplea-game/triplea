@@ -21,7 +21,7 @@ class ChatReceivedMessageTest {
     final String result = chatMessage(testString);
 
     assertThat(result, is(testString));
-    assertThat(result, not(endsWith(ChatReceivedMessage.ELLIPSES)));
+    assertThat(result, not(endsWith("...")));
   }
 
   @Test
@@ -32,7 +32,7 @@ class ChatReceivedMessageTest {
     final String result = chatMessage(testString);
 
     assertThat(result.length(), Matchers.is(ChatReceivedMessage.MAX_MESSAGE_LENGTH));
-    assertThat(result, endsWith(ChatReceivedMessage.ELLIPSES));
+    assertThat(result, endsWith("..."));
   }
 
   private static String createStringWithLength(final int length) {

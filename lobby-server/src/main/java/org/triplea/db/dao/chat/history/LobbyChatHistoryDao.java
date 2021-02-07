@@ -1,9 +1,9 @@
 package org.triplea.db.dao.chat.history;
 
-import com.google.common.base.Ascii;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
+import org.triplea.java.StringUtils;
 
 /** Lobby chat history records lobby chat messages. */
 public interface LobbyChatHistoryDao {
@@ -13,7 +13,7 @@ public interface LobbyChatHistoryDao {
     insertMessage(
         chatReceivedMessage.getSender().getValue(),
         apiKeyId,
-        Ascii.truncate(chatReceivedMessage.getMessage(), MESSAGE_COLUMN_LENGTH, ""));
+        StringUtils.truncate(chatReceivedMessage.getMessage(), MESSAGE_COLUMN_LENGTH));
   }
 
   /**
