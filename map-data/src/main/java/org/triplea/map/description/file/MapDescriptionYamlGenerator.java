@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
@@ -139,6 +140,7 @@ class MapDescriptionYamlGenerator {
                                 .xmlPath(mapFolder.relativize(xmlFile.toPath()).toString())
                                 .build())
                     .orElse(null))
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 

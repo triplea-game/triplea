@@ -116,6 +116,7 @@ public final class HeadedGameRunner {
         .build()
         .generateYamlFiles();
 
+    log.info("Launching game, version: {} ", Injections.getInstance().getEngineVersion());
     GameRunner.start();
   }
 
