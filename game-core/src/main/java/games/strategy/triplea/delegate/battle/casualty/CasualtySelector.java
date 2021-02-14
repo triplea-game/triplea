@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
@@ -102,13 +101,6 @@ public class CasualtySelector {
       return new CasualtyDetails(List.of(), List.of(), true);
     }
 
-    if (allTargetsOneTypeOneHitPoint(targetsToPickFrom, dependents)) {
-      final List<Unit> killed =
-          targetsToPickFrom.stream()
-              .limit(Math.min(hitsRemaining, targetsToPickFrom.size()))
-              .collect(Collectors.toList());
-      return new CasualtyDetails(killed, List.of(), true);
-    }
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do
     // it here.
     final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
@@ -135,6 +127,7 @@ public class CasualtySelector {
 
     final CasualtyDetails casualtySelection =
         hitsRemaining >= totalHitpoints
+                || allTargetsOneTypeOneHitPoint(sortedTargetsToPickFrom, dependents)
             ? new CasualtyDetails(defaultCasualties, true)
             : tripleaPlayer.selectCasualties(
                 sortedTargetsToPickFrom,
