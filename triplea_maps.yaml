@@ -2244,7 +2244,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/young_grasshoppers_tournament_edition/archive/master.zip
   version: 1
-  img: https://github.com/triplea-maps/young_grasshoppers_tournament_edition/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/young_grasshoppers_tournament_edition/master/preview.png
   description: |
     <p>Young Grasshoppers Tournament Edition is based on the victory objective system 
     developed by Young Grasshopper for tournament play of Axis and Allies 1940 Global 2nd 
