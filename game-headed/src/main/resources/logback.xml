@@ -28,5 +28,4 @@
         <appender-ref ref="FILE" />
     </root>
     <logger name="org.apache.http" level="info"/>
-    <logger name="org.triplea.generic.xml" level="trace"/>
 </configuration>
