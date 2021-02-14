@@ -17,7 +17,6 @@ import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 import org.triplea.generic.xml.reader.exceptions.JavaDataModelException;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
-import org.triplea.java.StringUtils;
 
 @Slf4j
 public class XmlMapper implements Closeable {
@@ -38,7 +37,6 @@ public class XmlMapper implements Closeable {
 
   private <T> T mapXmlToObject(final Class<T> pojo, final String tagName)
       throws XmlParsingException {
-    log.trace("Mapping tag: {}, to object: {}", tagName, pojo.getName());
     // At this point in parsing the XML cursor is just beyond the start tag.
     // We can read attributes directly off of the stream at this point.
     // If we do nothing more then the cursor will keep moving down and will not
@@ -84,12 +82,6 @@ public class XmlMapper implements Closeable {
                 .orElse(null);
 
         final Object value = new AttributeValueCasting(field).castAttributeValue(attributeValue);
-        log.trace(
-            "Mapping class: {}, attributes: {}, to value: {} (casted value == {})",
-            pojo.getName(),
-            List.of(attributeNames),
-            StringUtils.truncate(attributeValue, 100),
-            value);
         field.set(instance, value);
       }
 
@@ -158,8 +150,6 @@ public class XmlMapper implements Closeable {
       }
 
       tagParser.parse(xmlStreamReader);
-
-      log.trace("Returning object type: {}, with parsed value: {}", pojo.getName(), instance);
       return instance;
     } catch (final Throwable e) {
       if (e instanceof XmlParsingException) {
