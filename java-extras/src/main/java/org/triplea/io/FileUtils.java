@@ -25,12 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class FileUtils {
 
-  /**
-   * Creates a new file with a parent folder and any number of child folders. This is a convenience
-   * method to concatenate the path together with an OS specific file separator.
-   */
-  public static File newFile(final String parentDir, final String... childDirs) {
-    return Path.of(parentDir, childDirs).toFile();
+  public static Path newTempFolder() {
+    try {
+      return Files.createTempDirectory("triplea");
+    } catch (final IOException e) {
+      throw new FileSystemException(e);
+    }
+  }
+
+  private static class FileSystemException extends RuntimeException {
+    private static final long serialVersionUID = -2046259158805830577L;
+
+    FileSystemException(final IOException e) {
+      super("File system exception (check available disk space), " + e.getMessage(), e);
+    }
   }
 
   /**

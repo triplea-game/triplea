@@ -30,9 +30,11 @@ public final class ClientFileSystemHelper {
    */
   public static File getRootFolder() {
     try {
-      return getFolderContainingFileWithName(".triplea-root", getCodeSourceFolder());
+      return FileUtils.findFileInParentFolders(getCodeSourceFolder().toPath(), ".triplea-root")
+          .orElseThrow(() -> new IllegalStateException("Unable to locate root folder"))
+          .toFile();
     } catch (final IOException e) {
-      throw new IllegalStateException("unable to locate root folder", e);
+      throw new IllegalStateException("Unable to locate root folder", e);
     }
   }
 
@@ -53,32 +55,6 @@ public final class ClientFileSystemHelper {
 
     // code source location is either a jar file (installation) or a folder (dev environment)
     return codeSourceLocation.isFile() ? codeSourceLocation.getParentFile() : codeSourceLocation;
-  }
-
-  @VisibleForTesting
-  static File getFolderContainingFileWithName(final String fileName, final File startFolder)
-      throws IOException {
-    return getFolderContainingFileWithName(fileName, startFolder, startFolder);
-  }
-
-  private static File getFolderContainingFileWithName(
-      final String fileName, final File startFolder, final @Nullable File currentFolder)
-      throws IOException {
-    if (currentFolder == null) {
-      throw new IOException(
-          String.format(
-              "unable to locate file with name '%s' starting from folder '%s'",
-              fileName, startFolder.getAbsolutePath()));
-    }
-
-    final boolean currentFolderContainsFileWithName =
-        FileUtils.listFiles(currentFolder).stream()
-            .filter(File::isFile)
-            .map(File::getName)
-            .anyMatch(fileName::equals);
-    return currentFolderContainsFileWithName
-        ? currentFolder
-        : getFolderContainingFileWithName(fileName, startFolder, currentFolder.getParentFile());
   }
 
   /**
@@ -121,14 +97,5 @@ public final class ClientFileSystemHelper {
       log.error("Error, could not create map download folder: {}", mapsFolder.getAbsolutePath());
     }
     return mapsFolder;
-  }
-
-  /** Create a temporary file, checked exceptions are re-thrown as unchecked. */
-  public static File newTempFile(final String suffix) {
-    try {
-      return File.createTempFile("triplea", suffix);
-    } catch (final IOException e) {
-      throw new IllegalStateException("Failed to create a temporary file", e);
-    }
   }
 }

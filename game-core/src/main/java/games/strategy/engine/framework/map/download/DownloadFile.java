@@ -1,12 +1,12 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 /**
@@ -55,13 +55,19 @@ final class DownloadFile {
             return;
           }
 
-          final File tempFile = newTempFile();
+          final String fileNameToWrite = normalizeMapName(download.getMapName()) + ".zip";
+
+          final Path targetTempFileToDownloadTo =
+              FileUtils.newTempFolder().resolve(fileNameToWrite);
+
           final FileSizeWatcher watcher =
               new FileSizeWatcher(
-                  tempFile,
+                  targetTempFileToDownloadTo.toFile(),
                   bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
+
           try {
-            DownloadConfiguration.contentReader().downloadToFile(download.getUrl(), tempFile);
+            DownloadConfiguration.contentReader()
+                .downloadToFile(download.getUrl(), targetTempFileToDownloadTo.toFile());
           } catch (final IOException e) {
             log.error("Failed to download: " + download.getUrl(), e);
             return;
@@ -76,7 +82,7 @@ final class DownloadFile {
           state = DownloadState.DONE;
 
           // extract map, if successful and does not have a 'map.yml' file, generate one.
-          ZippedMapsExtractor.unzipMap(tempFile)
+          ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo.toFile())
               .ifPresent(
                   installedMap -> {
                     if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {
@@ -88,10 +94,21 @@ final class DownloadFile {
         });
   }
 
-  private static File newTempFile() {
-    final File file = ClientFileSystemHelper.newTempFile(".zip");
-    file.deleteOnExit();
-    return file;
+  /**
+   * Strips invalid and dangerous file system characters from a map name. The map name is used to
+   * create a folder, we would not want a map named something like "/bin/bash" or "c:\\"
+   */
+  @VisibleForTesting
+  static String normalizeMapName(final String mapName) {
+    return mapName
+        .replaceAll(" ", "_")
+        .replaceAll("[&;:.,/]", "")
+        .replaceAll("\\\\", "")
+        .replaceAll("\\|", "")
+        .replaceAll("\\]", "")
+        .replaceAll("\\[", "")
+        .replaceAll("\\*", "")
+        .replaceAll("\"", "");
   }
 
   @VisibleForTesting
