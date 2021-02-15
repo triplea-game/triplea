@@ -32,4 +32,5 @@ topics such as 'how to release'
 **project**: general documentation around the TripleA project that describes project
 process, how to contribute, how to engage, where to communicate
 
-
+**infrastructre**: relates to software deployment and opeations, 
+eg: bot setup, server setup, checking logs, checking and restarting services
