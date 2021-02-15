@@ -16,20 +16,6 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 final class FileUtilsTest {
-
-  @Nested
-  final class NewFile {
-    @Test
-    void createNewFile() {
-      assertThat(FileUtils.newFile("file", "path"), is(new File("file" + File.separator + "path")));
-    }
-
-    @Test
-    void createNewFileFromSingleton() {
-      assertThat(FileUtils.newFile("file"), is(new File("file")));
-    }
-  }
-
   @Nested
   final class ListFilesTest {
     @Test
