@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.File;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
-class MapDownloadListTest extends AbstractClientSettingTestCase {
+class AvailableMapsListingTest extends AbstractClientSettingTestCase {
   private static final String MAP_NAME = "new_test_order";
   private static final int MAP_VERSION = 10;
 
@@ -28,27 +28,28 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
 
   @Test
   void testAvailable() {
-    final DownloadedMaps downloadedMaps = new DownloadedMaps(List.of());
+    final DownloadedMapsListing downloadedMapsListing = new DownloadedMapsListing(List.of());
 
-    final MapDownloadList mapDownloadList = new MapDownloadList(List.of(TEST_MAP), downloadedMaps);
+    final AvailableMapsListing availableMapsListing =
+        new AvailableMapsListing(List.of(TEST_MAP), downloadedMapsListing);
 
-    assertThat(mapDownloadList.getAvailable(), hasSize(1));
-    assertThat(mapDownloadList.getInstalled(), is(empty()));
-    assertThat(mapDownloadList.getOutOfDate(), is(empty()));
+    assertThat(availableMapsListing.getAvailable(), hasSize(1));
+    assertThat(availableMapsListing.getInstalled(), is(empty()));
+    assertThat(availableMapsListing.getOutOfDate(), is(empty()));
   }
 
   @Test
   void testAvailableExcluding() {
-    final DownloadedMaps downloadedMaps = new DownloadedMaps(List.of());
+    final DownloadedMapsListing downloadedMapsListing = new DownloadedMapsListing(List.of());
 
     final DownloadFileDescription download1 = newDownloadWithUrl("url1");
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newDownloadWithUrl("url3");
-    final MapDownloadList mapDownloadList =
-        new MapDownloadList(List.of(download1, download2, download3), downloadedMaps);
+    final AvailableMapsListing availableMapsListing =
+        new AvailableMapsListing(List.of(download1, download2, download3), downloadedMapsListing);
 
     final List<DownloadFileDescription> available =
-        mapDownloadList.getAvailableExcluding(List.of(download1, download3));
+        availableMapsListing.getAvailableExcluding(List.of(download1, download3));
 
     assertThat(available, is(List.of(download2)));
   }
@@ -76,21 +77,22 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
 
   @Test
   void testInstalled() {
-    final DownloadedMaps downloadedMaps =
+    final DownloadedMapsListing downloadedMapsListing =
         buildIndexWithMapVersions(Map.of("mapName url", MAP_VERSION));
 
-    final MapDownloadList mapDownloadList =
-        new MapDownloadList(List.of(newInstalledDownloadWithUrl("url")), downloadedMaps);
+    final AvailableMapsListing availableMapsListing =
+        new AvailableMapsListing(
+            List.of(newInstalledDownloadWithUrl("url")), downloadedMapsListing);
 
-    assertThat(mapDownloadList.getAvailable(), is(empty()));
-    assertThat(mapDownloadList.getInstalled(), hasSize(1));
-    assertThat(mapDownloadList.getOutOfDate(), is(empty()));
+    assertThat(availableMapsListing.getAvailable(), is(empty()));
+    assertThat(availableMapsListing.getInstalled(), hasSize(1));
+    assertThat(availableMapsListing.getOutOfDate(), is(empty()));
   }
 
-  private static DownloadedMaps buildIndexWithMapVersions(
+  private static DownloadedMapsListing buildIndexWithMapVersions(
       final Map<String, Integer> mapNameToVersion) {
 
-    return new DownloadedMaps(
+    return new DownloadedMapsListing(
         mapNameToVersion.entrySet().stream()
             .map(
                 entry ->
@@ -110,14 +112,15 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
 
   @Test
   void testOutOfDate() {
-    final DownloadedMaps downloadedMaps =
+    final DownloadedMapsListing downloadedMapsListing =
         buildIndexWithMapVersions(Map.of("mapName url", MAP_VERSION - 1));
-    final MapDownloadList mapDownloadList =
-        new MapDownloadList(List.of(newInstalledDownloadWithUrl("url")), downloadedMaps);
+    final AvailableMapsListing availableMapsListing =
+        new AvailableMapsListing(
+            List.of(newInstalledDownloadWithUrl("url")), downloadedMapsListing);
 
-    assertThat(mapDownloadList.getAvailable(), is(empty()));
-    assertThat(mapDownloadList.getInstalled(), is(empty()));
-    assertThat(mapDownloadList.getOutOfDate(), hasSize(1));
+    assertThat(availableMapsListing.getAvailable(), is(empty()));
+    assertThat(availableMapsListing.getInstalled(), is(empty()));
+    assertThat(availableMapsListing.getOutOfDate(), hasSize(1));
   }
 
   @Test
@@ -126,18 +129,18 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription download2 = newInstalledDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newInstalledDownloadWithUrl("url3");
 
-    final DownloadedMaps downloadedMaps =
+    final DownloadedMapsListing downloadedMapsListing =
         buildIndexWithMapVersions(
             Map.of(
                 download1.getMapName(), download1.getVersion() - 1,
                 download2.getMapName(), download2.getVersion() - 1,
                 download3.getMapName(), download3.getVersion() - 1));
 
-    final MapDownloadList mapDownloadList =
-        new MapDownloadList(List.of(download1, download2, download3), downloadedMaps);
+    final AvailableMapsListing availableMapsListing =
+        new AvailableMapsListing(List.of(download1, download2, download3), downloadedMapsListing);
 
     final List<DownloadFileDescription> outOfDate =
-        mapDownloadList.getOutOfDateExcluding(List.of(download1, download3));
+        availableMapsListing.getOutOfDateExcluding(List.of(download1, download3));
 
     assertThat(outOfDate, is(List.of(download2)));
   }

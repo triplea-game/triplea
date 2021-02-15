@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.gameparser.ShallowGameParser;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -53,7 +53,7 @@ public class GameChooser {
    */
   public static void chooseGame(
       final Frame owner,
-      final DownloadedMaps downloadedMaps,
+      final DownloadedMapsListing downloadedMapsListing,
       final String gameName,
       final Consumer<Path> gameChosenCallback) {
 
@@ -61,7 +61,7 @@ public class GameChooser {
     dialog.setLayout(new BorderLayout());
 
     final DefaultListModel<DefaultGameChooserEntry> gameChooserModel = new DefaultListModel<>();
-    downloadedMaps.getGameNamesToGameLocations().entrySet().stream()
+    downloadedMapsListing.getGameNamesToGameLocations().entrySet().stream()
         .map(
             entry ->
                 DefaultGameChooserEntry.builder()
@@ -235,7 +235,7 @@ public class GameChooser {
                             notes.append(
                                 LocalizeHtml.localizeImgLinksInHtml(
                                     gameNotes,
-                                    DownloadedMaps.parseMapFiles()
+                                    DownloadedMapsListing.parseMapFiles()
                                         .findContentRootForMapNameOrElseThrow(mapName)))));
     return notes.toString();
   }

@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import java.awt.Color;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
@@ -15,7 +15,7 @@ public class NotesPanel extends JScrollPane {
         createNotesPane(
             LocalizeHtml.localizeImgLinksInHtml(
                 trimmedNotes,
-                DownloadedMaps.parseMapFiles()
+                DownloadedMapsListing.parseMapFiles()
                     .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()))));
   }
 

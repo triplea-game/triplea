@@ -18,7 +18,7 @@ import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
@@ -40,7 +40,7 @@ public class HeadlessGameServer {
   public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
   private static HeadlessGameServer instance = null;
 
-  private final DownloadedMaps availableGames = DownloadedMaps.parseMapFiles();
+  private final DownloadedMapsListing availableGames = DownloadedMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final HeadlessServerSetupPanelModel setupPanelModel =
       new HeadlessServerSetupPanelModel(gameSelectorModel);

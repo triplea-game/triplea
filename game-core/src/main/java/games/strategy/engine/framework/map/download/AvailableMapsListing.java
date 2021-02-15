@@ -3,7 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static java.util.function.Predicate.not;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,19 +12,20 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
-class MapDownloadList {
+class AvailableMapsListing {
 
   private final List<DownloadFileDescription> available = new ArrayList<>();
   private final List<DownloadFileDescription> installed = new ArrayList<>();
   private final List<DownloadFileDescription> outOfDate = new ArrayList<>();
 
-  MapDownloadList(final Collection<DownloadFileDescription> downloads) {
-    this(downloads, DownloadedMaps.parseMapFiles());
+  AvailableMapsListing(final Collection<DownloadFileDescription> downloads) {
+    this(downloads, DownloadedMapsListing.parseMapFiles());
   }
 
   @VisibleForTesting
-  MapDownloadList(
-      final Collection<DownloadFileDescription> downloads, final DownloadedMaps downloadedMaps) {
+  AvailableMapsListing(
+      final Collection<DownloadFileDescription> downloads,
+      final DownloadedMapsListing downloadedMapsListing) {
     for (final DownloadFileDescription download : downloads) {
       if (download == null) {
         return;
@@ -32,7 +33,7 @@ class MapDownloadList {
 
       if (download.getInstallLocation().isPresent()) {
         final Optional<Integer> mapVersion =
-            downloadedMaps.getMapVersionByName(download.getMapName());
+            downloadedMapsListing.getMapVersionByName(download.getMapName());
         if (download.getVersion() != null
             && (mapVersion.isEmpty() || download.getVersion() > mapVersion.get())) {
           outOfDate.add(download);

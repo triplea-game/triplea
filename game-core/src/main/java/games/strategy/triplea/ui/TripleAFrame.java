@@ -33,7 +33,7 @@ import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.HistoryNode;
@@ -923,7 +923,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(
             message,
-            DownloadedMaps.parseMapFiles()
+            DownloadedMapsListing.parseMapFiles()
                 .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
     messageAndDialogThreadPool.submit(
         () ->
@@ -962,7 +962,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(
             message,
-            DownloadedMaps.parseMapFiles()
+            DownloadedMapsListing.parseMapFiles()
                 .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
     messageAndDialogThreadPool.submit(
         () ->

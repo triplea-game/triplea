@@ -19,12 +19,12 @@ import org.triplea.map.description.file.MapDescriptionYaml;
  * onto their hard drive.
  */
 @AllArgsConstructor
-public class DownloadedMaps {
+public class DownloadedMapsListing {
   private static final Map<String, Optional<File>> mapNameToContentRootCache = new HashMap<>();
   // The set of all 'map.yml' files found on disk
   private final Collection<MapDescriptionYaml> mapDescriptionYamls;
 
-  private DownloadedMaps() {
+  private DownloadedMapsListing() {
     this(readMapYamlsAndGenerateMissingMapYamls());
   }
 
@@ -32,8 +32,8 @@ public class DownloadedMaps {
    * Reads the downloaded maps folder contents, parses those contents to find available games, and
    * returns the list of available games found.
    */
-  public static synchronized DownloadedMaps parseMapFiles() {
-    return new DownloadedMaps();
+  public static synchronized DownloadedMapsListing parseMapFiles() {
+    return new DownloadedMapsListing();
   }
 
   private static Collection<MapDescriptionYaml> readMapYamlsAndGenerateMissingMapYamls() {
@@ -110,7 +110,7 @@ public class DownloadedMaps {
           // Search that location and underneath for a 'polygons' file.
           // If found, that location is our content root.
           final Path mapYamlParentFolder =
-              new DownloadedMaps()
+              new DownloadedMapsListing()
                   .findMapYamlFileForMapName(mapName)
                   .map(Path::getParent)
                   .orElse(null);

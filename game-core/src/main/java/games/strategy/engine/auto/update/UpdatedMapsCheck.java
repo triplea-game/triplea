@@ -3,7 +3,7 @@ package games.strategy.engine.auto.update;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.triplea.settings.ClientSetting;
 import java.time.Instant;
@@ -55,7 +55,7 @@ class UpdatedMapsCheck {
     final Collection<String> outOfDateMapNames =
         computeOutOfDateMaps(
             availableToDownloadMaps,
-            name -> DownloadedMaps.parseMapFiles().getMapVersionByName(name));
+            name -> DownloadedMapsListing.parseMapFiles().getMapVersionByName(name));
 
     if (!outOfDateMapNames.isEmpty()) {
       promptUserToUpdateMaps(outOfDateMapNames);
