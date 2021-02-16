@@ -2243,7 +2243,7 @@
 - mapName: Young Grasshoppers Tournament Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/young_grasshoppers_tournament_edition/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/young_grasshoppers_tournament_edition/master/preview.png
   description: |
     <p>Young Grasshoppers Tournament Edition is based on the victory objective system
