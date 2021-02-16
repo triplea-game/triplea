@@ -4,7 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -45,7 +45,7 @@ public class ResourceLoader implements Closeable {
     Preconditions.checkNotNull(mapName);
 
     final File mapLocation =
-        DownloadedMaps.findContentRootForMapName(mapName)
+        DownloadedMapsListing.findContentRootForMapName(mapName)
             .orElseThrow(
                 () -> {
                   SwingComponents.promptUser(

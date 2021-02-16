@@ -6,7 +6,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -324,7 +324,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         String displayMessage =
             LocalizeHtml.localizeImgLinksInHtml(
                 status,
-                DownloadedMaps.parseMapFiles()
+                DownloadedMapsListing.parseMapFiles()
                     .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
         if (displayMessage.endsWith("</body>")) {
           displayMessage =

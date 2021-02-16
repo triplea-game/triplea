@@ -303,7 +303,7 @@ public class DownloadMapsWindow extends JFrame {
       final Optional<String> selectedMapName,
       final List<DownloadFileDescription> downloads,
       final Set<DownloadFileDescription> pendingDownloads) {
-    final MapDownloadList mapList = new MapDownloadList(downloads);
+    final AvailableMapsListing mapList = new AvailableMapsListing(downloads);
 
     final JTabbedPane tabbedPane = new JTabbedPane();
 

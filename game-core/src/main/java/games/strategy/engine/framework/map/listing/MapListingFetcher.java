@@ -2,7 +2,7 @@ package games.strategy.engine.framework.map.listing;
 
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMaps;
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.framework.system.DevOverrides;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
@@ -15,10 +15,10 @@ import org.triplea.live.servers.LiveServersFetcher;
 /** Fetches the full listing of maps that are available for download. */
 public class MapListingFetcher {
 
-  private final DownloadedMaps downloadedMaps;
+  private final DownloadedMapsListing downloadedMapsListing;
 
   private MapListingFetcher() {
-    downloadedMaps = DownloadedMaps.parseMapFiles();
+    downloadedMapsListing = DownloadedMapsListing.parseMapFiles();
   }
 
   /**
@@ -50,7 +50,7 @@ public class MapListingFetcher {
       final List<MapDownloadListing> downloadListings) {
 
     return downloadListings.stream()
-        .map(map -> DownloadFileDescription.ofMapDownloadListing(map, downloadedMaps))
+        .map(map -> DownloadFileDescription.ofMapDownloadListing(map, downloadedMapsListing))
         .collect(Collectors.toList());
   }
 }
