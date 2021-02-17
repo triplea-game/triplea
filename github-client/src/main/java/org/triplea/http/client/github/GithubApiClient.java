@@ -2,8 +2,11 @@ package org.triplea.http.client.github;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.HttpClient;
@@ -19,8 +22,6 @@ public class GithubApiClient {
   static final String STUBBED_RETURN_VALUE =
       "API-token==test--returned-a-stubbed-github-issue-link";
 
-  private final String githubOrg;
-  private final String githubRepo;
   private final String authToken;
   private final GithubApiFeignClient githubApiFeignClient;
   /**
@@ -31,14 +32,8 @@ public class GithubApiClient {
 
   @Builder
   public GithubApiClient(
-      @Nonnull final URI uri,
-      @Nonnull final String githubOrg,
-      @Nonnull final String githubRepo,
-      @Nonnull final String authToken,
-      final boolean isTest) {
+      @Nonnull final URI uri, @Nonnull final String authToken, final boolean isTest) {
     githubApiFeignClient = new HttpClient<>(GithubApiFeignClient.class, uri).get();
-    this.githubOrg = githubOrg;
-    this.githubRepo = githubRepo;
     this.authToken = authToken;
     this.test = isTest;
   }
@@ -50,7 +45,10 @@ public class GithubApiClient {
    * @return Response from server containing link to the newly created issue.
    * @throws feign.FeignException thrown on error or if non-2xx response is received
    */
-  public CreateIssueResponse newIssue(final CreateIssueRequest createIssueRequest) {
+  public CreateIssueResponse newIssue(
+      final String githubOrg,
+      final String githubRepo,
+      final CreateIssueRequest createIssueRequest) {
     if (test) {
       return new CreateIssueResponse(STUBBED_RETURN_VALUE);
     }
@@ -58,5 +56,34 @@ public class GithubApiClient {
     final Map<String, Object> tokens = new HashMap<>();
     tokens.put("Authorization", "token " + authToken);
     return githubApiFeignClient.newIssue(tokens, githubOrg, githubRepo, createIssueRequest);
+  }
+
+  /**
+   * Returns a listing of the repositories within a github organization. This call handles paging,
+   * it returns a complete list and may perform multiple calls to Github.
+   */
+  public Collection<URI> listRepositories(final String githubOrg) {
+    final Collection<URI> allRepos = new HashSet<>();
+    int pageNumber = 1;
+    Collection<URI> repos = listRepositories(githubOrg, pageNumber);
+    while (!repos.isEmpty()) {
+      pageNumber++;
+      allRepos.addAll(repos);
+      repos = listRepositories(githubOrg, pageNumber);
+    }
+    return allRepos;
+  }
+
+  private Collection<URI> listRepositories(final String githubOrg, final int pageNumber) {
+    final Map<String, Object> tokens = new HashMap<>();
+    tokens.put("Authorization", "token " + authToken);
+    final Map<String, String> queryParams = new HashMap<>();
+    queryParams.put("per_page", "100");
+    queryParams.put("page", String.valueOf(pageNumber));
+
+    return githubApiFeignClient.listRepos(tokens, queryParams, githubOrg).stream()
+        .map(RepoListingResponse::getHtmlUrl)
+        .map(URI::create)
+        .collect(Collectors.toSet());
   }
 }

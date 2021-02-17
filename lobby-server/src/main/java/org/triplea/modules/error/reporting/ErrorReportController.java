@@ -34,8 +34,6 @@ public class ErrorReportController extends HttpController {
         GithubApiClient.builder()
             .uri(LobbyServerConfig.GITHUB_WEB_SERVICE_API_URL)
             .authToken(configuration.getGithubApiToken())
-            .githubOrg(LobbyServerConfig.GITHUB_ORG)
-            .githubRepo(configuration.getGithubRepo())
             .isTest(isTest)
             .build();
 
@@ -44,7 +42,9 @@ public class ErrorReportController extends HttpController {
     }
 
     return ErrorReportController.builder()
-        .errorReportIngestion(CreateIssueStrategy.build(githubApiClient, jdbi))
+        .errorReportIngestion(
+            CreateIssueStrategy.build(
+                LobbyServerConfig.GITHUB_ORG, configuration.getGithubRepo(), githubApiClient, jdbi))
         .canReportModule(CanUploadErrorReportStrategy.build(jdbi))
         .build();
   }

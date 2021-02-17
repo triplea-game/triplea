@@ -3,6 +3,7 @@ package org.triplea.modules.error.reporting;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,12 +37,14 @@ class CreateIssueStrategyTest {
   void verifyFlow() {
     final CreateIssueStrategy createIssueStrategy =
         CreateIssueStrategy.builder()
+            .githubOrg("org")
+            .githubRepo("repo")
             .githubApiClient(githubApiClient)
             .responseAdapter(responseAdapter)
             .errorReportingDao(errorReportingDao)
             .build();
 
-    when(githubApiClient.newIssue(any())).thenReturn(createIssueResponse);
+    when(githubApiClient.newIssue(eq("org"), eq("repo"), any())).thenReturn(createIssueResponse);
     when(responseAdapter.apply(createIssueResponse)).thenReturn(errorReportResponse);
 
     final ErrorReportResponse response =
