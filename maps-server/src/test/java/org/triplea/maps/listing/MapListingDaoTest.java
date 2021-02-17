@@ -19,6 +19,7 @@ class MapListingDaoTest extends MapServerTest {
 
   @Test
   void verifySelect() {
+
     final var results = mapListingDao.fetchMapListings();
 
     assertThat(results, hasSize(2));

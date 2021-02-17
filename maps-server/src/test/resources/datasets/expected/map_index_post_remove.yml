@@ -1,0 +1,6 @@
+map_index:
+  - id: 10
+    map_name: map-name
+    repo_url: http://map-repo-url
+    category_id: 1
+    version: 100

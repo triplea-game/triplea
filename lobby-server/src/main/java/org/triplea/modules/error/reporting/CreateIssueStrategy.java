@@ -20,9 +20,17 @@ public class CreateIssueStrategy implements Function<CreateIssueParams, ErrorRep
   @Nonnull private final Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Nonnull private final GithubApiClient githubApiClient;
   @Nonnull private final ErrorReportingDao errorReportingDao;
+  @Nonnull private final String githubOrg;
+  @Nonnull private final String githubRepo;
 
-  public static CreateIssueStrategy build(final GithubApiClient githubApiClient, final Jdbi jdbi) {
+  public static CreateIssueStrategy build(
+      final String githubOrg,
+      final String githubRepo,
+      final GithubApiClient githubApiClient,
+      final Jdbi jdbi) {
     return CreateIssueStrategy.builder()
+        .githubOrg(githubOrg)
+        .githubRepo(githubRepo)
         .githubApiClient(githubApiClient)
         .responseAdapter(new ErrorReportResponseConverter())
         .errorReportingDao(jdbi.onDemand(ErrorReportingDao.class))
@@ -50,6 +58,8 @@ public class CreateIssueStrategy implements Function<CreateIssueParams, ErrorRep
   private ErrorReportResponse sendRequest(final ErrorReportRequest errorReportRequest) {
     return responseAdapter.apply(
         githubApiClient.newIssue(
+            githubOrg,
+            githubRepo,
             CreateIssueRequest.builder()
                 .title(errorReportRequest.getGameVersion() + ": " + errorReportRequest.getTitle())
                 .body(errorReportRequest.getBody())
