@@ -3,7 +3,6 @@
     name: nginx
     state: present
 
-
 - name: generate dhparam.pem
   shell:
     cmd: openssl dhparam -out {{ dhparams_pem_file }} 4096
@@ -13,7 +12,6 @@
   file:
     dest: "{{ dhparams_pem_file }}"
     mode: 600
-
 
 - name: check for SSL cert key
   stat:
@@ -34,7 +32,6 @@
           -newkey rsa:4096 -keyout {{ ssl_cert_key }} -out {{ ssl_cert }} \
           -batch -subj '/CN=localhost' -sha256 -addext "subjectAltName = IP:127.0.0.1, IP:::1"
 
-
 - name: check for letsencrypt cert key
   stat:
     path: "{{ lets_encrypt_cert_key }}"
@@ -53,7 +50,6 @@
     cert_key: "{{ lets_encrypt_cert_key }}; # managed by Certbot;"
   changed_when: false
 
-
 - name: check for lets_encrypt cert
   stat:
     path: "{{ lets_encrypt_cert }}"
@@ -71,7 +67,6 @@
   set_fact:
     cert: "{{ lets_encrypt_cert }}; # managed by Certbot;"
   changed_when: false
-
 
 - name: deploy nginx sites_enabled configuation
   template:
