@@ -17,6 +17,6 @@ vagrant ssh
 The `run_ansible_vagrant` script accepts ansible
 flags, such as '-t' to run specific tags. EG:
 ```
-./run_ansible_vagrant -t lobby
+./run_ansible_vagrant -t lobby_server
 ```
 
