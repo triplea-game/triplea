@@ -5,7 +5,7 @@ set -eu
 URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
 green="\e[32m"
 end="\e[0m"
-IGNORE_LIST=("https://www.axisandallies.org/forums")
+IGNORE_LIST=("https://www.axisandallies.org/forums" "https://forums.triplea-game.org/")
 
 if [ -z "$URI_FILE" ]; then
   echo "Error could not find file 'UrlConstants.java'"
