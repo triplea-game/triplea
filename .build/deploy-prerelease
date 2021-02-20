@@ -8,5 +8,4 @@ eval "$(ssh-agent -s)"
 cd infrastructure
 echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
 trap "rm vault_password" EXIT
-./run_ansible_prerelease "$version" -i ansible/inventory/prerelease
-
+./run_ansible_prerelease "$version"
