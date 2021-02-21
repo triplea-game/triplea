@@ -1,4 +1,4 @@
-name: Upload Artifacts to Github Releases
+name: Deploy Prerelease
 on:
   push:
     branches:
