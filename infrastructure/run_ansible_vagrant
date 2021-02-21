@@ -27,5 +27,5 @@ function main() {
 main "$@"
 
 echo "lobby port -> 8008"
-echo "maps server port -> 9090"
+echo "maps server port -> 9000"
 
