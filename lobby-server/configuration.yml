@@ -8,7 +8,7 @@ logSqlStatements: false
 database:
   driverClass: org.postgresql.Driver
   user: ${DATABASE_USER:-lobby_user}
-  password: ${DATABASE_PASSWORD:-postgres}
+  password: ${DATABASE_PASSWORD:-lobby}
   url: jdbc:postgresql://${DB_URL:-localhost:5432/lobby_db}
   properties:
     charSet: UTF-8
