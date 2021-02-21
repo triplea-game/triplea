@@ -1,0 +1,62 @@
+- name: create service user group
+  group:
+    name: "{{ maps_server_user }}"
+
+- name: create service user
+  user:
+    name: "{{ maps_server_user }}"
+    create_home: yes
+    system: yes
+
+- name: ensure deployment folder exists
+  file:
+    state: directory
+    path: "{{ maps_server_home_folder }}"
+    mode: "0755"
+    owner: "{{ maps_server_user }}"
+    group: "{{ maps_server_user }}"
+
+- name: deploy zip artifact file if using latest
+  when: using_latest
+  register: deploy_artifact
+  copy:
+    src: "{{ maps_server_artifact }}"
+    dest: "{{ maps_server_home_folder }}/{{ maps_server_artifact }}"
+    owner: "{{ maps_server_user }}"
+    group: "{{ maps_server_user }}"
+
+- name: download zip artifact file if not using latest
+  when: not using_latest
+  register: deploy_artifact
+  get_url:
+    url: "{{ maps_server_artifact_download }}"
+    dest: "{{ maps_server_home_folder }}/{{ maps_server_artifact }}"
+    owner: "{{ maps_server_user }}"
+    group: "{{ maps_server_user }}"
+
+- name: extract zip file
+  unarchive:
+    remote_src: yes
+    src: "{{ maps_server_home_folder }}/{{ maps_server_artifact }}"
+    dest: "{{ maps_server_home_folder }}/"
+    owner: "{{ maps_server_user }}"
+    group: "{{ maps_server_user }}"
+
+- name: install systemd service script
+  register: service_script
+  template:
+    src: maps_server.service.j2
+    dest: /lib/systemd/system/maps_server.service
+    mode: "644"
+
+- name: reload systemd
+  when: service_script.changed
+  systemd:
+    daemon_reload: yes
+
+- name: restart service if new artifact was deployed
+  when: (maps_server_restart_on_new_deployment) and ((deploy_artifact.changed) or (service_script.changed))
+  service:
+    name: maps_server
+    state: restarted
+    enabled: yes

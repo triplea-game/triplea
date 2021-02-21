@@ -10,6 +10,9 @@ prod2-lobby.triplea-game.org
 [prod2_lobby:children]
 lobbyServer
 
+[mapsServer:children]
+lobbyServer
+
 [letsEncrypt:children]
 lobbyServer
 

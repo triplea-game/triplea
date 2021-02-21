@@ -10,6 +10,9 @@ vagrant
 [lobbyServer:children]
 vagrant
 
+[mapsServer:children]
+vagrant
+
 [botHosts:children]
 vagrant
 
