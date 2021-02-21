@@ -1,93 +1,63 @@
+- name: create service user group
+  group:
+    name: "{{ lobby_server_user }}"
+
 - name: create service user
   user:
     name: "{{ lobby_server_user }}"
+    group: "{{ lobby_server_user }}"
     create_home: yes
     system: yes
 
-- name: create bin folder for jar file
-  when: using_latest
+- name: ensure deployment folder exists
   file:
     state: directory
-    path: "{{ lobby_server_home_folder }}/bin/"
+    path: "{{ lobby_server_home_folder }}"
     mode: "0755"
     owner: "{{ lobby_server_user }}"
     group: "{{ lobby_server_user }}"
 
-- name: deploy jar file
+- name: deploy zip artifact file if using latest
   when: using_latest
-  register: deploy_jar_file
+  register: deploy_artifact
   copy:
-    src: "{{ lobby_server_jar }}"
-    dest: "{{ lobby_server_home_folder }}/bin/{{ lobby_server_jar }}"
+    src: "{{ lobby_artifact }}"
+    dest: "{{ lobby_server_home_folder }}/{{ lobby_artifact }}"
     owner: "{{ lobby_server_user }}"
     group: "{{ lobby_server_user }}"
 
-
-- name: download zip file if not using latest
+- name: download zip artifact file if not using latest
   when: not using_latest
-  register: deploy_jar_file
+  register: deploy_artifact
   get_url:
-    url: "{{ lobby_server_zip_download }}"
-    dest: "{{ lobby_server_home_folder }}/triplea-lobby-server-{{ version }}.zip"
+    url: "{{ lobby_artifact_download }}"
+    dest: "{{ lobby_server_home_folder }}/{{ lobby_artifact }}"
     owner: "{{ lobby_server_user }}"
     group: "{{ lobby_server_user }}"
 
-- name: extract zip file if not using latest
-  when: not using_latest
+- name: extract zip file
   unarchive:
     remote_src: yes
-    src: "{{ lobby_server_home_folder }}/triplea-lobby-server-{{ version }}.zip"
+    src: "{{ lobby_server_home_folder }}/{{ lobby_artifact }}"
     dest: "{{ lobby_server_home_folder }}/"
     owner: "{{ lobby_server_user }}"
     group: "{{ lobby_server_user }}"
 
-- name: deploy run_server script
-  template:
-    src: run_server.j2
-    dest: "{{ lobby_server_run_file }}"
-    mode: "755"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
-
-- name: deploy server config file
-  register: deploy_config_file
-  template:
-    src: configuration.yml.j2
-    dest: "{{ lobby_server_home_folder}}/configuration.yml"
-    mode: "644"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
-
 - name: install systemd service script
+  register: service_script
   template:
     src: lobby_server.service.j2
     dest: /lib/systemd/system/lobby_server.service
     mode: "644"
 
 - name: reload systemd
+  when: service_script.changed
   systemd:
     daemon_reload: yes
 
-- name: enable and start service
-  when: (deploy_jar_file.changed == false) and (deploy_config_file.changed == false)
-  service:
-    name: lobby_server
-    state: started
-    enabled: yes
-
-- name: restart service if new jar file deployed
-  when: (lobby_restart_on_new_deployment) and ((deploy_jar_file.changed) or (deploy_config_file.changed))
+- name: restart service if new artifact was deployed
+  when: (lobby_restart_on_new_deployment) and ((deploy_artifact.changed) or (service_script.changed))
   service:
     name: lobby_server
     state: restarted
     enabled: yes
-
-- name: deploy admin scripts to facilite server operations, EG. check logs, start, stop
-  copy:
-    src: "{{ item }}"
-    dest: /home/admin/
-    owner: admin
-    group: admin
-    mode: "0700"
-  with_fileglob:
-    - "admin_scripts/*"

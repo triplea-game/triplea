@@ -10,25 +10,21 @@ fi
 
 
 function main() {
-  symlinkNginxCert
   local -r version=$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)
   .include/build_latest_artifacts "$version"
 
-  ansible-playbook -D -v \
+  unbuffer ansible-playbook --diff --verbose \
       "$@" \
-      -i ansible/inventory/vagrant \
-      ansible/site.yml
-  # Update certs to pick up new or updated certs from nginx
-  sudo update-ca-certificates -f
-}
-
-function symlinkNginxCert() {
-  local crtFile="triplea-nginx-vagrant.crt"
-  local link="/usr/local/share/ca-certificates/${crtFile}"
-  if [ ! -L "$link" ]; then
-    sudo ln -s "$(pwd)/.vagrant/${crtFile}" "$link"
-  fi
+      --extra-vars "using_latest=true" \
+      --extra-vars "version=$version" \
+      --inventory-file ansible/inventory/vagrant \
+      ansible/site.yml \
+    | tee output \
+    | sed 's|\\n|\n|g'
+  rm output
 }
 
 main "$@"
+
+echo "lobby port -> 8008"
 

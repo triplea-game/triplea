@@ -23,6 +23,8 @@ ansible-vault view \
 
 # Run Deployment
 ansible-playbook \
+    --extra-vars "version=$VERSION" \
+    --extra-vars "using_latest=false" \
     --vault-password-file vault_password \
     "$@" \
     -i ansible/inventory/prod2 \

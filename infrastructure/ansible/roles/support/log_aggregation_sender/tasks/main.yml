@@ -17,7 +17,7 @@
 - name: deploy private logs-user ssh key to admin user
   # This is the SSH key that will be needed when sending log files to the aggregation server
   copy:
-   src: log_aggregation_ed25519
+   src: "{{ log_sending_private_key_file_source }}"
    dest: "{{ log_sending_private_key_file }}"
    mode: 0600
    owner: admin

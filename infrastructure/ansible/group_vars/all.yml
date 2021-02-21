@@ -12,10 +12,4 @@ maps_db_user: maps_user
 admin_user: "admin"
 admin_home: "/home/{{ admin_user }}"
 
-# If using latest we will build jar files from source,
-# otherwise they will be downloaded.
-# When set to 'false', the version' variable will
-# typically be specified.
-using_latest: true
-version: "{{ lookup('env', 'VERSION') }}"
-
+github_releases_url: https://github.com/triplea-game/triplea/releases/download

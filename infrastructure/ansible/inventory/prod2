@@ -1,7 +1,10 @@
 [forums]
 forums.triplea-game.org
 
-[dropwizardHosts]
+[lobbyServer]
+prod2-lobby.triplea-game.org
+
+[mapsServer]
 prod2-lobby.triplea-game.org
 
 [prod2_lobby:children]
