@@ -16,7 +16,7 @@ lobbyServer
 [letsEncrypt:children]
 lobbyServer
 
-[postgresHosts:children]
+[database:children]
 lobbyServer
 
 [botHosts]

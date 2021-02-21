@@ -14,14 +14,20 @@
     - system/apt_common_tools
     - nginx_forums_conf
 
+- hosts: database
+  tags: [database, postgres]
+  roles:
+    - system/admin_user
+    - system/apt_common_tools
+    - database/postgres
+    - {name: database/flyway, tags: flyway}
+
 - hosts: lobbyServer
   tags: [lobby, lobby_server]
   roles:
     - system/admin_user
     - system/apt_common_tools
     - java
-    - database/postgres
-    - {name: database/flyway, tags: flyway}
     - lobby_server
     - nginx
     - postfix
@@ -32,8 +38,6 @@
     - system/admin_user
     - system/apt_common_tools
     - java
-    - database/postgres
-    - {name: database/flyway, tags: flyway}
     - maps_server
     - nginx
 
