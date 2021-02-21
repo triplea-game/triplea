@@ -9,7 +9,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Run Ansible to Deploy
-        run: .build/deploy-prod2-servers/run
+        run: |
+          cd infrastructure
+          echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+          ./run_ansible_production
         with:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 

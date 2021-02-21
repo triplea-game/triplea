@@ -36,8 +36,9 @@ function copyBuildArtifact() {
   fi
 
   mkdir -p "$artifactDestinationPath"
-  cp "$artifactSource" "$artifactDestinationPath"
+  cp -v "$artifactSource" "$artifactDestinationPath"
 }
 
 main
+
 

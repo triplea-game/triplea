@@ -27,7 +27,11 @@ jobs:
               echo "release_name=$(date +%Y-%B) - Release - $BUILD_NUMBER" | tee -a $GITHUB_ENV
           fi
       - name: Deploy to Prerelease
-        run: .build/deploy-prerelease ${{ env.product_version }}
+        run: |
+          eval "$(ssh-agent -s)"
+          cd infrastructure
+          echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+          ./run_ansible_prerelease ${{ env.product_version }}
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
