@@ -48,6 +48,10 @@ function runCleanup() {
   # With grep -v we filter out folders that begin with a '.', and the 'maps' folder and run_server script 
   ansible -i ansible/inventory/prerelease botHosts -m shell -a \
     "find /home/bot -type d -mindepth 1 -maxdepth 1 | grep -Ev \"/\.|maps|run_server|$VERSION\" | xargs --no-run-if-empty rm -rf"
+
+  # auto-remove to clean up /usr/lib/modules, each kernel update leaves data in that folder  
+  ansible -i ansible/inventory/prerelease all -m shell -a \
+    "sudo apt autoremove"
 }
 
 main "$@"
