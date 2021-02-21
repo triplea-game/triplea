@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - release/*
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
@@ -15,17 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - name: set build version variables
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }} ${{ github.sha }})
-              echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
-              echo "is_prerelease=true" | tee -a $GITHUB_ENV
-              echo "release_name=$(date +%Y-%B-%d) - Prerelease - $BUILD_NUMBER" | tee -a $GITHUB_ENV
-          else
-              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
-              echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
-              echo "is_prerelease=false" | tee -a $GITHUB_ENV
-              echo "release_name=$(date +%Y-%B) - Release - $BUILD_NUMBER" | tee -a $GITHUB_ENV
-          fi
+          BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }} ${{ github.sha }})
+          echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
       - name: Deploy to Prerelease
         run: |
           eval "$(ssh-agent -s)"
