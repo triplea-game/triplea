@@ -34,6 +34,19 @@
     - postfix
     - support/log_aggregation_sender
 
+
+- hosts: mapsServer
+  tags: [maps_server]
+  roles:
+    - system/admin_user
+    - system/apt_common_tools
+    - java
+    - database/postgres
+    - {name: database/flyway, tags: flyway}
+    - maps_server
+    - nginx
+    - support/log_aggregation_sender
+
 - hosts: letsEncrypt
   tags: lobby
   roles:
