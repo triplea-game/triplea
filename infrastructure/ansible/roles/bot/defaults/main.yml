@@ -1,11 +1,12 @@
 bot_user: "bot"
 bot_folder: "/home/{{ bot_user }}"
+bot_version: "{{ version }}"
 
 # The location where we will install the bot binaries
-bot_install_home: "{{ bot_folder }}/{{ version }}"
+bot_install_home: "{{ bot_folder }}/{{ bot_version }}"
 
 # The location of the jar executable that we will run to launch the bot server.
-bot_jar: "{{ bot_install_home }}/triplea-game-headless-{{ version }}.jar"
+bot_jar: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.jar"
 
 # A folder where the bot server will find maps.
 bot_maps_folder: "{{ bot_folder }}/maps"
@@ -25,11 +26,11 @@ bot_numbers: ["01", "02", "03", "04" ]
 bot_prefix: ""
 
 # Using latest flag indicates we should use assets that are built locally. False indicates we
-# will download assets for a target version.
+# will download assets for a target bot_version.
 using_latest: true
 
 # Download URL for grabbing bot artifacts, not used if using_latest is false.
-zip_download: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/triplea-game-headless-{{ version }}.zip"
+zip_download: "https://github.com/triplea-game/triplea/releases/download/{{ bot_version }}/triplea-game-headless-{{ bot_version }}.zip"
 
 # Name of the bot server, this will typically be overriden in inventory. The final name of the bot host is
 # concatenation of the "Bot" the "bot name", and the "bot number" with prefix.

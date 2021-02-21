@@ -1,25 +1,9 @@
 #!/bin/bash
 
-# This script is used to execute prereleae and production deployments.
-# It should be run from the infrastructure machine.
-# The script is saved in git repository so that we can track changes to it.
-# If the script is updated, upload a new copy to the infrastructure machine
-# to /home/ansible.
+# This script is used to execute prerelease deployments by building artifacts
+# and then deploying them via ansible.
 
-function usage() {
-  echo "Usage: $0 [Version] (ansible_args)"
-  echo "  version: The version of tripleA we will deploy eg: 1.10.5252"
-  echo "  (options) ansible_args: Additional args passed to ansible-playbook"
-  echo "Example: $0 1.10.5252"
-  echo "Example: $0 1.10.5252 --diff -v"
-  exit 1
-}
-
-if [ "$#" -eq 0 ]; then
-  usage
-fi
-
-export VERSION=${1-}
+VERSION=${1-$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)}
 shift
 
 VAULT_PASSWORD_FILE="vault_password"
@@ -27,7 +11,6 @@ if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
   echo "Error: $VAULT_PASSWORD_FILE must exist"
   exit 1
 fi
-
 
 function main() {
   .include/build_latest_artifacts "$VERSION"
@@ -37,13 +20,18 @@ function main() {
 }
 
 function addPrivateSshKeyToAgent() {
-  ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
+  ansible-vault view \
+    --vault-password-file="$VAULT_PASSWORD_FILE" \
+    ansible_ssh_key.ed25519 \
+  | ssh-add -
 }
 
 function runDeployment() {
   ansible-playbook \
+    --extra-vars "version=$VERSION" \
+    --extra-vars "using_latest=true" \
     --vault-password-file "$VAULT_PASSWORD_FILE" \
-    -i ansible/inventory/prerelease \
+    --inventory ansible/inventory/prerelease \
    "$@" \
    ansible/site.yml
 }

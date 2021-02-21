@@ -1,19 +1,15 @@
-## This is the dropwizard configuration for local development and tests.
-## Keep this configuration in sync with the prerelease/production configuration.
-## The deployed configuration is in 'infrastructure/ansible/.../configuration.yml.j2'
-
-githubRepo: test
-githubApiToken: test
+githubRepo: ${ERROR_REPORT_GITHUB_REPO:-test}
+githubApiToken: ${GITHUB_API_TOKEN:-test}
 # if we are using any stubbing, we'll assert that this value is false.
 # this is to help guarantee that we do not accidentally use test configuration in prod.
-prod: false
+prod: ${PROD_FLAG:-false}
 logSqlStatements: false
 
 database:
   driverClass: org.postgresql.Driver
-  user: lobby_user
-  password: postgres
-  url: jdbc:postgresql://localhost:5432/lobby_db
+  user: ${DATABASE_USER:-lobby_user}
+  password: ${DATABASE_PASSWORD:-postgres}
+  url: jdbc:postgresql://${DB_URL:-localhost:5432/lobby_db}
   properties:
     charSet: UTF-8
   # the maximum amount of time to wait on an empty pool before throwing an exception

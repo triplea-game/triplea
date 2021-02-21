@@ -4,12 +4,10 @@ plugins {
 }
 
 archivesBaseName = "$group-$name"
-description = 'Lobby Http Server'
 mainClassName = 'org.triplea.http.LobbyServer'
 ext {
     releasesDir = file("$buildDir/releases")
 }
-
 
 configurations {
     testImplementation {
@@ -65,8 +63,7 @@ jar {
 }
 
 task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
-    from file('configuration-prerelease.yml')
-    from file('configuration-production.yml')
+    from file('configuration.yml')
 
     from(shadowJar.outputs) {
         into 'bin'

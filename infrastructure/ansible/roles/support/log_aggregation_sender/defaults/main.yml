@@ -6,5 +6,9 @@
 # being sent to the log aggregation server.
 
 journalctl_applications: [ ]
-
 log_sending_private_key_file: /home/admin/.ssh/log_aggregation_ed25519
+
+# file containing private key used for log sending (done via SCP)
+# Local environments can override this to avoid needing a vault password.
+log_sending_private_key_file_source: log_aggregation_ed25519
+

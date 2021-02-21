@@ -9,7 +9,10 @@ support01.triplea-game.org
 [postgresHosts:children]
 prerelease
 
-[dropwizardHosts:children]
+[lobbyServer:children]
+prerelease
+
+[mapsServer:children]
 prerelease
 
 [botHosts:children]

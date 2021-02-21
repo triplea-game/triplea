@@ -5,33 +5,42 @@
     - system/apt_update
     - system/firewall
     - system/security
-    - system/admin_user
-    - system/apt_common_tools
     - system/journald
 
 - hosts: support
   tags: support
   roles:
+    - system/admin_user
+    - system/apt_common_tools
     - support/log_aggregation_server
 
 - hosts: forums
   tags: forums
   roles:
+    - system/admin_user
+    - system/apt_common_tools
     - nginx_forums_conf
 
-- hosts: postgresHosts
-  tags: [database, flyway]
+- hosts: lobbyServer
+  tags: [lobby, lobby_server]
   roles:
-    - database/postgres
-    - database/flyway
-
-- hosts: dropwizardHosts
-  tags: lobby
-  roles:
+    - system/admin_user
+    - system/apt_common_tools
     - java
+    - database/postgres
+    - {name: database/flyway, tags: flyway}
     - lobby_server
     - nginx
     - postfix
+    - support/log_aggregation_sender
+
+- hosts: mapsServer
+  tags: maps_server
+  roles:
+    - system/admin_user
+    - system/apt_common_tools
+    - java
+    - maps_server
     - support/log_aggregation_sender
 
 - hosts: letsEncrypt
@@ -47,6 +56,7 @@
 - hosts: botHosts
   tags: [bot, bots]
   roles:
+    - system/apt_common_tools
     - java
     - bot
     - support/log_aggregation_sender
