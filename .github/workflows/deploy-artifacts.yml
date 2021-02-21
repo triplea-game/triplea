@@ -1,0 +1,43 @@
+name: Deploy Artifacts to Github Releases
+on:
+  push:
+    branches:
+      - master
+      - release/*
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  build:
+    name: Build and upload installers
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: set build version variables
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }} ${{ github.sha }})
+              echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
+              echo "is_prerelease=true" | tee -a $GITHUB_ENV
+              echo "release_name=$(date +%Y-%B-%d) - Prerelease - $BUILD_NUMBER" | tee -a $GITHUB_ENV
+          else
+              BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
+              echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
+              echo "is_prerelease=false" | tee -a $GITHUB_ENV
+              echo "release_name=$(date +%Y-%B) - Release - $BUILD_NUMBER" | tee -a $GITHUB_ENV
+          fi
+      - name: Build installers
+        run: .build/build-installer
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+          INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
+      - name: Create Github Release
+        uses: ncipollo/release-action@v1
+        with:        
+          artifacts: build/artifacts/*
+          tag: ${{ env.product_version }} 
+          name: ${{ env.release_name }}
+          prerelease: ${{ env.is_prerelease }}
+          commit: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+

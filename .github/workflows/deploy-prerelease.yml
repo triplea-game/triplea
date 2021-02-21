@@ -1,4 +1,4 @@
-name: Build and upload Prerelease
+name: Upload Artifacts to Github Releases
 on:
   push:
     branches:
@@ -26,26 +26,8 @@ jobs:
               echo "is_prerelease=false" | tee -a $GITHUB_ENV
               echo "release_name=$(date +%Y-%B) - Release - $BUILD_NUMBER" | tee -a $GITHUB_ENV
           fi
-      - name: Build installers
-        run: .build/build-installer
-        env:
-          BUILD_NUMBER: ${{ github.run_number }}
-          INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
-      - name: Create Github Release
-        uses: ncipollo/release-action@v1
-        with:        
-          artifacts: build/artifacts/*
-          tag: ${{ env.product_version }} 
-          name: ${{ env.release_name }}
-          prerelease: ${{ env.is_prerelease }}
-          commit: master
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy to Prerelease
         run: .build/deploy-prerelease ${{ env.product_version }}
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-      - name: Update maps on website
-        run: .build/update-maps-on-website/run
-        env:
-          BUILD_NUMBER: ${{ github.run_number }}
-          PUSH_TO_WEBSITE_TOKEN: ${{ secrets.PUSH_TO_WEBSITE_TOKEN }}
+
