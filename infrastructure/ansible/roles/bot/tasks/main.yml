@@ -37,21 +37,14 @@
 - name: download maps on bot server
   command: "{{ admin_home }}/download-all-maps {{ update_maps }}"
 
-- name: deploy jar file if using latest
+- name: deploy zip file if using latest
   when: using_latest
   copy:
-    src: "triplea-game-headless-{{ bot_version }}.jar"
+    src: "triplea-game-headless-{{ bot_version }}.zip"
     dest: "{{ bot_jar }}"
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
 
-- name: create triplea-root touch file
-  file:
-    state: touch
-    path: "{{ bot_install_home }}/.triplea-root"
-    mode: "0644"
-    owner: "{{ bot_user }}"
-    group: "{{ bot_user }}"
 
 - name: download zip file if not using latest
   when: not using_latest
@@ -61,8 +54,7 @@
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
 
-- name: extract zip file if not using latest
-  when: not using_latest
+- name: extract zip file
   unarchive:
     remote_src: yes
     src: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
@@ -70,12 +62,11 @@
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
 
-- name: move jar file to expected location if not using latest
-  when: not using_latest
-  copy:
-    remote_src: true
-    src: "{{ bot_install_home }}/bin/triplea-game-headless-{{ bot_version }}.jar"
-    dest: "{{ bot_jar }}"
+- name: create triplea-root touch file
+  file:
+    state: touch
+    path: "{{ bot_install_home }}/.triplea-root"
+    mode: "0644"
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
 

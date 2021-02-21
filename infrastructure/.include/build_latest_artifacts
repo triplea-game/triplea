@@ -19,11 +19,11 @@ function main() {
 function buildArtifacts() {
   (
     cd ..
-    ./gradlew :lobby-server:release :game-headless:shadowJar :database:release
+    ./gradlew :lobby-server:release :game-headless:release :database:release
   )
   copyBuildArtifact "../database/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
   copyBuildArtifact "../lobby-server/build/artifacts/triplea-lobby-server-$VERSION.zip" "ansible/roles/lobby_server/files/"
-  copyBuildArtifact "../game-headless/build/libs/triplea-game-headless-$VERSION.jar" "ansible/roles/bot/files/"
+  copyBuildArtifact "../game-headless/build/libs/triplea-game-headless-$VERSION.zip" "ansible/roles/bot/files/"
 }
 
 function copyBuildArtifact() {
@@ -40,5 +40,4 @@ function copyBuildArtifact() {
 }
 
 main
-
 
