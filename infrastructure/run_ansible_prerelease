@@ -38,7 +38,7 @@ function runDeployment() {
 
 function runCleanup() {
   # Remove all lobby_server binary files except the current one.
-  ansible -i ansible/inventory/prerelease dropwizardHosts -m shell -a \
+  ansible -i ansible/inventory/prerelease lobbyServer -m shell -a \
     "find /home/lobby_server/bin -type f | grep -v \"$VERSION\" | xargs rm"
  
   # remove folders under bot (each deployment folder), eg: /home/bot/2.3.21496

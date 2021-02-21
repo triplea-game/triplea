@@ -8,13 +8,13 @@ prod2-lobby.triplea-game.org
 prod2-lobby.triplea-game.org
 
 [prod2_lobby:children]
-dropwizardHosts
+lobbyServer
 
 [letsEncrypt:children]
-dropwizardHosts
+lobbyServer
 
 [postgresHosts:children]
-dropwizardHosts
+lobbyServer
 
 [support]
 support01.triplea-game.org
@@ -37,7 +37,7 @@ botHosts
 
 [prod2:children]
 postgresHosts
-dropwizardHosts
+lobbyServer
 botHosts
 
 [linode:children]

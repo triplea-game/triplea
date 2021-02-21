@@ -20,5 +20,5 @@ prerelease
 prerelease
 
 [letsEncrypt:children]
-dropwizardHosts
+lobbyServer
 
