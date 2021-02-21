@@ -7,13 +7,6 @@
     - system/security
     - system/journald
 
-- hosts: support
-  tags: support
-  roles:
-    - system/admin_user
-    - system/apt_common_tools
-    - support/log_aggregation_server
-
 - hosts: forums
   tags: forums
   roles:
@@ -32,8 +25,6 @@
     - lobby_server
     - nginx
     - postfix
-    - support/log_aggregation_sender
-
 
 - hosts: mapsServer
   tags: [maps_server]
@@ -45,7 +36,6 @@
     - {name: database/flyway, tags: flyway}
     - maps_server
     - nginx
-    - support/log_aggregation_sender
 
 - hosts: letsEncrypt
   tags: lobby
@@ -63,5 +53,4 @@
     - system/apt_common_tools
     - java
     - bot
-    - support/log_aggregation_sender
 
