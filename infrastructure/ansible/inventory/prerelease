@@ -1,7 +1,7 @@
 [prerelease]
 prerelease.triplea-game.org
 
-[postgresHosts:children]
+[database:children]
 prerelease
 
 [lobbyServer:children]
