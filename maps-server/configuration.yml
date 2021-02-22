@@ -8,7 +8,7 @@ server:
 database:
   driverClass: org.postgresql.Driver
   user: maps_user
-  password: ${DATABASE_PASSWORD:-postgres}
+  password: ${DATABASE_PASSWORD:-maps}
   url: jdbc:postgresql://localhost:5432/maps_db
   properties:
     charSet: UTF-8
