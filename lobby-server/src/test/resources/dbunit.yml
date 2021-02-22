@@ -3,4 +3,4 @@ connectionConfig:
   driver: "org.postgresql.Driver"
   url: "jdbc:postgresql://localhost:5432/lobby_db"
   user: "lobby_user"
-  password: "postgres"
+  password: "lobby"
