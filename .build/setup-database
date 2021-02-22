@@ -6,14 +6,15 @@ set -eux
 function createDatabase() {
   local dbName="$1"
   local dbUser="$2"
+  local password="$3"
   
-  echo "create user ${dbUser} with password 'postgres'" | psql -h localhost -U postgres -d postgres
+  echo "create user ${dbUser} with password ${password}" | psql -h localhost -U postgres -d postgres
   echo "create database ${dbName} owner ${dbUser}" | psql -h localhost -U postgres -d postgres
 }
 
 export PGPASSWORD=postgres
-createDatabase "lobby_db" "lobby_user"
-createDatabase "maps_db" "maps_user"
+createDatabase "lobby_db" "lobby_user" "lobby"
+createDatabase "maps_db" "maps_user" "maps"
 
 ./gradlew flywayMigrateAll
 
