@@ -2,8 +2,8 @@ package games.strategy.engine.framework.map.download;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import javax.swing.DefaultListModel;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingComponents;
 
@@ -11,7 +11,7 @@ import org.triplea.swing.SwingComponents;
 class FileSystemAccessStrategy {
 
   static void remove(
-      final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
+      final List<DownloadFileDescription> toRemove, final Consumer<String> removeAction) {
     SwingComponents.promptUser(
         "Remove Maps?",
         "<html>Will remove "
@@ -19,11 +19,11 @@ class FileSystemAccessStrategy {
             + " maps, are you sure? <br/>"
             + formatMapList(toRemove, DownloadFileDescription::getMapName)
             + "</html>",
-        newRemoveMapAction(toRemove, listModel));
+        newRemoveMapAction(toRemove, removeAction));
   }
 
   private static Runnable newRemoveMapAction(
-      final List<DownloadFileDescription> maps, final DefaultListModel<String> listModel) {
+      final List<DownloadFileDescription> maps, final Consumer<String> removeAction) {
     return () -> {
       final List<DownloadFileDescription> deletes = new ArrayList<>();
 
@@ -35,7 +35,7 @@ class FileSystemAccessStrategy {
       }
 
       if (!deletes.isEmpty()) {
-        deletes.stream().map(DownloadFileDescription::getMapName).forEach(listModel::removeElement);
+        deletes.stream().map(DownloadFileDescription::getMapName).forEach(removeAction);
         final String message = newDialogMessage("Successfully removed.", deletes);
         showDialog(message, deletes, DownloadFileDescription::getMapName);
       }
