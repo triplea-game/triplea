@@ -8,7 +8,7 @@ function createDatabase() {
   local dbUser="$2"
   local password="$3"
   
-  echo "create user ${dbUser} with password ${password}" | psql -h localhost -U postgres -d postgres
+  echo "create user ${dbUser} with password '${password}'" | psql -h localhost -U postgres -d postgres
   echo "create database ${dbName} owner ${dbUser}" | psql -h localhost -U postgres -d postgres
 }
 
