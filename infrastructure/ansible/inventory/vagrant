@@ -1,15 +1,23 @@
-[vagrant]
+[vagrant_local]
 vagrant ansible_host=127.0.0.1 ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/vagrantHost/virtualbox/private_key
 
 [database:children]
-vagrant
+vagrant_local
 
 [lobbyServer:children]
-vagrant
+vagrant_local
 
 [mapsServer:children]
-vagrant
+vagrant_local
 
 [botHosts:children]
-vagrant
+vagrant_local
 
+[vagrant_local:vars]
+ansible_ssh_user: vagrant
+ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+ansible_python_interpreter: /usr/bin/python3
+lobby_uri: "http://localhost:8080"
+lobby_db_password: "lobby"
+maps_db_password: "maps"
+bot_numbers: ["01", "02"]
