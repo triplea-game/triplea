@@ -352,7 +352,7 @@ public class DownloadMapsWindow extends JFrame {
     // find the map description by map name and update the map download detail panel
     maps.stream()
         .filter(mapDescription -> mapDescription.getMapName().equals(mapName))
-        .findFirst()
+        .findAny()
         .ifPresent(
             map -> {
               final String text = map.toHtmlString();
