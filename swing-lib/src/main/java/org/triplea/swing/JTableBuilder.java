@@ -62,11 +62,21 @@ public class JTableBuilder<T> {
                         .map(d -> d.stream().map(rowMapper).collect(Collectors.toList()))
                         .orElse(List.of()));
 
-    final DefaultTableModel model = new DefaultTableModel();
+    final DefaultTableModel model =
+        new DefaultTableModel() {
+          private static final long serialVersionUID = -2814510707475316911L;
+
+          @Override
+          public boolean isCellEditable(final int row, final int column) {
+            return false;
+          }
+        };
     columnNames.forEach(model::addColumn);
 
     data.stream().map(row -> row.toArray(new String[0])).forEach(model::addRow);
-    return new JTable(model);
+    final JTable table = new JTable(model);
+    table.setAutoCreateRowSorter(true);
+    return table;
   }
 
   /**
