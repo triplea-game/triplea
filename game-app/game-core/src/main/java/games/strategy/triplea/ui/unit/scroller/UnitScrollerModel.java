@@ -24,22 +24,16 @@ class UnitScrollerModel {
       final Collection<Unit> skippedUnits) {
     Preconditions.checkNotNull(t);
 
-    return getPlayerUnitsInTerritory(t, movePhase, player).stream()
-        .filter(Matches.unitHasMovementLeft())
-        .filter(Predicate.not(skippedUnits::contains))
-        .collect(Collectors.toList());
-  }
-
-  static List<Unit> getPlayerUnitsInTerritory(
-      final Territory t, final UnitScroller.MovePhase movePhase, final GamePlayer player) {
-    Preconditions.checkNotNull(t);
-
-    final Predicate<Unit> movableInCurrentPhaseAndOwnedByMe =
+    final Predicate<Unit> moveableUnitOwnedByMe =
         PredicateBuilder.of(Matches.unitIsOwnedBy(player))
+            .and(Matches.unitHasMovementLeft())
+            // if not non combat, cannot move aa units
             .andIf(
                 movePhase == UnitScroller.MovePhase.COMBAT, Matches.unitCanMoveDuringCombatMove())
             .build();
-    return t.getUnitCollection().getMatches(movableInCurrentPhaseAndOwnedByMe);
+    final List<Unit> units = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
+    units.removeAll(skippedUnits);
+    return units;
   }
 
   static int computeUnitsToMoveCount(
