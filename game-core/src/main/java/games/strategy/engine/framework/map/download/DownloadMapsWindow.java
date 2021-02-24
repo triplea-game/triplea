@@ -306,11 +306,6 @@ public class DownloadMapsWindow extends JFrame {
 
   private JPanel newMapSelectionPanel(
       final List<DownloadFileDescription> unsortedMaps, final MapAction action) {
-
-    //    final List<DownloadFileDescription> maps =
-    //        unsortedMaps.stream()
-    //            .sorted(Comparator.comparing(lhs -> lhs.getMapName().toUpperCase()))
-    //            .collect(Collectors.toList());
     final JPanel main = new JPanelBuilder().border(30).borderLayout().build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
