@@ -56,5 +56,6 @@ task release(group: 'release', dependsOn: portableInstaller) {
 }
 
 shadowJar {
+    mergeServiceFiles()
     archiveClassifier.set ''
 }
