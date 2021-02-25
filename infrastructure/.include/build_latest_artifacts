@@ -22,7 +22,7 @@ function buildArtifacts() {
     ./gradlew \
         :lobby-server:release \
         :maps-server:release \
-        :game-headless:shadowJar \
+        :game-headless:release \
         :database:release
   )
   copyBuildArtifact "../database/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
