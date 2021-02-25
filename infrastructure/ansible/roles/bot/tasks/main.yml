@@ -41,7 +41,7 @@
   when: using_latest
   copy:
     src: "triplea-game-headless-{{ bot_version }}.zip"
-    dest: "{{ bot_jar }}"
+    dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
 

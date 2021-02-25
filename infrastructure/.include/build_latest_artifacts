@@ -28,7 +28,7 @@ function buildArtifacts() {
   copyBuildArtifact "../database/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
   copyBuildArtifact "../lobby-server/build/artifacts/triplea-lobby-server-$VERSION.zip" "ansible/roles/lobby_server/files/"
   copyBuildArtifact "../maps-server/build/artifacts/triplea-maps-server-$VERSION.zip" "ansible/roles/maps_server/files/"
-  copyBuildArtifact "../game-headless/build/libs/triplea-game-headless-$VERSION.zip" "ansible/roles/bot/files/"
+  copyBuildArtifact "../game-headless/build/artifacts/triplea-game-headless-$VERSION.zip" "ansible/roles/bot/files/"
 }
 
 function copyBuildArtifact() {
