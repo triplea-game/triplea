@@ -4,8 +4,7 @@ plugins {
 }
 
 archivesBaseName = "$group-$name"
-description = 'TripleA Maps Server'
-mainClassName = 'org.triplea.maps.server.http.Server'
+mainClassName = 'org.triplea.maps.server.http.MapsServer'
 ext {
     releasesDir = file("$buildDir/releases")
 }
