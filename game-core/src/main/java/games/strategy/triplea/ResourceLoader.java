@@ -40,11 +40,12 @@ public class ResourceLoader implements Closeable {
   private final URLClassLoader loader;
 
   @Getter private final List<URL> searchUrls;
+  @Getter private final File mapLocation;
 
   public ResourceLoader(final String mapName) {
     Preconditions.checkNotNull(mapName);
 
-    final File mapLocation =
+    mapLocation =
         DownloadedMapsListing.findContentRootForMapName(mapName)
             .orElseThrow(
                 () -> {

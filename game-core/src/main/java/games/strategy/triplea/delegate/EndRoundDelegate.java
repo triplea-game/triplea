@@ -6,7 +6,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -323,9 +322,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // now tell the HOST, and see if they want to continue the game.
         String displayMessage =
             LocalizeHtml.localizeImgLinksInHtml(
-                status,
-                DownloadedMapsListing.parseMapFiles()
-                    .findContentRootForMapNameOrElseThrow(UiContext.getMapDir()));
+                status, UiContext.getResourceLoader().getMapLocation());
         if (displayMessage.endsWith("</body>")) {
           displayMessage =
               displayMessage.substring(0, displayMessage.length() - "</body>".length())
