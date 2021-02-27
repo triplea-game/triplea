@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,11 +38,6 @@ public class UnitSeparator {
     @Builder.Default final boolean transportMovement = false;
     /** whether to categorize by amphibious */
     @Builder.Default final boolean amphibious = false;
-    /**
-     * If true then sort the categories in UnitCategory order; if false, then leave categories in
-     * original order (based on units).
-     */
-    @Builder.Default final boolean sort = true;
   }
 
   /**
@@ -93,12 +86,7 @@ public class UnitSeparator {
       final Collection<Unit> units, final SeparatorCategories separatorCategories) {
     // somewhat odd, but we map UnitCategory->UnitCategory, key and value are the same
     // we do this to take advantage of .equals() on objects that are equal in a special way
-    final Map<UnitCategory, UnitCategory> categories;
-    if (separatorCategories.sort) {
-      categories = new HashMap<>();
-    } else {
-      categories = new LinkedHashMap<>();
-    }
+    final Map<UnitCategory, UnitCategory> categories = new HashMap<>();
     for (final Unit current : units) {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (separatorCategories.movement
@@ -137,8 +125,6 @@ public class UnitSeparator {
         categories.put(entry, entry);
       }
     }
-    return separatorCategories.sort
-        ? new TreeSet<>(categories.keySet())
-        : new LinkedHashSet<>(categories.keySet());
+    return new TreeSet<>(categories.keySet());
   }
 }

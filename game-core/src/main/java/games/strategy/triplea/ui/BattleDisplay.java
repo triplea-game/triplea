@@ -903,9 +903,7 @@ public class BattleDisplay extends JPanel {
       } finally {
         gameData.releaseReadLock();
       }
-      final Collection<UnitCategory> unitCategories =
-          UnitSeparator.categorize(
-              units, UnitSeparator.SeparatorCategories.builder().sort(false).build());
+      final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
       for (final UnitCategory category : unitCategories) {
         final int[] shift = new int[gameData.getDiceSides() + 1];
         for (final Unit current : category.getUnits()) {
