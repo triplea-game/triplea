@@ -37,7 +37,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   private final BigDecimal movement;
   // movement of the units
   private final int transportCost;
-  private final boolean wasAmphibious;
+  private final boolean amphibious;
   private final GamePlayer owner;
   // the units in the category, may be duplicates.
   private final List<Unit> units = new ArrayList<>();
@@ -51,7 +51,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     movement = new BigDecimal(-1);
     transportCost = -1;
     this.owner = owner;
-    wasAmphibious = false;
+    amphibious = false;
   }
 
   UnitCategory(
@@ -62,7 +62,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
       final int bombingDamage,
       final boolean disabled,
       final int transportCost,
-      final boolean wasAmphibious) {
+      final boolean amphibious) {
     type = unit.getType();
     this.movement = movement;
     this.transportCost = transportCost;
@@ -70,7 +70,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     this.damaged = damaged;
     this.bombingDamage = bombingDamage;
     this.disabled = disabled;
-    this.wasAmphibious = wasAmphibious;
+    this.amphibious = amphibious;
     units.add(unit);
     createDependents(dependents);
   }
@@ -95,8 +95,8 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return UnitAttachment.get(type).getHitPoints();
   }
 
-  private boolean getWasAmphibious() {
-    return wasAmphibious;
+  private boolean getAmphibious() {
+    return amphibious;
   }
 
   private void createDependents(final Collection<Unit> dependents) {
@@ -122,7 +122,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
         && other.damaged == this.damaged
         && other.bombingDamage == this.bombingDamage
         && other.disabled == this.disabled
-        && other.wasAmphibious == this.wasAmphibious;
+        && other.amphibious == this.amphibious;
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
@@ -152,7 +152,9 @@ public class UnitCategory implements Comparable<UnitCategory> {
         + " dependents:"
         + dependents
         + " movement:"
-        + movement;
+        + movement
+        + " amphibious:"
+        + amphibious;
   }
 
   /** Collection of UnitOwners, the type of our dependents, not the dependents. */
@@ -201,7 +203,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
                 .thenComparingInt(UnitCategory::getDamaged)
                 .thenComparingInt(UnitCategory::getBombingDamage)
                 .thenComparing(UnitCategory::getDisabled)
-                .thenComparing(UnitCategory::getWasAmphibious))
+                .thenComparing(UnitCategory::getAmphibious))
         .compare(this, other);
   }
 }
