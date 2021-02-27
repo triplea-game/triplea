@@ -97,7 +97,7 @@ public final class UnitChooser extends JPanel {
     combinedList.addAll(defaultSelections.getKilled());
     createEntries(
         units,
-        UnitSeparator.SeparatorCategories.builder().dependents(dependent).build(),
+        UnitSeparator.SeparatorCategories.builder().dependents(dependent).airMovement(true).build(),
         combinedList);
     layoutEntries();
   }

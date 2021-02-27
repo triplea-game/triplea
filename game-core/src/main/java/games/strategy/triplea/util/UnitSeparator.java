@@ -32,6 +32,8 @@ public class UnitSeparator {
     @Builder.Default @Nullable final Map<Unit, Collection<Unit>> dependents = null;
     /** whether to categorize by movement */
     @Builder.Default final boolean movement = false;
+    /** whether to categorize air units by movement */
+    @Builder.Default final boolean airMovement = false;
     /** whether to categorize by transport cost */
     @Builder.Default final boolean transportCost = false;
     /** whether to categorize transports by movement */
@@ -91,6 +93,9 @@ public class UnitSeparator {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (separatorCategories.movement
           || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))) {
+        unitMovement = current.getMovementLeft();
+      }
+      if (separatorCategories.airMovement && current.getUnitAttachment().getIsAir()) {
         unitMovement = current.getMovementLeft();
       }
       int unitTransportCost = -1;
