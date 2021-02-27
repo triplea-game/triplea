@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.math.BigDecimal;
@@ -39,6 +38,8 @@ public class UnitSeparator {
     @Builder.Default final boolean transportCost = false;
     /** whether to categorize transports by movement */
     @Builder.Default final boolean transportMovement = false;
+    /** whether to categorize by amphibious */
+    @Builder.Default final boolean amphibious = false;
     /**
      * If true then sort the categories in UnitCategory order; if false, then leave categories in
      * original order (based on units).
@@ -106,11 +107,15 @@ public class UnitSeparator {
       }
       int unitTransportCost = -1;
       if (separatorCategories.transportCost) {
-        unitTransportCost = UnitAttachment.get(current.getType()).getTransportCost();
+        unitTransportCost = current.getUnitAttachment().getTransportCost();
       }
       Collection<Unit> currentDependents = null;
       if (separatorCategories.dependents != null) {
         currentDependents = separatorCategories.dependents.get(current);
+      }
+      boolean unitAmphibious = false;
+      if (separatorCategories.amphibious) {
+        unitAmphibious = current.getWasAmphibious();
       }
       final boolean disabled = Matches.unitIsDisabled().test(current);
       final UnitCategory entry =
@@ -121,7 +126,8 @@ public class UnitSeparator {
               current.getHits(),
               current.getUnitDamage(),
               disabled,
-              unitTransportCost);
+              unitTransportCost,
+              unitAmphibious);
       // we test to see if we have the key using equals, then since
       // key maps to key, we retrieve it to add the unit to the correct category
       if (categories.containsKey(entry)) {
