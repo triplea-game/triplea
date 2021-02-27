@@ -233,7 +233,9 @@ public class BattleDisplay extends JPanel {
       dependentUnitsReturned.addAll(dependentCollection);
     }
     for (final UnitCategory category :
-        UnitSeparator.categorize(killedUnits, dependentsMap, false, false)) {
+        UnitSeparator.categorize(
+            killedUnits,
+            UnitSeparator.SeparatorCategories.builder().dependents(dependentsMap).build())) {
       final JPanel panel = new JPanel();
       JLabel unit = uiContext.newUnitImageLabel(category.getType(), category.getOwner());
       panel.add(unit);
@@ -901,8 +903,7 @@ public class BattleDisplay extends JPanel {
       } finally {
         gameData.releaseReadLock();
       }
-      final Collection<UnitCategory> unitCategories =
-          UnitSeparator.categorize(units, null, false, false, false);
+      final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
       for (final UnitCategory category : unitCategories) {
         final int[] shift = new int[gameData.getDiceSides() + 1];
         for (final Unit current : category.getUnits()) {
@@ -1009,14 +1010,16 @@ public class BattleDisplay extends JPanel {
         this.killed.add(new JLabel("Killed"));
       }
       final Iterable<UnitCategory> killedIter =
-          UnitSeparator.categorize(killed, dependents, false, false);
+          UnitSeparator.categorize(
+              killed, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
       categorizeUnits(killedIter, false, false);
       damaged.removeAll(killed);
       if (!damaged.isEmpty()) {
         this.damaged.add(new JLabel("Damaged"));
       }
       final Iterable<UnitCategory> damagedIter =
-          UnitSeparator.categorize(damaged, dependents, false, false);
+          UnitSeparator.categorize(
+              damaged, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
       categorizeUnits(damagedIter, true, true);
       invalidate();
       validate();
@@ -1029,7 +1032,8 @@ public class BattleDisplay extends JPanel {
         this.killed.add(new JLabel("Killed"));
       }
       final Iterable<UnitCategory> killedIter =
-          UnitSeparator.categorize(killed, dependents, false, false);
+          UnitSeparator.categorize(
+              killed, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
       categorizeUnits(killedIter, false, false);
       invalidate();
       validate();

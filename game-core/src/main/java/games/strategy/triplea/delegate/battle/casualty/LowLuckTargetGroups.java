@@ -43,7 +43,8 @@ class LowLuckTargetGroups {
     }
 
     final Collection<UnitCategory> groupedTargets =
-        UnitSeparator.categorize(targets, null, false, true);
+        UnitSeparator.categorize(
+            targets, UnitSeparator.SeparatorCategories.builder().transportCost(true).build());
     for (final UnitCategory uc : groupedTargets) {
       final Deque<List<Unit>> guaranteedGroups =
           new ArrayDeque<>(Lists.partition(uc.getUnits(), guaranteeHitGroupSize));

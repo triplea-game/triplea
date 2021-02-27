@@ -26,6 +26,7 @@ import org.triplea.java.collections.CollectionUtils;
  *   <li>Bombing damage
  *   <li>Disabled state
  *   <li>Dependents
+ *   <li>Amphibious
  * </ul>
  */
 public class UnitCategory implements Comparable<UnitCategory> {
@@ -36,6 +37,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   private final BigDecimal movement;
   // movement of the units
   private final int transportCost;
+  private final boolean amphibious;
   private final GamePlayer owner;
   // the units in the category, may be duplicates.
   private final List<Unit> units = new ArrayList<>();
@@ -49,6 +51,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     movement = new BigDecimal(-1);
     transportCost = -1;
     this.owner = owner;
+    amphibious = false;
   }
 
   UnitCategory(
@@ -58,7 +61,8 @@ public class UnitCategory implements Comparable<UnitCategory> {
       final int damaged,
       final int bombingDamage,
       final boolean disabled,
-      final int transportCost) {
+      final int transportCost,
+      final boolean amphibious) {
     type = unit.getType();
     this.movement = movement;
     this.transportCost = transportCost;
@@ -66,6 +70,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     this.damaged = damaged;
     this.bombingDamage = bombingDamage;
     this.disabled = disabled;
+    this.amphibious = amphibious;
     units.add(unit);
     createDependents(dependents);
   }
@@ -90,6 +95,10 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return UnitAttachment.get(type).getHitPoints();
   }
 
+  private boolean getAmphibious() {
+    return amphibious;
+  }
+
   private void createDependents(final Collection<Unit> dependents) {
     this.dependents = new ArrayList<>();
     if (dependents == null) {
@@ -112,7 +121,8 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return equalsIgnoreDamaged
         && other.damaged == this.damaged
         && other.bombingDamage == this.bombingDamage
-        && other.disabled == this.disabled;
+        && other.disabled == this.disabled
+        && other.amphibious == this.amphibious;
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
@@ -142,7 +152,9 @@ public class UnitCategory implements Comparable<UnitCategory> {
         + " dependents:"
         + dependents
         + " movement:"
-        + movement;
+        + movement
+        + " amphibious:"
+        + amphibious;
   }
 
   /** Collection of UnitOwners, the type of our dependents, not the dependents. */
@@ -190,7 +202,8 @@ public class UnitCategory implements Comparable<UnitCategory> {
                     })
                 .thenComparingInt(UnitCategory::getDamaged)
                 .thenComparingInt(UnitCategory::getBombingDamage)
-                .thenComparing(UnitCategory::getDisabled))
+                .thenComparing(UnitCategory::getDisabled)
+                .thenComparing(UnitCategory::getAmphibious))
         .compare(this, other);
   }
 }

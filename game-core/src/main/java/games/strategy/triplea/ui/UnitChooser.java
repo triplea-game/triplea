@@ -65,7 +65,13 @@ public final class UnitChooser extends JPanel {
       final Map<Unit, Collection<Unit>> dependent,
       final boolean allowTwoHit,
       final UiContext uiContext) {
-    this(units, defaultSelections, dependent, false, false, allowTwoHit, uiContext);
+    this(
+        units,
+        defaultSelections,
+        dependent,
+        UnitSeparator.SeparatorCategories.builder().build(),
+        allowTwoHit,
+        uiContext);
   }
 
   private UnitChooser(
@@ -89,7 +95,10 @@ public final class UnitChooser extends JPanel {
     final List<Unit> combinedList = defaultSelections.getDamaged();
     // TODO: this adds it to the default selections list, is this intended?
     combinedList.addAll(defaultSelections.getKilled());
-    createEntries(units, dependent, false, false, combinedList);
+    createEntries(
+        units,
+        UnitSeparator.SeparatorCategories.builder().dependents(dependent).build(),
+        combinedList);
     layoutEntries();
   }
 
@@ -97,12 +106,12 @@ public final class UnitChooser extends JPanel {
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost,
+      final UnitSeparator.SeparatorCategories separatorCategories,
       final boolean allowMultipleHits,
       final UiContext uiContext) {
     this(dependent, allowMultipleHits, uiContext, null);
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
+    createEntries(
+        units, separatorCategories.toBuilder().dependents(dependents).build(), defaultSelections);
     layoutEntries();
   }
 
@@ -110,13 +119,13 @@ public final class UnitChooser extends JPanel {
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost,
+      final UnitSeparator.SeparatorCategories separatorCategories,
       final boolean allowMultipleHits,
       final UiContext uiContext,
       final Predicate<Collection<Unit>> match) {
     this(dependent, allowMultipleHits, uiContext, match);
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
+    createEntries(
+        units, separatorCategories.toBuilder().dependents(dependents).build(), defaultSelections);
     layoutEntries();
   }
 
@@ -190,15 +199,12 @@ public final class UnitChooser extends JPanel {
 
   private void createEntries(
       final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost,
+      final UnitSeparator.SeparatorCategories separatorCategories,
       final Collection<Unit> defaultSelections) {
     final Collection<UnitCategory> categories =
-        UnitSeparator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
+        UnitSeparator.categorize(units, separatorCategories);
     final Collection<UnitCategory> defaultSelectionsCategorized =
-        UnitSeparator.categorize(
-            defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+        UnitSeparator.categorize(defaultSelections, separatorCategories);
     final IntegerMap<UnitCategory> defaultValues =
         newDefaultSelectionsMap(defaultSelectionsCategorized);
     for (final UnitCategory category : categories) {

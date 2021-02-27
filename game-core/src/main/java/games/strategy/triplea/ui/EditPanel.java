@@ -171,7 +171,12 @@ class EditPanel extends ActionPanel {
             final String text = "Remove from " + t.getName();
             final UnitChooser chooser =
                 new UnitChooser(
-                    unitsToMove, selectedUnits, null, false, false, false, getMap().getUiContext());
+                    unitsToMove,
+                    selectedUnits,
+                    null,
+                    UnitSeparator.SeparatorCategories.builder().build(),
+                    false,
+                    getMap().getUiContext());
             final int option =
                 JOptionPane.showOptionDialog(
                     getTopLevelAncestor(),
@@ -404,11 +409,21 @@ class EditPanel extends ActionPanel {
                       allUnits, o -> selectedUnitTypes.contains(o.getType()));
               final int allCategories =
                   UnitSeparator.categorize(
-                          allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true)
+                          allOfCorrectType,
+                          UnitSeparator.SeparatorCategories.builder()
+                              .dependents(mustMoveWithDetails.getMustMoveWith())
+                              .movement(true)
+                              .transportCost(true)
+                              .build())
                       .size();
               final int selectedCategories =
                   UnitSeparator.categorize(
-                          selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, true)
+                          selectedUnits,
+                          UnitSeparator.SeparatorCategories.builder()
+                              .dependents(mustMoveWithDetails.getMustMoveWith())
+                              .movement(true)
+                              .transportCost(true)
+                              .build())
                       .size();
               mustChoose = (allCategories != selectedCategories);
             }
@@ -420,9 +435,8 @@ class EditPanel extends ActionPanel {
                       allUnits,
                       selectedUnits,
                       mustMoveWithDetails.getMustMoveWith(),
-                      true,
+                      UnitSeparator.SeparatorCategories.builder().movement(true).build(),
                       false,
-                      /* allowMultipleHits= */ false,
                       getMap().getUiContext());
               final int option =
                   JOptionPane.showOptionDialog(

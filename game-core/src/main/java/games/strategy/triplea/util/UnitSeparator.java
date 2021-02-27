@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.math.BigDecimal;
@@ -13,16 +12,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.Nullable;
+import lombok.Builder;
 
 /** Separates a group of units into distinct categories. */
 public class UnitSeparator {
   private UnitSeparator() {}
+
+  @Builder(toBuilder = true)
+  public static class SeparatorCategories {
+    /**
+     * if not null, then will group units with the same dependents (compares type, owner, and
+     * amount)
+     */
+    @Builder.Default @Nullable final Map<Unit, Collection<Unit>> dependents = null;
+    /** whether to categorize by movement */
+    @Builder.Default final boolean movement = false;
+    /** whether to categorize by transport cost */
+    @Builder.Default final boolean transportCost = false;
+    /** whether to categorize transports by movement */
+    @Builder.Default final boolean transportMovement = false;
+    /** whether to categorize by amphibious */
+    @Builder.Default final boolean amphibious = false;
+  }
 
   /**
    * Finds unit categories, removes not displayed, and then sorts them into logical order to display
@@ -57,63 +73,37 @@ public class UnitSeparator {
   }
 
   public static Set<UnitCategory> categorize(final Collection<Unit> units) {
-    return categorize(units, null, false, false);
-  }
-
-  public static Set<UnitCategory> categorize(
-      final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost,
-      final boolean sort) {
-    return categorize(
-        units,
-        dependent,
-        categorizeMovement,
-        categorizeTransportCost, /* ctgzTrnMovement */
-        false,
-        sort);
+    return categorize(units, SeparatorCategories.builder().build());
   }
 
   /**
-   * Break the units into discrete categories. Do this based on unit owner, and optionally dependent
-   * units and movement
+   * Break the units into discrete categories. Do this based on unit owner and optionally other
+   * categories
    *
-   * @param dependent - can be null
-   * @param categorizeMovement - whether to categorize by movement
-   * @param categorizeTrnMovement - whether to categorize transports by movement
-   * @param sort If true then sort the categories in UnitCategory order; if false, then leave
-   *     categories in original order (based on units).
    * @return a Collection of UnitCategories
    */
   public static Set<UnitCategory> categorize(
-      final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost,
-      final boolean categorizeTrnMovement,
-      final boolean sort) {
+      final Collection<Unit> units, final SeparatorCategories separatorCategories) {
     // somewhat odd, but we map UnitCategory->UnitCategory, key and value are the same
     // we do this to take advantage of .equals() on objects that are equal in a special way
-    final Map<UnitCategory, UnitCategory> categories;
-    if (sort) {
-      categories = new HashMap<>();
-    } else {
-      categories = new LinkedHashMap<>();
-    }
+    final Map<UnitCategory, UnitCategory> categories = new HashMap<>();
     for (final Unit current : units) {
       BigDecimal unitMovement = new BigDecimal(-1);
-      if (categorizeMovement
-          || (categorizeTrnMovement && Matches.unitIsTransport().test(current))) {
+      if (separatorCategories.movement
+          || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))) {
         unitMovement = current.getMovementLeft();
       }
       int unitTransportCost = -1;
-      if (categorizeTransportCost) {
-        unitTransportCost = UnitAttachment.get(current.getType()).getTransportCost();
+      if (separatorCategories.transportCost) {
+        unitTransportCost = current.getUnitAttachment().getTransportCost();
       }
       Collection<Unit> currentDependents = null;
-      if (dependent != null) {
-        currentDependents = dependent.get(current);
+      if (separatorCategories.dependents != null) {
+        currentDependents = separatorCategories.dependents.get(current);
+      }
+      boolean unitAmphibious = false;
+      if (separatorCategories.amphibious) {
+        unitAmphibious = current.getWasAmphibious();
       }
       final boolean disabled = Matches.unitIsDisabled().test(current);
       final UnitCategory entry =
@@ -124,7 +114,8 @@ public class UnitSeparator {
               current.getHits(),
               current.getUnitDamage(),
               disabled,
-              unitTransportCost);
+              unitTransportCost,
+              unitAmphibious);
       // we test to see if we have the key using equals, then since
       // key maps to key, we retrieve it to add the unit to the correct category
       if (categories.containsKey(entry)) {
@@ -134,23 +125,6 @@ public class UnitSeparator {
         categories.put(entry, entry);
       }
     }
-    return sort ? new TreeSet<>(categories.keySet()) : new LinkedHashSet<>(categories.keySet());
-  }
-
-  /**
-   * Legacy interface. Break the units into discrete categories. Do this based on unit owner, and
-   * optionally dependent units and movement
-   *
-   * @param dependent - can be null
-   * @param categorizeMovement - whether to categorize by movement
-   * @return a Collection of UnitCategories
-   */
-  public static Set<UnitCategory> categorize(
-      final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost) {
-    // sort by default
-    return categorize(units, dependent, categorizeMovement, categorizeTransportCost, true);
+    return new TreeSet<>(categories.keySet());
   }
 }
