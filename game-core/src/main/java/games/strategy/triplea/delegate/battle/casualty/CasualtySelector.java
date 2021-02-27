@@ -328,7 +328,8 @@ public class CasualtySelector {
   private static boolean allTargetsOneTypeOneHitPoint(
       final Collection<Unit> targets, final Map<Unit, Collection<Unit>> dependents) {
     final Set<UnitCategory> categorized =
-        UnitSeparator.categorize(targets, dependents, false, false);
+        UnitSeparator.categorize(
+            targets, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
     if (categorized.size() == 1) {
       final UnitCategory unitCategory = categorized.iterator().next();
       return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;

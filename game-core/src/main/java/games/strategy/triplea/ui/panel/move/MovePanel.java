@@ -193,10 +193,9 @@ public class MovePanel extends AbstractMovePanel {
               chooser =
                   new UnitChooser(
                       unitsToMove,
-                      selectedUnits, /* mustMoveWith */
+                      selectedUnits,
                       null,
-                      /* categorizeMovement */ false, /* categorizeTransportCost */
-                      false, /* allowTwoHit */
+                      UnitSeparator.SeparatorCategories.builder().build(),
                       false,
                       getMap().getUiContext(),
                       ownerMatch);
@@ -204,10 +203,9 @@ public class MovePanel extends AbstractMovePanel {
               chooser =
                   new UnitChooser(
                       unitsToMove,
-                      selectedUnits, /* mustMoveWith */
-                      null, /* categorizeMovement */
-                      false,
-                      /* categorizeTransportCost */ false, /* allowTwoHit */
+                      selectedUnits,
+                      null,
+                      UnitSeparator.SeparatorCategories.builder().build(),
                       false,
                       getMap().getUiContext());
             }
@@ -344,8 +342,7 @@ public class MovePanel extends AbstractMovePanel {
                   candidateAirTransports,
                   defaultSelections,
                   dependentUnits,
-                  /* categorizeMovement */ true, /* categorizeTransportCost */
-                  false, /* allowTwoHit */
+                  UnitSeparator.SeparatorCategories.builder().movement(true).build(),
                   false,
                   getMap().getUiContext(),
                   transportsToLoadMatch);
@@ -840,7 +837,11 @@ public class MovePanel extends AbstractMovePanel {
     // Are the transports all of the same type and if they are, then don't ask
     final Collection<UnitCategory> categories =
         UnitSeparator.categorize(
-            candidateTransports, mustMoveWithDetails.getMustMoveWith(), true, false);
+            candidateTransports,
+            UnitSeparator.SeparatorCategories.builder()
+                .dependents(mustMoveWithDetails.getMustMoveWith())
+                .movement(true)
+                .build());
     if (categories.size() == 1) {
       return ImmutableList.copyOf(unitsToUnload);
     }
@@ -915,10 +916,9 @@ public class MovePanel extends AbstractMovePanel {
         new UnitChooser(
             candidateTransports,
             defaultSelections,
-            mustMoveWithDetails.getMustMoveWith(), /* categorizeMovement */
-            true, /* categorizeTransportCost */
+            mustMoveWithDetails.getMustMoveWith(),
+            UnitSeparator.SeparatorCategories.builder().movement(true).build(),
             false,
-            /* allowTwoHit */ false,
             getMap().getUiContext(),
             transportsToUnloadMatch);
     chooser.setTitle("What transports do you want to unload");
@@ -1290,7 +1290,11 @@ public class MovePanel extends AbstractMovePanel {
       }
       // all the same type, dont ask unless we have more than 1 unit type
       if (UnitSeparator.categorize(
-                      candidateTransports, endMustMoveWith.getMustMoveWith(), true, false)
+                      candidateTransports,
+                      UnitSeparator.SeparatorCategories.builder()
+                          .dependents(endMustMoveWith.getMustMoveWith())
+                          .movement(true)
+                          .build())
                   .size()
               == 1
           && unitsToLoad.size() == 1) {
@@ -1317,10 +1321,9 @@ public class MovePanel extends AbstractMovePanel {
         new UnitChooser(
             candidateTransports,
             defaultSelections,
-            endMustMoveWith.getMustMoveWith(), /* categorizeMovement */
-            true, /* categorizeTransportCost */
+            endMustMoveWith.getMustMoveWith(),
+            UnitSeparator.SeparatorCategories.builder().movement(true).build(),
             false,
-            /* allowTwoHit */ false,
             getMap().getUiContext(),
             transportsToLoadMatch);
     chooser.setTitle("What transports do you want to load");
@@ -1355,7 +1358,11 @@ public class MovePanel extends AbstractMovePanel {
     if (!mustQueryUser) {
       final Set<UnitCategory> categories =
           UnitSeparator.categorize(
-              candidateUnits, mustMoveWithDetails.getMustMoveWith(), true, false);
+              candidateUnits,
+              UnitSeparator.SeparatorCategories.builder()
+                  .dependents(mustMoveWithDetails.getMustMoveWith())
+                  .movement(true)
+                  .build());
       for (final UnitCategory category1 : categories) {
         // we cant move these, dont bother to check
         if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
@@ -1402,8 +1409,7 @@ public class MovePanel extends AbstractMovePanel {
               candidateUnits,
               defaultSelections,
               mustMoveWithDetails.getMustMoveWith(),
-              true,
-              false,
+              UnitSeparator.SeparatorCategories.builder().movement(true).build(),
               false,
               getMap().getUiContext(),
               matchCriteria);
@@ -1477,8 +1483,7 @@ public class MovePanel extends AbstractMovePanel {
             unitsToLoad,
             defaultSelections,
             dependentUnits,
-            /* categorizeMovement */ false, /* categorizeTransportCost */
-            true, /* allowTwoHit */
+            UnitSeparator.SeparatorCategories.builder().transportCost(true).build(),
             false,
             getMap().getUiContext(),
             unitsToLoadMatch);

@@ -179,9 +179,10 @@ public final class TransportUtils {
 
     // Get a list of the unit categories
     final Collection<UnitCategory> unitTypes =
-        UnitSeparator.categorize(canBeTransported, null, false, true);
-    final Collection<UnitCategory> transportTypes =
-        UnitSeparator.categorize(airTransports, null, false, false);
+        UnitSeparator.categorize(
+            canBeTransported,
+            UnitSeparator.SeparatorCategories.builder().transportCost(true).build());
+    final Collection<UnitCategory> transportTypes = UnitSeparator.categorize(airTransports);
     for (final UnitCategory unitType : unitTypes) {
       final int transportCost = unitType.getTransportCost();
       for (final UnitCategory transportType : transportTypes) {
