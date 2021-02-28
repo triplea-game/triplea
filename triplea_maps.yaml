@@ -1247,7 +1247,7 @@
 - mapName: Global War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/global_war/master/preview.png
   description: |
     <br>Global War
