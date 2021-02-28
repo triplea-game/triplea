@@ -34,7 +34,7 @@ dependencies {
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "at.favre.lib:bcrypt:$bcryptVersion"
     implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
-    implementation project(':domain-data')
+    implementation project(':game-app:domain-data')
     implementation project(':lib:dropwizard-common')
     implementation project(':http-clients:github-client')
     implementation project(':http-clients:feign-common')
@@ -51,7 +51,6 @@ dependencies {
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
     testImplementation project(":lib:dropwizard-common-test")
     testImplementation project(":lib:test-common")
-    testImplementation project(':domain-data')
     testImplementation project(':lib:java-extras')
 }
 

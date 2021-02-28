@@ -10,7 +10,7 @@ set -x
 runNumber="$1"
 githubSha="$2"
 
-PROP_FILE="game-core/src/main/resources/META-INF/triplea/product.properties"
+PROP_FILE="game-app/game-core/src/main/resources/META-INF/triplea/product.properties"
 
 
 versionSuffix="$runNumber"

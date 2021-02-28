@@ -1,0 +1,8 @@
+description = 'TripleA ai implementations'
+
+dependencies {
+    implementation project(":game-app:game-core")
+    implementation project(":lib:java-extras")
+    testImplementation project(':game-app:game-core').sourceSets.test.output
+    testFixtures project(':game-app:game-core').sourceSets.test.resources
+}

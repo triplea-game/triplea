@@ -7,26 +7,8 @@ Docker for Mac can be obtained at: https://store.docker.com/editions/community/d
 
 ## Start Dev Database
 
-This is needed to run integration tests or to launch a local lobby.
+[launch-local-database.md](launch-local-database.md])
 
-```
-./database/start_docker_db
-```
-The above will: 
-- Launch local docker DB (postgres)
-- run flyway (schema install)
-- load sample data (adds a moderator "test:test" user valid for lobby login):
-
-
-For any SQL work, connect to the local database with:
-```
-./database/connect_to_docker_db
-```
-
-To reload the local database with fresh data (needed after running tests), run:
-```
-./database/reset_docker_db
-```
 
 ## Running all checks & tests
 
@@ -53,6 +35,8 @@ To format everything, including documentation files run:
 
 
 ## Testing a local lobby
+
+[launch-local-lobby.md](launch-local-lobby.md)
 
 * Start lobby by using the checked-in IDE launcher 'lobby-server'
 * Start a bot, look for the headless game launcher, the bot will connect to your local lobby

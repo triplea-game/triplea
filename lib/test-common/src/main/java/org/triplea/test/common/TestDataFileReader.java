@@ -27,6 +27,7 @@ public class TestDataFileReader {
         // current context can be from a sub-project, or can be from the top-most level of the
         // project. Check up a directory in case context is sub-project.
         .or(() -> readFromProjectRoot("../" + filePath))
+        .or(() -> readFromProjectRoot("../../" + filePath))
         .or(() -> readFromResources(filePath))
         .orElseThrow(() -> new TestDataFileNotFound(filePath));
   }
