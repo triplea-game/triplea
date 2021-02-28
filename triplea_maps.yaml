@@ -1885,7 +1885,7 @@
 - mapName: Pacific
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/pacific/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/pacific/master/preview.png
   description: |
     <br>
