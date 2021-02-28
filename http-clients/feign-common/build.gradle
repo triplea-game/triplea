@@ -1,5 +1,3 @@
-description = 'Http clients, can be used to interact with HTTP services (lobby, maps, github)'
-
 dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"

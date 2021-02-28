@@ -1,5 +1,3 @@
-description = 'TripleA core library containing code shared between headed and headless versions'
-
 dependencies {
     implementation "com.googlecode.soundlibs:jlayer:$jlayerVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
@@ -8,16 +6,16 @@ dependencies {
     implementation "commons-io:commons-io:$commonsIoVersion"
     implementation "io.github.openfeign:feign-gson:$openFeignVersion"
     implementation "org.apache.commons:commons-math3:$commonsMathVersion"
+    implementation "org.apache.commons:commons-text:$commonsTextVersion"
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     implementation "org.knowm.xchart:xchart:$xchartVersion"
-    implementation "org.apache.commons:commons-text:$commonsTextVersion"
     implementation project(":game-app:domain-data")
-    implementation project(":http-clients:feign-common")
-    implementation project(":lib:java-extras")
-    implementation project(":http-clients:lobby-client")
     implementation project(":game-app:map-data")
+    implementation project(":http-clients:feign-common")
+    implementation project(":http-clients:lobby-client")
     implementation project(":http-clients:maps-server-client")
+    implementation project(":lib:java-extras")
     implementation project(":lib:swing-lib")
     implementation project(":lib:websocket-client")
     implementation project(":lib:xml-reader")

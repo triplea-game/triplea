@@ -3,8 +3,8 @@ description = 'TripleA library for low-level helper APIs, ie: syntactic sugar'
 dependencies {
     errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-    implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
-    testImplementation project(':lib:test-common')
+    implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
     testImplementation "commons-io:commons-io:$commonsIoVersion"
+    testImplementation project(':lib:test-common')
 }

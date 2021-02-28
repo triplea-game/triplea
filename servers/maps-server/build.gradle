@@ -23,16 +23,16 @@ dependencies {
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
-    implementation project(':lib:dropwizard-common')
-    implementation project(':lib:java-extras')
     implementation project(':http-clients:github-client')
     implementation project(':http-clients:maps-server-client')
+    implementation project(':lib:dropwizard-common')
+    implementation project(':lib:java-extras')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
-    testImplementation project(':lib:test-common')
     testImplementation project(':lib:dropwizard-common-test')
+    testImplementation project(':lib:test-common')
 }
 
 jar {

@@ -7,7 +7,6 @@ plugins {
 }
 
 archivesBaseName = "$group-$name"
-description = 'TripleA Headless Game Server'
 mainClassName = 'org.triplea.game.server.HeadlessGameRunner'
 
 dependencies {
