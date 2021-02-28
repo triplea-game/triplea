@@ -592,7 +592,7 @@ public class MovePanel extends AbstractMovePanel {
                   }
                   return maxMap.greaterThanOrEqualTo(currentMap);
                 };
-            allowSpecificUnitSelection(units, route, false, unitTypeCountMatch);
+            allowSpecificUnitSelection(units, route, unitTypeCountMatch);
             if (units.isEmpty()) {
               cancelMove();
               return;
@@ -1350,45 +1350,42 @@ public class MovePanel extends AbstractMovePanel {
   private void allowSpecificUnitSelection(
       final Collection<Unit> units,
       final Route route,
-      final boolean initialMustQueryUser,
       final Predicate<Collection<Unit>> matchCriteria) {
     final List<Unit> candidateUnits =
         getFirstSelectedTerritory().getUnitCollection().getMatches(getMovableMatch(route, units));
-    boolean mustQueryUser = initialMustQueryUser;
-    if (!mustQueryUser) {
-      final Set<UnitCategory> categories =
-          UnitSeparator.categorize(
-              candidateUnits,
-              UnitSeparator.SeparatorCategories.builder()
-                  .dependents(mustMoveWithDetails.getMustMoveWith())
-                  .movement(true)
-                  .build());
-      for (final UnitCategory category1 : categories) {
+    final Set<UnitCategory> categories =
+        UnitSeparator.categorize(
+            candidateUnits,
+            UnitSeparator.SeparatorCategories.builder()
+                .dependents(mustMoveWithDetails.getMustMoveWith())
+                .movement(true)
+                .build());
+    boolean mustQueryUser = false;
+    for (final UnitCategory category1 : categories) {
+      // we cant move these, dont bother to check
+      if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
+        continue;
+      }
+      for (final UnitCategory category2 : categories) {
         // we cant move these, dont bother to check
-        if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
+        if (category2.getMovement().compareTo(BigDecimal.ZERO) == 0) {
           continue;
         }
-        for (final UnitCategory category2 : categories) {
-          // we cant move these, dont bother to check
-          if (category2.getMovement().compareTo(BigDecimal.ZERO) == 0) {
+        // if we find that two categories are compatible, and some units are selected from one
+        // category, but not the
+        // other then the user has to refine his selection
+        if (!ObjectUtils.referenceEquals(category1, category2)
+            && Objects.equals(category1.getType(), category2.getType())
+            && !category1.equals(category2)) {
+          // if we are moving all the units from both categories, then nothing to choose
+          if (units.containsAll(category1.getUnits())
+              && units.containsAll(category2.getUnits())) {
             continue;
           }
-          // if we find that two categories are compatible, and some units are selected from one
-          // category, but not the
-          // other then the user has to refine his selection
-          if (!ObjectUtils.referenceEquals(category1, category2)
-              && Objects.equals(category1.getType(), category2.getType())
-              && !category1.equals(category2)) {
-            // if we are moving all the units from both categories, then nothing to choose
-            if (units.containsAll(category1.getUnits())
-                && units.containsAll(category2.getUnits())) {
-              continue;
-            }
-            // if we are moving some of the units from either category, then we need to stop
-            if (!CollectionUtils.intersection(category1.getUnits(), units).isEmpty()
-                || !CollectionUtils.intersection(category2.getUnits(), units).isEmpty()) {
-              mustQueryUser = true;
-            }
+          // if we are moving some of the units from either category, then we need to stop
+          if (!CollectionUtils.intersection(category1.getUnits(), units).isEmpty()
+              || !CollectionUtils.intersection(category2.getUnits(), units).isEmpty()) {
+            mustQueryUser = true;
           }
         }
       }
