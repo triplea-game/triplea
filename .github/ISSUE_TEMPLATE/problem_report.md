@@ -6,10 +6,11 @@ labels: 'Problem'
 assignees: ''
 ---
 
-### How can the problem be recreated?
-<!-- What list of steps can we take to see the problem, please be specific -->
-
-### Do you have any ideas for an expected fix?
+### Reproduction Steps
+<!-- What list of steps can we take after launching TripleA to see the problem, please be specific -->
+1.
+2.
+3.
 
 ### Attach a Save Game
 <!-- Do you have a save game? These help us greatly! -->
@@ -18,20 +19,14 @@ assignees: ''
   To zip and attach a save game:
     - save games will be in your home folder > triplea > saved games
     - find the save game file ending with '.tsvg'
-    - use a 'zip' program like winzip (file compression,
-      example: https://www.wikihow.com/Make-a-Zip-File)
+    - zip the file, use a program like winzip (https://www.wikihow.com/Make-a-Zip-File)
     - drag and drop the zip file into this window
 -->
 
-### If playing a prerelease, which version are you using?
-<!-- If you downloaded the game from the triplea-game.org website, leave this blank -->
+### Engine Version
+<!-- Which version of TripleA are you using? -->
 
-Game Version:
-
-### If playing a prerelease, does this happen on the latest release?
-<!-- If you downloaded the game from the triplea-game.org website, leave this blank -->
-
-- [] yes
-- [] no
+Engine Version:
 
 ### Is there anything else we should know?
+
