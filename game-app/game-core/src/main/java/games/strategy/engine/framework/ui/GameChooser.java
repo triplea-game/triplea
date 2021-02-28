@@ -126,7 +126,13 @@ public class GameChooser {
     mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
 
-    final Runnable selectAndReturn = () -> dialog.setVisible(false);
+    final Runnable selectAndReturn =
+        () -> {
+          dialog.setVisible(false);
+          Optional.ofNullable(gameList.getSelectedValue())
+              .flatMap(DefaultGameChooserEntry::getGameXmlFilePath)
+              .ifPresent(gameChosenCallback);
+        };
 
     final JButton cancelButton =
         new JButtonBuilder("Cancel").actionListener(dialog::dispose).build();
@@ -170,9 +176,5 @@ public class GameChooser {
     dialog.setLocationRelativeTo(owner);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.setVisible(true); // Blocking and waits for user action
-
-    Optional.ofNullable(gameList.getSelectedValue())
-        .flatMap(DefaultGameChooserEntry::getGameXmlFilePath)
-        .ifPresent(gameChosenCallback);
   }
 }
