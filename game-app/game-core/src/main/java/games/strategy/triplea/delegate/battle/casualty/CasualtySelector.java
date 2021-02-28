@@ -150,13 +150,16 @@ public class CasualtySelector {
       killAmphibiousFirst(killed, sortedTargetsToPickFrom);
     }
 
-    // if partial retreat isn't possible, then ensure units with marine bonus are removed first or
-    // last depending on whether the bonus is negative or positive
+    // if partial retreat isn't possible and it was an amphibious assault, then ensure units with
+    // marine bonus are removed first or last depending on whether the bonus is negative or positive
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())
         && (casualtySelection.getKilled().stream()
-                .anyMatch(unit -> unit.getUnitAttachment().getIsMarine() != 0)
+                .anyMatch(
+                    unit -> unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious())
             || casualtySelection.getDamaged().stream()
-                .anyMatch(unit -> unit.getUnitAttachment().getIsMarine() != 0))) {
+                .anyMatch(
+                    unit ->
+                        unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious()))) {
       casualtySelection =
           casualtySelection.ensureUnitsWithPositiveMarineBonusAreTakenLast(sortedTargetsToPickFrom);
     }
