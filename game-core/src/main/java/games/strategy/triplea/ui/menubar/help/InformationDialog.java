@@ -15,6 +15,7 @@ import org.triplea.swing.SwingAction;
 class InformationDialog {
   static JDialog createDialog(final JComponent component, final String title) {
     final JDialog dialog = new JDialog((JFrame) null, title);
+    dialog.setAlwaysOnTop(true);
     dialog.add(component, BorderLayout.CENTER);
     final JPanel buttons = new JPanel();
     final JButton button =
