@@ -190,7 +190,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
   private ObjectivePanel objectivePanel;
-  private final NotesPanel notesPanel;
   @Getter private final TerritoryDetailPanel territoryDetails;
   private final JPanel historyComponent = new JPanel();
   private final JPanel gameSouthPanel;
@@ -597,8 +596,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     } else {
       addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
     }
-    notesPanel = new NotesPanel(data.getProperties().get("notes", "").trim());
-    addTab("Notes", notesPanel, KeyCode.N);
     territoryDetails = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
     addTab("Territory", territoryDetails, KeyCode.T);
     editPanel = new EditPanel(data, mapPanel, this);
@@ -2070,7 +2067,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           if (objectivePanel != null && !objectivePanel.isEmpty()) {
             addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
           }
-          addTab("Notes", notesPanel, KeyCode.N);
           addTab("Territory", territoryDetails, KeyCode.T);
           if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
@@ -2259,7 +2255,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           if (objectivePanel != null && !objectivePanel.isEmpty()) {
             addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
           }
-          addTab("Notes", notesPanel, KeyCode.N);
           addTab("Territory", territoryDetails, KeyCode.T);
           if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
