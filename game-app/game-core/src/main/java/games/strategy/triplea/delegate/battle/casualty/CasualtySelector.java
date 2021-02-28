@@ -125,7 +125,7 @@ public class CasualtySelector {
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
             : sortedTargetsToPickFrom.size());
 
-    final CasualtyDetails casualtySelection =
+    CasualtyDetails casualtySelection =
         hitsRemaining >= totalHitpoints
                 || allTargetsOneTypeOneHitPoint(sortedTargetsToPickFrom, dependents)
             ? new CasualtyDetails(defaultCasualties, true)
@@ -149,6 +149,24 @@ public class CasualtySelector {
     if (Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       killAmphibiousFirst(killed, sortedTargetsToPickFrom);
     }
+
+    // if partial retreat isn't possible, then ensure units with marine bonus are removed first or
+    // last depending on whether the bonus is negative or positive
+    if (!Properties.getPartialAmphibiousRetreat(data.getProperties())
+        && (casualtySelection.getKilled().stream()
+                .anyMatch(unit -> unit.getUnitAttachment().getIsMarine() != 0)
+            || casualtySelection.getDamaged().stream()
+                .anyMatch(unit -> unit.getUnitAttachment().getIsMarine() != 0))) {
+      casualtySelection =
+          casualtySelection.ensureUnitsWithPositiveMarineBonusAreTakenLast(sortedTargetsToPickFrom);
+    }
+
+    if (casualtySelection.getKilled().stream().anyMatch(Matches.unitIsAir())
+        || casualtySelection.getDamaged().stream().anyMatch(Matches.unitIsAir())) {
+      casualtySelection =
+          casualtySelection.ensureAirUnitsWithLessMovementAreTakenFirst(sortedTargetsToPickFrom);
+    }
+
     final List<Unit> damaged = casualtySelection.getDamaged();
     int numhits = killed.size();
     if (!allowMultipleHitsPerUnit) {

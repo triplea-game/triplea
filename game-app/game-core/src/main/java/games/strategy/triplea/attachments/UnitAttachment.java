@@ -862,7 +862,8 @@ public class UnitAttachment extends DefaultAttachment {
     isAir = getBool(s);
   }
 
-  private void setIsAir(final Boolean s) {
+  @VisibleForTesting
+  public void setIsAir(final Boolean s) {
     isAir = s;
   }
 
@@ -1539,7 +1540,8 @@ public class UnitAttachment extends DefaultAttachment {
     movement = getInt(s);
   }
 
-  private void setMovement(final Integer s) {
+  @VisibleForTesting
+  public void setMovement(final Integer s) {
     movement = s;
   }
 
