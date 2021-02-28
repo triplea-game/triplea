@@ -19,7 +19,7 @@ configurations {
 
 dependencies {
     errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-
+    implementation "at.favre.lib:bcrypt:$bcryptVersion"
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
@@ -30,16 +30,15 @@ dependencies {
     implementation "io.github.openfeign:feign-gson:$openFeignVersion"
     implementation "javax.activation:activation:$javaxActivationVersion"
     implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
-    implementation "at.favre.lib:bcrypt:$bcryptVersion"
-    implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     implementation project(':game-app:domain-data')
-    implementation project(':lib:dropwizard-common')
-    implementation project(':http-clients:github-client')
     implementation project(':http-clients:feign-common')
-    implementation project(':lib:java-extras')
+    implementation project(':http-clients:github-client')
     implementation project(':http-clients:lobby-client')
+    implementation project(':lib:dropwizard-common')
+    implementation project(':lib:java-extras')
     implementation project(':lib:websocket-client')
     implementation project(':lib:websocket-server')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
