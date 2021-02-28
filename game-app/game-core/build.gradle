@@ -1,6 +1,7 @@
 dependencies {
     implementation "com.googlecode.soundlibs:jlayer:$jlayerVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
+    implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
     implementation "commons-cli:commons-cli:$commonsCliVersion"
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIoVersion"
