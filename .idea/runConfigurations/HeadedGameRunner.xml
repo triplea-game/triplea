@@ -12,7 +12,7 @@
     </extension>
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="downloadAssets" externalProjectPath="$PROJECT_DIR$/game-headed" vmOptions="" scriptParameters="" />
+      <option name="Gradle.BeforeRunTask" enabled="false" tasks="downloadAssets" externalProjectPath="$PROJECT_DIR$/game-app/game-headed" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>
