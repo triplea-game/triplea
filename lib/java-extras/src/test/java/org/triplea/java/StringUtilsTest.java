@@ -87,4 +87,16 @@ final class StringUtilsTest {
     assertThrows(IllegalArgumentException.class, () -> StringUtils.truncate("123", 2));
     assertThrows(IllegalArgumentException.class, () -> StringUtils.truncate("123", -1));
   }
+
+  @Test
+  void truncateEnding() {
+    assertThat(StringUtils.truncateEnding("string.xml", ".xml"), is("string"));
+    assertThat(StringUtils.truncateEnding("string.xml", "string.xml"), is(""));
+    assertThat(StringUtils.truncateEnding("string", "xml"), is("string"));
+    assertThat(StringUtils.truncateEnding("string", "  "), is("string"));
+    assertThat(StringUtils.truncateEnding("string  ", "  "), is("string"));
+    assertThat(StringUtils.truncateEnding("string\n", "\n"), is("string"));
+    assertThat(StringUtils.truncateEnding("", ".xml"), is(""));
+    assertThrows(IllegalArgumentException.class, () -> StringUtils.truncateEnding("", ""));
+  }
 }

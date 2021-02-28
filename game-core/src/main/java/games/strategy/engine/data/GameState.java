@@ -45,6 +45,10 @@ public interface GameState {
 
   GameProperties getProperties();
 
+  String getGameName();
+
+  String getMapName();
+
   /**
    * Returns all relationshipTypes that are valid in this game, default there is the NullRelation
    * (relation with the Null player / Neutral) and the SelfRelation (Relation with yourself) all

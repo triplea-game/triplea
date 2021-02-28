@@ -37,7 +37,7 @@ public final class HelpMenu {
         KeyStroke.getKeyStroke(
             KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
-    final String gameNotes = gameData.getProperties().get("notes", "").trim();
+    final String gameNotes = gameData.loadGameNotes();
     if (!gameNotes.isBlank()) {
       menu.add(GameNotesMenu.buildMenu(gameNotes)).setMnemonic(KeyEvent.VK_N);
     }

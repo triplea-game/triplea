@@ -1,13 +1,12 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -20,9 +19,7 @@ import org.triplea.map.description.file.MapDescriptionYaml;
  */
 @AllArgsConstructor
 public class DownloadedMapsListing {
-  private static final Map<String, Optional<File>> mapNameToContentRootCache = new HashMap<>();
-  // The set of all 'map.yml' files found on disk
-  private final Collection<MapDescriptionYaml> mapDescriptionYamls;
+  private final Collection<DownloadedMap> downloadedMaps;
 
   private DownloadedMapsListing() {
     this(readMapYamlsAndGenerateMissingMapYamls());
@@ -36,7 +33,7 @@ public class DownloadedMapsListing {
     return new DownloadedMapsListing();
   }
 
-  private static Collection<MapDescriptionYaml> readMapYamlsAndGenerateMissingMapYamls() {
+  private static Collection<DownloadedMap> readMapYamlsAndGenerateMissingMapYamls() {
     // loop over all maps, find and parse a 'map.yml' file, if not found attempt to generate it
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(File::isDirectory)
@@ -46,28 +43,17 @@ public class DownloadedMapsListing {
                     .or(() -> MapDescriptionYaml.generateForMap(mapFolder)))
         .filter(Optional::isPresent)
         .map(Optional::get)
+        .map(DownloadedMap::new)
         .collect(Collectors.toList());
   }
 
   /** Returns the list of all installed game names. */
   public List<String> getSortedGameList() {
-    return getGameNamesToGameLocations().keySet().stream().sorted().collect(Collectors.toList());
-  }
-
-  /** Returns the set of all downloaded game names mapped to their XML file location. */
-  public Map<String, Path> getGameNamesToGameLocations() {
-    final Map<String, Path> gameNamesToPaths = new HashMap<>();
-    for (final MapDescriptionYaml mapDescriptionYaml : mapDescriptionYamls) {
-      mapDescriptionYaml.getMapGameList().stream()
-          .map(MapDescriptionYaml.MapGame::getGameName)
-          .forEach(
-              gameName -> {
-                final Path xmlFilePath =
-                    mapDescriptionYaml.getGameXmlPathByGameName(gameName).orElseThrow();
-                gameNamesToPaths.put(gameName, xmlFilePath);
-              });
-    }
-    return gameNamesToPaths;
+    return downloadedMaps.stream()
+        .map(DownloadedMap::getGameNames)
+        .flatMap(Collection::stream)
+        .sorted()
+        .collect(Collectors.toList());
   }
 
   /**
@@ -78,22 +64,22 @@ public class DownloadedMapsListing {
    * @return The full path to the game file; or {@code empty} if the game is not available.
    */
   public Optional<Path> findGameXmlPathByGameName(final String gameName) {
-    return mapDescriptionYamls.stream()
-        .map(mapDescriptionYaml -> mapDescriptionYaml.getGameXmlPathByGameName(gameName))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .findAny();
+    return downloadedMaps.stream()
+        .filter(downloadedMap -> downloadedMap.getGameNames().contains(gameName))
+        .findAny()
+        .flatMap(downloadedMap -> downloadedMap.getGameXmlFilePath(gameName));
   }
 
   public boolean hasGame(final String gameName) {
     return findGameXmlPathByGameName(gameName).isPresent();
   }
 
-  public Optional<Integer> getMapVersionByName(final String mapName) {
-    return mapDescriptionYamls.stream()
-        .filter(yaml -> normalizeName(yaml.getMapName()).equals(normalizeName(mapName)))
+  public Integer getMapVersionByName(final String mapName) {
+    return downloadedMaps.stream()
+        .filter(d -> d.getMapName().equals(mapName))
         .findAny()
-        .map(MapDescriptionYaml::getMapVersion);
+        .map(DownloadedMap::getMapVersion)
+        .orElse(0);
   }
 
   /**
@@ -101,36 +87,12 @@ public class DownloadedMapsListing {
    * called something like "downloadedMaps/mapName/map". Returns empty if no map with the given name
    * is found.
    */
-  public static Optional<File> findContentRootForMapName(final String mapName) {
-    return mapNameToContentRootCache.computeIfAbsent(
-        mapName,
-        key -> {
-          // Find a 'map.yml' with the given map name.
-          // Find the parent folder for that 'map.yml'
-          // Search that location and underneath for a 'polygons' file.
-          // If found, that location is our content root.
-          final Path mapYamlParentFolder =
-              new DownloadedMapsListing()
-                  .findMapYamlFileForMapName(mapName)
-                  .map(Path::getParent)
-                  .orElse(null);
-          if (mapYamlParentFolder == null) {
-            return Optional.empty();
-          }
-
-          return FileUtils.findFile(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
-              .map(File::toPath)
-              .map(Path::getParent)
-              .map(Path::toFile);
-        });
-  }
-
-  private Optional<Path> findMapYamlFileForMapName(final String mapName) {
-    return mapDescriptionYamls.stream()
-        .filter(m -> normalizeName(m.getMapName()).equalsIgnoreCase(normalizeName(mapName)))
+  public Optional<Path> findContentRootForMapName(final String mapName) {
+    final String nameToFind = normalizeName(mapName);
+    return downloadedMaps.stream()
+        .filter(d -> nameToFind.equals(normalizeName(d.getMapName())))
         .findAny()
-        .map(MapDescriptionYaml::getYamlFileLocation)
-        .map(Path::of);
+        .flatMap(DownloadedMap::findContentRoot);
   }
 
   private static String normalizeName(final String mapName) {
@@ -141,18 +103,36 @@ public class DownloadedMapsListing {
         .replaceAll("-", "");
   }
 
-  public File findContentRootForMapNameOrElseThrow(final String mapName) {
-    return findContentRootForMapName(mapName)
-        .orElseThrow(() -> new IllegalArgumentException("Unable to find map: " + mapName));
-  }
-
   /**
    * Finds the map folder storing a given map by name. The map folder is assumed to be the parent
    * directory of the 'map.yml' file describing that map.
    */
   public Optional<File> findMapFolderByName(final String mapName) {
-    return findMapYamlFileForMapName(mapName) //
-        .map(Path::getParent)
-        .map(Path::toFile);
+    return findContentRootForMapName(mapName).map(Path::getParent).map(Path::toFile);
+  }
+
+  /**
+   * Creates and returns the list of 'game-chooser-entries' that can be presented to a user for game
+   * selection.
+   */
+  public Collection<DefaultGameChooserEntry> createGameChooserEntries() {
+    return downloadedMaps.stream()
+        .map(DownloadedMapsListing::convertDownloadedMapToChooserEntries)
+        .flatMap(Collection::stream)
+        .sorted(Comparator.comparing(DefaultGameChooserEntry::getGameName))
+        .collect(Collectors.toList());
+  }
+
+  private static Collection<DefaultGameChooserEntry> convertDownloadedMapToChooserEntries(
+      final DownloadedMap downloadedMap) {
+
+    return downloadedMap.getGameNames().stream()
+        .map(
+            gameName ->
+                DefaultGameChooserEntry.builder()
+                    .downloadedMap(downloadedMap)
+                    .gameName(gameName)
+                    .build())
+        .collect(Collectors.toList());
   }
 }

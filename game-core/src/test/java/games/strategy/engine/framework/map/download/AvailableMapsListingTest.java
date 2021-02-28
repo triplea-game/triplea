@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 
+import games.strategy.engine.framework.map.file.system.loader.DownloadedMap;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.File;
@@ -96,17 +97,18 @@ class AvailableMapsListingTest extends AbstractClientSettingTestCase {
         mapNameToVersion.entrySet().stream()
             .map(
                 entry ->
-                    MapDescriptionYaml.builder()
-                        .yamlFileLocation(new File("/local/file").toURI())
-                        .mapName(entry.getKey())
-                        .mapVersion(entry.getValue())
-                        .mapGameList(
-                            List.of(
-                                MapDescriptionYaml.MapGame.builder()
-                                    .xmlPath("path.xml")
-                                    .gameName("game")
-                                    .build()))
-                        .build())
+                    new DownloadedMap(
+                        MapDescriptionYaml.builder()
+                            .yamlFileLocation(new File("/local/file").toURI())
+                            .mapName(entry.getKey())
+                            .mapVersion(entry.getValue())
+                            .mapGameList(
+                                List.of(
+                                    MapDescriptionYaml.MapGame.builder()
+                                        .xmlPath("path.xml")
+                                        .gameName("game")
+                                        .build()))
+                            .build()))
             .collect(Collectors.toList()));
   }
 

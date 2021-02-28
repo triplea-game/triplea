@@ -105,7 +105,7 @@ public final class FileUtils {
   }
 
   /**
-   * Recursively searches parent folders for a given file name.
+   * Recursively searches current folder and parent folders for a given file name.
    *
    * @return Path to file or empty if not found.
    */
@@ -169,6 +169,36 @@ public final class FileUtils {
 
     FileSystemReadError(final File file, final IOException e) {
       super("Error reading files in: " + file.getAbsolutePath(), e);
+    }
+  }
+
+  /**
+   * Reads and returns the contents of a given file. Returns empty if the file does not exist or if
+   * there were any errors reading the file.
+   */
+  public static Optional<String> readContents(final Path fileToRead) {
+    if (!fileToRead.toFile().exists()) {
+      return Optional.empty();
+    }
+
+    try {
+      return Optional.of(Files.readString(fileToRead));
+    } catch (final IOException e) {
+      log.error(
+          "Error reading file: {}, {}", fileToRead.toFile().getAbsolutePath(), e.getMessage(), e);
+      return Optional.empty();
+    }
+  }
+
+  public static void writeToFile(final Path fileToWrite, final String contents) {
+    try {
+      Files.writeString(fileToWrite, contents);
+    } catch (final IOException e) {
+      log.error(
+          "Failed to write file: {}, {}",
+          fileToWrite.toFile().getAbsolutePath(),
+          e.getMessage(),
+          e);
     }
   }
 }

@@ -115,7 +115,7 @@ public final class GameParser {
           .map(Path::toFile)
           .flatMap(MapDescriptionYaml::fromFile)
           .map(MapDescriptionYaml::getMapName)
-          .ifPresent(mapName -> gameData.get().getProperties().set(Constants.MAP_NAME, mapName));
+          .ifPresent(mapName -> gameData.get().setMapName(mapName));
     }
 
     return gameData;

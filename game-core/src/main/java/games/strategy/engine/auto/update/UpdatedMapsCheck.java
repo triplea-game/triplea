@@ -11,7 +11,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingComponents;
@@ -73,21 +72,17 @@ class UpdatedMapsCheck {
    */
   public static Collection<String> computeOutOfDateMaps(
       final Collection<DownloadFileDescription> availableToDownloadMaps,
-      final Function<String, Optional<Integer>> mapVersionLookup) {
+      final Function<String, Integer> mapVersionLookup) {
 
     final Collection<String> outOfDateMapNames = new ArrayList<>();
 
     // Loop over all available maps, check if we have that map present, its version,
     // and remember any whose version is less than what is available.
     for (final DownloadFileDescription availableMap : availableToDownloadMaps) {
-      mapVersionLookup
-          .apply(availableMap.getMapName())
-          .ifPresent(
-              installedVersion -> {
-                if (installedVersion < availableMap.getVersion()) {
-                  outOfDateMapNames.add(availableMap.getMapName());
-                }
-              });
+      final int installedVersion = mapVersionLookup.apply(availableMap.getMapName());
+      if (installedVersion < availableMap.getVersion()) {
+        outOfDateMapNames.add(availableMap.getMapName());
+      }
     }
     return outOfDateMapNames;
   }

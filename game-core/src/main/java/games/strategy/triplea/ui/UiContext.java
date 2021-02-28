@@ -6,7 +6,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
@@ -259,7 +258,7 @@ public class UiContext {
   }
 
   private static String getDefaultMapDir(final GameState data) {
-    final String mapName = String.valueOf(data.getProperties().get(Constants.MAP_NAME));
+    final String mapName = data.getMapName();
     if (mapName == null || mapName.isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
@@ -285,8 +284,7 @@ public class UiContext {
     internalSetMapDir(mapDir, data);
     this.getMapData().verify(data);
     // set the default after internal succeeds, if an error is thrown we don't want to persist it
-    final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
-    final Preferences prefs = getPreferencesForMap(mapName);
+    final Preferences prefs = getPreferencesForMap(data.getMapName());
     prefs.put(MAP_SKIN_PREF, mapDir);
     try {
       prefs.flush();
