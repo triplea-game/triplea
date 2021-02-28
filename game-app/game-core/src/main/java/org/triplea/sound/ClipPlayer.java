@@ -222,13 +222,12 @@ public class ClipPlayer {
    * @param gamePlayer - the name of the player, or null
    */
   public static void play(final String clipPath, final GamePlayer gamePlayer) {
-    final ClipPlayer result;
     synchronized (ClipPlayer.class) {
-      result =
-          Optional.ofNullable(clipPlayer)
-              .orElseThrow(() -> new IllegalStateException("No resource loader has been set"));
+      if (clipPlayer == null) {
+        clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
+      }
     }
-    result.playClip(clipPath, gamePlayer);
+    clipPlayer.playClip(clipPath, gamePlayer);
   }
 
   private void playClip(final String clipName, final GamePlayer gamePlayer) {

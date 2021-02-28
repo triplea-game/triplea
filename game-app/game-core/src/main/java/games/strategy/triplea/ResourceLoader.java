@@ -1,7 +1,6 @@
 package games.strategy.triplea;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
@@ -18,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -43,24 +43,24 @@ public class ResourceLoader implements Closeable {
   @Getter private final File mapLocation;
 
   public ResourceLoader(final String mapName) {
-    Preconditions.checkNotNull(mapName);
-
     mapLocation =
-        DownloadedMapsListing.parseMapFiles()
-            .findContentRootForMapName(mapName)
-            .map(Path::toFile)
-            .orElseThrow(
-                () -> {
-                  SwingComponents.promptUser(
-                      "Download Map?",
-                      "Map missing: "
-                          + mapName
-                          + ", could not join game.\nWould you like to download the map now?"
-                          + "\nOnce the download completes, you may reconnect to this game.",
-                      () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+        mapName == null || mapName.isBlank()
+            ? null
+            : DownloadedMapsListing.parseMapFiles()
+                .findContentRootForMapName(mapName)
+                .map(Path::toFile)
+                .orElseThrow(
+                    () -> {
+                      SwingComponents.promptUser(
+                          "Download Map?",
+                          "Map missing: "
+                              + mapName
+                              + ", could not join game.\nWould you like to download the map now?"
+                              + "\nOnce the download completes, you may reconnect to this game.",
+                          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
 
-                  return new MapNotFoundException(mapName);
-                });
+                      return new MapNotFoundException(mapName);
+                    });
 
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map resources.
@@ -72,7 +72,11 @@ public class ResourceLoader implements Closeable {
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
     try {
-      searchUrls = List.of(mapLocation.toURI().toURL(), gameAssetsDirectory.toURI().toURL());
+      searchUrls = new ArrayList<>();
+      if (mapLocation != null) {
+        searchUrls.add(mapLocation.toURI().toURL());
+      }
+      searchUrls.add(gameAssetsDirectory.toURI().toURL());
       loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
     } catch (final MalformedURLException e) {
       throw new IllegalArgumentException(
@@ -84,6 +88,15 @@ public class ResourceLoader implements Closeable {
               + mapLocation.getAbsolutePath(),
           e);
     }
+  }
+
+  /**
+   * Resource loader that loads generic sounds and images, no map loaded. A standard resource loader
+   * will look for map assets first before falling back to game engine assets. This resource loader
+   * is to be used in the launching screens before any map has been launched.
+   */
+  public static ResourceLoader getGameEngineAssetLoader() {
+    return new ResourceLoader("");
   }
 
   /**
