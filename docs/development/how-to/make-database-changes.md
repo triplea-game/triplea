@@ -9,12 +9,12 @@
 
 ## Create a Migration File
 
-- Start local docker database: `./database/start_docker_db`
-- (A) Create a file in `database/src/main/resources/db.migrations/<schema>/`
+- Start local docker database: `./servers/database/start_docker_db`
+- (A) Create a file in `servers/database/src/main/resources/db.migrations/<schema>/`
 - (B) Add  SQL code to that file
-- (C) Run `./database/reset_docker_db` to redeploy changes to database
+- (C) Run `./servers/database/reset_docker_db` to redeploy changes to database
 - Verfiy changes:
-  - connect to local db: `./database/connect_to_docker_db`
+  - connect to local db: `./servers/database/connect_to_docker_db`
   - run/write DB unit tests
 - Repeat (B) and (C) until done
 - Repate (A), (B), (C) until all desired DB changes are ready

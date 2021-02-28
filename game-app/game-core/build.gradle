@@ -12,11 +12,11 @@ dependencies {
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     implementation "org.knowm.xchart:xchart:$xchartVersion"
     implementation "org.apache.commons:commons-text:$commonsTextVersion"
-    implementation project(":domain-data")
+    implementation project(":game-app:domain-data")
     implementation project(":http-clients:feign-common")
     implementation project(":lib:java-extras")
     implementation project(":http-clients:lobby-client")
-    implementation project(":map-data")
+    implementation project(":game-app:map-data")
     implementation project(":http-clients:maps-server-client")
     implementation project(":lib:swing-lib")
     implementation project(":lib:websocket-client")

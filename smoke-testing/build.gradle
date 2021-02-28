@@ -9,7 +9,7 @@ description = 'TripleA Smoke Testing Application'
 mainClassName = 'org.triplea.test.smoke.ClientConnect'
 
 dependencies {
-    implementation project(':game-core')
+    implementation project(':game-app:game-core')
     implementation project(':http-clients:feign-common')
     implementation project(':http-clients:lobby-client')
     testImplementation project(':lib:java-extras')

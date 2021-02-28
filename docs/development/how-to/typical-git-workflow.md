@@ -27,4 +27,4 @@ git push origin
 ```
 
 With the above done, you'll get a link in the push output that can
-create a PR. Read more about [pull requests here](./pull-requests.md).
+create a PR. Read more about [pull requests here](../reference/dev-process/pull-requests.md).

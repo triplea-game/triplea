@@ -1,6 +1,6 @@
 dependencies {
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"
-    implementation project(":domain-data")
+    implementation project(":game-app:domain-data")
     implementation project(":lib:dropwizard-common")
     implementation project(":http-clients:feign-common")
     implementation project(":lib:java-extras")

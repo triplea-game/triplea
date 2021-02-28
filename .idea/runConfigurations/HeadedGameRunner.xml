@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="HeadedGameRunner" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="org.triplea.game.client.HeadedGameRunner" />
-    <module name="triplea.game-headed.main" />
+    <module name="triplea.game-app.game-headed.main" />
     <option name="VM_PARAMETERS" value="-Xss1250K" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/game-headed" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/game-app/game-headed" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.triplea.game.client.*" />
