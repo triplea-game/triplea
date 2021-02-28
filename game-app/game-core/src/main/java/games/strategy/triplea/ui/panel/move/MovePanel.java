@@ -921,12 +921,11 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToUnloadMatch);
-    chooser.setTitle("What transports do you want to unload");
     final int option =
         JOptionPane.showOptionDialog(
             getTopLevelAncestor(),
             chooser,
-            "What transports do you want to unload",
+            "Select transports to unload",
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE,
             null,
@@ -1326,12 +1325,11 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToLoadMatch);
-    chooser.setTitle("What transports do you want to load");
     final int option =
         JOptionPane.showOptionDialog(
             getTopLevelAncestor(),
             chooser,
-            "What transports do you want to load",
+            "Select transports to load",
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE,
             null,
