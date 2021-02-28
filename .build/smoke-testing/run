@@ -17,7 +17,7 @@ set -eux
 
 readonly VERSION=$(sed 's/version\s*=\s*//' game-core/src/main/resources/META-INF/triplea/product.properties)
 
-readonly LOBBY_SERVER_JAR_PATH="lobby-server/build/libs/triplea-lobby-server-${VERSION}.jar"
+readonly LOBBY_SERVER_JAR_PATH="servers/lobby-server/build/libs/triplea-lobby-server-${VERSION}.jar"
 readonly BOT_JAR_PATH="game-headless/build/libs/triplea-game-headless-${VERSION}.jar"
 readonly SMOKE_TEST_JAR_PATH="smoke-testing/build/libs/triplea-smoke-testing-${VERSION}.jar"
 
@@ -59,13 +59,13 @@ function printLogs() {
 
 function buildJars() {
   ./gradlew --parallel \
-     :lobby-server:shadowJar \
+     :servers:lobby-server:shadowJar \
      :game-headless:shadowJar \
      :smoke-testing:shadowJar 
 }
 
 function startLobby() {
-  java -jar "$LOBBY_SERVER_JAR_PATH" server ./lobby-server/configuration.yml > "$LOBBY_SERVER_OUTPUT" 2>&1 &
+  java -jar "$LOBBY_SERVER_JAR_PATH" server ./servers/lobby-server/configuration.yml > "$LOBBY_SERVER_OUTPUT" 2>&1 &
   echo $!
 }
 

@@ -1,0 +1,80 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+archivesBaseName = "$group-$name"
+mainClassName = 'org.triplea.http.LobbyServer'
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+configurations {
+    testImplementation {
+        // database-rider brings in slf4j-simple as a transitive dependency
+        // DropWizard has logback baked in and cannot have multiple slf4j bindings.
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+}
+
+dependencies {
+    errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+
+    implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
+    implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
+    implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
+    implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
+    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
+    implementation "io.github.openfeign:feign-gson:$openFeignVersion"
+    implementation "javax.activation:activation:$javaxActivationVersion"
+    implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
+    implementation "at.favre.lib:bcrypt:$bcryptVersion"
+    implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
+    implementation project(':domain-data')
+    implementation project(':lib:dropwizard-common')
+    implementation project(':http-clients:github-client')
+    implementation project(':http-clients:feign-common')
+    implementation project(':lib:java-extras')
+    implementation project(':http-clients:lobby-client')
+    implementation project(':lib:websocket-client')
+    implementation project(':lib:websocket-server')
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
+    testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
+    testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
+    testImplementation project(":lib:dropwizard-common-test")
+    testImplementation project(":lib:test-common")
+    testImplementation project(':domain-data')
+    testImplementation project(':lib:java-extras')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('configuration.yml')
+
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}

@@ -18,10 +18,10 @@ dependencies {
     implementation project(":ai")
     implementation project(":map-data")
     implementation project(":game-core")
-    implementation project(":java-extras")
-    implementation project(":swing-lib")
+    implementation project(":lib:java-extras")
+    implementation project(":lib:swing-lib")
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
-    testImplementation project(":test-common")
+    testImplementation project(":lib:test-common")
 }
 
 install4j {
