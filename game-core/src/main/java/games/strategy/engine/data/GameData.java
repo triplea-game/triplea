@@ -10,14 +10,17 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.ui.UiContext;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,8 +35,11 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.SwingUtilities;
 import org.triplea.injection.Injections;
+import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
 import org.triplea.java.RemoveOnNextMajorRelease;
+import org.triplea.map.description.file.MapDescriptionYaml;
+import org.triplea.map.game.notes.GameNotes;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
@@ -311,8 +317,18 @@ public class GameData implements Serializable, GameState {
     this.gameName = gameName;
   }
 
+  @Override
   public String getGameName() {
     return gameName;
+  }
+
+  @Override
+  public String getMapName() {
+    return String.valueOf(properties.get(Constants.MAP_NAME));
+  }
+
+  public void setMapName(final String mapName) {
+    properties.set(Constants.MAP_NAME, mapName);
   }
 
   public void setDiceSides(final int diceSides) {
@@ -520,5 +536,26 @@ public class GameData implements Serializable, GameState {
 
   public void setSaveGameFileName(final String saveGameFileName) {
     getProperties().set(SAVE_GAME_FILE_NAME_PROPERTY, saveGameFileName);
+  }
+
+  /**
+   * Reads the game notes from the game-notes file and returns that text with an auto-generated
+   * header. Returns empty if the 'map.yml' or game notes file cannot be found.
+   */
+  public String loadGameNotes() {
+    // Given a game name, the map.yml file can tell us the path to the game xml file.
+    // From the game-xml file name, we can find the game-notes file.
+    return findMapDescriptionYaml()
+        .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()))
+        .map(gameFilePath -> GameNotes.loadGameNotes(gameFilePath, getGameName()))
+        .orElse("");
+  }
+
+  private Optional<MapDescriptionYaml> findMapDescriptionYaml() {
+    return FileUtils.findFileInParentFolders(
+            UiContext.getResourceLoader().getMapLocation().toPath(),
+            MapDescriptionYaml.MAP_YAML_FILE_NAME)
+        .map(Path::toFile)
+        .flatMap(MapDescriptionYaml::fromFile);
   }
 }

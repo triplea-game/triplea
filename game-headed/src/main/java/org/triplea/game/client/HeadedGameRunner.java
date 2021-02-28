@@ -36,6 +36,7 @@ import org.triplea.debug.ErrorMessage;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.map.description.file.MapDescriptionYamlGeneratorRunner;
+import org.triplea.map.game.notes.GameNotesMigrator;
 import org.triplea.swing.SwingAction;
 
 /** Runs a headed game client. */
@@ -115,6 +116,13 @@ public final class HeadedGameRunner {
                 BackgroundTaskRunner.runInBackground("Generating map descriptor files", unzipTask))
         .build()
         .generateYamlFiles();
+
+    GameNotesMigrator.builder()
+        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder().toPath())
+        .progressIndicator(
+            unzipTask -> BackgroundTaskRunner.runInBackground("Migrating game notes..", unzipTask))
+        .build()
+        .extractGameNotes();
 
     log.info("Launching game, version: {} ", Injections.getInstance().getEngineVersion());
     GameRunner.start();

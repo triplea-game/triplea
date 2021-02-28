@@ -5,7 +5,6 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
@@ -242,9 +241,7 @@ final class ViewMenu extends JMenu {
     mapSubMenu.setMnemonic(KeyEvent.VK_K);
     add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
-    final Map<String, String> skins =
-        UiContext.getSkins(
-            frame.getGame().getData().getProperties().get(Constants.MAP_NAME).toString());
+    final Map<String, String> skins = UiContext.getSkins(frame.getGame().getData().getMapName());
     mapSubMenu.setEnabled(skins.size() > 1);
     for (final String key : skins.keySet()) {
       final JMenuItem mapMenuItem = new JRadioButtonMenuItem(key);

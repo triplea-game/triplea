@@ -3,7 +3,22 @@
 A list of changes to map files that have occurred over time.
 Caution, this list might not be complete, please let us know if there is anything missing.
 
-## XML Changes
+
+## 2.6
+
+- Map folder can be any arbitrary name, no longer as to match the 'map name' value
+  from XML
+- Maps are required to have a `map.yml` file
+- The following values are no longer read from XML:
+  - map name
+  - game name
+  - notes
+- Game notes are now stored in a '.notes.html' file alongside XML files
+
+
+## 2.5  and before
+
+### XML Changes
 
 - `<option name="isMechanized"` >> `<option name="isLandTransportable"`
 - `<option name="isParatroop"` >> `<option name="isAirTransportable"`
@@ -50,11 +65,11 @@ Delete these tags (found under `<property>`)
 - `<boolean/>`
 - `<string/>`
 
-## map.properties changes
+### map.properties changes
 
 - `color.Impassible=` >> `color.Impassable=`
 
-## sound.properties and sound file changes
+### sound.properties and sound file changes
 
 - .wav files need to be re-encoded as mp3 (128 or 168Kbps are preferred bit rates)
 - all file names in sound.properties need to be updated to match the new '.mp3' suffix

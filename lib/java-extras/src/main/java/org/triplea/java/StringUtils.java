@@ -3,6 +3,7 @@ package org.triplea.java;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Ascii;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 import lombok.experimental.UtilityClass;
@@ -46,5 +47,30 @@ public final class StringUtils {
 
   public static String truncate(final String stringToTruncate, final int maxLength) {
     return Ascii.truncate(Strings.nullToEmpty(stringToTruncate), maxLength, "...");
+  }
+
+  /**
+   * Removes an ending suffix from a String. Example:
+   *
+   * <pre>
+   * truncateEnding(input.xml, xml) -> input
+   * </pre>
+   *
+   * <p>The original input will be returned if the ending is not found, eg:
+   *
+   * <pre>
+   * truncateEnding(input, xml) -> input
+   * </pre>
+   *
+   * @throws IllegalArgumentException Thrown if endingToTruncate parameter is empty.
+   */
+  public static String truncateEnding(
+      final String stringToTruncate, final String endingToTruncate) {
+    Preconditions.checkArgument(
+        !endingToTruncate.isEmpty(),
+        "Illegal empty ending to truncate requested on string: " + stringToTruncate);
+    return stringToTruncate.endsWith(endingToTruncate)
+        ? stringToTruncate.substring(0, stringToTruncate.indexOf(endingToTruncate))
+        : stringToTruncate;
   }
 }

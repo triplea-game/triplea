@@ -7,7 +7,6 @@ import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsList
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
@@ -31,17 +30,15 @@ class AvailableMapsListing {
         return;
       }
 
-      if (download.getInstallLocation().isPresent()) {
-        final Optional<Integer> mapVersion =
-            downloadedMapsListing.getMapVersionByName(download.getMapName());
-        if (download.getVersion() != null
-            && (mapVersion.isEmpty() || download.getVersion() > mapVersion.get())) {
+      if (download.getInstallLocation().isEmpty()) {
+        available.add(download);
+      } else {
+        final int mapVersion = downloadedMapsListing.getMapVersionByName(download.getMapName());
+        if (download.getVersion() != null && download.getVersion() > mapVersion) {
           outOfDate.add(download);
         } else {
           installed.add(download);
         }
-      } else {
-        available.add(download);
       }
     }
   }

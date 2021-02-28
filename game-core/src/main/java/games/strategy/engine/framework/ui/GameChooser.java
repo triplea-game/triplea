@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.data.gameparser.ShallowGameParser;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,16 +26,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
-import org.triplea.io.FileUtils;
-import org.triplea.map.data.elements.PropertyList;
-import org.triplea.map.data.elements.ShallowParsedGame;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
-import org.triplea.util.LocalizeHtml;
 
 /**
  * Use to display a modal dialog that prompts the user to select a game (map) from the list of
@@ -61,14 +56,8 @@ public class GameChooser {
     dialog.setLayout(new BorderLayout());
 
     final DefaultListModel<DefaultGameChooserEntry> gameChooserModel = new DefaultListModel<>();
-    downloadedMapsListing.getGameNamesToGameLocations().entrySet().stream()
-        .map(
-            entry ->
-                DefaultGameChooserEntry.builder()
-                    .gameName(entry.getKey())
-                    .gameFilePath(entry.getValue())
-                    .build())
-        .sorted()
+    downloadedMapsListing //
+        .createGameChooserEntries()
         .forEach(gameChooserModel::addElement);
 
     final JList<DefaultGameChooserEntry> gameList = new JList<>(gameChooserModel);
@@ -125,8 +114,7 @@ public class GameChooser {
     notesPanel.setForeground(Color.BLACK);
 
     Optional.ofNullable(gameList.getSelectedValue())
-        .map(DefaultGameChooserEntry::getGameFilePath)
-        .map(GameChooser::buildGameNotesText)
+        .map(DefaultGameChooserEntry::readGameNotes)
         .ifPresent(notesPanel::setText);
 
     final JPanel infoPanel = new JPanel();
@@ -159,8 +147,7 @@ public class GameChooser {
         e -> {
           if (!e.getValueIsAdjusting()) {
             Optional.ofNullable(gameList.getSelectedValue())
-                .map(DefaultGameChooserEntry::getGameFilePath)
-                .map(GameChooser::buildGameNotesText)
+                .map(DefaultGameChooserEntry::readGameNotes)
                 .ifPresent(notesPanel::setText);
             // scroll to the top of the notes screen
             SwingUtilities.invokeLater(
@@ -185,72 +172,7 @@ public class GameChooser {
     dialog.setVisible(true); // Blocking and waits for user action
 
     Optional.ofNullable(gameList.getSelectedValue())
-        .map(DefaultGameChooserEntry::getGameFilePath)
+        .flatMap(DefaultGameChooserEntry::getGameXmlFilePath)
         .ifPresent(gameChosenCallback);
-  }
-
-  private static String buildGameNotesText(final Path gameFile) {
-    if (gameFile == null) {
-      return "";
-    }
-
-    final ShallowParsedGame shallowParsedGame =
-        FileUtils.openInputStream(
-            gameFile.toFile(),
-            inputStream -> ShallowGameParser.parseShallow(inputStream).orElse(null));
-
-    if (shallowParsedGame == null
-        || shallowParsedGame.getInfo() == null
-        || shallowParsedGame.getInfo().getName() == null) {
-      return "Error reading file.. "
-          + gameFile.toFile().getAbsolutePath()
-          + ", could not parse or missing <info> tag data.";
-    }
-
-    if (shallowParsedGame.getPlayerList() == null) {
-      return "Error reading file.. "
-          + gameFile.toFile().getAbsolutePath()
-          + ", missing <playerList> tag data.";
-    }
-
-    final StringBuilder notes = new StringBuilder();
-    notes.append("<h1>").append(shallowParsedGame.getInfo().getName()).append("</h1>");
-    notes
-        .append("<b>")
-        .append("Number Of Players")
-        .append("</b>")
-        .append(": ")
-        .append(shallowParsedGame.getPlayerList().getPlayers().size())
-        .append("<br>")
-        .append("<p></p>");
-
-    extractGameNotes(shallowParsedGame)
-        .ifPresent(
-            gameNotes ->
-                shallowParsedGame
-                    .getProperty("mapName")
-                    .map(PropertyList.Property::getValue)
-                    .ifPresent(
-                        mapName ->
-                            notes.append(
-                                LocalizeHtml.localizeImgLinksInHtml(
-                                    gameNotes,
-                                    DownloadedMapsListing.parseMapFiles()
-                                        .findContentRootForMapNameOrElseThrow(mapName)))));
-    return notes.toString();
-  }
-
-  private static Optional<String> extractGameNotes(final ShallowParsedGame shallowParsedGame) {
-    return shallowParsedGame
-        // get 'value' attribute of 'notes' property
-        .getProperty("notes")
-        .map(PropertyList.Property::getValue)
-        // otherwise look for 'value' child node of 'notes' property
-        .or(
-            () ->
-                shallowParsedGame
-                    .getProperty("notes")
-                    .map(PropertyList.Property::getValueProperty)
-                    .map(PropertyList.Property.Value::getData));
   }
 }
