@@ -20,7 +20,7 @@ trap 'rm $javaFiles $sqlFiles' EXIT
 
 find . -type f -name "*.java" > "$javaFiles"
 find . -type f -name "*Test.java" > "$testFiles"
-find database/src/main/resources -type f -name "*.sql" > "$sqlFiles"
+find servers/database/src/main/resources -type f -name "*.sql" > "$sqlFiles"
 
 status=0
 

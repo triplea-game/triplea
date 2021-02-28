@@ -13,15 +13,15 @@ dependencies {
     implementation "org.knowm.xchart:xchart:$xchartVersion"
     implementation "org.apache.commons:commons-text:$commonsTextVersion"
     implementation project(":domain-data")
-    implementation project(":http-clients")
-    implementation project(":java-extras")
-    implementation project(":lobby-client")
+    implementation project(":http-clients:feign-common")
+    implementation project(":lib:java-extras")
+    implementation project(":http-clients:lobby-client")
     implementation project(":map-data")
-    implementation project(":maps-server-client")
-    implementation project(":swing-lib")
-    implementation project(":websocket-client")
-    implementation project(":xml-reader")
+    implementation project(":http-clients:maps-server-client")
+    implementation project(":lib:swing-lib")
+    implementation project(":lib:websocket-client")
+    implementation project(":lib:xml-reader")
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
-    testImplementation project(":test-common")
+    testImplementation project(":lib:test-common")
 }

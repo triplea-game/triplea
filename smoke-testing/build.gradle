@@ -10,10 +10,10 @@ mainClassName = 'org.triplea.test.smoke.ClientConnect'
 
 dependencies {
     implementation project(':game-core')
-    implementation project(':http-clients')
-    implementation project(':lobby-client')
-    testImplementation project(':java-extras')
-    testImplementation project(':test-common')
+    implementation project(':http-clients:feign-common')
+    implementation project(':http-clients:lobby-client')
+    testImplementation project(':lib:java-extras')
+    testImplementation project(':lib:test-common')
 }
 
 shadowJar {
