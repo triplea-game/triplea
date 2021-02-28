@@ -21,7 +21,6 @@ sudo ps -ef | grep java
 lobby_s+   55674       1 99 05:16 ?        00:00:01 /usr/bin/java -jar bin/triplea-lobby-server-2.6.jar
 ```
 
-
 ### Connect to database & view tables
 
 ```bash

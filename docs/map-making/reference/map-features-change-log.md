@@ -3,7 +3,6 @@
 A list of changes to map files that have occurred over time.
 Caution, this list might not be complete, please let us know if there is anything missing.
 
-
 ## 2.6
 
 - Map folder can be any arbitrary name, no longer as to match the 'map name' value
@@ -14,7 +13,6 @@ Caution, this list might not be complete, please let us know if there is anythin
   - game name
   - notes
 - Game notes are now stored in a '.notes.html' file alongside XML files
-
 
 ## 2.5  and before
 

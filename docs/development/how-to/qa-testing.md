@@ -5,7 +5,6 @@
 	- [Lobby and bot running OLD should be able to communicate with client running NEW](#lobby-and-bot-running-old-should-be-able-to-communicate-with-client-running-new)
 - [Manual Regression Testing](#manual-regression-testing)
 
-
 ### Network games
 
 Ensure compatibility between network nodes running different versions.

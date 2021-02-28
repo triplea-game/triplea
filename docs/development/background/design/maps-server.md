@@ -5,13 +5,12 @@ Describes the design behind how maps are uploaded and downloaded.
 ## Map Upload
 
 Upload is done directly in github, triplea-maps organization where a new repository
-is created. 
+is created.
 
 The maps server scans github for new repositories on a periodic basis.
 When found, it will search for a 'map.yml' descriptor file to load in data such
 as the: {map name, map description, map version, game names}. That data will then
 be stored in the maps-server database
-
 
 ## Map Download System
 

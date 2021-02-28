@@ -5,7 +5,6 @@ This page describes how that documentation is organized.
 
 Documentation organization is based on: <https://documentation.divio.com/>
 
-
 ## Types of Documentation
 
 **tutorial / getting-started**: explanatory instructions intended to teach.
@@ -16,7 +15,6 @@ Look here when getting started.
 **reference**: description of a topic or a process (EG: encyclopedia entry)
 
 **background**: explanation of how something came to be (EG: design or a decision doc)
-
 
 ## Documentation Folders
 
@@ -32,5 +30,5 @@ topics such as 'how to release'
 **project**: general documentation around the TripleA project that describes project
 process, how to contribute, how to engage, where to communicate
 
-**infrastructre**: relates to software deployment and opeations, 
+**infrastructre**: relates to software deployment and opeations,
 eg: bot setup, server setup, checking logs, checking and restarting services

@@ -24,16 +24,15 @@ Typical configuration:
 - Ubuntu latest LTS
 - Region, somewhere in US or Europe
 - Set linode label (follow naming convention)
-- Set root password per admin secrets document 
+- Set root password per admin secrets document
 - Select to add a SSH key
-
 
 # Adding DNS Entries
 
 Create a DNS entries on [namecheap.com > account > dashboard > "manage" button > "advanced DNS"
 ](https://ap.www.namecheap.com/Domains/DomainControlPanel/triplea-game.org/advancedns)
 
-All servers will have both an 'A' (IPv4 address) and 'AAAA' (IPv6 address) record. 
+All servers will have both an 'A' (IPv4 address) and 'AAAA' (IPv6 address) record.
 You can get both IPv4 and IPv6 addresses from the linode dashboard.
 
 ## Create an 'A' Record
@@ -53,4 +52,4 @@ This is needed for lobby server or any server that will be serving https traffic
 
 - Add the server to [inventory configuration](/infrastructure/ansible/inventory)
 - Commit the changes and submit for a PR. After the PR is merged, travis will run a deployment
-  automatically deploying all needed configurations to the server. 
+  automatically deploying all needed configurations to the server.

@@ -1,8 +1,8 @@
 ## *IntelliJ* Setup
 
-Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with the associated settings, and some settings to download and import.  
+Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with the associated settings, and some settings to download and import.
 
-### Plugins: 
+### Plugins:
   1. *Google Java Format*
         1. *settings > Other settings > google-java-format*
         1.  Check 'enable'
@@ -18,12 +18,11 @@ Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with
   1. *Save Actions*
         1. **Settings > Other settings > Save Actions**
         1. Select 'Activate save actions on save'
-        1. configure in settings to add 'final' to local variables and class variables. 
+        1. configure in settings to add 'final' to local variables and class variables.
   1. *Lombok*
         1. **settings > annotation processing**
-        1. Turn on annotation processing. 
+        1. Turn on annotation processing.
         ![annotationprocessing2](https://user-images.githubusercontent.com/54828470/95939758-6da00a00-0da2-11eb-9c7a-823040578c4e.png)
-
 
 ### Settings
   1. *File > Import Settings*

@@ -10,9 +10,7 @@ git push origin release/<release_number>
 
 This will build installers and create a release in github releases.
 
-
 ## Increment version
-
 
 Change the version number in 'product.properties', increase the version number
 to prep for the next release and commit this to master.
@@ -40,24 +38,20 @@ done >> release-notes
 
 Clean up the above output and update the release-notes.md page on website.
 
-
 ## Update servers.yml
 
 Increase latest version to the release. This will trigger in-game
 notifications to upgrade
-
 
 ## Update partner sites:
 
   - http://www.freewarefiles.com/TripleA_program_56699.html
   - http://download.cnet.com/TripleA/3000-18516_4-75184098.html
 
-
 ## Post to forums:
 
   - https://forums.triplea-game.org/category/1/announcements
   - http://www.axisandallies.org/forums/index.php?board=53.0
-
 
 # Hotfix - Releasing a Patch
 

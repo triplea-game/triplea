@@ -6,7 +6,6 @@ The file is used by both the game engine to know which maps
 are installed and also by the maps-server to index map repositories
 and make those maps available for download.
 
- 
 ## map.yml location
 
 The 'map.yml' should be placed at the top-most directory of a map.
@@ -58,9 +57,8 @@ that displays in the lobby.
 The game engine will find your XML file by starting at the 'map.ym' and then
 following this path to find an XML file. This is important to get right!
 Use forward slashes: '/', do not start the path with a slash. The path should
-end with a '.xml' file. Typically this path will be something like: 
+end with a '.xml' file. Typically this path will be something like:
 `games/my-game.xml`
-
 
 ## Usages
 
@@ -80,10 +78,10 @@ which will respond with a latest listing of maps and their latest version.
 
 ### Map Updates
 
-Game engines know which map version are installed from the 'map.yml' file, 
+Game engines know which map version are installed from the 'map.yml' file,
 the maps server will scan the 'map.yml' file in repositories for a 'version'
 value and store that in database. When the game engine checks for out-of-date
 maps it will send a request to the maps server which will return a listing
 of maps and their latest version. The game engine will compare this against
 all installed maps and notify users to update any maps where there is a
-newer version available. 
+newer version available.

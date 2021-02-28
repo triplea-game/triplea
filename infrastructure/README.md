@@ -11,7 +11,6 @@ virtual machines via CLI.
 
 - Use vagrant to test deployments and configuration updates.
 
-
 ### Installation
 
 #### (1.A) Install, VirtualBox and Ansible

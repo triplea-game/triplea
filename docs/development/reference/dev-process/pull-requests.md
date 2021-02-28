@@ -1,6 +1,6 @@
 ## PR workflow
 
-* Before creating a PR, do a self-review of the code and ensure that it looks good.  
+* Before creating a PR, do a self-review of the code and ensure that it looks good.
 * Ensure that your commit message is descriptive. Remember, the commit
 message is for future developers and maintainers.  Any text in the PR
 is one-time and is for reviewers for the benefit of doing their review. The

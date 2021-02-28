@@ -4,11 +4,9 @@ All commands assume a working directory of the triplea clone. EG: `cd ~/work/; g
 
 Docker for Mac can be obtained at: https://store.docker.com/editions/community/docker-ce-desktop-mac
 
-
 ## Start Dev Database
 
 [launch-local-database.md](launch-local-database.md])
-
 
 ## Running all checks & tests
 
@@ -21,7 +19,6 @@ To run just static analysis checks (checkstyles & PMD & custom checks), run:
 ./verify-no-tests
 ```
 
-
 ## Formatting
 
 ```
@@ -32,7 +29,6 @@ To format everything, including documentation files run:
 ```
 ./format
 ```
-
 
 ## Testing a local lobby
 

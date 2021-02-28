@@ -27,7 +27,6 @@ systemctl start bot@01.service
 Done by hand from your local system.
 Requires access to vault secret
 
-
 ```bash
 # setup vault_password file
 cd triplea/infrastructure

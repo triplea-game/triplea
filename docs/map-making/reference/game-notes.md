@@ -3,7 +3,6 @@
 - Game notes are stored in a file alongside game XML files.
 - Notes are written in HTML
 
-
 ### File Naming
 
 Game notes files should have the same name as a game XML file but with a

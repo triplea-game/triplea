@@ -1,6 +1,5 @@
 # Postgres Operations
 
-
 ## Commands
 
 Connect
