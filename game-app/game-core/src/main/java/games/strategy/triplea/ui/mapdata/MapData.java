@@ -127,6 +127,7 @@ public class MapData {
   @Nullable private final Image blockadeImage;
   @Nullable private final Image errorImage;
   @Nullable private final Image warningImage;
+  @Nullable private final Image nonWithrawableImage;
   private final String mapNameDir;
 
   public MapData(final String mapNameDir) {
@@ -176,6 +177,7 @@ public class MapData {
       blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
       errorImage = loader.loadImage("misc/error.gif").orElse(null);
       warningImage = loader.loadImage("misc/warning.gif").orElse(null);
+      nonWithrawableImage = loader.loadImage("misc/non-withdrawable.png").orElse(null);
     }
   }
 
@@ -751,6 +753,10 @@ public class MapData {
 
   public Optional<Image> getWarningImage() {
     return Optional.ofNullable(warningImage);
+  }
+
+  public Optional<Image> getNonWithdrawableImage() {
+    return Optional.ofNullable(nonWithrawableImage);
   }
 
   public Map<String, Image> getTerritoryNameImages() {

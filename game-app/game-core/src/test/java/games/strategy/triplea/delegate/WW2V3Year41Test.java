@@ -91,6 +91,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
@@ -1265,6 +1266,16 @@ class WW2V3Year41Test {
     // bombard, but only 2 ships
     // may bombard total)
     assertEquals(2, mfb.getBombardingUnits().size());
+    givenRemotePlayerWillSelectCasualtiesPer(
+        bridge,
+        invocation -> {
+          final Collection<Unit> selectFrom = invocation.getArgument(0);
+          final int hitsRemaining = invocation.getArgument(2);
+          return new CasualtyDetails(
+              selectFrom.stream().limit(hitsRemaining).collect(Collectors.toList()),
+              new ArrayList<>(),
+              false);
+        });
     // Show that bombard casualties can return fire
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
     // 2= Battleship hitting a 3, 2=Cruiser hitting a 3, 15=British infantry hitting once

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -89,6 +90,7 @@ public final class UnitChooser extends JPanel {
       final Collection<Unit> units,
       final CasualtyList defaultSelections,
       final Map<Unit, Collection<Unit>> dependent,
+      final UnitSeparator.SeparatorCategories separatorCategories,
       final boolean allowMultipleHits,
       final UiContext uiContext) {
     this(dependent, allowMultipleHits, uiContext, null);
@@ -96,9 +98,7 @@ public final class UnitChooser extends JPanel {
     // TODO: this adds it to the default selections list, is this intended?
     combinedList.addAll(defaultSelections.getKilled());
     createEntries(
-        units,
-        UnitSeparator.SeparatorCategories.builder().dependents(dependent).build(),
-        combinedList);
+        units, separatorCategories.toBuilder().dependents(dependents).build(), combinedList);
     layoutEntries();
   }
 
@@ -476,9 +476,31 @@ public final class UnitChooser extends JPanel {
                     0,
                     0));
           }
+          gridx++;
           if (category.getTransportCost() != -1) {
             panel.add(
                 new JLabel("cst " + category.getTransportCost()),
+                new GridBagConstraints(
+                    gridx,
+                    rowIndex,
+                    1,
+                    1,
+                    0,
+                    0,
+                    GridBagConstraints.WEST,
+                    GridBagConstraints.HORIZONTAL,
+                    new Insets(0, 4, 0, 4),
+                    0,
+                    0));
+          }
+          gridx++;
+          if (!category.getCanRetreat()) {
+            panel.add(
+                uiContext
+                    .getMapData()
+                    .getNonWithdrawableImage()
+                    .map(image -> new JLabel(new ImageIcon(image)))
+                    .orElse(new JLabel("no retreat")),
                 new GridBagConstraints(
                     gridx,
                     rowIndex,

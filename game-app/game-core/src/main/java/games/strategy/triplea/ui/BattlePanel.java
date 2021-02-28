@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -484,6 +485,7 @@ public final class BattlePanel extends ActionPanel {
                   selectFrom,
                   defaultCasualties,
                   dependents,
+                  UnitSeparator.SeparatorCategories.builder().build(),
                   allowMultipleHitsPerUnit,
                   getMap().getUiContext());
           chooser.setTitle(message);

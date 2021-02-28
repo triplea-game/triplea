@@ -549,6 +549,11 @@ public class BattleDisplay extends JPanel {
                             selectFrom,
                             defaultCasualties,
                             dependents,
+                            UnitSeparator.SeparatorCategories.builder()
+                                .retreatPossibility(
+                                    Properties.getPartialAmphibiousRetreat(
+                                        gameData.getProperties()))
+                                .build(),
                             allowMultipleHitsPerUnit,
                             uiContext);
                     chooser.setTitle(messageText);
