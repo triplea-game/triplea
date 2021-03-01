@@ -125,7 +125,7 @@ public class CasualtySelector {
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
             : sortedTargetsToPickFrom.size());
 
-    final CasualtyDetails casualtySelection =
+    CasualtyDetails casualtySelection =
         hitsRemaining >= totalHitpoints
                 || allTargetsOneTypeOneHitPoint(sortedTargetsToPickFrom, dependents)
             ? new CasualtyDetails(defaultCasualties, true)
@@ -149,6 +149,30 @@ public class CasualtySelector {
     if (Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       killAmphibiousFirst(killed, sortedTargetsToPickFrom);
     }
+
+    if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
+      final boolean isUnitWithMarineBonusAndWasAmphibiousKilled =
+          casualtySelection.getKilled().stream()
+              .anyMatch(
+                  unit -> unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious());
+      final boolean isUnitWithMarineBonusAndWasAmphibiousDamaged =
+          casualtySelection.getDamaged().stream()
+              .anyMatch(
+                  unit -> unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious());
+      if (isUnitWithMarineBonusAndWasAmphibiousKilled
+          || isUnitWithMarineBonusAndWasAmphibiousDamaged) {
+        casualtySelection =
+            casualtySelection.ensureUnitsWithPositiveMarineBonusAreTakenLast(
+                sortedTargetsToPickFrom);
+      }
+    }
+
+    if (casualtySelection.getKilled().stream().anyMatch(Matches.unitIsAir())
+        || casualtySelection.getDamaged().stream().anyMatch(Matches.unitIsAir())) {
+      casualtySelection =
+          casualtySelection.ensureAirUnitsWithLessMovementAreTakenFirst(sortedTargetsToPickFrom);
+    }
+
     final List<Unit> damaged = casualtySelection.getDamaged();
     int numhits = killed.size();
     if (!allowMultipleHitsPerUnit) {
