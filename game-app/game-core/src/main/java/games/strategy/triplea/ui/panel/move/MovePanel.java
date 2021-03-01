@@ -1376,8 +1376,7 @@ public class MovePanel extends AbstractMovePanel {
             && Objects.equals(category1.getType(), category2.getType())
             && !category1.equals(category2)) {
           // if we are moving all the units from both categories, then nothing to choose
-          if (units.containsAll(category1.getUnits())
-              && units.containsAll(category2.getUnits())) {
+          if (units.containsAll(category1.getUnits()) && units.containsAll(category2.getUnits())) {
             continue;
           }
           // if we are moving some of the units from either category, then we need to stop

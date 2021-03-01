@@ -62,9 +62,11 @@ public class MapDescriptionYamlReaderTest {
       assertThat(mapDescriptionYaml.getMapVersion(), is(10));
       assertThat(mapDescriptionYaml.getMapGameList(), hasSize(2));
       assertThat(mapDescriptionYaml.getMapGameList().get(0).getGameName(), is("GameName0"));
-      assertThat(mapDescriptionYaml.getMapGameList().get(0).getXmlPath(), is("XmlGameFile0.xml"));
+      assertThat(
+          mapDescriptionYaml.getMapGameList().get(0).getXmlFileName(), is("XmlGameFile0.xml"));
       assertThat(mapDescriptionYaml.getMapGameList().get(1).getGameName(), is("GameName1"));
-      assertThat(mapDescriptionYaml.getMapGameList().get(1).getXmlPath(), is("XmlGameFile1.xml"));
+      assertThat(
+          mapDescriptionYaml.getMapGameList().get(1).getXmlFileName(), is("XmlGameFile1.xml"));
     }
   }
 
