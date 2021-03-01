@@ -37,7 +37,7 @@ public class DownloadedMap {
     // relative to the 'map.yml' file location, search current and child directories for
     // a polygons file, the location of the polygons file is the map content root.
     final Path mapYamlParentFolder = Path.of(mapDescriptionYaml.getYamlFileLocation()).getParent();
-    return FileUtils.findFile(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+    return FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
         .map(File::toPath)
         .map(Path::getParent);
   }

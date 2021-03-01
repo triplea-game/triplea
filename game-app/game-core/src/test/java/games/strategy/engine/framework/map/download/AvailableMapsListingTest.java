@@ -105,7 +105,7 @@ class AvailableMapsListingTest extends AbstractClientSettingTestCase {
                             .mapGameList(
                                 List.of(
                                     MapDescriptionYaml.MapGame.builder()
-                                        .xmlPath("path.xml")
+                                        .xmlFileName("path.xml")
                                         .gameName("game")
                                         .build()))
                             .build()))

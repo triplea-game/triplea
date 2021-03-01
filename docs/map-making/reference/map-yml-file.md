@@ -34,10 +34,10 @@ Here is an example:
 map_name: Name of My Map
 version: 1
 games:
-  - name: Game Name (1)
-    xml_path: games/XmlGameFile.xml
-  - name: Game Name (2)
-    xml_path: games/XmlGameFile2.xml
+  - game_name: Game Name (1)
+    file_name: XmlGameFile.xml
+  - game_name: Game Name (2)
+    file_name: games/XmlGameFile2.xml
 ```
 
 **map_name**: This is the name of your map, this is the name that will
@@ -49,16 +49,12 @@ to users that they can update the map if it is incremented.
 **games**: This is a list of each game that is in the map. There should
 be one entry per game XML file.
 
-**name**: This is the name of any game that is backed by an XML file. This
+**game_name**: This is the name of any game that is backed by an XML file. This
 name will display when a user clicks 'select game', and this is the game name
 that displays in the lobby.
 
-**xml_path**: This is the path from the map.yml file to the game.xml file.
-The game engine will find your XML file by starting at the 'map.ym' and then
-following this path to find an XML file. This is important to get right!
-Use forward slashes: '/', do not start the path with a slash. The path should
-end with a '.xml' file. Typically this path will be something like:
-`games/my-game.xml`
+**file_name**: This is the name of the game XML file. The engine will search for
+a 'games' folder and look to match any file with the given name.
 
 ## Usages
 

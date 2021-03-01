@@ -4,10 +4,10 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import com.github.npathai.hamcrestopt.OptionalMatchers;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -31,39 +31,26 @@ class MapDescriptionYamlTest {
                 List.of(
                     MapDescriptionYaml.MapGame.builder() //
                         .gameName("game name")
-                        .xmlPath("path.xml")
+                        .xmlFileName("path.xml")
                         .build()))
             .build());
   }
 
   @Test
-  void getGameXmlPathByGameName() {
-    final MapDescriptionYaml mapDescriptionYaml =
-        MapDescriptionYaml.builder()
-            .yamlFileLocation(new File("/my/path/map.yml").toURI())
-            .mapName("map name")
-            .mapVersion(1)
-            .mapGameList(
-                List.of(
-                    MapDescriptionYaml.MapGame.builder() //
-                        .gameName("game1")
-                        .xmlPath("games/path1.xml")
-                        .build(),
-                    MapDescriptionYaml.MapGame.builder()
-                        .gameName("game2")
-                        .xmlPath("games/path2.xml")
-                        .build()))
-            .build();
+  void getGameXmlPathByGameName() throws Exception {
+    final Path mapFolder =
+        Path.of(
+            MapDescriptionYamlTest.class.getClassLoader().getResource("map_yml_example").toURI());
+    final Path ymlFile = mapFolder.resolve(MapDescriptionYaml.MAP_YAML_FILE_NAME);
 
+    final MapDescriptionYaml mapDescriptionYaml =
+        MapDescriptionYaml.fromFile(ymlFile.toFile())
+            .orElseThrow(
+                () -> new IllegalStateException("Unexpected failure to parse map.yml file"));
+
+    final Optional<Path> gameFilePath = mapDescriptionYaml.getGameXmlPathByGameName("Great Game");
     assertThat(
-        mapDescriptionYaml.getGameXmlPathByGameName("game1"),
-        isPresentAndIs(Path.of("/my/path/games/path1.xml")));
-    assertThat(
-        mapDescriptionYaml.getGameXmlPathByGameName("game2"),
-        isPresentAndIs(Path.of("/my/path/games/path2.xml")));
-    assertThat(
-        "game name is not in the game list, looking up the game path by name is empty result.",
-        mapDescriptionYaml.getGameXmlPathByGameName("game-DNE"),
-        OptionalMatchers.isEmpty());
+        gameFilePath,
+        isPresentAndIs(mapFolder.resolve("games").resolve("game1").resolve("game-file.xml")));
   }
 }

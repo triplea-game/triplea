@@ -37,8 +37,7 @@ class MapDescriptionYamlReader {
      * 'map.yml' file at depth 2, eg: 'map_folder-master/map_folder/map/map.yml'.
      */
     final int maxMapYmlSearchDepth = 2;
-    return FileUtils.findFile(
-        mapFolder, maxMapYmlSearchDepth, MapDescriptionYaml.MAP_YAML_FILE_NAME);
+    return FileUtils.find(mapFolder, maxMapYmlSearchDepth, MapDescriptionYaml.MAP_YAML_FILE_NAME);
   }
 
   /** Factory method, finds the map.yml file in a folder and reads it. */
@@ -101,7 +100,7 @@ class MapDescriptionYamlReader {
   private static MapDescriptionYaml.MapGame parseMapGame(final Map<String, String> yamlData) {
     return MapDescriptionYaml.MapGame.builder()
         .gameName(Strings.nullToEmpty(yamlData.get(YamlKeys.GAME_NAME)))
-        .xmlPath(Strings.nullToEmpty(yamlData.get(YamlKeys.XML_PATH)))
+        .xmlFileName(Strings.nullToEmpty(yamlData.get(YamlKeys.FILE_NAME)))
         .build();
   }
 }
