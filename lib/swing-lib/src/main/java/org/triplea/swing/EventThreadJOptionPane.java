@@ -14,10 +14,12 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import lombok.AllArgsConstructor;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 
 /** Blocking JOptionPane calls that do their work in the swing event thread (to be thread safe). */
@@ -195,37 +197,55 @@ public final class EventThreadJOptionPane {
                 initialValue));
   }
 
-  /**
-   * Shows a confirmation dialog using a {@code CountDownLatchHandler} that will release its
-   * associated latches upon interruption.
-   *
-   * @see JOptionPane#showConfirmDialog(Component, Object, String, int)
-   */
-  public static int showConfirmDialog(
-      final @Nullable Component parentComponent,
-      final @Nullable Object message,
-      final @Nullable String title,
-      final int optionType) {
-    return showConfirmDialog(
-        parentComponent, message, title, optionType, new CountDownLatchHandler());
+  @AllArgsConstructor
+  public enum ConfirmDialogType {
+    YES_NO(JOptionPane.YES_NO_OPTION),
+    OK_CANCEL(JOptionPane.OK_CANCEL_OPTION);
+
+    final int optionTypeMagicNumber;
   }
 
   /**
-   * Shows a confirmation dialog using the specified {@code CountDownLatchHandler}.
+   * Shows a blocking, non-modal confirmation dialog.
    *
-   * @param latchHandler The handler with which to associate the latch used to await the dialog.
-   * @see JOptionPane#showConfirmDialog(Component, Object, String, int)
+   * @return True if user confirms, false if user closes the confirmation dialog or selects no.
    */
-  public static int showConfirmDialog(
+  public static boolean showConfirmDialog(
       final @Nullable Component parentComponent,
       final @Nullable Object message,
       final @Nullable String title,
-      final int optionType,
-      final CountDownLatchHandler latchHandler) {
-    checkNotNull(latchHandler);
+      final ConfirmDialogType confirmDialogType) {
 
-    return invokeAndWait(
-        latchHandler,
-        () -> JOptionPane.showConfirmDialog(parentComponent, message, title, optionType));
+    // Construct a 'JDialog' the "hard" way through a JOptionPane so that we can
+    // set modal to be false.
+    final JOptionPane optionPane =
+        new JOptionPane(
+            message, JOptionPane.QUESTION_MESSAGE, confirmDialogType.optionTypeMagicNumber);
+    final JDialog dialog = optionPane.createDialog(parentComponent, title);
+    dialog.setAlwaysOnTop(true);
+    dialog.setModal(false);
+
+    // Only modal dialogs are blocking. To mimic this, we use a latch to block once
+    // the dialog is set to visible. We use a property listener to capture the users
+    // confirmation choice and to unblock.
+    final CountDownLatch latch = new CountDownLatch(1);
+    final AtomicReference<Boolean> confirmation = new AtomicReference<>();
+    optionPane.addPropertyChangeListener(
+        JOptionPane.VALUE_PROPERTY,
+        ignored -> {
+          final Object selectedValue = optionPane.getValue();
+          confirmation.set(selectedValue != null && JOptionPane.OK_OPTION == (int) selectedValue);
+          latch.countDown();
+          dialog.dispose();
+        });
+    SwingUtilities.invokeLater(() -> dialog.setVisible(true));
+
+    try {
+      latch.await();
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+      latch.countDown();
+    }
+    return Optional.ofNullable(confirmation.get()).orElse(false);
   }
 }
