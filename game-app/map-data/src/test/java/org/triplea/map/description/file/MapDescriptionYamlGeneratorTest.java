@@ -89,12 +89,12 @@ class MapDescriptionYamlGeneratorTest {
 
     assertThat(
         mapDescriptionYaml.getMapGameList().stream()
-            .anyMatch(g -> g.getXmlPath().equals("games/game.xml")),
+            .anyMatch(g -> g.getXmlFileName().equals("game.xml")),
         is(true));
 
     assertThat(
         mapDescriptionYaml.getMapGameList().stream()
-            .anyMatch(g -> g.getXmlPath().equals("games/game2.xml")),
+            .anyMatch(g -> g.getXmlFileName().equals("game2.xml")),
         is(true));
   }
 }

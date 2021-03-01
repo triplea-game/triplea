@@ -68,13 +68,14 @@ public final class FileUtils {
     }
   }
 
-  /** Convenience API, see {@link FileUtils#findFile(Path, int, String)} */
-  public Optional<File> findFile(final File searchRoot, final int maxDepth, final String fileName) {
-    return findFile(searchRoot.toPath(), maxDepth, fileName);
+  /** Convenience API, see {@link FileUtils#find(Path, int, String)} */
+  public Optional<File> find(final File searchRoot, final int maxDepth, final String fileName) {
+    return find(searchRoot.toPath(), maxDepth, fileName);
   }
 
   /**
-   * Searchs a file system for a specific file name starting from a given directory.
+   * Searches a file system starting from a given directory looking for a file or directory with a
+   * matching name.
    *
    * @param searchRoot The directory whose contents we will search (and sub-directories)
    * @param maxDepth The maximum number of subdirectories to search. Zero means only search the
@@ -82,17 +83,15 @@ public final class FileUtils {
    * @param fileName The name of the file to be search for.
    * @return A file matching the given name or empty if not found.
    */
-  public Optional<File> findFile(final Path searchRoot, final int maxDepth, final String fileName) {
-    Preconditions.checkArgument(searchRoot.toFile().isDirectory());
-    Preconditions.checkArgument(searchRoot.toFile().exists());
+  public Optional<File> find(final Path searchRoot, final int maxDepth, final String fileName) {
+    Preconditions.checkArgument(
+        searchRoot.toFile().isDirectory(), searchRoot.toFile().getAbsolutePath());
+    Preconditions.checkArgument(
+        searchRoot.toFile().exists(), searchRoot.toFile().getAbsolutePath());
     Preconditions.checkArgument(maxDepth > -1);
     Preconditions.checkArgument(!fileName.isBlank());
     try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
-      return files
-          .map(Path::toFile)
-          .filter(File::isFile)
-          .filter(f -> f.getName().equals(fileName))
-          .findAny();
+      return files.map(Path::toFile).filter(f -> f.getName().equals(fileName)).findAny();
     } catch (final IOException e) {
       log.error(
           "Unable to access files in: "

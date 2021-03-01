@@ -137,7 +137,7 @@ class MapDescriptionYamlGenerator {
                         gameName ->
                             MapDescriptionYaml.MapGame.builder()
                                 .gameName(gameName)
-                                .xmlPath(mapFolder.relativize(xmlFile.toPath()).toString())
+                                .xmlFileName(xmlFile.getName())
                                 .build())
                     .orElse(null))
         .filter(Objects::nonNull)

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.io.FileUtils;
 
 /**
  * POJO data structure representing the contents of a map.yml file along with operations to read,
@@ -54,16 +56,16 @@ public class MapDescriptionYaml {
     String MAP_NAME = "map_name";
     String VERSION = "version";
     String GAMES_LIST = "games";
-    String GAME_NAME = "name";
-    String XML_PATH = "xml_path";
+    String GAME_NAME = "game_name";
+    String FILE_NAME = "file_name";
   }
 
   /**
    * Represents a single list node describing a game contained in a map. Example structure:
    *
    * <pre>
-   * - name: [string]
-   *   xml_path: [string]
+   * - game_name: [string]
+   *   file_name: [string]
    * </pre>
    */
   @Getter
@@ -74,7 +76,7 @@ public class MapDescriptionYaml {
   public static class MapGame {
     private final String gameName;
     /** Path of the XML file relative to the location of map.yml file. */
-    private final String xmlPath;
+    private final String xmlFileName;
   }
 
   /** Dumps (writes) the current data represented in this object into a YAML formatted string. */
@@ -119,15 +121,23 @@ public class MapDescriptionYaml {
       validationErrors.add(YamlKeys.GAMES_LIST + " is empty");
     } else {
       if (mapGameList.stream().anyMatch(game -> Strings.nullToEmpty(game.gameName).isBlank())) {
-        validationErrors.add(YamlKeys.GAME_NAME + " attribute empty or missing");
+        validationErrors.add(
+            YamlKeys.GAME_NAME
+                + " attribute empty, misspelled or missing in "
+                + YamlKeys.GAMES_LIST
+                + " list");
       }
 
-      if (mapGameList.stream().anyMatch(game -> Strings.nullToEmpty(game.xmlPath).isBlank())) {
-        validationErrors.add(YamlKeys.XML_PATH + " attribute empty or missing");
-      } else if (mapGameList.stream()
-          .anyMatch(game -> !Strings.nullToEmpty(game.xmlPath).endsWith(".xml"))) {
+      if (mapGameList.stream().anyMatch(game -> Strings.nullToEmpty(game.xmlFileName).isBlank())) {
         validationErrors.add(
-            YamlKeys.XML_PATH + " value must be a path to an xml file (end with .xml");
+            YamlKeys.FILE_NAME
+                + " attribute empty, misspelled or missing in "
+                + YamlKeys.GAMES_LIST
+                + " list");
+      } else if (mapGameList.stream()
+          .anyMatch(game -> !Strings.nullToEmpty(game.xmlFileName).endsWith(".xml"))) {
+        validationErrors.add(
+            YamlKeys.FILE_NAME + " value must be name of an xml file (end with .xml");
       }
     }
 
@@ -138,11 +148,59 @@ public class MapDescriptionYaml {
     return validationErrors.isEmpty();
   }
 
+  /**
+   * Given the name of a game, returns the path to the corresponding game XML file. This works by
+   * looking up the game file name in the 'map.yml' file, then we search for a 'games' folder, and
+   * then underneath that folder we search for a matching file name.
+   */
   public Optional<Path> getGameXmlPathByGameName(final String gameName) {
-    return mapGameList.stream()
-        .filter(map -> map.getGameName().equalsIgnoreCase(gameName))
-        .findAny()
-        .map(MapGame::getXmlPath)
-        .map(path -> new File(yamlFileLocation).toPath().getParent().resolve(path));
+    final Optional<String> xmlFileName = findFileNameForGame(gameName);
+    final Optional<Path> gamesFolder = findGamesFolder();
+
+    if (xmlFileName.isEmpty() || gamesFolder.isEmpty()) {
+      return Optional.empty();
+    } else {
+      return searchForGameFile(gamesFolder.get(), xmlFileName.get());
+    }
+  }
+
+  /** Lookup game XML file name in map.yml by game name. */
+  private Optional<String> findFileNameForGame(final String gameName) {
+    final Optional<String> fileName =
+        mapGameList.stream()
+            .filter(map -> map.getGameName().equalsIgnoreCase(gameName))
+            .findAny()
+            .map(MapGame::getXmlFileName);
+
+    if (fileName.isEmpty()) {
+      log.warn(
+          "Failed to find game name {} in map.yml file, map.yml had the following entries: {}",
+          gameName,
+          mapGameList.stream().map(MapGame::getGameName).sorted().collect(Collectors.toList()));
+    }
+    return fileName;
+  }
+
+  /** Find 'games' folder starting from map.yml parent folder. */
+  private Optional<Path> findGamesFolder() {
+    final Path mapFolder = Path.of(yamlFileLocation).getParent();
+    final Optional<Path> gamesFolder = FileUtils.find(mapFolder, 5, "games").map(File::toPath);
+
+    if (gamesFolder.isEmpty()) {
+      log.warn("No 'games' folder found under location: {}", mapFolder.toFile().getAbsolutePath());
+    }
+    return gamesFolder;
+  }
+
+  /** Search 'games' folder for a game-xml-file. */
+  private Optional<Path> searchForGameFile(final Path gamesFolder, final String xmlFileName) {
+    final Optional<File> gameFile = FileUtils.find(gamesFolder.toFile(), 3, xmlFileName);
+    if (gameFile.isEmpty()) {
+      log.warn(
+          "Failed to find game file: {}, within directory tree rooted at: {}",
+          xmlFileName,
+          gamesFolder.toFile().getAbsolutePath());
+    }
+    return gameFile.map(File::toPath);
   }
 }

@@ -57,7 +57,7 @@ class MapDescriptionYamlWriter {
   private static Map<String, Object> mapGameToYamlDataMap(final MapDescriptionYaml.MapGame game) {
     final Map<String, Object> gameYamlData = new HashMap<>();
     gameYamlData.put(MapDescriptionYaml.YamlKeys.GAME_NAME, game.getGameName());
-    gameYamlData.put(MapDescriptionYaml.YamlKeys.XML_PATH, game.getXmlPath());
+    gameYamlData.put(MapDescriptionYaml.YamlKeys.FILE_NAME, game.getXmlFileName());
     return gameYamlData;
   }
 }

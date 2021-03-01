@@ -57,7 +57,8 @@ public class NodeBbTokenGenerator {
     Preconditions.checkNotNull(username);
     Preconditions.checkNotNull(password);
 
-    try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
+    try (CloseableHttpClient client =
+        HttpClients.custom().disableCookieManagement().disableDefaultUserAgent().build()) {
       final int userId = getUserId(client, username);
       return new TokenInfo(getToken(client, userId, password, otp), userId);
     } catch (final IOException e) {
@@ -72,7 +73,8 @@ public class NodeBbTokenGenerator {
    * @param userId The userId that the token was issued for.
    */
   public void revokeToken(final String token, final int userId) {
-    try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
+    try (CloseableHttpClient client =
+        HttpClients.custom().disableCookieManagement().disableDefaultUserAgent().build()) {
       deleteToken(client, userId, token);
     } catch (final IOException e) {
       throw new RuntimeException("Failed to revoke login token", e);
@@ -110,9 +112,9 @@ public class NodeBbTokenGenerator {
   private Map<String, Object> queryUserInfo(final CloseableHttpClient client, final String username)
       throws IOException {
     final String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
-    final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + encodedUsername);
-    HttpProxy.addProxy(post);
-    try (CloseableHttpResponse response = client.execute(post)) {
+    final HttpGet get = new HttpGet(forumUrl + "/api/user/username/" + encodedUsername);
+    HttpProxy.addProxy(get);
+    try (CloseableHttpResponse response = client.execute(get)) {
       return YamlReader.readMap(EntityUtils.toString(response.getEntity()));
     }
   }
