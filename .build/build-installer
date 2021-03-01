@@ -41,7 +41,7 @@ function build_installers() {
 function collect_artifacts() {
   readonly ARTIFACTS_DIR=./build/artifacts
   mkdir -p $ARTIFACTS_DIR
-  cp ./*/build/artifacts/* ${ARTIFACTS_DIR}
+  cp ./*/*/build/artifacts/* ${ARTIFACTS_DIR}
   find $ARTIFACTS_DIR
 }
 
