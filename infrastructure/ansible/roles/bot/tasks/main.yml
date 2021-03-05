@@ -38,7 +38,7 @@
   command: "{{ admin_home }}/download-all-maps {{ update_maps }}"
 
 - name: deploy zip file if using latest
-  when: using_latest
+  when: using_latest|bool
   copy:
     src: "triplea-game-headless-{{ bot_version }}.zip"
     dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
@@ -47,7 +47,8 @@
 
 
 - name: download zip file if not using latest
-  when: not using_latest
+  tags: testing
+  when: not using_latest|bool
   get_url:
     url: "{{ zip_download }}"
     dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
@@ -89,7 +90,7 @@
     daemon_reload: yes
 
 - name: restart bots if deploying latest
-  when: using_latest
+  when: using_latest|bool
   service:
     name: "bot@{{ item }}"
     state: restarted
@@ -97,7 +98,7 @@
   with_items: "{{ bot_numbers }}"
 
 - name: enable and ensure bots are started
-  when: not using_latest
+  when: not using_latest|bool
   service:
     name: "bot@{{ item }}"
     state: started
