@@ -32,7 +32,7 @@ prod2-bot09.triplea-game.org  bot_prefix=9 bot_name=Frankfurt
 prod2-bot10.triplea-game.org  bot_prefix=10 bot_name=Jersey
 
 [botHosts:vars]
-bot_version="2.5.22202"
+bot_version="2.5.22294"
 
 [prod2:children]
 postgresHosts
