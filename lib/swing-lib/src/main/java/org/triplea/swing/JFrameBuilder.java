@@ -6,7 +6,9 @@ import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -102,7 +104,8 @@ public class JFrameBuilder {
   /** Returns the standard application icon typically displayed in a window's title bar. */
   public static Image getGameIcon() {
     try {
-      return ImageIO.read(JFrameBuilder.class.getResource("ta_icon.png"));
+      final File iconFile = Path.of("assets").resolve("icons").resolve("ta_icon.png").toFile();
+      return ImageIO.read(iconFile);
     } catch (final IOException e) {
       log.error("ta_icon.png not loaded", e);
     }
