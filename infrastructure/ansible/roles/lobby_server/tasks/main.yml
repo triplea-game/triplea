@@ -18,7 +18,7 @@
     group: "{{ lobby_server_user }}"
 
 - name: deploy zip artifact file if using latest
-  when: using_latest
+  when: using_latest|bool
   register: deploy_artifact
   copy:
     src: "{{ lobby_artifact }}"
@@ -27,7 +27,7 @@
     group: "{{ lobby_server_user }}"
 
 - name: download zip artifact file if not using latest
-  when: not using_latest
+  when: not using_latest|bool
   register: deploy_artifact
   get_url:
     url: "{{ lobby_artifact_download }}"

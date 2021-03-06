@@ -17,7 +17,7 @@
     group: "{{ maps_server_user }}"
 
 - name: deploy zip artifact file if using latest
-  when: using_latest
+  when: using_latest|bool
   register: deploy_artifact
   copy:
     src: "{{ maps_server_artifact }}"
@@ -26,7 +26,7 @@
     group: "{{ maps_server_user }}"
 
 - name: download zip artifact file if not using latest
-  when: not using_latest
+  when: not using_latest|bool
   register: deploy_artifact
   get_url:
     url: "{{ maps_server_artifact_download }}"

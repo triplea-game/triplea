@@ -23,7 +23,7 @@
     group: flyway
 
 - name: copy flyway migrations zip if deploying latest
-  when: using_latest == "true"
+  when: using_latest|bool
   copy:
     src: "migrations.zip"
     dest: "/home/flyway/migrations.zip"
@@ -32,7 +32,7 @@
     group: flyway
 
 - name: download flyway migrations if deploying a specific version
-  when: using_latest == "false"
+  when: not using_latest|bool
   get_url:
     url: "{{ migrations_url }}"
     dest: "/home/flyway/migrations.zip"
