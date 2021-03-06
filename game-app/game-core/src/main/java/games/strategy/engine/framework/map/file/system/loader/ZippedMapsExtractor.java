@@ -161,7 +161,7 @@ public class ZippedMapsExtractor {
     if (newName.endsWith("-master")) {
       newName = newName.substring(0, newName.length() - "-master".length());
     }
-    return newName;
+    return newName.toLowerCase();
   }
 
   /**
