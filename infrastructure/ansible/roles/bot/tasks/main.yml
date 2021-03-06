@@ -47,7 +47,6 @@
 
 
 - name: download zip file if not using latest
-  tags: testing
   when: not using_latest|bool
   get_url:
     url: "{{ zip_download }}"
