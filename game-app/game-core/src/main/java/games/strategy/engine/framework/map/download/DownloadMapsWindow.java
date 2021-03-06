@@ -286,16 +286,15 @@ public class DownloadMapsWindow extends JFrame {
 
     final List<DownloadFileDescription> outOfDateDownloads =
         mapList.getOutOfDateExcluding(pendingDownloads);
-    final JPanel outOfDate =
-        outOfDateDownloads.isEmpty()
-            ? null
-            : newMapSelectionPanel(outOfDateDownloads, MapAction.UPDATE);
     // For the UX, always show an available maps tab, even if it is empty
     final JPanel available =
         newMapSelectionPanel(mapList.getAvailableExcluding(pendingDownloads), MapAction.INSTALL);
-
     tabbedPane.addTab("Available", available);
-    tabbedPane.addTab("Update", outOfDate);
+
+    if (!outOfDateDownloads.isEmpty()) {
+      final JPanel outOfDate = newMapSelectionPanel(outOfDateDownloads, MapAction.UPDATE);
+      tabbedPane.addTab("Update", outOfDate);
+    }
 
     if (!mapList.getInstalled().isEmpty()) {
       final JPanel installed = newMapSelectionPanel(mapList.getInstalled(), MapAction.REMOVE);
@@ -319,6 +318,9 @@ public class DownloadMapsWindow extends JFrame {
           mapSelections ->
               newDescriptionPanelUpdatingSelectionListener(
                   mapSelections.get(0), descriptionPane, unsortedMaps, mapSizeLabel));
+
+      descriptionPane.setText(unsortedMaps.get(0).toHtmlString());
+      descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
       final JPanel southPanel =

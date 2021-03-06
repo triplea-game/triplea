@@ -8,6 +8,8 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import java.io.File;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 class DownloadedMapsListingTest {
@@ -54,8 +56,48 @@ class DownloadedMapsListingTest {
 
   @Test
   void getMapVersionByName() {
-    assertThat(downloadedMapsListing.getMapVersionByName("DNE"), is(0));
-    assertThat(downloadedMapsListing.getMapVersionByName("map-name0"), is(0));
-    assertThat(downloadedMapsListing.getMapVersionByName("map-name1"), is(2));
+    assertThat(
+        "If a map does not exist, we default version value to '0'",
+        downloadedMapsListing.getMapVersionByName("DNE"),
+        is(0));
+    assertThat(
+        "This map in the listing has a version value of '0'",
+        downloadedMapsListing.getMapVersionByName("map-name0"),
+        is(0));
+    assertThat(
+        "This map in the listing has a version value of '2'",
+        downloadedMapsListing.getMapVersionByName("map-name1"),
+        is(2));
+  }
+
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "",
+        "DNE",
+        "map_name", // does not quite match, missing trailing 0
+        "map-name", // does not quite match, missing trailing 0
+        "map",
+        "name0"
+      })
+  void isMapInstalled_NegativeCases(final String mapName) {
+    assertThat(downloadedMapsListing.isMapInstalled(mapName), is(false));
+  }
+
+  /** Verify match is not case sensitive with insignificant characters ignored */
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "MAP NAME0",
+        "MAP_NAME0",
+        "MAP-NAME0",
+        "map name0",
+        "map_name0",
+        "map-name0",
+        "mapname0",
+        "MAPNAME0"
+      })
+  void isMapInstalled_PositiveCases(final String mapName) {
+    assertThat(downloadedMapsListing.isMapInstalled(mapName), is(true));
   }
 }

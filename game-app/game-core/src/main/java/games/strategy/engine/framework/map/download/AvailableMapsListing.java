@@ -30,7 +30,7 @@ class AvailableMapsListing {
         return;
       }
 
-      if (download.getInstallLocation().isEmpty()) {
+      if (!downloadedMapsListing.isMapInstalled(download.getMapName())) {
         available.add(download);
       } else {
         final int mapVersion = downloadedMapsListing.getMapVersionByName(download.getMapName());
