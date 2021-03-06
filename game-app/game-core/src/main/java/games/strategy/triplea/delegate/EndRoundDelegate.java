@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
-import javax.swing.JOptionPane;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.util.LocalizeHtml;
 
 /** A delegate used to check for end of game conditions. */
@@ -334,12 +334,11 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // classes. maybe there is
         // a better way?
         stopGame =
-            JOptionPane.OK_OPTION
-                != EventThreadJOptionPane.showConfirmDialog(
-                    null,
-                    "<html>" + displayMessage + "</html>",
-                    "Continue Game?  (" + title + ")",
-                    JOptionPane.YES_NO_OPTION);
+            EventThreadJOptionPane.showConfirmDialog(
+                null,
+                "<html>" + displayMessage + "</html>",
+                "Continue Game?  (" + title + ")",
+                ConfirmDialogType.YES_NO);
       }
       if (stopGame) {
         bridge.stopGameSequence();

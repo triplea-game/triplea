@@ -43,6 +43,7 @@ import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -317,15 +318,11 @@ public final class BattlePanel extends ActionPanel {
         .result
         .map(
             comp -> {
-              int option = JOptionPane.NO_OPTION;
-              while (option != JOptionPane.OK_OPTION) {
-                option =
+              boolean confirmed = false;
+              while (!confirmed) {
+                confirmed =
                     EventThreadJOptionPane.showConfirmDialog(
-                        this,
-                        comp,
-                        "Bombardment Territory Selection",
-                        JOptionPane.OK_OPTION,
-                        getMap().getUiContext().getCountDownLatchHandler());
+                        this, comp, "Bombardment Territory Selection", ConfirmDialogType.YES_NO);
               }
               return comp.getSelection();
             })
@@ -335,45 +332,28 @@ public final class BattlePanel extends ActionPanel {
   public boolean getAttackSubs(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-            null,
-            "Attack submarines in " + terr.toString() + "?",
-            "Attack",
-            JOptionPane.YES_NO_OPTION,
-            getMap().getUiContext().getCountDownLatchHandler())
-        == 0;
+        null, "Attack submarines in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
   }
 
   public boolean getAttackTransports(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-            null,
-            "Attack transports in " + terr.toString() + "?",
-            "Attack",
-            JOptionPane.YES_NO_OPTION,
-            getMap().getUiContext().getCountDownLatchHandler())
-        == 0;
+        null, "Attack transports in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
   }
 
   public boolean getAttackUnits(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-            null,
-            "Attack units in " + terr.toString() + "?",
-            "Attack",
-            JOptionPane.YES_NO_OPTION,
-            getMap().getUiContext().getCountDownLatchHandler())
-        == 0;
+        null, "Attack units in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
   }
 
   public boolean getShoreBombard(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-            null,
-            "Conduct naval bombard in " + terr.toString() + "?",
-            "Bombard",
-            JOptionPane.YES_NO_OPTION,
-            getMap().getUiContext().getCountDownLatchHandler())
-        == 0;
+        null,
+        "Conduct naval bombard in " + terr.toString() + "?",
+        "Bombard",
+        ConfirmDialogType.YES_NO);
   }
 
   public void casualtyNotification(

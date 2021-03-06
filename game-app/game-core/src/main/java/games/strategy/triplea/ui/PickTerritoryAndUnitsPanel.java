@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
@@ -57,9 +58,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           final UnitChooser unitChooser =
               new UnitChooser(unitChoices, Map.of(), false, getMap().getUiContext());
           unitChooser.setMaxAndShowMaxButton(unitsPerPick);
-          if (JOptionPane.OK_OPTION
-              == EventThreadJOptionPane.showConfirmDialog(
-                  parent, unitChooser, "Select Units", JOptionPane.OK_CANCEL_OPTION)) {
+          if (EventThreadJOptionPane.showConfirmDialog(
+              parent, unitChooser, "Select Units", ConfirmDialogType.OK_CANCEL)) {
             pickedUnits.clear();
             pickedUnits.addAll(unitChooser.getSelected());
           }

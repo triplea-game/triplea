@@ -155,6 +155,7 @@ import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -780,14 +781,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Override
   public boolean shutdown() {
     if (isVisible()) {
-      final int selectedOption =
+
+      final boolean confirmed =
           EventThreadJOptionPane.showConfirmDialog(
               this,
               "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.",
               "Exit Program",
-              JOptionPane.YES_NO_OPTION,
-              getUiContext().getCountDownLatchHandler());
-      if (selectedOption != JOptionPane.OK_OPTION) {
+              ConfirmDialogType.YES_NO);
+      if (!confirmed) {
         return false;
       }
     }
@@ -802,14 +803,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * and the application will return to the main menu.
    */
   public void leaveGame() {
-    final int selectedOption =
+    final boolean confirmed =
         EventThreadJOptionPane.showConfirmDialog(
             this,
             "Are you sure you want to leave the current game?\nUnsaved game data will be lost.",
             "Leave Game",
-            JOptionPane.YES_NO_OPTION,
-            getUiContext().getCountDownLatchHandler());
-    if (selectedOption != JOptionPane.OK_OPTION) {
+            ConfirmDialogType.YES_NO);
+    if (!confirmed) {
       return;
     }
     if (game instanceof ServerGame) {
@@ -1074,30 +1074,22 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final String acceptanceQuestion,
       final boolean politics) {
     messageAndDialogThreadPool.waitForAll();
-    final int choice =
-        EventThreadJOptionPane.showConfirmDialog(
-            this,
-            acceptanceQuestion,
-            "Accept "
-                + (politics ? "Political " : "")
-                + "Proposal from "
-                + playerSendingProposal.getName()
-                + "?",
-            JOptionPane.YES_NO_OPTION,
-            getUiContext().getCountDownLatchHandler());
-    return choice == JOptionPane.YES_OPTION;
+
+    return EventThreadJOptionPane.showConfirmDialog(
+        this,
+        acceptanceQuestion,
+        "Accept "
+            + (politics ? "Political " : "")
+            + "Proposal from "
+            + playerSendingProposal.getName()
+            + "?",
+        ConfirmDialogType.YES_NO);
   }
 
   public boolean getOk(final String message) {
     messageAndDialogThreadPool.waitForAll();
-    final int choice =
-        EventThreadJOptionPane.showConfirmDialog(
-            this,
-            message,
-            message,
-            JOptionPane.OK_CANCEL_OPTION,
-            getUiContext().getCountDownLatchHandler());
-    return choice == JOptionPane.OK_OPTION;
+    return EventThreadJOptionPane.showConfirmDialog(
+        this, message, message, ConfirmDialogType.OK_CANCEL);
   }
 
   /** Displays a message to the user informing them of the results of rolling for technologies. */
