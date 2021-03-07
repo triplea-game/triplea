@@ -265,7 +265,7 @@
 - mapName: Domination 1914 No Mans Land
   mapCategory: BEST
   url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
-  version: 7
+  version: 8
   img: https://raw.githubusercontent.com/triplea-maps/domination_1914_no_mans_land/master/preview.png
   description: |
     <br>By Imbaked
@@ -1694,7 +1694,7 @@
 - mapName: Steampunk Advanced
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/steampunk_advanced/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/steampunk_advanced/master/preview.png
   description: |
     <br>
