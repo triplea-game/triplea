@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.swing.JOptionPane;
 import lombok.AllArgsConstructor;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.java.ThreadRunner;
 
 /**
  * Can be used to create a {@link MainPanel} UI component class, which is a UI holder. The final
@@ -40,15 +41,14 @@ public class MainPanelBuilder {
                         gameLoadingWindow.setVisible(true);
                         gameLoadingWindow.showWait();
                         JOptionPane.getFrameForComponent(uiPanel).setVisible(false);
-                        new Thread(
-                                () -> {
-                                  try {
-                                    launcher.launch();
-                                  } finally {
-                                    gameLoadingWindow.doneWait();
-                                  }
-                                })
-                            .start();
+                        ThreadRunner.runInNewThread(
+                            () -> {
+                              try {
+                                launcher.launch();
+                              } finally {
+                                gameLoadingWindow.doneWait();
+                              }
+                            });
                       });
               setupPanelModel.getPanel().postStartGame();
             },

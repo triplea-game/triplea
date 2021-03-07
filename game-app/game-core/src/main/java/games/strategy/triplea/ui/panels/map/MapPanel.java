@@ -74,6 +74,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ObjectUtils;
+import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
@@ -236,25 +237,24 @@ public class MapPanel extends ImageScrollerLargeView {
             is4Pressed = e.getButton() == 4 || is4Pressed;
             is5Pressed = e.getButton() == 5 || is5Pressed;
             if (lastActive == -1) {
-              new Thread(
-                      () -> {
-                        // Mouse Events are different than key events
-                        // That's why we're "simulating" multiple clicks while the mouse button is
-                        // held down
-                        // so the map keeps scrolling
-                        while (lastActive != -1) {
-                          final int diffPixel = computeScrollSpeed.get();
-                          if (lastActive == 5) {
-                            setTopLeft(getXOffset() + diffPixel, getYOffset());
-                          } else if (lastActive == 4) {
-                            setTopLeft(getXOffset() - diffPixel, getYOffset());
-                          }
-                          // 50ms seems to be a good interval between "clicks"
-                          // changing this number changes the scroll speed
-                          Interruptibles.sleep(50);
-                        }
-                      })
-                  .start();
+              ThreadRunner.runInNewThread(
+                  () -> {
+                    // Mouse Events are different than key events
+                    // That's why we're "simulating" multiple clicks while the mouse button is
+                    // held down
+                    // so the map keeps scrolling
+                    while (lastActive != -1) {
+                      final int diffPixel = computeScrollSpeed.get();
+                      if (lastActive == 5) {
+                        setTopLeft(getXOffset() + diffPixel, getYOffset());
+                      } else if (lastActive == 4) {
+                        setTopLeft(getXOffset() - diffPixel, getYOffset());
+                      }
+                      // 50ms seems to be a good interval between "clicks"
+                      // changing this number changes the scroll speed
+                      Interruptibles.sleep(50);
+                    }
+                  });
             }
             lastActive = e.getButton();
           }

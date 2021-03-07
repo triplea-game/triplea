@@ -77,6 +77,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.Shut
 import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
@@ -621,8 +622,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           .getGameId()
           .ifPresent(
               gameId ->
-                  new Thread(() -> connectionAndGameIdAction.accept(gameToLobbyConnection, gameId))
-                      .start());
+                  ThreadRunner.runInNewThread(
+                      () -> connectionAndGameIdAction.accept(gameToLobbyConnection, gameId)));
     }
   }
 

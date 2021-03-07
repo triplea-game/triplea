@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 
 /**
  * List of settings that can be adjusted and stored with a Client's OS. On windows this would be the
@@ -341,7 +342,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     // Store preferences before spawning new thread; tests may call resetPreferences() before it can
     // run.
     final Preferences preferences = getPreferences();
-    new Thread(() -> flush(preferences)).start();
+    ThreadRunner.runInNewThread(() -> flush(preferences));
   }
 
   @Override

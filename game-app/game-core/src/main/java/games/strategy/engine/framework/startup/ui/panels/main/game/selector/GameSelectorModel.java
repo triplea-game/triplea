@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the game
@@ -176,7 +177,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
     // clear out ai cached properties (this ended up being the best place to put it,
     // as we have definitely left a game at this point)
     GameShutdownRegistry.runShutdownActions();
-    new Thread(this::loadDefaultGameSameThread).start();
+    ThreadRunner.runInNewThread(this::loadDefaultGameSameThread);
   }
 
   /**

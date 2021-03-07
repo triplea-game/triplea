@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
+import org.triplea.java.ThreadRunner;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 /**
@@ -38,18 +39,14 @@ final class DownloadFile {
     return download;
   }
 
-  void startAsyncDownload() {
-    state = DownloadState.DOWNLOADING;
-    newDownloadThread().start();
-  }
-
   /**
    * Creates a thread that will download to a target temporary file, and once complete and if the
    * download state is not cancelled, it will then move the completed download temp file to:
    * 'downloadDescription.getInstallLocation()'.
    */
-  private Thread newDownloadThread() {
-    return new Thread(
+  void startAsyncDownload() {
+    state = DownloadState.DOWNLOADING;
+    ThreadRunner.runInNewThread(
         () -> {
           if (state == DownloadState.CANCELLED) {
             return;

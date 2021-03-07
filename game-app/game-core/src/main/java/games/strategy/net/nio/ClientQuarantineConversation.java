@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.swing.DialogBuilder;
 
 /** Client-side implementation of {@link QuarantineConversation}. */
@@ -113,18 +114,17 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           // We warn the user here to let them know explicitly so it does not look like
           // a silent error.
           if (!assignedName.startsWith(localName)) {
-            new Thread(
-                    () ->
-                        DialogBuilder.builder()
-                            .parent(null)
-                            .title("Already Logged In")
-                            .infoMessage(
-                                "<html>Already logged in with another name, "
-                                    + "cannot use a different name.<br/>"
-                                    + "Logging in as: "
-                                    + assignedName)
-                            .showDialog())
-                .start();
+            ThreadRunner.runInNewThread(
+                () ->
+                    DialogBuilder.builder()
+                        .parent(null)
+                        .title("Already Logged In")
+                        .infoMessage(
+                            "<html>Already logged in with another name, "
+                                + "cannot use a different name.<br/>"
+                                + "Logging in as: "
+                                + assignedName)
+                        .showDialog());
           }
           localName = strings[0];
           serverName = strings[1];

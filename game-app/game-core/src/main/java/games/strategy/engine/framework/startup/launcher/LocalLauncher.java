@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 
 /** Implementation of {@link ILauncher} for a headed local or network client game. */
 @Slf4j
@@ -57,7 +58,7 @@ public class LocalLauncher implements ILauncher {
   @Override
   public void launch() {
     final Optional<ServerGame> result = loadGame();
-    new Thread(() -> launchInternal(result.orElse(null))).start();
+    ThreadRunner.runInNewThread(() -> launchInternal(result.orElse(null)));
   }
 
   private Optional<ServerGame> loadGame() {

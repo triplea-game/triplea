@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 
 /**
  * A thread that reads socket data using NIO from a collection of sockets. Data is read in packets,
@@ -38,7 +39,7 @@ class NioReader {
       log.error("Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    new Thread(this::loop, "NIO Reader").start();
+    ThreadRunner.runInNewThread(this::loop);
   }
 
   void shutDown() {

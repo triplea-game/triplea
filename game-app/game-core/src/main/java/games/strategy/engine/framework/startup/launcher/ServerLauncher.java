@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.lobby.common.GameDescription;
 
 /** Implementation of {@link ILauncher} for a headed or headless network server game. */
@@ -101,7 +102,7 @@ public class ServerLauncher implements ILauncher {
       log.error("Error when loading game", e);
       abortLaunch = true;
     }
-    new Thread(this::launchInternal).start();
+    ThreadRunner.runInNewThread(this::launchInternal);
   }
 
   private void loadGame() {

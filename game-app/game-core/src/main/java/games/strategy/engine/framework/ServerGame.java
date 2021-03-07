@@ -50,6 +50,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.util.ExitStatus;
 
 /** Implementation of {@link IGame} for a network server node. */
@@ -205,21 +206,19 @@ public class ServerGame extends AbstractGame {
     try {
       final CountDownLatch waitOnObserver = new CountDownLatch(1);
       final byte[] bytes = GameDataWriter.writeToBytes(gameData, delegateExecutionManager);
-      new Thread(
-              () -> {
-                try {
-                  blockingObserver.joinGame(bytes, playerManager.getPlayerMapping());
-                  waitOnObserver.countDown();
-                } catch (final Exception e) {
-                  if (e.getCause() instanceof ConnectionLostException) {
-                    log.error("Connection lost to observer while joining: " + newNode.getName(), e);
-                  } else {
-                    log.error("Failed to join game", e);
-                  }
-                }
-              },
-              "Waiting on observer to finish joining: " + newNode.getName())
-          .start();
+      ThreadRunner.runInNewThread(
+          () -> {
+            try {
+              blockingObserver.joinGame(bytes, playerManager.getPlayerMapping());
+              waitOnObserver.countDown();
+            } catch (final Exception e) {
+              if (e.getCause() instanceof ConnectionLostException) {
+                log.error("Connection lost to observer while joining: " + newNode.getName(), e);
+              } else {
+                log.error("Failed to join game", e);
+              }
+            }
+          });
       try {
         if (!waitOnObserver.await(
             ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(), TimeUnit.SECONDS)) {

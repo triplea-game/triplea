@@ -30,6 +30,7 @@ import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 import org.triplea.java.UrlStreams;
 
 /**
@@ -244,21 +245,20 @@ public class ClipPlayer {
         .or(() -> loadClipPath(clipName))
         .ifPresent(
             clip ->
-                new Thread(
-                        () ->
-                            UrlStreams.openStream(
-                                URI.create(clip.toString()),
-                                inputStream -> {
-                                  try {
-                                    final AudioDevice audioDevice =
-                                        FactoryRegistry.systemRegistry().createAudioDevice();
-                                    new AdvancedPlayer(inputStream, audioDevice).play();
-                                  } catch (final Exception e) {
-                                    log.error("Failed to play: " + clip, e);
-                                  }
-                                  return null;
-                                }))
-                    .start());
+                ThreadRunner.runInNewThread(
+                    () ->
+                        UrlStreams.openStream(
+                            URI.create(clip.toString()),
+                            inputStream -> {
+                              try {
+                                final AudioDevice audioDevice =
+                                    FactoryRegistry.systemRegistry().createAudioDevice();
+                                new AdvancedPlayer(inputStream, audioDevice).play();
+                              } catch (final Exception e) {
+                                log.error("Failed to play: " + clip, e);
+                              }
+                              return null;
+                            })));
   }
 
   private boolean isSoundEnabled() {

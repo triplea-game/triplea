@@ -52,6 +52,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
@@ -1193,61 +1194,58 @@ class BattleCalculatorPanel extends JPanel {
         new WaitDialog(this, "Calculating Odds... (this may take a while)", calculator::cancel);
     final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
-    new Thread(
-            () -> {
-              try {
-                final Territory location = findPotentialBattleSite();
-                if (location == null) {
-                  throw new IllegalStateException("No territory found that is land:" + isLand());
-                }
-                final List<Unit> defending = defendingUnitsPanel.getUnits();
-                final List<Unit> attacking = attackingUnitsPanel.getUnits();
-                List<Unit> bombarding = new ArrayList<>();
-                if (isLand()) {
-                  bombarding =
-                      CollectionUtils.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
-                  attacking.removeAll(bombarding);
-                  final int numLandUnits =
-                      CollectionUtils.countMatches(attacking, Matches.unitIsLand());
-                  if (Properties.getShoreBombardPerGroundUnitRestricted(data.getProperties())
-                      && numLandUnits < bombarding.size()) {
-                    BattleDelegate.sortUnitsToBombard(bombarding);
-                    // Create new list as needs to be serializable which subList isn't
-                    bombarding = new ArrayList<>(bombarding.subList(0, numLandUnits));
-                  }
-                }
-                calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
-                calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());
-                calculator.setKeepOneAttackingLandUnit(
-                    landBattleCheckBox.isSelected()
-                        && keepOneAttackingLandUnitCheckBox.isSelected());
-                calculator.setAmphibious(isAmphibiousBattle());
-                calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
-                calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
-                final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-                defenders.set(defending);
-                attackers.set(attacking);
-                results.set(
-                    calculator.calculate(
-                        getAttacker(),
-                        getDefender(),
-                        location,
-                        attacking,
-                        defending,
-                        bombarding,
-                        territoryEffects,
-                        retreatWhenOnlyAirLeftCheckBox.isSelected(),
-                        numRuns.getValue()));
-              } finally {
-                SwingUtilities.invokeLater(
-                    () -> {
-                      dialog.setVisible(false);
-                      dialog.dispose();
-                    });
+    ThreadRunner.runInNewThread(
+        () -> {
+          try {
+            final Territory location = findPotentialBattleSite();
+            if (location == null) {
+              throw new IllegalStateException("No territory found that is land:" + isLand());
+            }
+            final List<Unit> defending = defendingUnitsPanel.getUnits();
+            final List<Unit> attacking = attackingUnitsPanel.getUnits();
+            List<Unit> bombarding = new ArrayList<>();
+            if (isLand()) {
+              bombarding =
+                  CollectionUtils.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
+              attacking.removeAll(bombarding);
+              final int numLandUnits =
+                  CollectionUtils.countMatches(attacking, Matches.unitIsLand());
+              if (Properties.getShoreBombardPerGroundUnitRestricted(data.getProperties())
+                  && numLandUnits < bombarding.size()) {
+                BattleDelegate.sortUnitsToBombard(bombarding);
+                // Create new list as needs to be serializable which subList isn't
+                bombarding = new ArrayList<>(bombarding.subList(0, numLandUnits));
               }
-            },
-            "Battle calculator thread")
-        .start();
+            }
+            calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
+            calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());
+            calculator.setKeepOneAttackingLandUnit(
+                landBattleCheckBox.isSelected() && keepOneAttackingLandUnitCheckBox.isSelected());
+            calculator.setAmphibious(isAmphibiousBattle());
+            calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
+            calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
+            final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
+            defenders.set(defending);
+            attackers.set(attacking);
+            results.set(
+                calculator.calculate(
+                    getAttacker(),
+                    getDefender(),
+                    location,
+                    attacking,
+                    defending,
+                    bombarding,
+                    territoryEffects,
+                    retreatWhenOnlyAirLeftCheckBox.isSelected(),
+                    numRuns.getValue()));
+          } finally {
+            SwingUtilities.invokeLater(
+                () -> {
+                  dialog.setVisible(false);
+                  dialog.dispose();
+                });
+          }
+        });
     // the runnable setting the dialog visible must run after this code executes, since this code is
     // running on the
     // swing event thread

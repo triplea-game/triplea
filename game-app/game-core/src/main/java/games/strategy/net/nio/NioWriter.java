@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 
 /**
  * A thread that writes socket data using NIO. Data is written in packets that are enqueued on our
@@ -37,7 +38,7 @@ class NioWriter {
       log.error("Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    new Thread(this::loop, "NIO Writer").start();
+    ThreadRunner.runInNewThread(this::loop);
   }
 
   void shutDown() {

@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
@@ -62,7 +63,7 @@ public final class GameRunner {
           setupPanelModel = new SetupPanelModel(gameSelectorModel);
           MainFrame.buildMainFrame(setupPanelModel, gameSelectorModel);
           setupPanelModel.showSelectType();
-          new Thread(GameRunner::showMainFrame).start();
+          ThreadRunner.runInNewThread(GameRunner::showMainFrame);
         });
 
     UpdateChecks.launch();

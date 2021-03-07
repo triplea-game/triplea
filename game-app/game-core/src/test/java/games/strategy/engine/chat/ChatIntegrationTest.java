@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
+import org.triplea.java.ThreadRunner;
 
 final class ChatIntegrationTest {
   private static final String CHAT_NAME = TestServerMessenger.CHAT_CHANNEL_NAME;
@@ -170,8 +171,8 @@ final class ChatIntegrationTest {
   }
 
   private static void sendMessagesFrom(final Chat node) {
-    new Thread(() -> IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test")))
-        .start();
+    ThreadRunner.runInNewThread(
+        () -> IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test")));
   }
 
   @FunctionalInterface

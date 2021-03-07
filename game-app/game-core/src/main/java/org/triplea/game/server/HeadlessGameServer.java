@@ -31,6 +31,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.util.ExitStatus;
 
 /** A way of hosting a game, but headless. */
@@ -64,17 +65,13 @@ public class HeadlessGameServer {
                       .ifPresent(HeadlessServerSetup::cancel);
                 }));
 
-    new Thread(
-            () -> {
-              log.info("Headless Start");
-              setupPanelModel.showSelectType();
-              log.info("Waiting for users to connect.");
-              waitForUsersHeadless();
-            },
-            "Initialize Headless Server Setup Model")
-        .start();
-
-    log.info("Game Server initialized");
+    ThreadRunner.runInNewThread(
+        () -> {
+          log.info("Headless Start");
+          setupPanelModel.showSelectType();
+          log.info("Waiting for users to connect.");
+          waitForUsersHeadless();
+        });
   }
 
   public static synchronized HeadlessGameServer getInstance() {
@@ -232,7 +229,7 @@ public class HeadlessGameServer {
                 .getLauncher()
                 .map(
                     launcher -> {
-                      new Thread(launcher::launch).start();
+                      ThreadRunner.runInNewThread(launcher::launch);
                       return true;
                     })
                 .orElse(false);

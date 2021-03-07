@@ -24,6 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.ProgressWindow;
 
@@ -242,75 +243,72 @@ public class PbemMessagePoster implements Serializable {
       final ProgressWindow progressWindow = new ProgressWindow(frame, "Posting " + title + "...");
       progressWindow.setVisible(true);
       // start a new thread for posting the summary.
-      new Thread(
-              () -> {
-                boolean postOk = true;
-                File saveGameFile = null;
-                if (postingDelegate != null) {
-                  postingDelegate.setHasPostedTurnSummary(true);
-                }
-                try {
-                  saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
-                  frame.getGame().saveGame(saveGameFile);
-                  setSaveGame(saveGameFile);
-                } catch (final Exception e) {
+      ThreadRunner.runInNewThread(
+          () -> {
+            boolean postOk = true;
+            File saveGameFile = null;
+            if (postingDelegate != null) {
+              postingDelegate.setHasPostedTurnSummary(true);
+            }
+            try {
+              saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
+              frame.getGame().saveGame(saveGameFile);
+              setSaveGame(saveGameFile);
+            } catch (final Exception e) {
+              postOk = false;
+              log.error("Failed to create save game", e);
+            }
+            turnSummary = historyLog.toString();
+            try {
+              // forward the poster to the delegate which invokes post() on the poster
+              if (postingDelegate != null) {
+                if (!postingDelegate.postTurnSummary(this, title)) {
                   postOk = false;
-                  log.error("Failed to create save game", e);
                 }
-                turnSummary = historyLog.toString();
-                try {
-                  // forward the poster to the delegate which invokes post() on the poster
-                  if (postingDelegate != null) {
-                    if (!postingDelegate.postTurnSummary(this, title)) {
-                      postOk = false;
-                    }
-                  } else {
-                    if (!post(null, title)) {
-                      postOk = false;
-                    }
+              } else {
+                if (!post(null, title)) {
+                  postOk = false;
+                }
+              }
+            } catch (final Exception e) {
+              postOk = false;
+              log.error("Failed to post save game to forum", e);
+            }
+            if (postingDelegate != null) {
+              postingDelegate.setHasPostedTurnSummary(postOk);
+            }
+            final StringBuilder sb1 = new StringBuilder();
+            if (gameProperties.get(IForumPoster.NAME) != null && this.turnSummaryRef != null) {
+              sb1.append("\nSummary Text: ").append(this.turnSummaryRef);
+            }
+            if (gameProperties.get(IEmailSender.SUBJECT) != null) {
+              sb1.append("\nEmails: ").append(emailSendStatus);
+            }
+            historyLog.append(sb1.toString());
+            historyLog.append("\n");
+            if (historyLog.isVisible()) {
+              historyLog.setVisible(true);
+            }
+            if (saveGameFile != null) {
+              saveGameFile.delete();
+            }
+            progressWindow.setVisible(false);
+            progressWindow.removeAll();
+            progressWindow.dispose();
+            final boolean finalPostOk = postOk;
+            final String finalMessage = sb1.toString();
+            SwingUtilities.invokeLater(
+                () -> {
+                  if (postButton != null) {
+                    postButton.setEnabled(!finalPostOk);
                   }
-                } catch (final Exception e) {
-                  postOk = false;
-                  log.error("Failed to post save game to forum", e);
-                }
-                if (postingDelegate != null) {
-                  postingDelegate.setHasPostedTurnSummary(postOk);
-                }
-                final StringBuilder sb1 = new StringBuilder();
-                if (gameProperties.get(IForumPoster.NAME) != null && this.turnSummaryRef != null) {
-                  sb1.append("\nSummary Text: ").append(this.turnSummaryRef);
-                }
-                if (gameProperties.get(IEmailSender.SUBJECT) != null) {
-                  sb1.append("\nEmails: ").append(emailSendStatus);
-                }
-                historyLog.append(sb1.toString());
-                historyLog.append("\n");
-                if (historyLog.isVisible()) {
-                  historyLog.setVisible(true);
-                }
-                if (saveGameFile != null) {
-                  saveGameFile.delete();
-                }
-                progressWindow.setVisible(false);
-                progressWindow.removeAll();
-                progressWindow.dispose();
-                final boolean finalPostOk = postOk;
-                final String finalMessage = sb1.toString();
-                SwingUtilities.invokeLater(
-                    () -> {
-                      if (postButton != null) {
-                        postButton.setEnabled(!finalPostOk);
-                      }
-                      JOptionPane.showMessageDialog(
-                          frame,
-                          finalMessage,
-                          title + " Posted",
-                          finalPostOk
-                              ? JOptionPane.INFORMATION_MESSAGE
-                              : JOptionPane.ERROR_MESSAGE);
-                    });
-              })
-          .start();
+                  JOptionPane.showMessageDialog(
+                      frame,
+                      finalMessage,
+                      title + " Posted",
+                      finalPostOk ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+                });
+          });
     }
   }
 
