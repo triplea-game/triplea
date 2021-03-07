@@ -90,17 +90,6 @@ class ArgParserTest extends AbstractClientSettingTestCase {
     assertThat(ClientSetting.mapFolderOverride.getValueOrThrow(), is(mapFolder));
   }
 
-  @Test
-  void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
-    ClientSetting.mapFolderOverride.setValue(Paths.get("some", "path"));
-
-    ArgParser.handleCommandLineArgs();
-
-    assertThat(
-        ClientSetting.mapFolderOverride.getValue(),
-        is(ClientSetting.mapFolderOverride.getDefaultValue()));
-  }
-
   private interface TestData {
     String propKey = "key";
     String propValue = "value";
