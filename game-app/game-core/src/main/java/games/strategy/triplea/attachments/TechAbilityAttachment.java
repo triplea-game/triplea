@@ -376,8 +376,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceSides(final Collection<TechAdvance> techAdvances) {
-    return sumNumbers(
-        TechAbilityAttachment::getWarBondDiceSides, TechAdvance.TECH_NAME_WAR_BONDS, techAdvances);
+    return techAdvances.stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .mapToInt(t -> t.getWarBondDiceSides())
+        .filter(t -> t > 0)
+        .findAny()
+        .orElse(0);
   }
 
   private void resetWarBondDiceSides() {
@@ -397,8 +402,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceNumber(final Collection<TechAdvance> techAdvances) {
-    return sumNumbers(
-        TechAbilityAttachment::getWarBondDiceNumber, TechAdvance.TECH_NAME_WAR_BONDS, techAdvances);
+    return techAdvances.stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .mapToInt(t -> t.getWarBondDiceNumber())
+        .filter(t -> t > 0)
+        .sum();
   }
 
   private void resetWarBondDiceNumber() {
