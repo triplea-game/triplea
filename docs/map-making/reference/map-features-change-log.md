@@ -5,14 +5,18 @@ Caution, this list might not be complete, please let us know if there is anythin
 
 ## 2.6
 
-- Map folder can be any arbitrary name, no longer as to match the 'map name' value
-  from XML
-- Maps are required to have a `map.yml` file
-- The following values are no longer read from XML:
-  - map name
-  - game name
-  - notes
-- Game notes are now stored in a '.notes.html' file alongside XML files
+XML stays the same so that maps can work with 2.5, there are additional files that
+now need to be created.
+
+- map.yml file needs to be created and located at top-most folder of a map
+- each 'xml' file needs a companion '.notes.html' file containing the game notes.
+- description.html file should be created with a map, contains the download description
+  that used to be present in 'triplea_maps.yaml'
+
+If a map is set to have a min version of 2.6, then these fields can be deleted from the XML file:
+- mapName
+- gameName
+- notes
 
 ## 2.5  and before
 
