@@ -57,6 +57,18 @@ public class DownloadedMapsListing {
   }
 
   /**
+   * Checks if a given map by name is installed, returns true if so. Map name matching is done
+   * case-insensitive with spaces, dashes and underscores ignored.
+   */
+  public boolean isMapInstalled(final String mapName) {
+    final String nameToMatch = normalizeName(mapName);
+    return downloadedMaps.stream()
+        .map(DownloadedMap::getMapName)
+        .map(DownloadedMapsListing::normalizeName)
+        .anyMatch(nameToMatch::equalsIgnoreCase);
+  }
+
+  /**
    * Returns the path to the file associated with the specified game. Returns empty if there is no
    * game matching the given name.
    *
