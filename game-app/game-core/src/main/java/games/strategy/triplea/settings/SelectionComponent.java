@@ -1,6 +1,8 @@
 package games.strategy.triplea.settings;
 
+import java.util.Optional;
 import javax.annotation.Nullable;
+import org.slf4j.LoggerFactory;
 
 /**
  * A SelectionComponent represents a UI component that a user can use to update the value of a
@@ -67,7 +69,13 @@ public interface SelectionComponent<T> {
      * @param value The new setting value or {@code null} to clear the setting value.
      */
     default <T> void setValue(final GameSetting<T> gameSetting, final @Nullable T value) {
-      setValue(gameSetting, value, ValueSensitivity.INSENSITIVE);
+      final Optional<String> validationErrorMessage = gameSetting.validateValue(value);
+      if (validationErrorMessage.isPresent()) {
+        LoggerFactory.getLogger(SelectionComponentFactory.class)
+            .warn("Setting not saved, invalid: {}", validationErrorMessage.get());
+      } else {
+        setValue(gameSetting, value, ValueSensitivity.INSENSITIVE);
+      }
     }
 
     /**

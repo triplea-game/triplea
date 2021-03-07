@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Nested;
@@ -20,16 +19,6 @@ final class ClientFileSystemHelperTest {
           ClientFileSystemHelper.getUserMapsFolder(() -> new File("/path/to/current"));
 
       assertThat(result, is(Paths.get("/path", "to", "current", "downloadedMaps").toFile()));
-    }
-
-    @Test
-    void shouldReturnOverrideFolderWhenOverrideFolderSet() {
-      ClientSetting.mapFolderOverride.setValue(Paths.get("/path", "to", "override"));
-
-      final File result =
-          ClientFileSystemHelper.getUserMapsFolder(() -> new File("/path/to/current"));
-
-      assertThat(result, is(Paths.get("/path", "to", "override").toFile()));
     }
   }
 }
