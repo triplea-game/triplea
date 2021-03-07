@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 
 /**
  * A panel for showing the battle steps in a display. Contains code for walking from the current
@@ -114,25 +115,24 @@ class BattleStepsPanel extends JPanel {
   }
 
   private void waitThenWalk() {
-    new Thread(
-            () -> {
-              synchronized (mutex) {
-                if (hasWalkThread) {
-                  return;
-                }
-                hasWalkThread = true;
-              }
-              try {
-                if (Interruptibles.sleep(330)) {
-                  SwingUtilities.invokeLater(this::walkStep);
-                }
-              } finally {
-                synchronized (mutex) {
-                  hasWalkThread = false;
-                }
-              }
-            })
-        .start();
+    ThreadRunner.runInNewThread(
+        () -> {
+          synchronized (mutex) {
+            if (hasWalkThread) {
+              return;
+            }
+            hasWalkThread = true;
+          }
+          try {
+            if (Interruptibles.sleep(330)) {
+              SwingUtilities.invokeLater(this::walkStep);
+            }
+          } finally {
+            synchronized (mutex) {
+              hasWalkThread = false;
+            }
+          }
+        });
   }
 
   /**

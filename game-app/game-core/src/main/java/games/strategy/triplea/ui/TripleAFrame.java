@@ -150,6 +150,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.sound.ClipPlayer;
@@ -1842,7 +1843,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private void updateStep() {
     if (SwingUtilities.isEventDispatchThread()) {
-      new Thread(this::updateStepFromEdt).start();
+      ThreadRunner.runInNewThread(this::updateStepFromEdt);
     } else {
       updateStepFromEdt();
     }

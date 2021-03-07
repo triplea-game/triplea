@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.download;
 import java.io.File;
 import java.util.function.Consumer;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 
 /**
  * A class that will monitor the size of a file. Inputs are a file and a consumer, the file is
@@ -16,7 +17,7 @@ final class FileSizeWatcher {
   FileSizeWatcher(final File fileToWatch, final Consumer<Long> progressListener) {
     this.fileToWatch = fileToWatch;
     this.progressListener = progressListener;
-    new Thread(newRunner()).start();
+    ThreadRunner.runInNewThread(newRunner());
   }
 
   void stop() {

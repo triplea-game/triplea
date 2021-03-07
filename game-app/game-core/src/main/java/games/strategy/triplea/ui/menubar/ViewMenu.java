@@ -44,6 +44,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.SwingAction;
@@ -275,10 +276,8 @@ final class ViewMenu extends JMenu {
             return;
           }
           TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-          new Thread(
-                  () -> frame.getMapPanel().updateCountries(gameMapTerritories),
-                  "Show map details thread")
-              .start();
+          ThreadRunner.runInNewThread(
+              () -> frame.getMapPanel().updateCountries(gameMapTerritories));
         });
     add(showMapDetails);
   }

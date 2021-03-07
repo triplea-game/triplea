@@ -32,6 +32,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
@@ -362,12 +363,11 @@ public class DownloadMapsWindow extends JFrame {
   private static void updateMapUrlAndSizeLabel(
       final DownloadFileDescription map, final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
-    new Thread(
-            () -> {
-              final String labelText = newLabelText(map);
-              SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
-            })
-        .start();
+    ThreadRunner.runInNewThread(
+        () -> {
+          final String labelText = newLabelText(map);
+          SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
+        });
   }
 
   private static String newLabelText(final DownloadFileDescription map) {

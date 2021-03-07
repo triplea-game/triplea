@@ -1,5 +1,6 @@
 package games.strategy.engine.random;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.random.IRemoteDiceServer.DiceServerException;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.Util;
@@ -22,6 +23,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 
@@ -192,7 +194,7 @@ public class PbemDiceRoller implements IRandomSource {
       }
       reRollButton.setEnabled(false);
       exitButton.setEnabled(false);
-      new Thread(this::rollInSeparateThread, "Triplea, roll in separate thread").start();
+      ThreadRunner.runInNewThread(this::rollInSeparateThread);
     }
 
     private void closeAndReturn() {
@@ -212,9 +214,7 @@ public class PbemDiceRoller implements IRandomSource {
      * syntax.
      */
     private void rollInSeparateThread() {
-      if (SwingUtilities.isEventDispatchThread()) {
-        throw new IllegalStateException("Wrong thread");
-      }
+      Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
 
       waitForWindowToBecomeVisible();
 

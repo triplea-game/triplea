@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
+import org.triplea.java.ThreadRunner;
 
 /**
  * A listener of map download progress events that updates the associated controls in the UI.
@@ -38,13 +39,12 @@ final class MapDownloadProgressListener {
   }
 
   private void requestDownloadLength() {
-    new Thread(
-            () ->
-                downloadLength =
-                    DownloadConfiguration.downloadLengthReader()
-                        .getDownloadLength(download.getUrl())
-                        .orElse(null))
-        .start();
+    ThreadRunner.runInNewThread(
+        () ->
+            downloadLength =
+                DownloadConfiguration.downloadLengthReader()
+                    .getDownloadLength(download.getUrl())
+                    .orElse(null));
   }
 
   void downloadStarted() {

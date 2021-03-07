@@ -62,6 +62,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
@@ -350,34 +351,31 @@ public class ClientModel implements IMessengerErrorListener {
             .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerTypes.CLIENT_PLAYER));
     final Set<Player> playerSet = data.getGameLoader().newPlayers(playerMapping);
     game = new ClientGame(data, playerSet, players, messengers, clientNetworkBridge);
-    new Thread(
-            () -> {
-              SwingUtilities.invokeLater(
-                  () -> JOptionPane.getFrameForComponent(ui).setVisible(false));
+    ThreadRunner.runInNewThread(
+        () -> {
+          SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(false));
+          try {
+            // game will be null if we loose the connection
+            if (game != null) {
               try {
-                // game will be null if we loose the connection
-                if (game != null) {
-                  try {
-                    data.getGameLoader()
-                        .startGame(game, playerSet, launchAction, getChatPanel().getChat());
-                  } catch (final Exception e) {
-                    log.error("Failed to start Game", e);
-                    game.shutDown();
-                    messenger.shutDown();
-                    gameLoadingWindow.doneWait();
-                    // an ugly hack, we need a better way to get the main frame
-                    GameRunner.clientLeftGame();
-                  }
-                }
-                if (!gameRunning) {
-                  ((IServerReady) messengers.getRemote(CLIENT_READY_CHANNEL)).clientReady();
-                }
-              } finally {
+                data.getGameLoader()
+                    .startGame(game, playerSet, launchAction, getChatPanel().getChat());
+              } catch (final Exception e) {
+                log.error("Failed to start Game", e);
+                game.shutDown();
+                messenger.shutDown();
                 gameLoadingWindow.doneWait();
+                // an ugly hack, we need a better way to get the main frame
+                GameRunner.clientLeftGame();
               }
-            },
-            "Client Game Launcher")
-        .start();
+            }
+            if (!gameRunning) {
+              ((IServerReady) messengers.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+            }
+          } finally {
+            gameLoadingWindow.doneWait();
+          }
+        });
   }
 
   public void takePlayer(final String playerName) {
