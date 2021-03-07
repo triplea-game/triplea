@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.security.CodeSource;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +87,20 @@ public final class ClientFileSystemHelper {
 
   @VisibleForTesting
   static File getUserMapsFolder(final Supplier<File> userHomeRootFolderSupplier) {
+    final File defaultDownloadedMapsFolder =
+        userHomeRootFolderSupplier.get().toPath().resolve("downloadedMaps").toFile();
+
+    // make sure folder override location is valid, if not notify user and reset it.
+    final Optional<Path> path = ClientSetting.mapFolderOverride.getValue();
+    if (path.isPresent() && (!path.get().toFile().exists() || !path.get().toFile().canWrite())) {
+      ClientSetting.mapFolderOverride.resetValue();
+      log.warn(
+          "Invalid map override setting folder does not exist or cannot be written: {}\n"
+              + "Reverting to use default map folder location: {}",
+          path.get().toFile().getAbsolutePath(),
+          defaultDownloadedMapsFolder.getAbsolutePath());
+    }
+
     final File mapsFolder =
         ClientSetting.mapFolderOverride
             .getValue()

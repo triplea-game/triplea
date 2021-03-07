@@ -56,4 +56,12 @@ public interface GameSetting<T> {
    * changed.
    */
   void removeListener(Consumer<GameSetting<T>> listener);
+
+  /**
+   * Validates a given value, returns empty if the value is value, otherwise returns an error
+   * message if the value is invalid.
+   */
+  default Optional<String> validateValue(T value) {
+    return Optional.empty();
+  }
 }
