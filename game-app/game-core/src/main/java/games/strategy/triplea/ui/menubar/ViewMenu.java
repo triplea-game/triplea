@@ -431,7 +431,11 @@ final class ViewMenu extends JMenu {
   }
 
   private void addLockMap() {
-    add(new JMenuItemCheckBoxBuilder("Lock Map", 'M').bindSetting(ClientSetting.lockMap).build());
+    add(
+        new JMenuItemCheckBoxBuilder("Lock Map", 'M')
+            .accelerator(KeyCode.L)
+            .bindSetting(ClientSetting.lockMap)
+            .build());
   }
 
   private void addFlagDisplayModeMenu() {
