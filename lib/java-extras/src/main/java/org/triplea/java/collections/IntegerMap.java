@@ -1,10 +1,13 @@
 package org.triplea.java.collections;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import javax.annotation.Nullable;
 
 /**
  * A utility class for mapping Objects to ints. <br>
@@ -22,6 +25,23 @@ public final class IntegerMap<T> implements Serializable {
 
   public IntegerMap(final Map<T, Integer> map) {
     mapValues = new LinkedHashMap<>(map);
+  }
+
+  /**
+   * Creates an IntegerMap using a counting function. The counting function maps each given element
+   * to a value that is then counted. The end result is a map with each counted elemented and how
+   * many occurrences of each counted element was found.
+   *
+   * @param collection A collection to iterate over and map each element with a counting function.
+   * @param countingFunction How to map each element of the input collection to a value that is then
+   *     to be counted.
+   */
+  public <X> IntegerMap(final Collection<X> collection, final Function<X, T> countingFunction) {
+    mapValues = new LinkedHashMap<>();
+    collection.stream()
+        .map(countingFunction)
+        .filter(Objects::nonNull)
+        .forEach(value -> mapValues.put(value, mapValues.getOrDefault(value, 0)));
   }
 
   /** Creates a shallow clone of the provided IntegerMap. */
@@ -81,9 +101,18 @@ public final class IntegerMap<T> implements Serializable {
   }
 
   /** Will return null if empty. */
-  public T lowestKey() {
+  @Nullable
+  public T minKey() {
     return mapValues.entrySet().stream()
         .min(Map.Entry.comparingByValue())
+        .map(Map.Entry::getKey)
+        .orElse(null);
+  }
+
+  @Nullable
+  public T maxKey() {
+    return mapValues.entrySet().stream()
+        .max(Map.Entry.comparingByValue())
         .map(Map.Entry::getKey)
         .orElse(null);
   }

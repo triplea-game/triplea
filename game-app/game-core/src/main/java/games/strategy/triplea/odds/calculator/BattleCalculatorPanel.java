@@ -1074,7 +1074,7 @@ class BattleCalculatorPanel extends JPanel {
 
         // Default attacker to current player
         final Optional<GamePlayer> currentPlayer = getCurrentPlayer(history);
-        currentPlayer.ifPresent(attackerCombo::setSelectedItem);
+        currentPlayer.ifPresent(this::setAttacker);
 
         // Get players with units sorted
         final List<GamePlayer> players = location.getUnitCollection().getPlayersByUnitCount();
@@ -1140,7 +1140,7 @@ class BattleCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  private Optional<GamePlayer> getCurrentPlayer(final History history) {
+  public Optional<GamePlayer> getCurrentPlayer(final History history) {
     final Optional<GamePlayer> player = history.getActivePlayer();
     if (player.isPresent()) {
       return player;
@@ -1152,8 +1152,16 @@ class BattleCalculatorPanel extends JPanel {
     return (GamePlayer) attackerCombo.getSelectedItem();
   }
 
+  void setAttacker(final GamePlayer gamePlayer) {
+    attackerCombo.setSelectedItem(gamePlayer);
+  }
+
   GamePlayer getDefender() {
     return (GamePlayer) defenderCombo.getSelectedItem();
+  }
+
+  void setDefender(final GamePlayer gamePlayer) {
+    defenderCombo.setSelectedItem(gamePlayer);
   }
 
   private GamePlayer getSwapSides() {
@@ -1354,6 +1362,14 @@ class BattleCalculatorPanel extends JPanel {
         getDefender(),
         CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand(), 1, false)),
         isLand());
+  }
+
+  public boolean hasAttackingUnitsAdded() {
+    return !attackingUnitsPanel.isEmpty();
+  }
+
+  public boolean hasDefendingUnitsAdded() {
+    return !defendingUnitsPanel.isEmpty();
   }
 
   private boolean isLand() {

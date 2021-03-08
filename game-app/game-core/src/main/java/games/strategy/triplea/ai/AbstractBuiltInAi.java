@@ -372,7 +372,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
             } else {
               final IntegerMap<Territory> distanceMap =
                   data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, it -> true);
-              picked = distanceMap.lowestKey();
+              picked = distanceMap.minKey();
             }
           }
         } else {
@@ -387,7 +387,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
               final IntegerMap<Territory> distanceMap =
                   data.getMap().getDistance(test.get(0), territoryChoices, it -> true);
               for (int i = 0; i < maxTerritoriesToPopulate; i++) {
-                final Territory choice = distanceMap.lowestKey();
+                final Territory choice = distanceMap.minKey();
                 distanceMap.removeKey(choice);
                 test.add(choice);
               }
@@ -413,7 +413,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
               }
               final List<Territory> choices = new ArrayList<>();
               for (int i = 0; i < maxTerritoriesToPopulate; i++) {
-                final Territory choice = distanceMap.lowestKey();
+                final Territory choice = distanceMap.minKey();
                 distanceMap.removeKey(choice);
                 choices.add(choice);
               }
@@ -443,7 +443,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
           } else {
             final IntegerMap<Territory> distanceMap =
                 data.getMap().getDistance(capitals.get(0), notOwned, it -> true);
-            picked = distanceMap.lowestKey();
+            picked = distanceMap.minKey();
           }
         }
       }

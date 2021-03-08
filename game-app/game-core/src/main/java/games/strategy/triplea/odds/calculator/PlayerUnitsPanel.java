@@ -232,6 +232,14 @@ public class PlayerUnitsPanel extends JPanel {
     return unitTypes;
   }
 
+  /**
+   * Returns true if all of the unit panel numbers are zero, false if there are any units 'added' to
+   * the panel.
+   */
+  boolean isEmpty() {
+    return unitPanels.stream().allMatch(unitPanel -> unitPanel.getCount() == 0);
+  }
+
   public void addChangeListener(final Runnable listener) {
     listeners.add(listener);
   }
