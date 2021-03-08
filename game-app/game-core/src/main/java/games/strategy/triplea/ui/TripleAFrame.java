@@ -41,6 +41,7 @@ import games.strategy.engine.history.Step;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -157,7 +158,6 @@ import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
-import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -407,7 +407,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     super("TripleA - " + game.getData().getGameName());
 
     localPlayers = players;
-    setIconImage(JFrameBuilder.getGameIcon());
+    setIconImage(EngineImageLoader.loadFrameIcon());
     // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
     setMinimumSize(new Dimension(200, 200));
 

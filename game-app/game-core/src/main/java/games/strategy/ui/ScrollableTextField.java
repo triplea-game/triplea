@@ -1,6 +1,7 @@
 package games.strategy.ui;
 
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -125,10 +126,10 @@ public class ScrollableTextField extends JPanel {
     if (imagesLoaded) {
       return;
     }
-    up = new ImageIcon(ScrollableTextField.class.getResource("images/up.gif"));
-    down = new ImageIcon(ScrollableTextField.class.getResource("images/down.gif"));
-    max = new ImageIcon(ScrollableTextField.class.getResource("images/max.gif"));
-    min = new ImageIcon(ScrollableTextField.class.getResource("images/min.gif"));
+    up = new ImageIcon(EngineImageLoader.loadImage("images", "up.gif"));
+    down = new ImageIcon(EngineImageLoader.loadImage("images", "down.gif"));
+    max = new ImageIcon(EngineImageLoader.loadImage("images", "max.gif"));
+    min = new ImageIcon(EngineImageLoader.loadImage("images", "min.gif"));
     imagesLoaded = true;
   }
 

@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.moderator.toolbox;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.TabFactory;
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.Component;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public final class ToolBoxWindow {
             JFrameBuilder.builder()
                 .title("Moderator Toolbox")
                 .locateRelativeTo(parent)
+                .iconImage(EngineImageLoader.loadFrameIcon())
                 .size(800, 700)
                 .minSize(400, 400)
                 .add(
