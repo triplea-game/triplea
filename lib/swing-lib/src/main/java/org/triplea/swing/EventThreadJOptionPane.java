@@ -223,7 +223,9 @@ public final class EventThreadJOptionPane {
             message, JOptionPane.QUESTION_MESSAGE, confirmDialogType.optionTypeMagicNumber);
     final JDialog dialog = optionPane.createDialog(parentComponent, title);
     dialog.setAlwaysOnTop(true);
-    dialog.setModal(false);
+    if (!SwingUtilities.isEventDispatchThread()) {
+      dialog.setModal(false);
+    }
 
     // Only modal dialogs are blocking. To mimic this, we use a latch to block once
     // the dialog is set to visible. We use a property listener to capture the users
@@ -240,11 +242,13 @@ public final class EventThreadJOptionPane {
         });
     SwingUtilities.invokeLater(() -> dialog.setVisible(true));
 
-    try {
-      latch.await();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      latch.countDown();
+    if (!SwingUtilities.isEventDispatchThread()) {
+      try {
+        latch.await();
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+        latch.countDown();
+      }
     }
     return Optional.ofNullable(confirmation.get()).orElse(false);
   }
