@@ -1,19 +1,16 @@
 package games.strategy.engine.chat;
 
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
-import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -38,17 +35,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   private static final Icon ignoreIcon;
 
   static {
-    final URL ignore = ChatPlayerPanel.class.getResource("ignore.png");
-    if (ignore == null) {
-      throw new IllegalStateException("Could not find ignore icon");
-    }
-    final Image img;
-    try {
-      img = ImageIO.read(ignore);
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    }
-    ignoreIcon = new ImageIcon(img);
+    ignoreIcon = new ImageIcon(EngineImageLoader.loadImage("images", "ignore.png"));
   }
 
   private JList<ChatParticipant> players;

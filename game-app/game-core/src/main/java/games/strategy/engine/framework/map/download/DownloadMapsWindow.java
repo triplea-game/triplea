@@ -7,6 +7,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -34,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -67,7 +67,7 @@ public class DownloadMapsWindow extends JFrame {
     setLocationRelativeTo(null);
     setMinimumSize(new Dimension(200, 200));
 
-    setIconImage(JFrameBuilder.getGameIcon());
+    setIconImage(EngineImageLoader.loadFrameIcon());
     progressPanel = new MapDownloadProgressPanel();
 
     final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();

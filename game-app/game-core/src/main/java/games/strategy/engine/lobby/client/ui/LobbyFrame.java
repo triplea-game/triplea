@@ -12,6 +12,7 @@ import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.MutePlayerAction;
 import games.strategy.engine.lobby.client.ui.action.player.info.ShowPlayerInformationAction;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.ui.QuitHandler;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
@@ -26,7 +27,6 @@ import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
-import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** The top-level frame window for the lobby client UI. */
@@ -41,7 +41,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     SwingComponents.addWindowClosedListener(this, GameRunner::exitGameIfNoWindowsVisible);
-    setIconImage(JFrameBuilder.getGameIcon());
+    setIconImage(EngineImageLoader.loadFrameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
     chatTransmitter =

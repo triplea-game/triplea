@@ -6,17 +6,12 @@ import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
@@ -30,7 +25,6 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
  *   <li>JFrame dispose on close
  * </ul>
  */
-@Slf4j
 public class JFrameBuilder {
   private final Collection<Function<JFrame, Component>> children = new ArrayList<>();
   private boolean escapeClosesWindow;
@@ -45,6 +39,7 @@ public class JFrameBuilder {
   private int minHeight = 50;
   private int width;
   private int height;
+  private Image iconImage;
   @Nullable private LayoutManager layoutManager;
   @Nullable private Runnable windowClosedAction;
   @Nullable private Runnable windowActivatedAction;
@@ -75,7 +70,7 @@ public class JFrameBuilder {
         });
 
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
-    frame.setIconImage(getGameIcon());
+    Optional.ofNullable(iconImage).ifPresent(frame::setIconImage);
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     if ((width > 0) || (height > 0)) {
@@ -101,15 +96,9 @@ public class JFrameBuilder {
     return frame;
   }
 
-  /** Returns the standard application icon typically displayed in a window's title bar. */
-  public static Image getGameIcon() {
-    try {
-      final File iconFile = Path.of("assets").resolve("icons").resolve("ta_icon.png").toFile();
-      return ImageIO.read(iconFile);
-    } catch (final IOException e) {
-      log.error("ta_icon.png not loaded", e);
-    }
-    return null;
+  public JFrameBuilder iconImage(final Image iconImage) {
+    this.iconImage = iconImage;
+    return this;
   }
 
   public JFrameBuilder escapeKeyClosesFrame() {

@@ -7,6 +7,7 @@ import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class MainFrame {
     mainFrame =
         JFrameBuilder.builder()
             .title("TripleA")
+            .iconImage(EngineImageLoader.loadFrameIcon())
             .windowClosedAction(GameRunner::exitGameIfNoWindowsVisible)
             .build();
     BackgroundTaskRunner.setMainFrame(mainFrame);

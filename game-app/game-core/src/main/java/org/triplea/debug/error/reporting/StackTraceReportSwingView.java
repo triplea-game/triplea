@@ -1,5 +1,6 @@
 package org.triplea.debug.error.reporting;
 
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.Component;
 import javax.annotation.Nullable;
 import javax.swing.Box;
@@ -26,6 +27,7 @@ class StackTraceReportSwingView implements StackTraceReportView {
   private final JFrame window =
       JFrameBuilder.builder()
           .title("Upload Error Report to TripleA Support")
+          .iconImage(EngineImageLoader.loadFrameIcon())
           .size(600, 450)
           .minSize(300, 350)
           .alwaysOnTop()
