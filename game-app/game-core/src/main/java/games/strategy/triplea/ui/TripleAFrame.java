@@ -228,7 +228,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         void refresh() {
           territoryInfo.removeAll();
 
-          message.setText((territoryLastEntered == null) ? "none" : territoryLastEntered.getName());
+          message.setText((territoryLastEntered == null) ? "" : territoryLastEntered.getName());
 
           // If territory is null or doesn't have an attachment then just display the name or "none"
           if (territoryLastEntered == null
