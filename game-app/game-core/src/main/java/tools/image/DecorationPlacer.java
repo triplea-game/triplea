@@ -714,13 +714,12 @@ public final class DecorationPlacer {
               imagePointType.getImageName());
       if (!image.exists()) {
         image =
-            new File(
-                ClientFileSystemHelper.getRootFolder()
-                    + File.separator
-                    + ResourceLoader.ASSETS_FOLDER
-                    + File.separator
-                    + imagePointType.getFolderName(),
-                imagePointType.getImageName());
+            ClientFileSystemHelper.getRootFolder()
+                .toPath()
+                .resolve(ResourceLoader.ASSETS_FOLDER)
+                .resolve(imagePointType.getFolderName())
+                .resolve(imagePointType.getImageName())
+                .toFile();
       }
       if (!image.exists()) {
         image = null;
