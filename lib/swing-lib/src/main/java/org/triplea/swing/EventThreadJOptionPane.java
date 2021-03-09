@@ -240,16 +240,22 @@ public final class EventThreadJOptionPane {
           latch.countDown();
           dialog.dispose();
         });
-    SwingUtilities.invokeLater(() -> dialog.setVisible(true));
 
-    if (!SwingUtilities.isEventDispatchThread()) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      // modal dialog being set to visible is blocking
+      dialog.setVisible(true);
+    } else {
+      // non modal dialog set to visible is not blocking and must be done on EDT
+      SwingUtilities.invokeLater(() -> dialog.setVisible(true));
       try {
+        // start blocking, wait for the dialog property event to fire to clear this latch
         latch.await();
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
         latch.countDown();
       }
     }
+
     return Optional.ofNullable(confirmation.get()).orElse(false);
   }
 }
