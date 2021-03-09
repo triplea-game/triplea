@@ -1,10 +1,13 @@
 package org.triplea.swing;
 
 import com.google.common.base.Preconditions;
+import java.awt.Toolkit;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.KeyStroke;
 import org.triplea.java.ArgChecker;
+import org.triplea.swing.key.binding.KeyCode;
 
 /**
  * Builds a JMenuCheckBox. This is a menu item with a checkbox next to it. By default the checkbox
@@ -25,6 +28,7 @@ public class JMenuItemCheckBoxBuilder {
   private Consumer<Boolean> action;
   private boolean selected;
   private SettingPersistence settingPersistence;
+  private KeyCode accelerator;
 
   /** Sets the title that appears next to the checkbox. */
   public JMenuItemCheckBoxBuilder(final String title, final char mnemonic) {
@@ -58,6 +62,14 @@ public class JMenuItemCheckBoxBuilder {
               .ifPresent(s -> s.saveSetting(checkBox.isSelected()));
           Optional.ofNullable(action).ifPresent(a -> a.accept(checkBox.isSelected()));
         });
+
+    Optional.ofNullable(accelerator)
+        .map(
+            accelerator ->
+                KeyStroke.getKeyStroke(
+                    accelerator.getInputEventCode(),
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()))
+        .ifPresent(checkBox::setAccelerator);
     return checkBox;
   }
 
@@ -77,6 +89,14 @@ public class JMenuItemCheckBoxBuilder {
    */
   public JMenuItemCheckBoxBuilder bindSetting(final SettingPersistence settingPersistence) {
     this.settingPersistence = settingPersistence;
+    return this;
+  }
+
+  /**
+   * Sets up an accelerator, or a hotkey for the menu. Typically activated via "control + keyCode".
+   */
+  public JMenuItemCheckBoxBuilder accelerator(final KeyCode keyCode) {
+    this.accelerator = keyCode;
     return this;
   }
 }

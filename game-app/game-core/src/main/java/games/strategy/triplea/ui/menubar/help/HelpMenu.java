@@ -3,11 +3,9 @@ package games.strategy.triplea.ui.menubar.help;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ui.UiContext;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import javax.swing.Action;
 import javax.swing.JMenu;
-import javax.swing.KeyStroke;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -33,9 +31,6 @@ public final class HelpMenu {
 
     final var helpMenu = menu.add(UnitHelpMenu.buildMenu(gameData, uiContext));
     helpMenu.setMnemonic(KeyEvent.VK_U);
-    helpMenu.setAccelerator(
-        KeyStroke.getKeyStroke(
-            KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
     final String gameNotes = gameData.loadGameNotes();
     if (!gameNotes.isBlank()) {
