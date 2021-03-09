@@ -60,8 +60,6 @@ public class UnitScroller {
       "Press ',' or click to see 'Previous' unmoved units.";
   private static final String NEXT_UNITS_TOOLTIP =
       "Press '.' or click to see 'Next' unmoved units.";
-  private static final String SLEEP_UNITS_TOOLTIP =
-      "Press 'S' or click to 'Sleep' these unmoved units until manually moved or alerted.";
   private static final String SKIP_UNITS_TOOLTIP =
       "Press 'Space' or click to 'Skip' these unmoved units until next move phase.";
   private static final String WAKE_ALL_TOOLTIP =
@@ -195,7 +193,8 @@ public class UnitScroller {
         .ifPresent(
             player -> {
               lastFocusedTerritory =
-                  TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, gameData);
+                  TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                      player, gameData.getMap());
               Optional.ofNullable(lastFocusedTerritory)
                   .ifPresent(
                       t -> {
@@ -245,10 +244,6 @@ public class UnitScroller {
     prevUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     prevUnit.addActionListener(e -> centerOnPreviousMovableUnit());
 
-    final JButton sleepButton = new JButton(UnitScrollerIcon.SLEEP.get());
-    sleepButton.setToolTipText(SLEEP_UNITS_TOOLTIP);
-    sleepButton.addActionListener(e -> sleepCurrentUnits());
-
     final JButton skipButton = new JButton(UnitScrollerIcon.SKIP.get());
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
     skipButton.addActionListener(e -> skipCurrentUnits());
@@ -268,8 +263,6 @@ public class UnitScroller {
             .add(prevUnit)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(wakeAllButton)
-            .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
-            .add(sleepButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(skipButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
