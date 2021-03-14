@@ -111,6 +111,10 @@ public class UnitPanel extends JPanel {
     textField.setValue(value);
   }
 
+  int getCount() {
+    return textField.getValue();
+  }
+
   void addChangeListener(final Runnable listener) {
     listeners.add(listener);
   }

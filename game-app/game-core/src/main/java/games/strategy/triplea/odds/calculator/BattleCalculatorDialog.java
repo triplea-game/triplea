@@ -1,6 +1,8 @@
 package games.strategy.triplea.odds.calculator;
 
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -13,9 +15,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
@@ -102,6 +106,27 @@ public class BattleCalculatorDialog extends JDialog {
       return;
     }
     final BattleCalculatorPanel currentPanel = instances.get(instances.size() - 1).panel;
+
+    // if there are no units set on the battle calculator panel, and if there are no units
+    // matching the current attacker, then we'll set the attacker to be the enemy player
+    // with the most units in the selected territory.
+    if (!currentPanel.hasAttackingUnitsAdded()
+        && t.getUnitCollection().stream()
+            .filter(u -> u.getOwner() != null)
+            .noneMatch(u -> u.getOwner().equals(currentPanel.getAttacker()))) {
+      // Find possible attackers (enemies) of the current defender.
+      // Count how many units each one has and find the max.
+      final List<Unit> units =
+          t.getUnitCollection()
+              .getMatches(
+                  Matches.enemyUnit(
+                      currentPanel.getDefender(), t.getData().getRelationshipTracker()));
+
+      final GamePlayer gamePlayer = new IntegerMap<>(units, Unit::getOwner).maxKey();
+      if (gamePlayer != null) {
+        currentPanel.setAttacker(gamePlayer);
+      }
+    }
     currentPanel.addAttackingUnits(
         t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(currentPanel.getAttacker())));
   }
@@ -111,6 +136,15 @@ public class BattleCalculatorDialog extends JDialog {
       return;
     }
     final BattleCalculatorDialog currentDialog = instances.get(instances.size() - 1);
+
+    // if there are no units added to the dialog, then we'll automatically
+    // select the defending side to match any unit in the current territory
+    if (!currentDialog.panel.hasAttackingUnitsAdded()
+        && !currentDialog.panel.hasDefendingUnitsAdded()) {
+      Optional.ofNullable(t.getUnitCollection().iterator().next())
+          .map(Unit::getOwner)
+          .ifPresent(currentDialog.panel::setDefender);
+    }
     currentDialog.panel.addDefendingUnits(
         t.getUnitCollection()
             .getMatches(

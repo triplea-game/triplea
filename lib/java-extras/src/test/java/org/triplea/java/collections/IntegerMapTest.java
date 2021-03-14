@@ -189,15 +189,27 @@ class IntegerMapTest {
   }
 
   @Test
-  void testLowestKey() {
+  void testMin() {
     final IntegerMap<Object> map = new IntegerMap<>();
-    assertNull(map.lowestKey());
+    assertNull(map.minKey());
     map.put(k1, 0);
-    assertEquals(k1, map.lowestKey());
+    assertEquals(k1, map.minKey());
     map.put(k2, 10);
-    assertEquals(k1, map.lowestKey());
+    assertEquals(k1, map.minKey());
     map.put(k3, -10);
-    assertEquals(k3, map.lowestKey());
+    assertEquals(k3, map.minKey());
+  }
+
+  @Test
+  void testMax() {
+    final IntegerMap<Object> map = new IntegerMap<>();
+    assertNull(map.maxKey());
+    map.put(k1, 0);
+    assertEquals(k1, map.maxKey());
+    map.put(k2, 10);
+    assertEquals(k2, map.maxKey());
+    map.put(k3, -10);
+    assertEquals(k2, map.maxKey());
   }
 
   @Test
