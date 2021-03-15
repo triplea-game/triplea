@@ -1,6 +1,7 @@
 package org.triplea.io;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -97,5 +99,20 @@ final class FileUtilsTest {
           FileUtils.findFileInParentFolders(testFolderPath.toPath(), "touch-parent"),
           isPresentAndIs(testFolderPath.toPath().resolve("touch-parent")));
     }
+  }
+
+  @Test
+  @DisplayName("Verify we can read file contents with ISO-8859-1 encoded characters")
+  void readContents() {
+    final File testFile =
+        new File(
+            ZipExtractorTest.class
+                .getClassLoader()
+                .getResource("ISO-8859-1-test-file.txt")
+                .getFile());
+
+    final Optional<String> contentRead = FileUtils.readContents(testFile.toPath());
+
+    assertThat(contentRead, isPresent());
   }
 }

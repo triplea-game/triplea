@@ -2,6 +2,7 @@ package org.triplea.io;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -180,13 +182,39 @@ public final class FileUtils {
       return Optional.empty();
     }
 
+    // try to read the file with default character encoding, if fails then fallback
+    // to UTF-8 then try ISO-8859_1
     try {
-      return Optional.of(Files.readString(fileToRead));
+      try {
+        return Optional.of(Files.readString(fileToRead));
+      } catch (final MalformedInputException e) {
+        log.info(
+            "Warning: "
+                + "unable to read file (character encoding problem), will next try UTF-8: {}, {}",
+            fileToRead.toFile().getAbsolutePath(),
+            e.getMessage());
+      }
+
+      try {
+        return Optional.of(Files.readString(fileToRead, Charsets.UTF_8));
+      } catch (final MalformedInputException e) {
+        log.info(
+            "Warning: "
+                + "unable to read file (character encoding problem), will next try ISO-8859_1: {}, {}",
+            fileToRead.toFile().getAbsolutePath(),
+            e.getMessage());
+      }
+
+      try {
+        return Optional.of(Files.readString(fileToRead, Charsets.ISO_8859_1));
+      } catch (final MalformedInputException e) {
+        throw e;
+      }
     } catch (final IOException e) {
       log.error(
           "Error reading file: {}, {}", fileToRead.toFile().getAbsolutePath(), e.getMessage(), e);
-      return Optional.empty();
     }
+    return Optional.empty();
   }
 
   public static void writeToFile(final Path fileToWrite, final String contents) {
