@@ -177,13 +177,10 @@ public class MapRouteDrawer {
    */
   protected double[] newParameterizedIndex(final Point2D[] points) {
     final double[] index = new double[points.length];
-    if (index.length > 0) {
-      index[0] = 0;
-    }
     for (int i = 1; i < points.length; i++) {
       final double sqrtDistance = Math.sqrt(points[i - 1].distance(points[i]));
       // Ensure that values are increasing even if the distance is 0
-      index[i] = index[i - 1] + Math.max(Double.MIN_NORMAL, sqrtDistance);
+      index[i] = Math.max(Math.nextUp(index[i - 1]), index[i - 1] + sqrtDistance);
     }
     return index;
   }
