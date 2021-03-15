@@ -37,6 +37,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.java.collections.IntegerMap;
 
 final class MapRouteDrawerTest {
+  /**
+   * This is a very special value because {@code 13.44 + Double.MIN_NORMAL == 13.44} evaluates to
+   * true. So we use the square of this value (because the code computes the square root) in order
+   * to test a very specific edge case.
+   */
+  private static final double MAGIC_VALUE = 13.44 * 13.44;
+
   private final Point[] dummyPoints =
       new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
   private final MapData dummyMapData = mock(MapData.class);
@@ -137,7 +144,8 @@ final class MapRouteDrawerTest {
             Arguments.of(new Double(1, 1)),
             Arguments.of(new Double(-1, -1)),
             Arguments.of(new Double(1, -1), new Double(1, -1), new Double(1, -1)),
-            Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)))
+            Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)),
+            Arguments.of(new Double(0, 0), new Double(0, MAGIC_VALUE), new Double(0, MAGIC_VALUE)))
         // Turn varargs into single array instance
         .map(Arguments::get)
         .map(Arrays::stream)
