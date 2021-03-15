@@ -1,6 +1,5 @@
 package org.triplea.util;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -24,7 +23,7 @@ public final class LocalizeHtml {
    * Replaces relative image links within a given {@code htmlText} with absolute links that point to
    * the correct location on the local file system.
    */
-  public static String localizeImgLinksInHtml(final String htmlText, final File mapContentFolder) {
+  public static String localizeImgLinksInHtml(final String htmlText, final Path mapContentFolder) {
     if (htmlText == null) {
       return null;
     }
@@ -46,9 +45,8 @@ public final class LocalizeHtml {
     return result.toString();
   }
 
-  private static String getLocalizedLink(final String link, final File mapContentFolder) {
-    final Path imagesPath =
-        mapContentFolder.toPath().resolve("doc").resolve("images").resolve(link);
+  private static String getLocalizedLink(final String link, final Path mapContentFolder) {
+    final Path imagesPath = mapContentFolder.resolve("doc").resolve("images").resolve(link);
     return FileUtils.toUrl(imagesPath).toString();
   }
 }

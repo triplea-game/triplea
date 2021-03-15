@@ -71,7 +71,7 @@ public class DownloadedMap {
     } else {
       return Optional.of(
           LocalizeHtml.localizeImgLinksInHtml(
-              GameNotes.loadGameNotes(xmlPath.get(), gameName), mapContentRoot.get().toFile()));
+              GameNotes.loadGameNotes(xmlPath.get(), gameName), mapContentRoot.get()));
     }
   }
 }
