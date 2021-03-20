@@ -37,13 +37,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.java.collections.IntegerMap;
 
 final class MapRouteDrawerTest {
-  /**
-   * This is a very special value because {@code 13.44 + Double.MIN_NORMAL == 13.44} evaluates to
-   * true. So we use the square of this value (because the code computes the square root) in order
-   * to test a very specific edge case.
-   */
-  private static final double MAGIC_VALUE = 13.44 * 13.44;
-
   private final Point[] dummyPoints =
       new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
   private final MapData dummyMapData = mock(MapData.class);
@@ -145,7 +138,14 @@ final class MapRouteDrawerTest {
             Arguments.of(new Double(-1, -1)),
             Arguments.of(new Double(1, -1), new Double(1, -1), new Double(1, -1)),
             Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)),
-            Arguments.of(new Double(0, 0), new Double(0, MAGIC_VALUE), new Double(0, MAGIC_VALUE)))
+            // 13.44 is chosen specifically to test a rare edge case that used to cause an exception
+            // in the past. We used to add a minimal positive double to indices to make them
+            // strictly increasing as required by commons-math. However in case of 13.44 the
+            // expression 13.44 + Double.MIN_NORMAL == 13.44 evaluates to true, so the sequence is
+            // no longer strictly increasing. So we use the square of this value (because the code
+            // computes the square root) in order to verify we don't get this issue again.
+            Arguments.of(
+                new Double(0, 0), new Double(0, 13.44 * 13.44), new Double(0, 13.44 * 13.44)))
         // Turn varargs into single array instance
         .map(Arguments::get)
         .map(Arrays::stream)
