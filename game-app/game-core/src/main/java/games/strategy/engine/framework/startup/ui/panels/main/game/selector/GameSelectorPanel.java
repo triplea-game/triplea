@@ -395,7 +395,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     BackgroundTaskRunner.runInBackground(
         "Loading map...",
         () -> {
-          model.load(gameFile.toFile().toURI());
+          model.load(gameFile.toFile());
           // warning: NPE check is not to protect against concurrency, another thread could still
           // null
           // out game data.

@@ -11,7 +11,7 @@ import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Observable;
 import java.util.Optional;
@@ -30,7 +30,7 @@ import org.triplea.java.ThreadRunner;
 @Slf4j
 public class GameSelectorModel extends Observable implements GameSelector {
 
-  private final Function<URI, Optional<GameData>> gameParser;
+  private final Function<File, Optional<GameData>> gameParser;
 
   @Nullable
   @Getter(onMethod_ = {@Override})
@@ -54,49 +54,42 @@ public class GameSelectorModel extends Observable implements GameSelector {
    *
    * @return True if successfully loaded, otherwise false.
    */
-  public boolean load(final File file) {
+  public boolean load(final File xmlFile) {
     Preconditions.checkArgument(
-        file.exists(),
+        xmlFile.exists(),
         "Programming error, expected file to have already been checked to exist: "
-            + file.getAbsolutePath());
+            + xmlFile.getAbsolutePath());
 
     // if the file name is xml, load it as a new game
-    if (file.getName().toLowerCase().endsWith("xml")) {
-      load(file.toURI());
-      return true;
+    if (xmlFile.getName().toLowerCase().endsWith("xml")) {
+      fileName = null;
+      GameData gameData = parseAndValidate(xmlFile);
+      if (gameData != null && gameData.getGameName() == null) {
+        gameData = null;
+      }
+      setGameData(gameData);
+      this.setDefaultGame(xmlFile, gameData);
+      return gameData != null;
     } else {
       // try to load it as a saved game whatever the extension
-      final GameData newData = GameDataManager.loadGame(file).orElse(null);
+      final GameData newData = GameDataManager.loadGame(xmlFile).orElse(null);
       if (newData == null) {
         return false;
       }
-      newData.setSaveGameFileName(file.getName());
-      this.fileName = file.getName();
+      newData.setSaveGameFileName(xmlFile.getName());
+      this.fileName = xmlFile.getName();
       setGameData(newData);
       return true;
     }
   }
 
-  public void load(final URI uri) {
-    fileName = null;
-    GameData gameData = null;
-    if (uri != null) {
-      gameData = parseAndValidate(uri);
-      if (gameData != null && gameData.getGameName() == null) {
-        gameData = null;
-      }
-    }
-    setGameData(gameData);
-    this.setDefaultGame(uri, gameData);
-  }
-
-  private void setDefaultGame(@Nullable final URI uri, @Nullable final GameData gameData) {
-    if (gameData == null || uri == null) {
+  private void setDefaultGame(@Nullable final File xmlFile, @Nullable final GameData gameData) {
+    if (gameData == null || xmlFile == null) {
       ClientSetting.defaultGameName.resetValue();
       ClientSetting.defaultGameUri.resetValue();
     } else {
       ClientSetting.defaultGameName.setValue(gameData.getGameName());
-      ClientSetting.defaultGameUri.setValue(uri.toString());
+      ClientSetting.defaultGameUri.setValue(xmlFile.getAbsolutePath());
     }
     ClientSetting.flush();
   }
@@ -107,8 +100,8 @@ public class GameSelectorModel extends Observable implements GameSelector {
   }
 
   @Nullable
-  private GameData parseAndValidate(final URI uri) {
-    final GameData gameData = gameParser.apply(uri).orElse(null);
+  private GameData parseAndValidate(final File file) {
+    final GameData gameData = gameParser.apply(file).orElse(null);
     if (gameData == null) {
       return null;
     }
@@ -118,8 +111,8 @@ public class GameSelectorModel extends Observable implements GameSelector {
       return gameData;
     } else {
       log.error(
-          "Validation errors parsing map: {}, errors:\n{}",
-          uri,
+          "Validation errors parsing game-XML file: {}, errors:\n{}",
+          file.getAbsolutePath(),
           String.join("\n", validationErrors));
       return null;
     }
@@ -189,18 +182,15 @@ public class GameSelectorModel extends Observable implements GameSelector {
         .getValue()
         .filter(Predicate.not(String::isBlank))
         .filter(GameSelectorModel::gameUriExistsOnFileSystem)
-        .map(URI::create)
+        .map(Path::of)
+        .map(Path::toFile)
         .ifPresentOrElse(this::load, this::resetDefaultGame);
   }
 
   @SuppressWarnings("ReturnValueIgnored")
   private static boolean gameUriExistsOnFileSystem(final String gameUri) {
-    final URI uri = URI.create(gameUri);
-    if (uri.getScheme() == null) {
-      return false;
-    }
     try {
-      final File gameFile = new File(uri);
+      final File gameFile = Path.of(gameUri).toFile();
 
       // starts with check is because we don't want to load a game file by default that is not
       // within

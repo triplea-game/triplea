@@ -14,5 +14,6 @@ import org.triplea.generic.xml.reader.annotations.Attribute;
 @AllArgsConstructor
 @ToString
 public class Info {
-  @XmlAttribute @Attribute private String name;
+  /** @deprecated Do not use, game name should be read from map.yml file instead. */
+  @Deprecated @XmlAttribute @Attribute private String name;
 }
