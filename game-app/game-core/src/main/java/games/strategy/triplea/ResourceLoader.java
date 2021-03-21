@@ -40,7 +40,7 @@ public class ResourceLoader implements Closeable {
   private final URLClassLoader loader;
 
   @Getter private final List<URL> searchUrls;
-  @Getter private final File mapLocation;
+  @Getter private final Path mapLocation;
 
   public ResourceLoader(final String mapName) {
     mapLocation =
@@ -48,7 +48,6 @@ public class ResourceLoader implements Closeable {
             ? null
             : DownloadedMapsListing.parseMapFiles()
                 .findContentRootForMapName(mapName)
-                .map(Path::toFile)
                 .orElseThrow(
                     () -> {
                       SwingComponents.promptUser(
@@ -74,7 +73,7 @@ public class ResourceLoader implements Closeable {
     try {
       searchUrls = new ArrayList<>();
       if (mapLocation != null) {
-        searchUrls.add(mapLocation.toURI().toURL());
+        searchUrls.add(mapLocation.toUri().toURL());
       }
       searchUrls.add(gameAssetsDirectory.toURI().toURL());
       loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
@@ -85,7 +84,7 @@ public class ResourceLoader implements Closeable {
               + ", engine assets path: "
               + gameAssetsDirectory.getAbsolutePath()
               + ", and path to map: "
-              + mapLocation.getAbsolutePath(),
+              + mapLocation.toAbsolutePath(),
           e);
     }
   }

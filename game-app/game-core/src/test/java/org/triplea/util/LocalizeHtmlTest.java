@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-import java.io.File;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,7 +18,7 @@ class LocalizeHtmlTest {
             + "<p>  Placeholder </P> <img\n"
             + " src='another-link.png'/><img src=\"another-link\"/>";
 
-    final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, new File("/usr/local"));
+    final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, Path.of("/usr/local"));
 
     assertThat(
         result,
@@ -40,7 +40,7 @@ class LocalizeHtmlTest {
       })
   void testAbsoluteUrl(final String testHtml) {
     assertThat(
-        LocalizeHtml.localizeImgLinksInHtml(testHtml, new File("/usr/local")),
+        LocalizeHtml.localizeImgLinksInHtml(testHtml, Path.of("/usr/local")),
         is(equalTo(testHtml)));
   }
 }

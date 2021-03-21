@@ -55,22 +55,13 @@ public final class FileUtils {
     return Optional.ofNullable(directory.listFiles()).map(List::of).orElseGet(List::of);
   }
 
-  public static URL toUrl(final File file) {
-    return toUrl(file.toPath());
-  }
-
   public static URL toUrl(final Path file) {
     try {
       return file.toUri().toURL();
     } catch (final MalformedURLException e) {
       throw new IllegalStateException(
-          "Invalid conversion from file to URL, file: " + file.toFile().getAbsolutePath(), e);
+          "Invalid conversion from file to URL, file: " + file.toAbsolutePath(), e);
     }
-  }
-
-  /** Convenience API, see {@link FileUtils#find(Path, int, String)} */
-  public Optional<File> find(final File searchRoot, final int maxDepth, final String fileName) {
-    return find(searchRoot.toPath(), maxDepth, fileName);
   }
 
   /**
