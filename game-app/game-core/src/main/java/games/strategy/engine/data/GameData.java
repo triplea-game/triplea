@@ -553,8 +553,7 @@ public class GameData implements Serializable, GameState {
 
   private Optional<MapDescriptionYaml> findMapDescriptionYaml() {
     return FileUtils.findFileInParentFolders(
-            UiContext.getResourceLoader().getMapLocation(),
-            MapDescriptionYaml.MAP_YAML_FILE_NAME)
+            UiContext.getResourceLoader().getMapLocation(), MapDescriptionYaml.MAP_YAML_FILE_NAME)
         .map(Path::toFile)
         .flatMap(MapDescriptionYaml::fromFile);
   }
