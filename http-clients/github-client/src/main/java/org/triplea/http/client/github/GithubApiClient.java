@@ -76,7 +76,12 @@ public class GithubApiClient {
 
   private Collection<URI> listRepositories(final String githubOrg, final int pageNumber) {
     final Map<String, Object> tokens = new HashMap<>();
-    tokens.put("Authorization", "token " + authToken);
+    // authToken is not required, can happen in dev environments.
+    // Without an auth token the only consequence is the github API rate
+    // limit is more strict.
+    if (authToken != null && !authToken.isBlank()) {
+      tokens.put("Authorization", "token " + authToken);
+    }
     final Map<String, String> queryParams = new HashMap<>();
     queryParams.put("per_page", "100");
     queryParams.put("page", String.valueOf(pageNumber));
