@@ -39,22 +39,6 @@ function runDeployment() {
 }
 
 function runCleanup() {
-  # Remove all lobby_server binary files except the current one.
-  # With grep -v we filter out folders that begin with a '.'
-  echo "Removing previous lobby_server deployments.."
-  ansible -i ansible/inventory/prerelease lobbyServer -m shell -a \
-    "find /home/lobby_server -type d -mindepth 1 | grep -Ev \"/\.|$VERSION\" | xargs --no-run-if-empty rm -rf"
-
-  echo "Removing previous maps_server deployments.."
-  ansible -i ansible/inventory/prerelease mapsServer -m shell -a \
-    "find /home/maps_server -type d -mindepth 1 | grep -Ev \"/\.|$VERSION\" | xargs --no-run-if-empty rm -rf"
-
-  # remove folders under bot (each deployment folder), eg: /home/bot/2.3.21496
-  # With grep -v we filter out folders that begin with a '.', and the 'maps' folder and run_server script 
-  echo "Removing previous bot deployments.."
-  ansible -i ansible/inventory/prerelease botHosts -m shell -a \
-    "find /home/bot -type d -mindepth 1 -maxdepth 1 | grep -Ev \"/\.|maps|run_server|$VERSION\" | xargs --no-run-if-empty rm -rf"
-
   # auto-remove to clean up /usr/lib/modules, each kernel update leaves data in that folder
   echo "Removing old kernel patches.."
   ansible -i ansible/inventory/prerelease all --become-user=root -m shell -a \
