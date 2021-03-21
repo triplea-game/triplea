@@ -6,9 +6,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -34,7 +32,6 @@ import org.triplea.java.Interruptibles;
  * <p>Warning: The input stream provided by this class can only be consumed once (property of input
  * streams, the input stream is not reset in any way after reading it).
  */
-@Slf4j
 public final class ContentDownloader implements CloseableDownloader {
   private final CloseableHttpClient httpClient;
 
@@ -96,26 +93,5 @@ public final class ContentDownloader implements CloseableDownloader {
     stream.close();
     response.close();
     httpClient.close();
-  }
-
-  /**
-   * Downloads content from a given URI and runs a function on the downloaded content and returns
-   * that functions output.
-   *
-   * @param uri The URI to download
-   * @param streamProcessor Function to process the downloaded input.
-   * @return Result of the stream processing function, otherwise an empty result if there were
-   *     errors or if the processing function returns null.
-   */
-  public static <T> Optional<T> downloadAndExecute(
-      final URI uri, final Function<InputStream, T> streamProcessor) {
-    try (CloseableDownloader downloader = new ContentDownloader(uri)) {
-      final InputStream stream = downloader.getStream();
-      return Optional.ofNullable(streamProcessor.apply(stream));
-    } catch (final IOException e) {
-      log.error(
-          "Failed to download and process content from URI: " + uri + ", " + e.getMessage(), e);
-      return Optional.empty();
-    }
   }
 }
