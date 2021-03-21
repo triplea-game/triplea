@@ -35,8 +35,8 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
+import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -98,24 +98,27 @@ public final class GameParser {
   /**
    * Performs a deep parse of the game XML file at the specified URI.
    *
-   * @param xmlUri URI of the game XML file to be parsed.
+   * @param xmlFile The game XML file to be parsed.
    * @return A complete {@link GameData} instance that can be used to play the game, otherwise
    *     returns empty if the file could not parsed or is not valid.
    */
-  public static Optional<GameData> parse(final URI xmlUri) {
-    log.debug("Parsing game XML: {}", xmlUri);
+  public static Optional<GameData> parse(final File xmlFile) {
+    log.debug("Parsing game XML: {}", xmlFile.getAbsolutePath());
     final Optional<GameData> gameData =
         GameParser.parse(
-            xmlUri, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
+            xmlFile, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
 
     // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
     // using the 'map name' from 'map.yml'
     if (gameData.isPresent()) {
-      FileUtils.findFileInParentFolders(Path.of(xmlUri), MapDescriptionYaml.MAP_YAML_FILE_NAME)
+      FileUtils.findFileInParentFolders(xmlFile.toPath(), MapDescriptionYaml.MAP_YAML_FILE_NAME)
           .map(Path::toFile)
           .flatMap(MapDescriptionYaml::fromFile)
-          .map(MapDescriptionYaml::getMapName)
-          .ifPresent(mapName -> gameData.get().setMapName(mapName));
+          .ifPresent(
+              mapDescriptionYaml -> {
+                gameData.get().setGameName(mapDescriptionYaml.findGameNameFromXmlFileName(xmlFile));
+                gameData.get().setMapName(mapDescriptionYaml.getMapName());
+              });
     }
 
     return gameData;
@@ -123,44 +126,41 @@ public final class GameParser {
 
   @VisibleForTesting
   public static Optional<GameData> parse(
-      final URI xmlUri,
+      final File xmlFile,
       final XmlGameElementMapper xmlGameElementMapper,
       final Version engineVersion) {
     return UrlStreams.openStream(
-        xmlUri,
+        xmlFile.toURI(),
         inputStream -> {
           try {
-            return new GameParser(xmlUri.toString(), xmlGameElementMapper, engineVersion)
-                .parse(inputStream);
+            return new GameParser(xmlFile.toString(), xmlGameElementMapper, engineVersion)
+                .parse(xmlFile, inputStream);
 
           } catch (final EngineVersionException e) {
-            log.warn("Game engine not compatible with: " + xmlUri, e);
+            log.warn("Game engine not compatible with: " + xmlFile, e);
             return null;
           } catch (final Exception e) {
-            log.error("Could not parse:" + xmlUri + ", " + e.getMessage(), e);
+            log.error("Could not parse:" + xmlFile + ", " + e.getMessage(), e);
             return null;
           }
         });
   }
 
   @Nonnull
-  private GameData parse(final InputStream stream)
+  private GameData parse(final File xmlFile, final InputStream stream)
       throws XmlParsingException, GameParseException, EngineVersionException {
 
     final Game game = new XmlMapper(stream).mapXmlToObject(Game.class);
 
-    // mandatory fields
-    // get the name of the map
-    if (game.getInfo() == null || game.getInfo().getName() == null) {
-      throw new GameParseException("<info name=..> is required and was not set");
+    // test minimum engine version first
+    if (!isEngineCompatibleWithMap(game.getTriplea())) {
+      throw new EngineVersionException(game.getTriplea().getMinimumVersion(), xmlFile);
     }
-    parseInfo(game.getInfo());
 
-    // test minimum engine version FIRST
-    parseMinimumEngineVersionNumber(game.getTriplea());
-    // if we manage to get this far, past the minimum engine version number test, AND we are still
-    // good, then check and
-    // see if we have any SAX errors we need to show
+    // For backward compatibility with maps that do not have a map.yml file,
+    // set game name using data found in XML. Note, similar will be done for map
+    // name when we load all properties into 'GameData'.
+    Optional.ofNullable(game.getInfo()).map(Info::getName).ifPresent(data::setGameName);
 
     parseDiceSides(game.getDiceSides());
     parsePlayerList(game.getPlayerList());
@@ -246,20 +246,12 @@ public final class GameParser {
     data.setDiceSides(diceSides == null ? 6 : diceSides.getValue());
   }
 
-  private void parseMinimumEngineVersionNumber(final Triplea tripleA)
-      throws EngineVersionException {
-    if (tripleA == null || tripleA.getMinimumVersion().isBlank()) {
-      return;
-    }
-    final Version mapMinimumEngineVersion = new Version(tripleA.getMinimumVersion());
-    if (!engineVersion.isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
-      throw new EngineVersionException(
-          String.format(
-              "Current engine version: %s, is not compatible with version: %s, required by map: %s",
-              Injections.getInstance().getEngineVersion(),
-              mapMinimumEngineVersion.toString(),
-              data.getGameName()));
-    }
+  private boolean isEngineCompatibleWithMap(final Triplea tripleA) throws EngineVersionException {
+
+    return tripleA == null
+        || tripleA.getMinimumVersion().isBlank()
+        || engineVersion.isCompatibleWithMapMinimumEngineVersion(
+            new Version(tripleA.getMinimumVersion()));
   }
 
   private GamePlayer getPlayerId(final String name) throws GameParseException {
@@ -341,10 +333,6 @@ public final class GameParser {
   private RepairFrontier getRepairFrontier(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRepairFrontierList().getRepairFrontier(name))
         .orElseThrow(() -> new GameParseException("Could not find repair frontier:" + name));
-  }
-
-  private void parseInfo(final Info info) {
-    data.setGameName(info.getName());
   }
 
   private void parseTerritories(

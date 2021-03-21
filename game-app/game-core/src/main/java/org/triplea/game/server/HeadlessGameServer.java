@@ -94,7 +94,7 @@ public class HeadlessGameServer {
       gameSelectorModel.load(
           availableGames
               .findGameXmlPathByGameName(gameName) //
-              .map(Path::toUri)
+              .map(Path::toFile)
               .orElseThrow());
       log.info("Changed to game map: " + gameName);
     } else {

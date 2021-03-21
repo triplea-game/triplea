@@ -164,6 +164,30 @@ public class MapDescriptionYaml {
     }
   }
 
+  /**
+   * Given an XML file, does something of a reverse lookup in the map.yml file to find the
+   * corresponding game name. The match is based on the file name.
+   *
+   * @throws IllegalStateException thrown if no entry exists in this map.yml file with a game whose
+   *     file name matches the input file name.
+   */
+  public String findGameNameFromXmlFileName(final File xmlFile) {
+    // Find map game entry whose xml file name matches input file name.
+    // Once found, return the corresponding game name.
+    return mapGameList.stream()
+        .filter(game -> game.getXmlFileName().equals(xmlFile.getName()))
+        .findAny()
+        .map(MapGame::getGameName)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "map.yml file at: "
+                        + yamlFileLocation
+                        + ", did not contain an entry"
+                        + "for "
+                        + xmlFile.getAbsolutePath()));
+  }
+
   /** Lookup game XML file name in map.yml by game name. */
   private Optional<String> findFileNameForGame(final String gameName) {
     final Optional<String> fileName =

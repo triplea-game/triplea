@@ -3,6 +3,7 @@ package org.triplea.map.description.file;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -52,5 +53,46 @@ class MapDescriptionYamlTest {
     assertThat(
         gameFilePath,
         isPresentAndIs(mapFolder.resolve("games").resolve("game1").resolve("game-file.xml")));
+  }
+
+  @Test
+  void findGameNameFromXmlFileName_PositiveCase() {
+    final MapDescriptionYaml mapDescriptionYaml =
+        MapDescriptionYaml.builder()
+            .yamlFileLocation(new File("/path/on/disk/map.yml").toURI())
+            .mapName("map name")
+            .mapVersion(1)
+            .mapGameList(
+                List.of(
+                    MapDescriptionYaml.MapGame.builder() //
+                        .gameName("game name")
+                        .xmlFileName("path.xml")
+                        .build()))
+            .build();
+
+    final String gameName =
+        mapDescriptionYaml.findGameNameFromXmlFileName(new File("/root/path.xml"));
+
+    assertThat(gameName, is("game name"));
+  }
+
+  @Test
+  void findGameNameFromXmlFileName_NegativeCase() {
+    final MapDescriptionYaml mapDescriptionYaml =
+        MapDescriptionYaml.builder()
+            .yamlFileLocation(new File("/path/on/disk/map.yml").toURI())
+            .mapName("map name")
+            .mapVersion(1)
+            .mapGameList(
+                List.of(
+                    MapDescriptionYaml.MapGame.builder() //
+                        .gameName("game name")
+                        .xmlFileName("path.xml")
+                        .build()))
+            .build();
+
+    assertThrows(
+        IllegalStateException.class,
+        () -> mapDescriptionYaml.findGameNameFromXmlFileName(new File("DNE.xml")));
   }
 }
