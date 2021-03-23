@@ -138,14 +138,10 @@ final class MapRouteDrawerTest {
             Arguments.of(new Double(-1, -1)),
             Arguments.of(new Double(1, -1), new Double(1, -1), new Double(1, -1)),
             Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)),
-            // 13.44 is chosen specifically to test a rare edge case that used to cause an exception
-            // in the past. We used to add a minimal positive double to indices to make them
-            // strictly increasing as required by commons-math. However in case of 13.44 the
-            // expression 13.44 + Double.MIN_NORMAL == 13.44 evaluates to true, so the sequence is
-            // no longer strictly increasing. So we use the square of this value (because the code
-            // computes the square root) in order to verify we don't get this issue again.
-            Arguments.of(
-                new Double(0, 0), new Double(0, 13.44 * 13.44), new Double(0, 13.44 * 13.44)))
+            // We used to add a minimal positive double to indices to make them strictly increasing
+            // as required by commons-math. However in some cases x + Double.MIN_NORMAL == x
+            // evaluates to true, so the sequence is no longer strictly increasing.
+            Arguments.of(new Double(0, 0), new Double(0, 1), new Double(0, 1)))
         // Turn varargs into single array instance
         .map(Arguments::get)
         .map(Arrays::stream)
