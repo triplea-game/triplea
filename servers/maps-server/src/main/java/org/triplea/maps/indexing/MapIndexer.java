@@ -8,7 +8,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.io.ContentDownloader;
+import org.triplea.io.SimpleDownloader;
+import org.triplea.io.SimpleDownloader.DownloadException;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -20,8 +21,20 @@ class MapIndexer implements Function<URI, Optional<MapIndexResult>> {
   @Override
   public Optional<MapIndexResult> apply(final URI uri) {
     final URI mapYmlUri = URI.create(uri.toString() + "/map.yml?raw=true");
-    return ContentDownloader.downloadAndExecute(
-        mapYmlUri, mapYmlContentStream -> indexMapYmlContent(mapYmlUri, mapYmlContentStream));
+
+    try {
+      return Optional.of(
+          SimpleDownloader.downloadAndExecute(
+              mapYmlUri,
+              mapYmlContentStream -> indexMapYmlContent(mapYmlUri, mapYmlContentStream)));
+    } catch (final DownloadException e) {
+      if (e.getStatusCode() == 404) {
+        log.info("No map.yml found: {}", uri);
+      } else {
+        log.error("Error retreiving map.yml file: {}", e.getMessage(), e);
+      }
+      return Optional.empty();
+    }
   }
 
   /**
