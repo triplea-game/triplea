@@ -137,7 +137,8 @@ final class MapRouteDrawerTest {
             Arguments.of(new Double(1, 1)),
             Arguments.of(new Double(-1, -1)),
             Arguments.of(new Double(1, -1), new Double(1, -1), new Double(1, -1)),
-            Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)))
+            Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)),
+            Arguments.of(new Double(0, 0), new Double(0, 1), new Double(0, 1)))
         // Turn varargs into single array instance
         .map(Arguments::get)
         .map(Arrays::stream)
