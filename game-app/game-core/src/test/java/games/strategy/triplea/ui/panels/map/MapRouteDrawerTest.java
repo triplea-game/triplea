@@ -138,9 +138,6 @@ final class MapRouteDrawerTest {
             Arguments.of(new Double(-1, -1)),
             Arguments.of(new Double(1, -1), new Double(1, -1), new Double(1, -1)),
             Arguments.of(new Double(-1, -1), new Double(1, 1), new Double(0, 0)),
-            // We used to add a minimal positive double to indices to make them strictly increasing
-            // as required by commons-math. However in some cases x + Double.MIN_NORMAL == x
-            // evaluates to true, so the sequence is no longer strictly increasing.
             Arguments.of(new Double(0, 0), new Double(0, 1), new Double(0, 1)))
         // Turn varargs into single array instance
         .map(Arguments::get)
