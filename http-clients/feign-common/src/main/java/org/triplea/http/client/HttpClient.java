@@ -13,7 +13,9 @@ import feign.codec.Decoder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -79,7 +81,13 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
               }
             })
         .logLevel(Logger.Level.BASIC)
-        .options(new Request.Options(DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIME_OUT_MS))
+        .options(
+            new Request.Options(
+                DEFAULT_CONNECT_TIMEOUT_MS,
+                TimeUnit.MILLISECONDS,
+                DEFAULT_READ_TIME_OUT_MS,
+                TimeUnit.MILLISECONDS,
+                true))
         .target(classType, hostUri.toString());
   }
 
@@ -95,7 +103,8 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
     throw Optional.ofNullable(response.body())
         .map(
             body -> {
-              try (BufferedReader reader = new BufferedReader(body.asReader())) {
+              try (BufferedReader reader =
+                  new BufferedReader(body.asReader(StandardCharsets.UTF_8))) {
                 final String errorMessageBody = reader.lines().collect(Collectors.joining("\n"));
                 return new HttpInteractionException(
                     response.status(), firstLine + "\n" + errorMessageBody);
