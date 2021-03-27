@@ -1,6 +1,6 @@
 package org.triplea.map.game.notes;
 
-import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,16 +41,15 @@ public class GameNotesMigrator {
     // If we have a number of game notes files to create, run in a progress dialog.
 
     final Runnable migrationJob =
-        () -> {
-          xmlFilesMissingGameNotesFile.forEach(
-              xmlGameFile -> {
-                final String gameNotes = readGameNotesFromXml(xmlGameFile);
-                final String fileNameToWrite = GameNotes.createExpectedNotesFileName(xmlGameFile);
-                final Path fileToWrite = xmlGameFile.resolveSibling(fileNameToWrite);
-                log.info("Writing game notes file: " + fileToWrite.toFile().getAbsolutePath());
-                FileUtils.writeToFile(fileToWrite, gameNotes);
-              });
-        };
+        () ->
+            xmlFilesMissingGameNotesFile.forEach(
+                xmlGameFile -> {
+                  final String gameNotes = readGameNotesFromXml(xmlGameFile);
+                  final String fileNameToWrite = GameNotes.createExpectedNotesFileName(xmlGameFile);
+                  final Path fileToWrite = xmlGameFile.resolveSibling(fileNameToWrite);
+                  log.info("Writing game notes file: " + fileToWrite.toFile().getAbsolutePath());
+                  FileUtils.writeToFile(fileToWrite, gameNotes);
+                });
 
     if (xmlFilesMissingGameNotesFile.size() > 3) {
       progressIndicator.accept(migrationJob);
@@ -62,14 +61,11 @@ public class GameNotesMigrator {
   private Collection<Path> findAllGameXmlFiles(final Path rootPath) {
     final Collection<Path> xmlFiles = new ArrayList<>();
 
-    for (final File child : FileUtils.listFiles(rootPath.toFile())) {
-      if (child.isDirectory() && child.getName().equalsIgnoreCase("games")) {
-        xmlFiles.addAll(
-            FileUtils.findXmlFiles(child, 1).stream()
-                .map(File::toPath)
-                .collect(Collectors.toList()));
-      } else if (child.isDirectory()) {
-        xmlFiles.addAll(findAllGameXmlFiles(child.toPath()));
+    for (final Path child : FileUtils.listFiles(rootPath)) {
+      if (Files.isDirectory(child) && child.getFileName().toString().equalsIgnoreCase("games")) {
+        xmlFiles.addAll(FileUtils.findXmlFiles(child, 1));
+      } else if (Files.isDirectory(child)) {
+        xmlFiles.addAll(findAllGameXmlFiles(child));
       }
     }
     return xmlFiles;
@@ -78,7 +74,7 @@ public class GameNotesMigrator {
   private String readGameNotesFromXml(final Path xmlGameFile) {
     final Game game =
         FileUtils.openInputStream(
-            xmlGameFile.toFile(),
+            xmlGameFile,
             input -> {
               try {
                 return new XmlMapper(input).mapXmlToObject(Game.class);
@@ -86,7 +82,7 @@ public class GameNotesMigrator {
                 log.warn(
                     "Unable to parse file (consider deleting this file or relocating it outside "
                         + "of the games folder): {}, error: {}",
-                    xmlGameFile.toFile().getAbsolutePath(),
+                    xmlGameFile.toAbsolutePath(),
                     e.getMessage());
                 return null;
               }

@@ -37,7 +37,6 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -112,7 +111,6 @@ public final class GameParser {
     // using the 'map name' from 'map.yml'
     if (gameData.isPresent()) {
       FileUtils.findFileInParentFolders(xmlFile.toPath(), MapDescriptionYaml.MAP_YAML_FILE_NAME)
-          .map(Path::toFile)
           .flatMap(MapDescriptionYaml::fromFile)
           .ifPresent(
               mapDescriptionYaml -> {

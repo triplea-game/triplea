@@ -1,6 +1,6 @@
 package org.triplea.map.description.file;
 
-import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -23,9 +23,9 @@ public class MapDescriptionYamlGeneratorRunner {
   private final Path downloadedMapsFolder;
 
   public void generateYamlFiles() {
-    final Collection<File> toGenerate =
-        FileUtils.listFiles(downloadedMapsFolder.toFile()).stream()
-            .filter(File::isDirectory)
+    final Collection<Path> toGenerate =
+        FileUtils.listFiles(downloadedMapsFolder).stream()
+            .filter(Files::isDirectory)
             .filter(Predicate.not(MapDescriptionYaml::mapHasYamlDescriptor))
             .collect(Collectors.toList());
     if (toGenerate.size() > 4) {

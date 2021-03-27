@@ -3,8 +3,6 @@ package org.triplea.io;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Preconditions;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -15,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
@@ -48,11 +47,16 @@ public final class FileUtils {
    * @param directory The directory whose files are to be listed.
    * @return An immutable collection of files. If {@code directory} does not denote a directory, the
    *     collection will be empty.
-   * @see File#listFiles()
+   * @see Files#list(Path)
    */
-  public static Collection<File> listFiles(final File directory) {
+  public static Collection<Path> listFiles(final Path directory) {
     checkNotNull(directory);
-    return Optional.ofNullable(directory.listFiles()).map(List::of).orElseGet(List::of);
+    try (Stream<Path> stream = Files.list(directory)) {
+      return stream.collect(Collectors.toList());
+    } catch (final IOException exception) {
+      log.error("Failed to list Files in directory " + directory, exception);
+      return List.of();
+    }
   }
 
   public static URL toUrl(final Path file) {
@@ -74,15 +78,13 @@ public final class FileUtils {
    * @param fileName The name of the file to be search for.
    * @return A file matching the given name or empty if not found.
    */
-  public Optional<File> find(final Path searchRoot, final int maxDepth, final String fileName) {
-    Preconditions.checkArgument(
-        searchRoot.toFile().isDirectory(), searchRoot.toFile().getAbsolutePath());
-    Preconditions.checkArgument(
-        searchRoot.toFile().exists(), searchRoot.toFile().getAbsolutePath());
+  public Optional<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
+    Preconditions.checkArgument(Files.isDirectory(searchRoot), searchRoot.toAbsolutePath());
+    Preconditions.checkArgument(Files.exists(searchRoot), searchRoot.toAbsolutePath());
     Preconditions.checkArgument(maxDepth > -1);
     Preconditions.checkArgument(!fileName.isBlank());
     try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
-      return files.map(Path::toFile).filter(f -> f.getName().equals(fileName)).findAny();
+      return files.filter(f -> f.getFileName().toString().equals(fileName)).findAny();
     } catch (final IOException e) {
       log.error(
           "Unable to access files in: "
@@ -123,11 +125,11 @@ public final class FileUtils {
    * @throws IllegalArgumentException thrown if input file does not exist or is not a file.
    */
   public <T> T openInputStream(
-      final File file, final Function<InputStream, T> inputStreamFunction) {
-    Preconditions.checkArgument(file.exists(), file.getAbsolutePath());
-    Preconditions.checkArgument(file.isFile(), file.getAbsolutePath());
+      final Path file, final Function<InputStream, T> inputStreamFunction) {
+    Preconditions.checkArgument(Files.exists(file), file.toAbsolutePath());
+    Preconditions.checkArgument(Files.isReadable(file), file.toAbsolutePath());
 
-    try (FileInputStream inputStream = new FileInputStream(file)) {
+    try (InputStream inputStream = Files.newInputStream(file)) {
       return inputStreamFunction.apply(inputStream);
     } catch (final IOException e) {
       throw new UnableToReadFileException(file, e);
@@ -137,17 +139,16 @@ public final class FileUtils {
   private static class UnableToReadFileException extends RuntimeException {
     private static final long serialVersionUID = -3739909439458686372L;
 
-    UnableToReadFileException(final File file, final IOException e) {
-      super("Unable to open file: " + file.getAbsolutePath() + ", " + e.getMessage(), e);
+    UnableToReadFileException(final Path file, final IOException e) {
+      super("Unable to open file: " + file.toAbsolutePath() + ", " + e.getMessage(), e);
     }
   }
 
-  public static Collection<File> findXmlFiles(final File mapFolder, final int maxXmlSearchDepth) {
-    try (Stream<Path> files = Files.walk(mapFolder.toPath(), maxXmlSearchDepth)) {
+  public static Collection<Path> findXmlFiles(final Path mapFolder, final int maxXmlSearchDepth) {
+    try (Stream<Path> files = Files.walk(mapFolder, maxXmlSearchDepth)) {
       return files
-          .map(Path::toFile)
-          .filter(File::isFile)
-          .filter(file -> file.getName().endsWith(".xml"))
+          .filter(Predicate.not(Files::isDirectory))
+          .filter(file -> file.getFileName().toString().endsWith(".xml"))
           .collect(Collectors.toList());
     } catch (final IOException e) {
       throw new FileSystemReadError(mapFolder, e);
@@ -157,8 +158,8 @@ public final class FileUtils {
   private static class FileSystemReadError extends RuntimeException {
     private static final long serialVersionUID = -1962042508193702048L;
 
-    FileSystemReadError(final File file, final IOException e) {
-      super("Error reading files in: " + file.getAbsolutePath(), e);
+    FileSystemReadError(final Path file, final IOException e) {
+      super("Error reading files in: " + file.toAbsolutePath(), e);
     }
   }
 

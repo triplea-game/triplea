@@ -6,8 +6,9 @@ import static org.triplea.map.description.file.MapDescriptionYaml.YamlKeys.VERSI
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,39 +25,39 @@ import org.triplea.yaml.YamlReader.InvalidYamlFormatException;
 @UtilityClass
 class MapDescriptionYamlReader {
 
-  static Optional<MapDescriptionYaml> readFromMap(final File mapFolder) {
-    Preconditions.checkArgument(mapFolder.exists());
+  static Optional<MapDescriptionYaml> readFromMap(final Path mapFolder) {
+    Preconditions.checkArgument(Files.exists(mapFolder));
 
     return findMapYmlFile(mapFolder) //
         .flatMap(MapDescriptionYamlReader::readYmlFile);
   }
 
-  private static Optional<File> findMapYmlFile(final File mapFolder) {
+  private static Optional<Path> findMapYmlFile(final Path mapFolder) {
     /*
      * We expect a map.yml file at depth of 1, eg: "map_folder/map/map.yml", but we can also find a
      * 'map.yml' file at depth 2, eg: 'map_folder-master/map_folder/map/map.yml'.
      */
     final int maxMapYmlSearchDepth = 2;
-    return FileUtils.find(
-        mapFolder.toPath(), maxMapYmlSearchDepth, MapDescriptionYaml.MAP_YAML_FILE_NAME);
+    return FileUtils.find(mapFolder, maxMapYmlSearchDepth, MapDescriptionYaml.MAP_YAML_FILE_NAME);
   }
 
   /** Factory method, finds the map.yml file in a folder and reads it. */
-  static Optional<MapDescriptionYaml> readYmlFile(final File ymlFile) {
-    Preconditions.checkArgument(ymlFile.isFile());
-    Preconditions.checkArgument(ymlFile.getName().equals(MapDescriptionYaml.MAP_YAML_FILE_NAME));
+  static Optional<MapDescriptionYaml> readYmlFile(final Path ymlFile) {
+    Preconditions.checkArgument(Files.isReadable(ymlFile));
+    Preconditions.checkArgument(
+        ymlFile.getFileName().toString().equals(MapDescriptionYaml.MAP_YAML_FILE_NAME));
 
     return FileUtils.openInputStream(ymlFile, inputStream -> parse(ymlFile, inputStream));
   }
 
-  static Optional<MapDescriptionYaml> parse(final File ymlFile, final InputStream inputStream) {
+  static Optional<MapDescriptionYaml> parse(final Path ymlFile, final InputStream inputStream) {
     Preconditions.checkNotNull(inputStream);
 
     try {
       final Map<String, Object> yamlData = YamlReader.readMap(inputStream);
       final MapDescriptionYaml mapDescriptionYaml =
           MapDescriptionYaml.builder()
-              .yamlFileLocation(ymlFile.toURI())
+              .yamlFileLocation(ymlFile.toUri())
               .mapName(Strings.nullToEmpty((String) yamlData.get(MAP_NAME)))
               .mapVersion((Integer) Optional.ofNullable(yamlData.get(VERSION)).orElse(0))
               .mapGameList(parseGameList(yamlData))
@@ -69,7 +70,7 @@ class MapDescriptionYamlReader {
                 + "If this is a map you downloaded, please contact TripleA.\n"
                 + "Data parsed:\n"
                 + "{}",
-            ymlFile.getAbsolutePath(),
+            ymlFile.toAbsolutePath(),
             mapDescriptionYaml.toString());
         return Optional.empty();
       }
@@ -79,7 +80,7 @@ class MapDescriptionYamlReader {
           "Invalid map description YML (map.yml) file detected: {}.\n"
               + "If this is a map you downloaded, please contact TripleA.\n"
               + "{}",
-          ymlFile.getAbsolutePath(),
+          ymlFile.toAbsolutePath(),
           e.getMessage(),
           e);
       return Optional.empty();

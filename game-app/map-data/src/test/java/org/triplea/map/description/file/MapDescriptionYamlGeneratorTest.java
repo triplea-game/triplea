@@ -14,20 +14,20 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class MapDescriptionYamlGeneratorTest {
 
-  private File exampleMapFolder;
+  private Path exampleMapFolder;
   private Path propertiesFilePath;
 
   @BeforeEach
   void setup() throws Exception {
     exampleMapFolder =
-        new File(
+        Path.of(
             MapDescriptionYamlGeneratorTest.class
                 .getClassLoader()
                 .getResource("map_description_yml_generator/example-map")
                 .toURI());
 
     propertiesFilePath =
-        exampleMapFolder.toPath().resolveSibling(exampleMapFolder.getName() + ".properties");
+        exampleMapFolder.resolveSibling(exampleMapFolder.getFileName().toString() + ".properties");
   }
 
   // functionality under test
@@ -41,8 +41,8 @@ class MapDescriptionYamlGeneratorTest {
   }
 
   @Test
-  void noVersionFile() {
-    propertiesFilePath.toFile().delete();
+  void noVersionFile() throws Exception {
+    Files.delete(propertiesFilePath);
 
     final MapDescriptionYaml mapDescriptionYaml = generateAndReadDescriptionYamlFile();
 

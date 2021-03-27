@@ -3,9 +3,9 @@ package org.triplea.map.description.file;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -46,23 +46,21 @@ class MapDescriptionYamlGenerator {
    *     be generated a map.yml descriptor file. The map.yml file will be created at the map's
    *     content root, where the map data files are located.
    */
-  static Optional<File> generateYamlDataForMap(final File mapFolder) {
-    Preconditions.checkArgument(mapFolder.exists());
-    Preconditions.checkArgument(mapFolder.isDirectory());
+  static Optional<File> generateYamlDataForMap(final Path mapFolder) {
+    Preconditions.checkArgument(Files.exists(mapFolder));
+    Preconditions.checkArgument(Files.isDirectory(mapFolder));
 
-    final String mapName = mapFolder.getName();
+    final String mapName = mapFolder.getFileName().toString();
 
-    final File propsFile =
-        mapFolder.toPath().resolveSibling(mapFolder.getName() + ".properties").toFile();
-    final int downloadVersion = propsFile.exists() ? readDownloadVersion(propsFile) : 0;
+    final Path propsFile = mapFolder.resolveSibling(mapName + ".properties");
+    final int downloadVersion = Files.exists(propsFile) ? readDownloadVersion(propsFile) : 0;
 
-    final List<MapDescriptionYaml.MapGame> games = readGameInformationFromXmls(mapFolder.toPath());
+    final List<MapDescriptionYaml.MapGame> games = readGameInformationFromXmls(mapFolder);
     if (games.isEmpty()) {
       return Optional.empty();
     }
 
-    final Path mapYmlTargetFileLocation =
-        mapFolder.toPath().resolve(MapDescriptionYaml.MAP_YAML_FILE_NAME);
+    final Path mapYmlTargetFileLocation = mapFolder.resolve(MapDescriptionYaml.MAP_YAML_FILE_NAME);
 
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYaml.builder()
@@ -79,32 +77,35 @@ class MapDescriptionYamlGenerator {
     final Optional<File> writtenYmlFile =
         MapDescriptionYamlWriter.writeYmlPojoToFile(mapDescriptionYaml);
 
-    if (writtenYmlFile.isPresent() && propsFile.exists()) {
+    if (writtenYmlFile.isPresent() && Files.exists(propsFile)) {
       // clean up the properties file, it is no longer needed
-      propsFile.delete();
+      try {
+        Files.delete(propsFile);
+      } catch (final IOException exception) {
+        log.error("Failed to delete file " + propsFile.toAbsolutePath(), exception);
+      }
     }
     return writtenYmlFile;
   }
 
   /** Parses an XML converting the XML tag information into POJO. */
-  private static Optional<Game> parseXmlTags(final File xmlFile) {
-    try (InputStream inputStream = new FileInputStream(xmlFile)) {
+  private static Optional<Game> parseXmlTags(final Path xmlFile) {
+    try (InputStream inputStream = Files.newInputStream(xmlFile)) {
       return Optional.of(new XmlMapper(inputStream).mapXmlToObject(Game.class));
     } catch (final XmlParsingException | IOException e) {
-      log.info("Unable to parse XML file: " + xmlFile.getAbsolutePath(), e);
+      log.info("Unable to parse XML file: " + xmlFile.toAbsolutePath(), e);
       return Optional.empty();
     }
   }
 
   /** Reads a properties file for the map version or zero if it cannot be read. */
-  private static int readDownloadVersion(final File propsFile) {
+  private static int readDownloadVersion(final Path propsFile) {
     final Properties props = new Properties();
-    try (InputStream fis = new FileInputStream(propsFile)) {
+    try (InputStream fis = Files.newInputStream(propsFile)) {
       props.load(fis);
     } catch (final IllegalArgumentException | IOException e) {
       log.error(
-          "Failed to read property file: " + propsFile.getAbsolutePath() + ", " + e.getMessage(),
-          e);
+          "Failed to read property file: " + propsFile.toAbsolutePath() + ", " + e.getMessage(), e);
       return 0;
     }
 
@@ -129,7 +130,7 @@ class MapDescriptionYamlGenerator {
     // We expect the needed search depth to be 2, eg: 'map/contentRoot/games/game.xml'
     // We add a bit extra for flexibility.
     final int maxXmlSearchDepth = 4;
-    return FileUtils.findXmlFiles(mapFolder.toFile(), maxXmlSearchDepth).stream()
+    return FileUtils.findXmlFiles(mapFolder, maxXmlSearchDepth).stream()
         .map(
             xmlFile ->
                 readGameNameFromXml(xmlFile)
@@ -137,14 +138,14 @@ class MapDescriptionYamlGenerator {
                         gameName ->
                             MapDescriptionYaml.MapGame.builder()
                                 .gameName(gameName)
-                                .xmlFileName(xmlFile.getName())
+                                .xmlFileName(xmlFile.getFileName().toString())
                                 .build())
                     .orElse(null))
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
-  private static Optional<String> readGameNameFromXml(final File xmlFile) {
+  private static Optional<String> readGameNameFromXml(final Path xmlFile) {
     return parseXmlTags(xmlFile)
         .map(Game::getInfo)
         .map(Info::getName)

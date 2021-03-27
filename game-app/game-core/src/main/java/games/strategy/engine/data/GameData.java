@@ -20,7 +20,6 @@ import games.strategy.triplea.ui.UiContext;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -554,7 +553,6 @@ public class GameData implements Serializable, GameState {
   private Optional<MapDescriptionYaml> findMapDescriptionYaml() {
     return FileUtils.findFileInParentFolders(
             UiContext.getResourceLoader().getMapLocation(), MapDescriptionYaml.MAP_YAML_FILE_NAME)
-        .map(Path::toFile)
         .flatMap(MapDescriptionYaml::fromFile);
   }
 }

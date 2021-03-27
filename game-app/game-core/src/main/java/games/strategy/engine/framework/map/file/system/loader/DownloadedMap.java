@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.triplea.ui.mapdata.MapData;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
@@ -37,9 +36,7 @@ public class DownloadedMap {
     // relative to the 'map.yml' file location, search current and child directories for
     // a polygons file, the location of the polygons file is the map content root.
     final Path mapYamlParentFolder = Path.of(mapDescriptionYaml.getYamlFileLocation()).getParent();
-    return FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
-        .map(File::toPath)
-        .map(Path::getParent);
+    return FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE).map(Path::getParent);
   }
 
   /**
