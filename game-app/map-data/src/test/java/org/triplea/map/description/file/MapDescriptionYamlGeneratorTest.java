@@ -42,7 +42,7 @@ class MapDescriptionYamlGeneratorTest {
 
   @Test
   void noVersionFile() throws Exception {
-    Files.delete(propertiesFilePath);
+    Files.deleteIfExists(propertiesFilePath);
 
     final MapDescriptionYaml mapDescriptionYaml = generateAndReadDescriptionYamlFile();
 
