@@ -26,17 +26,17 @@ final class FileUtilsTest {
       Files.createFile(tempDir.resolve("file3"));
 
       assertThat(
-          FileUtils.listFiles(tempDir.toFile()),
+          FileUtils.listFiles(tempDir),
           containsInAnyOrder(
-              tempDir.resolve("file1").toFile(),
-              tempDir.resolve("file2").toFile(),
-              tempDir.resolve("file3").toFile()));
+              tempDir.resolve("file1"),
+              tempDir.resolve("file2"),
+              tempDir.resolve("file3")));
     }
 
     @Test
     void shouldReturnEmptyCollectionWhenTargetIsNotDirectory() throws Exception {
       final Path tempDir = Files.createTempDirectory(null);
-      final File file1 = Files.createFile(tempDir.resolve("file1")).toFile();
+      final Path file1 = Files.createFile(tempDir.resolve("file1"));
 
       assertThat(FileUtils.listFiles(file1), is(empty()));
     }
@@ -45,7 +45,7 @@ final class FileUtilsTest {
     void shouldReturnEmptyCollectionWhenDirectoryIsEmpty() throws Exception {
       final Path tempDir = Files.createTempDirectory(null);
 
-      assertThat(FileUtils.listFiles(tempDir.toFile()), is(empty()));
+      assertThat(FileUtils.listFiles(tempDir), is(empty()));
     }
   }
 

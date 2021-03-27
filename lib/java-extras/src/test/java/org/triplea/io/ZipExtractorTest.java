@@ -34,7 +34,7 @@ class ZipExtractorTest {
 
       assertThat(
           "Should contain one folder and one file only",
-          FileUtils.listFiles(destinationFolder),
+          FileUtils.listFiles(destinationFolder.toPath()),
           hasSize(2));
 
       final File unzippedTestFile1 = new File(destinationFolder, "test-file1");
