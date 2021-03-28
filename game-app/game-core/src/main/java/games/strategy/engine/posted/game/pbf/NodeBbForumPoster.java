@@ -9,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -157,8 +156,7 @@ public class NodeBbForumPoster {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
-        final String url =
-            (String) ((List<Map<String, Object>>) YamlReader.readList(json)).get(0).get("url");
+        final String url = (String) YamlReader.readList(json).get(0).get("url");
         return "\n[Savegame](" + url + ")";
       }
       throw new IllegalStateException(
