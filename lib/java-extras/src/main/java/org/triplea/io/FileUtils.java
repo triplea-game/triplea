@@ -196,19 +196,13 @@ public final class FileUtils {
       }
 
       try {
-        return Optional.of(Files.readString(fileToRead, Charsets.UTF_8));
-      } catch (final MalformedInputException e) {
-        log.info(
-            "Warning: "
-                + "unable to read file (character encoding problem), will next try ISO-8859_1: {}, {}",
-            fileToRead.toFile().getAbsolutePath(),
-            e.getMessage());
-      }
-
-      try {
         return Optional.of(Files.readString(fileToRead, Charsets.ISO_8859_1));
       } catch (final MalformedInputException e) {
-        throw e;
+        log.warn(
+            "Bad file encoding on file: "
+                + fileToRead.toAbsolutePath().toString()
+                + ", contact the map maker and ask them to save this file as UTF-8");
+        return Optional.empty();
       }
     } catch (final IOException e) {
       log.error(
