@@ -82,7 +82,7 @@ class MapDescriptionYamlGenerator {
       try {
         Files.delete(propsFile);
       } catch (final IOException exception) {
-        log.error("Failed to delete file " + propsFile.toAbsolutePath(), exception);
+        log.warn("Failed to delete file " + propsFile.toAbsolutePath(), exception);
       }
     }
     return writtenYmlFile;
