@@ -781,13 +781,12 @@ public final class DecorationPlacer {
                   : 0));
       final List<String> allTerritories = new ArrayList<>(centers.keySet());
       for (final Path path : FileUtils.listFiles(currentImageFolderLocation)) {
-        final File file = path.toFile();
-        if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {
+        if (!path.toString().endsWith(".png") && !path.toString().endsWith(".gif")) {
           continue;
         }
-        final String imageName = file.getName();
+        final String imageName = path.getFileName().toString();
         final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
-        final Image image = newImage(file.getPath());
+        final Image image = newImage(path.toString());
         List<Point> points =
             (currentPoints != null
                 ? currentPoints.get(

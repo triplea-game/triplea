@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +74,7 @@ public class ZippedMapsExtractor {
 
   private Collection<Path> findAllZippedMapFiles() {
     return FileUtils.listFiles(downloadedMapsFolder).stream()
-        .filter(Files::isReadable)
+        .filter(Predicate.not(Files::isDirectory))
         .filter(file -> file.getFileName().toString().toLowerCase().endsWith(ZIP_EXTENSION))
         .collect(Collectors.toList());
   }
