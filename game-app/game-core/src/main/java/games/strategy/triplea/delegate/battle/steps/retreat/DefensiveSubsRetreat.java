@@ -38,14 +38,9 @@ public class DefensiveSubsRetreat implements BattleStep {
 
   @Override
   public List<String> getNames() {
+    // do not check for destroyer because it could die before the retreat step
+    // and thus allow the retreat step
     if (isEvaderNotPresent() || isRetreatNotPossible()) {
-      return List.of();
-    }
-
-    if (getOrder() == SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE && isDestroyerPresent()) {
-      // only check for destroyers if subs can retreat before battle
-      // because the destroyer could be killed during the battle which would
-      // allow the sub to withdraw at the end of the battle
       return List.of();
     }
 
