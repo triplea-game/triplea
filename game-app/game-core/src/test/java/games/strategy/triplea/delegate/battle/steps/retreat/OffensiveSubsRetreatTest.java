@@ -78,11 +78,7 @@ public class OffensiveSubsRetreatTest {
     final BattleState battleState =
         givenBattleStateBuilder()
             .attackingUnits(List.of(givenUnitCanEvade()))
-            .gameData(
-                MockGameData.givenGameData()
-                    .withSubRetreatBeforeBattle(false)
-                    .withSubmersibleSubs(true)
-                    .build())
+            .gameData(MockGameData.givenGameData().withSubmersibleSubs(true).build())
             .attackerRetreatTerritories(List.of())
             .build();
     final OffensiveSubsRetreat offensiveSubsRetreat =
@@ -107,21 +103,17 @@ public class OffensiveSubsRetreatTest {
   }
 
   @Test
-  void hasNoNamesWhenDestroyerIsOnDefenseAndWithdrawIsBeforeBattle() {
+  void hasNameWhenDestroyerIsOnDefenseAndWithdrawIsBeforeBattle() {
     final BattleState battleState =
         givenBattleStateBuilder()
             .attackingUnits(List.of(givenUnitCanEvade()))
             .defendingUnits(List.of(givenUnitDestroyer()))
-            .gameData(
-                MockGameData.givenGameData()
-                    .withSubmersibleSubs(true)
-                    .withSubRetreatBeforeBattle(true)
-                    .build())
+            .gameData(MockGameData.givenGameData().withSubmersibleSubs(true).build())
             .build();
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
+    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
   }
 
   @Test

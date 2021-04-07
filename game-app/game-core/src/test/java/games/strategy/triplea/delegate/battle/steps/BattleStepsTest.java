@@ -684,7 +684,7 @@ public class BattleStepsTest {
 
   @Test
   @DisplayName(
-      "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
+      "Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
   void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     final Unit unit1 = givenUnitDestroyer();
     final Unit unit2 = givenUnitCanEvade();
@@ -706,7 +706,9 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(
+        steps,
+        is(mergeSteps(List.of(defender.getName() + SUBS_SUBMERGE), basicFightStepStrings())));
   }
 
   @Test
