@@ -229,7 +229,8 @@ public final class EventThreadJOptionPane {
     if (SwingUtilities.isEventDispatchThread()) {
       final JOptionPane optionPane =
               new JOptionPane(
-                      message, JOptionPane.QUESTION_MESSAGE, confirmDialogType.optionTypeMagicNumber);
+                      message, JOptionPane.QUESTION_MESSAGE,
+                      confirmDialogType.optionTypeMagicNumber);
       final JDialog dialog = optionPane.createDialog(parentComponent, title);
       dialog.setAlwaysOnTop(true);
 
@@ -237,21 +238,21 @@ public final class EventThreadJOptionPane {
               JOptionPane.VALUE_PROPERTY,
               ignored -> {
                 final Object selectedValue = optionPane.getValue();
-                confirmation.set(selectedValue != null && JOptionPane.OK_OPTION == (int) selectedValue);
+                confirmation.set(selectedValue != null
+                        && JOptionPane.OK_OPTION == (int) selectedValue);
                 latch.countDown();
                 dialog.dispose();
               });
 
       // modal dialog being set to visible is blocking
       dialog.setVisible(true);
-    }
 
     // For non-Swing event threads, we must request our code be invoked and block manually
-    else {
+    } else {
       SwingUtilities.invokeLater(() -> {
         final JOptionPane optionPane =
-                new JOptionPane(
-                        message, JOptionPane.QUESTION_MESSAGE, confirmDialogType.optionTypeMagicNumber);
+                new JOptionPane(message, JOptionPane.QUESTION_MESSAGE,
+                        confirmDialogType.optionTypeMagicNumber);
         final JDialog dialog = optionPane.createDialog(parentComponent, title);
         dialog.setAlwaysOnTop(true);
         dialog.setModal(false);
@@ -260,7 +261,8 @@ public final class EventThreadJOptionPane {
                 JOptionPane.VALUE_PROPERTY,
                 ignored -> {
                   final Object selectedValue = optionPane.getValue();
-                  confirmation.set(selectedValue != null && JOptionPane.OK_OPTION == (int) selectedValue);
+                  confirmation.set(selectedValue != null
+                          && JOptionPane.OK_OPTION == (int) selectedValue);
                   latch.countDown();
                   dialog.dispose();
                 });
