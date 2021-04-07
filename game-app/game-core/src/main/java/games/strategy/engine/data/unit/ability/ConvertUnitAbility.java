@@ -18,7 +18,7 @@ import lombok.experimental.NonFinal;
 @Builder(toBuilder = true)
 public class ConvertUnitAbility {
 
-  enum Team {
+  public enum Team {
     FRIENDLY,
     FOE
   }
