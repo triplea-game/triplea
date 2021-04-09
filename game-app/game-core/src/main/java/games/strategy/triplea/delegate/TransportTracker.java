@@ -43,18 +43,9 @@ public class TransportTracker {
     }
   }
 
-  /**
-   * @return Unmodifiable collection of units that the given transport is transporting.
-   * @deprecated Invoke unit.getTransporting() directly
-   */
-  @Deprecated
-  public static List<Unit> transporting(final Unit transport) {
-    return transport.getTransporting();
-  }
-
   /** @return Unmodifiable map of transport -> collection of transported units. */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
-    return transporting(units, TransportTracker::transporting);
+    return transporting(units, Unit::getTransporting);
   }
 
   private static Map<Unit, Collection<Unit>> transporting(
@@ -95,11 +86,11 @@ public class TransportTracker {
   }
 
   public static boolean isTransporting(final Unit transport) {
-    return !transporting(transport).isEmpty();
+    return !transport.getTransporting().isEmpty();
   }
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
-    final Collection<Unit> units = new ArrayList<>(transporting(transport));
+    final Collection<Unit> units = new ArrayList<>(transport.getTransporting());
     units.addAll(transport.getUnloaded());
     return units;
   }
@@ -204,7 +195,7 @@ public class TransportTracker {
       return 0;
     }
     final int capacity = ua.getTransportCapacity();
-    final int used = getCost(transporting(unit));
+    final int used = getCost(unit.getTransporting());
     final int unloaded = getCost(unit.getUnloaded());
     return capacity - used - unloaded;
   }

@@ -493,7 +493,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "britishBattle");
     final BattleDelegate battleDelegate = battleDelegate(gameData);
     battleDelegate.setDelegateBridgeAndPlayer(bridge);
-    assertEquals(2, TransportTracker.transporting(transports.get(0)).size());
+    assertEquals(2, transports.get(0).getTransporting().size());
     battleDelegate.start();
     // battle already fought
     // make sure the infantry die with the transport

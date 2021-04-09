@@ -961,7 +961,7 @@ public class MoveValidator {
     // just worry about transports
     final Map<Unit, Collection<Unit>> dependents = new HashMap<>();
     for (final Unit unit : units) {
-      dependents.put(unit, TransportTracker.transporting(unit));
+      dependents.put(unit, unit.getTransporting());
     }
     return dependents;
   }
@@ -1222,7 +1222,7 @@ public class MoveValidator {
                 && Matches.territoryHasUnitsThatMatch(enemySubMatch).test(routeStart)) {
               // we must have at least one warship (non-transport) unit, otherwise the enemy sub
               // stops our unloading for amphibious assault
-              for (final Unit unit : TransportTracker.transporting(transport)) {
+              for (final Unit unit : transport.getTransporting()) {
                 result.addDisallowedUnit(
                     ENEMY_SUBMARINE_PREVENTING_UNESCORTED_AMPHIBIOUS_ASSAULT_LANDING, unit);
               }
@@ -1237,7 +1237,7 @@ public class MoveValidator {
               // causing problems if
               // the sea transports get killed (the land units are not dying)
               // TODO: should we use the battle tracker for this instead?
-              for (final Unit unit : TransportTracker.transporting(transport)) {
+              for (final Unit unit : transport.getTransporting()) {
                 result.addDisallowedUnit(
                     TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED,
                     unit);
@@ -1249,7 +1249,7 @@ public class MoveValidator {
         // to modify the order
         // in which they perform their actions. check whether transport has already unloaded
         if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
-          for (final Unit unit : TransportTracker.transporting(transport)) {
+          for (final Unit unit : transport.getTransporting()) {
             result.addDisallowedUnit(
                 TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
           }
@@ -1259,14 +1259,14 @@ public class MoveValidator {
           final Territory alreadyUnloadedTo =
               getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
           if (alreadyUnloadedTo != null) {
-            for (final Unit unit : TransportTracker.transporting(transport)) {
+            for (final Unit unit : transport.getTransporting()) {
               result.addDisallowedUnit(
                   TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
             }
           }
           // Check if the transport has already loaded after being in combat
         } else if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport)) {
-          for (final Unit unit : TransportTracker.transporting(transport)) {
+          for (final Unit unit : transport.getTransporting()) {
             result.addDisallowedUnit(TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT, unit);
           }
         }
@@ -1309,7 +1309,7 @@ public class MoveValidator {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
         // make sure transports dont leave their units behind
         if (ua.getTransportCapacity() != -1) {
-          final Collection<Unit> holding = TransportTracker.transporting(unit);
+          final Collection<Unit> holding = unit.getTransporting();
           if (!units.containsAll(holding)) {
             result.addDisallowedUnit("Transports cannot leave their units", unit);
           }
@@ -1617,7 +1617,7 @@ public class MoveValidator {
     final Collection<Unit> transports =
         CollectionUtils.getMatches(units, Matches.unitIsTransport());
     for (final Unit transport : transports) {
-      final Collection<Unit> transporting = TransportTracker.transporting(transport);
+      final Collection<Unit> transporting = transport.getTransporting();
       mustMoveWith.put(transport, transporting);
     }
     return mustMoveWith;
@@ -1631,7 +1631,7 @@ public class MoveValidator {
     // Then check those that have already had their transportedBy set
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
-        Collection<Unit> transporting = TransportTracker.transporting(airTransport);
+        Collection<Unit> transporting = airTransport.getTransporting();
         if (transporting.isEmpty() && !newDependents.isEmpty()) {
           transporting = newDependents.get(airTransport);
         }

@@ -113,7 +113,7 @@ public final class ProTransportUtils {
 
     // Get units if transport already loaded
     if (TransportTracker.isTransporting(transport)) {
-      selectedUnits.addAll(TransportTracker.transporting(transport));
+      selectedUnits.addAll(transport.getTransporting());
     } else {
 
       // Get all units that can be transported
