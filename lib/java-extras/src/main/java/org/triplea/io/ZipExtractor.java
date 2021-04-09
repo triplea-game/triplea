@@ -118,17 +118,13 @@ public class ZipExtractor {
       throws IOException {
     final Path newFile = newFile(destDir, zipRoot, zipEntry);
     if (Files.isDirectory(zipEntry)) {
-      if (!Files.isDirectory(newFile)) {
-        Files.createDirectories(newFile);
+      if (!Files.exists(newFile)) {
+        Files.createDirectory(newFile);
       }
     } else {
-      // fix for Windows-created archives
-      final Path parent = newFile.getParent();
-      if (!Files.isDirectory(parent)) {
-        Files.createDirectories(parent.getParent());
-      }
       Files.copy(zipEntry, newFile, StandardCopyOption.REPLACE_EXISTING);
     }
+
   }
 
   /**
