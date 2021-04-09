@@ -279,7 +279,7 @@ public final class TransportUtils {
     for (final Unit unit : canBeTransported) {
       final List<Unit> transportOptions = new ArrayList<>();
       for (final Unit transport : canTransport) {
-        if (containsEquivalentUnit(unit, TransportTracker.transporting(transport))) {
+        if (containsEquivalentUnit(unit, transport.getTransporting())) {
           transportOptions.add(transport);
         }
       }
@@ -309,7 +309,7 @@ public final class TransportUtils {
     Unit selectedTransport = unitToPotentialTransports.get(unit).get(0);
     for (final Unit transport : unitToPotentialTransports.get(unit)) {
       int transportOptions = 0;
-      for (final Unit loadedUnit : TransportTracker.transporting(transport)) {
+      for (final Unit loadedUnit : transport.getTransporting()) {
         if (containsEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet())) {
           final Unit equivalentUnit =
               getEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
@@ -320,7 +320,7 @@ public final class TransportUtils {
         }
       }
       final double averageTransportOptions =
-          (double) transportOptions / TransportTracker.transporting(transport).size();
+          (double) transportOptions / transport.getTransporting().size();
       if (averageTransportOptions < minAverageTransportOptions) {
         minAverageTransportOptions = averageTransportOptions;
         selectedTransport = transport;
@@ -331,7 +331,7 @@ public final class TransportUtils {
 
   private static Map<Unit, List<Unit>> removeTransportAndLoadedUnits(
       final Unit transport, final Map<Unit, List<Unit>> unitToPotentialTransports) {
-    for (final Unit loadedUnit : TransportTracker.transporting(transport)) {
+    for (final Unit loadedUnit : transport.getTransporting()) {
       if (containsEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet())) {
         final Unit unit = getEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
         unitToPotentialTransports.remove(unit);

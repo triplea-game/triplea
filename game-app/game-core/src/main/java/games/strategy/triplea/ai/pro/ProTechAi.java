@@ -14,7 +14,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import java.util.ArrayDeque;
@@ -221,8 +220,7 @@ final class ProTechAi {
             int availInf = 0;
             int availOther = 0;
             for (final Unit candidateTransport : transports) {
-              final Collection<Unit> thisTransUnits =
-                  TransportTracker.transporting(candidateTransport);
+              final Collection<Unit> thisTransUnits = candidateTransport.getTransporting();
               int inf = 2;
               int other = 1;
               for (final Unit checkUnit : thisTransUnits) {

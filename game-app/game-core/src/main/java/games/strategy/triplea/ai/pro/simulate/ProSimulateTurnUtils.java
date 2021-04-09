@@ -18,7 +18,6 @@ import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
@@ -148,7 +147,7 @@ public final class ProSimulateTurnUtils {
           if (toTransport == null) {
             continue;
           }
-          toUnits.addAll(TransportTracker.transporting(toTransport));
+          toUnits.addAll(toTransport.getTransporting());
         } else {
           toTransport = transferUnit(transport, unitTerritoryMap, usedUnits, toData, player);
           if (toTransport == null) {
@@ -303,7 +302,7 @@ public final class ProSimulateTurnUtils {
                 ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
     for (final Unit toTransport : toTransports) {
       if (!usedUnits.contains(toTransport)) {
-        final List<Unit> toTransportingUnits = TransportTracker.transporting(toTransport);
+        final List<Unit> toTransportingUnits = toTransport.getTransporting();
         if (transportingUnits.size() == toTransportingUnits.size()) {
           boolean canTransfer = true;
           for (int i = 0; i < transportingUnits.size(); i++) {

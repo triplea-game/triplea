@@ -1686,7 +1686,7 @@ class ProNonCombatMoveAi {
           // If transporting units then unload to safe territory
           // TODO: consider which is 'safest'
           if (TransportTracker.isTransporting(transport)) {
-            final List<Unit> amphibUnits = TransportTracker.transporting(transport);
+            final List<Unit> amphibUnits = transport.getTransporting();
             final Set<Territory> possibleUnloadTerritories =
                 data.getMap()
                     .getNeighbors(

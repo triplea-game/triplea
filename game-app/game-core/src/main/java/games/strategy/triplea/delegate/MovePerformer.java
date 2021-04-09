@@ -445,7 +445,7 @@ public class MovePerformer implements Serializable {
       // mark transports as having transported
       for (final Unit load : transporting.keySet()) {
         final Unit transport = transporting.get(load);
-        if (!TransportTracker.transporting(transport).contains(load)) {
+        if (!transport.getTransporting().contains(load)) {
           final Change change = TransportTracker.loadTransportChange(transport, load);
           currentMove.addChange(change);
           currentMove.load(transport);

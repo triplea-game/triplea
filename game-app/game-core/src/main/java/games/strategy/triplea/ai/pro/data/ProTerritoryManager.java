@@ -1220,7 +1220,7 @@ public class ProTerritoryManager {
             final List<Unit> units = new ArrayList<>();
             final Set<Territory> myUnitsToLoadTerritories = new HashSet<>();
             if (TransportTracker.isTransporting(myTransportUnit)) {
-              units.addAll(TransportTracker.transporting(myTransportUnit));
+              units.addAll(myTransportUnit.getTransporting());
             } else if (Matches.territoryHasEnemySeaUnits(player, data.getRelationshipTracker())
                 .negate()
                 .test(currentTerritory)) {

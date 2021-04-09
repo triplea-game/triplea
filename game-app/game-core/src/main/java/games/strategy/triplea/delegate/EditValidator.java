@@ -132,7 +132,7 @@ final class EditValidator {
     }
     // if transport selected, all transported units must be deleted too
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitCanTransport())) {
-      if (!units.containsAll(TransportTracker.transporting(unit))) {
+      if (!units.containsAll(unit.getTransporting())) {
         return "Can't remove transport without removing transported units";
       }
     }
