@@ -174,7 +174,7 @@ public final class PlacementPicker {
       if (!placeDimensionsSet) {
         try {
           final Path file =
-              FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "map.properties");
+              FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "map.properties");
           if (Files.exists(file)) {
             double scale = unitZoomPercent;
             int width = unitWidth;
@@ -303,8 +303,7 @@ public final class PlacementPicker {
           log.error("Failed to initialize from user input", e);
         }
       }
-      final Path file =
-          FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "polygons.txt");
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "polygons.txt");
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),

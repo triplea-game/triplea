@@ -7,7 +7,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class FileHelper {
 
-  public static Path getTextFileInRootDirectory(
+  public static Path getFileInMapRoot(
       final Path mapFolderLocation, final String mapName, final String fileName) {
     Path path = null;
     if (mapFolderLocation != null && Files.exists(mapFolderLocation)) {

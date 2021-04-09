@@ -139,8 +139,7 @@ public final class PolygonGrabber {
     PolygonGrabberFrame(final String mapName) throws IOException {
       super("Polygon grabber");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file =
-          FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "centers.txt");
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "centers.txt");
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
