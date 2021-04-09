@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 
 import feign.RequestTemplate;
 import feign.gson.GsonEncoder;
+import java.nio.charset.StandardCharsets;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ class JsonEncoderTest {
 
     jsonEncoder.encode(value, String.class, template);
 
-    assertThat(template.requestBody().asString(), is(value));
+    assertThat(new String(template.body(), StandardCharsets.UTF_8), is(value));
   }
 
   /**
@@ -35,8 +36,8 @@ class JsonEncoderTest {
     jsonEncoder.encode(sampleObject, SampleObject.class, template);
 
     assertThat(
-        template.requestBody().asString(),
-        is(encodeWithGson(sampleObject).requestBody().asString()));
+        new String(template.body(), StandardCharsets.UTF_8),
+        is(new String(encodeWithGson(sampleObject).body(), StandardCharsets.UTF_8)));
   }
 
   private static RequestTemplate encodeWithGson(final SampleObject sampleObject) {
