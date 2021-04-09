@@ -28,7 +28,9 @@ final class FileUtilsTest {
       assertThat(
           FileUtils.listFiles(tempDir),
           containsInAnyOrder(
-              tempDir.resolve("file1"), tempDir.resolve("file2"), tempDir.resolve("file3")));
+              tempDir.resolve("file1"),
+              tempDir.resolve("file2"),
+              tempDir.resolve("file3")));
     }
 
     @Test
