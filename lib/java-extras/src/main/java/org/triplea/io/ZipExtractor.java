@@ -1,12 +1,14 @@
 package org.triplea.io;
 
 import com.google.common.base.Preconditions;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,8 +24,8 @@ public class ZipExtractor {
   public static class ZipReadException extends RuntimeException {
     private static final long serialVersionUID = -17268314166178535L;
 
-    ZipReadException(final File fileZip, final Exception e) {
-      super("Error reading zip file: " + fileZip.getAbsolutePath() + ", " + e.getMessage(), e);
+    ZipReadException(final Path fileZip, final Exception e) {
+      super("Error reading zip file: " + fileZip.toAbsolutePath() + ", " + e.getMessage(), e);
     }
   }
 
@@ -34,8 +36,8 @@ public class ZipExtractor {
   public static class FileSystemException extends RuntimeException {
     private static final long serialVersionUID = -7396074067935705710L;
 
-    FileSystemException(final File fileZip, final Exception e) {
-      super("Error extracting zip file: " + fileZip.getAbsolutePath() + ", " + e.getMessage(), e);
+    FileSystemException(final Path fileZip, final Exception e) {
+      super("Error extracting zip file: " + fileZip.toAbsolutePath() + ", " + e.getMessage(), e);
     }
 
     FileSystemException(final Exception e) {
@@ -61,36 +63,40 @@ public class ZipExtractor {
    * @throws ZipReadException Thrown if the target zip file is invalid and could not be read.
    * @throws FileSystemException Thrown if there is an error during extraction.
    */
-  public static void unzipFile(final File fileZip, final File destDir)
+  public static void unzipFile(final Path fileZip, final Path destDir)
       throws ZipReadException, FileSystemException {
     Preconditions.checkArgument(
-        fileZip.getName().endsWith(".zip"),
-        "Illegal arg, must be a zip file: " + fileZip.getAbsolutePath());
-    if (destDir.exists()) {
+        fileZip.toString().endsWith(".zip"),
+        "Illegal arg, must be a zip file: " + fileZip.toAbsolutePath());
+    if (Files.exists(destDir)) {
       Preconditions.checkArgument(
-          destDir.isDirectory(),
-          "Illegal arg, destination directory must be a directory: " + destDir.getAbsolutePath());
+          Files.isDirectory(destDir),
+          "Illegal arg, destination directory must be a directory: " + destDir.toAbsolutePath());
     } else {
-      Preconditions.checkState(
-          destDir.mkdirs(),
-          "Error, was not able to create directory: " + destDir.getAbsolutePath());
+      try {
+        Files.createDirectories(destDir);
+      } catch (final IOException e) {
+        throw new IllegalStateException(
+            "Error, was not able to create directory: " + destDir.toAbsolutePath(), e);
+      }
     }
 
     // iterate over each zip entry and write to a corresponding file
-    try (ZipFile zipFile = new ZipFile(fileZip)) {
-      for (final ZipEntry zipEntry : zipFile.stream().collect(Collectors.toList())) {
-        try {
-          unzipZipEntry(destDir, zipFile, zipEntry);
-        } catch (final IOException e) {
-          throw new FileSystemException(fileZip, e);
+    try (FileSystem zipFileSystem = FileSystems.newFileSystem(fileZip, null)) {
+      final Path zipRoot = zipFileSystem.getPath("/");
+      try (Stream<Path> files = Files.walk(zipRoot)) {
+        for (final Path zipEntry : files.collect(Collectors.toList())) {
+          unzipZipEntry(destDir, zipRoot, zipEntry);
         }
+      } catch (final IOException e) {
+        throw new FileSystemException(fileZip, e);
       }
     } catch (final IOException e) {
       throw new ZipReadException(fileZip, e);
     } catch (final ZipSecurityException e) {
       log.error(
           "Malicious zip file detected: "
-              + fileZip.getAbsolutePath()
+              + fileZip.toAbsolutePath()
               + ", please report this to TripleA and delete the zip file");
     }
   }
@@ -105,23 +111,20 @@ public class ZipExtractor {
    *     destination directory (EG: zip path is something like "../../../bin/bash")
    * @throws IOException thrown if there are errors writing the extracted zip contents.
    */
-  private static void unzipZipEntry(
-      final File destDir, final ZipFile zipFile, final ZipEntry zipEntry) throws IOException {
-    final File newFile = newFile(destDir, zipEntry);
-    if (zipEntry.isDirectory()) {
-      if (!newFile.isDirectory() && !newFile.mkdirs()) {
-        throw new FileSystemException("Failed to create directory " + newFile);
+  private static void unzipZipEntry(final Path destDir, final Path zipRoot, final Path zipEntry)
+      throws IOException {
+    final Path newFile = newFile(destDir, zipRoot, zipEntry);
+    if (Files.isDirectory(zipEntry)) {
+      if (!Files.isDirectory(newFile)) {
+        Files.createDirectories(newFile);
       }
     } else {
       // fix for Windows-created archives
-      final File parent = newFile.getParentFile();
-      if (!parent.isDirectory() && !parent.mkdirs()) {
-        throw new FileSystemException("Failed to create directory " + parent);
+      final Path parent = newFile.getParent();
+      if (!Files.isDirectory(parent)) {
+        Files.createDirectories(parent.getParent());
       }
-
-      try (FileOutputStream fos = new FileOutputStream(newFile)) {
-        fos.write(zipFile.getInputStream(zipEntry).readAllBytes());
-      }
+      Files.copy(zipEntry, newFile, StandardCopyOption.REPLACE_EXISTING);
     }
   }
 
@@ -136,29 +139,23 @@ public class ZipExtractor {
    *     determine what the final path will be for a given zip entry which may require queries to
    *     the file system.)
    */
-  private static File newFile(final File destinationDir, final ZipEntry zipEntry) {
-    final File destFile = new File(destinationDir, zipEntry.getName());
+  private static Path newFile(final Path destinationDir, final Path zipRoot, final Path zipEntry) {
+    // We swap file systems here, from the path within the zip to the path on the local machine
+    final Path destFile = destinationDir.resolve(zipRoot.relativize(zipEntry).toString());
 
-    try {
-      final String destDirPath = destinationDir.getCanonicalPath();
-      final String destFilePath = destFile.getCanonicalPath();
-
-      // ensure that the destination to write is within the target folder. Avoids
-      // 'zip slip' vulnerability: https://snyk.io/research/zip-slip-vulnerability
-      if (!destFilePath.startsWith(destDirPath + File.separator)) {
-        throw new ZipSecurityException(zipEntry);
-      }
-
-      return destFile;
-    } catch (final IOException e) {
-      throw new FileSystemException(e);
+    // ensure that the destination to write is within the target folder. Avoids
+    // 'zip slip' vulnerability: https://snyk.io/research/zip-slip-vulnerability
+    if (!destFile.toAbsolutePath().startsWith(destinationDir.toAbsolutePath())) {
+      throw new ZipSecurityException(zipEntry);
     }
+
+    return destFile;
   }
 
   private static class ZipSecurityException extends RuntimeException {
     private static final long serialVersionUID = 4558259887205500763L;
 
-    ZipSecurityException(final ZipEntry zipEntry) {
+    ZipSecurityException(final Path zipEntry) {
       throw new IllegalArgumentException("Malicious path: " + zipEntry);
     }
   }
