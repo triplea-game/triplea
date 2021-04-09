@@ -5,9 +5,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,9 +26,9 @@ public class MapDescriptionYamlReaderTest {
             .toURI();
 
     final MapDescriptionYaml mapDescriptionYaml =
-        MapDescriptionYamlReader.readFromMap(new File(sampleFolderUri)).orElseThrow();
+        MapDescriptionYamlReader.readFromMap(Path.of(sampleFolderUri)).orElseThrow();
 
-    assertThat(mapDescriptionYaml.isValid(new File("")), is(true));
+    assertThat(mapDescriptionYaml.isValid(Path.of("")), is(true));
   }
 
   @Test
@@ -40,7 +40,7 @@ public class MapDescriptionYamlReaderTest {
             .toURI();
 
     final Optional<MapDescriptionYaml> mapDescription =
-        MapDescriptionYamlReader.readFromMap(new File(sampleFolderUri));
+        MapDescriptionYamlReader.readFromMap(Path.of(sampleFolderUri));
 
     assertThat(mapDescription, isEmpty());
   }
@@ -55,7 +55,7 @@ public class MapDescriptionYamlReaderTest {
 
       final MapDescriptionYaml mapDescriptionYaml =
           MapDescriptionYamlReader.parse(
-                  new File("map_description_yml_parsing/sample_map_description.yml"), stream)
+                  Path.of("map_description_yml_parsing/sample_map_description.yml"), stream)
               .orElseThrow();
 
       assertThat(mapDescriptionYaml.getMapName(), is("MapName"));
@@ -82,7 +82,7 @@ public class MapDescriptionYamlReaderTest {
         MapDescriptionYamlReaderTest.class.getClassLoader().getResourceAsStream(inputFile)) {
 
       final Optional<MapDescriptionYaml> result =
-          MapDescriptionYamlReader.parse(new File(inputFile), stream);
+          MapDescriptionYamlReader.parse(Path.of(inputFile), stream);
 
       assertThat(result, isEmpty());
     }

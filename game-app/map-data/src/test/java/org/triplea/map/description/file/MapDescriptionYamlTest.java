@@ -18,7 +18,7 @@ class MapDescriptionYamlTest {
   @ParameterizedTest
   @MethodSource
   void isValid(final MapDescriptionYaml mapDescriptionYaml) {
-    assertThat(mapDescriptionYaml.isValid(new File("")), is(true));
+    assertThat(mapDescriptionYaml.isValid(Path.of("")), is(true));
   }
 
   @SuppressWarnings("unused")
@@ -45,7 +45,7 @@ class MapDescriptionYamlTest {
     final Path ymlFile = mapFolder.resolve(MapDescriptionYaml.MAP_YAML_FILE_NAME);
 
     final MapDescriptionYaml mapDescriptionYaml =
-        MapDescriptionYaml.fromFile(ymlFile.toFile())
+        MapDescriptionYaml.fromFile(ymlFile)
             .orElseThrow(
                 () -> new IllegalStateException("Unexpected failure to parse map.yml file"));
 

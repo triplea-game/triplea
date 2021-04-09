@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.file.system.loader;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
@@ -35,8 +36,8 @@ public class DownloadedMapsListing {
 
   private static Collection<DownloadedMap> readMapYamlsAndGenerateMissingMapYamls() {
     // loop over all maps, find and parse a 'map.yml' file, if not found attempt to generate it
-    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
-        .filter(File::isDirectory)
+    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder().toPath()).stream()
+        .filter(Files::isDirectory)
         .map(
             mapFolder ->
                 MapDescriptionYaml.fromMap(mapFolder)

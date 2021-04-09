@@ -23,8 +23,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -396,11 +396,13 @@ public class UiContext {
   public static Map<String, String> getSkins(final String mapName) {
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
     skinsByDisplayName.put("Original", mapName);
-    for (final File f : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
-      if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
+    for (final Path path :
+        FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder().toPath())) {
+      final String fileName = path.getFileName().toString();
+      if (mapSkinNameMatchesMapName(fileName, mapName)) {
         final String displayName =
-            f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
-        skinsByDisplayName.put(displayName, f.getName());
+            fileName.replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
+        skinsByDisplayName.put(displayName, fileName);
       }
     }
     return skinsByDisplayName;

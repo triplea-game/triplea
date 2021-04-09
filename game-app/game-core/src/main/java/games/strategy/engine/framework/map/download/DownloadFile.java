@@ -79,7 +79,7 @@ final class DownloadFile {
           state = DownloadState.DONE;
 
           // extract map, if successful and does not have a 'map.yml' file, generate one.
-          ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo.toFile())
+          ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
               .ifPresent(
                   installedMap -> {
                     if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {

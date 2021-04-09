@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,23 +85,23 @@ public class MapDescriptionYaml {
     return MapDescriptionYamlWriter.toYamlString(this);
   }
 
-  public static boolean mapHasYamlDescriptor(final File mapFolder) {
-    return mapFolder.toPath().resolve(MAP_YAML_FILE_NAME).toFile().exists();
+  public static boolean mapHasYamlDescriptor(final Path mapFolder) {
+    return Files.exists(mapFolder.resolve(MAP_YAML_FILE_NAME));
   }
 
-  public static Optional<MapDescriptionYaml> fromMap(final File mapFolder) {
+  public static Optional<MapDescriptionYaml> fromMap(final Path mapFolder) {
     return MapDescriptionYamlReader.readFromMap(mapFolder);
   }
 
-  public static Optional<MapDescriptionYaml> fromFile(final File mapDescriptionYamlFile) {
+  public static Optional<MapDescriptionYaml> fromFile(final Path mapDescriptionYamlFile) {
     Preconditions.checkArgument(
-        mapDescriptionYamlFile.getName().equals(MAP_YAML_FILE_NAME),
-        mapDescriptionYamlFile.getAbsolutePath());
+        mapDescriptionYamlFile.getFileName().toString().equals(MAP_YAML_FILE_NAME),
+        mapDescriptionYamlFile.toAbsolutePath());
 
     return MapDescriptionYamlReader.readYmlFile(mapDescriptionYamlFile);
   }
 
-  public static Optional<MapDescriptionYaml> generateForMap(final File mapFolder) {
+  public static Optional<MapDescriptionYaml> generateForMap(final Path mapFolder) {
     if (MapDescriptionYamlGenerator.generateYamlDataForMap(mapFolder).isEmpty()) {
       // failed to generate
       return Optional.empty();
@@ -108,7 +109,7 @@ public class MapDescriptionYaml {
     return fromMap(mapFolder);
   }
 
-  boolean isValid(final File sourceFile) {
+  boolean isValid(final Path sourceFile) {
     final Collection<String> validationErrors = new ArrayList<>();
 
     if (mapName.isBlank()) {
@@ -142,7 +143,7 @@ public class MapDescriptionYaml {
     }
 
     if (!validationErrors.isEmpty()) {
-      log.warn("Error found in: {}, errors: {}", sourceFile.getAbsolutePath(), validationErrors);
+      log.warn("Error found in: {}, errors: {}", sourceFile.toAbsolutePath(), validationErrors);
     }
 
     return validationErrors.isEmpty();
@@ -208,7 +209,7 @@ public class MapDescriptionYaml {
   /** Find 'games' folder starting from map.yml parent folder. */
   private Optional<Path> findGamesFolder() {
     final Path mapFolder = Path.of(yamlFileLocation).getParent();
-    final Optional<Path> gamesFolder = FileUtils.find(mapFolder, 5, "games").map(File::toPath);
+    final Optional<Path> gamesFolder = FileUtils.find(mapFolder, 5, "games");
 
     if (gamesFolder.isEmpty()) {
       log.warn("No 'games' folder found under location: {}", mapFolder.toFile().getAbsolutePath());
@@ -218,13 +219,13 @@ public class MapDescriptionYaml {
 
   /** Search 'games' folder for a game-xml-file. */
   private Optional<Path> searchForGameFile(final Path gamesFolder, final String xmlFileName) {
-    final Optional<File> gameFile = FileUtils.find(gamesFolder, 3, xmlFileName);
+    final Optional<Path> gameFile = FileUtils.find(gamesFolder, 3, xmlFileName);
     if (gameFile.isEmpty()) {
       log.warn(
           "Failed to find game file: {}, within directory tree rooted at: {}",
           xmlFileName,
-          gamesFolder.toFile().getAbsolutePath());
+          gamesFolder.toAbsolutePath());
     }
-    return gameFile.map(File::toPath);
+    return gameFile;
   }
 }

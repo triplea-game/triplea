@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -198,7 +199,7 @@ public final class DecorationPlacer {
     // hash map for polygon points
     private final Map<String, List<Polygon>> polygons;
     private final JLabel locationLabel = new JLabel();
-    private File currentImageFolderLocation = null;
+    private Path currentImageFolderLocation = null;
     private File currentImagePointsTextFile = null;
     private Point currentMousePoint = new Point(0, 0);
     private Triple<String, Image, Point> currentSelectedImage = null;
@@ -679,7 +680,7 @@ public final class DecorationPlacer {
           || !imageFolder.getFile().exists()) {
         currentImageFolderLocation = null;
       } else {
-        currentImageFolderLocation = imageFolder.getFile();
+        currentImageFolderLocation = imageFolder.getFile().toPath();
       }
     }
 
@@ -779,13 +780,13 @@ public final class DecorationPlacer {
                   ? ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
                   : 0));
       final List<String> allTerritories = new ArrayList<>(centers.keySet());
-      for (final File file : FileUtils.listFiles(currentImageFolderLocation)) {
-        if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {
+      for (final Path path : FileUtils.listFiles(currentImageFolderLocation)) {
+        if (!path.toString().endsWith(".png") && !path.toString().endsWith(".gif")) {
           continue;
         }
-        final String imageName = file.getName();
+        final String imageName = path.getFileName().toString();
         final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
-        final Image image = newImage(file.getPath());
+        final Image image = newImage(path.toString());
         List<Point> points =
             (currentPoints != null
                 ? currentPoints.get(
