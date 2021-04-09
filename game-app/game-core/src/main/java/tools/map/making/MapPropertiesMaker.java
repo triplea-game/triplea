@@ -19,14 +19,14 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.AbstractAction;
@@ -66,7 +66,7 @@ import tools.util.ToolArguments;
  */
 @Slf4j
 public final class MapPropertiesMaker {
-  private File mapFolderLocation = null;
+  private Path mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
 
   private MapPropertiesMaker() {}
@@ -86,14 +86,11 @@ public final class MapPropertiesMaker {
     handleSystemProperties();
     if (mapFolderLocation == null) {
       log.info("Select the map folder");
-      final String path =
-          new FileSave("Where is your map's folder?", null, mapFolderLocation).getPathString();
-      if (path != null) {
-        final File mapFolder = new File(path);
-        if (mapFolder.exists()) {
-          mapFolderLocation = mapFolder;
-          System.setProperty(ToolArguments.MAP_FOLDER, mapFolderLocation.getPath());
-        }
+      final Path mapFolder =
+          new FileSave("Where is your map's folder?", null, mapFolderLocation).getFile();
+      if (mapFolder != null && Files.exists(mapFolder)) {
+        mapFolderLocation = mapFolder;
+        System.setProperty(ToolArguments.MAP_FOLDER, mapFolderLocation.toString());
       }
     }
     if (mapFolderLocation != null) {
@@ -498,25 +495,25 @@ public final class MapPropertiesMaker {
 
     private void saveProperties() {
       try {
-        final String fileName =
+        final Path fileName =
             new FileSave("Where To Save map.properties ?", "map.properties", mapFolderLocation)
-                .getPathString();
+                .getFile();
         if (fileName == null) {
           return;
         }
-        final String stringToWrite = getOutPutString();
-        try (OutputStream sink = new FileOutputStream(fileName);
+        final String stringToWrite = getOutputString();
+        try (OutputStream sink = Files.newOutputStream(fileName);
             Writer out = new OutputStreamWriter(sink, StandardCharsets.UTF_8)) {
           out.write(stringToWrite);
         }
-        log.info("Data written to :" + new File(fileName).getCanonicalPath());
+        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
         log.info(stringToWrite);
       } catch (final Exception e) {
         log.error("Failed to save map properties", e);
       }
     }
 
-    private String getOutPutString() {
+    private String getOutputString() {
       final StringBuilder outString = new StringBuilder();
       for (final Method outMethod : mapProperties.getClass().getMethods()) {
         final boolean startsWithSet = outMethod.getName().startsWith("out");

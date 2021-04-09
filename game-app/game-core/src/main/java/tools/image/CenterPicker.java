@@ -17,12 +17,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ import tools.util.ToolsUtil;
  */
 @Slf4j
 public final class CenterPicker {
-  private File mapFolderLocation;
+  private Path mapFolderLocation;
 
   private CenterPicker() {}
 
@@ -75,13 +74,13 @@ public final class CenterPicker {
     mapFolderLocation = MapFolderLocationSystemProperty.read();
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final String mapName = mapSelection.getPathString();
+    final Path map = mapSelection.getFile();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParentFile();
+      mapFolderLocation = mapSelection.getFile().getParent();
     }
-    if (mapName != null) {
-      log.info("Map : " + mapName);
-      final CenterPickerFrame frame = new CenterPickerFrame(mapName);
+    if (map != null) {
+      log.info("Map : " + map);
+      final CenterPickerFrame frame = new CenterPickerFrame(map.toString());
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
@@ -129,14 +128,8 @@ public final class CenterPicker {
     CenterPickerFrame(final String mapName) throws IOException {
       super("Center Picker");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      File file = null;
-      if (mapFolderLocation != null && mapFolderLocation.exists()) {
-        file = new File(mapFolderLocation, "polygons.txt");
-      }
-      if (file == null || !file.exists()) {
-        file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
-      }
-      if (file.exists()
+      Path file = FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "polygons.txt");
+      if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
                   "A polygons.txt file was found in the map's folder, do you want to use "
@@ -144,17 +137,17 @@ public final class CenterPicker {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = new FileInputStream(file.getPath())) {
+        try (InputStream is = Files.newInputStream(file)) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: " + file.getAbsolutePath());
+          log.error("Something wrong with your Polygons file: " + file.toAbsolutePath());
           throw e;
         }
       } else {
-        final String polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
+        final Path polyPath =
+            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
-          try (InputStream is = new FileInputStream(polyPath)) {
+          try (InputStream is = Files.newInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
             log.error("Something wrong with your Polygons file: " + polyPath);
@@ -251,15 +244,14 @@ public final class CenterPicker {
 
     /** Saves the centers to disk. */
     private void saveCenters() {
-      final String fileName =
-          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation)
-              .getPathString();
+      final Path fileName =
+          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation).getFile();
       if (fileName == null) {
         return;
       }
-      try (OutputStream out = new FileOutputStream(fileName)) {
+      try (OutputStream out = Files.newOutputStream(fileName)) {
         PointFileReaderWriter.writeOneToOne(out, centers);
-        log.info("Data written to :" + new File(fileName).getCanonicalPath());
+        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to save centers: " + fileName, e);
       }
@@ -268,12 +260,12 @@ public final class CenterPicker {
     /** Loads a pre-defined file with map center points. */
     private void loadCenters() {
       log.info("Load a center file");
-      final String centerName =
-          new FileOpen("Load A Center File", mapFolderLocation, ".txt").getPathString();
+      final Path centerName =
+          new FileOpen("Load A Center File", mapFolderLocation, ".txt").getFile();
       if (centerName == null) {
         return;
       }
-      try (InputStream in = new FileInputStream(centerName)) {
+      try (InputStream in = Files.newInputStream(centerName)) {
         centers = PointFileReaderWriter.readOneToOne(in);
       } catch (final IOException e) {
         log.error("Failed to load centers: " + centerName, e);

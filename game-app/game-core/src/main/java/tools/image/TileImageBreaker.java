@@ -14,6 +14,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class TileImageBreaker {
-  private String location = null;
+  private Path location = null;
   private final JFrame observer = new JFrame();
-  private File mapFolderLocation = null;
+  private Path mapFolderLocation = null;
   private final JTextAreaOptionPane textOptionPane =
       new JTextAreaOptionPane(
           null,
@@ -78,9 +79,9 @@ public final class TileImageBreaker {
                 + "</html>"));
     final FileSave locationSelection =
         new FileSave("Where to save Tile Images?", null, mapFolderLocation);
-    location = locationSelection.getPathString();
+    location = locationSelection.getFile();
     if (mapFolderLocation == null && locationSelection.getFile() != null) {
-      mapFolderLocation = locationSelection.getFile().getParentFile();
+      mapFolderLocation = locationSelection.getFile().getParent();
     }
     if (location == null) {
       log.info("You need to select a folder to save the tiles in for this to work");
@@ -148,10 +149,10 @@ public final class TileImageBreaker {
    */
   private Image loadImage() {
     log.info("Select the map");
-    final String mapName =
-        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
+    final Path mapName =
+        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
     if (mapName != null) {
-      final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
+      final Image img = Toolkit.getDefaultToolkit().createImage(mapName.toString());
       final MediaTracker tracker = new MediaTracker(new Panel());
       tracker.addImage(img, 1);
       try {

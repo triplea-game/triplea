@@ -19,13 +19,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
+import tools.image.FileHelper;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.image.MapFolderLocationSystemProperty;
@@ -71,7 +71,7 @@ public final class PlacementPicker {
   private double unitZoomPercent = 1;
   private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private File mapFolderLocation = null;
+  private Path mapFolderLocation = null;
 
   private PlacementPicker() {}
 
@@ -129,12 +129,12 @@ public final class PlacementPicker {
                 + "</html>"));
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final String mapName = mapSelection.getPathString();
+    final Path mapName = mapSelection.getFile();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParentFile();
+      mapFolderLocation = mapSelection.getFile().getParent();
     }
     if (mapName != null) {
-      final PlacementPickerFrame frame = new PlacementPickerFrame(mapName);
+      final PlacementPickerFrame frame = new PlacementPickerFrame(mapName.toString());
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
@@ -173,14 +173,9 @@ public final class PlacementPicker {
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       if (!placeDimensionsSet) {
         try {
-          File file = null;
-          if (mapFolderLocation != null && mapFolderLocation.exists()) {
-            file = new File(mapFolderLocation, "map.properties");
-          }
-          if (file == null || !file.exists()) {
-            file = new File(new File(mapName).getParent() + File.separator + "map.properties");
-          }
-          if (file.exists()) {
+          Path file =
+              FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "map.properties");
+          if (Files.exists(file)) {
             double scale = unitZoomPercent;
             int width = unitWidth;
             int height = unitHeight;
@@ -308,14 +303,8 @@ public final class PlacementPicker {
           log.error("Failed to initialize from user input", e);
         }
       }
-      File file = null;
-      if (mapFolderLocation != null && mapFolderLocation.exists()) {
-        file = new File(mapFolderLocation, "polygons.txt");
-      }
-      if (file == null || !file.exists()) {
-        file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
-      }
-      if (file.exists()
+      Path file = FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "polygons.txt");
+      if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
                   "A polygons.txt file was found in the map's folder, do you want to "
@@ -323,20 +312,20 @@ public final class PlacementPicker {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = new FileInputStream(file.getPath())) {
-          log.info("Polygons : " + file.getPath());
+        try (InputStream is = Files.newInputStream(file)) {
+          log.info("Polygons : " + file);
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.error("Failed to load polygons: " + file.getAbsolutePath());
+          log.error("Failed to load polygons: " + file.toAbsolutePath());
           throw e;
         }
       } else {
         log.info("Select the Polygons file");
-        final String polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
+        final Path polyPath =
+            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
           log.info("Polygons : " + polyPath);
-          try (InputStream is = new FileInputStream(polyPath)) {
+          try (InputStream is = Files.newInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
             log.error("Failed to load polygons: " + polyPath);
@@ -551,14 +540,14 @@ public final class PlacementPicker {
 
     /** Saves the placements to disk. */
     private void savePlacements() {
-      final String fileName =
-          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
+      final Path fileName =
+          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getFile();
       if (fileName == null) {
         return;
       }
-      try (OutputStream out = new FileOutputStream(fileName)) {
+      try (OutputStream out = Files.newOutputStream(fileName)) {
         PointFileReaderWriter.writeOneToManyPlacements(out, placements);
-        log.info("Data written to :" + new File(fileName).getCanonicalPath());
+        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to write placements: " + fileName, e);
       }
@@ -567,12 +556,12 @@ public final class PlacementPicker {
     /** Loads a pre-defined file with map placement points. */
     private void loadPlacements() {
       log.info("Load a placement file");
-      final String placeName =
-          new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getPathString();
+      final Path placeName =
+          new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getFile();
       if (placeName == null) {
         return;
       }
-      try (InputStream in = new FileInputStream(placeName)) {
+      try (InputStream in = Files.newInputStream(placeName)) {
         placements = PointFileReaderWriter.readOneToManyPlacements(in);
       } catch (final IOException e) {
         log.error("Failed to load placements: " + placeName, e);

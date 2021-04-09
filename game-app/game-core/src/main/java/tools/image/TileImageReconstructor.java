@@ -15,9 +15,10 @@ import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,8 @@ import org.triplea.util.PointFileReaderWriter;
 /** For taking a folder of basetiles and putting them back together into an image. */
 @Slf4j
 public final class TileImageReconstructor {
-  private String baseTileLocation = null;
-  private String imageSaveLocation = null;
-  private File mapFolderLocation = null;
+  private Path baseTileLocation = null;
+  private Path imageSaveLocation = null;
   private final JTextAreaOptionPane textOptionPane =
       new JTextAreaOptionPane(
           null,
@@ -66,7 +66,7 @@ public final class TileImageReconstructor {
   }
 
   private void runInternal() {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    Path mapFolderLocation = MapFolderLocationSystemProperty.read();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(
@@ -78,9 +78,9 @@ public final class TileImageReconstructor {
                 + "</html>"));
     final FileSave baseTileLocationSelection =
         new FileSave("Where are the Tile Images?", null, mapFolderLocation);
-    baseTileLocation = baseTileLocationSelection.getPathString();
+    baseTileLocation = baseTileLocationSelection.getFile();
     if (mapFolderLocation == null && baseTileLocationSelection.getFile() != null) {
-      mapFolderLocation = baseTileLocationSelection.getFile().getParentFile();
+      mapFolderLocation = baseTileLocationSelection.getFile().getParent();
     }
     if (baseTileLocation == null) {
       log.info("You need to select a folder where the basetiles are for this to work");
@@ -93,7 +93,7 @@ public final class TileImageReconstructor {
             null,
             mapFolderLocation,
             JFileChooser.FILES_ONLY,
-            new File(mapFolderLocation, "map.png"),
+            mapFolderLocation.resolve("map.png"),
             new FileFilter() {
               @Override
               public boolean accept(final File f) {
@@ -105,7 +105,7 @@ public final class TileImageReconstructor {
                 return "*.png";
               }
             });
-    imageSaveLocation = imageSaveLocationSelection.getPathString();
+    imageSaveLocation = imageSaveLocationSelection.getFile();
     if (imageSaveLocation == null) {
       log.info("You need to choose a name and location for your image file for this to work");
       log.info("Shutting down");
@@ -142,10 +142,10 @@ public final class TileImageReconstructor {
         == JOptionPane.NO_OPTION) {
       try {
         log.info("Load a polygon file");
-        final String polyName =
-            new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
+        final Path polyName =
+            new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyName != null) {
-          try (InputStream in = new FileInputStream(polyName)) {
+          try (InputStream in = Files.newInputStream(polyName)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(in);
           } catch (final IOException e) {
             log.error("Failed to load polygons: " + polyName, e);
@@ -171,11 +171,11 @@ public final class TileImageReconstructor {
     for (int x = 0; x * TILE_SIZE < sizeX; x++) {
       for (int y = 0; y * TILE_SIZE < sizeY; y++) {
         final String tileName = x + "_" + y + ".png";
-        final File tileFile = new File(baseTileLocation, tileName);
-        if (!tileFile.exists()) {
+        final Path tileFile = baseTileLocation.resolve(tileName);
+        if (!Files.exists(tileFile)) {
           continue;
         }
-        final Image tile = Toolkit.getDefaultToolkit().createImage(tileFile.getPath());
+        final Image tile = Toolkit.getDefaultToolkit().createImage(tileFile.toString());
         Util.ensureImageLoaded(tile);
         final Rectangle tileBounds =
             new Rectangle(
@@ -208,7 +208,7 @@ public final class TileImageReconstructor {
     }
     textOptionPane.appendNewLine("Saving as " + imageSaveLocation + " ... ");
     try {
-      ImageIO.write(mapImage, "png", new File(imageSaveLocation));
+      ImageIO.write(mapImage, "png", imageSaveLocation.toFile());
     } catch (final IOException e) {
       log.error("Failed to save image: " + imageSaveLocation, e);
     }

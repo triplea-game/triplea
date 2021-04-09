@@ -10,12 +10,11 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public final class AutoPlacementFinder {
   private double unitZoomPercent = 1;
   private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private File mapFolderLocation = null;
+  private Path mapFolderLocation = null;
   private final JTextAreaOptionPane textOptionPane =
       new JTextAreaOptionPane(
           null,
@@ -108,19 +107,19 @@ public final class AutoPlacementFinder {
   private void calculate() {
     // ask user where the map is
     final String mapDir =
-        mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
+        mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getFileName().toString();
     if (mapDir == null) {
       log.info("You need to specify a map name for this to work");
       log.info("Shutting down");
       return;
     }
-    final File file = getMapPropertiesFile(mapDir);
-    if (file.exists() && mapFolderLocation == null) {
-      mapFolderLocation = file.getParentFile();
+    final Path file = getMapPropertiesFile(mapDir);
+    if (Files.exists(file) && mapFolderLocation == null) {
+      mapFolderLocation = file.getParent();
     }
     if (!placeDimensionsSet) {
       try {
-        if (file.exists()) {
+        if (Files.exists(file)) {
           double scale = unitZoomPercent;
           int width = unitWidth;
           int height = unitHeight;
@@ -196,7 +195,7 @@ public final class AutoPlacementFinder {
           }
         }
       } catch (final Exception e) {
-        log.error("Failed to initialize from map properties: " + file.getAbsolutePath(), e);
+        log.error("Failed to initialize from map properties: " + file.toAbsolutePath(), e);
       }
     }
     if (!placeDimensionsSet
@@ -269,16 +268,16 @@ public final class AutoPlacementFinder {
     }
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
-    final String fileName =
-        new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
+    final Path fileName =
+        new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getFile();
     if (fileName == null) {
       textOptionPane.appendNewLine("You chose not to save, Shutting down");
       textOptionPane.dispose();
       return;
     }
-    try (OutputStream os = new FileOutputStream(fileName)) {
+    try (OutputStream os = Files.newOutputStream(fileName)) {
       PointFileReaderWriter.writeOneToMany(os, placements);
-      textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
+      textOptionPane.appendNewLine("Data written to :" + fileName.normalize().toAbsolutePath());
     } catch (final IOException e) {
       log.error("Failed to write points file: " + fileName, e);
       textOptionPane.dispose();
@@ -295,24 +294,28 @@ public final class AutoPlacementFinder {
     return JOptionPane.showInputDialog(null, "Enter the map name (ie. folder name)");
   }
 
-  private static File getMapPropertiesFile(final String mapDir) {
-    final File file = getMapPropertiesFileForCurrentFolderStructure(mapDir);
-    if (file.exists()) {
+  private static Path getMapPropertiesFile(final String mapDir) {
+    final Path file = getMapPropertiesFileForCurrentFolderStructure(mapDir);
+    if (Files.exists(file)) {
       return file;
     }
 
     return getMapPropertiesFileForLegacyFolderStructure(mapDir);
   }
 
-  private static File getMapPropertiesFileForCurrentFolderStructure(final String mapDir) {
-    return new File(
-        ClientFileSystemHelper.getUserMapsFolder(),
-        Paths.get(mapDir, "map", "map.properties").toString());
+  private static Path getMapPropertiesFileForCurrentFolderStructure(final String mapDir) {
+    return ClientFileSystemHelper.getUserMapsFolder()
+        .toPath()
+        .resolve(mapDir)
+        .resolve("map")
+        .resolve("map.properties");
   }
 
-  private static File getMapPropertiesFileForLegacyFolderStructure(final String mapDir) {
-    return new File(
-        ClientFileSystemHelper.getUserMapsFolder(), Paths.get(mapDir, "map.properties").toString());
+  private static Path getMapPropertiesFileForLegacyFolderStructure(final String mapDir) {
+    return ClientFileSystemHelper.getUserMapsFolder()
+        .toPath()
+        .resolve(mapDir)
+        .resolve("map.properties");
   }
 
   private static String getUnitsScale() {
