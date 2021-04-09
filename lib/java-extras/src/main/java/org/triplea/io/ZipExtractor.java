@@ -145,7 +145,7 @@ public class ZipExtractor {
 
     // ensure that the destination to write is within the target folder. Avoids
     // 'zip slip' vulnerability: https://snyk.io/research/zip-slip-vulnerability
-    if (!destFile.toAbsolutePath().startsWith(destinationDir.toAbsolutePath())) {
+    if (!destFile.normalize().startsWith(destinationDir.normalize())) {
       throw new ZipSecurityException(zipEntry);
     }
 
