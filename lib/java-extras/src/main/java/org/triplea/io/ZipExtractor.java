@@ -45,18 +45,6 @@ public class ZipExtractor {
     FileSystemException(final Path fileZip, final Exception e) {
       super("Error extracting zip file: " + fileZip.toAbsolutePath() + ", " + e.getMessage(), e);
     }
-
-    FileSystemException(final Exception e) {
-      super("Error accessing file system: " + e.getMessage(), e);
-    }
-
-    FileSystemException(final String message) {
-      super(message);
-    }
-
-    public FileSystemException(final String message, final Exception e) {
-      super(message, e);
-    }
   }
 
   /**
