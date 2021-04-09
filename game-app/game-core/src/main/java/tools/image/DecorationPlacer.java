@@ -215,7 +215,7 @@ public final class DecorationPlacer {
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       setLocationRelativeTo(null);
       highlightAll = false;
-      Path fileCenters =
+      final Path fileCenters =
           FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "centers.txt");
       if (Files.exists(fileCenters)
           && JOptionPane.showConfirmDialog(
@@ -252,7 +252,7 @@ public final class DecorationPlacer {
           throw e;
         }
       }
-      Path filePoly =
+      final Path filePoly =
           FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "polygons.txt");
       if (Files.exists(filePoly)
           && JOptionPane.showConfirmDialog(

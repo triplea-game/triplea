@@ -128,7 +128,8 @@ public final class CenterPicker {
     CenterPickerFrame(final String mapName) throws IOException {
       super("Center Picker");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      Path file = FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "polygons.txt");
+      final Path file =
+          FileHelper.getTextFileInRootDirectory(mapFolderLocation, mapName, "polygons.txt");
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),

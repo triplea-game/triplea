@@ -45,7 +45,7 @@ public final class ImageShrinker {
   }
 
   private void runInternal() throws IOException {
-    Path mapFolderLocation = MapFolderLocationSystemProperty.read();
+    final Path mapFolderLocation = MapFolderLocationSystemProperty.read();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(
