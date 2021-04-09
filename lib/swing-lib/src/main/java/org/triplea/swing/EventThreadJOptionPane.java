@@ -211,10 +211,10 @@ public final class EventThreadJOptionPane {
    * @return True if user confirms, false if user closes the confirmation dialog or selects no.
    */
   public static boolean showConfirmDialog(
-          final @Nullable Component parentComponent,
-          final @Nullable Object message,
-          final @Nullable String title,
-          final ConfirmDialogType confirmDialogType) {
+      final @Nullable Component parentComponent,
+      final @Nullable Object message,
+      final @Nullable String title,
+      final ConfirmDialogType confirmDialogType) {
 
     // We want to construct a 'JDialog' the "hard" way through a JOptionPane so
     // that we can set modal to be false.
@@ -228,48 +228,47 @@ public final class EventThreadJOptionPane {
     // in one, dialog creation is fairly easy.
     if (SwingUtilities.isEventDispatchThread()) {
       final JOptionPane optionPane =
-              new JOptionPane(
-                      message, JOptionPane.QUESTION_MESSAGE,
-                      confirmDialogType.optionTypeMagicNumber);
+          new JOptionPane(
+              message, JOptionPane.QUESTION_MESSAGE, confirmDialogType.optionTypeMagicNumber);
       final JDialog dialog = optionPane.createDialog(parentComponent, title);
       dialog.setAlwaysOnTop(true);
 
       optionPane.addPropertyChangeListener(
-              JOptionPane.VALUE_PROPERTY,
-              ignored -> {
-                final Object selectedValue = optionPane.getValue();
-                confirmation.set(selectedValue != null
-                        && JOptionPane.OK_OPTION == (int) selectedValue);
-                latch.countDown();
-                dialog.dispose();
-              });
+          JOptionPane.VALUE_PROPERTY,
+          ignored -> {
+            final Object selectedValue = optionPane.getValue();
+            confirmation.set(selectedValue != null && JOptionPane.OK_OPTION == (int) selectedValue);
+            latch.countDown();
+            dialog.dispose();
+          });
 
       // modal dialog being set to visible is blocking
       dialog.setVisible(true);
 
-    // For non-Swing event threads, we must request our code be invoked and block manually
+      // For non-Swing event threads, we must request our code be invoked and block manually
     } else {
-      SwingUtilities.invokeLater(() -> {
-        final JOptionPane optionPane =
-                new JOptionPane(message, JOptionPane.QUESTION_MESSAGE,
-                        confirmDialogType.optionTypeMagicNumber);
-        final JDialog dialog = optionPane.createDialog(parentComponent, title);
-        dialog.setAlwaysOnTop(true);
-        dialog.setModal(false);
+      SwingUtilities.invokeLater(
+          () -> {
+            final JOptionPane optionPane =
+                new JOptionPane(
+                    message, JOptionPane.QUESTION_MESSAGE, confirmDialogType.optionTypeMagicNumber);
+            final JDialog dialog = optionPane.createDialog(parentComponent, title);
+            dialog.setAlwaysOnTop(true);
+            dialog.setModal(false);
 
-        optionPane.addPropertyChangeListener(
+            optionPane.addPropertyChangeListener(
                 JOptionPane.VALUE_PROPERTY,
                 ignored -> {
                   final Object selectedValue = optionPane.getValue();
-                  confirmation.set(selectedValue != null
-                          && JOptionPane.OK_OPTION == (int) selectedValue);
+                  confirmation.set(
+                      selectedValue != null && JOptionPane.OK_OPTION == (int) selectedValue);
                   latch.countDown();
                   dialog.dispose();
                 });
 
-        // non modal dialog set to visible is not blocking and must be done on EDT
-        dialog.setVisible(true);
-      });
+            // non modal dialog set to visible is not blocking and must be done on EDT
+            dialog.setVisible(true);
+          });
 
       try {
         // start blocking, wait for the dialog property event to fire to clear this latch
