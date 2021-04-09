@@ -18,6 +18,12 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class ZipExtractor {
+  /**
+   * Arbitrary maximum depth to prevent infinite loops
+   * on maliciously crafted zip files.
+   */
+  private static final int MAX_DEPTH = 10;
+
   /** Indicates there was an error reading the zip file (zip file is invalid). */
   public static class ZipReadException extends RuntimeException {
     private static final long serialVersionUID = -17268314166178535L;
@@ -78,7 +84,7 @@ public class ZipExtractor {
     // iterate over each zip entry and write to a corresponding file
     try (FileSystem zipFileSystem = FileSystems.newFileSystem(fileZip, null)) {
       final Path zipRoot = zipFileSystem.getPath("/");
-      try (Stream<Path> files = Files.walk(zipRoot)) {
+      try (Stream<Path> files = Files.walk(zipRoot, MAX_DEPTH)) {
         for (final Path zipEntry : files.collect(Collectors.toList())) {
           unzipZipEntry(destDir, zipRoot, zipEntry);
         }
