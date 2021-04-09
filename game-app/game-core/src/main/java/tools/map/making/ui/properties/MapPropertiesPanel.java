@@ -68,10 +68,8 @@ public class MapPropertiesPanel {
             e -> {
               final Path mapFolder =
                   new FileSave("Where is your map's folder?", null, null).getFile();
-              if (mapFolder != null) {
-                if (Files.exists(mapFolder)) {
-                  System.setProperty(ToolArguments.MAP_FOLDER, mapFolder.toString());
-                }
+              if (mapFolder != null && Files.exists(mapFolder)) {
+                System.setProperty(ToolArguments.MAP_FOLDER, mapFolder.toString());
               }
             }));
     panel.add(mapFolderButton);
