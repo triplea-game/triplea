@@ -68,6 +68,12 @@ public class ZippedMapsExtractor {
                     // Do not move the zip file to a bad-zip folder as that operation could also
                     // fail.
                     log.warn("Error extracting map zip: " + mapZip + ", " + e.getMessage(), e);
+                  } catch (final ZipExtractor.ZipSecurityException e) {
+                    log.error(
+                        "Malicious zip file detected: "
+                            + mapZip.toAbsolutePath()
+                            + ", please report this to TripleA and delete the zip file",
+                        e);
                   }
                 }));
   }

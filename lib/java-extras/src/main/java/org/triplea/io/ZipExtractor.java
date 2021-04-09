@@ -29,6 +29,14 @@ public class ZipExtractor {
     }
   }
 
+  public static class ZipSecurityException extends RuntimeException {
+    private static final long serialVersionUID = 4558259887205500763L;
+
+    ZipSecurityException(final Path zipEntry) {
+      super(zipEntry.toString());
+    }
+  }
+
   /**
    * Indicates there was an error accessing or writing to the file system (zip is okay, but
    * extration failed).
@@ -93,11 +101,6 @@ public class ZipExtractor {
       }
     } catch (final IOException e) {
       throw new ZipReadException(fileZip, e);
-    } catch (final ZipSecurityException e) {
-      log.error(
-          "Malicious zip file detected: "
-              + fileZip.toAbsolutePath()
-              + ", please report this to TripleA and delete the zip file");
     }
   }
 
@@ -150,13 +153,5 @@ public class ZipExtractor {
     }
 
     return destFile;
-  }
-
-  private static class ZipSecurityException extends RuntimeException {
-    private static final long serialVersionUID = 4558259887205500763L;
-
-    ZipSecurityException(final Path zipEntry) {
-      throw new IllegalArgumentException("Malicious path: " + zipEntry);
-    }
   }
 }
