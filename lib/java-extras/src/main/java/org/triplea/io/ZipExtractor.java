@@ -10,7 +10,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class with method to extract a zip file with check against "Zip Slip" vulnerability
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
  * reading the zip file or alternatively errors accessing and writing to file system.
  */
 @UtilityClass
-@Slf4j
 public class ZipExtractor {
   /** Indicates there was an error reading the zip file (zip file is invalid). */
   public static class ZipReadException extends RuntimeException {
