@@ -1,6 +1,5 @@
 package org.triplea.web.socket;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import javax.websocket.CloseReason;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +48,6 @@ public class StandaloneWebsocketServer extends WebSocketServer {
   public void shutdown() {
     try {
       super.stop();
-    } catch (final IOException e) {
-      log.warn("Error stopping server", e);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       log.warn(
