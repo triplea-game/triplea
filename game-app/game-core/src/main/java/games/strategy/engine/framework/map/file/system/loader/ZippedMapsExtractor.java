@@ -98,7 +98,7 @@ public class ZippedMapsExtractor {
   }
 
   private static Optional<Path> unzipMapThrowing(final Path mapZip) throws IOException {
-    Preconditions.checkArgument(Files.isReadable(mapZip), mapZip.toAbsolutePath());
+    Preconditions.checkArgument(!Files.isDirectory(mapZip), mapZip.toAbsolutePath());
     Preconditions.checkArgument(Files.exists(mapZip), mapZip.toAbsolutePath());
     Preconditions.checkArgument(
         mapZip.getFileName().toString().endsWith(".zip"), mapZip.toAbsolutePath());
