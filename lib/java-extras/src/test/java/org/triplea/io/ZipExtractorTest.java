@@ -7,7 +7,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
@@ -48,7 +47,7 @@ class ZipExtractorTest {
    * Once the zip file is unzipped, the test verifies the files exist with expected contents.
    */
   @Test
-  void unzip() throws IOException, URISyntaxException {
+  void unzip() throws IOException {
     final Path testDataZip = testDataFolder.resolve("test-data.zip");
 
     ZipExtractor.unzipFile(testDataZip, destinationFolder);
@@ -72,17 +71,19 @@ class ZipExtractorTest {
   }
 
   @Test
-  void verifyMaliciousZipCantBeUnpacked() throws Exception {
+  void verifyMaliciousZipCantBeUnpacked() {
     final Path zip = testDataFolder.resolve("evil.zip");
     final Path subfolder = destinationFolder.resolve("sub");
 
-    final Exception exception = assertThrows(
-        ZipExtractor.ZipSecurityException.class, () -> ZipExtractor.unzipFile(zip, subfolder));
+    final Exception exception =
+        assertThrows(
+            ZipExtractor.ZipSecurityException.class, () -> ZipExtractor.unzipFile(zip, subfolder));
 
     assertThat(Files.exists(destinationFolder.resolve("matrix.jpg")), is(false));
     // Make sure file isn't extracted at all
     assertThat(Files.exists(subfolder.resolve("matrix.jpg")), is(false));
 
-    assertThat(exception.getMessage(), is("/..\\matrix.jpg"));
+    // Folder creation outside of the extraction directory should be prevented!
+    assertThat(exception.getMessage(), is("/.."));
   }
 }
