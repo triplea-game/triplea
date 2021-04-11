@@ -2,15 +2,39 @@ package org.triplea.io;
 
 import static org.apache.commons.io.FileUtils.deleteDirectory;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ZipExtractorTest {
+
+  private Path destinationFolder;
+  private Path testDataFolder;
+
+  @BeforeEach
+  void setUp() throws Exception {
+    destinationFolder = Files.createTempDirectory("zip-destination");
+    testDataFolder =
+        Path.of(ZipExtractorTest.class.getClassLoader().getResource("test-data").toURI());
+  }
+
+  @AfterEach
+  void tearDown() throws IOException {
+    deleteDirectory(destinationFolder.toFile());
+    assertThat(
+        "Ensure that we have no file handles open or anything else that"
+            + "would get in the way of deleting the unzipped folder",
+        Files.exists(destinationFolder),
+        is(false));
+  }
 
   /**
    * Unzips a sample test zip that contains the following files and file contents:
@@ -25,42 +49,42 @@ class ZipExtractorTest {
    */
   @Test
   void unzip() throws IOException {
-    final File destinationFolder = new File("destination");
-    destinationFolder.deleteOnExit();
-    try {
-      final File testDataZip = testDataZip();
+    final Path testDataZip = testDataFolder.resolve("test-data.zip");
 
-      ZipExtractor.unzipFile(testDataZip, destinationFolder);
+    ZipExtractor.unzipFile(testDataZip, destinationFolder);
 
-      assertThat(
-          "Should contain one folder and one file only",
-          FileUtils.listFiles(destinationFolder.toPath()),
-          hasSize(2));
-
-      final File unzippedTestFile1 = new File(destinationFolder, "test-file1");
-      final String testFile1Contents = Files.readString(unzippedTestFile1.toPath());
-      assertThat(testFile1Contents, is("ipsum ipsor\n"));
-
-      final File unzippedDirectory = new File(destinationFolder, "directory");
-      assertThat(unzippedDirectory.isDirectory(), is(true));
-      assertThat(unzippedDirectory.exists(), is(true));
-
-      final File unzippedTestFile2 = new File(unzippedDirectory, "test-file2");
-      final String testFile2Contents = Files.readString(unzippedTestFile2.toPath());
-      assertThat(testFile2Contents, is("lupsom osculus\n"));
-    } finally {
-      deleteDirectory(destinationFolder);
-    }
     assertThat(
-        "Ensure that we have no file handles open or anything else that"
-            + "would get in the way of deleting the unzipped folder",
-        destinationFolder.exists(),
-        is(false));
+        "Should contain one folder and one file only",
+        FileUtils.listFiles(destinationFolder),
+        hasSize(2));
+
+    final Path unzippedTestFile1 = destinationFolder.resolve("test-file1");
+    final String testFile1Contents = Files.readString(unzippedTestFile1);
+    assertThat(testFile1Contents, is("ipsum ipsor\n"));
+
+    final Path unzippedDirectory = destinationFolder.resolve("directory");
+    assertThat(Files.isDirectory(unzippedDirectory), is(true));
+    assertThat(Files.exists(unzippedDirectory), is(true));
+
+    final Path unzippedTestFile2 = unzippedDirectory.resolve("test-file2");
+    final String testFile2Contents = Files.readString(unzippedTestFile2);
+    assertThat(testFile2Contents, is("lupsom osculus\n"));
   }
 
-  private static File testDataZip() {
-    final File file =
-        new File(ZipExtractorTest.class.getClassLoader().getResource("test-data").getFile());
-    return new File(file, "test-data.zip");
+  @Test
+  void verifyMaliciousZipCantBeUnpacked() {
+    final Path zip = testDataFolder.resolve("evil.zip");
+    final Path subfolder = destinationFolder.resolve("sub");
+
+    final Exception exception =
+        assertThrows(
+            ZipExtractor.ZipSecurityException.class, () -> ZipExtractor.unzipFile(zip, subfolder));
+
+    assertThat(Files.exists(destinationFolder.resolve("matrix.jpg")), is(false));
+    // Make sure file isn't extracted at all
+    assertThat(Files.exists(subfolder.resolve("matrix.jpg")), is(false));
+
+    // Folder creation outside of the extraction directory should be prevented!
+    assertThat(exception.getMessage(), containsString("/.."));
   }
 }

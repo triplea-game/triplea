@@ -61,13 +61,19 @@ public class ZippedMapsExtractor {
                                     "Error extracting map zip: "
                                         + mapZip.toAbsolutePath()
                                         + ", zip has been moved to: "
-                                        + newLocation.toFile().getAbsolutePath(),
+                                        + newLocation.toAbsolutePath(),
                                     zipReadException));
                   } catch (final FileSystemException e) {
                     // Thrown if we are are out of disk space or have file system access issues.
                     // Do not move the zip file to a bad-zip folder as that operation could also
                     // fail.
                     log.warn("Error extracting map zip: " + mapZip + ", " + e.getMessage(), e);
+                  } catch (final ZipExtractor.ZipSecurityException e) {
+                    log.error(
+                        "Malicious zip file detected: "
+                            + mapZip.toAbsolutePath()
+                            + ", please report this to TripleA and delete the zip file",
+                        e);
                   }
                 }));
   }
@@ -98,7 +104,7 @@ public class ZippedMapsExtractor {
   }
 
   private static Optional<Path> unzipMapThrowing(final Path mapZip) throws IOException {
-    Preconditions.checkArgument(Files.isReadable(mapZip), mapZip.toAbsolutePath());
+    Preconditions.checkArgument(!Files.isDirectory(mapZip), mapZip.toAbsolutePath());
     Preconditions.checkArgument(Files.exists(mapZip), mapZip.toAbsolutePath());
     Preconditions.checkArgument(
         mapZip.getFileName().toString().endsWith(".zip"), mapZip.toAbsolutePath());
@@ -107,7 +113,7 @@ public class ZippedMapsExtractor {
     final Path extractionTarget =
         ClientFileSystemHelper.getUserMapsFolder().toPath().resolve(extractionFolderName);
 
-    final boolean mapIsAlreadyExtracted = extractionTarget.toFile().exists();
+    final boolean mapIsAlreadyExtracted = Files.exists(extractionTarget);
     if (mapIsAlreadyExtracted) {
       // no-op, we would not have expected for the map zip to have exist
       return Optional.empty();
@@ -118,7 +124,7 @@ public class ZippedMapsExtractor {
 
     // extract into a temp folder first
     final Path tempFolder = Files.createTempDirectory("triplea-unzip");
-    ZipExtractor.unzipFile(mapZip.toFile(), tempFolder.toFile());
+    ZipExtractor.unzipFile(mapZip, tempFolder);
 
     // Check if the zip extracts to a single folder, if so, then to preserve pre-2.6 functionality
     // we will use that as the map folder.
@@ -172,15 +178,20 @@ public class ZippedMapsExtractor {
    */
   private Optional<Path> moveBadZip(final Path mapZip) {
     final Path badZipFolder = downloadedMapsFolder.resolve("bad-zips");
-    if (!badZipFolder.toFile().exists() && !badZipFolder.toFile().mkdirs()) {
-      log.error(
-          "Unable to create folder: "
-              + badZipFolder.toFile().getAbsolutePath()
-              + ", please report this to TripleA and create the folder manually.");
-      return Optional.empty();
+    if (!Files.exists(badZipFolder)) {
+      try {
+        Files.createDirectories(badZipFolder);
+      } catch (final IOException e) {
+        log.error(
+            "Unable to create folder: "
+                + badZipFolder.toAbsolutePath()
+                + ", please report this to TripleA and create the folder manually.",
+            e);
+        return Optional.empty();
+      }
     }
     try {
-      final Path newLocation = badZipFolder.resolve(mapZip.getFileName().toString());
+      final Path newLocation = badZipFolder.resolve(mapZip.getFileName());
       Files.move(mapZip, newLocation);
       return Optional.of(newLocation);
     } catch (final IOException e) {
@@ -188,7 +199,7 @@ public class ZippedMapsExtractor {
           "Failed to move file: "
               + mapZip.toAbsolutePath()
               + ", to: "
-              + badZipFolder.toFile().getAbsolutePath(),
+              + badZipFolder.toAbsolutePath(),
           e);
       return Optional.empty();
     }
