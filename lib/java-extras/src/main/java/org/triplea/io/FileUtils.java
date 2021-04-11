@@ -2,11 +2,13 @@ package org.triplea.io;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -165,20 +167,42 @@ public final class FileUtils {
 
   /**
    * Reads and returns the contents of a given file. Returns empty if the file does not exist or if
-   * there were any errors reading the file.
+   * there were any errors reading the file. Character encodings allowed: UTf-8, ISO_8859_1
+   *
+   * @throws MalformedInputException thrown if unrecongized character encodings found
+   * @throws IOException thrown if there are any problems reading the target file
    */
   public static Optional<String> readContents(final Path fileToRead) {
     if (!fileToRead.toFile().exists()) {
       return Optional.empty();
     }
 
+    // try to read the file with default character encoding, if fails then fallback
+    // to UTF-8 then try ISO-8859_1
     try {
-      return Optional.of(Files.readString(fileToRead));
+      try {
+        return Optional.of(Files.readString(fileToRead));
+      } catch (final MalformedInputException e) {
+        log.info(
+            "Warning: file was not saved as UTF-8, some characters may not render:  {}, {}",
+            fileToRead.toFile().getAbsolutePath(),
+            e.getMessage());
+      }
+
+      try {
+        return Optional.of(Files.readString(fileToRead, Charsets.ISO_8859_1));
+      } catch (final MalformedInputException e) {
+        log.warn(
+            "Bad file encoding: "
+                + fileToRead.toAbsolutePath().toString()
+                + ", contact the map maker and ask them to save this file as UTF-8");
+        return Optional.empty();
+      }
     } catch (final IOException e) {
       log.error(
           "Error reading file: {}, {}", fileToRead.toFile().getAbsolutePath(), e.getMessage(), e);
-      return Optional.empty();
     }
+    return Optional.empty();
   }
 
   public static void writeToFile(final Path fileToWrite, final String contents) {
