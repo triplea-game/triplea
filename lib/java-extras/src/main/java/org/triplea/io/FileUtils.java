@@ -175,7 +175,10 @@ public final class FileUtils {
 
   /**
    * Reads and returns the contents of a given file. Returns empty if the file does not exist or if
-   * there were any errors reading the file.
+   * there were any errors reading the file. Character encodings allowed: UTf-8, ISO_8859_1
+   *
+   * @throws MalformedInputException thrown if unrecongized character encodings found
+   * @throws IOException thrown if there are any problems reading the target file
    */
   public static Optional<String> readContents(final Path fileToRead) {
     if (!fileToRead.toFile().exists()) {
@@ -189,8 +192,7 @@ public final class FileUtils {
         return Optional.of(Files.readString(fileToRead));
       } catch (final MalformedInputException e) {
         log.info(
-            "Warning: "
-                + "unable to read file (character encoding problem), will next try UTF-8: {}, {}",
+            "Warning: file was not saved as UTF-8, some characters may not render:  {}, {}",
             fileToRead.toFile().getAbsolutePath(),
             e.getMessage());
       }
@@ -199,7 +201,7 @@ public final class FileUtils {
         return Optional.of(Files.readString(fileToRead, Charsets.ISO_8859_1));
       } catch (final MalformedInputException e) {
         log.warn(
-            "Bad file encoding on file: "
+            "Bad file encoding: "
                 + fileToRead.toAbsolutePath().toString()
                 + ", contact the map maker and ask them to save this file as UTF-8");
         return Optional.empty();
