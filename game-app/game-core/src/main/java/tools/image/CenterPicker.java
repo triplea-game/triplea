@@ -2,7 +2,6 @@ package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,7 +10,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -80,7 +78,7 @@ public final class CenterPicker {
     }
     if (map != null) {
       log.info("Map : " + map);
-      final CenterPickerFrame frame = new CenterPickerFrame(map.toString());
+      final CenterPickerFrame frame = new CenterPickerFrame(map);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
@@ -112,7 +110,7 @@ public final class CenterPicker {
     private static final long serialVersionUID = -5633998810385136625L;
 
     // The map image will be stored here
-    private Image image;
+    private final Image image;
     // hash map for center points
     private Map<String, Point> centers = new HashMap<>();
     // hash map for polygon points
@@ -123,12 +121,12 @@ public final class CenterPicker {
      * Sets up all GUI components, initializes variables with default or needed values, and prepares
      * the map for user commands.
      *
-     * @param mapName Name of map file.
+     * @param mapFolder The {@link Path} pointing to the map folder.
      */
-    CenterPickerFrame(final String mapName) throws IOException {
+    CenterPickerFrame(final Path mapFolder) throws IOException {
       super("Center Picker");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "polygons.txt");
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
@@ -155,7 +153,7 @@ public final class CenterPicker {
           }
         }
       }
-      createImage(mapName);
+      image = FileHelper.newImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
@@ -212,16 +210,6 @@ public final class CenterPicker {
       fileMenu.addSeparator();
       fileMenu.add(exitItem);
       menuBar.add(fileMenu);
-    } // end constructor
-
-    /**
-     * creates the image map and makes sure it is properly loaded.
-     *
-     * @param mapName the path of image map
-     */
-    private void createImage(final String mapName) {
-      image = Toolkit.getDefaultToolkit().createImage(mapName);
-      Util.ensureImageLoaded(image);
     }
 
     /** Creates the main panel and returns a JPanel object. */

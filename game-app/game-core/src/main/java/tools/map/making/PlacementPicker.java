@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,7 +11,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -134,7 +132,7 @@ public final class PlacementPicker {
       mapFolderLocation = mapSelection.getFile().getParent();
     }
     if (mapName != null) {
-      final PlacementPickerFrame frame = new PlacementPickerFrame(mapName.toString());
+      final PlacementPickerFrame frame = new PlacementPickerFrame(mapName);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
@@ -154,7 +152,7 @@ public final class PlacementPicker {
     private boolean showIncompleteMode = false;
     private int incompleteNum = 1;
     private Point currentSquare;
-    private Image image;
+    private final Image image;
     private final JLabel locationLabel = new JLabel();
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     private Map<String, Tuple<List<Point>, Boolean>> placements;
@@ -166,15 +164,15 @@ public final class PlacementPicker {
      * Sets up all GUI components, initializes variables with default or needed values, and prepares
      * the map for user commands.
      *
-     * @param mapName Name of map file.
+     * @param mapFolder The {@link Path} pointing to the map folder.
      */
-    PlacementPickerFrame(final String mapName) throws IOException {
+    PlacementPickerFrame(final Path mapFolder) throws IOException {
       super("Placement Picker");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       if (!placeDimensionsSet) {
         try {
           final Path file =
-              FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "map.properties");
+              FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "map.properties");
           if (Files.exists(file)) {
             double scale = unitZoomPercent;
             int width = unitWidth;
@@ -303,7 +301,7 @@ public final class PlacementPicker {
           log.error("Failed to initialize from user input", e);
         }
       }
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "polygons.txt");
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
@@ -335,7 +333,7 @@ public final class PlacementPicker {
           log.info("Polygons file not given. Will run regardless");
         }
       }
-      createImage(mapName);
+      image = FileHelper.newImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
@@ -447,16 +445,6 @@ public final class PlacementPicker {
       editMenu.add(showIncompleteModeItem);
       menuBar.add(fileMenu);
       menuBar.add(editMenu);
-    } // end constructor
-
-    /**
-     * creates the image map and makes sure it is properly loaded.
-     *
-     * @param mapName The path of image map.
-     */
-    private void createImage(final String mapName) {
-      image = Toolkit.getDefaultToolkit().createImage(mapName);
-      Util.ensureImageLoaded(image);
     }
 
     /** Creates the main panel and returns a JPanel object. */

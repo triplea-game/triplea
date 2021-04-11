@@ -2,7 +2,6 @@ package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,7 +10,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -82,7 +80,7 @@ public final class PolygonGrabber {
     }
     if (mapName != null) {
       log.info("Map : " + mapName);
-      final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName.toString());
+      final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
@@ -122,7 +120,7 @@ public final class PolygonGrabber {
     // the current set of polyongs
     private List<Polygon> current;
     // holds the map image
-    private BufferedImage bufferedImage;
+    private final BufferedImage bufferedImage;
     // maps String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     // holds the centers for the polygons
@@ -134,12 +132,12 @@ public final class PolygonGrabber {
      * Asks user to specify a file with center points. If not program will exit. We setup the mouse
      * listeners and toolbars and load the actual image of the map here.
      *
-     * @param mapName Path to image map.
+     * @param mapFolder The {@link Path} pointing to the map folder.
      */
-    PolygonGrabberFrame(final String mapName) throws IOException {
+    PolygonGrabberFrame(final Path mapFolder) throws IOException {
       super("Polygon grabber");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "centers.txt");
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
@@ -174,7 +172,7 @@ public final class PolygonGrabber {
           throw e;
         }
       }
-      createImage(mapName);
+      bufferedImage = newBufferedImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
@@ -315,22 +313,22 @@ public final class PolygonGrabber {
       editMenu.add(autoItem);
       menuBar.add(fileMenu);
       menuBar.add(editMenu);
-    } // end constructor
+    }
 
     /**
      * We create the image of the map here and assure that it is loaded properly.
      *
-     * @param mapName The path of the image map.
+     * @param mapFolder The {@link Path} pointing to the map folder.
      */
-    private void createImage(final String mapName) {
-      final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
-      Util.ensureImageLoaded(image);
-      bufferedImage =
+    private BufferedImage newBufferedImage(final Path mapFolder) {
+      final Image image = FileHelper.newImage(mapFolder);
+      final BufferedImage bufferedImage =
           new BufferedImage(
               image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics g = bufferedImage.getGraphics();
       g.drawImage(image, 0, 0, this);
       g.dispose();
+      return bufferedImage;
     }
 
     /**

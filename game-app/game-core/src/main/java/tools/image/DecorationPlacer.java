@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +12,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -132,7 +130,7 @@ public final class DecorationPlacer {
       mapFolderLocation = mapSelection.getFile().getParent();
     }
     if (map != null) {
-      final DecorationPlacerFrame frame = new DecorationPlacerFrame(map.toString());
+      final DecorationPlacerFrame frame = new DecorationPlacerFrame(map);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
@@ -210,13 +208,13 @@ public final class DecorationPlacer {
     private boolean cheapMutex = false;
     private boolean showPointNames = false;
 
-    DecorationPlacerFrame(final String mapName) throws IOException {
+    DecorationPlacerFrame(final Path mapFolder) throws IOException {
       super("Decoration Placer");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       setLocationRelativeTo(null);
       highlightAll = false;
       final Path fileCenters =
-          FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "centers.txt");
+          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
       if (Files.exists(fileCenters)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
@@ -252,7 +250,8 @@ public final class DecorationPlacer {
           throw e;
         }
       }
-      final Path filePoly = FileHelper.getFileInMapRoot(mapFolderLocation, mapName, "polygons.txt");
+      final Path filePoly =
+          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
       if (Files.exists(filePoly)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
@@ -286,7 +285,7 @@ public final class DecorationPlacer {
           throw new IOException("no polygons file specified");
         }
       }
-      image = newImage(mapName);
+      image = FileHelper.newImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
@@ -391,24 +390,12 @@ public final class DecorationPlacer {
       menuBar.add(editMenu);
     }
 
-    /**
-     * Creates the image map and makes sure it is properly loaded.
-     *
-     * @param mapName The path of image map.
-     */
-    private Image newImage(final String mapName) {
-      final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
-      Util.ensureImageLoaded(image);
-      return image;
-    }
-
     private JPanel newMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
 
         @Override
         public void paint(final Graphics g) {
-          // super.paint(g);
           paintToG(g);
         }
       };
@@ -718,7 +705,7 @@ public final class DecorationPlacer {
         if (imageSelection.getFile() == null || !Files.exists(imageSelection.getFile())) {
           continue;
         }
-        staticImageForPlacing = newImage(imageSelection.getFile().toString());
+        staticImageForPlacing = FileHelper.newImage(imageSelection.getFile());
       }
       final int width = staticImageForPlacing.getWidth(null);
       final int height = staticImageForPlacing.getHeight(null);
@@ -768,7 +755,7 @@ public final class DecorationPlacer {
         }
         final String imageName = path.getFileName().toString();
         final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
-        final Image image = newImage(path.toString());
+        final Image image = FileHelper.newImage(path);
         List<Point> points =
             (currentPoints != null
                 ? currentPoints.get(
