@@ -13,12 +13,12 @@ public class FileHelper {
   /**
    * Helper method to unify commons file searching functionality. It searches for a file with the
    * name of {@code fileName} inside of {@code mapFolderLocation}. If no file exists there it tries
-   * to search inside a directory specified by {@code mapName}.
+   * to search inside a directory specified by {@code mapFolder}.
    *
    * @param mapFolderLocation The folder to check first.
    * @param mapFolder The folder to check as a fallback.
    * @param fileName The file to search for.
-   * @return The found file if it exists in {@code mapFolderLocation}, the file in {@code mapName}
+   * @return The found file if it exists in {@code mapFolderLocation}, the file in {@code mapFolder}
    *     otherwise, even if it does not exist.
    */
   public static Path getFileInMapRoot(
