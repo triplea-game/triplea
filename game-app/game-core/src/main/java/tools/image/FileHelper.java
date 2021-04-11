@@ -31,6 +31,7 @@ public class FileHelper {
     }
     return mapFolder.resolveSibling(fileName);
   }
+
   /**
    * Creates the image map and makes sure it is properly loaded.
    *
