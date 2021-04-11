@@ -2,6 +2,7 @@ package org.triplea.io;
 
 import static org.apache.commons.io.FileUtils.deleteDirectory;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,6 +85,6 @@ class ZipExtractorTest {
     assertThat(Files.exists(subfolder.resolve("matrix.jpg")), is(false));
 
     // Folder creation outside of the extraction directory should be prevented!
-    assertThat(exception.getMessage(), is("/.."));
+    assertThat(exception.getMessage(), containsString("/.."));
   }
 }

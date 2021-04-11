@@ -34,7 +34,7 @@ public class ZipExtractor {
     private static final long serialVersionUID = 4558259887205500763L;
 
     ZipSecurityException(final Path zipEntry) {
-      super(zipEntry.toString());
+      super(zipEntry + " is a forbidden path");
     }
   }
 
