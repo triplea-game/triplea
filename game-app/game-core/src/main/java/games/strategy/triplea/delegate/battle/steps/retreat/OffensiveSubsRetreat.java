@@ -34,8 +34,9 @@ public class OffensiveSubsRetreat implements BattleStep {
 
   @Override
   public List<String> getNames() {
-    // do not check for destroyer because it could die before the retreat step
-    // and thus allow the retreat step
+    // even though the #execute method checks for destroyers, we don't do it here
+    // because this is called at the beginning of the round and any destroyer that exists
+    // might die before the #execute is called
     if (isEvaderNotPresent() || isRetreatNotPossible()) {
       return List.of();
     }
