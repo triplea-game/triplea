@@ -113,7 +113,10 @@ public class OffensiveSubsRetreatTest {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(
+        "The destroyer could be killed during the AA phase which would allow the sub to retreat.",
+        offensiveSubsRetreat.getNames(),
+        hasSize(1));
   }
 
   @Test
