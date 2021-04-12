@@ -11,10 +11,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.HttpClient;
 
-/**
- * Accumulates required args for making requests to create github issues, and then presents an API
- * to accept user upload data.
- */
+/** Can be used to interact with github's webservice API. */
 public class GithubApiClient {
 
   /** If this client is set to 'test' mode, we will return a stubbed response. */
@@ -53,14 +50,28 @@ public class GithubApiClient {
       return new CreateIssueResponse(STUBBED_RETURN_VALUE);
     }
 
-    final Map<String, Object> tokens = new HashMap<>();
-    tokens.put("Authorization", "token " + authToken);
+    final Map<String, Object> tokens = buildAuthorizationHeaders();
     return githubApiFeignClient.newIssue(tokens, githubOrg, githubRepo, createIssueRequest);
+  }
+
+  private Map<String, Object> buildAuthorizationHeaders() {
+    final Map<String, Object> tokens = new HashMap<>();
+    // authToken is not required, can happen in dev environments.
+    // Without an auth token the only consequence is the github API rate
+    // limit is more strict.
+    if (authToken != null && !authToken.isBlank()) {
+      tokens.put("Authorization", "token " + authToken);
+    }
+    return tokens;
   }
 
   /**
    * Returns a listing of the repositories within a github organization. This call handles paging,
    * it returns a complete list and may perform multiple calls to Github.
+   *
+   * <p>Example equivalent cUrl call:
+   *
+   * <p>curl https://api.github.com/orgs/triplea-maps/repos
    */
   public Collection<URI> listRepositories(final String githubOrg) {
     final Collection<URI> allRepos = new HashSet<>();
@@ -75,13 +86,8 @@ public class GithubApiClient {
   }
 
   private Collection<URI> listRepositories(final String githubOrg, final int pageNumber) {
-    final Map<String, Object> tokens = new HashMap<>();
-    // authToken is not required, can happen in dev environments.
-    // Without an auth token the only consequence is the github API rate
-    // limit is more strict.
-    if (authToken != null && !authToken.isBlank()) {
-      tokens.put("Authorization", "token " + authToken);
-    }
+    final Map<String, Object> tokens = buildAuthorizationHeaders();
+
     final Map<String, String> queryParams = new HashMap<>();
     queryParams.put("per_page", "100");
     queryParams.put("page", String.valueOf(pageNumber));
@@ -90,5 +96,24 @@ public class GithubApiClient {
         .map(RepoListingResponse::getHtmlUrl)
         .map(URI::create)
         .collect(Collectors.toSet());
+  }
+
+  /**
+   * Fetches details of a specific branch on a specific repo. Useful for retrieving info about the
+   * last commit to the repo. Note, the repo listing contains a 'last_push' date, but this method
+   * should be used instead as the last_push date on a repo can be for any branch (even PRs).
+   *
+   * <p>Example equivalent cUrl:
+   * https://api.github.com/repos/triplea-maps/star_wars_galactic_war/branches/master
+   *
+   * @param org Name of the github org to be queried.
+   * @param repo Name of the github repository.
+   * @param branch Which branch to be queried.
+   * @return Payload response object representing the response from Github's web API.
+   */
+  public BranchInfoResponse fetchBranchInfo(
+      final String org, final String repo, final String branch) {
+    final Map<String, Object> tokens = buildAuthorizationHeaders();
+    return githubApiFeignClient.getBranchInfo(tokens, org, repo, branch);
   }
 }

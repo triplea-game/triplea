@@ -17,6 +17,7 @@ interface GithubApiFeignClient {
 
   @VisibleForTesting String CREATE_ISSUE_PATH = "/repos/{org}/{repo}/issues";
   @VisibleForTesting String LIST_REPOS_PATH = "/orgs/{org}/repos";
+  @VisibleForTesting String BRANCHES_PATH = "/repos/{org}/{repo}/branches/{branch}";
 
   /**
    * Creates a new issue on github.com.
@@ -35,4 +36,11 @@ interface GithubApiFeignClient {
       @HeaderMap Map<String, Object> headerMap,
       @QueryMap Map<String, String> queryParams,
       @Param("org") String org);
+
+  @RequestLine("GET " + BRANCHES_PATH)
+  BranchInfoResponse getBranchInfo(
+      @HeaderMap Map<String, Object> headerMap,
+      @Param("org") String org,
+      @Param("repo") String repo,
+      @Param("branch") String branch);
 }
