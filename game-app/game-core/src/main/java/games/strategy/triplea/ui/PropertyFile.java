@@ -8,11 +8,9 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.sound.PropertiesLoader;
 
 /** Common property file class which should be extended. */
-@Slf4j
 public abstract class PropertyFile {
 
   protected static final Cache<Class<? extends PropertyFile>, PropertyFile> cache =

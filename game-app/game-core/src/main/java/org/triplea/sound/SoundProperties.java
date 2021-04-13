@@ -2,10 +2,8 @@ package org.triplea.sound;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.PropertyFile;
-import lombok.extern.slf4j.Slf4j;
 
 /** sounds.properties file helper class */
-@Slf4j
 class SoundProperties extends PropertyFile {
   static final String GENERIC_FOLDER = "generic";
   private static final String PROPERTY_FILE = "sounds.properties";

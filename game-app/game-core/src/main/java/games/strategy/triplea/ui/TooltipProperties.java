@@ -3,11 +3,9 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.LocalizeHtml;
 
 /** Generates unit tooltips based on the content of the map's {@code tooltips.properties} file. */
-@Slf4j
 public final class TooltipProperties extends PropertyFile {
   private static final String PROPERTY_FILE = "tooltips.properties";
   private static final String TOOLTIP = "tooltip";

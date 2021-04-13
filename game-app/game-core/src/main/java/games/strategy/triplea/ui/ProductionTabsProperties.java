@@ -5,11 +5,9 @@ import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.sound.PropertiesLoader;
 import org.triplea.util.Tuple;
 
-@Slf4j
 class ProductionTabsProperties {
   // Filename
   private static final String PROPERTY_FILE = "production_tabs";

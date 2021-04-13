@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui;
 
-import lombok.extern.slf4j.Slf4j;
-
 /** Same as PoliticsText but for user actions. */
-@Slf4j
 public class UserActionText extends PropertyFile {
   // Filename
   private static final String PROPERTY_FILE = "actionstext.properties";
