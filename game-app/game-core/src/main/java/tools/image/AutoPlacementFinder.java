@@ -11,7 +11,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -275,8 +274,8 @@ public final class AutoPlacementFinder {
       textOptionPane.dispose();
       return;
     }
-    try (OutputStream os = Files.newOutputStream(fileName)) {
-      PointFileReaderWriter.writeOneToMany(os, placements);
+    try {
+      PointFileReaderWriter.writeOneToMany(fileName, placements);
       textOptionPane.appendNewLine("Data written to :" + fileName.normalize().toAbsolutePath());
     } catch (final IOException e) {
       log.error("Failed to write points file: " + fileName, e);

@@ -16,7 +16,6 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -145,8 +144,8 @@ public final class TileImageReconstructor {
         final Path polyName =
             new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyName != null) {
-          try (InputStream in = Files.newInputStream(polyName)) {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+          try {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(polyName);
           } catch (final IOException e) {
             log.error("Failed to load polygons: " + polyName, e);
             return;

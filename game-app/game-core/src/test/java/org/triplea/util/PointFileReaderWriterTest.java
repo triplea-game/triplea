@@ -7,11 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
@@ -20,57 +16,51 @@ import com.google.common.primitives.Ints;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.io.IoUtils;
 import org.triplea.java.function.ThrowingConsumer;
-import org.triplea.java.function.ThrowingFunction;
 
 final class PointFileReaderWriterTest {
-  private static <R> R readFromString(
-      final ThrowingFunction<InputStream, R, IOException> function, final String content)
+  private static String writeToString(final ThrowingConsumer<Path, IOException> consumer)
       throws Exception {
-    return IoUtils.readFromMemory(content.getBytes(StandardCharsets.UTF_8), function);
+    final Path path = mock(Path.class);
+    final FileSystem fileSystem = mock(FileSystem.class);
+    final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
+    when(path.getFileSystem()).thenReturn(fileSystem);
+    when(fileSystem.provider()).thenReturn(fileSystemProvider);
+    final ByteArrayOutputStream os = new ByteArrayOutputStream();
+    when(fileSystemProvider.newOutputStream(path)).thenReturn(os);
+    consumer.accept(path);
+    return os.toString(StandardCharsets.UTF_8);
   }
 
-  private static String writeToString(final ThrowingConsumer<OutputStream, IOException> consumer)
-      throws Exception {
-    return new String(IoUtils.writeToMemory(consumer), StandardCharsets.UTF_8);
-  }
-
-  private static InputStream newInputStreamForCloseTest() throws Exception {
-    final InputStream is = mock(InputStream.class);
-    when(is.read(any(), anyInt(), anyInt())).thenReturn(-1);
-    return is;
-  }
-
-  private static OutputStream newOutputStreamForCloseTest() {
-    return mock(OutputStream.class);
+  private static Path pathToVirtualTextFile(final String content) throws IOException {
+    final Path path = mock(Path.class);
+    final FileSystem fileSystem = mock(FileSystem.class);
+    final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
+    when(path.getFileSystem()).thenReturn(fileSystem);
+    when(fileSystem.provider()).thenReturn(fileSystemProvider);
+    when(fileSystemProvider.newInputStream(path))
+        .thenReturn(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
+    return path;
   }
 
   @Nested
   final class ReadOneToOneTest {
     @Test
-    void shouldNotCloseStream() throws Exception {
-      final InputStream is = newInputStreamForCloseTest();
-
-      PointFileReaderWriter.readOneToOne(is);
-
-      verify(is, never()).close();
-    }
-
-    @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
-      assertThat(
-          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToOne), is(Map.of()));
+      final Path path = pathToVirtualTextFile("");
+      assertThat(PointFileReaderWriter.readOneToOne(path), is(Map.of()));
     }
 
     @Test
@@ -84,7 +74,7 @@ final class PointFileReaderWriterTest {
               + " (321,456)\n";
 
       final Map<String, Point> pointsByName =
-          readFromString(PointFileReaderWriter::readOneToOne, content);
+          PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content));
 
       assertThat(
           pointsByName,
@@ -100,23 +90,28 @@ final class PointFileReaderWriterTest {
     void shouldErrorOnInvalidSyntax() {
       final String content1 = "United Kingdom (1011,1021\n";
       assertThrows(
-          IOException.class, () -> readFromString(PointFileReaderWriter::readOneToOne, content1));
+          IOException.class,
+          () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content1)));
 
       final String content2 = "(United) Kingdom (1011,1021)\n";
       assertThrows(
-          IOException.class, () -> readFromString(PointFileReaderWriter::readOneToOne, content2));
+          IOException.class,
+          () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content2)));
 
       final String content3 = "United Kingdom 1011,1021)\n";
       assertThrows(
-          IOException.class, () -> readFromString(PointFileReaderWriter::readOneToOne, content3));
+          IOException.class,
+          () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content3)));
 
       final String content4 = "United Kingdom (1011 1021)\n";
       assertThrows(
-          IOException.class, () -> readFromString(PointFileReaderWriter::readOneToOne, content4));
+          IOException.class,
+          () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content4)));
 
       final String content5 = "United Kingdom 1011 1021\n";
       assertThrows(
-          IOException.class, () -> readFromString(PointFileReaderWriter::readOneToOne, content5));
+          IOException.class,
+          () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content5)));
     }
 
     @Test
@@ -126,7 +121,7 @@ final class PointFileReaderWriterTest {
       final Exception e1 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToOne, content1));
+              () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content1)));
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
@@ -135,7 +130,7 @@ final class PointFileReaderWriterTest {
       final Exception e2 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToOne, content2));
+              () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content2)));
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 = "" + "54 Sea Zone  (1011,1021)\n" + "54 Sea Zone  (1021,1011)";
@@ -143,7 +138,7 @@ final class PointFileReaderWriterTest {
       final Exception e3 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToOne, content3));
+              () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content3)));
       assertTrue(e3.getMessage().contains("54 Sea Zone"));
     }
 
@@ -156,7 +151,7 @@ final class PointFileReaderWriterTest {
               + "Eastern United States (-123, -456)";
 
       final Map<String, Point> pointsByName =
-          readFromString(PointFileReaderWriter::readOneToOne, content);
+          PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content));
 
       assertThat(
           pointsByName,
@@ -171,18 +166,8 @@ final class PointFileReaderWriterTest {
   @Nested
   final class ReadOneToManyTest {
     @Test
-    void shouldNotCloseStream() throws Exception {
-      final InputStream is = newInputStreamForCloseTest();
-
-      PointFileReaderWriter.readOneToMany(is);
-
-      verify(is, never()).close();
-    }
-
-    @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
-      assertThat(
-          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToMany), is(Map.of()));
+      assertThat(PointFileReaderWriter.readOneToMany(pathToVirtualTextFile("")), is(Map.of()));
     }
 
     @Test
@@ -194,7 +179,7 @@ final class PointFileReaderWriterTest {
               + "Philippines (3011,3021)\n";
 
       final Map<String, List<Point>> pointListsByName =
-          readFromString(PointFileReaderWriter::readOneToMany, content);
+          PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content));
 
       assertThat(
           pointListsByName,
@@ -213,7 +198,7 @@ final class PointFileReaderWriterTest {
       final Exception e1 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToMany, content1));
+              () -> PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content1)));
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
@@ -222,7 +207,7 @@ final class PointFileReaderWriterTest {
       final Exception e2 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToMany, content2));
+              () -> PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content2)));
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 =
@@ -233,7 +218,7 @@ final class PointFileReaderWriterTest {
       final Exception e3 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToMany, content3));
+              () -> PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content3)));
       assertTrue(e3.getMessage().contains("54 Sea Zone"));
     }
 
@@ -242,7 +227,7 @@ final class PointFileReaderWriterTest {
       final String content = "" + "United Kingdom (-1011,1021) (1234, -12424) (-123, -456)";
 
       final Map<String, List<Point>> pointListsByName =
-          readFromString(PointFileReaderWriter::readOneToMany, content);
+          PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content));
 
       assertThat(
           pointListsByName,
@@ -257,19 +242,9 @@ final class PointFileReaderWriterTest {
   @Nested
   final class ReadOneToManyPlacementsTest {
     @Test
-    void shouldNotCloseStream() throws Exception {
-      final InputStream is = newInputStreamForCloseTest();
-
-      PointFileReaderWriter.readOneToManyPlacements(is);
-
-      verify(is, never()).close();
-    }
-
-    @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(
-          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToManyPlacements),
-          is(Map.of()));
+          PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile("")), is(Map.of()));
     }
 
     @Test
@@ -283,7 +258,7 @@ final class PointFileReaderWriterTest {
               + "East Africa (5011,5021) | overflowToLeft=not a boolean\n";
 
       final Map<String, Tuple<List<Point>, Boolean>> pointListsByName =
-          readFromString(PointFileReaderWriter::readOneToManyPlacements, content);
+          PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content));
 
       assertThat(
           pointListsByName,
@@ -314,7 +289,7 @@ final class PointFileReaderWriterTest {
       final Exception e1 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToManyPlacements, content1));
+              () -> PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content1)));
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
@@ -325,7 +300,7 @@ final class PointFileReaderWriterTest {
       final Exception e2 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToManyPlacements, content2));
+              () -> PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content2)));
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 =
@@ -336,7 +311,7 @@ final class PointFileReaderWriterTest {
       final Exception e3 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToManyPlacements, content3));
+              () -> PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content3)));
       assertTrue(e3.getMessage().contains("54 Sea Zone"));
     }
 
@@ -345,7 +320,7 @@ final class PointFileReaderWriterTest {
       final String content = "" + "United Kingdom (-1011,1021) (1234, -12424) (-123, -456)";
 
       final Map<String, Tuple<List<Point>, Boolean>> pointListsByName =
-          readFromString(PointFileReaderWriter::readOneToManyPlacements, content);
+          PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content));
 
       assertThat(
           pointListsByName,
@@ -362,19 +337,9 @@ final class PointFileReaderWriterTest {
   @Nested
   final class ReadOneToManyPolygonsTest {
     @Test
-    void shouldNotCloseStream() throws Exception {
-      final InputStream is = newInputStreamForCloseTest();
-
-      PointFileReaderWriter.readOneToManyPolygons(is);
-
-      verify(is, never()).close();
-    }
-
-    @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(
-          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToManyPolygons),
-          is(Map.of()));
+          PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile("")), is(Map.of()));
     }
 
     @Test
@@ -387,7 +352,7 @@ final class PointFileReaderWriterTest {
               + "(3111,3121) (3112,3122) >  <  (3211,3221) >\n";
 
       final Map<String, List<Polygon>> polygonListsByName =
-          readFromString(PointFileReaderWriter::readOneToManyPolygons, content);
+          PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content));
 
       assertThat(polygonListsByName, is(aMapWithSize(3)));
       assertThat(polygonListsByName, hasKey("Belarus"));
@@ -423,7 +388,7 @@ final class PointFileReaderWriterTest {
       final Exception e1 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToManyPolygons, content1));
+              () -> PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content1)));
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
@@ -433,7 +398,7 @@ final class PointFileReaderWriterTest {
       final Exception e2 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToManyPolygons, content2));
+              () -> PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content2)));
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 =
@@ -443,7 +408,7 @@ final class PointFileReaderWriterTest {
       final Exception e3 =
           assertThrows(
               IOException.class,
-              () -> readFromString(PointFileReaderWriter::readOneToManyPolygons, content3));
+              () -> PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content3)));
       assertTrue(e3.getMessage().contains("54 Sea Zone"));
     }
 
@@ -464,7 +429,7 @@ final class PointFileReaderWriterTest {
       final String content = "" + "United Kingdom < (-1011,1021) (1234, -12424) (-123, -456) >";
 
       final Map<String, List<Polygon>> polygonListsByName =
-          readFromString(PointFileReaderWriter::readOneToManyPolygons, content);
+          PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content));
 
       assertThat(
           points(polygonListsByName.get("United Kingdom")),
@@ -477,15 +442,6 @@ final class PointFileReaderWriterTest {
 
   @Nested
   final class WriteOneToOneTest {
-    @Test
-    void shouldNotCloseStream() throws Exception {
-      final OutputStream os = newOutputStreamForCloseTest();
-
-      PointFileReaderWriter.writeOneToOne(os, Map.of());
-
-      verify(os, never()).close();
-    }
-
     @Test
     void shouldWriteOnePointPerName() throws Exception {
       final Map<String, Point> pointsByName =
@@ -511,15 +467,6 @@ final class PointFileReaderWriterTest {
   @Nested
   final class WriteOneToManyTest {
     @Test
-    void shouldNotCloseStream() throws Exception {
-      final OutputStream os = newOutputStreamForCloseTest();
-
-      PointFileReaderWriter.writeOneToMany(os, Map.of());
-
-      verify(os, never()).close();
-    }
-
-    @Test
     void shouldWriteMultiplePointsPerName() throws Exception {
       final Map<String, List<Point>> pointListsByName =
           // ImmutableMap#of guarantees iteration ordering
@@ -544,15 +491,6 @@ final class PointFileReaderWriterTest {
 
   @Nested
   final class WriteOneToManyPlacementsTest {
-    @Test
-    void shouldNotCloseStream() throws Exception {
-      final OutputStream os = newOutputStreamForCloseTest();
-
-      PointFileReaderWriter.writeOneToManyPlacements(os, Map.of());
-
-      verify(os, never()).close();
-    }
-
     @Test
     void shouldWriteMultiplePlacementsPerName() throws Exception {
       final Map<String, Tuple<List<Point>, Boolean>> polygonListsByName =
@@ -587,15 +525,6 @@ final class PointFileReaderWriterTest {
 
   @Nested
   final class WriteOneToManyPolygonsTest {
-    @Test
-    void shouldNotCloseStream() throws Exception {
-      final OutputStream os = newOutputStreamForCloseTest();
-
-      PointFileReaderWriter.writeOneToManyPolygons(os, Map.of());
-
-      verify(os, never()).close();
-    }
-
     @Test
     void shouldWriteMultiplePolygonsPerName() throws Exception {
       final Map<String, List<Polygon>> polygonListsByName =
@@ -638,17 +567,16 @@ final class PointFileReaderWriterTest {
   @Nested
   final class ReadStreamTest {
     @Test
-    void testExceptionWrapping() {
+    void testExceptionWrapping() throws IOException {
       final String test = "Test";
-      final ByteArrayInputStream stream =
-          new ByteArrayInputStream(test.getBytes(StandardCharsets.UTF_8));
+      final Path path = pathToVirtualTextFile(test);
       final IllegalArgumentException exception = new IllegalArgumentException("Test Exception");
       final Exception e =
           assertThrows(
               IOException.class,
               () ->
-                  PointFileReaderWriter.readStream(
-                      stream,
+                  PointFileReaderWriter.readPath(
+                      path,
                       line -> {
                         assertEquals(test, line);
                         throw exception;

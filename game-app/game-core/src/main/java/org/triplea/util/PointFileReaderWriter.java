@@ -9,15 +9,9 @@ import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +20,6 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.commons.io.input.CloseShieldInputStream;
-import org.apache.commons.io.output.CloseShieldOutputStream;
 
 /**
  * Utility to read and write files in the form of String -> a list of points, or string-> list of
@@ -48,11 +40,11 @@ public final class PointFileReaderWriter {
   private PointFileReaderWriter() {}
 
   /** Returns a map of the form String -> Point. */
-  public static Map<String, Point> readOneToOne(final InputStream stream) throws IOException {
-    checkNotNull(stream);
+  public static Map<String, Point> readOneToOne(final Path input) throws IOException {
+    checkNotNull(input);
 
     final Map<String, Point> mapping = new HashMap<>();
-    readStream(stream, current -> readSingle(current, mapping));
+    readPath(input, current -> readSingle(current, mapping));
     return mapping;
   }
 
@@ -80,32 +72,32 @@ public final class PointFileReaderWriter {
   /**
    * Writes the specified one-to-one mapping between names and points to the specified stream.
    *
-   * @param sink The stream to which the name-to-point mappings will be written.
+   * @param output The stream to which the name-to-point mappings will be written.
    * @param mapping The name-to-point mapping to be written.
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
-  public static void writeOneToOne(final OutputStream sink, final Map<String, Point> mapping)
+  public static void writeOneToOne(final Path output, final Map<String, Point> mapping)
       throws IOException {
-    checkNotNull(sink);
+    checkNotNull(output);
     checkNotNull(mapping);
 
     write(
         mapping.entrySet().stream()
             .map(entry -> entry.getKey() + " " + pointToString(entry.getValue()))
             .collect(Collectors.joining("\r\n")),
-        sink);
+        output);
   }
 
   /**
    * Writes the specified one-to-many mapping between names and polygons to the specified stream.
    *
-   * @param sink The stream to which the name-to-polygons mappings will be written.
+   * @param output The stream to which the name-to-polygons mappings will be written.
    * @param mapping The name-to-polygons mapping to be written.
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
   public static void writeOneToManyPolygons(
-      final OutputStream sink, final Map<String, List<Polygon>> mapping) throws IOException {
-    checkNotNull(sink);
+      final Path output, final Map<String, List<Polygon>> mapping) throws IOException {
+    checkNotNull(output);
     checkNotNull(mapping);
 
     write(
@@ -118,14 +110,11 @@ public final class PointFileReaderWriter {
                             .map(PointFileReaderWriter::polygonToString)
                             .collect(Collectors.joining()))
             .collect(Collectors.joining("\r\n")),
-        sink);
+        output);
   }
 
-  private static void write(final String string, final OutputStream sink) throws IOException {
-    try (Writer out =
-        new OutputStreamWriter(new CloseShieldOutputStream(sink), StandardCharsets.UTF_8)) {
-      out.write(string);
-    }
+  private static void write(final String string, final Path output) throws IOException {
+    Files.writeString(output, string);
   }
 
   private static String pointToString(final Point point) {
@@ -144,20 +133,20 @@ public final class PointFileReaderWriter {
   /**
    * Writes the specified one-to-many mapping between names and points to the specified stream.
    *
-   * @param sink The stream to which the name-to-points mappings will be written.
+   * @param output The stream to which the name-to-points mappings will be written.
    * @param mapping The name-to-points mapping to be written.
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
-  public static void writeOneToMany(final OutputStream sink, final Map<String, List<Point>> mapping)
+  public static void writeOneToMany(final Path output, final Map<String, List<Point>> mapping)
       throws IOException {
-    checkNotNull(sink);
+    checkNotNull(output);
     checkNotNull(mapping);
 
     write(
         mapping.entrySet().stream()
             .map(entry -> entry.getKey() + " " + pointsToString(entry.getValue()))
             .collect(Collectors.joining("\r\n")),
-        sink);
+        output);
   }
 
   private static String pointsToString(final List<Point> points) {
@@ -165,12 +154,11 @@ public final class PointFileReaderWriter {
   }
 
   /** Returns a map of the form String -> Collection of points. */
-  public static Map<String, List<Point>> readOneToMany(final InputStream stream)
-      throws IOException {
-    checkNotNull(stream);
+  public static Map<String, List<Point>> readOneToMany(final Path input) throws IOException {
+    checkNotNull(input);
 
     final Map<String, List<Point>> mapping = new HashMap<>();
-    readStream(stream, current -> readMultiple(current, mapping));
+    readPath(input, current -> readMultiple(current, mapping));
     return mapping;
   }
 
@@ -178,14 +166,14 @@ public final class PointFileReaderWriter {
    * Writes the specified one-to-many mapping between names and (points, overflowToLeft) to the
    * specified stream.
    *
-   * @param sink The stream to which the name-to-points mappings will be written.
+   * @param output The stream to which the name-to-points mappings will be written.
    * @param mapping The name-to-points mapping to be written.
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
   public static void writeOneToManyPlacements(
-      final OutputStream sink, final Map<String, Tuple<List<Point>, Boolean>> mapping)
+      final Path output, final Map<String, Tuple<List<Point>, Boolean>> mapping)
       throws IOException {
-    checkNotNull(sink);
+    checkNotNull(output);
     checkNotNull(mapping);
 
     write(
@@ -198,18 +186,18 @@ public final class PointFileReaderWriter {
                         + " | overflowToLeft="
                         + entry.getValue().getSecond())
             .collect(Collectors.joining("\r\n")),
-        sink);
+        output);
   }
 
   /** Returns a map of the form String -> (points, overflowToLeft). */
-  public static Map<String, Tuple<List<Point>, Boolean>> readOneToManyPlacements(
-      final InputStream stream) throws IOException {
-    checkNotNull(stream);
+  public static Map<String, Tuple<List<Point>, Boolean>> readOneToManyPlacements(final Path input)
+      throws IOException {
+    checkNotNull(input);
 
     final Map<String, List<Point>> mapping = new HashMap<>();
     final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
-    readStream(
-        stream,
+    readPath(
+        input,
         current -> {
           final List<String> s = Splitter.on(" | ").splitToList(current);
           final Tuple<String, List<Point>> tuple = readMultiple(s.get(0), mapping);
@@ -222,12 +210,12 @@ public final class PointFileReaderWriter {
   }
 
   /** Returns a map of the form String -> Collection of polygons. */
-  public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream)
+  public static Map<String, List<Polygon>> readOneToManyPolygons(final Path input)
       throws IOException {
-    checkNotNull(stream);
+    checkNotNull(input);
 
     final Map<String, List<Polygon>> mapping = new HashMap<>();
-    readStream(stream, current -> readMultiplePolygons(current, mapping));
+    readPath(input, current -> readMultiplePolygons(current, mapping));
     return mapping;
   }
 
@@ -275,12 +263,10 @@ public final class PointFileReaderWriter {
   }
 
   @VisibleForTesting
-  static void readStream(final InputStream stream, final Consumer<String> lineParser)
-      throws IOException {
-    try (Reader inputStreamReader =
-            new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        BufferedReader reader = new BufferedReader(inputStreamReader)) {
-      reader.lines().filter(current -> current.trim().length() != 0).forEachOrdered(lineParser);
+  static void readPath(final Path input, final Consumer<String> lineParser) throws IOException {
+
+    try {
+      Files.lines(input).filter(current -> current.trim().length() != 0).forEachOrdered(lineParser);
     } catch (final IllegalArgumentException e) {
       throw new IOException(e);
     }

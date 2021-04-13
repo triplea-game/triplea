@@ -14,6 +14,8 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -31,7 +34,6 @@ import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ColorUtils;
 import org.triplea.java.function.ThrowingFunction;
-import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
 
@@ -143,24 +145,25 @@ public class MapData {
                   + loader.getSearchUrls());
         }
 
-        place.putAll(readPlacementsOneToMany(loader.optionalResource(PLACEMENT_FILE)));
-        territoryEffects.putAll(
-            readPointsOneToMany(loader.optionalResource(TERRITORY_EFFECT_FILE)));
+        place.putAll(readOptionalPlacementsOneToMany(loader, PLACEMENT_FILE));
+        territoryEffects.putAll(readOptionalPointsOneToMany(loader, TERRITORY_EFFECT_FILE));
 
-        polys.putAll(readPolygonsOneToMany(loader.requiredResource(POLYGON_FILE)));
-        centers.putAll(readPointsOneToOne(loader.requiredResource(CENTERS_FILE)));
-        vcPlace.putAll(readPointsOneToOne(loader.optionalResource(VC_MARKERS)));
-        convoyPlace.putAll(readPointsOneToOne(loader.optionalResource(CONVOY_MARKERS)));
-        commentPlace.putAll(readPointsOneToOne(loader.optionalResource(COMMENT_MARKERS)));
-        blockadePlace.putAll(readPointsOneToOne(loader.optionalResource(BLOCKADE_MARKERS)));
-        capitolPlace.putAll(readPointsOneToOne(loader.optionalResource(CAPITAL_MARKERS)));
-        puPlace.putAll(readPointsOneToOne(loader.optionalResource(PU_PLACE_FILE)));
-        namePlace.putAll(readPointsOneToOne(loader.optionalResource(TERRITORY_NAME_PLACE_FILE)));
-        kamikazePlace.putAll(readPointsOneToOne(loader.optionalResource(KAMIKAZE_FILE)));
+        polys.putAll(
+            PointFileReaderWriter.readOneToManyPolygons(loader.requiredResource(POLYGON_FILE)));
+        centers.putAll(PointFileReaderWriter.readOneToOne(loader.requiredResource(CENTERS_FILE)));
+        vcPlace.putAll(readOptionalPointsOneToOne(loader, VC_MARKERS));
+        convoyPlace.putAll(readOptionalPointsOneToOne(loader, CONVOY_MARKERS));
+        commentPlace.putAll(readOptionalPointsOneToOne(loader, COMMENT_MARKERS));
+        blockadePlace.putAll(readOptionalPointsOneToOne(loader, BLOCKADE_MARKERS));
+        capitolPlace.putAll(readOptionalPointsOneToOne(loader, CAPITAL_MARKERS));
+        puPlace.putAll(readOptionalPointsOneToOne(loader, PU_PLACE_FILE));
+        namePlace.putAll(readOptionalPointsOneToOne(loader, TERRITORY_NAME_PLACE_FILE));
+        kamikazePlace.putAll(readOptionalPointsOneToOne(loader, KAMIKAZE_FILE));
         decorations.putAll(loadDecorations(loader));
         territoryNameImages.putAll(territoryNameImages(loader));
 
-        try (InputStream inputStream = loader.requiredResource(MAP_PROPERTIES).get()) {
+        try (InputStream inputStream =
+            Files.newInputStream(loader.requiredResource(MAP_PROPERTIES))) {
           mapProperties.load(inputStream);
         } catch (final Exception e) {
           log.error("Error reading map.properties", e);
@@ -179,33 +182,31 @@ public class MapData {
     }
   }
 
-  private static Map<String, Point> readPointsOneToOne(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
-    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToOne);
+  private static Map<String, Point> readOptionalPointsOneToOne(
+      final ResourceLoader loader, final String path) throws IOException {
+    return readOptionalMap(loader, path, PointFileReaderWriter::readOneToOne);
   }
 
-  private static Map<String, List<Point>> readPointsOneToMany(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
-    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToMany);
+  private static Map<String, List<Point>> readOptionalPointsOneToMany(
+      final ResourceLoader loader, final String path) throws IOException {
+    return readOptionalMap(loader, path, PointFileReaderWriter::readOneToMany);
   }
 
-  private static Map<String, Tuple<List<Point>, Boolean>> readPlacementsOneToMany(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
-    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPlacements);
+  private static Map<String, Tuple<List<Point>, Boolean>> readOptionalPlacementsOneToMany(
+      final ResourceLoader loader, final String path) throws IOException {
+    return readOptionalMap(loader, path, PointFileReaderWriter::readOneToManyPlacements);
   }
 
-  private static Map<String, List<Polygon>> readPolygonsOneToMany(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
-    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPolygons);
-  }
-
-  private static <R> R runWithInputStream(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory,
-      final ThrowingFunction<InputStream, R, IOException> reader)
+  private static <K, V> Map<K, V> readOptionalMap(
+      final ResourceLoader loader,
+      final String path,
+      final ThrowingFunction<Path, Map<K, V>, IOException> mapper)
       throws IOException {
-    try (InputStream is = inputStreamFactory.get()) {
-      return reader.apply(is);
+    @Nullable Path resourcePath = loader.optionalResource(path).orElse(null);
+    if (resourcePath != null) {
+      return mapper.apply(resourcePath);
     }
+    return Map.of();
   }
 
   public boolean scrollWrapX() {
@@ -245,15 +246,12 @@ public class MapData {
 
   private Map<Image, List<Point>> loadDecorations(final ResourceLoader resourceLoader)
       throws IOException {
-    final Map<Image, List<Point>> decorations = new HashMap<>();
-    final Map<String, List<Point>> points =
-        readPointsOneToMany(resourceLoader.optionalResource(DECORATIONS_FILE));
-    for (final String name : points.keySet()) {
-      resourceLoader
-          .loadImage("misc/" + name)
-          .ifPresent(img -> decorations.put(img, points.get(name)));
-    }
-    return decorations;
+    return readOptionalPointsOneToMany(resourceLoader, DECORATIONS_FILE).entrySet().stream()
+        .map(
+            entry ->
+                Map.entry(resourceLoader.loadImage("misc/" + entry.getKey()), entry.getValue()))
+        .filter(entry -> entry.getKey().isPresent())
+        .collect(Collectors.toMap(entry -> entry.getKey().orElseThrow(), Entry::getValue));
   }
 
   /** returns the named property, or null. */

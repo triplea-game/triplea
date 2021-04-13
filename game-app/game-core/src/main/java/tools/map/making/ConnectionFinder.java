@@ -11,7 +11,6 @@ import java.awt.geom.Area;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -108,8 +107,8 @@ public final class ConnectionFinder {
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
     final Map<String, List<Polygon>> mapOfPolygons;
-    try (InputStream in = Files.newInputStream(polyFile)) {
-      mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
+    try {
+      mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(polyFile);
       for (final Entry<String, List<Polygon>> entry : mapOfPolygons.entrySet()) {
         territoryAreas.put(
             entry.getKey(), entry.getValue().stream().map(Area::new).collect(Collectors.toList()));

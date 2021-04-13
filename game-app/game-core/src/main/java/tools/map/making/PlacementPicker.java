@@ -18,8 +18,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -310,9 +308,9 @@ public final class PlacementPicker {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = Files.newInputStream(file)) {
+        try {
           log.info("Polygons : " + file);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          polygons = PointFileReaderWriter.readOneToManyPolygons(file);
         } catch (final IOException e) {
           log.error("Failed to load polygons: " + file.toAbsolutePath());
           throw e;
@@ -323,8 +321,8 @@ public final class PlacementPicker {
             new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
           log.info("Polygons : " + polyPath);
-          try (InputStream is = Files.newInputStream(polyPath)) {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          try {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
           } catch (final IOException e) {
             log.error("Failed to load polygons: " + polyPath);
             throw e;
@@ -533,8 +531,8 @@ public final class PlacementPicker {
       if (fileName == null) {
         return;
       }
-      try (OutputStream out = Files.newOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToManyPlacements(out, placements);
+      try {
+        PointFileReaderWriter.writeOneToManyPlacements(fileName, placements);
         log.info("Data written to :" + fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to write placements: " + fileName, e);
@@ -549,8 +547,8 @@ public final class PlacementPicker {
       if (placeName == null) {
         return;
       }
-      try (InputStream in = Files.newInputStream(placeName)) {
-        placements = PointFileReaderWriter.readOneToManyPlacements(in);
+      try {
+        placements = PointFileReaderWriter.readOneToManyPlacements(placeName);
       } catch (final IOException e) {
         log.error("Failed to load placements: " + placeName, e);
       }

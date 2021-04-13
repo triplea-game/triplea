@@ -19,8 +19,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -223,9 +221,9 @@ public final class DecorationPlacer {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = Files.newInputStream(fileCenters)) {
+        try {
           log.info("Centers : " + fileCenters);
-          centers = PointFileReaderWriter.readOneToOne(is);
+          centers = PointFileReaderWriter.readOneToOne(fileCenters);
         } catch (final IOException e) {
           log.error("Something wrong with Centers file");
           throw e;
@@ -237,9 +235,7 @@ public final class DecorationPlacer {
               new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
           if (centerPath != null) {
             log.info("Centers : " + centerPath);
-            try (InputStream is = Files.newInputStream(centerPath)) {
-              centers = PointFileReaderWriter.readOneToOne(is);
-            }
+            centers = PointFileReaderWriter.readOneToOne(centerPath);
           } else {
             log.info("You must specify a centers file.");
             log.info("Shutting down.");
@@ -260,9 +256,9 @@ public final class DecorationPlacer {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = Files.newInputStream(filePoly)) {
+        try {
           log.info("Polygons : " + filePoly);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          polygons = PointFileReaderWriter.readOneToManyPolygons(filePoly);
         } catch (final IOException e) {
           log.error("Something wrong with your Polygons file: " + filePoly.toAbsolutePath());
           throw e;
@@ -273,8 +269,8 @@ public final class DecorationPlacer {
             new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
           log.info("Polygons : " + polyPath);
-          try (InputStream is = Files.newInputStream(polyPath)) {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          try {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
           } catch (final IOException e) {
             log.error("Something wrong with your Polygons file: " + polyPath);
             throw e;
@@ -499,8 +495,8 @@ public final class DecorationPlacer {
       if (fileName == null) {
         return;
       }
-      try (OutputStream out = Files.newOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToMany(out, currentPoints);
+      try {
+        PointFileReaderWriter.writeOneToMany(fileName, currentPoints);
         log.info("Data written to :" + fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to save points: " + fileName, e);
@@ -666,8 +662,8 @@ public final class DecorationPlacer {
               ".txt");
       currentImagePointsTextFile = centerName.getFile();
       if (centerName.getFile() != null && Files.exists(centerName.getFile())) {
-        try (InputStream in = Files.newInputStream(centerName.getFile())) {
-          currentPoints = PointFileReaderWriter.readOneToMany(in);
+        try {
+          currentPoints = PointFileReaderWriter.readOneToMany(centerName.getFile());
         } catch (final IOException e) {
           log.error("Failed to load image points: " + centerName.getFile(), e);
           currentPoints = new HashMap<>();
