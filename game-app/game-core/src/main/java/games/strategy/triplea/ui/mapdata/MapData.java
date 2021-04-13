@@ -202,7 +202,7 @@ public class MapData {
       final String path,
       final ThrowingFunction<Path, Map<K, V>, IOException> mapper)
       throws IOException {
-    @Nullable Path resourcePath = loader.optionalResource(path).orElse(null);
+    @Nullable final Path resourcePath = loader.optionalResource(path).orElse(null);
     if (resourcePath != null) {
       return mapper.apply(resourcePath);
     }
