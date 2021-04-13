@@ -12,7 +12,7 @@ import org.triplea.io.FileUtils;
 
 class LocalizeHtmlTest {
 
-  private final Path path = Path.of("/usr/local");
+  private final Path path = Path.of("/does/not/exist");
 
   @Test
   void testLocalizeHtml() {
