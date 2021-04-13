@@ -5,7 +5,8 @@ import games.strategy.triplea.image.UnitImageFactory;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -65,13 +66,10 @@ public class MapPropertiesPanel {
         SwingAction.of(
             "Select Map Folder",
             e -> {
-              final String path =
-                  new FileSave("Where is your map's folder?", null, null).getPathString();
-              if (path != null) {
-                final File mapFolder = new File(path);
-                if (mapFolder.exists()) {
-                  System.setProperty(ToolArguments.MAP_FOLDER, path);
-                }
+              final Path mapFolder =
+                  new FileSave("Where is your map's folder?", null, null).getFile();
+              if (mapFolder != null && Files.exists(mapFolder)) {
+                System.setProperty(ToolArguments.MAP_FOLDER, mapFolder.toString());
               }
             }));
     panel.add(mapFolderButton);

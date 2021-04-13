@@ -10,13 +10,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public final class ConnectionFinder {
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
   private static final String MIN_OVERLAP = "triplea.map.minOverlap";
 
-  private File mapFolderLocation = null;
+  private Path mapFolderLocation = null;
   private boolean dimensionsSet = false;
   private StringBuilder territoryDefinitions = null;
   // how many pixels should each area become bigger in both x and y axis to see which area it
@@ -86,12 +85,12 @@ public final class ConnectionFinder {
                 + "it is Not Needed and not read by the engine. "
                 + "</html>"));
     log.info("Select polygons.txt");
-    File polyFile = null;
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
-      polyFile = new File(mapFolderLocation, "polygons.txt");
+    Path polyFile = null;
+    if (mapFolderLocation != null && Files.exists(mapFolderLocation)) {
+      polyFile = mapFolderLocation.resolve("polygons.txt");
     }
     if (polyFile == null
-        || !polyFile.exists()
+        || !Files.exists(polyFile)
         || JOptionPane.showConfirmDialog(
                 null,
                 "A polygons.txt file was found in the map's folder, do you want to use it?",
@@ -100,23 +99,23 @@ public final class ConnectionFinder {
             != 0) {
       polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
-    if (polyFile == null || !polyFile.exists()) {
+    if (polyFile == null || !Files.exists(polyFile)) {
       log.info("No polygons.txt Selected. Shutting down.");
       return;
     }
     if (mapFolderLocation == null) {
-      mapFolderLocation = polyFile.getParentFile();
+      mapFolderLocation = polyFile.getParent();
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
     final Map<String, List<Polygon>> mapOfPolygons;
-    try (InputStream in = new FileInputStream(polyFile)) {
+    try (InputStream in = Files.newInputStream(polyFile)) {
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
       for (final Entry<String, List<Polygon>> entry : mapOfPolygons.entrySet()) {
         territoryAreas.put(
             entry.getKey(), entry.getValue().stream().map(Area::new).collect(Collectors.toList()));
       }
     } catch (final IOException e) {
-      log.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);
+      log.error("Failed to load polygons: " + polyFile.toAbsolutePath(), e);
       return;
     }
     if (!dimensionsSet) {
@@ -217,12 +216,12 @@ public final class ConnectionFinder {
       territoryDefinitions = doTerritoryDefinitions(allTerritories, waterString);
     }
     try {
-      final String fileName =
+      final Path fileName =
           new FileSave(
                   "Where To Save connections.txt ? (cancel to print to console)",
                   "connections.txt",
                   mapFolderLocation)
-              .getPathString();
+              .getFile();
       final StringBuilder connectionsString = convertToXml(connections);
       if (fileName == null) {
         if (territoryDefinitions != null) {
@@ -230,13 +229,13 @@ public final class ConnectionFinder {
         }
         log.info(connectionsString.toString());
       } else {
-        try (OutputStream out = new FileOutputStream(fileName)) {
+        try (OutputStream out = Files.newOutputStream(fileName)) {
           if (territoryDefinitions != null) {
             out.write(String.valueOf(territoryDefinitions).getBytes(StandardCharsets.UTF_8));
           }
           out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
         }
-        log.info("Data written to :" + new File(fileName).getCanonicalPath());
+        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
       }
     } catch (final Exception e) {
       log.error("Failed to write connections", e);

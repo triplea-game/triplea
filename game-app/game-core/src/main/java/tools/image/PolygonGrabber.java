@@ -2,7 +2,6 @@ package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,19 +10,17 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,7 +51,7 @@ import org.triplea.util.PointFileReaderWriter;
  */
 @Slf4j
 public final class PolygonGrabber {
-  private File mapFolderLocation;
+  private Path mapFolderLocation;
 
   private PolygonGrabber() {}
 
@@ -77,9 +74,9 @@ public final class PolygonGrabber {
     mapFolderLocation = MapFolderLocationSystemProperty.read();
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final String mapName = mapSelection.getPathString();
+    final Path mapName = mapSelection.getFile();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParentFile();
+      mapFolderLocation = mapSelection.getFile().getParent();
     }
     if (mapName != null) {
       log.info("Map : " + mapName);
@@ -123,7 +120,7 @@ public final class PolygonGrabber {
     // the current set of polyongs
     private List<Polygon> current;
     // holds the map image
-    private BufferedImage bufferedImage;
+    private final BufferedImage bufferedImage;
     // maps String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     // holds the centers for the polygons
@@ -135,19 +132,13 @@ public final class PolygonGrabber {
      * Asks user to specify a file with center points. If not program will exit. We setup the mouse
      * listeners and toolbars and load the actual image of the map here.
      *
-     * @param mapName Path to image map.
+     * @param mapFolder The {@link Path} pointing to the map folder.
      */
-    PolygonGrabberFrame(final String mapName) throws IOException {
+    PolygonGrabberFrame(final Path mapFolder) throws IOException {
       super("Polygon grabber");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      File file = null;
-      if (mapFolderLocation != null && mapFolderLocation.exists()) {
-        file = new File(mapFolderLocation, "centers.txt");
-      }
-      if (file == null || !file.exists()) {
-        file = new File(new File(mapName).getParent() + File.separator + "centers.txt");
-      }
-      if (file.exists()
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
+      if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
                   "A centers.txt file was found in the map's folder, do you want to use "
@@ -155,8 +146,8 @@ public final class PolygonGrabber {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = new FileInputStream(file.getPath())) {
-          log.info("Centers : " + file.getPath());
+        try (InputStream is = Files.newInputStream(file)) {
+          log.info("Centers : " + file);
           centers = PointFileReaderWriter.readOneToOne(is);
         } catch (final IOException e) {
           log.error("Something wrong with Centers file", e);
@@ -164,11 +155,11 @@ public final class PolygonGrabber {
       } else {
         try {
           log.info("Select the Centers file");
-          final String centerPath =
-              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
+          final Path centerPath =
+              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
           if (centerPath != null) {
             log.info("Centers : " + centerPath);
-            try (InputStream is = new FileInputStream(centerPath)) {
+            try (InputStream is = Files.newInputStream(centerPath)) {
               centers = PointFileReaderWriter.readOneToOne(is);
             }
           } else {
@@ -181,7 +172,7 @@ public final class PolygonGrabber {
           throw e;
         }
       }
-      createImage(mapName);
+      bufferedImage = newBufferedImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
@@ -322,22 +313,22 @@ public final class PolygonGrabber {
       editMenu.add(autoItem);
       menuBar.add(fileMenu);
       menuBar.add(editMenu);
-    } // end constructor
+    }
 
     /**
      * We create the image of the map here and assure that it is loaded properly.
      *
-     * @param mapName The path of the image map.
+     * @param mapFolder The {@link Path} pointing to the map folder.
      */
-    private void createImage(final String mapName) {
-      final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
-      Util.ensureImageLoaded(image);
-      bufferedImage =
+    private BufferedImage newBufferedImage(final Path mapFolder) {
+      final Image image = FileHelper.newImage(mapFolder);
+      final BufferedImage bufferedImage =
           new BufferedImage(
               image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics g = bufferedImage.getGraphics();
       g.drawImage(image, 0, 0, this);
       g.dispose();
+      return bufferedImage;
     }
 
     /**
@@ -383,15 +374,14 @@ public final class PolygonGrabber {
 
     /** Saves the polygons to disk. */
     private void savePolygons() {
-      final String polyName =
-          new FileSave("Where To Save Polygons.txt ?", "polygons.txt", mapFolderLocation)
-              .getPathString();
+      final Path polyName =
+          new FileSave("Where To Save Polygons.txt ?", "polygons.txt", mapFolderLocation).getFile();
       if (polyName == null) {
         return;
       }
-      try (OutputStream out = new FileOutputStream(polyName)) {
+      try (OutputStream out = Files.newOutputStream(polyName)) {
         PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
-        log.info("Data written to :" + new File(polyName).getCanonicalPath());
+        log.info("Data written to :" + polyName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to save polygons: " + polyName, e);
       }
@@ -400,12 +390,12 @@ public final class PolygonGrabber {
     /** Loads a pre-defined file with map polygon points. */
     private void loadPolygons() {
       log.info("Load a polygon file");
-      final String polyName =
-          new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
+      final Path polyName =
+          new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
       if (polyName == null) {
         return;
       }
-      try (InputStream in = new FileInputStream(polyName)) {
+      try (InputStream in = Files.newInputStream(polyName)) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(in);
       } catch (final IOException e) {
         log.error("Failed to load polygons: " + polyName, e);

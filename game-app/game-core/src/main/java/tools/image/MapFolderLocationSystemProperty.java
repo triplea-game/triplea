@@ -1,6 +1,7 @@
 package tools.image;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -11,11 +12,11 @@ import tools.util.ToolArguments;
 public class MapFolderLocationSystemProperty {
 
   @Nullable
-  public File read() {
+  public Path read() {
     final String value = System.getProperty(ToolArguments.MAP_FOLDER);
     if (value != null && value.length() > 0) {
-      final File mapFolder = new File(value);
-      if (mapFolder.exists()) {
+      final Path mapFolder = Path.of(value);
+      if (Files.exists(mapFolder)) {
         return mapFolder;
       } else {
         log.info("Could not find directory: " + value);

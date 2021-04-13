@@ -6,8 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -25,7 +26,6 @@ import tools.image.MapFolderLocationSystemProperty;
 /** Takes an image and shrinks it. Used for making small images. */
 @Slf4j
 public final class ImageShrinker {
-  private File mapFolderLocation = null;
 
   private ImageShrinker() {}
 
@@ -45,7 +45,7 @@ public final class ImageShrinker {
   }
 
   private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    final Path mapFolderLocation = MapFolderLocationSystemProperty.read();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(
@@ -58,17 +58,14 @@ public final class ImageShrinker {
                 + "<br>So we suggest you instead shrink the image with paint.net or photoshop or "
                 + "gimp, etc, then clean it up before saving."
                 + "</html>"));
-    final File mapFile =
+    final Path mapFile =
         new FileOpen("Select The Large Image", mapFolderLocation, ".gif", ".png").getFile();
-    if (mapFile == null || !mapFile.exists()) {
-      throw new IllegalStateException(mapFile + "File does not exist");
-    }
-    if (mapFolderLocation == null) {
-      mapFolderLocation = mapFile.getParentFile();
+    if (mapFile == null || !Files.exists(mapFile)) {
+      throw new IllegalStateException(mapFile + " File does not exist");
     }
     final String input = JOptionPane.showInputDialog(null, "Select scale");
     final float scale = Float.parseFloat(input);
-    final Image baseImg = ImageIO.read(mapFile);
+    final Image baseImg = ImageIO.read(mapFile.toFile());
     final int thumbWidth = (int) (baseImg.getWidth(null) * scale);
     final int thumbHeight = (int) (baseImg.getHeight(null) * scale);
     // based on code from
@@ -81,9 +78,8 @@ public final class ImageShrinker {
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     graphics2D.drawImage(baseImg, 0, 0, thumbWidth, thumbHeight, null);
     // save thumbnail image to OUTFILE
-    final File file =
-        new File(new File(mapFile.getPath()).getParent() + File.separatorChar + "smallMap.jpeg");
-    try (ImageOutputStream out = new FileImageOutputStream(file)) {
+    final Path file = mapFile.resolveSibling("smallMap.jpeg");
+    try (ImageOutputStream out = new FileImageOutputStream(file.toFile())) {
       final ImageWriter encoder = ImageIO.getImageWritersByFormatName("JPEG").next();
       final JPEGImageWriteParam param = new JPEGImageWriteParam(null);
       param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
@@ -91,6 +87,6 @@ public final class ImageShrinker {
       encoder.setOutput(out);
       encoder.write(null, new IIOImage(thumbImage, null, null), param);
     }
-    log.info("Image successfully written to " + file.getPath());
+    log.info("Image successfully written to " + file);
   }
 }
