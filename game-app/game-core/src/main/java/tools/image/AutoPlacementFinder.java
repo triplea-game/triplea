@@ -305,17 +305,13 @@ public final class AutoPlacementFinder {
 
   private static Path getMapPropertiesFileForCurrentFolderStructure(final String mapDir) {
     return ClientFileSystemHelper.getUserMapsFolder()
-        .toPath()
         .resolve(mapDir)
         .resolve("map")
         .resolve("map.properties");
   }
 
   private static Path getMapPropertiesFileForLegacyFolderStructure(final String mapDir) {
-    return ClientFileSystemHelper.getUserMapsFolder()
-        .toPath()
-        .resolve(mapDir)
-        .resolve("map.properties");
+    return ClientFileSystemHelper.getUserMapsFolder().resolve(mapDir).resolve("map.properties");
   }
 
   private static String getUnitsScale() {

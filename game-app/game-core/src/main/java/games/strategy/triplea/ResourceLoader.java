@@ -64,7 +64,7 @@ public class ResourceLoader implements Closeable {
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map resources.
     final File gameAssetsDirectory =
-        findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
+        findDirectory(ClientFileSystemHelper.getRootFolder().toFile(), ASSETS_FOLDER)
             .orElseThrow(GameAssetsNotFoundException::new);
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
@@ -113,7 +113,7 @@ public class ResourceLoader implements Closeable {
     GameAssetsNotFoundException() {
       super(
           "Unable to find game assets folder starting from location: "
-              + ClientFileSystemHelper.getRootFolder().getAbsolutePath()
+              + ClientFileSystemHelper.getRootFolder().toAbsolutePath()
               + "\nThere is a problem with the installation, please report this to TripleA "
               + "and the path where TripleA is installed.");
     }

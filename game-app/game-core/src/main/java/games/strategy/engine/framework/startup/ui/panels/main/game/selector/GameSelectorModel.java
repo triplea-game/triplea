@@ -11,6 +11,7 @@ import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Observable;
@@ -190,14 +191,14 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @SuppressWarnings("ReturnValueIgnored")
   private static boolean gameUriExistsOnFileSystem(final String gameUri) {
     try {
-      final File gameFile = Path.of(gameUri).toFile();
+      final Path gameFile = Path.of(gameUri);
 
       // starts with check is because we don't want to load a game file by default that is not
       // within
       // the map folders. (ie: if a previous version of triplea was using running a game within its
       // root folder, we shouldn't open it)
-      return gameFile.exists()
-          && gameFile.toPath().startsWith(ClientFileSystemHelper.getUserRootFolder().toPath());
+      return Files.exists(gameFile)
+          && gameFile.startsWith(ClientFileSystemHelper.getUserRootFolder());
     } catch (final IllegalArgumentException e) {
       log.info("Default game uri {} could not be loaded", gameUri, e);
       return false;

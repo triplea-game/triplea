@@ -15,9 +15,10 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.util.ByteArrayDataSource;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Properties;
@@ -62,7 +63,7 @@ public class DefaultEmailSender implements IEmailSender {
   public void sendEmail(
       final String subject,
       final String htmlMessage,
-      final File saveGame,
+      final Path saveGame,
       final String saveGameName)
       throws IOException {
     // this is the last step and we create the email to send
@@ -99,7 +100,7 @@ public class DefaultEmailSender implements IEmailSender {
         final Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(bodypart);
         // add save game
-        try (FileInputStream fin = new FileInputStream(saveGame)) {
+        try (InputStream fin = Files.newInputStream(saveGame)) {
           final DataSource source = new ByteArrayDataSource(fin, "application/triplea");
           final BodyPart messageBodyPart = new MimeBodyPart();
           messageBodyPart.setDataHandler(new DataHandler(source));

@@ -2,8 +2,8 @@ package games.strategy.engine.posted.game.pbem;
 
 import com.google.common.base.Preconditions;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.triplea.util.Arrays;
 
 /**
@@ -26,7 +26,7 @@ public interface IEmailSender {
    * @param saveGame the savegame or null
    * @throws IOException if an error occurs
    */
-  void sendEmail(String subject, String htmlMessage, File saveGame, String saveGameName)
+  void sendEmail(String subject, String htmlMessage, Path saveGame, String saveGameName)
       throws IOException;
 
   /**

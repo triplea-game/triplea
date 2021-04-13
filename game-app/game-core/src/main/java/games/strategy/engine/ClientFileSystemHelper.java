@@ -3,9 +3,9 @@ package games.strategy.engine;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.CodeSource;
 import java.util.Optional;
@@ -29,17 +29,16 @@ public final class ClientFileSystemHelper {
    *     the user root folder that is not replaced between installations.
    * @throws IllegalStateException If the root folder cannot be located.
    */
-  public static File getRootFolder() {
+  public static Path getRootFolder() {
     try {
-      return FileUtils.findFileInParentFolders(getCodeSourceFolder().toPath(), ".triplea-root")
-          .orElseThrow(() -> new IllegalStateException("Unable to locate root folder"))
-          .toFile();
+      return FileUtils.findFileInParentFolders(getCodeSourceFolder(), ".triplea-root")
+          .orElseThrow(() -> new IllegalStateException("Unable to locate root folder"));
     } catch (final IOException e) {
       throw new IllegalStateException("Unable to locate root folder", e);
     }
   }
 
-  private static File getCodeSourceFolder() throws IOException {
+  private static Path getCodeSourceFolder() throws IOException {
     final ApplicationContext applicationContext = Services.loadAny(ApplicationContext.class);
     final @Nullable CodeSource codeSource =
         applicationContext.getMainClass().getProtectionDomain().getCodeSource();
@@ -47,15 +46,17 @@ public final class ClientFileSystemHelper {
       throw new IOException("code source is not available");
     }
 
-    final File codeSourceLocation;
+    final Path codeSourceLocation;
     try {
-      codeSourceLocation = new File(codeSource.getLocation().toURI());
+      codeSourceLocation = Path.of(codeSource.getLocation().toURI());
     } catch (final URISyntaxException e) {
       throw new IOException("code source location URI is malformed", e);
     }
 
     // code source location is either a jar file (installation) or a folder (dev environment)
-    return codeSourceLocation.isFile() ? codeSourceLocation.getParentFile() : codeSourceLocation;
+    return Files.isDirectory(codeSourceLocation)
+        ? codeSourceLocation
+        : codeSourceLocation.getParent();
   }
 
   /**
@@ -67,10 +68,10 @@ public final class ClientFileSystemHelper {
    *     would contain as some examples: save games, downloaded maps. This location is currently not
    *     configurable (ideally we would allow this to be set during install perhaps).
    */
-  public static File getUserRootFolder() {
-    final File userHome = new File(SystemProperties.getUserHome());
-    final File rootDir = new File(new File(userHome, "Documents"), "triplea");
-    return rootDir.exists() ? rootDir : new File(userHome, "triplea");
+  public static Path getUserRootFolder() {
+    final Path userHome = Path.of(SystemProperties.getUserHome());
+    final Path rootDir = userHome.resolve("Documents").resolve("triplea");
+    return Files.exists(rootDir) ? rootDir : userHome.resolve("triplea");
   }
 
   /**
@@ -81,35 +82,38 @@ public final class ClientFileSystemHelper {
    *     folder and not the engine install folder, this allows it to be retained between engine
    *     installations. Users can override this location in settings.
    */
-  public static File getUserMapsFolder() {
+  public static Path getUserMapsFolder() {
     return getUserMapsFolder(ClientFileSystemHelper::getUserRootFolder);
   }
 
   @VisibleForTesting
-  static File getUserMapsFolder(final Supplier<File> userHomeRootFolderSupplier) {
-    final File defaultDownloadedMapsFolder =
-        userHomeRootFolderSupplier.get().toPath().resolve("downloadedMaps").toFile();
+  static Path getUserMapsFolder(final Supplier<Path> userHomeRootFolderSupplier) {
+    final Path defaultDownloadedMapsFolder =
+        userHomeRootFolderSupplier.get().resolve("downloadedMaps");
 
     // make sure folder override location is valid, if not notify user and reset it.
     final Optional<Path> path = ClientSetting.mapFolderOverride.getValue();
-    if (path.isPresent() && (!path.get().toFile().exists() || !path.get().toFile().canWrite())) {
+    if (path.isPresent() && (!Files.exists(path.get()) || !Files.isWritable(path.get()))) {
       ClientSetting.mapFolderOverride.resetValue();
       log.warn(
           "Invalid map override setting folder does not exist or cannot be written: {}\n"
               + "Reverting to use default map folder location: {}",
-          path.get().toFile().getAbsolutePath(),
-          defaultDownloadedMapsFolder.getAbsolutePath());
+          path.get().toAbsolutePath(),
+          defaultDownloadedMapsFolder.toAbsolutePath());
     }
 
-    final File mapsFolder =
+    final Path mapsFolder =
         ClientSetting.mapFolderOverride
             .getValue()
-            .map(Path::toFile)
-            .orElseGet(
-                () -> userHomeRootFolderSupplier.get().toPath().resolve("downloadedMaps").toFile());
+            .orElseGet(() -> userHomeRootFolderSupplier.get().resolve("downloadedMaps"));
 
-    if (!mapsFolder.exists() && !mapsFolder.mkdirs()) {
-      log.error("Error, could not create map download folder: {}", mapsFolder.getAbsolutePath());
+    if (!Files.exists(mapsFolder)) {
+      try {
+        Files.createDirectories(mapsFolder);
+      } catch (final IOException e) {
+        log.error(
+            "Error, could not create map download folder: {}", mapsFolder.toAbsolutePath(), e);
+      }
     }
     return mapsFolder;
   }

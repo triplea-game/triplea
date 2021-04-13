@@ -3,15 +3,14 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,18 +39,18 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         serializableMap.put(property.getName(), property.getValue());
       }
     }
-    final File cache = getCacheFile(gameData);
+    final Path cache = getCacheFile(gameData);
     try {
       // create the directory if it doesn't already exists
-      if (!cache.getParentFile().exists()) {
-        cache.getParentFile().mkdirs();
+      if (!Files.exists(cache.getParent())) {
+        Files.createDirectories(cache.getParent());
       }
-      try (OutputStream os = new FileOutputStream(cache);
+      try (OutputStream os = Files.newOutputStream(cache);
           ObjectOutputStream out = new ObjectOutputStream(os)) {
         out.writeObject(serializableMap);
       }
     } catch (final IOException e) {
-      log.error("Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
+      log.error("Failed to write game properties to cache: " + cache.toAbsolutePath(), e);
     }
   }
 
@@ -59,10 +58,10 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   @SuppressWarnings("unchecked")
   // generics are compile time only, and lost during serialization
   public void loadCachedGamePropertiesInto(final GameData gameData) {
-    final File cache = getCacheFile(gameData);
+    final Path cache = getCacheFile(gameData);
     try {
-      if (cache.exists()) {
-        try (InputStream is = new FileInputStream(cache);
+      if (Files.exists(cache)) {
+        try (InputStream is = Files.newInputStream(cache);
             ObjectInputStream in = new ObjectInputStream(is)) {
           final Map<String, Serializable> serializedMap =
               (Map<String, Serializable>) in.readObject();
@@ -76,7 +75,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         }
       }
     } catch (final IOException | ClassNotFoundException e) {
-      log.error("Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
+      log.error("Failed to load game properties from cache: " + cache.toAbsolutePath(), e);
     }
   }
 
@@ -86,9 +85,9 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
    * @param gameData the game data
    * @return the File where the cached game options should be stored or read from
    */
-  private static File getCacheFile(final GameData gameData) {
-    final File cacheDir = new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache");
-    return new File(cacheDir, getFileName(gameData.getGameName()));
+  private static Path getCacheFile(final GameData gameData) {
+    final Path cacheDir = ClientFileSystemHelper.getUserRootFolder().resolve("optionCache");
+    return cacheDir.resolve(getFileName(gameData.getGameName()));
   }
 
   /**

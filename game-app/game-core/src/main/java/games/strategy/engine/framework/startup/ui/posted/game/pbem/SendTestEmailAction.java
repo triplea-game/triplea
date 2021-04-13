@@ -2,10 +2,9 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +30,10 @@ public class SendTestEmailAction {
           String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
           int messageType = JOptionPane.ERROR_MESSAGE;
           try {
-            final File dummy =
-                new File(ClientFileSystemHelper.getUserRootFolder(), "test-attachment.txt");
-            dummy.deleteOnExit();
-            try (var fileOutputStream = new FileOutputStream(dummy)) {
-              fileOutputStream.write(
-                  "This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
-            }
+            final Path dummy =
+                ClientFileSystemHelper.getUserRootFolder().resolve("test-attachment.txt");
+            dummy.toFile().deleteOnExit();
+            Files.writeString(dummy, "This file would normally be a save game");
             final String html =
                 "<html><body><h1>Success</h1><p>This was a test email "
                     + "sent by TripleA<p></body></html>";

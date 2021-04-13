@@ -111,7 +111,7 @@ public class ZippedMapsExtractor {
 
     final String extractionFolderName = createExtractionFolderName(mapZip.getFileName().toString());
     final Path extractionTarget =
-        ClientFileSystemHelper.getUserMapsFolder().toPath().resolve(extractionFolderName);
+        ClientFileSystemHelper.getUserMapsFolder().resolve(extractionFolderName);
 
     final boolean mapIsAlreadyExtracted = Files.exists(extractionTarget);
     if (mapIsAlreadyExtracted) {
