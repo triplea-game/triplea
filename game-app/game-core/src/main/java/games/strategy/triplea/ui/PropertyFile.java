@@ -27,10 +27,10 @@ public abstract class PropertyFile {
   PropertyFile(final String fileName, final ResourceLoader loader) {
     final URL url = loader.getResource(fileName);
     if (url != null) {
-      final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-      if (inputStream.isPresent()) {
-        try {
-          properties.load(inputStream.get());
+      final Optional<InputStream> optionalInputStream = UrlStreams.openStream(url);
+      if (optionalInputStream.isPresent()) {
+        try (InputStream inputStream = optionalInputStream.get()) {
+          properties.load(inputStream);
         } catch (final IOException e) {
           log.error("Error reading " + fileName, e);
         }
