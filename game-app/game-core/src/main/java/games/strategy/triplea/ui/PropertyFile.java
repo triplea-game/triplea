@@ -4,16 +4,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import games.strategy.triplea.ResourceLoader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.java.UrlStreams;
+import org.triplea.sound.PropertiesLoader;
 
 /** Common property file class which should be extended. */
 @Slf4j
@@ -22,20 +18,10 @@ public abstract class PropertyFile {
   protected static final Cache<Class<? extends PropertyFile>, PropertyFile> cache =
       CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
 
-  protected final Properties properties = new OrderedProperties();
+  protected final Properties properties;
 
-  PropertyFile(final String fileName, final ResourceLoader loader) {
-    final URL url = loader.getResource(fileName);
-    if (url != null) {
-      final Optional<InputStream> optionalInputStream = UrlStreams.openStream(url);
-      if (optionalInputStream.isPresent()) {
-        try (InputStream inputStream = optionalInputStream.get()) {
-          properties.load(inputStream);
-        } catch (final IOException e) {
-          log.error("Error reading " + fileName, e);
-        }
-      }
-    }
+  protected PropertyFile(final String fileName, final ResourceLoader loader) {
+    this(PropertiesLoader.loadAsResource(loader, fileName));
   }
 
   protected PropertyFile(final String fileName) {
@@ -44,7 +30,7 @@ public abstract class PropertyFile {
 
   @VisibleForTesting
   protected PropertyFile(final Properties properties) {
-    this.properties.putAll(properties);
+    this.properties = properties;
   }
 
   @SuppressWarnings("unchecked")
