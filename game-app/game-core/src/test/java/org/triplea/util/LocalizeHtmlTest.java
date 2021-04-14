@@ -8,8 +8,12 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.triplea.io.FileUtils;
 
 class LocalizeHtmlTest {
+
+  private final Path path = Path.of("/does/not/exist");
+
   @Test
   void testLocalizeHtml() {
     final String testHtml =
@@ -18,16 +22,24 @@ class LocalizeHtmlTest {
             + "<p>  Placeholder </P> <img\n"
             + " src='another-link.png'/><img src=\"another-link\"/>";
 
-    final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, Path.of("/usr/local"));
+    final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, path);
+
+    final String urlPrefix = FileUtils.toUrl(path).toString();
 
     assertThat(
         result,
         is(
             "<audio src='test-audio'> &lt;img src=&quot;test&quot;&gt;"
-                + "<img useless fill src=\"file:/usr/local/doc/images/dir/actual-link\" "
+                + "<img useless fill src=\""
+                + urlPrefix
+                + "/doc/images/dir/actual-link\" "
                 + "alt='Alternative Text' > <p>  Placeholder </P> <img\n"
-                + " src='file:/usr/local/doc/images/another-link.png'/>"
-                + "<img src=\"file:/usr/local/doc/images/another-link\"/>"));
+                + " src='"
+                + urlPrefix
+                + "/doc/images/another-link.png'/>"
+                + "<img src=\""
+                + urlPrefix
+                + "/doc/images/another-link\"/>"));
   }
 
   @ParameterizedTest
@@ -40,7 +52,7 @@ class LocalizeHtmlTest {
       })
   void testAbsoluteUrl(final String testHtml) {
     assertThat(
-        LocalizeHtml.localizeImgLinksInHtml(testHtml, Path.of("/usr/local")),
+        LocalizeHtml.localizeImgLinksInHtml(testHtml, path),
         is(equalTo(testHtml)));
   }
 }
