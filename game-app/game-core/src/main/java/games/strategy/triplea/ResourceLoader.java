@@ -5,6 +5,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
+import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
@@ -19,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
@@ -203,5 +205,21 @@ public class ResourceLoader implements Closeable {
       log.error("Image loading failed: " + imageName, e);
       return Optional.empty();
     }
+  }
+
+  public Properties loadAsResource(final String fileName) {
+    final Properties properties = new OrderedProperties();
+    final URL url = getResource(fileName);
+    if (url != null) {
+      final Optional<InputStream> optionalInputStream = UrlStreams.openStream(url);
+      if (optionalInputStream.isPresent()) {
+        try (InputStream inputStream = optionalInputStream.get()) {
+          properties.load(inputStream);
+        } catch (final IOException e) {
+          log.error("Error reading " + fileName, e);
+        }
+      }
+    }
+    return properties;
   }
 }

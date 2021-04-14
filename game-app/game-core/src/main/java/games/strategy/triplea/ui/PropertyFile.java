@@ -8,7 +8,6 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import org.triplea.sound.PropertiesLoader;
 
 /** Common property file class which should be extended. */
 public abstract class PropertyFile {
@@ -19,7 +18,7 @@ public abstract class PropertyFile {
   protected final Properties properties;
 
   protected PropertyFile(final String fileName, final ResourceLoader loader) {
-    this(PropertiesLoader.loadAsResource(loader, fileName));
+    this(loader.loadAsResource(fileName));
   }
 
   protected PropertyFile(final String fileName) {

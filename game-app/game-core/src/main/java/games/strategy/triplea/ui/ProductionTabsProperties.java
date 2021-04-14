@@ -1,11 +1,11 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.triplea.sound.PropertiesLoader;
 import org.triplea.util.Tuple;
 
 class ProductionTabsProperties {
@@ -37,10 +37,10 @@ class ProductionTabsProperties {
 
   protected ProductionTabsProperties(final GamePlayer gamePlayer, final List<Rule> rules) {
     this.rules = rules;
-    properties =
-        PropertiesLoader.loadAsResource(PROPERTY_FILE + "." + gamePlayer.getName() + ".properties");
+    final ResourceLoader loader = UiContext.getResourceLoader();
+    properties = loader.loadAsResource(PROPERTY_FILE + "." + gamePlayer.getName() + ".properties");
     // no production_tabs.france.properties check for production_tabs.properties
-    properties.putAll(PropertiesLoader.loadAsResource(PROPERTY_FILE + ".properties"));
+    properties.putAll(loader.loadAsResource(PROPERTY_FILE + ".properties"));
   }
 
   static ProductionTabsProperties getInstance(final GamePlayer gamePlayer, final List<Rule> rules) {
