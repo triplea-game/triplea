@@ -78,8 +78,7 @@ class DefensiveSubsRetreatTest {
     final BattleState battleState =
         givenBattleStateBuilder()
             .defendingUnits(List.of(givenUnitCanEvade()))
-            .gameData(
-                givenGameData().withSubRetreatBeforeBattle(false).withSubmersibleSubs(true).build())
+            .gameData(givenGameData().withSubmersibleSubs(true).build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -94,8 +93,7 @@ class DefensiveSubsRetreatTest {
             // it shouldn't even care if the attacking unit is a destroyer
             .attackingUnits(List.of(mock(Unit.class)))
             .defendingUnits(List.of(givenUnitCanEvade()))
-            .gameData(
-                givenGameData().withSubRetreatBeforeBattle(false).withSubmersibleSubs(true).build())
+            .gameData(givenGameData().withSubmersibleSubs(true).build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
@@ -104,18 +102,17 @@ class DefensiveSubsRetreatTest {
   }
 
   @Test
-  void hasNoNamesWhenDestroyerIsOnOffenseAndWithdrawIsBeforeBattle() {
+  void hasNameWhenDestroyerIsOnOffenseAndWithdrawIsBeforeBattle() {
     final BattleState battleState =
         givenBattleStateBuilder()
             .attackingUnits(List.of(givenUnitDestroyer()))
             .defendingUnits(List.of(givenUnitCanEvade()))
-            .gameData(
-                givenGameData().withSubmersibleSubs(true).withSubRetreatBeforeBattle(true).build())
+            .gameData(givenGameData().withSubmersibleSubs(true).build())
             .build();
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), is(empty()));
+    assertThat(defensiveSubsRetreat.getNames(), hasSize(1));
   }
 
   @Test

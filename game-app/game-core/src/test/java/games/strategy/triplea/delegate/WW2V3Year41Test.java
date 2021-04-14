@@ -1107,6 +1107,7 @@ class WW2V3Year41Test {
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         BattleStepsTest.mergeSteps(
+                List.of(attacker + SUBS_SUBMERGE),
                 List.of(defender + SUBS_SUBMERGE),
                 BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
@@ -1132,6 +1133,7 @@ class WW2V3Year41Test {
   void testAttackDestroyerAndSubsAgainstSub() {
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final String defender = "Germans";
     final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
@@ -1153,6 +1155,7 @@ class WW2V3Year41Test {
     assertEquals(
         BattleStepsTest.mergeSteps(
                 List.of(attacker + SUBS_SUBMERGE),
+                List.of(defender + SUBS_SUBMERGE),
                 BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
@@ -1177,6 +1180,7 @@ class WW2V3Year41Test {
   void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
+    final String defender = "Germans";
     final GamePlayer attackerPlayer = british(gameData);
     final Territory attacked = territory("31 Sea Zone", gameData);
     final Territory from = territory("32 Sea Zone", gameData);
@@ -1198,6 +1202,8 @@ class WW2V3Year41Test {
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         BattleStepsTest.mergeSteps(
+                List.of(attacker + SUBS_SUBMERGE),
+                List.of(defender + SUBS_SUBMERGE),
                 BattleStepsTest.firstStrikeFightStepStrings(attackerPlayer, defenderPlayer),
                 BattleStepsTest.generalFightStepStrings(attackerPlayer, defenderPlayer),
                 BattleStepsTest.firstStrikeFightStepStrings(defenderPlayer, attackerPlayer),
