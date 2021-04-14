@@ -103,14 +103,14 @@ public final class HeadedGameRunner {
     SwingUtilities.invokeLater(ErrorMessage::initialize);
 
     ZippedMapsExtractor.builder()
-        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder().toPath())
+        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder())
         .progressIndicator(
             unzipTask -> BackgroundTaskRunner.runInBackground("Unzipping map files", unzipTask))
         .build()
         .unzipMapFiles();
 
     MapDescriptionYamlGeneratorRunner.builder()
-        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder().toPath())
+        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder())
         .progressIndicator(
             unzipTask ->
                 BackgroundTaskRunner.runInBackground("Generating map descriptor files", unzipTask))
@@ -118,7 +118,7 @@ public final class HeadedGameRunner {
         .generateYamlFiles();
 
     GameNotesMigrator.builder()
-        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder().toPath())
+        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder())
         .progressIndicator(
             unzipTask -> BackgroundTaskRunner.runInBackground("Migrating game notes..", unzipTask))
         .build()

@@ -12,11 +12,12 @@ import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.SaveGameParameter
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,7 +39,7 @@ import org.triplea.swing.ProgressWindow;
 public class PbemMessagePoster implements Serializable {
   private static final long serialVersionUID = -1L;
   private final GameProperties gameProperties;
-  private File saveGameFile = null;
+  private Path saveGameFile = null;
   private String turnSummary = null;
   private String turnSummaryRef = null;
   private String emailSendStatus;
@@ -68,7 +69,7 @@ public class PbemMessagePoster implements Serializable {
             || gameData.getProperties().get(IEmailSender.SUBJECT) != null);
   }
 
-  public void setSaveGame(final File saveGameFile) {
+  public void setSaveGame(final Path saveGameFile) {
     this.saveGameFile = saveGameFile;
   }
 
@@ -100,7 +101,7 @@ public class PbemMessagePoster implements Serializable {
                     (gameNameAndInfo + "\n\n" + turnSummary),
                     "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber,
                     SaveGameParameter.builder()
-                        .path(saveGameFile.toPath())
+                        .path(saveGameFile)
                         .displayName(saveGameName)
                         .build());
         final AtomicBoolean success = new AtomicBoolean(false);
@@ -246,13 +247,13 @@ public class PbemMessagePoster implements Serializable {
       ThreadRunner.runInNewThread(
           () -> {
             boolean postOk = true;
-            File saveGameFile = null;
+            Path saveGameFile = null;
             if (postingDelegate != null) {
               postingDelegate.setHasPostedTurnSummary(true);
             }
             try {
-              saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
-              frame.getGame().saveGame(saveGameFile);
+              saveGameFile = Files.createTempFile("triplea", GameDataFileUtils.getExtension());
+              frame.getGame().saveGame(saveGameFile.toFile());
               setSaveGame(saveGameFile);
             } catch (final Exception e) {
               postOk = false;
@@ -290,7 +291,11 @@ public class PbemMessagePoster implements Serializable {
               historyLog.setVisible(true);
             }
             if (saveGameFile != null) {
-              saveGameFile.delete();
+              try {
+                Files.delete(saveGameFile);
+              } catch (final IOException e) {
+                log.warn("Could not delete file " + saveGameFile.toAbsolutePath(), e);
+              }
             }
             progressWindow.setVisible(false);
             progressWindow.removeAll();

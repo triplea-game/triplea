@@ -686,7 +686,6 @@ public final class DecorationPlacer {
       if (!Files.exists(image)) {
         image =
             ClientFileSystemHelper.getRootFolder()
-                .toPath()
                 .resolve(ResourceLoader.ASSETS_FOLDER)
                 .resolve(imagePointType.getFolderName())
                 .resolve(imagePointType.getImageName());

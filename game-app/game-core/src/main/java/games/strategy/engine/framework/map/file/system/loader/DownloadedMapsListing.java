@@ -36,7 +36,7 @@ public class DownloadedMapsListing {
 
   private static Collection<DownloadedMap> readMapYamlsAndGenerateMissingMapYamls() {
     // loop over all maps, find and parse a 'map.yml' file, if not found attempt to generate it
-    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder().toPath()).stream()
+    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(Files::isDirectory)
         .map(
             mapFolder ->

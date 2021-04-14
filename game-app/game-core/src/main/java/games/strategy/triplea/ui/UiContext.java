@@ -396,8 +396,7 @@ public class UiContext {
   public static Map<String, String> getSkins(final String mapName) {
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
     skinsByDisplayName.put("Original", mapName);
-    for (final Path path :
-        FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder().toPath())) {
+    for (final Path path : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
       final String fileName = path.getFileName().toString();
       if (mapSkinNameMatchesMapName(fileName, mapName)) {
         final String displayName =

@@ -325,7 +325,7 @@ public class HeadlessGameServer {
     boolean printUsage = false;
 
     if (!ClientSetting.mapFolderOverride.isSet()) {
-      ClientSetting.mapFolderOverride.setValue(ClientFileSystemHelper.getUserMapsFolder().toPath());
+      ClientSetting.mapFolderOverride.setValue(ClientFileSystemHelper.getUserMapsFolder());
     }
 
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
