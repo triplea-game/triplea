@@ -334,7 +334,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // classes. maybe there is
         // a better way?
         stopGame =
-            EventThreadJOptionPane.showConfirmDialog(
+            !EventThreadJOptionPane.showConfirmDialog(
                 null,
                 "<html>" + displayMessage + "</html>",
                 "Continue Game?  (" + title + ")",
