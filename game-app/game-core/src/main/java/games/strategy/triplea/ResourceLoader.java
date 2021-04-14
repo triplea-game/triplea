@@ -88,6 +88,13 @@ public class ResourceLoader implements Closeable {
     }
   }
 
+  @VisibleForTesting
+  ResourceLoader(final URLClassLoader loader) {
+    this.loader = loader;
+    searchUrls = List.of();
+    mapLocation = null;
+  }
+
   /**
    * Resource loader that loads generic sounds and images, no map loaded. A standard resource loader
    * will look for map assets first before falling back to game engine assets. This resource loader
