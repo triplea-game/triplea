@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -266,7 +267,7 @@ public final class PointFileReaderWriter {
   static void readPath(final Path input, final Consumer<String> lineParser) throws IOException {
 
     try {
-      Files.lines(input).filter(current -> current.trim().length() != 0).forEachOrdered(lineParser);
+      Files.lines(input).filter(Predicate.not(String::isBlank)).forEachOrdered(lineParser);
     } catch (final IllegalArgumentException e) {
       throw new IOException(e);
     }
