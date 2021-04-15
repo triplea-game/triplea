@@ -10,8 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class PropertyFileTest {
-  private final ResourceLoader mock = mock(ResourceLoader.class);
   private static final String RESOURCE = "resource";
+  private final ResourceLoader mock = mock(ResourceLoader.class);
 
   @BeforeEach
   void setup() {
