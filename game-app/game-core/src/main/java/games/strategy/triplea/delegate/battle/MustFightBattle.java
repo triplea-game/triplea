@@ -625,6 +625,9 @@ public class MustFightBattle extends DependentBattle
       removeFromDependentBattles(killedUnits, bridge, dependentBattles);
     }
 
+    // Remember all these killed units to build after-battle statistics
+    this.killed.addAll(killedUnits);
+
     if (side == DEFENSE) {
       defendingUnits.addAll(transformedUnits);
       defendingUnits.removeAll(killedUnits);
