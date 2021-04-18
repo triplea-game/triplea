@@ -2273,7 +2273,7 @@
     Edition.</p>
     <br><p>Key features include combining UK Pacific and ANZAC into one nation, revised
     order of play for nations, victory objectives and 8 rounds of play.</p>
-   mapName: AAZ
+ - mapName: AAZ
    mapCategory: EXPERIMENTAL
    url: https://github.com/triplea-maps/AAZ/archive/refs/heads/master.zip
    version: 0
