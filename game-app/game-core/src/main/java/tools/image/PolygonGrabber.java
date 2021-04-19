@@ -17,8 +17,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -146,9 +144,9 @@ public final class PolygonGrabber {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = Files.newInputStream(file)) {
+        try {
           log.info("Centers : " + file);
-          centers = PointFileReaderWriter.readOneToOne(is);
+          centers = PointFileReaderWriter.readOneToOne(file);
         } catch (final IOException e) {
           log.error("Something wrong with Centers file", e);
         }
@@ -159,9 +157,7 @@ public final class PolygonGrabber {
               new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
           if (centerPath != null) {
             log.info("Centers : " + centerPath);
-            try (InputStream is = Files.newInputStream(centerPath)) {
-              centers = PointFileReaderWriter.readOneToOne(is);
-            }
+            centers = PointFileReaderWriter.readOneToOne(centerPath);
           } else {
             log.info("You must specify a centers file.");
             log.info("Shutting down.");
@@ -379,8 +375,8 @@ public final class PolygonGrabber {
       if (polyName == null) {
         return;
       }
-      try (OutputStream out = Files.newOutputStream(polyName)) {
-        PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
+      try {
+        PointFileReaderWriter.writeOneToManyPolygons(polyName, polygons);
         log.info("Data written to :" + polyName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to save polygons: " + polyName, e);
@@ -395,8 +391,8 @@ public final class PolygonGrabber {
       if (polyName == null) {
         return;
       }
-      try (InputStream in = Files.newInputStream(polyName)) {
-        polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+      try {
+        polygons = PointFileReaderWriter.readOneToManyPolygons(polyName);
       } catch (final IOException e) {
         log.error("Failed to load polygons: " + polyName, e);
       }

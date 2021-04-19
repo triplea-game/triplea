@@ -7,13 +7,12 @@ import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsList
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
@@ -25,8 +24,6 @@ import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
-import org.triplea.java.UrlStreams;
-import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -152,9 +149,7 @@ public class ResourceLoader implements Closeable {
    *     resource. Do not use '\' or File.separator)
    */
   public @Nullable URL getResource(final String inputPath) {
-    return findResource(inputPath) //
-        .or(() -> findResource(inputPath))
-        .orElse(null);
+    return findResource(inputPath).orElse(null);
   }
 
   /**
@@ -173,33 +168,21 @@ public class ResourceLoader implements Closeable {
     return loader.resources(searchPath).findFirst();
   }
 
-  /**
-   * Returns an input stream for the specified resource or {@code null} if the resource does not
-   * exist. The caller is responsible for closing the returned input stream.
-   *
-   * @throws IllegalStateException If the specified resource exists but the input stream cannot be
-   *     opened.
-   */
-  public @Nullable InputStream getResourceAsStream(final String path) {
-    final URL url = getResource(path);
-    if (url == null) {
-      return null;
-    }
-
-    return UrlStreams.openStream(url)
-        .orElseThrow(() -> new IllegalStateException("Failed to open an input stream to: " + path));
+  public Optional<Path> optionalResource(final String path) {
+    return findResource(path)
+        .map(
+            url -> {
+              try {
+                return url.toURI();
+              } catch (final URISyntaxException e) {
+                throw new IllegalStateException(e);
+              }
+            })
+        .map(Path::of);
   }
 
-  public ThrowingSupplier<InputStream, IOException> optionalResource(final String path) {
-    return () ->
-        Optional.ofNullable(getResourceAsStream(path))
-            .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
-  }
-
-  public ThrowingSupplier<InputStream, IOException> requiredResource(final String path) {
-    return () ->
-        Optional.ofNullable(getResourceAsStream(path))
-            .orElseThrow(() -> new FileNotFoundException(path));
+  public Path requiredResource(final String path) throws IOException {
+    return optionalResource(path).orElseThrow(() -> new FileNotFoundException(path));
   }
 
   public Optional<Image> loadImage(final String imageName) {

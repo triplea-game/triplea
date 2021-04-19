@@ -16,8 +16,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -135,8 +133,8 @@ public final class CenterPicker {
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
-        try (InputStream is = Files.newInputStream(file)) {
-          polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+        try {
+          polygons = PointFileReaderWriter.readOneToManyPolygons(file);
         } catch (final IOException e) {
           log.error("Something wrong with your Polygons file: " + file.toAbsolutePath());
           throw e;
@@ -145,8 +143,8 @@ public final class CenterPicker {
         final Path polyPath =
             new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
-          try (InputStream is = Files.newInputStream(polyPath)) {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          try {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
           } catch (final IOException e) {
             log.error("Something wrong with your Polygons file: " + polyPath);
             throw e;
@@ -237,8 +235,8 @@ public final class CenterPicker {
       if (fileName == null) {
         return;
       }
-      try (OutputStream out = Files.newOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToOne(out, centers);
+      try {
+        PointFileReaderWriter.writeOneToOne(fileName, centers);
         log.info("Data written to :" + fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to save centers: " + fileName, e);
@@ -253,8 +251,8 @@ public final class CenterPicker {
       if (centerName == null) {
         return;
       }
-      try (InputStream in = Files.newInputStream(centerName)) {
-        centers = PointFileReaderWriter.readOneToOne(in);
+      try {
+        centers = PointFileReaderWriter.readOneToOne(centerName);
       } catch (final IOException e) {
         log.error("Failed to load centers: " + centerName, e);
       }
