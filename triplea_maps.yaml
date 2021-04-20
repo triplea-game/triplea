@@ -2273,12 +2273,12 @@
     Edition.</p>
     <br><p>Key features include combining UK Pacific and ANZAC into one nation, revised
     order of play for nations, victory objectives and 8 rounds of play.</p>
- - mapName: Zombies-World War 2
-   mapCategory: EXPERIMENTAL
-   url: https://github.com/triplea-maps/AAZ/archive/refs/heads/master.zip
-   version: 1
-   img: https://github.com/triplea-maps/AAZ/archive/refs/heads/master/previes.zip
-   description: 
-     <br>In this weird alternate history, the nations fighting World War II most also fight off the menace of the walking dead.
-     <br>Inspired by the game Axis & Allies & Zombies
-     <br>Also includes a normal version of WW2, using the same map
+- mapName: Zombies-World War 2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AAZ/archive/refs/heads/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/AAZ/archive/refs/heads/master/previes.zip
+  description:
+    <br>In this weird alternate history, the nations fighting World War II most also fight off the menace of the walking dead.
+    <br>Inspired by the game Axis & Allies & Zombies
+    <br>Also includes a normal version of WW2, using the same map
