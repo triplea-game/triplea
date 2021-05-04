@@ -2272,12 +2272,13 @@
     developed by Young Grasshopper for tournament play of Axis and Allies 1940 Global 2nd
     Edition.</p>
     <br><p>Key features include combining UK Pacific and ANZAC into one nation, revised
-    order of play for nations, victory objectives and 8 roundsmapName: Global 40 House Rules
+    order of play for nations, victory objectives and 8 rounds of play.</p>
+- mapName: G 40 Expansion
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/g_40_expansion.git
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/g_40_expansion/master/preview.png
   description:
     <br>
-    <br>.<br> of play.</p>G 40 House Rules Expansion Created by captain and Company
+    <br>.<br> of play.</p>G 40 House Rules Expansion Created by Captain and Company. </p>
   
