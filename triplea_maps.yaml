@@ -2275,7 +2275,7 @@
     order of play for nations, victory objectives and 8 rounds of play.</p>
 - mapName: G 40 Expansion
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/g_40_expansion.git
+  url: https://github.com/triplea-maps/g_40_expansion
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/g_40_expansion/master/preview.png
   description:
