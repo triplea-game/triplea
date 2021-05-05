@@ -81,7 +81,7 @@ subprojects {
         dropwizardWebsocketsVersion = '1.3.14'
         equalsVerifierVersion = '3.6'
         errorProneVersion = '2.6.0'
-        feignCoreVersion = '11.1'
+        feignCoreVersion = '11.2'
         feignGsonVersion = '11.1'
         javaWebSocketVersion = '1.5.2'
         gsonVersion = '2.8.6'
