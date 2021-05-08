@@ -67,7 +67,7 @@ subprojects {
 
     ext {
         apacheHttpComponentsVersion = '4.5.13'
-        awaitilityVersion = '4.0.3'
+        awaitilityVersion = '4.1.0'
         bcryptVersion = '0.9.0'
         caffeineVersion = '2.8.1'
         checkstyleVersion = '8.23'
