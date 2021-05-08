@@ -2273,3 +2273,12 @@
     Edition.</p>
     <br><p>Key features include combining UK Pacific and ANZAC into one nation, revised
     order of play for nations, victory objectives and 8 rounds of play.</p>
+- mapName: Zombies-World War 2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/zombies-World_War_2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/zombies-World_War_2/master/preview.png
+  description: |
+    <br>Zombies-World War 2 is inspired by the game Axis & Allies & Zombies. There are 2 scenarios.
+    <br>* Zombies-World War 2 has Zombies randomly popping up around the world, an enemy both to the Axis & the Allies
+    <br>* World War II v7 removes the zombies, for a simple, fast-play game
