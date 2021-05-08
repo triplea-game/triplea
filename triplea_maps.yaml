@@ -2278,7 +2278,7 @@
   url: https://github.com/triplea-maps/AAZ/archive/refs/heads/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/AAZ/master/Preview.png
-  description:
+  description: |
     <br>In this weird alternate history, the nations fighting World War II most also fight off the menace of the walking dead.
     <br>Inspired by the game Axis & Allies & Zombies
     <br>Also includes a normal version of WW2, using the same map
