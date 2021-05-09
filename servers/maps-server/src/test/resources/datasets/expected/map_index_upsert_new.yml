@@ -1,10 +1,10 @@
 map_index:
   - map_name: map-name
     repo_url: http://map-repo-url
-    version: 100
+    last_commit_date: 2000-12-01 23:59:20.0
   - map_name: map-name-2
     repo_url: http://map-repo-url-2
-    version: 100
+    last_commit_date: 2016-01-01 23:59:20.0
   - map_name: map-name-3
     repo_url: http://map-repo-url-3
-    version: 2
+    last_commit_date: 2000-01-12 23:59:00.0

@@ -13,6 +13,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.triplea.java.StringUtils;
 
 /**
  * Bare-bones utility class to download content from a specific URI and process the downloaded
@@ -47,8 +48,8 @@ public final class SimpleDownloader {
    * @return Result of the stream processing function
    * @throws DownloadException Thrown if there are any problems during download.
    */
-  public static <T> T downloadAndExecute(
-      final URI uri, final Function<InputStream, T> streamProcessor) throws DownloadException {
+  public static <T> T download(final URI uri, final Function<InputStream, T> streamProcessor)
+      throws DownloadException {
 
     final HttpGet request = new HttpGet(uri);
     try (CloseableHttpClient httpClient = HttpClients.custom().disableCookieManagement().build();
@@ -69,5 +70,9 @@ public final class SimpleDownloader {
     } catch (final IOException e) {
       throw new DownloadException(0, e);
     }
+  }
+
+  public static String downloadAsString(final URI uri) throws DownloadException {
+    return download(uri, StringUtils::readFully);
   }
 }

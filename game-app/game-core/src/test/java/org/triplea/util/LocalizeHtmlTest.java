@@ -51,8 +51,6 @@ class LocalizeHtmlTest {
         "<p>Paragraph</p>"
       })
   void testAbsoluteUrl(final String testHtml) {
-    assertThat(
-        LocalizeHtml.localizeImgLinksInHtml(testHtml, path),
-        is(equalTo(testHtml)));
+    assertThat(LocalizeHtml.localizeImgLinksInHtml(testHtml, path), is(equalTo(testHtml)));
   }
 }

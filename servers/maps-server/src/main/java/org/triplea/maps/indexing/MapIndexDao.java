@@ -9,10 +9,10 @@ interface MapIndexDao {
 
   /** Upserts a map indexing result into the map_index table. */
   @SqlUpdate(
-      "insert into map_index(map_name, repo_url, category_id, version)\n"
-          + "values(:mapName, :mapRepoUri, 1, :mapVersion)\n"
+      "insert into map_index(map_name, repo_url, category_id, last_commit_date)\n"
+          + "values(:mapName, :mapRepoUri, 1, :lastCommitDate)\n"
           + "on conflict(repo_url)\n"
-          + "do update set map_name = :mapName, version = :mapVersion")
+          + "do update set map_name = :mapName, last_commit_date = :lastCommitDate")
   void upsert(@BindBean MapIndexResult mapIndexResult);
 
   /** Deletes maps that are not in the parameter list from the map_index table. */

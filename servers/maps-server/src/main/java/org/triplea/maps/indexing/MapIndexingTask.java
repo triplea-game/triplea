@@ -2,6 +2,7 @@ package org.triplea.maps.indexing;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.github.GithubApiClient;
+import org.triplea.http.client.github.MapRepoListing;
 
 /**
  * Task that runs a map indexing pass on all maps. The indexing will update database to reflect the
@@ -28,7 +30,7 @@ class MapIndexingTask implements Runnable {
   @Nonnull private final String githubOrgName;
   @Nonnull private final MapIndexDao mapIndexDao;
   @Nonnull private final GithubApiClient githubApiClient;
-  @Nonnull private final Function<URI, Optional<MapIndexResult>> mapIndexer;
+  @Nonnull private final Function<MapRepoListing, Optional<MapIndexResult>> mapIndexer;
 
   @Override
   public void run() {
@@ -37,15 +39,16 @@ class MapIndexingTask implements Runnable {
     final long start = System.currentTimeMillis();
 
     // get list of maps
-    final Collection<URI> mapUris =
+    final Collection<MapRepoListing> mapUris =
         githubApiClient.listRepositories(githubOrgName).stream()
-            .sorted()
+            .sorted(Comparator.comparing(MapRepoListing::getName))
             .collect(Collectors.toList());
 
     // remove deleted maps
     final int mapsRemovedCount =
         mapIndexDao.removeMapsNotIn(
-            mapUris.stream() //
+            mapUris.stream()
+                .map(MapRepoListing::getUri)
                 .map(URI::toString)
                 .collect(Collectors.toList()));
 

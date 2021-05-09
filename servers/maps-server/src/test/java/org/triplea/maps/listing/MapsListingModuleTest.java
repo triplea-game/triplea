@@ -5,6 +5,9 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,11 @@ import org.triplea.http.client.maps.listing.MapDownloadListing;
 
 @ExtendWith(MockitoExtension.class)
 class MapsListingModuleTest {
+  private static final Instant commitDate1 =
+      LocalDateTime.of(1990, 12, 31, 23, 59, 0).toInstant(ZoneOffset.UTC);
+
+  private static final Instant commitDate2 =
+      LocalDateTime.of(1999, 1, 30, 12, 59, 0).toInstant(ZoneOffset.UTC);
 
   @Mock private MapListingDao mapListingDao;
 
@@ -30,13 +38,13 @@ class MapsListingModuleTest {
                 MapListingRecord.builder()
                     .url("http://map-url-1")
                     .name("map-name-1")
-                    .version("1")
+                    .lastCommitDate(commitDate1)
                     .categoryName("category-1")
                     .build(),
                 MapListingRecord.builder()
                     .url("http://map-url-2")
                     .name("map-name-2")
-                    .version("2")
+                    .lastCommitDate(commitDate2)
                     .categoryName("category-2")
                     .build()));
 
@@ -44,12 +52,12 @@ class MapsListingModuleTest {
     assertThat(results, hasSize(2));
     // expected sort by map name, so first map should be id "1"
     assertThat(results.get(0).getMapName(), is("map-name-1"));
-    assertThat(results.get(0).getVersion(), is("1"));
+    assertThat(results.get(0).getLastCommitDateEpochMilli(), is(commitDate1.toEpochMilli()));
     assertThat(results.get(0).getUrl(), is("http://map-url-1"));
     assertThat(results.get(0).getMapCategory(), is("category-1"));
 
     assertThat(results.get(1).getMapName(), is("map-name-2"));
-    assertThat(results.get(1).getVersion(), is("2"));
+    assertThat(results.get(1).getLastCommitDateEpochMilli(), is(commitDate2.toEpochMilli()));
     assertThat(results.get(1).getUrl(), is("http://map-url-2"));
     assertThat(results.get(1).getMapCategory(), is("category-2"));
   }

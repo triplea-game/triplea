@@ -2,6 +2,8 @@ package org.triplea.maps.indexing;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ class MapIndexDaoTest extends MapServerTest {
         MapIndexResult.builder()
             .mapName("map-name-3")
             .mapRepoUri("http://map-repo-url-3")
-            .mapVersion(2)
+            .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
             .build());
   }
 
@@ -31,7 +33,7 @@ class MapIndexDaoTest extends MapServerTest {
         MapIndexResult.builder()
             .mapName("map-name-updated")
             .mapRepoUri("http://map-repo-url-2")
-            .mapVersion(1000)
+            .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
             .build());
   }
 
@@ -42,7 +44,7 @@ class MapIndexDaoTest extends MapServerTest {
         MapIndexResult.builder()
             .mapName("map-name-2")
             .mapRepoUri("http://map-repo-url-2")
-            .mapVersion(100)
+            .lastCommitDate(LocalDateTime.of(2016, 1, 1, 23, 59, 20).toInstant(ZoneOffset.UTC))
             .build());
   }
 

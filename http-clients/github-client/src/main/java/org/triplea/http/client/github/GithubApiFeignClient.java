@@ -32,7 +32,7 @@ interface GithubApiFeignClient {
       CreateIssueRequest createIssueRequest);
 
   @RequestLine("GET " + LIST_REPOS_PATH)
-  List<RepoListingResponse> listRepos(
+  List<MapRepoListing> listRepos(
       @HeaderMap Map<String, Object> headerMap,
       @QueryMap Map<String, String> queryParams,
       @Param("org") String org);

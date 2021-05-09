@@ -32,16 +32,24 @@ public class MapsIndexingSchedule implements Managed {
    * 'start()' method must be called for map indexing to begin.
    */
   public static MapsIndexingSchedule build(final MapsConfig configuration, final Jdbi jdbi) {
+    final var githubApiClient =
+        GithubApiClient.builder()
+            .uri(URI.create(configuration.getGithubApiUri()))
+            .authToken(configuration.getGithubApiKey())
+            .isTest(false)
+            .build();
+
     return new MapsIndexingSchedule(
         MapIndexingTask.builder()
             .githubOrgName(configuration.getGithubMapsOrgName())
-            .githubApiClient(
-                GithubApiClient.builder()
-                    .uri(URI.create(configuration.getGithubApiUri()))
-                    .authToken(configuration.getGithubApiKey())
-                    .isTest(false)
-                    .build())
-            .mapIndexer(new MapIndexer())
+            .githubApiClient(githubApiClient)
+            .mapIndexer(
+                new MapIndexer(
+                    repoName ->
+                        githubApiClient
+                            .fetchBranchInfo(
+                                configuration.getGithubMapsOrgName(), repoName, "master")
+                            .getLastCommitDate()))
             .mapIndexDao(jdbi.onDemand(MapIndexDao.class))
             .build());
   }

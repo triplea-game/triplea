@@ -5,6 +5,8 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
 import org.triplea.maps.server.http.MapServerTest;
 
@@ -19,7 +21,6 @@ class MapListingDaoTest extends MapServerTest {
 
   @Test
   void verifySelect() {
-
     final var results = mapListingDao.fetchMapListings();
 
     assertThat(results, hasSize(2));
@@ -27,6 +28,8 @@ class MapListingDaoTest extends MapServerTest {
     assertThat(mapDownloadListing.getMapCategory(), is("category_name"));
     assertThat(mapDownloadListing.getMapName(), is("map-name"));
     assertThat(mapDownloadListing.getUrl(), is("http://map-repo-url"));
-    assertThat(mapDownloadListing.getVersion(), is("100"));
+    assertThat(
+        mapDownloadListing.getLastCommitDateEpochMilli(),
+        is(LocalDateTime.of(2000, 12, 1, 23, 59, 20).toInstant(ZoneOffset.UTC).toEpochMilli()));
   }
 }
