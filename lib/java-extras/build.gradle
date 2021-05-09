@@ -5,5 +5,6 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
+    testImplementation "commons-io:commons-io:$commonsIoVersion"
     testImplementation project(':lib:test-common')
 }
