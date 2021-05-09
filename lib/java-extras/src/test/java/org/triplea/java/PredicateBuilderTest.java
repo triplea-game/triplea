@@ -9,11 +9,7 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
 
 class PredicateBuilderTest {
-
-  @SuppressWarnings("UnnecessaryLambda")
   private final Predicate<Object> truePredicate = o -> true;
-
-  @SuppressWarnings("UnnecessaryLambda")
   private final Predicate<Object> falsePredicate = o -> false;
 
   @Test

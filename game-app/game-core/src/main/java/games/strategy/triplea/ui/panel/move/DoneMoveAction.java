@@ -11,7 +11,6 @@ import lombok.Builder;
 
 @Builder
 @AllArgsConstructor
-@SuppressWarnings("UnnecessaryLambda")
 class DoneMoveAction {
 
   @Nonnull private final JComponent parentComponent;
