@@ -6,6 +6,9 @@ import com.google.common.base.Ascii;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import lombok.experimental.UtilityClass;
 
 /** A collection of useful methods for working with instances of {@link String}. */
@@ -72,5 +75,25 @@ public final class StringUtils {
     return stringToTruncate.endsWith(endingToTruncate)
         ? stringToTruncate.substring(0, stringToTruncate.indexOf(endingToTruncate))
         : stringToTruncate;
+  }
+
+  /**
+   * Reads the entire contents of an inputStream into a string. The inputStream is *not* closed by
+   * this method, the caller is responsible for closing the input stream.
+   */
+  public static String readFully(final InputStream inputStream) {
+    try {
+      return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+    } catch (final IOException e) {
+      throw new ReadException(e);
+    }
+  }
+
+  private static class ReadException extends RuntimeException {
+    private static final long serialVersionUID = -4641610436073137414L;
+
+    ReadException(final Throwable cause) {
+      super("Error reading input stream", cause);
+    }
   }
 }

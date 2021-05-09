@@ -8,7 +8,7 @@ interface MapListingDao {
       "select"
           + "    m.map_name,"
           + "    m.repo_url,"
-          + "    m.version,"
+          + "    m.last_commit_date,"
           + "    c.name as category_name"
           + "  from map_index m"
           + "  join map_category c on c.id = m.category_id"

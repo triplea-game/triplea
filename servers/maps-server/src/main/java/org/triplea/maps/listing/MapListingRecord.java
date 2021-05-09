@@ -1,5 +1,6 @@
 package org.triplea.maps.listing;
 
+import java.time.Instant;
 import lombok.Builder;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
@@ -7,18 +8,18 @@ import org.triplea.http.client.maps.listing.MapDownloadListing;
 public class MapListingRecord {
   private final String name;
   private final String url;
-  private final String version;
+  private final Instant lastCommitDate;
   private final String categoryName;
 
   @Builder
   public MapListingRecord(
       @ColumnName("map_name") final String name,
       @ColumnName("repo_url") final String url,
-      @ColumnName("version") final String version,
+      @ColumnName("last_commit_date") final Instant lastCommitDate,
       @ColumnName("category_name") final String categoryName) {
     this.url = url;
     this.name = name;
-    this.version = version;
+    this.lastCommitDate = lastCommitDate;
     this.categoryName = categoryName;
   }
 
@@ -26,7 +27,7 @@ public class MapListingRecord {
     return MapDownloadListing.builder()
         .url(url)
         .mapName(name)
-        .version(version)
+        .lastCommitDateEpochMilli(lastCommitDate.toEpochMilli())
         .mapCategory(categoryName)
         .build();
   }

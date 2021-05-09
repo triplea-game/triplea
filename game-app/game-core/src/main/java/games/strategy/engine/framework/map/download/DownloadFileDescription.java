@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.primitives.Ints;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import java.io.File;
 import java.io.IOException;
@@ -97,7 +96,8 @@ public final class DownloadFileDescription {
     return DownloadFileDescription.builder()
         .url(mapDownloadListing.getUrl())
         .mapName(mapDownloadListing.getMapName())
-        .version(Ints.tryParse(mapDownloadListing.getVersion()))
+        // TODO: PROJECT#17 replace with latest commit date
+        .version(1)
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
         .installLocation(
             downloadedMapsListing.findMapFolderByName(mapDownloadListing.getMapName()).orElse(null))

@@ -1,5 +1,6 @@
 package org.triplea.maps.indexing;
 
+import java.time.Instant;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Value;
@@ -13,5 +14,6 @@ import lombok.Value;
 public class MapIndexResult {
   @Nonnull String mapName;
   @Nonnull String mapRepoUri;
-  @Nonnull Integer mapVersion;
+  /** Date of the most recent commit to master. */
+  @Nonnull Instant lastCommitDate;
 }

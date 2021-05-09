@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.HttpClient;
@@ -73,10 +72,10 @@ public class GithubApiClient {
    *
    * <p>curl https://api.github.com/orgs/triplea-maps/repos
    */
-  public Collection<URI> listRepositories(final String githubOrg) {
-    final Collection<URI> allRepos = new HashSet<>();
+  public Collection<MapRepoListing> listRepositories(final String githubOrg) {
+    final Collection<MapRepoListing> allRepos = new HashSet<>();
     int pageNumber = 1;
-    Collection<URI> repos = listRepositories(githubOrg, pageNumber);
+    Collection<MapRepoListing> repos = listRepositories(githubOrg, pageNumber);
     while (!repos.isEmpty()) {
       pageNumber++;
       allRepos.addAll(repos);
@@ -85,17 +84,15 @@ public class GithubApiClient {
     return allRepos;
   }
 
-  private Collection<URI> listRepositories(final String githubOrg, final int pageNumber) {
+  private Collection<MapRepoListing> listRepositories(
+      final String githubOrg, final int pageNumber) {
     final Map<String, Object> tokens = buildAuthorizationHeaders();
 
     final Map<String, String> queryParams = new HashMap<>();
     queryParams.put("per_page", "100");
     queryParams.put("page", String.valueOf(pageNumber));
 
-    return githubApiFeignClient.listRepos(tokens, queryParams, githubOrg).stream()
-        .map(RepoListingResponse::getHtmlUrl)
-        .map(URI::create)
-        .collect(Collectors.toSet());
+    return githubApiFeignClient.listRepos(tokens, queryParams, githubOrg);
   }
 
   /**

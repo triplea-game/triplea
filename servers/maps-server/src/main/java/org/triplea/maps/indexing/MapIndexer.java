@@ -1,56 +1,96 @@
 package org.triplea.maps.indexing;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.io.InputStream;
 import java.net.URI;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.http.client.github.MapRepoListing;
 import org.triplea.io.SimpleDownloader;
 import org.triplea.io.SimpleDownloader.DownloadException;
 import org.triplea.yaml.YamlReader;
 
 /**
- * Given a map URI, attempts to fetch the 'map.yml' file from the URI and if available generates a
- * {@code MapIndexResult}.
+ * Given a map repo name and URI, reads pertinent indexing information.
+ *
+ * <ul>
+ *   <li>mapName: read from map.yml found in the repository
+ *   <li>lastCommitDate: github API is queried for the repo's master branch last commit date.
+ * </ul>
  */
 @Slf4j
-class MapIndexer implements Function<URI, Optional<MapIndexResult>> {
-  @Override
-  public Optional<MapIndexResult> apply(final URI uri) {
-    final URI mapYmlUri = URI.create(uri.toString() + "/map.yml?raw=true");
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
+class MapIndexer implements Function<MapRepoListing, Optional<MapIndexResult>> {
+  /* Function that uses github API to map a {repoName -> lastCommitDate} */
+  @Nonnull private final Function<String, Instant> lastCommitDateFetcher;
 
-    try {
-      return Optional.of(
-          SimpleDownloader.downloadAndExecute(
-              mapYmlUri,
-              mapYmlContentStream -> indexMapYmlContent(mapYmlUri, mapYmlContentStream)));
-    } catch (final DownloadException e) {
-      if (e.getStatusCode() == 404) {
-        log.info("No map.yml found: {}", uri);
-      } else {
-        log.error("Error retreiving map.yml file: {}", e.getMessage(), e);
-      }
+  /* Function to download content as a string and log an info message if not found. */
+  @Setter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
+  @Builder.Default
+  private Function<URI, String> downloadFunction =
+      uri -> {
+        try {
+          return SimpleDownloader.downloadAsString(uri);
+        } catch (final DownloadException e) {
+          if (e.getStatusCode() == 404) {
+            log.info("Not found: {}", uri);
+          } else {
+            log.error("Error downloading: {}", e.getMessage(), e);
+          }
+          return null;
+        }
+      };
+
+  @Override
+  public Optional<MapIndexResult> apply(final MapRepoListing mapRepoListing) {
+    final String mapName = readMapNameFromYaml(mapRepoListing);
+    if (mapName == null) {
       return Optional.empty();
     }
+
+    final Instant lastCommitDate = lastCommitDateFetcher.apply(mapRepoListing.getName());
+    if (lastCommitDate == null) {
+      return Optional.empty();
+    }
+
+    return Optional.of(
+        MapIndexResult.builder()
+            .mapName(mapName)
+            .mapRepoUri(mapRepoListing.getUri().toString())
+            .lastCommitDate(lastCommitDate)
+            .build());
   }
 
   /**
-   * Reads the input stream for map index YAML information, returns null if any data is missing or
-   * formatting is bad.
+   * Determines the expected location of a map.yml file, downloads it, reads and returns the
+   * 'map_name' attribute. Returns null if the file could not be found or otherwise could not be
+   * read.
    */
   @VisibleForTesting
   @Nullable
-  static MapIndexResult indexMapYmlContent(final URI mapYmlUri, final InputStream inputStream) {
+  String readMapNameFromYaml(final MapRepoListing mapRepoListing) {
+    final URI mapYmlUri = URI.create(mapRepoListing.getUri().toString() + "/map.yml?raw=true");
+
+    final String mapYamlContents = downloadFunction.apply(mapYmlUri);
+    if (mapYamlContents == null) {
+      return null;
+    }
+
+    // parse and return the 'map_name' attribute from the YML file we just downloaded
     try {
-      final Map<String, Object> mapYamlData = YamlReader.readMap(inputStream);
-      return MapIndexResult.builder()
-          .mapRepoUri(mapYmlUri.toString())
-          .mapName((String) mapYamlData.get("map_name"))
-          .mapVersion((Integer) mapYamlData.get("version"))
-          .build();
+      final Map<String, Object> mapYamlData = YamlReader.readMap(mapYamlContents);
+      return (String) mapYamlData.get("map_name");
     } catch (final ClassCastException
         | YamlReader.InvalidYamlFormatException
         | NullPointerException e) {

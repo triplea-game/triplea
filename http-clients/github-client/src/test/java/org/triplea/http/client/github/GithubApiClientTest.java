@@ -37,18 +37,35 @@ class GithubApiClientTest {
         TestDataFileReader.readContents("sample_responses/repo_listing_response_page2.json"));
     stubRepoListingResponse(3, server, "[]");
 
-    final Collection<URI> repoUris =
+    final Collection<MapRepoListing> repos =
         GithubApiClient.builder()
             .authToken("test-token")
             .uri(URI.create(server.baseUrl()))
             .build()
             .listRepositories("example-org");
 
-    assertThat(repoUris, hasSize(3));
-    assertThat(repoUris, hasItem(URI.create("https://github.com/triplea-maps/tutorial")));
+    assertThat(repos, hasSize(3));
     assertThat(
-        repoUris, hasItem(URI.create("https://github.com/triplea-maps/aa_enhanced_revised")));
-    assertThat(repoUris, hasItem(URI.create("https://github.com/triplea-maps/roman_invasion")));
+        repos,
+        hasItem(
+            MapRepoListing.builder()
+                .htmlUrl("https://github.com/triplea-maps/tutorial")
+                .name("tutorial")
+                .build()));
+    assertThat(
+        repos,
+        hasItem(
+            MapRepoListing.builder()
+                .htmlUrl("https://github.com/triplea-maps/aa_enhanced_revised")
+                .name("aa_enhanced_revised")
+                .build()));
+    assertThat(
+        repos,
+        hasItem(
+            MapRepoListing.builder()
+                .htmlUrl("https://github.com/triplea-maps/roman_invasion")
+                .name("roman_invasion")
+                .build()));
   }
 
   private void stubRepoListingResponse(
