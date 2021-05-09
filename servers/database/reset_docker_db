@@ -25,6 +25,6 @@ scriptDir="$(dirname "$0")"
 $PSQL <  "$scriptDir/sql/init/02-create-databases.sql"
 
 echo "Deploying schema"
-"$scriptDir/../gradlew" flywayMigrateAll
+"$scriptDir/../../gradlew" flywayMigrateAll
 
 "$scriptDir/load_sample_data"
