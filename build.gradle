@@ -167,6 +167,9 @@ subprojects {
             check 'WaitNotInLoop', CheckSeverity.ERROR
             disable 'UnusedVariable' // Workaround for https://github.com/google/error-prone/issues/1250
             disable 'SameNameButDifferent' // Workaround for https://github.com/google/error-prone/issues/2120
+            // UnnecessaryLambda: frequent false positive - we use lambda's assigned to variables
+            // frequently to facilitate testing.
+            disable 'UnnecessaryLambda'
         }
         options.incremental = true
     }
