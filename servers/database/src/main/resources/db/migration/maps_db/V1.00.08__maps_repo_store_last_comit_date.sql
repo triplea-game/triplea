@@ -4,7 +4,7 @@ create table map_index
 (
     id           serial primary key,
     map_name     varchar(256) not null,
-    last_commit_date      timestamp not null check(last_commit_date < now()),
+    last_commit_date      timestamptz not null check(last_commit_date < now()),
     repo_url     varchar(256) not null unique check (repo_url like 'http%'),
     category_id  integer      not null references map_category (id),
     date_created timestamptz  not null default now(),
