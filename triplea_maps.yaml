@@ -2282,3 +2282,11 @@
     <br>Zombies-World War 2 is inspired by the game Axis & Allies & Zombies. There are 2 scenarios.
     <br>* Zombies-World War 2 has Zombies randomly popping up around the world, an enemy both to the Axis & the Allies
     <br>* World War II v7 removes the zombies, for a simple, fast-play game
+- mapName: Global 40 expansion
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/global_40_expansion/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
+  description: |
+    <br>
+    <br>This is Global 40 Expansion. Adds House Rules from The Captain and Company.<br>
