@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.io.IOUtils;
 
 /** A collection of useful methods for working with instances of {@link String}. */
 @SuppressWarnings("UnstableApiUsage")
@@ -84,7 +83,7 @@ public final class StringUtils {
    */
   public static String readFully(final InputStream inputStream) {
     try {
-      return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+      return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
     } catch (final IOException e) {
       throw new ReadException(e);
     }
