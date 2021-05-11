@@ -405,6 +405,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final UiContext uiContext,
       @Nullable final Chat chat) {
     super("TripleA - " + game.getData().getGameName());
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
     localPlayers = players;
     setIconImage(EngineImageLoader.loadFrameIcon());
