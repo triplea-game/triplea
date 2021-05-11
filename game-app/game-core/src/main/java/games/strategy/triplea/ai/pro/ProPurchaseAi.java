@@ -20,7 +20,6 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProResourceTracker;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.ai.pro.logging.ProMetricUtils;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
@@ -248,7 +247,6 @@ class ProPurchaseAi {
         populateProductionRuleMap(purchaseTerritories, purchaseOptions);
 
     // Purchase units
-    ProMetricUtils.collectPurchaseStats(purchaseMap);
     final String error = purchaseDelegate.purchase(purchaseMap);
     if (error != null) {
       ProLogger.warn("Purchase error: " + error);
@@ -378,7 +376,6 @@ class ProPurchaseAi {
         populateProductionRuleMap(purchaseTerritories, purchaseOptions);
 
     // Purchase units
-    ProMetricUtils.collectPurchaseStats(purchaseMap);
     final String error = purchaseDelegate.purchase(purchaseMap);
     if (error != null) {
       ProLogger.warn("Purchase error: " + error);
