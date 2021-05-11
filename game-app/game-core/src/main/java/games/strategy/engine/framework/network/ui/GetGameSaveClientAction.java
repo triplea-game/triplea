@@ -6,9 +6,9 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +34,10 @@ public class GetGameSaveClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final Frame frame = JOptionPane.getFrameForComponent(parent);
-    final File f = SaveGameFileChooser.getSaveGameLocation(frame, gameDataOnStartup);
+    final Path f = SaveGameFileChooser.getSaveGameLocation(frame, gameDataOnStartup);
     if (f != null) {
       final byte[] bytes = serverRemote.getSaveGame();
-      try (var fileOutputStream = new FileOutputStream(f)) {
+      try (var fileOutputStream = Files.newOutputStream(f)) {
         fileOutputStream.write(bytes);
       } catch (final IOException exception) {
         log.error("Failed to download save game from server", exception);

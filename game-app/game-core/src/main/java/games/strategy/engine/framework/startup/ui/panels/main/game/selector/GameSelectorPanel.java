@@ -343,7 +343,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                 DialogBuilder.builder()
                     .parent(this)
                     .title("Save Game File Not Found")
-                    .errorMessage("File does not exist: " + file.getAbsolutePath())
+                    .errorMessage("File does not exist: " + file.toAbsolutePath())
                     .showDialog())
         .build()
         .selectGameFile(JOptionPane.getFrameForComponent(this))
@@ -395,7 +395,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     BackgroundTaskRunner.runInBackground(
         "Loading map...",
         () -> {
-          model.load(gameFile.toFile());
+          model.load(gameFile);
           // warning: NPE check is not to protect against concurrency, another thread could still
           // null
           // out game data.

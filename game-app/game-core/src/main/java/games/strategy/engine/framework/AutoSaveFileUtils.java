@@ -6,8 +6,7 @@ import static org.triplea.java.StringUtils.capitalize;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -17,11 +16,11 @@ import java.util.Locale;
  */
 public class AutoSaveFileUtils {
   @VisibleForTesting
-  File getAutoSaveFile(final String baseFileName) {
+  Path getAutoSaveFile(final String baseFileName) {
     return ClientSetting.saveGamesFolderPath
         .getValueOrThrow()
-        .resolve(Paths.get("autoSave", getAutoSaveFileName(baseFileName)))
-        .toFile();
+        .resolve("autoSave")
+        .resolve(getAutoSaveFileName(baseFileName));
   }
 
   @VisibleForTesting
@@ -29,15 +28,15 @@ public class AutoSaveFileUtils {
     return baseFileName;
   }
 
-  public File getOddRoundAutoSaveFile() {
+  public Path getOddRoundAutoSaveFile() {
     return getAutoSaveFile(addExtension("autosave_round_odd"));
   }
 
-  public File getEvenRoundAutoSaveFile() {
+  public Path getEvenRoundAutoSaveFile() {
     return getAutoSaveFile(addExtension("autosave_round_even"));
   }
 
-  public File getLostConnectionAutoSaveFile(final LocalDateTime localDateTime) {
+  public Path getLostConnectionAutoSaveFile(final LocalDateTime localDateTime) {
     checkNotNull(localDateTime);
 
     return getAutoSaveFile(
@@ -47,13 +46,13 @@ public class AutoSaveFileUtils {
                     .format(localDateTime)));
   }
 
-  public File getBeforeStepAutoSaveFile(final String stepName) {
+  public Path getBeforeStepAutoSaveFile(final String stepName) {
     checkNotNull(stepName);
 
     return getAutoSaveFile(addExtension("autosaveBefore" + capitalize(stepName)));
   }
 
-  public File getAfterStepAutoSaveFile(final String stepName) {
+  public Path getAfterStepAutoSaveFile(final String stepName) {
     checkNotNull(stepName);
 
     return getAutoSaveFile(addExtension("autosaveAfter" + capitalize(stepName)));

@@ -253,7 +253,7 @@ public class PbemMessagePoster implements Serializable {
             }
             try {
               saveGameFile = Files.createTempFile("triplea", GameDataFileUtils.getExtension());
-              frame.getGame().saveGame(saveGameFile.toFile());
+              frame.getGame().saveGame(saveGameFile);
               setSaveGame(saveGameFile);
             } catch (final Exception e) {
               postOk = false;
