@@ -10,7 +10,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +24,8 @@ final class GameParserTest {
   @Test
   @DisplayName("Verify backward compatibility can parse 1.8 maps")
   void backwardCompatibilityCheck() throws Exception {
-    final File mapFile =
-        Path.of(GameParserTest.class.getClassLoader().getResource("v1_8_map__270BC.xml").toURI())
-            .toFile();
+    final Path mapFile =
+        Path.of(GameParserTest.class.getClassLoader().getResource("v1_8_map__270BC.xml").toURI());
 
     final GameData gameData =
         GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.0.0")).orElseThrow();

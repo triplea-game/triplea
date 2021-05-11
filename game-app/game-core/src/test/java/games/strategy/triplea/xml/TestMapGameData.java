@@ -5,7 +5,6 @@ import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.triplea.delegate.TestDelegate;
-import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -66,9 +65,9 @@ public enum TestMapGameData {
    * @throws RuntimeException If an error occurs while loading the map.
    */
   public GameData getGameData() {
-    final File mapUri;
+    final Path mapUri;
     try {
-      mapUri = Path.of(getClass().getClassLoader().getResource(fileName).toURI()).toFile();
+      mapUri = Path.of(getClass().getClassLoader().getResource(fileName).toURI());
     } catch (final URISyntaxException e) {
       throw new IllegalStateException("Can't find " + fileName, e);
     }
