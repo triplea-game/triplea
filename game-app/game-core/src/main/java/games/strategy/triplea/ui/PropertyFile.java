@@ -34,18 +34,7 @@ public abstract class PropertyFile {
   protected static <T extends PropertyFile> T getInstance(
       final Class<T> clazz, final Supplier<T> constructor) {
     try {
-      return (T)
-          cache.get(
-              clazz,
-              () -> {
-                final long start = System.currentTimeMillis();
-                try {
-                  return constructor.get();
-                } finally {
-                  System.out.print(System.currentTimeMillis() - start);
-                  System.out.println("ms for" + clazz.getCanonicalName());
-                }
-              });
+      return (T) cache.get(clazz, constructor::get);
     } catch (final ExecutionException e) {
       throw new IllegalStateException("Error in constructor", e);
     }
