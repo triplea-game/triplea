@@ -5,12 +5,14 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
+import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -19,11 +21,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
+import org.triplea.java.UrlStreams;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -84,6 +88,13 @@ public class ResourceLoader implements Closeable {
               + mapLocation.toAbsolutePath(),
           e);
     }
+  }
+
+  @VisibleForTesting
+  ResourceLoader(final URLClassLoader loader) {
+    this.loader = loader;
+    searchUrls = List.of();
+    mapLocation = null;
   }
 
   /**
@@ -203,5 +214,21 @@ public class ResourceLoader implements Closeable {
       log.error("Image loading failed: " + imageName, e);
       return Optional.empty();
     }
+  }
+
+  public Properties loadAsResource(final String fileName) {
+    final Properties properties = new OrderedProperties();
+    final URL url = getResource(fileName);
+    if (url != null) {
+      final Optional<InputStream> optionalInputStream = UrlStreams.openStream(url);
+      if (optionalInputStream.isPresent()) {
+        try (InputStream inputStream = optionalInputStream.get()) {
+          properties.load(inputStream);
+        } catch (final IOException e) {
+          log.error("Error reading " + fileName, e);
+        }
+      }
+    }
+    return properties;
   }
 }
