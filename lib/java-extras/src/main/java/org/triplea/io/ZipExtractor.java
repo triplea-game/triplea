@@ -79,7 +79,8 @@ public class ZipExtractor {
     }
 
     // iterate over each zip entry and write to a corresponding file
-    try (FileSystem zipFileSystem = FileSystems.newFileSystem(fileZip, null)) {
+    // Note: We can switch to the single-param version of newFileSystem() once on Java 13+.
+    try (FileSystem zipFileSystem = FileSystems.newFileSystem(fileZip, (ClassLoader) null)) {
       final Path zipRoot = zipFileSystem.getRootDirectories().iterator().next();
       try (Stream<Path> files = Files.walk(zipRoot, MAX_DEPTH)) {
         for (final Path zipEntry : files.collect(Collectors.toList())) {
