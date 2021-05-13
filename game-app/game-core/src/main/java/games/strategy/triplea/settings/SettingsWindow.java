@@ -112,8 +112,7 @@ public enum SettingsWindow {
     // provides a satisfactory display. Most non-Substance L&Fs use a {@code null} default text
     // field border, and so the
     // default scroll pane border in those cases is not changed.
-    @Nullable final Border descriptionScrollPaneBorder =
-        UIManager.getBorder("TextField.border");
+    @Nullable final Border descriptionScrollPaneBorder = UIManager.getBorder("TextField.border");
 
     int row = 0;
     for (final ClientSettingSwingUiBinding setting : settings) {
