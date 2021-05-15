@@ -11,6 +11,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -23,6 +24,7 @@ import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
@@ -530,11 +532,12 @@ class EditPanel extends ActionPanel {
             } catch (final Exception e) {
               // ignore malformed input
             }
+            final IEditDelegate delegate = EditPanel.this.frame.getEditDelegate();
+            // Use the old changePUs() API since changeResource() was only added in 2.6.
             final String result =
-                EditPanel.this
-                    .frame
-                    .getEditDelegate()
-                    .changeResource(player, resource.getName(), newTotal);
+                Constants.PUS.equals(resource.getName())
+                    ? delegate.changePUs(player, newTotal)
+                    : delegate.changeResource(player, resource.getName(), newTotal);
             if (result != null) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
