@@ -125,19 +125,32 @@ public final class SwingComponents {
     }
 
     if (showMessage) {
-      SwingUtilities.invokeLater(
-          () -> {
-            // blocks until the user responds to the modal dialog
-            final int response =
-                JOptionPane.showConfirmDialog(
-                    null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      // If message is long, place it in a scroll pane with a max size set.
+      // The max size is required to prevent the confirmation window from expanding
+      // to fit the full message (which might extend beyond the height of the screen).
+      final Component messageComponent =
+          message.length() < 1000
+              ? new JLabel(message)
+              : new JScrollPaneBuilder(new JLabel(message))
+                  .preferredSize(600, 600)
+                  .maxSize(600, 600)
+                  .border(BorderBuilder.EMPTY_BORDER)
+                  .build();
 
-            // dialog is now closed
-            visiblePrompts.remove(message);
-            if (response == JOptionPane.YES_OPTION) {
-              confirmedAction.run();
-            }
-          });
+      // blocks until the user responds to the modal dialog
+      final int response =
+          JOptionPane.showConfirmDialog(
+              null,
+              messageComponent,
+              title,
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.QUESTION_MESSAGE);
+
+      // dialog is now closed
+      visiblePrompts.remove(message);
+      if (response == JOptionPane.YES_OPTION) {
+        confirmedAction.run();
+      }
     }
   }
 
