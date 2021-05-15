@@ -1410,9 +1410,10 @@ public class ProTerritoryManager {
       final Unit unit,
       final Territory unitTerritory,
       final GamePlayer player,
-      boolean isCheckingEnemyAttacks) {
+      final boolean isCheckingEnemyAttacks) {
     if (isCheckingEnemyAttacks) {
-      final BigDecimal range = new BigDecimal(UnitAttachment.get(unit.getType()).getMovement(player));
+      final BigDecimal range =
+          new BigDecimal(UnitAttachment.get(unit.getType()).getMovement(player));
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
               unitTerritory, player, data.getRelationshipTracker(), data.getMap())
           .test(unit)) {
