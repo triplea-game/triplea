@@ -24,7 +24,7 @@ Note: The below instructions reference IntelliJ Settings, which are accessible v
         1. Select 'Activate save actions on save'
         1. configure in settings to add 'final' to local variables and class variables.
   1. *Lombok*
-        1. **Settings > Annotation processing**
+        1. **Settings > Annotation Processors**
         1. Turn on annotation processing.
         ![annotationprocessing2](https://user-images.githubusercontent.com/54828470/95939758-6da00a00-0da2-11eb-9c7a-823040578c4e.png)
 
