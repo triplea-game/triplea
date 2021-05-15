@@ -2,7 +2,7 @@
 
 Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with the associated settings, and some settings to download and import.
 
-Plugins can be install can be initiated from the JetBrains Marketplace web page, by clicking "Install to IDE" link from each plugin's page.
+Plugin installation can be initiated from the JetBrains Marketplace web page, by clicking "Install to IDE" link from each plugin's page.
 
 Note: The below instructions reference IntelliJ Settings, which are accessible via: `IntelliJ IDEA > Preferences` for macOS or `File > Settings` on other platforms.
 
