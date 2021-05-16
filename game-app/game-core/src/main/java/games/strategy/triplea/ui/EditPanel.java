@@ -11,6 +11,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -480,7 +481,7 @@ class EditPanel extends ActionPanel {
           }
         };
     changePUsAction =
-        new AbstractAction("Change PUs/resources") {
+        new AbstractAction("Change PUs") {
           private static final long serialVersionUID = -2751668909341983795L;
 
           @Override
@@ -490,31 +491,32 @@ class EditPanel extends ActionPanel {
             final PlayerChooser playerChooser =
                 new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
             final JDialog dialog =
-                playerChooser.createDialog(
-                    getTopLevelAncestor(), "Select owner PUs/resources to change");
+                playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
             dialog.setVisible(true);
             final GamePlayer player = playerChooser.getSelected();
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
-
-            final ResourceChooser resourceChooser =
-                new ResourceChooser(getData(), getMap().getUiContext());
-            final Resource resource =
-                resourceChooser.showDialog(getTopLevelAncestor(), "Select resource to change");
-            if (resource == null) {
+            getData().acquireReadLock();
+            final Resource pus;
+            try {
+              pus = getData().getResourceList().getResource(Constants.PUS);
+            } finally {
+              getData().releaseReadLock();
+            }
+            if (pus == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            final int oldTotal = player.getResources().getQuantity(resource.getName());
-            final JTextField totalField = new JTextField(String.valueOf(oldTotal), 4);
-            totalField.setMaximumSize(totalField.getPreferredSize());
+            final int oldTotal = player.getResources().getQuantity(pus);
+            final JTextField pusField = new JTextField(String.valueOf(oldTotal), 4);
+            pusField.setMaximumSize(pusField.getPreferredSize());
             final int option =
                 JOptionPane.showOptionDialog(
                     getTopLevelAncestor(),
-                    new JScrollPane(totalField),
-                    "Select new number of " + resource.getName(),
+                    new JScrollPane(pusField),
+                    "Select new number of PUs",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE,
                     null,
@@ -526,15 +528,12 @@ class EditPanel extends ActionPanel {
             }
             int newTotal = oldTotal;
             try {
-              newTotal = Integer.parseInt(totalField.getText());
+              newTotal = Integer.parseInt(pusField.getText());
             } catch (final Exception e) {
               // ignore malformed input
             }
             final String result =
-                EditPanel.this
-                    .frame
-                    .getEditDelegate()
-                    .changeResource(player, resource.getName(), newTotal);
+                EditPanel.this.frame.getEditDelegate().changePUs(player, newTotal);
             if (result != null) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),

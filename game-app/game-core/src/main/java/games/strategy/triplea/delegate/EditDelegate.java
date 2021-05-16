@@ -172,35 +172,21 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changePUs(final GamePlayer player, final int newTotal) {
-    return changeResource(player, Constants.PUS, newTotal);
-  }
-
-  @Override
-  public String changeResource(
-      final GamePlayer player, final String resourceName, final int newTotal) {
     final String result = checkEditMode();
     if (result != null) {
       return result;
     }
-    final Resource resource = getData().getResourceList().getResource(resourceName);
-    final int oldTotal = player.getResources().getQuantity(resource);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
+    final int oldTotal = player.getResources().getQuantity(pus);
     if (oldTotal == newTotal) {
-      return "New " + resourceName + " total is unchanged";
+      return "New PUs total is unchanged";
     }
     if (newTotal < 0) {
-      return "New " + resourceName + " total is invalid";
+      return "New PUs total is invalid";
     }
     logEvent(
-        "Changing "
-            + resourceName
-            + " for "
-            + player.getName()
-            + " from "
-            + oldTotal
-            + " to "
-            + newTotal,
-        null);
-    bridge.addChange(ChangeFactory.changeResourcesChange(player, resource, (newTotal - oldTotal)));
+        "Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
+    bridge.addChange(ChangeFactory.changeResourcesChange(player, pus, (newTotal - oldTotal)));
     return null;
   }
 
