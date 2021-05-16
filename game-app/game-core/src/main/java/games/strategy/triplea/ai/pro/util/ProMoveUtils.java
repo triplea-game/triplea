@@ -21,8 +21,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
 /** Pro AI move utilities. */
@@ -479,5 +481,41 @@ public final class ProMoveUtils {
         AbstractBuiltInAi.movePause();
       }
     }
+  }
+
+  public static List<MoveDescription> calculateAmphibLandingMoves(
+      final ProData proData,
+      final GamePlayer player,
+      final Map<Territory, ProTerritory> moveMap,
+      final boolean b) {
+    List<MoveDescription> moves = new ArrayList<>();
+    final GameMap gameMap = proData.getData().getMap();
+    final Predicate<Territory> candidateLandingTerritories =
+        Matches.territoryIsLand()
+            .and(
+                Matches.isTerritoryAllied(player, proData.getData().getRelationshipTracker())
+                    .and(
+                        Matches.territoryDoesNotCostMoneyToEnter(
+                            proData.getData().getProperties())));
+    for (final Territory territory : gameMap.getTerritories()) {
+      if (!territory.isWater()) {
+        continue;
+      }
+
+      final List<Unit> myLandUnits =
+          territory.getUnitCollection().getMatches(Matches.unitIsLandAndOwnedBy(player));
+      if (myLandUnits.isEmpty()) {
+        continue;
+      }
+      final Set<Territory> landNeighbors =
+          gameMap.getNeighbors(territory, candidateLandingTerritories);
+      if (!landNeighbors.isEmpty()) {
+        // Pick a random destination from the candidates. We could do something smarter, but for now
+        // a random territory ensures it's not predictable for human players.
+        final Territory destination = CollectionUtils.getRandomElement(landNeighbors);
+        moves.add(new MoveDescription(myLandUnits, new Route(territory, destination)));
+      }
+    }
+    return moves;
   }
 }

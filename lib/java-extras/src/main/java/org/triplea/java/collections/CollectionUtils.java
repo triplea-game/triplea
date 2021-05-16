@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -126,5 +127,9 @@ public class CollectionUtils {
     final TreeMultiset<T> sortedCollection = TreeMultiset.create(comparator);
     sortedCollection.addAll(elements);
     return sortedCollection;
+  }
+
+  public static <E> E getRandomElement(final Collection<E> elements) {
+    return elements.stream().skip(new Random().nextInt(elements.size())).findFirst().orElse(null);
   }
 }

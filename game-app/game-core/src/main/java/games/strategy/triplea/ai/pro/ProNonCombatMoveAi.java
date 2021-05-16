@@ -222,6 +222,15 @@ class ProNonCombatMoveAi {
     // Calculate amphib move routes and perform moves
     ProMoveUtils.doMove(
         proData, ProMoveUtils.calculateAmphibRoutes(proData, player, moveMap, false), moveDel);
+
+    // If any land units are still stuck on ships, land them now. This can happen if some of the
+    // amphib moves failed (e.g. AI bug, e.g. planning amphib moves that require fuel without having
+    // that fuel). This assumes it's always better to land units than keep them on transports, since
+    // they can always be picked up the next turn freely.
+    ProMoveUtils.doMove(
+        proData,
+        ProMoveUtils.calculateAmphibLandingMoves(proData, player, moveMap, false),
+        moveDel);
   }
 
   private void findUnitsThatCantMove(
