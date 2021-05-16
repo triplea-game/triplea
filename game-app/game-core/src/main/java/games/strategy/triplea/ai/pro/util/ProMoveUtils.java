@@ -488,7 +488,7 @@ public final class ProMoveUtils {
       final GamePlayer player,
       final Map<Territory, ProTerritory> moveMap,
       final boolean b) {
-    List<MoveDescription> moves = new ArrayList<>();
+    final List<MoveDescription> moves = new ArrayList<>();
     final GameMap gameMap = proData.getData().getMap();
     final Predicate<Territory> candidateLandingTerritories =
         Matches.territoryIsLand()
