@@ -99,7 +99,7 @@ subprojects {
         jdbiVersion = '3.20.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.7.2'
-        junitPlatformLauncherVersion = '1.7.1'
+        junitPlatformLauncherVersion = '1.7.2'
         logbackClassicVersion = '1.2.3'
         mockitoVersion = '3.10.0'
         openFeignVersion = '11.2'
