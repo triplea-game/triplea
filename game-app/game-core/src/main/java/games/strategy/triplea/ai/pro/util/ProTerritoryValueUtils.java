@@ -118,11 +118,7 @@ public final class ProTerritoryValueUtils {
         double nearbySeaProductionValue = 0;
         final Set<Territory> nearbySeaTerritories =
             data.getMap()
-                .getNeighbors(
-                    t,
-                    4,
-                    ProMatches.territoryCanMoveSeaUnits(
-                        player, data.getProperties(), data.getRelationshipTracker(), true));
+                .getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(data, player, true));
         final List<Territory> nearbyEnemySeaTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
@@ -134,8 +130,7 @@ public final class ProTerritoryValueUtils {
                   .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(
-                          player, data.getProperties(), data.getRelationshipTracker(), true),
+                      ProMatches.territoryCanMoveSeaUnits(data, player, true),
                       Set.of(),
                       player);
           if (route == null) {
@@ -160,8 +155,7 @@ public final class ProTerritoryValueUtils {
                   .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(
-                          player, data.getProperties(), data.getRelationshipTracker(), true),
+                      ProMatches.territoryCanMoveSeaUnits(data, player, true),
                       Set.of(),
                       player);
           if (route == null) {
@@ -353,8 +347,7 @@ public final class ProTerritoryValueUtils {
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
           // find neutral value
           value = findTerritoryAttackValue(proData, player, nearbyEnemyTerritory) / 3;
-        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(
-                player, data.getMap(), data.getProperties(), data.getRelationshipTracker())
+        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(data, player)
             .test(nearbyEnemyTerritory)) {
           value *= 0.1; // reduce value for can't hold amphib allied territories
         }
@@ -409,8 +402,7 @@ public final class ProTerritoryValueUtils {
               .getRouteForUnits(
                   t,
                   enemyCapitalOrFactory,
-                  ProMatches.territoryCanMoveSeaUnits(
-                      player, data.getProperties(), data.getRelationshipTracker(), true),
+                  ProMatches.territoryCanMoveSeaUnits(data, player, true),
                   Set.of(),
                   player);
       if (route == null) {
@@ -432,11 +424,7 @@ public final class ProTerritoryValueUtils {
     double nearbyLandValue = 0;
     final Set<Territory> nearbyTerritories =
         data.getMap()
-            .getNeighborsIgnoreEnd(
-                t,
-                3,
-                ProMatches.territoryCanMoveSeaUnits(
-                    player, data.getProperties(), data.getRelationshipTracker(), true));
+            .getNeighborsIgnoreEnd(t, 3, ProMatches.territoryCanMoveSeaUnits(data, player, true));
     final List<Territory> nearbyLandTerritories =
         CollectionUtils.getMatches(
             nearbyTerritories,
@@ -448,8 +436,7 @@ public final class ProTerritoryValueUtils {
               .getRouteForUnits(
                   t,
                   nearbyLandTerritory,
-                  ProMatches.territoryCanMoveSeaUnits(
-                      player, data.getProperties(), data.getRelationshipTracker(), true),
+                  ProMatches.territoryCanMoveSeaUnits(data, player, true),
                   Set.of(),
                   player);
       if (route == null) {
