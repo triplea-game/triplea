@@ -1,22 +1,9 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.triplea.ResourceLoader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.time.Instant;
-import java.util.Optional;
-import java.util.Properties;
-import lombok.extern.slf4j.Slf4j;
-import org.triplea.java.UrlStreams;
-
 /** Same as PoliticsText but for user actions. */
-@Slf4j
-public class UserActionText {
+public class UserActionText extends PropertyFile {
   // Filename
   private static final String PROPERTY_FILE = "actionstext.properties";
-  private static UserActionText text = null;
-  private static Instant timestamp = Instant.EPOCH;
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
@@ -27,30 +14,12 @@ public class UserActionText {
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
-  private final Properties properties = new Properties();
-
   private UserActionText() {
-    final ResourceLoader loader = UiContext.getResourceLoader();
-    final URL url = loader.getResource(PROPERTY_FILE);
-    if (url != null) {
-      final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-      if (inputStream.isPresent()) {
-        try {
-          properties.load(inputStream.get());
-        } catch (final IOException e) {
-          log.error("Error reading " + PROPERTY_FILE, e);
-        }
-      }
-    }
+    super(PROPERTY_FILE);
   }
 
   public static UserActionText getInstance() {
-    // cache properties for 10 seconds
-    if (text == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
-      text = new UserActionText();
-      timestamp = Instant.now();
-    }
-    return text;
+    return PropertyFile.getInstance(UserActionText.class, UserActionText::new);
   }
 
   private String getString(final String value) {

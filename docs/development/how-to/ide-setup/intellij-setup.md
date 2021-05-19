@@ -2,9 +2,13 @@
 
 Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with the associated settings, and some settings to download and import.
 
+Plugin installation can be initiated from the JetBrains Marketplace web page, by clicking "Install to IDE" link from each plugin's page.
+
+Note: The below instructions reference IntelliJ Settings, which are accessible via: `IntelliJ IDEA > Preferences` for macOS or `File > Settings` on other platforms.
+
 ### Plugins:
-  1. *Google Java Format*
-        1. *settings > Other settings > google-java-format*
+  1. *Google Java Format* [plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+        1. **Settings* > google-java-format Settings**
         1.  Check 'enable'
       ![Screenshot from 2019-08-08 17-35-52
       ](https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png)
@@ -20,7 +24,7 @@ Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with
         1. Select 'Activate save actions on save'
         1. configure in settings to add 'final' to local variables and class variables.
   1. *Lombok*
-        1. **settings > annotation processing**
+        1. **Settings > Annotation Processors**
         1. Turn on annotation processing.
         ![annotationprocessing2](https://user-images.githubusercontent.com/54828470/95939758-6da00a00-0da2-11eb-9c7a-823040578c4e.png)
 
