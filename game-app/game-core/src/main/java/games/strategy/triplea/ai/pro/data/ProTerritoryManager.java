@@ -810,13 +810,12 @@ public class ProTerritoryManager {
               gameMap.getRouteForUnit(
                   myUnitTerritory,
                   potentialTerritory,
-                  isCheckingEnemyAttacks ?
-                      ProMatches.territoryCanMoveSeaUnits(data, player, isCombatMove) :
-                      ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
+                  isCheckingEnemyAttacks
+                      ? ProMatches.territoryCanMoveSeaUnits(data, player, isCombatMove)
+                      : ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
                           data, player, isCombatMove, clearedTerritories, List.of()),
                   mySeaUnit,
                   player);
-          }
           if (myRoute == null) {
             continue;
           }
@@ -873,26 +872,16 @@ public class ProTerritoryManager {
         final Territory startTerritory = proData.getUnitTerritory(myLandUnit);
         // Should this use getUnitRange()?
         final BigDecimal range = myLandUnit.getMovementLeft();
-        Set<Territory> possibleMoveTerritories =
+        final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory,
                 myLandUnit,
                 range,
-                ProMatches.territoryCanMoveSpecificLandUnit(
-                    player,
-                    data.getProperties(),
-                    data.getRelationshipTracker(),
-                    isCombatMove,
-                    myLandUnit));
-        if (isIgnoringRelationships) {
-          possibleMoveTerritories =
-              gameMap.getNeighborsByMovementCost(
-                  myUnitTerritory,
-                  myLandUnit,
-                  range,
-                  ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(
-                      player, data.getProperties(), myLandUnit));
-        }
+                isIgnoringRelationships
+                    ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(
+                        player, data.getProperties(), myLandUnit)
+                    : ProMatches.territoryCanMoveSpecificLandUnit(
+                        data, player, isCombatMove, myLandUnit));
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(
@@ -907,14 +896,19 @@ public class ProTerritoryManager {
               gameMap.getRouteForUnit(
                   myUnitTerritory,
                   potentialTerritory,
-                  isCheckingEnemyAttacks ?
-                  ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
-                      data, player, myLandUnit, startTerritory, isCombatMove, enemyTerritories, clearedTerritories) :
-                  ProMatches.territoryCanMoveLandUnitsThrough(
-                      data, player, myLandUnit, startTerritory, isCombatMove, enemyTerritories),
+                  isCheckingEnemyAttacks
+                      ? ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
+                          data,
+                          player,
+                          myLandUnit,
+                          startTerritory,
+                          isCombatMove,
+                          enemyTerritories,
+                          clearedTerritories)
+                      : ProMatches.territoryCanMoveLandUnitsThrough(
+                          data, player, myLandUnit, startTerritory, isCombatMove, enemyTerritories),
                   myLandUnit,
                   player);
-          }
           if (myRoute == null) {
             continue;
           }
@@ -1013,14 +1007,14 @@ public class ProTerritoryManager {
             getUnitRange(data, myAirUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
 
         // Find potential territories to move to
-        Set<Territory> possibleMoveTerritories =
+        final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory,
                 myAirUnit,
                 range,
-                isIgnoringRelationships ?
-                    ProMatches.territoryCanPotentiallyMoveAirUnits(player, data.getProperties()) :
-                    ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove));
+                isIgnoringRelationships
+                    ? ProMatches.territoryCanPotentiallyMoveAirUnits(player, data.getProperties())
+                    : ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove));
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(
@@ -1324,9 +1318,9 @@ public class ProTerritoryManager {
               gameMap.getRouteForUnit(
                   myUnitTerritory,
                   bombardFromTerritory,
-                  isCheckingEnemyAttacks ?
-                      ProMatches.territoryCanMoveSeaUnits(data, player, true) :
-                      ProMatches.territoryCanMoveSeaUnitsThrough(data, player, true),
+                  isCheckingEnemyAttacks
+                      ? ProMatches.territoryCanMoveSeaUnits(data, player, true)
+                      : ProMatches.territoryCanMoveSeaUnitsThrough(data, player, true),
                   mySeaUnit,
                   player);
           if (myRoute == null) {

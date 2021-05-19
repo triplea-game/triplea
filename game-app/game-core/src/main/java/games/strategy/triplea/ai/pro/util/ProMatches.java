@@ -94,19 +94,15 @@ public final class ProMatches {
   }
 
   public static Predicate<Territory> territoryCanMoveSpecificLandUnit(
-      final GamePlayer player,
-      final GameProperties properties,
-      final RelationshipTracker relationshipTracker,
-      final boolean isCombatMove,
-      final Unit unit) {
+      final GameState data, final GamePlayer player, final boolean isCombatMove, final Unit unit) {
     return t -> {
       final Predicate<Territory> territoryMatch =
-          Matches.territoryDoesNotCostMoneyToEnter(properties)
+          Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
               .and(
                   Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
                       player,
-                      properties,
-                      relationshipTracker,
+                      data.getProperties(),
+                      data.getRelationshipTracker(),
                       isCombatMove,
                       true,
                       false,
@@ -178,14 +174,12 @@ public final class ProMatches {
                 .and(Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()));
         final Predicate<Territory> alliedOrBlitzableMatch =
             alliedWithNoEnemiesMatch.or(territoryIsBlitzable(player, data, u));
-        return territoryCanMoveSpecificLandUnit(
-                player, data.getProperties(), data.getRelationshipTracker(), isCombatMove, u)
+        return territoryCanMoveSpecificLandUnit(data, player, isCombatMove, u)
             .and(alliedOrBlitzableMatch)
             .and(not(enemyTerritories::contains))
             .test(t);
       }
-      return territoryCanMoveSpecificLandUnit(
-              player, data.getProperties(), data.getRelationshipTracker(), isCombatMove, u)
+      return territoryCanMoveSpecificLandUnit(data, player, isCombatMove, u)
           .and(Matches.isTerritoryAllied(player, data.getRelationshipTracker()))
           .and(Matches.territoryHasNoEnemyUnits(player, data.getRelationshipTracker()))
           .and(not(enemyTerritories::contains))
@@ -212,8 +206,7 @@ public final class ProMatches {
               .or(clearedTerritories::contains)
               .or(territoryIsBlitzable(player, data, u));
     }
-    return territoryCanMoveSpecificLandUnit(
-            player, data.getProperties(), data.getRelationshipTracker(), isCombatMove, u)
+    return territoryCanMoveSpecificLandUnit(data, player, isCombatMove, u)
         .and(alliedMatch)
         .and(not(blockedTerritories::contains));
   }
