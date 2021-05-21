@@ -259,8 +259,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * Returns all neighbors within a certain distance of the starting territory that match the
-   * condition. Does NOT include the original/starting territory in the returned Set.
+   * Returns a mutable set of all neighbors within a certain distance of the starting territory
+   * that match the condition. Returned Set does NOT include the original/starting territory.
    *
    * <p>TODO: update to properly consider movement cost not just distance
    */
@@ -274,7 +274,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
         movementLeft.compareTo(BigDecimal.ZERO) >= 0,
         "MovementLeft must be non-negative: " + movementLeft);
     if (movementLeft.compareTo(BigDecimal.ZERO) == 0) {
-      return Set.of();
+      return new HashSet<>();
     }
     final Set<Territory> neighbors = getNeighbors(territory, territoryCondition);
     if (movementLeft.compareTo(BigDecimal.ONE) <= 0) {
