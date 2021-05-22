@@ -77,7 +77,7 @@ public final class HeadedGameRunner {
                             + " is currently not supported on macOS.",
                         "Unsupported feature",
                         JOptionPane.INFORMATION_MESSAGE));
-            System.setProperty(CliProperties.TRIPLEA_GAME, file.getAbsolutePath());
+            System.setProperty(CliProperties.TRIPLEA_GAME, file.toAbsolutePath().toString());
             GameRunner.showMainFrame();
           });
     }

@@ -6,11 +6,11 @@ import games.strategy.triplea.delegate.BidPlaceDelegate;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,11 +45,11 @@ class PlayerOrder {
         playerSet.add(currentGamePlayer);
       }
     }
-    printData.getOutDir().mkdir();
-    final File outFile = new File(printData.getOutDir(), "General Information.csv");
+    Files.createDirectory(printData.getOutDir());
+    final Path outFile = printData.getOutDir().resolve("General Information.csv");
     try (Writer turnWriter =
         Files.newBufferedWriter(
-            outFile.toPath(),
+            outFile,
             StandardCharsets.UTF_8,
             StandardOpenOption.CREATE,
             StandardOpenOption.APPEND)) {

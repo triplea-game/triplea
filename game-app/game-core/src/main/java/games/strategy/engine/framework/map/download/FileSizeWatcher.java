@@ -1,7 +1,10 @@
 package games.strategy.engine.framework.map.download;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 
@@ -9,12 +12,13 @@ import org.triplea.java.ThreadRunner;
  * A class that will monitor the size of a file. Inputs are a file and a consumer, the file is
  * polled in a new thread for its file size which is then passed to the consumer.
  */
+@Slf4j
 final class FileSizeWatcher {
-  private final File fileToWatch;
+  private final Path fileToWatch;
   private final Consumer<Long> progressListener;
   private volatile boolean stop = false;
 
-  FileSizeWatcher(final File fileToWatch, final Consumer<Long> progressListener) {
+  FileSizeWatcher(final Path fileToWatch, final Consumer<Long> progressListener) {
     this.fileToWatch = fileToWatch;
     this.progressListener = progressListener;
     ThreadRunner.runInNewThread(newRunner());
@@ -27,7 +31,11 @@ final class FileSizeWatcher {
   private Runnable newRunner() {
     return () -> {
       while (!stop) {
-        progressListener.accept(fileToWatch.length());
+        try {
+          progressListener.accept(Files.size(fileToWatch));
+        } catch (final IOException e) {
+          log.error("Failed to read filesize", e);
+        }
         if (!Interruptibles.sleep(50)) {
           break;
         }

@@ -5,11 +5,11 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,10 +45,10 @@ class CountryChart {
       infoMap.put(currentTerritory, unitPairs);
       availableUnits = printData.getData().getUnitTypeList().iterator();
     }
-    final File outFile = new File(printData.getOutDir(), player.getName() + ".csv");
+    final Path outFile = printData.getOutDir().resolve(player.getName() + ".csv");
     try (Writer countryFileWriter =
         Files.newBufferedWriter(
-            outFile.toPath(),
+            outFile,
             StandardCharsets.UTF_8,
             StandardOpenOption.CREATE,
             StandardOpenOption.APPEND)) {
@@ -86,7 +86,7 @@ class CountryChart {
         countryFileWriter.write("\r\n");
       }
     } catch (final IOException e) {
-      log.error("Failed Saving to File " + outFile.toString(), e);
+      log.error("Failed Saving to File " + outFile, e);
     }
   }
 }

@@ -5,7 +5,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +19,7 @@ class DownloadedMapsListingTest {
           List.of(
               new DownloadedMap(
                   MapDescriptionYaml.builder()
-                      .yamlFileLocation(new File("/path/map0/map.yml").toURI())
+                      .yamlFileLocation(Path.of("/path/map0/map.yml").toUri())
                       .mapName("map-name0")
                       .mapVersion(0)
                       .mapGameList(
@@ -31,7 +31,7 @@ class DownloadedMapsListingTest {
                       .build()),
               new DownloadedMap(
                   MapDescriptionYaml.builder()
-                      .yamlFileLocation(new File("/path/map1/map.yml").toURI())
+                      .yamlFileLocation(Path.of("/path/map1/map.yml").toUri())
                       .mapName("map-name1")
                       .mapVersion(2)
                       .mapGameList(

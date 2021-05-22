@@ -11,8 +11,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -28,7 +28,7 @@ class PuChart {
   private final Font chartFont = new Font("Serif", Font.PLAIN, 12);
   private final BufferedImage puImage;
   private final Graphics2D g2d;
-  private final File outDir;
+  private final Path outDir;
 
   PuChart(final PrintGenerationData printData) {
     final GameState gameData = printData.getData();
@@ -115,8 +115,8 @@ class PuChart {
       // Write to file
       final int firstNum = cols * rows * i;
       final int secondNum = cols * rows * (i + 1) - 1;
-      final File outputFile = new File(outDir, "PUchart" + firstNum + "-" + secondNum + ".png");
-      ImageIO.write(puImage, "png", outputFile);
+      final Path outputFile = outDir.resolve("PUchart" + firstNum + "-" + secondNum + ".png");
+      ImageIO.write(puImage, "png", outputFile.toFile());
       final Color transparent = new Color(0, 0, 0, 0);
       g2d.setColor(transparent);
       g2d.setComposite(AlphaComposite.Src);

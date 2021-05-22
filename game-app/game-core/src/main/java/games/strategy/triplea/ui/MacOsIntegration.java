@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /** Utility class to add macOS integration. */
@@ -33,10 +34,11 @@ public final class MacOsIntegration {
    * allows for multiple files to be opened at once this doesn't make sense for currently existing
    * use-cases. Therefore this feature can't be accessed via this wrapper.
    */
-  public static void setOpenFileHandler(final Consumer<File> handler) {
+  public static void setOpenFileHandler(final Consumer<Path> handler) {
     checkNotNull(handler);
     Desktop.getDesktop()
-        .setOpenFileHandler(event -> event.getFiles().stream().findAny().ifPresent(handler));
+        .setOpenFileHandler(
+            event -> event.getFiles().stream().findAny().map(File::toPath).ifPresent(handler));
   }
 
   /** Sets the specified quit handler to the application. */

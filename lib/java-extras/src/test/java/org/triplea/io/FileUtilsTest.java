@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -55,7 +54,7 @@ final class FileUtilsTest {
     @Test
     void fileDoesNotExist() {
       final Optional<Path> result =
-          FileUtils.findFileInParentFolders(new File("").toPath(), "does not exist");
+          FileUtils.findFileInParentFolders(Path.of(""), "does not exist");
       assertThat(result, isEmpty());
     }
 
@@ -68,10 +67,10 @@ final class FileUtilsTest {
       //      |- child2/
       //         |- touch-file
 
-      final File testFolderPath =
-          new File(
+      final Path testFolderPath =
+          Path.of(
               ZipExtractorTest.class.getClassLoader().getResource("test-folder-path").getFile());
-      final Path child1 = testFolderPath.toPath().resolve("child1");
+      final Path child1 = testFolderPath.resolve("child1");
       final Path child2 = child1.resolve("child2");
 
       assertThat(
@@ -87,29 +86,29 @@ final class FileUtilsTest {
       assertThat(
           "all three test folder contain 'touch-parent' at a top level",
           FileUtils.findFileInParentFolders(child1, "touch-parent"),
-          isPresentAndIs(testFolderPath.toPath().resolve("touch-parent")));
+          isPresentAndIs(testFolderPath.resolve("touch-parent")));
 
       assertThat(
           FileUtils.findFileInParentFolders(child2, "touch-parent"),
-          isPresentAndIs(testFolderPath.toPath().resolve("touch-parent")));
+          isPresentAndIs(testFolderPath.resolve("touch-parent")));
 
       assertThat(
-          FileUtils.findFileInParentFolders(testFolderPath.toPath(), "touch-parent"),
-          isPresentAndIs(testFolderPath.toPath().resolve("touch-parent")));
+          FileUtils.findFileInParentFolders(testFolderPath, "touch-parent"),
+          isPresentAndIs(testFolderPath.resolve("touch-parent")));
     }
   }
 
   @Test
   @DisplayName("Verify we can read file contents with ISO-8859-1 encoded characters")
   void readContents() {
-    final File testFile =
-        new File(
+    final Path testFile =
+        Path.of(
             ZipExtractorTest.class
                 .getClassLoader()
                 .getResource("ISO-8859-1-test-file.txt")
                 .getFile());
 
-    final Optional<String> contentRead = FileUtils.readContents(testFile.toPath());
+    final Optional<String> contentRead = FileUtils.readContents(testFile);
 
     assertThat(contentRead, isPresent());
   }

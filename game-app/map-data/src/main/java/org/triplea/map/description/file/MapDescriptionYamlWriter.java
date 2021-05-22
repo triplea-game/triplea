@@ -1,7 +1,6 @@
 package org.triplea.map.description.file;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,19 +19,19 @@ import org.triplea.yaml.YamlWriter;
 @UtilityClass
 @Slf4j
 class MapDescriptionYamlWriter {
-  static Optional<File> writeYmlPojoToFile(final MapDescriptionYaml mapDescriptionYaml) {
+  static Optional<Path> writeYmlPojoToFile(final MapDescriptionYaml mapDescriptionYaml) {
 
     final String yamlString = toYamlString(mapDescriptionYaml);
-    final Path mapYmlTargetPath = new File(mapDescriptionYaml.getYamlFileLocation()).toPath();
+    final Path mapYmlTargetPath = Path.of(mapDescriptionYaml.getYamlFileLocation());
 
     try {
       Files.writeString(mapYmlTargetPath, yamlString);
-      log.info("Wrote map yaml to file: {}", mapYmlTargetPath.toFile().getAbsolutePath());
-      return Optional.of(mapYmlTargetPath.toFile());
+      log.info("Wrote map yaml to file: {}", mapYmlTargetPath.toAbsolutePath());
+      return Optional.of(mapYmlTargetPath);
     } catch (final IOException e) {
       log.error(
           "Failed to write map.yml file to: {}, {}",
-          mapYmlTargetPath.toFile().getAbsolutePath(),
+          mapYmlTargetPath.toAbsolutePath(),
           e.getMessage(),
           e);
       return Optional.empty();

@@ -14,7 +14,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
@@ -256,7 +257,7 @@ public final class SwingComponents {
    *     selection.
    * @return Empty if the user selects nothing, otherwise the users selection.
    */
-  public static Optional<File> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
+  public static Optional<Path> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
     final JFileChooser fileChooser = new JFileChooser();
     if (folderSelectionMode == FolderSelectionMode.DIRECTORIES) {
       fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -266,7 +267,7 @@ public final class SwingComponents {
 
     final int result = fileChooser.showOpenDialog(null);
     return (result == JFileChooser.APPROVE_OPTION)
-        ? Optional.of(fileChooser.getSelectedFile())
+        ? Optional.of(fileChooser.getSelectedFile().toPath())
         : Optional.empty();
   }
 
@@ -283,7 +284,7 @@ public final class SwingComponents {
    *     file chooser.
    * @return The file selected by the user or empty if the user aborted the save.
    */
-  public static Optional<File> promptSaveFile(
+  public static Optional<Path> promptSaveFile(
       final Component parent, final String fileExtension, final String fileExtensionDescription) {
     checkNotNull(fileExtension);
     checkNotNull(fileExtensionDescription);
@@ -294,15 +295,15 @@ public final class SwingComponents {
 
           @Override
           public void approveSelection() {
-            final File file = appendExtensionIfAbsent(getSelectedFile(), fileExtension);
-            setSelectedFile(file);
-            if (file.exists()) {
+            final Path file = appendExtensionIfAbsent(getSelectedFile().toPath(), fileExtension);
+            setSelectedFile(file.toFile());
+            if (Files.exists(file)) {
               final int result =
                   JOptionPane.showConfirmDialog(
                       parent,
                       String.format(
                           "A file named \"%s\" already exists. Do you want to replace it?",
-                          file.getName()),
+                          file.getFileName()),
                       "Confirm Save",
                       JOptionPane.YES_NO_OPTION,
                       JOptionPane.WARNING_MESSAGE);
@@ -324,18 +325,21 @@ public final class SwingComponents {
 
     final int result = fileChooser.showSaveDialog(parent);
     return (result == JFileChooser.APPROVE_OPTION)
-        ? Optional.of(fileChooser.getSelectedFile())
+        ? Optional.of(fileChooser.getSelectedFile().toPath())
         : Optional.empty();
   }
 
   @VisibleForTesting
-  static File appendExtensionIfAbsent(final File file, final String extension) {
+  static Path appendExtensionIfAbsent(final Path file, final String extension) {
     final String extensionWithLeadingPeriod = extensionWithLeadingPeriod(extension);
-    if (file.getName().toLowerCase().endsWith(extensionWithLeadingPeriod.toLowerCase())) {
+    if (file.getFileName()
+        .toString()
+        .toLowerCase()
+        .endsWith(extensionWithLeadingPeriod.toLowerCase())) {
       return file;
     }
 
-    return new File(file.getParentFile(), file.getName() + extensionWithLeadingPeriod);
+    return file.resolveSibling(file.getFileName() + extensionWithLeadingPeriod);
   }
 
   @VisibleForTesting

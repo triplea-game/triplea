@@ -2,7 +2,6 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
-import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
@@ -17,8 +16,7 @@ final class ProcessRunnerUtil {
   private ProcessRunnerUtil() {}
 
   static void populateBasicJavaArgs(final List<String> commands) {
-    final String javaCommand =
-        SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
+    final String javaCommand = Path.of(SystemProperties.getJavaHome(), "bin", "java").toString();
     commands.add(javaCommand);
     commands.add("-classpath");
     commands.add(SystemProperties.getJavaClassPath());

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,11 +26,11 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
   final class DownloadToFileTest {
     @Mock private CloseableDownloader closeableDownloader;
 
-    private File file;
+    private Path file;
 
     @BeforeEach
     void setUp(@TempDir final Path tempDirPath) throws Exception {
-      file = Files.createTempFile(tempDirPath, null, null).toFile();
+      file = Files.createTempFile(tempDirPath, null, null);
     }
 
     @Test
@@ -53,7 +52,7 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
     }
 
     private byte[] fileContent() throws Exception {
-      return Files.readAllBytes(file.toPath());
+      return Files.readAllBytes(file);
     }
   }
 }

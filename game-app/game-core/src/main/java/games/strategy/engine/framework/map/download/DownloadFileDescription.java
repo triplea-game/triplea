@@ -2,9 +2,9 @@ package games.strategy.engine.framework.map.download;
 
 import com.google.common.base.MoreObjects;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -32,7 +32,7 @@ public final class DownloadFileDescription {
   private final Integer version;
   private final MapCategory mapCategory;
   private final String img;
-  @Nullable private final File installLocation;
+  @Nullable private final Path installLocation;
 
   boolean delete() {
     if (installLocation == null) {
@@ -40,11 +40,11 @@ public final class DownloadFileDescription {
     }
 
     try {
-      Files.delete(installLocation.toPath());
+      Files.delete(installLocation);
     } catch (final IOException e) {
       log.warn(
           "Unable to delete maps files.<br>Manual removal may be necessary: {}<br>{}",
-          installLocation.getAbsolutePath(),
+          installLocation.toAbsolutePath(),
           e.getMessage(),
           e);
       return false;
@@ -52,10 +52,10 @@ public final class DownloadFileDescription {
 
     // now sleep a short while before we check our work
     Interruptibles.sleep(10);
-    if (installLocation.exists()) {
+    if (Files.exists(installLocation)) {
       log.warn(
           "Unable to delete maps files.<br>Manual removal may be necessary: {}",
-          installLocation.getAbsolutePath());
+          installLocation.toAbsolutePath());
       return false;
     } else {
       return true;
@@ -104,13 +104,8 @@ public final class DownloadFileDescription {
         .build();
   }
 
-  /** Returns the name of the zip file. */
-  String getMapZipFileName() {
-    return (url != null && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1) : "";
-  }
-
   /** File reference for where to install the file, empty if not installed. */
-  Optional<File> getInstallLocation() {
+  Optional<Path> getInstallLocation() {
     return Optional.ofNullable(installLocation);
   }
 

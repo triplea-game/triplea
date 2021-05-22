@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,17 +24,17 @@ final class ResourceLoaderTest {
   final class FindDirectoryTest {
     private static final String TARGET_DIR_NAME = "182c91fa8e";
 
-    private File startDir;
+    private Path startDir;
 
     @BeforeEach
     void createStartDir(@TempDir final Path tempDirPath) throws Exception {
-      startDir = Files.createTempDirectory(tempDirPath, null).toFile();
+      startDir = Files.createTempDirectory(tempDirPath, null);
     }
 
     @Test
-    void shouldReturnDirWhenTargetDirExistsInStartDir() {
-      final File targetDir = new File(startDir, TARGET_DIR_NAME);
-      targetDir.mkdirs();
+    void shouldReturnDirWhenTargetDirExistsInStartDir() throws Exception {
+      final Path targetDir = startDir.resolve(TARGET_DIR_NAME);
+      Files.createDirectories(targetDir);
 
       assertThat(
           ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
@@ -43,16 +42,16 @@ final class ResourceLoaderTest {
 
     @Test
     void shouldReturnEmptyWhenTargetFileExistsInStartDir() throws Exception {
-      final File targetDir = new File(startDir, TARGET_DIR_NAME);
-      targetDir.createNewFile();
+      final Path targetDir = startDir.resolve(TARGET_DIR_NAME);
+      Files.createFile(targetDir);
 
       assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
     }
 
     @Test
-    void shouldReturnDirWhenTargetDirExistsInParentDir() {
-      final File targetDir = new File(startDir.getParentFile(), TARGET_DIR_NAME);
-      targetDir.mkdirs();
+    void shouldReturnDirWhenTargetDirExistsInParentDir() throws Exception {
+      final Path targetDir = startDir.resolveSibling(TARGET_DIR_NAME);
+      Files.createDirectories(targetDir);
 
       assertThat(
           ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
@@ -60,8 +59,8 @@ final class ResourceLoaderTest {
 
     @Test
     void shouldReturnEmptyWhenTargetFileExistsInParentDir() throws Exception {
-      final File targetDir = new File(startDir.getParentFile(), TARGET_DIR_NAME);
-      targetDir.createNewFile();
+      final Path targetDir = startDir.resolveSibling(TARGET_DIR_NAME);
+      Files.createFile(targetDir);
 
       assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
     }

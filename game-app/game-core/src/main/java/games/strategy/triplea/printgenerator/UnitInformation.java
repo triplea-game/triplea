@@ -9,11 +9,11 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,90 +22,89 @@ import org.triplea.java.StringUtils;
 
 @Slf4j
 class UnitInformation {
-  //  private GameData data;
-
   void saveToFile(
       final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
-    printData.getOutDir().mkdir();
-    final File outFile = new File(printData.getOutDir(), "General Information.csv");
-    try (Writer unitInformation =
-        Files.newBufferedWriter(outFile.toPath(), StandardCharsets.UTF_8)) {
-      for (int i = 0; i < 8; i++) {
-        unitInformation.write(",");
-      }
-      unitInformation.write("Unit Information");
-      for (int i = 10; i < 20; i++) {
-        unitInformation.write(",");
-      }
-      unitInformation.write("\r\n");
-      unitInformation.write(
-          "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?,"
-              + "Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,"
-              + "Carrier Cost,Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,"
-              + "Submarine?,Destroyer?");
-      unitInformation.write("\r\n");
-      for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
-        final UnitType currentType = entry.getKey();
-        final UnitAttachment currentAttachment = entry.getValue();
-        if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-          unitInformation.write(currentType.getName() + ",");
-        } else {
-          unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
+    final Path outFile = printData.getOutDir().resolve("General Information.csv");
+    try {
+      Files.createDirectory(printData.getOutDir());
+      try (Writer unitInformation = Files.newBufferedWriter(outFile, StandardCharsets.UTF_8)) {
+        for (int i = 0; i < 8; i++) {
+          unitInformation.write(",");
         }
-        unitInformation.write(getCostInformation(currentType, printData.getData()) + ",");
+        unitInformation.write("Unit Information");
+        for (int i = 10; i < 20; i++) {
+          unitInformation.write(",");
+        }
+        unitInformation.write("\r\n");
         unitInformation.write(
-            currentAttachment.getMovement(GamePlayer.NULL_PLAYERID)
-                + ","
-                + currentAttachment.getAttack(GamePlayer.NULL_PLAYERID)
-                + ","
-                + currentAttachment.getDefense(GamePlayer.NULL_PLAYERID)
-                + ","
-                + (!currentAttachment.getCanBlitz(GamePlayer.NULL_PLAYERID) ? "-" : "true")
-                + ","
-                + (!currentAttachment.getArtillery() ? "-" : "true")
-                + ","
-                + (!currentAttachment.getArtillerySupportable() ? "-" : "true")
-                + ","
-                + (!currentAttachment.getCanProduceUnits() ? "-" : "true")
-                + ","
-                + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine())
-                + ","
-                + (currentAttachment.getTransportCost() == -1
-                    ? "-"
-                    : currentAttachment.getTransportCost())
-                + ","
-                + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true")
-                + ","
-                + (!currentAttachment.getIsAir() ? "-" : "true")
-                + ","
-                + (!currentAttachment.getIsStrategicBomber() ? "-" : "true")
-                + ","
-                + (currentAttachment.getCarrierCost() == -1
-                    ? "-"
-                    : currentAttachment.getCarrierCost())
-                + ","
-                + (!currentAttachment.getIsSea() ? "-" : "true")
-                + ","
-                + currentAttachment.getHitPoints()
-                + ","
-                + (currentAttachment.getTransportCapacity() == -1
-                    ? "-"
-                    : currentAttachment.getTransportCapacity())
-                + ","
-                + (currentAttachment.getCarrierCapacity() == -1
-                    ? "-"
-                    : currentAttachment.getCarrierCapacity())
-                + ","
-                + (!(currentAttachment.getCanEvade() && currentAttachment.getIsFirstStrike())
-                    ? "-"
-                    : "true")
-                + ","
-                + (!currentAttachment.getIsDestroyer() ? "-" : "true"));
+            "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?,"
+                + "Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,"
+                + "Carrier Cost,Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,"
+                + "Submarine?,Destroyer?");
+        unitInformation.write("\r\n");
+        for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
+          final UnitType currentType = entry.getKey();
+          final UnitAttachment currentAttachment = entry.getValue();
+          if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
+            unitInformation.write(currentType.getName() + ",");
+          } else {
+            unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
+          }
+          unitInformation.write(getCostInformation(currentType, printData.getData()) + ",");
+          unitInformation.write(
+              currentAttachment.getMovement(GamePlayer.NULL_PLAYERID)
+                  + ","
+                  + currentAttachment.getAttack(GamePlayer.NULL_PLAYERID)
+                  + ","
+                  + currentAttachment.getDefense(GamePlayer.NULL_PLAYERID)
+                  + ","
+                  + (!currentAttachment.getCanBlitz(GamePlayer.NULL_PLAYERID) ? "-" : "true")
+                  + ","
+                  + (!currentAttachment.getArtillery() ? "-" : "true")
+                  + ","
+                  + (!currentAttachment.getArtillerySupportable() ? "-" : "true")
+                  + ","
+                  + (!currentAttachment.getCanProduceUnits() ? "-" : "true")
+                  + ","
+                  + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine())
+                  + ","
+                  + (currentAttachment.getTransportCost() == -1
+                      ? "-"
+                      : currentAttachment.getTransportCost())
+                  + ","
+                  + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true")
+                  + ","
+                  + (!currentAttachment.getIsAir() ? "-" : "true")
+                  + ","
+                  + (!currentAttachment.getIsStrategicBomber() ? "-" : "true")
+                  + ","
+                  + (currentAttachment.getCarrierCost() == -1
+                      ? "-"
+                      : currentAttachment.getCarrierCost())
+                  + ","
+                  + (!currentAttachment.getIsSea() ? "-" : "true")
+                  + ","
+                  + currentAttachment.getHitPoints()
+                  + ","
+                  + (currentAttachment.getTransportCapacity() == -1
+                      ? "-"
+                      : currentAttachment.getTransportCapacity())
+                  + ","
+                  + (currentAttachment.getCarrierCapacity() == -1
+                      ? "-"
+                      : currentAttachment.getCarrierCapacity())
+                  + ","
+                  + (!(currentAttachment.getCanEvade() && currentAttachment.getIsFirstStrike())
+                      ? "-"
+                      : "true")
+                  + ","
+                  + (!currentAttachment.getIsDestroyer() ? "-" : "true"));
+          unitInformation.write("\r\n");
+        }
         unitInformation.write("\r\n");
       }
-      unitInformation.write("\r\n");
     } catch (final IOException e) {
-      log.error("There was an error while trying to save File " + outFile.toString(), e);
+      log.error("There was an error while trying to save File " + outFile, e);
     }
   }
 

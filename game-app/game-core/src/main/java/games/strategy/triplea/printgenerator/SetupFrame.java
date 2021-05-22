@@ -2,7 +2,7 @@ package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
 import java.awt.BorderLayout;
-import java.io.File;
+import java.nio.file.Path;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -20,7 +20,7 @@ public class SetupFrame extends JPanel {
   private final JFileChooser outChooser;
   private final JRadioButton originalState;
   private final GameData data;
-  private File outDir;
+  private Path outDir;
 
   public SetupFrame(final GameData data) {
     super(new BorderLayout());
@@ -44,15 +44,15 @@ public class SetupFrame extends JPanel {
         e -> {
           final int returnVal = outChooser.showOpenDialog(null);
           if (returnVal == JFileChooser.APPROVE_OPTION) {
-            final File outDir = outChooser.getSelectedFile();
-            outField.setText(outDir.getAbsolutePath());
+            final Path outDir = outChooser.getSelectedFile().toPath();
+            outField.setText(outDir.toAbsolutePath().toString());
           }
         });
     runButton.setText("Generate the Files");
     runButton.addActionListener(
         e -> {
           if (!outField.getText().isEmpty()) {
-            outDir = new File(outField.getText());
+            outDir = Path.of(outField.getText());
             final PrintGenerationData printData =
                 PrintGenerationData.builder().outDir(outDir).data(this.data).build();
             new InitialSetup().run(printData, originalState.isSelected());

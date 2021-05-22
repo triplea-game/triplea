@@ -12,6 +12,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -393,11 +395,15 @@ public class DownloadMapsWindow extends JFrame {
                         .append(")"));
       }
     } else {
-      sb.append(doubleSpace)
-          .append(" (")
-          .append(newSizeLabel(map.getInstallLocation().get().length()))
-          .append(")");
-      sb.append("<br>").append(map.getInstallLocation().get().getAbsolutePath());
+      try {
+        sb.append(doubleSpace)
+            .append(" (")
+            .append(newSizeLabel(Files.size(map.getInstallLocation().get())))
+            .append(")");
+      } catch (final IOException e) {
+        log.warn("Failed to read file size", e);
+      }
+      sb.append("<br>").append(map.getInstallLocation().get().toAbsolutePath());
     }
     sb.append("<br>");
     sb.append("</html>");

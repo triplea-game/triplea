@@ -9,7 +9,6 @@ import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +64,8 @@ public class ResourceLoader implements Closeable {
 
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map resources.
-    final File gameAssetsDirectory =
-        findDirectory(ClientFileSystemHelper.getRootFolder().toFile(), ASSETS_FOLDER)
+    final Path gameAssetsDirectory =
+        findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
             .orElseThrow(GameAssetsNotFoundException::new);
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
@@ -76,14 +76,14 @@ public class ResourceLoader implements Closeable {
       if (mapLocation != null) {
         searchUrls.add(mapLocation.toUri().toURL());
       }
-      searchUrls.add(gameAssetsDirectory.toURI().toURL());
+      searchUrls.add(gameAssetsDirectory.toUri().toURL());
       loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
     } catch (final MalformedURLException e) {
       throw new IllegalArgumentException(
           "Error creating file system paths with map: "
               + mapName
               + ", engine assets path: "
-              + gameAssetsDirectory.getAbsolutePath()
+              + gameAssetsDirectory.toAbsolutePath()
               + ", and path to map: "
               + mapLocation.toAbsolutePath(),
           e);
@@ -112,7 +112,7 @@ public class ResourceLoader implements Closeable {
    * for more information on what will be contained in that folder.
    */
   public static Image loadImageAsset(final Path path) {
-    return ImageLoader.getImage(Path.of(ASSETS_FOLDER).resolve(path).toFile());
+    return ImageLoader.getImage(Path.of(ASSETS_FOLDER).resolve(path));
   }
 
   private static class GameAssetsNotFoundException extends RuntimeException {
@@ -128,10 +128,10 @@ public class ResourceLoader implements Closeable {
   }
 
   @VisibleForTesting
-  static Optional<File> findDirectory(final File startDir, final String targetDirName) {
-    for (File currentDir = startDir; currentDir != null; currentDir = currentDir.getParentFile()) {
-      final File targetDir = new File(currentDir, targetDirName);
-      if (targetDir.isDirectory()) {
+  static Optional<Path> findDirectory(final Path startDir, final String targetDirName) {
+    for (Path currentDir = startDir; currentDir != null; currentDir = currentDir.getParent()) {
+      final Path targetDir = currentDir.resolve(targetDirName);
+      if (Files.isDirectory(targetDir)) {
         return Optional.of(targetDir);
       }
     }
