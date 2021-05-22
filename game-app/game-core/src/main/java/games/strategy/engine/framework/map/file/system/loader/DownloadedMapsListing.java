@@ -108,11 +108,7 @@ public class DownloadedMapsListing {
   }
 
   private static String normalizeName(final String mapName) {
-    return mapName
-        .toLowerCase() //
-        .replaceAll("_", "")
-        .replaceAll(" ", "")
-        .replaceAll("-", "");
+    return mapName.toLowerCase().replaceAll("[_ -]", "");
   }
 
   /**
