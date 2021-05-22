@@ -24,12 +24,12 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.help.UnitStatsTable;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -94,7 +94,7 @@ final class ExportMenu extends JMenu {
   private void exportXmlFile() {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final File rootDir = new File(SystemProperties.getUserDir());
+    final Path rootDir = Path.of(SystemProperties.getUserDir());
 
     final int round = gameData.getCurrentRound();
     final String defaultFileName =
@@ -105,7 +105,7 @@ final class ExportMenu extends JMenu {
                     gameData.getGameName(),
                     round))
             + ".xml";
-    chooser.setSelectedFile(new File(rootDir, defaultFileName));
+    chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
@@ -152,7 +152,7 @@ final class ExportMenu extends JMenu {
     final ExtendedStats statPanel = new ExtendedStats(gameData, uiContext);
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final File rootDir = new File(SystemProperties.getUserDir());
+    final Path rootDir = Path.of(SystemProperties.getUserDir());
     final int currentRound = gameData.getCurrentRound();
     final String defaultFileName =
         FileNameUtils.removeIllegalCharacters(
@@ -163,7 +163,7 @@ final class ExportMenu extends JMenu {
                     currentRound,
                     showPhaseStats ? "full" : "short"))
             + ".csv";
-    chooser.setSelectedFile(new File(rootDir, defaultFileName));
+    chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
@@ -281,7 +281,6 @@ final class ExportMenu extends JMenu {
       }
       writer.println();
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
-      @SuppressWarnings("unchecked")
       final Enumeration<TreeNode> nodes =
           ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
       @Nullable GamePlayer currentPlayer = null;
@@ -371,10 +370,10 @@ final class ExportMenu extends JMenu {
   private void exportUnitCharts() {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final File rootDir = new File(SystemProperties.getUserDir());
+    final Path rootDir = Path.of(SystemProperties.getUserDir());
     final String defaultFileName =
         FileNameUtils.removeIllegalCharacters(gameData.getGameName()) + "_unit_stats.html";
-    chooser.setSelectedFile(new File(rootDir, defaultFileName));
+    chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }

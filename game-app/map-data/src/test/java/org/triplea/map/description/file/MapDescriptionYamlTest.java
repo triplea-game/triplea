@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,7 @@ class MapDescriptionYamlTest {
   static List<MapDescriptionYaml> isValid() {
     return List.of(
         MapDescriptionYaml.builder()
-            .yamlFileLocation(new File("/path/on/disk/map.yml").toURI())
+            .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
             .mapName("map name")
             .mapVersion(1)
             .mapGameList(
@@ -59,7 +58,7 @@ class MapDescriptionYamlTest {
   void findGameNameFromXmlFileName_PositiveCase() {
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYaml.builder()
-            .yamlFileLocation(new File("/path/on/disk/map.yml").toURI())
+            .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
             .mapName("map name")
             .mapVersion(1)
             .mapGameList(
@@ -80,7 +79,7 @@ class MapDescriptionYamlTest {
   void findGameNameFromXmlFileName_NegativeCase() {
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYaml.builder()
-            .yamlFileLocation(new File("/path/on/disk/map.yml").toURI())
+            .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
             .mapName("map name")
             .mapVersion(1)
             .mapGameList(

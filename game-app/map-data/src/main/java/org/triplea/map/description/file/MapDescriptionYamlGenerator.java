@@ -2,7 +2,6 @@ package org.triplea.map.description.file;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -46,7 +45,7 @@ class MapDescriptionYamlGenerator {
    *     be generated a map.yml descriptor file. The map.yml file will be created at the map's
    *     content root, where the map data files are located.
    */
-  static Optional<File> generateYamlDataForMap(final Path mapFolder) {
+  static Optional<Path> generateYamlDataForMap(final Path mapFolder) {
     Preconditions.checkArgument(Files.exists(mapFolder));
     Preconditions.checkArgument(Files.isDirectory(mapFolder));
 
@@ -74,7 +73,7 @@ class MapDescriptionYamlGenerator {
       return Optional.empty();
     }
 
-    final Optional<File> writtenYmlFile =
+    final Optional<Path> writtenYmlFile =
         MapDescriptionYamlWriter.writeYmlPojoToFile(mapDescriptionYaml);
 
     if (writtenYmlFile.isPresent() && Files.exists(propsFile)) {

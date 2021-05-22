@@ -6,7 +6,7 @@ import static org.triplea.swing.SwingComponents.appendExtensionIfAbsent;
 import static org.triplea.swing.SwingComponents.extensionWithLeadingPeriod;
 import static org.triplea.swing.SwingComponents.extensionWithoutLeadingPeriod;
 
-import java.io.File;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -16,30 +16,29 @@ final class SwingComponentsTest {
     @Test
     void shouldAppendExtensionWhenExtensionAbsent() {
       assertThat(
-          appendExtensionIfAbsent(new File("path/file.aaa"), "bbb"),
-          is(new File("path/file.aaa.bbb")));
+          appendExtensionIfAbsent(Path.of("path/file.aaa"), "bbb"),
+          is(Path.of("path/file.aaa.bbb")));
       assertThat(
-          appendExtensionIfAbsent(new File("path/filebbb"), "bbb"),
-          is(new File("path/filebbb.bbb")));
+          appendExtensionIfAbsent(Path.of("path/filebbb"), "bbb"), is(Path.of("path/filebbb.bbb")));
     }
 
     @Test
     void shouldNotAppendExtensionWhenExtensionPresent() {
       assertThat(
-          appendExtensionIfAbsent(new File("path/file.bbb"), "bbb"), is(new File("path/file.bbb")));
+          appendExtensionIfAbsent(Path.of("path/file.bbb"), "bbb"), is(Path.of("path/file.bbb")));
     }
 
     @Test
     void shouldHandleExtensionThatStartsWithPeriod() {
       assertThat(
-          appendExtensionIfAbsent(new File("path/file.aaa"), ".bbb"),
-          is(new File("path/file.aaa.bbb")));
+          appendExtensionIfAbsent(Path.of("path/file.aaa"), ".bbb"),
+          is(Path.of("path/file.aaa.bbb")));
     }
 
     @Test
     void shouldUseCaseInsensitiveComparisonForExtension() {
       assertThat(
-          appendExtensionIfAbsent(new File("path/file.bBb"), "BbB"), is(new File("path/file.bBb")));
+          appendExtensionIfAbsent(Path.of("path/file.bBb"), "BbB"), is(Path.of("path/file.bBb")));
     }
   }
 

@@ -59,12 +59,12 @@ final class DownloadFile {
 
           final FileSizeWatcher watcher =
               new FileSizeWatcher(
-                  targetTempFileToDownloadTo.toFile(),
+                  targetTempFileToDownloadTo,
                   bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
 
           try {
             DownloadConfiguration.contentReader()
-                .downloadToFile(download.getUrl(), targetTempFileToDownloadTo.toFile());
+                .downloadToFile(download.getUrl(), targetTempFileToDownloadTo);
           } catch (final IOException e) {
             log.error("Failed to download: " + download.getUrl(), e);
             return;

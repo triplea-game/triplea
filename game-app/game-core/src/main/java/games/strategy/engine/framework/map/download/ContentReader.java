@@ -3,11 +3,11 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -59,11 +59,10 @@ public final class ContentReader {
    * @param file The file that will receive the resource; must not be {@code null}.
    * @throws IOException If an error occurs during the download.
    */
-  void downloadToFile(final String uri, final File file) throws IOException {
+  void downloadToFile(final String uri, final Path file) throws IOException {
     checkNotNull(uri);
     checkNotNull(file);
 
-    downloadAndApplyAction(
-        uri, is -> Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING));
+    downloadAndApplyAction(uri, is -> Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING));
   }
 }

@@ -2,11 +2,11 @@ package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +28,10 @@ class PuInfo {
                       Function.identity(), currentPlayer.getResources()::getQuantity)));
     }
     try {
-      final File outFile = new File(printData.getOutDir(), "General Information.csv");
+      final Path outFile = printData.getOutDir().resolve("General Information.csv");
       try (Writer resourceWriter =
           Files.newBufferedWriter(
-              outFile.toPath(),
+              outFile,
               StandardCharsets.UTF_8,
               StandardOpenOption.CREATE,
               StandardOpenOption.APPEND)) {

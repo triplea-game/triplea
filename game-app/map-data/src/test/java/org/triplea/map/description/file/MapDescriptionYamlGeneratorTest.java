@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,9 +31,9 @@ class MapDescriptionYamlGeneratorTest {
 
   // functionality under test
   private MapDescriptionYaml generateAndReadDescriptionYamlFile() {
-    final File generatedFile =
+    final Path generatedFile =
         MapDescriptionYamlGenerator.generateYamlDataForMap(exampleMapFolder).orElseThrow();
-    generatedFile.deleteOnExit();
+    generatedFile.toFile().deleteOnExit();
 
     // after generation of the YAML file, read it back so we can compare written data to expected
     return MapDescriptionYamlReader.readFromMap(exampleMapFolder).orElseThrow();

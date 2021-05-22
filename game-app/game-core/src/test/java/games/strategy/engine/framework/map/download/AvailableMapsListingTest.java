@@ -8,7 +8,7 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMap;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -72,7 +72,7 @@ class AvailableMapsListingTest extends AbstractClientSettingTestCase {
         .mapName("mapName " + url)
         .version(MAP_VERSION)
         .mapCategory(DownloadFileDescription.MapCategory.BEST)
-        .installLocation(new File("/"))
+        .installLocation(Path.of("/"))
         .build();
   }
 
@@ -99,7 +99,7 @@ class AvailableMapsListingTest extends AbstractClientSettingTestCase {
                 entry ->
                     new DownloadedMap(
                         MapDescriptionYaml.builder()
-                            .yamlFileLocation(new File("/local/file").toURI())
+                            .yamlFileLocation(Path.of("/local/file").toUri())
                             .mapName(entry.getKey())
                             .mapVersion(entry.getValue())
                             .mapGameList(

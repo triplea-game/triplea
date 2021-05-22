@@ -2,7 +2,6 @@ package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -120,8 +119,8 @@ public class DownloadedMapsListing {
    * Finds the map folder storing a given map by name. The map folder is assumed to be the parent
    * directory of the 'map.yml' file describing that map.
    */
-  public Optional<File> findMapFolderByName(final String mapName) {
-    return findContentRootForMapName(mapName).map(Path::getParent).map(Path::toFile);
+  public Optional<Path> findMapFolderByName(final String mapName) {
+    return findContentRootForMapName(mapName).map(Path::getParent);
   }
 
   /**

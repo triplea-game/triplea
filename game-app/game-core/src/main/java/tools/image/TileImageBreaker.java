@@ -12,7 +12,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import javax.imageio.ImageIO;
@@ -129,10 +128,10 @@ public final class TileImageBreaker {
                 bounds.y + TILE_SIZE,
                 observer);
 
-        final String outFileName = location + File.separator + x + "_" + y + ".png";
+        final Path outFile = location.resolve(x + "_" + y + ".png");
 
-        ImageIO.write(relief, "png", new File(outFileName));
-        textOptionPane.appendNewLine("wrote " + outFileName);
+        ImageIO.write(relief, "png", outFile.toFile());
+        textOptionPane.appendNewLine("wrote " + outFile);
       }
     }
     textOptionPane.appendNewLine("\r\nAll Finished!");

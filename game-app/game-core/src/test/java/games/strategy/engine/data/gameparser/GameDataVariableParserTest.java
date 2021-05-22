@@ -7,9 +7,9 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -37,10 +37,10 @@ class GameDataVariableParserTest {
   }
 
   private static VariableList readFile(final String fileName) throws Exception {
-    final File file = new File(fileName);
-    checkState(file.isFile());
+    final Path file = Path.of(fileName);
+    checkState(!Files.isDirectory(file));
 
-    try (InputStream inputStream = new DataInputStream(new FileInputStream(file))) {
+    try (InputStream inputStream = new DataInputStream(Files.newInputStream(file))) {
 
       return new XmlMapper(inputStream).mapXmlToObject(Game.class).getVariableList();
     }

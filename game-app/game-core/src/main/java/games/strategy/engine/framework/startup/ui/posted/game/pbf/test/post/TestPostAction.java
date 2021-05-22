@@ -5,8 +5,9 @@ import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.SaveGameParameter;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
@@ -33,14 +34,14 @@ public class TestPostAction implements BiConsumer<String, Integer> {
 
     ThreadRunner.runInNewThread(
         () -> {
-          File f = null;
+          Path f = null;
           try {
-            f = File.createTempFile("123", ".jpg");
-            f.deleteOnExit();
+            f = Files.createTempFile("123", ".jpg");
+            f.toFile().deleteOnExit();
             final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
             final Graphics g = image.getGraphics();
             g.drawString("Testing file upload", 10, 20);
-            ImageIO.write(image, "jpg", f);
+            ImageIO.write(image, "jpg", f.toFile());
           } catch (final IOException e) {
             // ignore
           }
@@ -54,7 +55,7 @@ public class TestPostAction implements BiConsumer<String, Integer> {
                       + DateTimeUtil.getLocalizedTime(),
                   "Testing Forum poster",
                   f != null
-                      ? SaveGameParameter.builder().path(f.toPath()).displayName("Test.jpg").build()
+                      ? SaveGameParameter.builder().path(f).displayName("Test.jpg").build()
                       : null);
           testPostProgressDisplay.close();
           try {

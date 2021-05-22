@@ -9,7 +9,6 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -184,8 +183,8 @@ public final class GameDataManager {
       final Version engineVersion)
       throws IOException {
     final Path tempFile =
-        File.createTempFile(GameDataManager.class.getSimpleName(), GameDataFileUtils.getExtension())
-            .toPath();
+        Files.createTempFile(
+            GameDataManager.class.getSimpleName(), GameDataFileUtils.getExtension());
     try {
       // write to temporary file first in case of error
       try (OutputStream os = Files.newOutputStream(tempFile);
