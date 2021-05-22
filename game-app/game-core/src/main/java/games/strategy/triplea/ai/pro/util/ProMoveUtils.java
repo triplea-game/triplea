@@ -497,13 +497,18 @@ public final class ProMoveUtils {
                     .and(
                         Matches.territoryDoesNotCostMoneyToEnter(
                             proData.getData().getProperties())));
+
+    // Candidate units are land units owned by the player on sea territories that were either
+    // not loaded this turn, or loaded after combat. (If they were loaded in combat, they are
+    // not allowed to be unloaded in non-combat.)
+    final Predicate<Unit> candidateUnits = Matches.unitIsLandAndOwnedBy(player).and(
+            u -> (!u.getWasLoadedThisTurn() || u.getWasLoadedAfterCombat()));
     for (final Territory territory : gameMap.getTerritories()) {
       if (!territory.isWater()) {
         continue;
       }
 
-      final List<Unit> myLandUnits =
-          territory.getUnitCollection().getMatches(Matches.unitIsLandAndOwnedBy(player));
+      final List<Unit> myLandUnits = territory.getUnitCollection().getMatches(candidateUnits);
       if (myLandUnits.isEmpty()) {
         continue;
       }
