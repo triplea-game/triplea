@@ -313,7 +313,7 @@ final class SelectionComponentFactory {
               .actionListener(
                   () ->
                       SwingComponents.showJFileChooser(folderSelectionMode)
-                          .ifPresent(file -> field.setText(file.getAbsolutePath())))
+                          .ifPresent(file -> field.setText(file.toAbsolutePath().toString())))
               .build();
 
       @Override
