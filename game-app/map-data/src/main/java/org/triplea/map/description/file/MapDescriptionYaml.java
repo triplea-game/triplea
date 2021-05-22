@@ -211,7 +211,7 @@ public class MapDescriptionYaml {
     final Optional<Path> gamesFolder = FileUtils.find(mapFolder, 5, "games");
 
     if (gamesFolder.isEmpty()) {
-      log.warn("No 'games' folder found under location: {}", mapFolder.toFile().getAbsolutePath());
+      log.warn("No 'games' folder found under location: {}", mapFolder.toAbsolutePath());
     }
     return gamesFolder;
   }
