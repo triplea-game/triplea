@@ -65,7 +65,7 @@ function buildJars() {
 }
 
 function startLobby() {
-  java -jar "$LOBBY_SERVER_JAR_PATH" server ./servers/lobby-server/configuration.yml > "$LOBBY_SERVER_OUTPUT" 2>&1 &
+  java -jar "$LOBBY_SERVER_JAR_PATH" server ./spitfire-server/lobby-module/configuration.yml > "$LOBBY_SERVER_OUTPUT" 2>&1 &
   echo $!
 }
 
