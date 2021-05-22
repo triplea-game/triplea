@@ -1516,16 +1516,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             data.getMap().getTerritories(),
             Matches.territoryHasEnemyUnits(alliedPlayer, data.getRelationshipTracker())));
     final Collection<Territory> possibleTerrs =
-            data.getMap()
-                .getNeighborsByMovementCost(
-                    currentTerr,
-                    strandedAir,
-                    new BigDecimal(maxDistance),
-                    Matches.airCanFlyOver(
-                        alliedPlayer,
-                        data.getProperties(),
-                        data.getRelationshipTracker(),
-                        areNeutralsPassableByAir));
+        data.getMap()
+            .getNeighborsByMovementCost(
+                currentTerr,
+                strandedAir,
+                new BigDecimal(maxDistance),
+                Matches.airCanFlyOver(
+                    alliedPlayer,
+                    data.getProperties(),
+                    data.getRelationshipTracker(),
+                    areNeutralsPassableByAir));
     final Iterator<Territory> possibleIter = possibleTerrs.iterator();
     while (possibleIter.hasNext()) {
       final Route route =
