@@ -3,10 +3,10 @@ package games.strategy.engine.framework.save.game;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.framework.GameDataManager;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
@@ -31,12 +31,12 @@ public class GameDataWriter {
   public static void writeToFile(
       final GameData gameData,
       final DelegateExecutionManager delegateExecutionManager,
-      final File file) {
+      final Path file) {
 
-    try (OutputStream fout = new FileOutputStream(file)) {
+    try (OutputStream fout = Files.newOutputStream(file)) {
       GameDataWriter.writeToOutputStream(gameData, fout, delegateExecutionManager);
     } catch (final IOException e) {
-      log.error("Failed to save game to file: " + file.getAbsolutePath(), e);
+      log.error("Failed to save game to file: " + file.toAbsolutePath(), e);
     }
   }
 

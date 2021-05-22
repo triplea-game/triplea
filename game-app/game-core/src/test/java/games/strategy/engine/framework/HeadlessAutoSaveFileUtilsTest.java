@@ -23,7 +23,7 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
       final String fileName = "savegame.tsvg";
       assertThat(
           autoSaveFileUtils.getAutoSaveFile(fileName),
-          is(Paths.get("path", "to", "saves", "autoSave", fileName).toFile()));
+          is(Paths.get("path", "to", "saves", "autoSave", fileName)));
     }
   }
 
@@ -84,7 +84,8 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
       assertThat(
           autoSaveFileUtils
               .getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8))
-              .getName(),
+              .getFileName()
+              .toString(),
           is("connection_lost_on_May_09_at_22_08.tsvg"));
     }
   }

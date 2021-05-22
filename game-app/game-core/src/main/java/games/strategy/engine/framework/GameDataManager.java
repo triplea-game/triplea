@@ -10,14 +10,14 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -42,11 +42,11 @@ public final class GameDataManager {
    * @param file The file from which the game data will be loaded.
    * @return The loaded game data or empty if there were problems.
    */
-  public static Optional<GameData> loadGame(final File file) {
+  public static Optional<GameData> loadGame(final Path file) {
     checkNotNull(file);
-    checkArgument(file.exists());
+    checkArgument(Files.exists(file));
 
-    try (InputStream fis = new FileInputStream(file);
+    try (InputStream fis = Files.newInputStream(file);
         InputStream is = new BufferedInputStream(fis)) {
       return loadGame(is);
     } catch (final IOException e) {
@@ -183,12 +183,12 @@ public final class GameDataManager {
       final boolean saveDelegateInfo,
       final Version engineVersion)
       throws IOException {
-    final File tempFile =
-        File.createTempFile(
-            GameDataManager.class.getSimpleName(), GameDataFileUtils.getExtension());
+    final Path tempFile =
+        File.createTempFile(GameDataManager.class.getSimpleName(), GameDataFileUtils.getExtension())
+            .toPath();
     try {
       // write to temporary file first in case of error
-      try (OutputStream os = new FileOutputStream(tempFile);
+      try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream);
           ObjectOutputStream outStream = new ObjectOutputStream(zippedOutStream)) {
@@ -207,12 +207,12 @@ public final class GameDataManager {
       }
 
       // now write to sink (ensure sink is closed per method contract)
-      try (InputStream is = new FileInputStream(tempFile);
+      try (InputStream is = Files.newInputStream(tempFile);
           OutputStream os = new BufferedOutputStream(sink)) {
         IOUtils.copy(is, os);
       }
     } finally {
-      tempFile.delete();
+      Files.delete(tempFile);
     }
   }
 

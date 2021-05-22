@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.BindException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -228,7 +229,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         @Override
         public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
           final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
-          if (headlessGameServer != null && autoSaveType.getFile().exists()) {
+          if (headlessGameServer != null && Files.exists(autoSaveType.getFile())) {
             headlessGameServer.loadGameSave(autoSaveType.getFile());
           }
         }

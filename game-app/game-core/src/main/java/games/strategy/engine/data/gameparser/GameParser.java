@@ -35,8 +35,8 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
-import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -101,8 +101,8 @@ public final class GameParser {
    * @return A complete {@link GameData} instance that can be used to play the game, otherwise
    *     returns empty if the file could not parsed or is not valid.
    */
-  public static Optional<GameData> parse(final File xmlFile) {
-    log.debug("Parsing game XML: {}", xmlFile.getAbsolutePath());
+  public static Optional<GameData> parse(final Path xmlFile) {
+    log.debug("Parsing game XML: {}", xmlFile.toAbsolutePath());
     final Optional<GameData> gameData =
         GameParser.parse(
             xmlFile, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
@@ -110,7 +110,7 @@ public final class GameParser {
     // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
     // using the 'map name' from 'map.yml'
     if (gameData.isPresent()) {
-      FileUtils.findFileInParentFolders(xmlFile.toPath(), MapDescriptionYaml.MAP_YAML_FILE_NAME)
+      FileUtils.findFileInParentFolders(xmlFile, MapDescriptionYaml.MAP_YAML_FILE_NAME)
           .flatMap(MapDescriptionYaml::fromFile)
           .ifPresent(
               mapDescriptionYaml -> {
@@ -124,11 +124,11 @@ public final class GameParser {
 
   @VisibleForTesting
   public static Optional<GameData> parse(
-      final File xmlFile,
+      final Path xmlFile,
       final XmlGameElementMapper xmlGameElementMapper,
       final Version engineVersion) {
     return UrlStreams.openStream(
-        xmlFile.toURI(),
+        xmlFile.toUri(),
         inputStream -> {
           try {
             return new GameParser(xmlFile.toString(), xmlGameElementMapper, engineVersion)
@@ -145,7 +145,7 @@ public final class GameParser {
   }
 
   @Nonnull
-  private GameData parse(final File xmlFile, final InputStream stream)
+  private GameData parse(final Path xmlFile, final InputStream stream)
       throws XmlParsingException, GameParseException, EngineVersionException {
 
     final Game game = new XmlMapper(stream).mapXmlToObject(Game.class);

@@ -5,7 +5,7 @@ import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.io.File;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.StringJoiner;
 import javax.swing.JFileChooser;
@@ -22,7 +22,7 @@ public final class SaveGameFileChooser extends JFileChooser {
    * @return The file to which the current game should be saved or {@code null} if the user
    *     cancelled the operation.
    */
-  public static File getSaveGameLocation(final Frame frame, final GameData gameData) {
+  public static Path getSaveGameLocation(final Frame frame, final GameData gameData) {
     final FileDialog fileDialog = new FileDialog(frame);
     fileDialog.setMode(FileDialog.SAVE);
     fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
@@ -37,7 +37,7 @@ public final class SaveGameFileChooser extends JFileChooser {
 
     // If the user selects a filename that already exists,
     // the AWT Dialog will ask the user for confirmation
-    return new File(fileDialog.getDirectory(), GameDataFileUtils.addExtensionIfAbsent(fileName));
+    return Path.of(fileDialog.getDirectory(), GameDataFileUtils.addExtensionIfAbsent(fileName));
   }
 
   private static String getSaveGameName(final GameData gameData) {

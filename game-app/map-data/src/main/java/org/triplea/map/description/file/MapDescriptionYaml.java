@@ -2,7 +2,6 @@ package org.triplea.map.description.file;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -172,11 +171,11 @@ public class MapDescriptionYaml {
    * @throws IllegalStateException thrown if no entry exists in this map.yml file with a game whose
    *     file name matches the input file name.
    */
-  public String findGameNameFromXmlFileName(final File xmlFile) {
+  public String findGameNameFromXmlFileName(final Path xmlFile) {
     // Find map game entry whose xml file name matches input file name.
     // Once found, return the corresponding game name.
     return mapGameList.stream()
-        .filter(game -> game.getXmlFileName().equals(xmlFile.getName()))
+        .filter(game -> game.getXmlFileName().equals(xmlFile.getFileName().toString()))
         .findAny()
         .map(MapGame::getGameName)
         .orElseThrow(
@@ -186,7 +185,7 @@ public class MapDescriptionYaml {
                         + yamlFileLocation
                         + ", did not contain an entry"
                         + "for "
-                        + xmlFile.getAbsolutePath()));
+                        + xmlFile.toAbsolutePath()));
   }
 
   /** Lookup game XML file name in map.yml by game name. */

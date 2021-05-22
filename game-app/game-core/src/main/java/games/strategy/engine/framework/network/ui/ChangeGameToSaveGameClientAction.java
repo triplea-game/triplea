@@ -4,9 +4,9 @@ import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.swing.AbstractAction;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,17 +33,17 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
         .ifPresent(this::changeToGameSave);
   }
 
-  private void changeToGameSave(final File saveGame) {
-    if (!saveGame.exists()) {
+  private void changeToGameSave(final Path saveGame) {
+    if (!Files.exists(saveGame)) {
       return;
     }
     final byte[] bytes;
     try {
-      bytes = Files.readAllBytes(saveGame.toPath());
+      bytes = Files.readAllBytes(saveGame);
     } catch (final IOException e) {
       log.error("Failed to read file: " + saveGame, e);
       return;
     }
-    serverStartupRemote.changeToGameSave(bytes, saveGame.getName());
+    serverStartupRemote.changeToGameSave(bytes, saveGame.getFileName().toString());
   }
 }

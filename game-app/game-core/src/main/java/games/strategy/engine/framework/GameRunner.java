@@ -19,8 +19,9 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.ui.MainFrame;
 import java.awt.Component;
 import java.awt.Frame;
-import java.io.File;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,8 +90,8 @@ public final class GameRunner {
     } else {
       final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
       if (!saveGameFileName.isEmpty()) {
-        final File saveGameFile = new File(saveGameFileName);
-        if (saveGameFile.exists() && !gameSelectorModel.load(saveGameFile)) {
+        final Path saveGameFile = Path.of(saveGameFileName);
+        if (Files.exists(saveGameFile) && !gameSelectorModel.load(saveGameFile)) {
           // abort launch if we failed to load the specified game
           return;
         }
