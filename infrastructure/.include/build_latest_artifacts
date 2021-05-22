@@ -20,8 +20,8 @@ function buildArtifacts() {
   (
     cd ..
     ./gradlew \
-        :servers:lobby-server:release \
-        :servers:maps-server:release \
+        :spitfire-server:lobby-module:release \
+        :spitfire-server:maps-module:release \
         :game-app:game-headless:release \
         :servers:database:release
   )

@@ -13,7 +13,8 @@ bold="\e[1m"
 
 status=0
 
-dbunit_project="servers/lobby-server"
+
+for dbunit_project in "spitfire-server/lobby-module" "spitfire-server/maps-module"; do
 
 ## Loop over all .yml dataset files
 while read -r dataSetFilePath; do
@@ -43,6 +44,7 @@ done <<< "$(find "${dbunit_project}/src/test/resources/datasets" -type f -name "
 if [ "$status" -eq 1 ]; then
   echo -e "${bold}Found unused db-unit test data files. Delete these files or use them in a dbunit test.${normal}"
 fi
+done
 
 exit "$status"
 

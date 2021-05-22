@@ -3,5 +3,5 @@ dependencies {
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-    implementation project(':lib:dropwizard-common')
+    implementation project(':spitfire-server:dropwizard-common')
 }
