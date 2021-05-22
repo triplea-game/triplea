@@ -395,15 +395,14 @@ public class DownloadMapsWindow extends JFrame {
                         .append(")"));
       }
     } else {
+      sb.append(doubleSpace).append(" (");
       try {
-        sb.append(doubleSpace)
-            .append(" (")
-            .append(newSizeLabel(Files.size(map.getInstallLocation().get())))
-            .append(")");
+        sb.append(newSizeLabel(Files.size(map.getInstallLocation().get())));
       } catch (final IOException e) {
         log.warn("Failed to read file size", e);
+        sb.append("N/A");
       }
-      sb.append("<br>").append(map.getInstallLocation().get().toAbsolutePath());
+      sb.append(")").append("<br>").append(map.getInstallLocation().get().toAbsolutePath());
     }
     sb.append("<br>");
     sb.append("</html>");
