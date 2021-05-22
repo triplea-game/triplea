@@ -1,5 +1,6 @@
 package games.strategy.triplea.settings;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -24,10 +25,10 @@ final class PathClientSetting extends ClientSetting<Path> {
 
   @Override
   public Optional<String> validateValue(final Path value) {
-    if (!value.toFile().exists() || !value.toFile().canWrite()) {
+    if (!Files.exists(value) || !Files.isWritable(value)) {
       return Optional.of(
           "Invalid path, does not exist or cannot be written (permissions): "
-              + value.toFile().getAbsolutePath());
+              + value.toAbsolutePath());
     } else {
       return Optional.empty();
     }

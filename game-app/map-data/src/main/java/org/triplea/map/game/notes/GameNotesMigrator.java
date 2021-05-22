@@ -47,7 +47,7 @@ public class GameNotesMigrator {
                   final String gameNotes = readGameNotesFromXml(xmlGameFile);
                   final String fileNameToWrite = GameNotes.createExpectedNotesFileName(xmlGameFile);
                   final Path fileToWrite = xmlGameFile.resolveSibling(fileNameToWrite);
-                  log.info("Writing game notes file: " + fileToWrite.toFile().getAbsolutePath());
+                  log.info("Writing game notes file: " + fileToWrite.toAbsolutePath());
                   FileUtils.writeToFile(fileToWrite, gameNotes);
                 });
 

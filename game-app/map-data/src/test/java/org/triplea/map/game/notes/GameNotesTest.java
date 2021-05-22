@@ -29,7 +29,7 @@ class GameNotesTest {
         is(
             "<h1>Game Name</h1>"
                 + "Path: "
-                + gameXmlPath.toFile().getAbsolutePath()
+                + gameXmlPath.toAbsolutePath()
                 + "<br>"
                 + "<blink>Game notes!</blink>"));
   }
