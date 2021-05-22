@@ -1028,11 +1028,10 @@ public class ProTerritoryManager {
         for (final Territory potentialTerritory : potentialTerritories) {
 
           // Find route ignoring impassable and territories with AA
-          Predicate<Territory> canFlyOverMatch =
-              ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, isCombatMove);
-          if (isCheckingEnemyAttacks) {
-            canFlyOverMatch = ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove);
-          }
+          final Predicate<Territory> canFlyOverMatch =
+              isCheckingEnemyAttacks
+                  ? ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove)
+                  : ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, isCombatMove);
           final Route myRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canFlyOverMatch, myAirUnit, player);
@@ -1246,18 +1245,16 @@ public class ProTerritoryManager {
         if (moveMap.containsKey(moveTerritory)) {
           alreadyAddedToMaxAmphibUnits = moveMap.get(moveTerritory).getMaxAmphibUnits();
         }
-        List<Unit> amphibUnits =
-            ProTransportUtils.getUnitsToTransportFromTerritories(
-                player, transport, territoriesCanLoadFrom, alreadyAddedToMaxAmphibUnits);
-        if (isCheckingEnemyAttacks) {
-          amphibUnits =
-              ProTransportUtils.getUnitsToTransportFromTerritories(
-                  player,
-                  transport,
-                  territoriesCanLoadFrom,
-                  alreadyAddedToMaxAmphibUnits,
-                  ProMatches.unitIsOwnedCombatTransportableUnit(player));
-        }
+        final List<Unit> amphibUnits =
+            isCheckingEnemyAttacks
+                ? ProTransportUtils.getUnitsToTransportFromTerritories(
+                    player,
+                    transport,
+                    territoriesCanLoadFrom,
+                    alreadyAddedToMaxAmphibUnits,
+                    ProMatches.unitIsOwnedCombatTransportableUnit(player))
+                : ProTransportUtils.getUnitsToTransportFromTerritories(
+                    player, transport, territoriesCanLoadFrom, alreadyAddedToMaxAmphibUnits);
 
         // Add amphib units to attack map
         moveMap

@@ -259,8 +259,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * Returns a mutable set of all neighbors within a certain distance of the starting territory
-   * that match the condition. Returned Set does NOT include the original/starting territory.
+   * Returns a mutable set of all neighbors within a certain distance of the starting territory that
+   * match the condition. Returned Set does NOT include the original/starting territory.
    *
    * <p>TODO: update to properly consider movement cost not just distance
    */
