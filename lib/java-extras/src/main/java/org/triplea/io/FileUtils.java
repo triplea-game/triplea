@@ -89,11 +89,7 @@ public final class FileUtils {
       return files.filter(f -> f.getFileName().toString().equals(fileName)).findAny();
     } catch (final IOException e) {
       log.error(
-          "Unable to access files in: "
-              + searchRoot.toFile().getAbsolutePath()
-              + ", "
-              + e.getMessage(),
-          e);
+          "Unable to access files in: " + searchRoot.toAbsolutePath() + ", " + e.getMessage(), e);
       return Optional.empty();
     }
   }
@@ -108,7 +104,7 @@ public final class FileUtils {
       return Optional.empty();
     }
 
-    if (searchRoot.resolve(fileName).toFile().exists()) {
+    if (Files.exists(searchRoot.resolve(fileName))) {
       return Optional.of(searchRoot.resolve(fileName));
     } else {
       return findFileInParentFolders(searchRoot.getParent(), fileName);
@@ -168,12 +164,9 @@ public final class FileUtils {
   /**
    * Reads and returns the contents of a given file. Returns empty if the file does not exist or if
    * there were any errors reading the file. Character encodings allowed: UTf-8, ISO_8859_1
-   *
-   * @throws MalformedInputException thrown if unrecongized character encodings found
-   * @throws IOException thrown if there are any problems reading the target file
    */
   public static Optional<String> readContents(final Path fileToRead) {
-    if (!fileToRead.toFile().exists()) {
+    if (!Files.exists(fileToRead)) {
       return Optional.empty();
     }
 
@@ -185,7 +178,7 @@ public final class FileUtils {
       } catch (final MalformedInputException e) {
         log.info(
             "Warning: file was not saved as UTF-8, some characters may not render:  {}, {}",
-            fileToRead.toFile().getAbsolutePath(),
+            fileToRead.toAbsolutePath(),
             e.getMessage());
       }
 
@@ -194,13 +187,12 @@ public final class FileUtils {
       } catch (final MalformedInputException e) {
         log.warn(
             "Bad file encoding: "
-                + fileToRead.toAbsolutePath().toString()
+                + fileToRead.toAbsolutePath()
                 + ", contact the map maker and ask them to save this file as UTF-8");
         return Optional.empty();
       }
     } catch (final IOException e) {
-      log.error(
-          "Error reading file: {}, {}", fileToRead.toFile().getAbsolutePath(), e.getMessage(), e);
+      log.error("Error reading file: {}, {}", fileToRead.toAbsolutePath(), e.getMessage(), e);
     }
     return Optional.empty();
   }
@@ -209,11 +201,7 @@ public final class FileUtils {
     try {
       Files.writeString(fileToWrite, contents);
     } catch (final IOException e) {
-      log.error(
-          "Failed to write file: {}, {}",
-          fileToWrite.toFile().getAbsolutePath(),
-          e.getMessage(),
-          e);
+      log.error("Failed to write file: {}, {}", fileToWrite.toAbsolutePath(), e.getMessage(), e);
     }
   }
 }
