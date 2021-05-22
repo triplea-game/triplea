@@ -9,7 +9,6 @@ import static org.hamcrest.core.Is.is;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -82,8 +81,8 @@ class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   void mapFolderOverrideClientSettingIsSetWhenSpecified() {
-    ClientSetting.mapFolderOverride.setValue(Paths.get("some", "path"));
-    final Path mapFolder = Paths.get("/path", "to", "maps");
+    ClientSetting.mapFolderOverride.setValue(Path.of("some", "path"));
+    final Path mapFolder = Path.of("/path", "to", "maps");
 
     ArgParser.handleCommandLineArgs("-P" + CliProperties.MAP_FOLDER + "=" + mapFolder);
 

@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.is;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,7 @@ final class ClientFileSystemHelperTest {
       final Path result =
           ClientFileSystemHelper.getUserMapsFolder(() -> Path.of("/path/to/current"));
 
-      assertThat(result, is(Paths.get("/path", "to", "current", "downloadedMaps")));
+      assertThat(result, is(Path.of("/path", "to", "current", "downloadedMaps")));
     }
   }
 }
