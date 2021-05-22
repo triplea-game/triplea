@@ -93,8 +93,7 @@ class ProductionPanel extends JPanel {
       final GameData data,
       final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
-    final private String title = bid ? "Produce (bid)" : "Produce";
-    dialog = new JDialog(parent, title, true);
+    dialog = new JDialog(parent, bid ? "Produce (bid)" : "Produce", true);
     dialog.getContentPane().add(this);
 
     SwingKeyBinding.addKeyBinding(
