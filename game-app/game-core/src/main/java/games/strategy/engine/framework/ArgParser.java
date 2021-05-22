@@ -3,7 +3,7 @@ package games.strategy.engine.framework;
 import games.strategy.triplea.settings.ClientSetting;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 /** Command line argument parser, parses args formatted as: "-Pkey=value". */
 public final class ArgParser {
@@ -31,7 +31,7 @@ public final class ArgParser {
 
   private static void setSystemPropertyOrClientSetting(final String key, final String value) {
     if (CliProperties.MAP_FOLDER.equals(key)) {
-      ClientSetting.mapFolderOverride.setValueAndFlush(Paths.get(value));
+      ClientSetting.mapFolderOverride.setValueAndFlush(Path.of(value));
     } else {
       System.setProperty(key, value);
     }

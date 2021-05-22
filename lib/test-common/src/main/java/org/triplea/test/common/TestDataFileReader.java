@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
@@ -34,7 +34,7 @@ public class TestDataFileReader {
 
   private Optional<String> readFromProjectRoot(final String filePath) {
     try {
-      final List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
+      final List<String> lines = Files.readAllLines(Path.of(filePath), StandardCharsets.UTF_8);
       return Optional.of(String.join("\n", lines));
     } catch (final IOException e) {
       return Optional.empty();

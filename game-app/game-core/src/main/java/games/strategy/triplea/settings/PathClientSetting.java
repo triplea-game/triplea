@@ -1,7 +1,6 @@
 package games.strategy.triplea.settings;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 final class PathClientSetting extends ClientSetting<Path> {
@@ -20,7 +19,7 @@ final class PathClientSetting extends ClientSetting<Path> {
 
   @Override
   protected Path decodeValue(final String encodedValue) {
-    return Paths.get(encodedValue);
+    return Path.of(encodedValue);
   }
 
   @Override

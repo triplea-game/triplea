@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -331,7 +330,7 @@ final class SelectionComponentFactory {
       @Override
       public void save(final SaveContext context) {
         final String value = field.getText();
-        context.setValue(clientSetting, value.isEmpty() ? null : Paths.get(value));
+        context.setValue(clientSetting, value.isEmpty() ? null : Path.of(value));
       }
 
       @Override
