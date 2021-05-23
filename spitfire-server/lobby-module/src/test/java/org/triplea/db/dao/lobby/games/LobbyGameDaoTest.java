@@ -3,15 +3,19 @@ package org.triplea.db.dao.lobby.games;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.TestData;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.LobbyServerTest;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
-import org.triplea.modules.TestData;
 
+@Disabled
 @RequiredArgsConstructor
-class LobbyGameDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class LobbyGameDaoTest {
   private final LobbyGameDao lobbyGameDao;
 
   @Test

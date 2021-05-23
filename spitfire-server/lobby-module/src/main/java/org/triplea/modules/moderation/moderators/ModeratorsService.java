@@ -17,7 +17,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 
 @Builder
 @Slf4j
-class ModeratorsService {
+public class ModeratorsService {
   @Nonnull private final ModeratorsDao moderatorsDao;
   @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
@@ -31,7 +31,7 @@ class ModeratorsService {
   }
 
   /** Returns a list of all users that are moderators. */
-  List<ModeratorInfo> fetchModerators() {
+  public List<ModeratorInfo> fetchModerators() {
     return moderatorsDao.getModerators().stream()
         .map(
             userInfo ->
@@ -46,7 +46,7 @@ class ModeratorsService {
   }
 
   /** Promotes a user to moderator. Can only be done by super-moderators. */
-  void addModerator(final int moderatorIdRequesting, final String username) {
+  public void addModerator(final int moderatorIdRequesting, final String username) {
     final int userId =
         userJdbiDao
             .lookupUserIdByName(username)
@@ -64,7 +64,7 @@ class ModeratorsService {
   }
 
   /** Removes moderator status from a user. Can only be done by super moderators. */
-  void removeMod(final int moderatorIdRequesting, final String moderatorNameToRemove) {
+  public void removeMod(final int moderatorIdRequesting, final String moderatorNameToRemove) {
     final int userId =
         userJdbiDao
             .lookupUserIdByName(moderatorNameToRemove)
@@ -87,7 +87,7 @@ class ModeratorsService {
   }
 
   /** Promotes a user to super-moderator. Can only be done by super moderators. */
-  void addAdmin(final int moderatorIdRequesting, final String username) {
+  public void addAdmin(final int moderatorIdRequesting, final String username) {
     final int userId =
         userJdbiDao
             .lookupUserIdByName(username)
@@ -107,7 +107,7 @@ class ModeratorsService {
   }
 
   /** Checks if any user exists in DB by the given name. */
-  boolean userExistsByName(final String username) {
+  public boolean userExistsByName(final String username) {
     return userJdbiDao.lookupUserIdByName(username).isPresent();
   }
 }

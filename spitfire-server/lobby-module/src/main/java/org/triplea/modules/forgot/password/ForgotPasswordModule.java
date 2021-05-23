@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.temp.password.TempPasswordHistoryDao;
-import org.triplea.http.LobbyServerConfig;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 
 /**
@@ -38,9 +37,9 @@ public class ForgotPasswordModule implements BiFunction<String, ForgotPasswordRe
   @Nonnull private final TempPasswordHistory tempPasswordHistory;
 
   public static BiFunction<String, ForgotPasswordRequest, String> build(
-      final LobbyServerConfig appConfig, final Jdbi jdbi) {
+      final boolean isProd, final Jdbi jdbi) {
     return ForgotPasswordModule.builder()
-        .passwordEmailSender(new PasswordEmailSender(appConfig))
+        .passwordEmailSender(PasswordEmailSender.builder().isProd(isProd).build())
         .passwordGenerator(new PasswordGenerator())
         .tempPasswordPersistence(TempPasswordPersistence.newInstance(jdbi))
         .tempPasswordHistory(new TempPasswordHistory(jdbi.onDemand(TempPasswordHistoryDao.class)))

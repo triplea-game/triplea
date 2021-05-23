@@ -7,7 +7,7 @@ import org.triplea.db.dao.moderator.BadWordsDao;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 
 @AllArgsConstructor
-class BadWordsService {
+public class BadWordsService {
   private final BadWordsDao badWordsDao;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
@@ -23,7 +23,7 @@ class BadWordsService {
    * @param badWord The value to be removed.
    * @return True if the value is removed, false otherwise.
    */
-  boolean removeBadWord(final int moderatorUserId, final String badWord) {
+  public boolean removeBadWord(final int moderatorUserId, final String badWord) {
     final boolean success = badWordsDao.removeBadWord(badWord) == 1;
     if (success) {
       moderatorAuditHistoryDao.addAuditRecord(
@@ -43,7 +43,7 @@ class BadWordsService {
    * @param badWord The value to add.
    * @return True if the value is added, false otherwise (eg: value might already exist in DB).
    */
-  boolean addBadWord(final int moderatorUserId, final String badWord) {
+  public boolean addBadWord(final int moderatorUserId, final String badWord) {
     final boolean success = badWordsDao.addBadWord(badWord) == 1;
     if (success) {
       moderatorAuditHistoryDao.addAuditRecord(
@@ -57,7 +57,7 @@ class BadWordsService {
   }
 
   /** Returns the list of bad words present in the bad-word table. */
-  List<String> getBadWords() {
+  public List<String> getBadWords() {
     return badWordsDao.getBadWords();
   }
 }

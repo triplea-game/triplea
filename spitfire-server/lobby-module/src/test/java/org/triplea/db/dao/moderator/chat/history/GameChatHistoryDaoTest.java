@@ -9,10 +9,13 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hamcrest.collection.IsCollectionWithSize;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @DataSet(
     value =
         "game_chat_history/game_hosting_api_key.yml,"
@@ -20,7 +23,8 @@ import org.triplea.http.LobbyServerTest;
             + "game_chat_history/game_chat_history.yml",
     useSequenceFiltering = false)
 @RequiredArgsConstructor
-class GameChatHistoryDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class GameChatHistoryDaoTest {
   private static final String SIR_HOSTS_A_LOT = "sir_hosts_a_lot";
   private static final String SIR_HOSTS_A_LITTLE = "sir_hosts_a_little";
   private static final String PLAYER1 = "player1";

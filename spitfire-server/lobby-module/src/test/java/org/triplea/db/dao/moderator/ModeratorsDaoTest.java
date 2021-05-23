@@ -10,15 +10,19 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.db.dao.user.role.UserRole;
-import org.triplea.http.LobbyServerTest;
 
+@Disabled
 @DataSet(
     value = "moderators/user_role.yml, moderators/lobby_user.yml, moderators/access_log.yml",
     useSequenceFiltering = false)
 @RequiredArgsConstructor
-class ModeratorsDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class ModeratorsDaoTest {
 
   private static final int NOT_MODERATOR_ID = 100000;
   private static final int MODERATOR_ID = 900000;

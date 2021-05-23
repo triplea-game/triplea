@@ -20,11 +20,11 @@ import org.triplea.modules.game.listing.GameListing;
  * API-Keys.
  */
 @AllArgsConstructor
-class ChatUploadModule {
+public class ChatUploadModule {
   private final LobbyGameDao lobbyGameDao;
   private final BiPredicate<ApiKey, String> gameIdValidator;
 
-  static ChatUploadModule build(final Jdbi jdbi, final GameListing gameListing) {
+  public static ChatUploadModule build(final Jdbi jdbi, final GameListing gameListing) {
     return new ChatUploadModule(
         jdbi.onDemand(LobbyGameDao.class), gameListing::isValidApiKeyAndGameId);
   }

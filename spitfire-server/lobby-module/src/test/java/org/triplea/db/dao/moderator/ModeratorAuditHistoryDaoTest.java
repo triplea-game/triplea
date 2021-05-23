@@ -12,9 +12,12 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @RequiredArgsConstructor
 @DataSet(
     value =
@@ -22,7 +25,8 @@ import org.triplea.http.LobbyServerTest;
             + "moderator_audit/lobby_user.yml,"
             + "moderator_audit/moderator_action_history.yml",
     useSequenceFiltering = false)
-class ModeratorAuditHistoryDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class ModeratorAuditHistoryDaoTest {
 
   private static final int MODERATOR_ID = 900000;
   private static final int MODERATOR_ID_DOES_NOT_EXIST = 1111;

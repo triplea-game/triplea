@@ -10,11 +10,15 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @RequiredArgsConstructor
-class AccessLogDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class AccessLogDaoTest {
   private static final String EMPTY_ACCESS_LOG =
       "access_log/user_role.yml,access_log/lobby_user.yml";
   private static final String ACCESS_LOG_TABLES =

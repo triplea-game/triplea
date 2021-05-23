@@ -3,7 +3,7 @@ package org.triplea.maps.listing;
 import java.util.List;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 
-interface MapListingDao {
+public interface MapListingDao {
   @SqlQuery(
       "select"
           + "    m.map_name,"

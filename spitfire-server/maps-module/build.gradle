@@ -26,13 +26,13 @@ dependencies {
     implementation project(':http-clients:github-client')
     implementation project(':http-clients:maps-client')
     implementation project(':lib:java-extras')
-    implementation project(':spitfire-server:dropwizard-common')
+    implementation project(':spitfire-server:database')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
     testImplementation project(':lib:test-common')
-    testImplementation project(':spitfire-server:dropwizard-common-test')
+    testImplementation project(':spitfire-server:database-test-support')
 }
 
 jar {

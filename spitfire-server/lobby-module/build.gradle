@@ -24,9 +24,9 @@ dependencies {
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
     implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
-    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
-    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
-    implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
+//    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
+//    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
+//    implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
     implementation "io.github.openfeign:feign-gson:$openFeignVersion"
     implementation "javax.activation:activation:$javaxActivationVersion"
     implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
@@ -40,7 +40,7 @@ dependencies {
     implementation project(':lib:java-extras')
     implementation project(':lib:websocket-client')
     implementation project(':lib:websocket-server')
-    implementation project(':spitfire-server:dropwizard-common')
+    implementation project(':spitfire-server:database')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
@@ -50,7 +50,7 @@ dependencies {
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
     testImplementation project(":lib:java-extras")
     testImplementation project(":lib:test-common")
-    testImplementation project(":spitfire-server:dropwizard-common-test")
+    testImplementation project(":spitfire-server:database-test-support")
 }
 
 jar {

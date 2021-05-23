@@ -10,7 +10,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogRequest;
 
 @Builder
-class AccessLogService {
+public class AccessLogService {
   @Nonnull private final AccessLogDao accessLogDao;
 
   public static AccessLogService build(final Jdbi jdbi) {
@@ -19,7 +19,7 @@ class AccessLogService {
         .build();
   }
 
-  List<AccessLogData> fetchAccessLog(final AccessLogRequest accessLogRequest) {
+  public List<AccessLogData> fetchAccessLog(final AccessLogRequest accessLogRequest) {
     return accessLogDao
         .fetchAccessLogRows(
             accessLogRequest.getPagingParams().getRowNumber(),
