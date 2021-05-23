@@ -8,13 +8,6 @@ prod2-lobby.triplea-game.org
 lobby_version=2.4.22192
 lobby_restart_on_new_deployment=false
 
-[mapsServer]
-prod2-lobby.triplea-game.org
-
-[mapsServer:vars]
-maps_server_version=2.4.22192
-maps_server_restart_on_new_deployment=false
-
 [letsEncrypt:children]
 lobbyServer
 

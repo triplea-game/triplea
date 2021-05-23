@@ -21,14 +21,7 @@ task flywayMigrateLobbyDb(type: FlywayMigrateTask) {
     locations = ['filesystem:src/main/resources/db/migration/lobby_db']
 }
 
-task flywayMigrateMapsDb(type: FlywayMigrateTask) {
-    url= 'jdbc:postgresql://localhost:5432/maps_db'
-    user = 'maps_user'
-    password = 'maps'
-    locations = ['filesystem:src/main/resources/db/migration/maps_db']
-}
-
-task flywayMigrateAll(dependsOn: [flywayMigrateLobbyDb, flywayMigrateMapsDb])
+task flywayMigrateAll(dependsOn: [flywayMigrateLobbyDb])
 
 task portableInstaller(type: Zip, group: 'release') {
     from 'src/main/resources/db/migration/'

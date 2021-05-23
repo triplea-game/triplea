@@ -17,12 +17,10 @@ fi
 
 echo "Force killing open connections to database"
 echo "select pg_terminate_backend(pid) from pg_stat_activity where datname='lobby_db';" | $PSQL
-echo "select pg_terminate_backend(pid) from pg_stat_activity where datname='maps_db';" | $PSQL
 echo "drop database lobby_db" | $PSQL
-echo "drop database maps_db" | $PSQL
 
 scriptDir="$(dirname "$0")"
-$PSQL <  "$scriptDir/sql/init/02-create-databases.sql"
+$PSQL <  "$scriptDir/sql/init/01-create-databases.sql"
 
 echo "Deploying schema"
 "$scriptDir/../../gradlew" flywayMigrateAll

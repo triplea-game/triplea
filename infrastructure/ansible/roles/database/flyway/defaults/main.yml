@@ -13,8 +13,4 @@ flyway_args:
     password: "{{ lobby_db_password }}"
     url: "{{ flyway_db_url }}/{{ lobby_db_name }}"
     migration_dir: "lobby_db"
-  - user: "{{ maps_db_user }}"
-    password: "{{ maps_db_password }}"
-    url: "{{ flyway_db_url }}/{{ maps_db_name }}"
-    migration_dir: "maps_db"
 
