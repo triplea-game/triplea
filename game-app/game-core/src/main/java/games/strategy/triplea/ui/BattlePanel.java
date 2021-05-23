@@ -265,7 +265,7 @@ public final class BattlePanel extends ActionPanel {
                   battleType);
           String battleStr = battleType.toDisplayText();
           battleStr = battleStr.equals("Battle") ? "" : String.format("  (%s)", battleStr);
-          battleWindow.setTitle(attacker.getName() + " attacks " + defender.getName() 
+          battleWindow.setTitle(attacker.getName() + " attacks " + defender.getName()
                                 + " in " + location.getName() + battleStr);
           battleWindow.getContentPane().removeAll();
           battleWindow.getContentPane().add(battleDisplay);
