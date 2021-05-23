@@ -9,10 +9,13 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.db.dao.user.role.UserRole;
-import org.triplea.http.LobbyServerTest;
 
+@Disabled
 @DataSet(
     value =
         "lobby_api_key/user_role.yml,"
@@ -20,7 +23,8 @@ import org.triplea.http.LobbyServerTest;
             + "lobby_api_key/lobby_api_key.yml",
     useSequenceFiltering = false)
 @RequiredArgsConstructor
-class PlayerApiKeyDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class PlayerApiKeyDaoTest {
 
   private static final int USER_ID = 50;
 

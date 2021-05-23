@@ -34,7 +34,7 @@ To format everything, including documentation files run:
 
 [launch-local-lobby.md](launch-local-lobby.md)
 
-* Start lobby by using the checked-in IDE launcher 'lobby-server'
+* Start server by using the checked-in IDE launcher 'dropwizard-server'
 * Start a bot, look for the headless game launcher, the bot will connect to your local lobby
 * Start the client, look for headed-game client launcher
 * In engine settings, go to test, select "use local lobby"

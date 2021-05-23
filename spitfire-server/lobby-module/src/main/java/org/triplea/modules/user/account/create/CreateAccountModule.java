@@ -13,7 +13,7 @@ import org.triplea.http.client.lobby.login.CreateAccountResponse;
  * account in database.
  */
 @Builder
-class CreateAccountModule implements Function<CreateAccountRequest, CreateAccountResponse> {
+public class CreateAccountModule implements Function<CreateAccountRequest, CreateAccountResponse> {
 
   @Nonnull private final Function<CreateAccountRequest, Optional<String>> createAccountValidation;
   @Nonnull private final Function<CreateAccountRequest, CreateAccountResponse> accountCreator;

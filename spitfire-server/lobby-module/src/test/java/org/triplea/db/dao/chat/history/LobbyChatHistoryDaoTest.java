@@ -3,11 +3,15 @@ package org.triplea.db.dao.chat.history;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @RequiredArgsConstructor
-class LobbyChatHistoryDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class LobbyChatHistoryDaoTest {
 
   private final LobbyChatHistoryDao lobbyChatHistoryDao;
 

@@ -10,21 +10,22 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.db.dao.temp.password.TempPasswordDao;
-import org.triplea.http.LobbyServerConfig;
 
 /** Sends a temporary password to a target user. */
 @AllArgsConstructor
+@Builder
 @Slf4j
 class PasswordEmailSender implements BiConsumer<String, String> {
   private static final String FROM = "no-reply@triplea-game.org";
 
-  private final LobbyServerConfig appConfig;
+  private final boolean isProd;
 
   @Override
   public void accept(final String email, final String generatedPassword) {
-    if (!appConfig.isProd()) {
+    if (!isProd) {
       // do not send emails if not on prod
       log.info(
           String.format(

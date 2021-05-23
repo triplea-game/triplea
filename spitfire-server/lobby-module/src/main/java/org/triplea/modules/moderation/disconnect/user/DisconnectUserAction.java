@@ -19,7 +19,7 @@ public class DisconnectUserAction {
   @Nonnull private final WebSocketMessagingBus playerConnections;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  static DisconnectUserAction build(
+  public static DisconnectUserAction build(
       final Jdbi jdbi, final Chatters chatters, final WebSocketMessagingBus playerConnections) {
     return DisconnectUserAction.builder()
         .apiKeyDaoWrapper(PlayerApiKeyDaoWrapper.build(jdbi))
@@ -33,7 +33,7 @@ public class DisconnectUserAction {
    * Does a simple disconnect of a given player from chat, records an audit log entry, and notifies
    * chatters of the disconnect.
    */
-  boolean disconnectPlayer(final int moderatorId, final PlayerChatId playerChatId) {
+  public boolean disconnectPlayer(final int moderatorId, final PlayerChatId playerChatId) {
     final PlayerIdentifiersByApiKeyLookup gamePlayerLookup =
         apiKeyDaoWrapper.lookupPlayerByChatId(playerChatId).orElse(null);
     if (gamePlayerLookup == null || !chatters.isPlayerConnected(gamePlayerLookup.getUserName())) {

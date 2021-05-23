@@ -13,7 +13,7 @@ import org.triplea.modules.game.listing.GameListing;
  * posting request to the list of available games.
  */
 @Builder
-class GamePostingModule {
+public class GamePostingModule {
   @Nonnull private final GameListing gameListing;
   @Nonnull private final ConnectivityCheck connectivityCheck;
 
@@ -25,7 +25,8 @@ class GamePostingModule {
         .build();
   }
 
-  GamePostingResponse postGame(final ApiKey apiKey, final GamePostingRequest gamePostingRequest) {
+  public GamePostingResponse postGame(
+      final ApiKey apiKey, final GamePostingRequest gamePostingRequest) {
     final boolean canReverseConnect =
         connectivityCheck.canDoReverseConnect(
             gamePostingRequest.getLobbyGame().getHostAddress(),

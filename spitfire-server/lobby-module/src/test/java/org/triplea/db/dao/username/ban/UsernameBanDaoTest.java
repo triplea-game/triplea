@@ -9,12 +9,16 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @RequiredArgsConstructor
-class UsernameBanDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class UsernameBanDaoTest {
 
   private final UsernameBanDao usernameBanDao;
 

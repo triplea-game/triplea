@@ -1,7 +1,6 @@
 package org.triplea.modules.player.info;
 
 import java.util.Collection;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -13,25 +12,23 @@ import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
 import org.triplea.db.dao.user.history.PlayerHistoryDao;
 import org.triplea.db.dao.user.history.PlayerHistoryRecord;
-import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
-import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
 
 @AllArgsConstructor
-class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatId, PlayerSummary> {
+public class FetchPlayerInfoModule {
   private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
   private final PlayerHistoryDao playerHistoryDao;
   private final Chatters chatters;
   private final GameListing gameListing;
 
-  static FetchPlayerInfoModule build(
+  public static FetchPlayerInfoModule build(
       final Jdbi jdbi, final Chatters chatters, final GameListing gameListing) {
     return new FetchPlayerInfoModule(
         PlayerApiKeyDaoWrapper.build(jdbi),
@@ -41,10 +38,16 @@ class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatI
         gameListing);
   }
 
-  @Override
-  public PlayerSummary apply(
-      final AuthenticatedUser authenticatedUser, final PlayerChatId playerChatId) {
+  public PlayerSummary fetchPlayerInfoAsModerator(final PlayerChatId playerChatId) {
+    return fetchPlayerInfo(true, playerChatId);
+  }
 
+  public PlayerSummary fetchPlayerInfo(final PlayerChatId playerChatId) {
+    return fetchPlayerInfo(false, playerChatId);
+  }
+
+  private PlayerSummary fetchPlayerInfo(
+      final boolean isModerator, final PlayerChatId playerChatId) {
     final var chatterSession =
         chatters.lookupPlayerByChatId(playerChatId).orElseThrow(this::playerLeftChatException);
 
@@ -56,7 +59,7 @@ class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatI
                     chatterSession.getChatParticipant().getUserName()));
 
     // if a moderator is requesting player data, then attach ban and aliases information
-    if (UserRole.isModerator(authenticatedUser.getUserRole())) {
+    if (isModerator) {
       final PlayerIdentifiersByApiKeyLookup gamePlayerLookup =
           apiKeyDaoWrapper
               .lookupPlayerByChatId(playerChatId)

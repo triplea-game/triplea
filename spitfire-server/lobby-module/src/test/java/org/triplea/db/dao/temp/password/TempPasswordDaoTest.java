@@ -7,9 +7,12 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @DataSet(
     value =
         "temp_password/user_role.yml,"
@@ -17,7 +20,8 @@ import org.triplea.http.LobbyServerTest;
             + "temp_password/temp_password_request.yml",
     useSequenceFiltering = false)
 @RequiredArgsConstructor
-class TempPasswordDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class TempPasswordDaoTest {
 
   private static final String USERNAME = "username";
   private static final String EMAIL = "email@";

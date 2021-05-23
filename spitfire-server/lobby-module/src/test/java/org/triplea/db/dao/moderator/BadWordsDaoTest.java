@@ -8,15 +8,19 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.http.LobbyServerTest;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @DataSet(value = "bad_words/bad_word.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor
-class BadWordsDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class BadWordsDaoTest {
   private static final List<String> expectedBadWords = List.of("aaa", "one", "two", "zzz");
 
   private final BadWordsDao badWordsDao;

@@ -8,7 +8,7 @@ import org.triplea.db.dao.user.UserJdbiDao;
 import org.triplea.modules.user.account.PasswordBCrypter;
 
 @Builder
-class UpdateAccountService {
+public class UpdateAccountService {
 
   @Nonnull private final UserJdbiDao userJdbiDao;
 
@@ -21,18 +21,18 @@ class UpdateAccountService {
         .build();
   }
 
-  void changePassword(final int userId, final String newPassword) {
+  public void changePassword(final int userId, final String newPassword) {
     final int updateCount = userJdbiDao.updatePassword(userId, passwordEncrpter.apply(newPassword));
     assert updateCount == 1;
   }
 
-  String fetchEmail(final int userId) {
+  public String fetchEmail(final int userId) {
     final String email = userJdbiDao.fetchEmail(userId);
     assert email != null;
     return email;
   }
 
-  void changeEmail(final int userId, final String newEmail) {
+  public void changeEmail(final int userId, final String newEmail) {
     final int updateCount = userJdbiDao.updateEmail(userId, newEmail);
     assert updateCount == 1;
   }

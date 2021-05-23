@@ -141,7 +141,7 @@ public class GameListing {
         .ifPresent(value -> playerMessagingBus.broadcastMessage(new LobbyGameRemovedMessage(id)));
   }
 
-  List<LobbyGameListing> getGames() {
+  public List<LobbyGameListing> getGames() {
     return games.asMap().entrySet().stream()
         .map(
             entry ->
@@ -169,7 +169,7 @@ public class GameListing {
   }
 
   /** Moderator action to remove a game. */
-  void bootGame(final int moderatorId, final String id) {
+  public void bootGame(final int moderatorId, final String id) {
     games
         .findEntryByKey(gameId -> gameId.id.equals(id))
         .ifPresent(

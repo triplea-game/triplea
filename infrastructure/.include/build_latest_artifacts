@@ -20,14 +20,13 @@ function buildArtifacts() {
   (
     cd ..
     ./gradlew \
-        :spitfire-server:lobby-module:release \
+        :spitfire-server:dropwizard-common:release \
         :spitfire-server:maps-module:release \
         :game-app:game-headless:release \
         :servers:database:release
   )
   copyBuildArtifact "../servers/database/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
-  copyBuildArtifact "../servers/lobby-server/build/artifacts/triplea-lobby-server-$VERSION.zip" "ansible/roles/lobby_server/files/"
-  copyBuildArtifact "../servers/maps-server/build/artifacts/triplea-maps-server-$VERSION.zip" "ansible/roles/maps_server/files/"
+  copyBuildArtifact "../servers/dropwizard-server/build/artifacts/triplea-dropwizard-server-$VERSION.zip" "ansible/roles/lobby_server/files/"
   copyBuildArtifact "../game-app/game-headless/build/artifacts/triplea-game-headless-$VERSION.zip" "ansible/roles/bot/files/"
 }
 

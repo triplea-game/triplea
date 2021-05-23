@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
 
 @AllArgsConstructor
-class MapsListingModule implements Supplier<List<MapDownloadListing>> {
+public class MapsListingModule implements Supplier<List<MapDownloadListing>> {
 
   private final MapListingDao mapListingDao;
 

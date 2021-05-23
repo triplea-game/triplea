@@ -10,4 +10,5 @@
     </root>
 
     <logger name="org.triplea.java.UrlStreams" level="OFF"/>
+    <logger name="org.triplea.io.FileUtils" level="OFF"/>
 </configuration>

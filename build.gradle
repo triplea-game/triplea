@@ -170,6 +170,8 @@ subprojects {
             // UnnecessaryLambda: frequent false positive - we use lambda's assigned to variables
             // frequently to facilitate testing.
             disable 'UnnecessaryLambda'
+            // MissingSummary throws false positives on lombok @Builder annotations.
+            disable 'MissingSummary'
         }
         options.incremental = true
     }
