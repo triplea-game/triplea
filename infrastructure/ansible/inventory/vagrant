@@ -19,5 +19,4 @@ ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
 ansible_python_interpreter: /usr/bin/python3
 lobby_uri: "http://localhost:8080"
 lobby_db_password: "lobby"
-maps_db_password: "maps"
 bot_numbers: ["01", "02"]

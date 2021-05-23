@@ -2,6 +2,11 @@
 
 set -eux
 
+function main() {
+  export PGPASSWORD=postgres
+  createDatabase "lobby_db" "lobby_user" "lobby"
+  ./gradlew flywayMigrateAll
+}
 
 function createDatabase() {
   local dbName="$1"
@@ -12,9 +17,4 @@ function createDatabase() {
   echo "create database ${dbName} owner ${dbUser}" | psql -h localhost -U postgres -d postgres
 }
 
-export PGPASSWORD=postgres
-createDatabase "lobby_db" "lobby_user" "lobby"
-createDatabase "maps_db" "maps_user" "maps"
-
-./gradlew flywayMigrateAll
-
+main
