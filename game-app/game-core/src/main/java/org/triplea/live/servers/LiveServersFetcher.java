@@ -89,7 +89,7 @@ public class LiveServersFetcher {
   }
 
   @VisibleForTesting
-  static final class LobbyAddressFetchException extends RuntimeException {
+  public static final class LobbyAddressFetchException extends RuntimeException {
     private static final long serialVersionUID = -301010780022774627L;
 
     LobbyAddressFetchException(final IOException e) {
@@ -109,9 +109,5 @@ public class LiveServersFetcher {
       log.warn("(No network connection?) Failed to get server locations", e);
       return Optional.empty();
     }
-  }
-
-  public Optional<URI> getMapsServerUri() {
-    return fetchServerProperties().map(ServerProperties::getMapsServerUri);
   }
 }

@@ -5,13 +5,17 @@ import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.http.client.maps.listing.MapsListingClient;
 import org.triplea.live.servers.LiveServersFetcher;
+import org.triplea.live.servers.LiveServersFetcher.LobbyAddressFetchException;
 
 /** Fetches the full listing of maps that are available for download. */
+@Slf4j
 public class MapListingFetcher {
 
   private final DownloadedMapsListing downloadedMapsListing;
@@ -31,12 +35,18 @@ public class MapListingFetcher {
     if (ClientSetting.useMapsServerBetaFeature.getValue().orElse(false)) {
       // Get the URI of the maps server (either from override or read it from the servers file) and
       // then send an API call to it requesting the list of maps available for download.
-      return new LiveServersFetcher()
-          .getMapsServerUri()
-          .map(MapsListingClient::new)
-          .map(MapsListingClient::fetchMapDownloads)
-          .map(mapListingFetcher::convertDownloadListings)
-          .orElseGet(List::of);
+      try {
+        final URI serverUri = new LiveServersFetcher().serverForCurrentVersion().getUri();
+        final var downloads = new MapsListingClient(serverUri).fetchMapDownloads();
+        return mapListingFetcher.convertDownloadListings(downloads);
+      } catch (final LobbyAddressFetchException e) {
+        log.warn(
+            "Failed to download server properties. Check network connection. "
+                + "Map listing will be empty. Error: "
+                + e.getMessage(),
+            e);
+        return List.of();
+      }
     } else {
       return ClientSetting.mapListOverride
           .getValue()
