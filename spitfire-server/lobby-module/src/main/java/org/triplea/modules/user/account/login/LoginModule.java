@@ -23,7 +23,7 @@ import org.triplea.modules.user.account.login.authorizer.registered.PasswordChec
 import org.triplea.modules.user.account.login.authorizer.temp.password.TempPasswordLogin;
 
 @Builder
-class LoginModule {
+public class LoginModule {
   @Nonnull private Predicate<LoginRequest> registeredLogin;
   @Nonnull private Predicate<LoginRequest> tempPasswordLogin;
   @Nonnull private Function<UserName, Optional<String>> anonymousLogin;

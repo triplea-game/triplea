@@ -1,3 +1,47 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+archivesBaseName = "$group-$name"
+mainClassName = 'org.triplea.spitfire.server.SpitfireServerApplication'
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('configuration.yml')
+
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}
+
+configurations {
+    testImplementation {
+        // database-rider brings in slf4j-simple as a transitive dependency
+        // DropWizard has logback baked in and cannot have multiple slf4j bindings.
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+}
+
+
 dependencies {
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
@@ -5,4 +49,21 @@ dependencies {
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
     implementation project(':game-app:domain-data')
     implementation project(':http-clients:feign-common')
+    implementation project(':http-clients:github-client')
+    implementation project(':http-clients:lobby-client')
+    implementation project(':http-clients:maps-client')
+    implementation project(':lib:java-extras')
+    implementation project(':lib:websocket-client')
+    implementation project(':lib:websocket-server')
+    implementation project(':spitfire-server:lobby-module')
+    implementation project(':spitfire-server:maps-module')
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "io.github.openfeign:feign-core:$feignCoreVersion"
+    testImplementation "io.github.openfeign:feign-gson:$feignGsonVersion"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testImplementation project(':spitfire-server:database-test-support')
+    testImplementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 }

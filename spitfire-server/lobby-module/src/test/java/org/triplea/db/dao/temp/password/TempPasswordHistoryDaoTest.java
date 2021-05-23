@@ -6,14 +6,16 @@ import static org.hamcrest.core.Is.is;
 import com.github.database.rider.core.api.dataset.DataSet;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
 @DataSet(
     cleanBefore = true,
     value = "temp_password_history/sample.yml",
     useSequenceFiltering = false)
 @RequiredArgsConstructor
-class TempPasswordHistoryDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class TempPasswordHistoryDaoTest {
 
   private static final String USERNAME = "username";
 

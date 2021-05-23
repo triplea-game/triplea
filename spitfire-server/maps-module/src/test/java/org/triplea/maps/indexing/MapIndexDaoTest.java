@@ -2,16 +2,20 @@ package org.triplea.maps.indexing;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.triplea.maps.server.http.MapServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@Disabled
 @AllArgsConstructor
 @DataSet(value = "map_category.yml,map_index.yml", useSequenceFiltering = false)
-class MapIndexDaoTest extends MapServerTest {
+@ExtendWith(DBUnitExtension.class)
+class MapIndexDaoTest {
 
   private final MapIndexDao mapIndexDao;
 

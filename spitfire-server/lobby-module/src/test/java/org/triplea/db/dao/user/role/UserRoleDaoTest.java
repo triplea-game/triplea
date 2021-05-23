@@ -5,12 +5,16 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.LobbyServerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
+@Disabled
 @DataSet(value = "user_role/initial.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor
-class UserRoleDaoTest extends LobbyServerTest {
+@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+class UserRoleDaoTest {
 
   private final UserRoleDao userRoleDao;
 

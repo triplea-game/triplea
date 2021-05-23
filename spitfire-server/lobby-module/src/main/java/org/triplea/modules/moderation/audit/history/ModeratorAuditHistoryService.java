@@ -8,14 +8,14 @@ import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
 
 @AllArgsConstructor
-class ModeratorAuditHistoryService {
+public class ModeratorAuditHistoryService {
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   public static ModeratorAuditHistoryService build(final Jdbi jdbi) {
     return new ModeratorAuditHistoryService(jdbi.onDemand(ModeratorAuditHistoryDao.class));
   }
 
-  List<ModeratorEvent> lookupHistory(final int rowNumber, final int rowCount) {
+  public List<ModeratorEvent> lookupHistory(final int rowNumber, final int rowCount) {
     return moderatorAuditHistoryDao.lookupHistoryItems(rowNumber, rowCount).stream()
         .map(
             item ->

@@ -18,7 +18,7 @@ public class CanUploadErrorReportStrategy
 
   private final ErrorReportingDao errorReportingDao;
 
-  static CanUploadErrorReportStrategy build(final Jdbi jdbi) {
+  public static CanUploadErrorReportStrategy build(final Jdbi jdbi) {
     return new CanUploadErrorReportStrategy(jdbi.onDemand(ErrorReportingDao.class));
   }
 

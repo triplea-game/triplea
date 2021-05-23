@@ -54,7 +54,7 @@ public class UserBanService {
     this.gameMessagingBus = gameMessagingBus;
   }
 
-  List<UserBanData> getBannedUsers() {
+  public List<UserBanData> getBannedUsers() {
     return userBanDao.lookupBans().stream()
         .map(
             daoData ->
@@ -69,7 +69,7 @@ public class UserBanService {
         .collect(Collectors.toList());
   }
 
-  boolean removeUserBan(final int moderatorId, final String banId) {
+  public boolean removeUserBan(final int moderatorId, final String banId) {
     final String unbanName = userBanDao.lookupUsernameByBanId(banId).orElse(null);
     if (userBanDao.removeBan(banId) != 1) {
       return false;
@@ -91,7 +91,7 @@ public class UserBanService {
     return true;
   }
 
-  void banUser(final int moderatorId, final BanPlayerRequest banPlayerRequest) {
+  public void banUser(final int moderatorId, final BanPlayerRequest banPlayerRequest) {
     apiKeyDaoWrapper
         .lookupPlayerByChatId(PlayerChatId.of(banPlayerRequest.getPlayerChatId()))
         .map(
@@ -99,7 +99,7 @@ public class UserBanService {
         .ifPresent(banUserParams -> banUser(moderatorId, banUserParams));
   }
 
-  void banUser(final int moderatorId, final UserBanParams userBanParams) {
+  public void banUser(final int moderatorId, final UserBanParams userBanParams) {
     persistUserBanToDatabase(userBanParams);
 
     if (removePlayerFromChat(userBanParams)) {

@@ -3,7 +3,7 @@
 boldGreen="\e[1m\e[92m"
 normal="\e[0m"
 
-servers/database/start_docker_db
+spitfire-server/database/start_docker_db
 
 ./gradlew --parallel spotlessApply check \
 && .build/code-convention-checks/run \

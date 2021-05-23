@@ -12,7 +12,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanDa
 
 @AllArgsConstructor
 @Builder
-class UsernameBanService {
+public class UsernameBanService {
   @Nonnull private final UsernameBanDao bannedUserNamesDao;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
@@ -23,7 +23,7 @@ class UsernameBanService {
         .build();
   }
 
-  boolean removeUsernameBan(final int moderatorUserId, final String nameToUnBan) {
+  public boolean removeUsernameBan(final int moderatorUserId, final String nameToUnBan) {
     if (bannedUserNamesDao.removeBannedUserName(nameToUnBan) > 0) {
       moderatorAuditHistoryDao.addAuditRecord(
           ModeratorAuditHistoryDao.AuditArgs.builder()
@@ -36,7 +36,7 @@ class UsernameBanService {
     return false;
   }
 
-  boolean addBannedUserName(final int moderatorUserId, final String nameToBan) {
+  public boolean addBannedUserName(final int moderatorUserId, final String nameToBan) {
     if (bannedUserNamesDao.addBannedUserName(nameToBan) == 1) {
       moderatorAuditHistoryDao.addAuditRecord(
           ModeratorAuditHistoryDao.AuditArgs.builder()
@@ -49,7 +49,7 @@ class UsernameBanService {
     return false;
   }
 
-  List<UsernameBanData> getBannedUserNames() {
+  public List<UsernameBanData> getBannedUserNames() {
     return bannedUserNamesDao.getBannedUserNames().stream()
         .map(
             data ->

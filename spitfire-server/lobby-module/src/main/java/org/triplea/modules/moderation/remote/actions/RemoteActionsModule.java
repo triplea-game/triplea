@@ -12,7 +12,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.Shut
 import org.triplea.web.socket.WebSocketMessagingBus;
 
 @Builder
-class RemoteActionsModule {
+public class RemoteActionsModule {
   @Nonnull private final UserBanDao userBanDao;
   @Nonnull private final ModeratorAuditHistoryDao auditHistoryDao;
   @Nonnull private final WebSocketMessagingBus gameMessagingBus;
@@ -26,11 +26,11 @@ class RemoteActionsModule {
         .build();
   }
 
-  boolean isUserBanned(final InetAddress ip) {
+  public boolean isUserBanned(final InetAddress ip) {
     return userBanDao.isBannedByIp(ip.getHostAddress());
   }
 
-  void addGameIdForShutdown(final int moderatorId, final String gameId) {
+  public void addGameIdForShutdown(final int moderatorId, final String gameId) {
     auditHistoryDao.addAuditRecord(
         AuditArgs.builder()
             .actionName(AuditAction.REMOTE_SHUTDOWN)

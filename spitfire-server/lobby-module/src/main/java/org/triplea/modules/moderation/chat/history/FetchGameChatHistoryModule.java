@@ -10,10 +10,10 @@ import org.triplea.db.dao.moderator.chat.history.GameChatHistoryDao;
 import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
 
 @AllArgsConstructor
-class FetchGameChatHistoryModule implements Function<String, List<ChatHistoryMessage>> {
+public class FetchGameChatHistoryModule implements Function<String, List<ChatHistoryMessage>> {
   private final GameChatHistoryDao gameChatHistoryDao;
 
-  static FetchGameChatHistoryModule build(final Jdbi jdbi) {
+  public static FetchGameChatHistoryModule build(final Jdbi jdbi) {
     return new FetchGameChatHistoryModule(jdbi.onDemand(GameChatHistoryDao.class));
   }
 
