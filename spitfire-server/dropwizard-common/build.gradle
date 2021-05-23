@@ -1,3 +1,47 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+archivesBaseName = "$group-$name"
+mainClassName = 'org.triplea.spitfire.server.SpitfireServerApplication'
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('configuration.yml')
+
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}
+
+configurations {
+    testImplementation {
+        // database-rider brings in slf4j-simple as a transitive dependency
+        // DropWizard has logback baked in and cannot have multiple slf4j bindings.
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+}
+
+
 dependencies {
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
@@ -21,4 +65,5 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
     testImplementation project(':spitfire-server:database-test-support')
     testImplementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 }

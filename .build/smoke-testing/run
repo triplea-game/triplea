@@ -13,11 +13,14 @@
 
 set -eux
 
+echo "TODO; aborting smoke test (WIP)"
+exit 1
+
 .build/setup-database
 
 readonly VERSION=$(sed 's/version\s*=\s*//' game-app/game-core/src/main/resources/META-INF/triplea/product.properties)
 
-readonly LOBBY_SERVER_JAR_PATH="spitfire-server/lobby-module/build/libs/triplea-lobby-module-${VERSION}.jar"
+readonly LOBBY_SERVER_JAR_PATH="spitfire-server/dropwizard-common/build/libs/triplea-dropwizard-common-${VERSION}.jar"
 readonly BOT_JAR_PATH="game-app/game-headless/build/libs/triplea-game-headless-${VERSION}.jar"
 readonly SMOKE_TEST_JAR_PATH="smoke-testing/build/libs/triplea-smoke-testing-${VERSION}.jar"
 
@@ -59,13 +62,15 @@ function printLogs() {
 
 function buildJars() {
   ./gradlew --parallel \
-     :spitfire-server:lobby-module:shadowJar \
+     :spitfire-server:dropwizard-common:shadowJar \
      :game-app:game-headless:shadowJar \
      :smoke-testing:shadowJar 
 }
 
 function startLobby() {
-  java -jar "$LOBBY_SERVER_JAR_PATH" server ./spitfire-server/lobby-module/configuration.yml > "$LOBBY_SERVER_OUTPUT" 2>&1 &
+  java -jar "$LOBBY_SERVER_JAR_PATH" \
+       server ./spitfire-server/dropwizard-common/configuration.yml \
+       > "$LOBBY_SERVER_OUTPUT" 2>&1 &
   echo $!
 }
 
