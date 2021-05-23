@@ -263,8 +263,10 @@ public final class BattlePanel extends ActionPanel {
                   defendingWaitingToDieCopy,
                   BattlePanel.this.getMap(),
                   battleType);
-          battleWindow.setTitle(
-              attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+          String battleStr = battleType.toDisplayText();
+          battleStr = battleStr.equals("Battle") ? "" : String.format("  (%s)", battleStr);
+          battleWindow.setTitle(attacker.getName() + " attacks " + defender.getName() 
+                                + " in " + location.getName() + battleStr);
           battleWindow.getContentPane().removeAll();
           battleWindow.getContentPane().add(battleDisplay);
           final Frame parent = JOptionPane.getFrameForComponent(BattlePanel.this);
