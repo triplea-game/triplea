@@ -485,7 +485,7 @@ class EditPanel extends ActionPanel {
           }
         };
     changePUsAction =
-        new AbstractAction("Change PUs/resources") {
+        new AbstractAction("Change PUs/Resources") {
           private static final long serialVersionUID = -2751668909341983795L;
 
           @Override
