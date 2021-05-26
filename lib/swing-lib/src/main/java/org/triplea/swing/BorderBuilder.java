@@ -6,6 +6,14 @@ import javax.swing.border.EmptyBorder;
 /** Presents a builder API for creating a swing Border object. */
 public final class BorderBuilder {
 
+  public static final Border EMPTY_BORDER =
+      new BorderBuilder()
+          .bottom(0) //
+          .top(0)
+          .left(0)
+          .right(0)
+          .build();
+
   private int top;
   private int bottom;
   private int left;

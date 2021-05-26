@@ -112,8 +112,7 @@ public enum SettingsWindow {
     // provides a satisfactory display. Most non-Substance L&Fs use a {@code null} default text
     // field border, and so the
     // default scroll pane border in those cases is not changed.
-    final Optional<Border> descriptionScrollPaneBorder =
-        Optional.ofNullable(UIManager.getBorder("TextField.border"));
+    @Nullable final Border descriptionScrollPaneBorder = UIManager.getBorder("TextField.border");
 
     int row = 0;
     for (final ClientSettingSwingUiBinding setting : settings) {
@@ -150,14 +149,13 @@ public enum SettingsWindow {
               0,
               0));
       panel.add(
-          JScrollPaneBuilder.builder()
-              .border(descriptionScrollPaneBorder)
-              .view(
+          new JScrollPaneBuilder(
                   JTextAreaBuilder.builder()
                       .text(setting.getDescription())
                       .rows(2)
                       .readOnly()
                       .build())
+              .border(descriptionScrollPaneBorder)
               .build(),
           new GridBagConstraints(
               2,

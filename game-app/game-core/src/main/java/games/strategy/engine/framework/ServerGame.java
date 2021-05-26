@@ -41,7 +41,9 @@ import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -370,14 +372,19 @@ public class ServerGame extends AbstractGame {
   }
 
   @Override
-  public void saveGame(final File file) {
+  public void saveGame(final Path file) {
     checkNotNull(file);
 
-    final File parentDir = file.getParentFile();
-    if (!parentDir.exists() && !parentDir.mkdirs()) {
-      log.error(
-          "Failed to create save game directory (or one of its ancestors): "
-              + parentDir.getAbsolutePath());
+    final Path parentDir = file.getParent();
+    if (!Files.exists(parentDir)) {
+      try {
+        Files.createDirectories(parentDir);
+      } catch (final IOException e) {
+        log.error(
+            "Failed to create save game directory (or one of its ancestors): "
+                + parentDir.toAbsolutePath(),
+            e);
+      }
     }
 
     GameDataWriter.writeToFile(gameData, delegateExecutionManager, file);

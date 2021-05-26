@@ -1,9 +1,9 @@
 package org.triplea.swing;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.JScrollPane;
@@ -24,12 +24,13 @@ import javax.swing.border.Border;
  */
 public final class JScrollPaneBuilder {
   private @Nullable Border border;
-  private Component view;
+  private Dimension preferredSize;
+  private Dimension maxSize;
 
-  private JScrollPaneBuilder() {}
+  private final Component view;
 
-  public static JScrollPaneBuilder builder() {
-    return new JScrollPaneBuilder();
+  public JScrollPaneBuilder(final Component view) {
+    this.view = view;
   }
 
   /**
@@ -38,33 +39,17 @@ public final class JScrollPaneBuilder {
    * @param border The border.
    */
   public JScrollPaneBuilder border(final Border border) {
-    checkNotNull(border);
-
     this.border = border;
     return this;
   }
 
-  /**
-   * Conditionally sets the scroll pane border.
-   *
-   * @param border The border; if empty, the current border will not be changed.
-   */
-  public JScrollPaneBuilder border(final Optional<Border> border) {
-    checkNotNull(border);
-
-    border.ifPresent(this::border);
+  public JScrollPaneBuilder maxSize(final int width, final int height) {
+    maxSize = new Dimension(width, height);
     return this;
   }
 
-  /**
-   * Sets the component to display in the scroll pane's viewport.
-   *
-   * @param view The component to display in the scroll pane's viewport.
-   */
-  public JScrollPaneBuilder view(final Component view) {
-    checkNotNull(view);
-
-    this.view = view;
+  public JScrollPaneBuilder preferredSize(final int width, final int height) {
+    preferredSize = new Dimension(width, height);
     return this;
   }
 
@@ -78,11 +63,9 @@ public final class JScrollPaneBuilder {
     checkState(view != null, "view must be specified");
 
     final JScrollPane scrollPane = new JScrollPane(view);
-
-    if (border != null) {
-      scrollPane.setBorder(border);
-    }
-
+    Optional.ofNullable(border).ifPresent(scrollPane::setBorder);
+    Optional.ofNullable(maxSize).ifPresent(scrollPane::setMaximumSize);
+    Optional.ofNullable(preferredSize).ifPresent(scrollPane::setPreferredSize);
     return scrollPane;
   }
 }

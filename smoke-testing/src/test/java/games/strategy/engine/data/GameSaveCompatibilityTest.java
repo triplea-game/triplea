@@ -5,9 +5,10 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import games.strategy.engine.framework.GameDataManager;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,9 +19,9 @@ class GameSaveCompatibilityTest {
 
   @ParameterizedTest
   @MethodSource
-  void loadSaveGames(final File saveGame) throws Exception {
+  void loadSaveGames(final Path saveGame) throws Exception {
     final GameData gameData;
-    try (InputStream inputStream = new FileInputStream(saveGame)) {
+    try (InputStream inputStream = Files.newInputStream(saveGame)) {
       gameData =
           GameDataManager.loadGame(new ProductVersionReader().getVersion(), inputStream)
               .orElseThrow();
@@ -55,7 +56,7 @@ class GameSaveCompatibilityTest {
   }
 
   @SuppressWarnings("unused")
-  static Collection<File> loadSaveGames() {
+  static Collection<Path> loadSaveGames() throws IOException {
     return TestDataFileLister.listFilesInTestResourcesDirectory("save-games");
   }
 }

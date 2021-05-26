@@ -20,7 +20,7 @@ import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -291,17 +291,20 @@ public class ServerLauncher implements ILauncher {
   private void saveAndEndGame(final INode node) {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a
     // million saves
-    final File f = launchAction.getAutoSaveFile();
+    final Path f = launchAction.getAutoSaveFile();
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {
-      log.error("Failed to save game: " + f.getAbsolutePath(), e);
+      log.error("Failed to save game: " + f.toAbsolutePath(), e);
     }
 
     stopGame();
 
     final String message =
-        "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+        "Connection lost to:"
+            + node.getName()
+            + " game is over.  Game saved to:"
+            + f.getFileName().toString();
     launchAction.onEnd(message);
   }
 

@@ -14,9 +14,10 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -231,10 +232,10 @@ public class ClientGame extends AbstractGame {
   }
 
   @Override
-  public void saveGame(final File f) {
+  public void saveGame(final Path f) {
     final IServerRemote server = (IServerRemote) messengers.getRemote(ServerGame.SERVER_REMOTE);
     final byte[] bytes = server.getSavedGame();
-    try (FileOutputStream fout = new FileOutputStream(f)) {
+    try (OutputStream fout = Files.newOutputStream(f)) {
       fout.write(bytes);
     } catch (final IOException e) {
       throw new IllegalStateException(e);

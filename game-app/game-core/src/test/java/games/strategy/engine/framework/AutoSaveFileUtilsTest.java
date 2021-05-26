@@ -23,7 +23,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
       final String fileName = "savegame.tsvg";
       assertThat(
           autoSaveFileUtils.getAutoSaveFile(fileName),
-          is(Paths.get("path", "to", "saves", "autoSave", fileName).toFile()));
+          is(Paths.get("path", "to", "saves", "autoSave", fileName)));
     }
   }
 
@@ -53,7 +53,8 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
       assertThat(
           autoSaveFileUtils
               .getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8))
-              .getName(),
+              .getFileName()
+              .toString(),
           is("connection_lost_on_May_09_at_22_08.tsvg"));
     }
   }
@@ -63,7 +64,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
     @Test
     void shouldReturnFileNameWithCapitalizedStepName() {
       assertThat(
-          autoSaveFileUtils.getBeforeStepAutoSaveFile("step").getName(),
+          autoSaveFileUtils.getBeforeStepAutoSaveFile("step").getFileName().toString(),
           is("autosaveBeforeStep.tsvg"));
     }
   }
@@ -73,7 +74,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
     @Test
     void shouldReturnFileNameWithCapitalizedStepName() {
       assertThat(
-          autoSaveFileUtils.getAfterStepAutoSaveFile("step").getName(),
+          autoSaveFileUtils.getAfterStepAutoSaveFile("step").getFileName().toString(),
           is("autosaveAfterStep.tsvg"));
     }
   }

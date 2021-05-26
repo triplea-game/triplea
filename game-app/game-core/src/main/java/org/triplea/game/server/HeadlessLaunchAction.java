@@ -12,7 +12,8 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.sound.HeadlessSoundChannel;
@@ -27,8 +28,8 @@ public class HeadlessLaunchAction implements LaunchAction {
     // if we do not do this, we can get into an infinite loop of launching a game,
     // then crashing out, then launching, etc.
     serverModel.setAllPlayersToNullNodes();
-    final File autoSaveFile = getAutoSaveFileUtils().getHeadlessAutoSaveFile();
-    if (autoSaveFile.exists()) {
+    final Path autoSaveFile = getAutoSaveFileUtils().getHeadlessAutoSaveFile();
+    if (Files.exists(autoSaveFile)) {
       gameSelectorModel.load(autoSaveFile);
     }
   }
@@ -60,7 +61,7 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public File getAutoSaveFile() {
+  public Path getAutoSaveFile() {
     return getAutoSaveFileUtils().getHeadlessAutoSaveFile();
   }
 
