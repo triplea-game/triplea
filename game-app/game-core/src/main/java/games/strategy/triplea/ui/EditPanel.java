@@ -33,8 +33,10 @@ import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeparator;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -50,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -491,9 +494,9 @@ class EditPanel extends ActionPanel {
             setWidgetActivation();
             final PlayerChooser playerChooser =
                 new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
+            final Container parent = getTopLevelAncestor();
             final JDialog dialog =
-                playerChooser.createDialog(
-                    getTopLevelAncestor(), "Select owner PUs/resources to change");
+                playerChooser.createDialog(parent, "Select Owner PUs/Resources to Change");
             dialog.setVisible(true);
             final GamePlayer player = playerChooser.getSelected();
             if (player == null) {
@@ -501,14 +504,22 @@ class EditPanel extends ActionPanel {
               return;
             }
 
-            final ResourceChooser resourceChooser =
-                new ResourceChooser(getData(), getMap().getUiContext());
-            final Resource resource =
-                resourceChooser.showDialog(getTopLevelAncestor(), "Select resource to change");
-            if (resource == null) {
-              cancelEditAction.actionPerformed(null);
-              return;
+            final List<Resource> resources = getData().getResourceList().getResources().stream()
+                    .filter(r -> !r.getName().equals(Constants.VPS))
+                    .collect(Collectors.toList());
+            final Resource resource;
+            if (resources.size() == 1) {
+              resource = resources.get(0);
+            } else {
+              final ResourceChooser chooser =
+                      new ResourceChooser(resources, getMap().getUiContext());
+              resource = chooser.showDialog(parent, "Select resource to change");
+              if (resource == null) {
+                cancelEditAction.actionPerformed(null);
+                return;
+              }
             }
+
             final int oldTotal = player.getResources().getQuantity(resource.getName());
             final JTextField totalField = new JTextField(String.valueOf(oldTotal), 4);
             totalField.setMaximumSize(totalField.getPreferredSize());

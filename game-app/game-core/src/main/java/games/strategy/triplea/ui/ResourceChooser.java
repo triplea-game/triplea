@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import java.awt.Component;
@@ -8,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JDialog;
 import javax.swing.JList;
@@ -21,22 +19,19 @@ class ResourceChooser extends JOptionPane {
   private JList<Resource> list;
   private final UiContext uiContext;
 
-  ResourceChooser(final GameData gameData, final UiContext uiContext) {
+  ResourceChooser(final List<Resource> resources, final UiContext uiContext) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
     this.uiContext = uiContext;
-    createComponents(gameData);
+    createComponents(resources);
   }
 
-  private void createComponents(final GameData gameData) {
-    final List<Resource> resources =
-        gameData.getResourceList().getResources().stream()
-            .filter(r -> !r.getName().equals(Constants.VPS))
-            .collect(Collectors.toList());
+  private void createComponents(final List<Resource> resources) {
     list = new JList<>(resources.toArray(new Resource[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    list.setSelectedValue(gameData.getResourceList().getResource(Constants.PUS), true);
+    list.setSelectedValue(resources.stream().filter(
+            r -> r.getName().equals(Constants.PUS)).findFirst().orElseThrow(), true);
     list.setFocusable(false);
     list.setCellRenderer(new Renderer(uiContext));
     list.addMouseListener(
