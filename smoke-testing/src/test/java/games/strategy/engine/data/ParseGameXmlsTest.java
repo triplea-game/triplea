@@ -5,7 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import com.github.npathai.hamcrestopt.OptionalMatchers;
 import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
@@ -18,7 +19,7 @@ class ParseGameXmlsTest {
 
   @ParameterizedTest
   @MethodSource
-  void parseGameFiles(final File xmlFile) {
+  void parseGameFiles(final Path xmlFile) {
     final Optional<GameData> result =
         GameParser.parse(
             xmlFile, new XmlGameElementMapper(), new ProductVersionReader().getVersion());
@@ -26,9 +27,9 @@ class ParseGameXmlsTest {
   }
 
   @SuppressWarnings("unused")
-  static Collection<File> parseGameFiles() {
+  static Collection<Path> parseGameFiles() throws IOException {
     return TestDataFileLister.listFilesInTestResourcesDirectory("map-xmls").stream()
-        .sorted(Comparator.comparing(file -> file.getName().toUpperCase()))
+        .sorted(Comparator.comparing(file -> file.getFileName().toString().toUpperCase()))
         .collect(Collectors.toList());
   }
 }

@@ -8,7 +8,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.Messengers;
-import java.io.File;
+import java.nio.file.Path;
 import javax.annotation.Nullable;
 import org.triplea.sound.ISound;
 
@@ -48,5 +48,5 @@ public interface IGame {
   PlayerManager getPlayerManager();
 
   /** Save the game to the given directory. The file should exist and be writeable. */
-  void saveGame(File f);
+  void saveGame(Path f);
 }

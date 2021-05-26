@@ -99,9 +99,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.font.TextAttribute;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -405,6 +406,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final UiContext uiContext,
       @Nullable final Chat chat) {
     super("TripleA - " + game.getData().getGameName());
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
     localPlayers = players;
     setIconImage(EngineImageLoader.loadFrameIcon());
@@ -2138,9 +2140,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       JOptionPane.INFORMATION_MESSAGE);
                   data.acquireReadLock();
                   try {
-                    final File f = SaveGameFileChooser.getSaveGameLocation(TripleAFrame.this, data);
+                    final Path f = SaveGameFileChooser.getSaveGameLocation(TripleAFrame.this, data);
                     if (f != null) {
-                      try (FileOutputStream fileOutputStream = new FileOutputStream(f)) {
+                      try (OutputStream fileOutputStream = Files.newOutputStream(f)) {
                         final GameData datacopy =
                             GameDataUtils.cloneGameData(
                                     data, true, Injections.getInstance().getEngineVersion())
@@ -2195,7 +2197,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                               JOptionPane.INFORMATION_MESSAGE);
                         }
                       } catch (final IOException e) {
-                        log.error("Failed to save game: " + f.getAbsolutePath(), e);
+                        log.error("Failed to save game: " + f.toAbsolutePath(), e);
                       }
                     }
                   } finally {

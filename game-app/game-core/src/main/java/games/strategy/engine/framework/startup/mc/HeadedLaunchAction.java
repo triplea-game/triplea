@@ -15,7 +15,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.TripleADisplay;
 import java.awt.Component;
 import java.awt.Frame;
-import java.io.File;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Set;
@@ -87,7 +87,7 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public File getAutoSaveFile() {
+  public Path getAutoSaveFile() {
     return getAutoSaveFileUtils()
         .getLostConnectionAutoSaveFile(LocalDateTime.now(ZoneId.systemDefault()));
   }

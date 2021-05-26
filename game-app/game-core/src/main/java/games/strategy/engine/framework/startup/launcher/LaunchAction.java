@@ -9,7 +9,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Set;
 import org.triplea.sound.ISound;
 
@@ -28,7 +28,7 @@ public interface LaunchAction {
 
   ISound getSoundChannel(LocalPlayers localPlayers);
 
-  File getAutoSaveFile();
+  Path getAutoSaveFile();
 
   void onLaunch(ServerGame serverGame);
 

@@ -71,7 +71,7 @@ class MapDescriptionYamlTest {
             .build();
 
     final String gameName =
-        mapDescriptionYaml.findGameNameFromXmlFileName(new File("/root/path.xml"));
+        mapDescriptionYaml.findGameNameFromXmlFileName(Path.of("/root/path.xml"));
 
     assertThat(gameName, is("game name"));
   }
@@ -93,6 +93,6 @@ class MapDescriptionYamlTest {
 
     assertThrows(
         IllegalStateException.class,
-        () -> mapDescriptionYaml.findGameNameFromXmlFileName(new File("DNE.xml")));
+        () -> mapDescriptionYaml.findGameNameFromXmlFileName(Path.of("DNE.xml")));
   }
 }

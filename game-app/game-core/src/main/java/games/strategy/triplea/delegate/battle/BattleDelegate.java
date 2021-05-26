@@ -1516,7 +1516,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             data.getMap().getTerritories(),
             Matches.territoryHasEnemyUnits(alliedPlayer, data.getRelationshipTracker())));
     final Collection<Territory> possibleTerrs =
-        new ArrayList<>(
             data.getMap()
                 .getNeighborsByMovementCost(
                     currentTerr,
@@ -1526,7 +1525,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                         alliedPlayer,
                         data.getProperties(),
                         data.getRelationshipTracker(),
-                        areNeutralsPassableByAir)));
+                        areNeutralsPassableByAir));
     final Iterator<Territory> possibleIter = possibleTerrs.iterator();
     while (possibleIter.hasNext()) {
       final Route route =
