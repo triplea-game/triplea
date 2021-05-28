@@ -742,6 +742,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         () ->
             mapPanel.setScale(
                 mapPanel.getScale() - (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
+
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
+        this,
+        KeyCode.ADD,
+        () ->
+            mapPanel.setScale(
+                mapPanel.getScale() + (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
+
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
+        this,
+        KeyCode.SUBTRACT,
+        () ->
+            mapPanel.setScale(
+                mapPanel.getScale() - (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
   }
 
   private void addTab(final String title, final Component component, final KeyCode hotkey) {
