@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -650,15 +649,15 @@ class TechPanel extends ActionPanel {
       }
       final int cost = TechTracker.getTechCost(player) * textField.getValue();
       int totalPaidByOthers = 0;
-      for (final Entry<GamePlayer, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
+      for (final Map.Entry<GamePlayer, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
         totalPaidByOthers += Math.max(0, entry.getValue().getValue());
       }
       final int totalPaidByPlayer = Math.max(0, cost - totalPaidByOthers);
       int amountOver = -1 * (playerPus - totalPaidByPlayer);
-      final Iterator<Entry<GamePlayer, ScrollableTextField>> otherPayers =
+      final Iterator<Map.Entry<GamePlayer, ScrollableTextField>> otherPayers =
           whoPaysTextFields.entrySet().iterator();
       while (amountOver > 0 && otherPayers.hasNext()) {
-        final Entry<GamePlayer, ScrollableTextField> entry = otherPayers.next();
+        final Map.Entry<GamePlayer, ScrollableTextField> entry = otherPayers.next();
         int current = entry.getValue().getValue();
         final int max = entry.getValue().getMax();
         if (current < max) {
@@ -670,14 +669,14 @@ class TechPanel extends ActionPanel {
       }
       // now check if we are negative
       totalPaidByOthers = 0;
-      for (final Entry<GamePlayer, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
+      for (final Map.Entry<GamePlayer, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
         totalPaidByOthers += Math.max(0, entry.getValue().getValue());
       }
       int amountUnder = -1 * (cost - totalPaidByOthers);
-      final Iterator<Entry<GamePlayer, ScrollableTextField>> otherPayers2 =
+      final Iterator<Map.Entry<GamePlayer, ScrollableTextField>> otherPayers2 =
           whoPaysTextFields.entrySet().iterator();
       while (amountUnder > 0 && otherPayers2.hasNext()) {
-        final Entry<GamePlayer, ScrollableTextField> entry = otherPayers2.next();
+        final Map.Entry<GamePlayer, ScrollableTextField> entry = otherPayers2.next();
         int current = entry.getValue().getValue();
         if (current > 0) {
           final int canSubtract = Math.min(current, amountUnder);
@@ -715,7 +714,7 @@ class TechPanel extends ActionPanel {
         whoPaysHowMuch.put(player, totalCost);
       } else {
         int runningTotal = 0;
-        for (final Entry<GamePlayer, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
+        for (final Map.Entry<GamePlayer, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
           final int value = entry.getValue().getValue();
           whoPaysHowMuch.put(entry.getKey(), value);
           runningTotal += value;
