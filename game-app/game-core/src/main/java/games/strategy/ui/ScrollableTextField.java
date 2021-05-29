@@ -169,6 +169,7 @@ public class ScrollableTextField extends JPanel {
       maxButton.setEnabled(false);
       minButton.setEnabled(false);
     }
+    invalidate();
   }
 
   public int getValue() {
