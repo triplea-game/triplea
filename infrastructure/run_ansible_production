@@ -7,6 +7,8 @@ if [ ! -f "vault_password" ]; then
   exit 1
 fi
 
+$(dirname $0)/.include/install-mitogen
+
 # Start up ssh-agent
 eval "$(ssh-agent -s)"
 
