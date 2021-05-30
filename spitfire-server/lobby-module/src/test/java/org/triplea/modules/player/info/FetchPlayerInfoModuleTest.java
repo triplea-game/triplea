@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +42,6 @@ import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
 import org.triplea.web.socket.WebSocketSession;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {
 
@@ -115,7 +113,9 @@ class FetchPlayerInfoModuleTest {
         .thenReturn(Optional.empty());
     assertThrows(
         IllegalArgumentException.class,
-        () -> fetchPlayerInfoModule.fetchPlayerInfo(PlayerChatId.of("id")));
+        () -> fetchPlayerInfoModule.fetchPlayerInfoAsModerator(PlayerChatId.of("id")),
+        "Using the lookup play info function requires a player to be in the lobby, "
+            + "we therefore expect to find their play id, or else throws.");
   }
 
   @Test

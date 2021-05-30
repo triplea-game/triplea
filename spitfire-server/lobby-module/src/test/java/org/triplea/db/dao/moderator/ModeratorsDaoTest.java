@@ -8,20 +8,20 @@ import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.db.dao.user.role.UserRole;
 
-@Disabled
 @DataSet(
     value = "moderators/user_role.yml, moderators/lobby_user.yml, moderators/access_log.yml",
     useSequenceFiltering = false)
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
 class ModeratorsDaoTest {
 
   private static final int NOT_MODERATOR_ID = 100000;

@@ -5,15 +5,15 @@ import static org.hamcrest.Matchers.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
-@Disabled
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
 class GameHostingApiKeyDaoTest {
 
   private final GameHostingApiKeyDao gameHostApiKeyDao;

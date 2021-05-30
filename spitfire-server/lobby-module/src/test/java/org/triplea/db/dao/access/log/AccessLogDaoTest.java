@@ -8,16 +8,16 @@ import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
-@Disabled
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
 class AccessLogDaoTest {
   private static final String EMPTY_ACCESS_LOG =
       "access_log/user_role.yml,access_log/lobby_user.yml";
