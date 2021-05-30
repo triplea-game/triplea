@@ -14,6 +14,8 @@ fi
 
 set -eu
 
+$(dirname $0)/.include/install-mitogen
+
 function main() {
   .include/build_latest_artifacts "$VERSION"
   addPrivateSshKeyToAgent
