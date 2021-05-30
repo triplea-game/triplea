@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# This script is used to execute server provisioning.
+# This needs to be run one-time after new servers
+# are added to the fleet before application deployments.
+
+VAULT_PASSWORD_FILE="vault_password"
+if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
+  echo "Error: $VAULT_PASSWORD_FILE must exist"
+  exit 1
+fi
+
+
+inventoryFile="$1"
+
+if [ -z "$inventoryFile" ]; then
+   echo "Error, missing arg [inventory file]"
+   echo "Usage: $0 [inventory file]"
+   exit 1
+fi
+
+if [ ! -f "$inventoryFile" ]; then
+  echo "Error, invalid inventory file specified: $inventoryFile"
+  echo "File does not exist."
+  exit 1
+fi
+
+set -eu
+
+function main() {
+  addPrivateSshKeyToAgent
+  runProvisioning
+}
+
+function addPrivateSshKeyToAgent() {
+  ansible-vault view \
+    --vault-password-file="$VAULT_PASSWORD_FILE" \
+    ansible_ssh_key.ed25519 \
+  | ssh-add -
+}
+
+function runProvisioning() {
+  ansible-playbook \
+    --vault-password-file "$VAULT_PASSWORD_FILE" \
+    --inventory "$inventoryFile" \
+   ansible/provision.yml
+}
+
+
+main

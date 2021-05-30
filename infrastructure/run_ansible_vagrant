@@ -8,24 +8,24 @@ if [ "$CUR_FOLDER" != infrastructure ]; then
   exit 1
 fi
 
+unbuffer ansible-playbook --diff --verbose \
+    "$@" ansible/provision.yml \
+  | tee output \
+  | sed 's|\\n|\n|g'
+rm output
 
-function main() {
-  local -r version=$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)
-  .include/build_latest_artifacts "$version"
 
-  unbuffer ansible-playbook --diff --verbose \
-      "$@" \
-      --extra-vars "using_latest=true" \
-      --extra-vars "version=$version" \
-      --inventory-file ansible/inventory/vagrant \
-      ansible/site.yml \
-    | tee output \
-    | sed 's|\\n|\n|g'
-  rm output
-}
+version=$(sed 's/.*=\s*//' $(find .. -path "*/src/main/*" -name "product.properties"))
+.include/build_latest_artifacts "$version"
 
-main "$@"
+unbuffer ansible-playbook --diff --verbose \
+    "$@" --extra-vars "using_latest=true" \
+    --extra-vars "version=$version" \
+    --inventory-file ansible/inventory/vagrant \
+    ansible/site.yml \
+  | tee output \
+  | sed 's|\\n|\n|g'
+rm output
 
 echo "lobby port -> 8008"
-echo "maps server port -> 9000"
 
