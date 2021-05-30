@@ -9,15 +9,14 @@ import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
-@Disabled
 @RequiredArgsConstructor
 @DataSet(
     value =
@@ -26,6 +25,7 @@ import org.triplea.db.LobbyModuleDatabaseTestSupport;
             + "moderator_audit/moderator_action_history.yml",
     useSequenceFiltering = false)
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
 class ModeratorAuditHistoryDaoTest {
 
   private static final int MODERATOR_ID = 900000;
