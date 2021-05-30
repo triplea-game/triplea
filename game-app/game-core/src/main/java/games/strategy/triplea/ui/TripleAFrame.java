@@ -1416,7 +1416,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     SwingUtilities.invokeLater(
         () -> {
           final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
-          for (final Map.Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
+          for (final Map.Entry<Territory, Collection<Unit>> entry :
+              possibleUnitsToAttack.entrySet()) {
             final List<Unit> units = new ArrayList<>(entry.getValue());
             final List<Unit> sortedUnits =
                 CasualtySelector.getCasualtyOrderOfLoss(

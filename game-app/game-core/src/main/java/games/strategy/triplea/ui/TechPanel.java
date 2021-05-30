@@ -714,7 +714,8 @@ class TechPanel extends ActionPanel {
         whoPaysHowMuch.put(player, totalCost);
       } else {
         int runningTotal = 0;
-        for (final Map.Entry<GamePlayer, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
+        for (final Map.Entry<GamePlayer, ScrollableTextField> entry :
+            whoPaysTextFields.entrySet()) {
           final int value = entry.getValue().getValue();
           whoPaysHowMuch.put(entry.getKey(), value);
           runningTotal += value;
