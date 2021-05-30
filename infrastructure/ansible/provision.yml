@@ -1,0 +1,10 @@
+- hosts: all
+  roles:
+    - system/hostname
+    - system/apt_update
+    - system/firewall
+    - system/security
+    - system/journald
+    - system/apt_common_tools
+    - system/admin_user
+
