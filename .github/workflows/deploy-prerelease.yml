@@ -14,14 +14,13 @@ jobs:
         uses: actions/checkout@v2
       - name: set build version variables
         run: |
-          BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
           echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
       - name: Deploy to Prerelease
         run: |
           eval "$(ssh-agent -s)"
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          ./run_ansible_prerelease ${{ env.product_version }}
+          ./run_ansible_prerelease $(.build/set-build-number ${{ github.run_number }})
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
