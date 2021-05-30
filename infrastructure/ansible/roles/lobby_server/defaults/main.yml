@@ -9,8 +9,8 @@ lobby_server_db_port: "5432"
 lobby_server_db_name: lobby_db
 lobby_server_db_user: lobby_user
 github_api_token: test
-lobby_artifact: triplea-lobby-server-{{ lobby_version }}.zip
-lobby_jar_file: triplea-lobby-server-{{ lobby_version }}.jar
+lobby_artifact: triplea-dropwizard-server-{{ lobby_version }}.zip
+lobby_jar_file: triplea-dropwizard-server-{{ lobby_version }}.jar
 lobby_artifact_download: |
   "{{ github_releases_url }}/{{ lobby_version }}/{{ lobby_artifact }}"
 lobby_restart_on_new_deployment: true

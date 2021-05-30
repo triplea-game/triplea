@@ -1,18 +1,19 @@
 #!/bin/bash
 
+set -x
 # This script is used to execute prerelease deployments by building artifacts
 # and then deploying them via ansible.
 
-VERSION=${1-$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)}
-shift
 
 VAULT_PASSWORD_FILE="vault_password"
 if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
-  echo "Error: $VAULT_PASSWORD_FILE must exist"
+  echo "Error: file: $VAULT_PASSWORD_FILE must exist"
   exit 1
 fi
 
 set -eu
+
+VERSION=$(sed 's/.*=\s*//' $(find .. -path "*/src/main/*" -name "product.properties"))
 
 $(dirname $0)/.include/install-mitogen
 
