@@ -80,7 +80,8 @@ class MapIndexer implements Function<MapRepoListing, Optional<MapIndexResult>> {
   @VisibleForTesting
   @Nullable
   String readMapNameFromYaml(final MapRepoListing mapRepoListing) {
-    final URI mapYmlUri = URI.create(mapRepoListing.getUri().toString() + "/map.yml?raw=true");
+    final URI mapYmlUri =
+        URI.create(mapRepoListing.getUri().toString() + "/blob/master/map.yml?raw=true");
 
     final String mapYamlContents = downloadFunction.apply(mapYmlUri);
     if (mapYamlContents == null) {
