@@ -58,7 +58,7 @@ public class GithubApiClient {
     // authToken is not required, can happen in dev environments.
     // Without an auth token the only consequence is the github API rate
     // limit is more strict.
-    if (authToken != null && !authToken.isBlank()) {
+    if (authToken != null && !authToken.isBlank() && !authToken.equalsIgnoreCase("test")) {
       tokens.put("Authorization", "token " + authToken);
     }
     return tokens;
