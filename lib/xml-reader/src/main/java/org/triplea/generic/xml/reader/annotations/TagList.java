@@ -13,7 +13,7 @@ public @interface TagList {
    * type. This property overrides that default to search for a different set of names.For example,
    * the below annotation would match tags named "foo" and "bar", but not "tag" .
    *
-   * <pre>{@code
+   * <pre><code>
    * class Tag {
    *   @TagList(names = {"foo" , "bar"}
    *   private List<Tag> tagList;
@@ -24,7 +24,8 @@ public @interface TagList {
    *       <foo/>
    *       <bar/>
    *   </list>
-   * }</pre>
+   * </code></pre>
    */
+  @SuppressWarnings("JavaDoc")
   String[] names() default "";
 }

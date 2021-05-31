@@ -11,12 +11,13 @@ import java.lang.annotation.Target;
  *
  * <p>Example:
  *
- * <pre>{@code
+ * <pre><code>
+ *
  * class Tag {
  *   @Attribute
  *   private String attribute;
  * }
- * }</pre>
+ * </code>
  *
  * With the XML below, the 'String attribute' above would get the value "attributeValue":
  *
@@ -26,6 +27,7 @@ import java.lang.annotation.Target;
  * </xml>
  * }</pre>
  */
+@SuppressWarnings("JavaDoc")
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Attribute {
@@ -34,12 +36,13 @@ public @interface Attribute {
    * property overrides that default to search for a different set of names.For example, the below
    * annotation would match attributes "foo" and "bar", but not "attribute".
    *
-   * <pre>{@code
+   * <pre><code>
+   *
    * class Tag {
    *   @Attribute(names = {"foo" , "bar"}
    *   private String attribute;
    * }
-   * }</pre>
+   * </code></pre>
    */
   String[] names() default "";
 

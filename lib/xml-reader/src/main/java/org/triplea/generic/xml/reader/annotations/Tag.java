@@ -13,12 +13,14 @@ public @interface Tag {
    * property overrides that default to search for a different set of names.For example, the below
    * annotation would match tags named "foo" and "bar", but not "tag" .
    *
-   * <pre>{@code
+   * <pre><code>
+   *
    * class Tag {
    *   @Tag(names = {"foo" , "bar"}
    *   private Tag tagObjectName;
    * }
-   * }</pre>
+   * </code>></pre>
    */
+  @SuppressWarnings("JavaDoc")
   String[] names() default "";
 }

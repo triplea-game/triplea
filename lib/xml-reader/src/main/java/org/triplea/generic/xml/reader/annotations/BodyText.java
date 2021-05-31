@@ -11,12 +11,12 @@ import java.lang.annotation.Target;
  *
  * <p>Example:
  *
- * <pre>{@code
+ * <pre><code>
  * class Tag {
  *   @BodyText
  *   private String content;
  * }
- * }</pre>
+ * </code></pre>
  *
  * With the XML below, the 'String content attribute' above would get the value "body text":
  *
@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
  * </xml>
  * }</pre>
  */
+@SuppressWarnings("JavaDoc")
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface BodyText {}
