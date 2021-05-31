@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanDao;
-import org.triplea.http.client.SystemIdHeader;
+import org.triplea.http.client.AuthenticationHeaders;
 
 @SuppressWarnings("SameParameterValue")
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +47,7 @@ class BannedPlayerFilterTest {
 
   void givenIpAndSystemId() {
     when(request.getRemoteAddr()).thenReturn(IP);
-    when(request.getHeader(SystemIdHeader.SYSTEM_ID_HEADER)).thenReturn(SYSTEM_ID);
+    when(request.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER)).thenReturn(SYSTEM_ID);
   }
 
   @Nested
@@ -114,7 +114,7 @@ class BannedPlayerFilterTest {
     @Test
     @DisplayName("Missing system ID is a bad request and should be rejected")
     void noSystemId() {
-      when(request.getHeader(SystemIdHeader.SYSTEM_ID_HEADER)).thenReturn(null);
+      when(request.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER)).thenReturn(null);
 
       bannedPlayerFilter.filter(containerRequestContext);
 

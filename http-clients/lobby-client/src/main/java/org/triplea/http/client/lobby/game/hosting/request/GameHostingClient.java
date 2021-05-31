@@ -3,8 +3,8 @@ package org.triplea.http.client.lobby.game.hosting.request;
 import java.net.URI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.SystemIdHeader;
 
 /**
  * Use this client to request a connection to lobby and to post a game. If the request is
@@ -22,6 +22,6 @@ public class GameHostingClient {
   }
 
   public GameHostingResponse sendGameHostingRequest() {
-    return gameHostingFeignClient.sendGameHostingRequest(SystemIdHeader.headers());
+    return gameHostingFeignClient.sendGameHostingRequest(AuthenticationHeaders.systemIdHeaders());
   }
 }

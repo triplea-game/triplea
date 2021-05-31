@@ -5,8 +5,8 @@ import java.net.URI;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.SystemIdHeader;
 
 /** Http client to upload error reports to the http lobby server. */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,7 +21,8 @@ public class ErrorReportClient {
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
   public static ErrorReportClient newClient(final URI uri) {
     return new ErrorReportClient(
-        SystemIdHeader.headers(), new HttpClient<>(ErrorReportFeignClient.class, uri).get());
+        AuthenticationHeaders.systemIdHeaders(),
+        new HttpClient<>(ErrorReportFeignClient.class, uri).get());
   }
 
   /**
