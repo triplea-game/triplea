@@ -51,10 +51,10 @@ class UpdatedMapsCheck {
       return;
     }
 
+    final DownloadedMapsListing downloadedMapsListing = DownloadedMapsListing.parseMapFiles();
+
     final Collection<String> outOfDateMapNames =
-        computeOutOfDateMaps(
-            availableToDownloadMaps,
-            name -> DownloadedMapsListing.parseMapFiles().getMapVersionByName(name));
+        computeOutOfDateMaps(availableToDownloadMaps, downloadedMapsListing::getMapVersionByName);
 
     if (!outOfDateMapNames.isEmpty()) {
       promptUserToUpdateMaps(outOfDateMapNames);
