@@ -13,10 +13,12 @@ import lombok.experimental.UtilityClass;
  * Utility class to make the API of {@code CompletableFuture.runAsync} a bit nicer and avoids the
  * return null in the exception handler.
  *
- * <p>Example usage: <code>
- *   AsyncRunner.runAsync(() -> taskToRun())
- *      .exceptionally(throwable -> log.log(Level.Severe, "Error message", throwable));
- * </code>
+ * <p>Example usage:
+ *
+ * <pre>{@code
+ * AsyncRunner.runAsync(() -> taskToRun())
+ *    .exceptionally(throwable -> log.log(Level.Severe, "Error message", throwable));
+ * }</pre>
  */
 @UtilityClass
 public class AsyncRunner {
