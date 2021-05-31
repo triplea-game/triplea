@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -93,7 +92,7 @@ public class IndividualUnitPanel extends JPanel {
     countOptionalTextFieldListener = optionalListener;
     setMaxAndShowMaxButton(max);
     this.showSelectAll = showSelectAll;
-    for (final Entry<Unit, Triple<Integer, Integer, Integer>> entry :
+    for (final Map.Entry<Unit, Triple<Integer, Integer, Integer>> entry :
         unitsAndTheirMaxMinAndCurrent.entrySet()) {
       final int unitMax = entry.getValue().getFirst();
       final int thisMax;

@@ -56,4 +56,8 @@ public class SpitfireServerConfig extends Configuration
   @Getter(onMethod_ = {@JsonProperty, @Override})
   @Setter(onMethod_ = {@JsonProperty})
   private String githubMapsOrgName;
+
+  @Getter(onMethod_ = {@JsonProperty})
+  @Setter(onMethod_ = {@JsonProperty})
+  private boolean mapIndexingEnabled;
 }

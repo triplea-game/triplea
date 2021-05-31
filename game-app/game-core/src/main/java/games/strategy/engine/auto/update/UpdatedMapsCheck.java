@@ -51,6 +51,8 @@ class UpdatedMapsCheck {
       return;
     }
 
+    final DownloadedMapsListing downloadedMapsListing = DownloadedMapsListing.parseMapFiles();
+
     final Collection<String> outOfDateMapNames =
         computeOutOfDateMaps(
             availableToDownloadMaps,

@@ -11,18 +11,18 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
-class AvailableMapsListing {
+class DownloadMapsWindowMapsListing {
 
   private final List<DownloadFileDescription> available = new ArrayList<>();
   private final List<DownloadFileDescription> installed = new ArrayList<>();
   private final List<DownloadFileDescription> outOfDate = new ArrayList<>();
 
-  AvailableMapsListing(final Collection<DownloadFileDescription> downloads) {
+  DownloadMapsWindowMapsListing(final Collection<DownloadFileDescription> downloads) {
     this(downloads, InstalledMapsListing.parseMapFiles());
   }
 
   @VisibleForTesting
-  AvailableMapsListing(
+  DownloadMapsWindowMapsListing(
       final Collection<DownloadFileDescription> downloads,
       final InstalledMapsListing installedMapsListing) {
     for (final DownloadFileDescription download : downloads) {

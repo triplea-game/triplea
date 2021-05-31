@@ -7,6 +7,7 @@ import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.LobbyModuleRowMappers;
 import org.triplea.dropwizard.common.AuthenticationConfiguration;
@@ -55,6 +56,7 @@ import org.triplea.web.socket.WebSocketMessagingBus;
  * any Jersey plugins, registering resources (controllers) and injecting those resources with
  * configuration properties from 'AppConfig'.
  */
+@Slf4j
 public class SpitfireServerApplication extends Application<SpitfireServerConfig> {
 
   private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};
@@ -95,7 +97,13 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
     if (configuration.isLogSqlStatements()) {
       JdbiLogging.registerSqlLogger(jdbi);
     }
-    environment.lifecycle().manage(MapsIndexingSchedule.build(configuration, jdbi));
+
+    if (configuration.isMapIndexingEnabled()) {
+      environment.lifecycle().manage(MapsIndexingSchedule.build(configuration, jdbi));
+      log.info("Map indexing is enabled and has been scheduled");
+    } else {
+      log.info("Map indexing is disabled");
+    }
 
     serverConfiguration.registerRequestFilter(
         environment, BannedPlayerFilter.newBannedPlayerFilter(jdbi));
