@@ -65,6 +65,7 @@ function buildJars() {
 }
 
 function startLobby() {
+  export MAP_INDEXING_ENABLED="false"
   java -jar "$LOBBY_SERVER_JAR_PATH" \
        server ./spitfire-server/dropwizard-server/configuration.yml \
        > "$LOBBY_SERVER_OUTPUT" 2>&1 &
