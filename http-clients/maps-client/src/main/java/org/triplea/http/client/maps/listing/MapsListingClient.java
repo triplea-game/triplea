@@ -2,6 +2,7 @@ package org.triplea.http.client.maps.listing;
 
 import java.net.URI;
 import java.util.List;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 
 /**
@@ -16,6 +17,6 @@ public class MapsListingClient {
   }
 
   public List<MapDownloadListing> fetchMapDownloads() {
-    return mapsListingFeignClient.fetchMapListing();
+    return mapsListingFeignClient.fetchMapListing(AuthenticationHeaders.systemIdHeaders());
   }
 }

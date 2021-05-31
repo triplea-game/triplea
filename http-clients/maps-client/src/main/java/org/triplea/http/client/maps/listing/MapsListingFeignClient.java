@@ -1,9 +1,11 @@
 package org.triplea.http.client.maps.listing;
 
 import feign.FeignException;
+import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
 import java.util.List;
+import java.util.Map;
 import org.triplea.http.client.HttpConstants;
 
 @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
@@ -15,5 +17,5 @@ public interface MapsListingFeignClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   @RequestLine("GET " + MapsListingClient.MAPS_LISTING_PATH)
-  List<MapDownloadListing> fetchMapListing();
+  List<MapDownloadListing> fetchMapListing(@HeaderMap Map<String, Object> headers);
 }
