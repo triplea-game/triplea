@@ -2,7 +2,7 @@ package org.triplea.spitfire.server.controllers;
 
 import java.net.URI;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.SystemIdHeader;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.spitfire.server.BasicEndpointTest;
@@ -19,7 +19,7 @@ class ForgotPasswordControllerIntegrationTest extends BasicEndpointTest<ForgotPa
     verifyEndpointReturningObject(
         client ->
             client.sendForgotPasswordRequest(
-                SystemIdHeader.headers(),
+                AuthenticationHeaders.systemIdHeaders(),
                 ForgotPasswordRequest.builder().username("user").email("email").build()));
   }
 }

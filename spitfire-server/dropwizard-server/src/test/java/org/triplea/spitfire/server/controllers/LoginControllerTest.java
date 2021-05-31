@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.SystemIdHeader;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.modules.user.account.login.LoginModule;
@@ -39,7 +39,8 @@ class LoginControllerTest {
   @Test
   void login() {
     when(httpServletRequest.getRemoteAddr()).thenReturn(IP);
-    when(httpServletRequest.getHeader(SystemIdHeader.SYSTEM_ID_HEADER)).thenReturn(SYSTEM_ID);
+    when(httpServletRequest.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER))
+        .thenReturn(SYSTEM_ID);
     when(loginModule.doLogin(loginRequest, SYSTEM_ID, IP)).thenReturn(lobbyLoginResponse);
 
     final LobbyLoginResponse response = loginController.login(httpServletRequest, loginRequest);

@@ -9,8 +9,8 @@ import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpInteractionException;
-import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
@@ -229,7 +229,7 @@ public class LobbyLogin {
                   () ->
                       ForgotPasswordClient.newClient(serverProperties.getUri())
                           .sendForgotPasswordRequest(
-                              SystemIdHeader.headers(),
+                              AuthenticationHeaders.systemIdHeaders(),
                               ForgotPasswordRequest.builder()
                                   .username(panel.getUserName())
                                   .email(panel.getEmail())
