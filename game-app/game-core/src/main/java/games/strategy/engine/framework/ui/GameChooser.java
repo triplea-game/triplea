@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,7 +48,7 @@ public class GameChooser {
    */
   public static void chooseGame(
       final Frame owner,
-      final DownloadedMapsListing downloadedMapsListing,
+      final InstalledMapsListing installedMapsListing,
       final String gameName,
       final Consumer<Path> gameChosenCallback) {
 
@@ -56,7 +56,7 @@ public class GameChooser {
     dialog.setLayout(new BorderLayout());
 
     final DefaultListModel<DefaultGameChooserEntry> gameChooserModel = new DefaultListModel<>();
-    downloadedMapsListing //
+    installedMapsListing //
         .createGameChooserEntries()
         .forEach(gameChooserModel::addElement);
 

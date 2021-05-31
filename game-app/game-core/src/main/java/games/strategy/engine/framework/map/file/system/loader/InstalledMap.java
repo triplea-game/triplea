@@ -13,7 +13,7 @@ import org.triplea.util.LocalizeHtml;
 
 /** Object representing a map that is downloaded and installed. */
 @AllArgsConstructor
-public class DownloadedMap {
+public class InstalledMap {
   private final MapDescriptionYaml mapDescriptionYaml;
 
   public String getMapName() {

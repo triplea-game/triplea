@@ -3,7 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static java.util.function.Predicate.not;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,22 +18,22 @@ class DownloadMapsWindowMapsListing {
   private final List<DownloadFileDescription> outOfDate = new ArrayList<>();
 
   DownloadMapsWindowMapsListing(final Collection<DownloadFileDescription> downloads) {
-    this(downloads, DownloadedMapsListing.parseMapFiles());
+    this(downloads, InstalledMapsListing.parseMapFiles());
   }
 
   @VisibleForTesting
   DownloadMapsWindowMapsListing(
       final Collection<DownloadFileDescription> downloads,
-      final DownloadedMapsListing downloadedMapsListing) {
+      final InstalledMapsListing installedMapsListing) {
     for (final DownloadFileDescription download : downloads) {
       if (download == null) {
         return;
       }
 
-      if (!downloadedMapsListing.isMapInstalled(download.getMapName())) {
+      if (!installedMapsListing.isMapInstalled(download.getMapName())) {
         available.add(download);
       } else {
-        final int mapVersion = downloadedMapsListing.getMapVersionByName(download.getMapName());
+        final int mapVersion = installedMapsListing.getMapVersionByName(download.getMapName());
         if (download.getVersion() != null && download.getVersion() > mapVersion) {
           outOfDate.add(download);
         } else {
