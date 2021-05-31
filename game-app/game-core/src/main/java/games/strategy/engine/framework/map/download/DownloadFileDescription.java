@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.base.MoreObjects;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,7 +92,7 @@ public final class DownloadFileDescription {
 
   public static DownloadFileDescription ofMapDownloadListing(
       final MapDownloadListing mapDownloadListing,
-      final DownloadedMapsListing downloadedMapsListing) {
+      final InstalledMapsListing installedMapsListing) {
     return DownloadFileDescription.builder()
         .url(mapDownloadListing.getUrl())
         .mapName(mapDownloadListing.getMapName())
@@ -100,7 +100,7 @@ public final class DownloadFileDescription {
         .version(1)
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
         .installLocation(
-            downloadedMapsListing.findMapFolderByName(mapDownloadListing.getMapName()).orElse(null))
+            installedMapsListing.findMapFolderByName(mapDownloadListing.getMapName()).orElse(null))
         .build();
   }
 
