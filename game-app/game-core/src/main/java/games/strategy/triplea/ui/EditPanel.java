@@ -41,17 +41,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
@@ -485,57 +475,79 @@ class EditPanel extends ActionPanel {
           }
         };
     changePUsAction =
-        new AbstractAction("Change PUs/Resources") {
+        new AbstractAction("Change Resources") {
           private static final long serialVersionUID = -2751668909341983795L;
 
           @Override
           public void actionPerformed(final ActionEvent event) {
             currentAction = this;
             setWidgetActivation();
-            final PlayerChooser playerChooser =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final Container parent = getTopLevelAncestor();
-            final JDialog dialog =
-                playerChooser.createDialog(parent, "Select Owner PUs/Resources to Change");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
-            if (player == null) {
+
+            final Optional<GamePlayer> player = choosePlayer();
+            if (player.isEmpty()) {
               cancelEditAction.actionPerformed(null);
               return;
             }
 
+            final Optional<Resource> resource = chooseResource();
+            if (resource.isEmpty()) {
+              cancelEditAction.actionPerformed(null);
+              return;
+            }
+
+            final Optional<Integer> newTotal = chooseResourceValue(player.get(), resource.get());
+            if (newTotal.isEmpty()) {
+              cancelEditAction.actionPerformed(null);
+              return;
+            }
+
+            final IEditDelegate delegate = EditPanel.this.frame.getEditDelegate();
+            final String result = delegate.changeResource(player.get(), resource.get().getName(), newTotal.get());
+            if (result != null) {
+               JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+            }
+            cancelEditAction.actionPerformed(null);
+          }
+
+          private Optional<GamePlayer> choosePlayer() {
+            final PlayerChooser playerChooser =
+                    new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
+            final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Change Resources");
+            dialog.setVisible(true);
+            return Optional.ofNullable(playerChooser.getSelected());
+          }
+
+          private Optional<Resource> chooseResource() {
+            // Ignore VPS resources, since that's what the economy panel does.
             final List<Resource> resources = getData().getResourceList().getResources().stream()
                     .filter(r -> !r.getName().equals(Constants.VPS))
                     .collect(Collectors.toList());
             final Resource resource;
             if (resources.size() == 1) {
-              resource = resources.get(0);
-            } else {
-              final ResourceChooser chooser =
-                      new ResourceChooser(resources, getMap().getUiContext());
-              resource = chooser.showDialog(parent, "Select resource to change");
-              if (resource == null) {
-                cancelEditAction.actionPerformed(null);
-                return;
-              }
+              return Optional.of(resources.get(0));
             }
 
+            final ResourceChooser chooser =
+                    new ResourceChooser(resources, getMap().getUiContext());
+            return Optional.ofNullable(chooser.showDialog(getTopLevelAncestor(), "Change Resources"));
+          }
+
+          private Optional<Integer> chooseResourceValue(final GamePlayer player, final Resource resource) {
             final int oldTotal = player.getResources().getQuantity(resource.getName());
             final JTextField totalField = new JTextField(String.valueOf(oldTotal), 4);
             totalField.setMaximumSize(totalField.getPreferredSize());
             final int option =
-                JOptionPane.showOptionDialog(
-                    getTopLevelAncestor(),
-                    new JScrollPane(totalField),
-                    "Select new number of " + resource.getName(),
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    null);
+                    JOptionPane.showOptionDialog(
+                            getTopLevelAncestor(),
+                            new JScrollPane(totalField),
+                            "Select new number of " + resource.getName(),
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            null,
+                            null);
             if (option != JOptionPane.OK_OPTION) {
-              cancelEditAction.actionPerformed(null);
-              return;
+              return Optional.empty();
             }
             int newTotal = oldTotal;
             try {
@@ -543,20 +555,7 @@ class EditPanel extends ActionPanel {
             } catch (final Exception e) {
               // ignore malformed input
             }
-            final IEditDelegate delegate = EditPanel.this.frame.getEditDelegate();
-            // Use the old changePUs() API since changeResource() was only added in 2.6.
-            final String result =
-                Constants.PUS.equals(resource.getName())
-                    ? delegate.changePUs(player, newTotal)
-                    : delegate.changeResource(player, resource.getName(), newTotal);
-            if (result != null) {
-              JOptionPane.showMessageDialog(
-                  getTopLevelAncestor(),
-                  result,
-                  "Could not perform edit",
-                  JOptionPane.ERROR_MESSAGE);
-            }
-            cancelEditAction.actionPerformed(null);
+            return Optional.of(newTotal);
           }
         };
     addTechAction =

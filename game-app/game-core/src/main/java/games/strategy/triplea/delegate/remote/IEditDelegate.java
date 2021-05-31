@@ -28,10 +28,7 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
 
   @RemoteActionCode(6)
   String changeTerritoryOwner(Territory t, GamePlayer player);
-
-  @RemoteActionCode(3)
-  String changePUs(GamePlayer player, int pus);
-
+  
   @RemoteActionCode(13)
   String changeResource(GamePlayer player, String resourceName, int newTotal);
 
