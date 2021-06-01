@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
@@ -185,7 +184,10 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (newTotal < 0) {
       return "New " + resourceName + " total must not be negative";
     }
-    logEvent(String.format("Changing %s for %s from %d to %d", resourceName, player.getName(), oldTotal, newTotal), null);
+    logEvent(
+        String.format(
+            "Changing %s for %s from %d to %d", resourceName, player.getName(), oldTotal, newTotal),
+        null);
     bridge.addChange(ChangeFactory.changeResourcesChange(player, resource, (newTotal - oldTotal)));
     return null;
   }

@@ -33,10 +33,8 @@ import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeparator;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -502,24 +500,31 @@ class EditPanel extends ActionPanel {
             }
 
             final IEditDelegate delegate = EditPanel.this.frame.getEditDelegate();
-            final String result = delegate.changeResource(player.get(), resource.get().getName(), newTotal.get());
+            final String result =
+                delegate.changeResource(player.get(), resource.get().getName(), newTotal.get());
             if (result != null) {
-               JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(
+                  getTopLevelAncestor(),
+                  result,
+                  "Could not perform edit",
+                  JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
           }
 
           private Optional<GamePlayer> choosePlayer() {
             final PlayerChooser playerChooser =
-                    new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Change Resources");
+                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
+            final JDialog dialog =
+                playerChooser.createDialog(getTopLevelAncestor(), "Change Resources");
             dialog.setVisible(true);
             return Optional.ofNullable(playerChooser.getSelected());
           }
 
           private Optional<Resource> chooseResource() {
             // Ignore VPS resources, since that's what the economy panel does.
-            final List<Resource> resources = getData().getResourceList().getResources().stream()
+            final List<Resource> resources =
+                getData().getResourceList().getResources().stream()
                     .filter(r -> !r.getName().equals(Constants.VPS))
                     .collect(Collectors.toList());
             final Resource resource;
@@ -527,25 +532,26 @@ class EditPanel extends ActionPanel {
               return Optional.of(resources.get(0));
             }
 
-            final ResourceChooser chooser =
-                    new ResourceChooser(resources, getMap().getUiContext());
-            return Optional.ofNullable(chooser.showDialog(getTopLevelAncestor(), "Change Resources"));
+            final ResourceChooser chooser = new ResourceChooser(resources, getMap().getUiContext());
+            return Optional.ofNullable(
+                chooser.showDialog(getTopLevelAncestor(), "Change Resources"));
           }
 
-          private Optional<Integer> chooseResourceValue(final GamePlayer player, final Resource resource) {
+          private Optional<Integer> chooseResourceValue(
+              final GamePlayer player, final Resource resource) {
             final int oldTotal = player.getResources().getQuantity(resource.getName());
             final JTextField totalField = new JTextField(String.valueOf(oldTotal), 4);
             totalField.setMaximumSize(totalField.getPreferredSize());
             final int option =
-                    JOptionPane.showOptionDialog(
-                            getTopLevelAncestor(),
-                            new JScrollPane(totalField),
-                            "Select new number of " + resource.getName(),
-                            JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.PLAIN_MESSAGE,
-                            null,
-                            null,
-                            null);
+                JOptionPane.showOptionDialog(
+                    getTopLevelAncestor(),
+                    new JScrollPane(totalField),
+                    "Select new number of " + resource.getName(),
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    null);
             if (option != JOptionPane.OK_OPTION) {
               return Optional.empty();
             }

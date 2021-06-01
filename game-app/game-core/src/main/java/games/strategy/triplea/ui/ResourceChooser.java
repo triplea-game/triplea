@@ -30,8 +30,9 @@ class ResourceChooser extends JOptionPane {
   private void createComponents(final List<Resource> resources) {
     list = new JList<>(resources.toArray(new Resource[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    list.setSelectedValue(resources.stream().filter(
-            r -> r.getName().equals(Constants.PUS)).findFirst().orElseThrow(), true);
+    list.setSelectedValue(
+        resources.stream().filter(r -> r.getName().equals(Constants.PUS)).findFirst().orElseThrow(),
+        true);
     list.setFocusable(false);
     list.setCellRenderer(new Renderer(uiContext));
     list.addMouseListener(
