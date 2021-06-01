@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
@@ -171,22 +170,25 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changePUs(final GamePlayer player, final int newTotal) {
+  public String changeResource(
+      final GamePlayer player, final String resourceName, final int newTotal) {
     final String result = checkEditMode();
     if (result != null) {
       return result;
     }
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
-    final int oldTotal = player.getResources().getQuantity(pus);
+    final Resource resource = getData().getResourceList().getResource(resourceName);
+    final int oldTotal = player.getResources().getQuantity(resource);
     if (oldTotal == newTotal) {
-      return "New PUs total is unchanged";
+      return "New " + resourceName + " total is unchanged";
     }
     if (newTotal < 0) {
-      return "New PUs total is invalid";
+      return "New " + resourceName + " total must not be negative";
     }
     logEvent(
-        "Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
-    bridge.addChange(ChangeFactory.changeResourcesChange(player, pus, (newTotal - oldTotal)));
+        String.format(
+            "Changing %s for %s from %d to %d", resourceName, player.getName(), oldTotal, newTotal),
+        null);
+    bridge.addChange(ChangeFactory.changeResourcesChange(player, resource, (newTotal - oldTotal)));
     return null;
   }
 

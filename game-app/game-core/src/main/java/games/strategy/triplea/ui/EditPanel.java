@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
+import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
@@ -48,7 +49,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -62,12 +65,12 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Triple;
 
@@ -77,7 +80,7 @@ class EditPanel extends ActionPanel {
   private final Action performMoveAction;
   private final Action addUnitsAction;
   private final Action delUnitsAction;
-  private final Action changePUsAction;
+  private final Action changeResourcesAction;
   private final Action addTechAction;
   private final Action removeTechAction;
   private final Action changeUnitHitDamageAction;
@@ -480,60 +483,36 @@ class EditPanel extends ActionPanel {
             // continued in territorySelected() handler below
           }
         };
-    changePUsAction =
-        new AbstractAction("Change PUs") {
+    changeResourcesAction =
+        new AbstractAction("Change Resources") {
           private static final long serialVersionUID = -2751668909341983795L;
 
           @Override
           public void actionPerformed(final ActionEvent event) {
             currentAction = this;
             setWidgetActivation();
-            final PlayerChooser playerChooser =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
+
+            final GamePlayer player = choosePlayer().orElse(null);
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            getData().acquireReadLock();
-            final Resource pus;
-            try {
-              pus = getData().getResourceList().getResource(Constants.PUS);
-            } finally {
-              getData().releaseReadLock();
-            }
-            if (pus == null) {
+
+            final Resource resource = chooseResource().orElse(null);
+            if (resource == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            final int oldTotal = player.getResources().getQuantity(pus);
-            final JTextField pusField = new JTextField(String.valueOf(oldTotal), 4);
-            pusField.setMaximumSize(pusField.getPreferredSize());
-            final int option =
-                JOptionPane.showOptionDialog(
-                    getTopLevelAncestor(),
-                    new JScrollPane(pusField),
-                    "Select new number of PUs",
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    null);
-            if (option != JOptionPane.OK_OPTION) {
+
+            final Integer newTotal = chooseResourceValue(player, resource).orElse(null);
+            if (newTotal == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            int newTotal = oldTotal;
-            try {
-              newTotal = Integer.parseInt(pusField.getText());
-            } catch (final Exception e) {
-              // ignore malformed input
-            }
+
+            final IEditDelegate delegate = EditPanel.this.frame.getEditDelegate();
             final String result =
-                EditPanel.this.frame.getEditDelegate().changePUs(player, newTotal);
+                delegate.changeResource(player, resource.getName(), newTotal);
             if (result != null) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
@@ -542,6 +521,52 @@ class EditPanel extends ActionPanel {
                   JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
+          }
+
+          private Optional<GamePlayer> choosePlayer() {
+            final PlayerChooser playerChooser =
+                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
+            final JDialog dialog =
+                playerChooser.createDialog(getTopLevelAncestor(), "Change Resources");
+            dialog.setVisible(true);
+            return Optional.ofNullable(playerChooser.getSelected());
+          }
+
+          private Optional<Resource> chooseResource() {
+            // Ignore VPS resources, since that's what the economy panel does.
+            final List<Resource> resources =
+                getData().getResourceList().getResources().stream()
+                    .filter(r -> !r.getName().equals(Constants.VPS))
+                    .collect(Collectors.toList());
+            if (resources.size() == 1) {
+              return Optional.of(resources.get(0));
+            }
+
+            final ResourceChooser chooser = new ResourceChooser(resources, getMap().getUiContext());
+            return Optional.ofNullable(
+                chooser.showDialog(getTopLevelAncestor(), "Change Resources"));
+          }
+
+          private Optional<Integer> chooseResourceValue(
+              final GamePlayer player, final Resource resource) {
+            final int oldTotal = player.getResources().getQuantity(resource.getName());
+            final IntTextField totalField = new IntTextField();
+            totalField.setValue(oldTotal);
+            totalField.setMaximumSize(totalField.getPreferredSize());
+            final int option =
+                JOptionPane.showOptionDialog(
+                    getTopLevelAncestor(),
+                    new JScrollPane(totalField),
+                    "Select new number of " + resource.getName(),
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    null);
+            if (option != JOptionPane.OK_OPTION) {
+              return Optional.empty();
+            }
+            return Optional.of(totalField.getValue());
           }
         };
     addTechAction =
@@ -945,7 +970,7 @@ class EditPanel extends ActionPanel {
     add(new JButton(addUnitsAction));
     add(new JButton(delUnitsAction));
     add(new JButton(changeTerritoryOwnerAction));
-    add(new JButton(changePUsAction));
+    add(new JButton(changeResourcesAction));
     if (Properties.getTechDevelopment(getData().getProperties())) {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
@@ -1001,7 +1026,7 @@ class EditPanel extends ActionPanel {
       addUnitsAction.setEnabled(false);
       delUnitsAction.setEnabled(false);
       changeTerritoryOwnerAction.setEnabled(false);
-      changePUsAction.setEnabled(false);
+      changeResourcesAction.setEnabled(false);
       addTechAction.setEnabled(false);
       removeTechAction.setEnabled(false);
       changeUnitHitDamageAction.setEnabled(false);
@@ -1012,7 +1037,7 @@ class EditPanel extends ActionPanel {
       addUnitsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       delUnitsAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
       changeTerritoryOwnerAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
-      changePUsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      changeResourcesAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       addTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       removeTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       changeUnitHitDamageAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());

@@ -152,7 +152,7 @@
 7,games.strategy.triplea.delegate.remote.IEditDelegate,changeUnitBombingDamage,org.triplea.java.collections.IntegerMap,games.strategy.engine.data.Territory
 4,games.strategy.triplea.delegate.remote.IEditDelegate,changePoliticalRelationships,java.util.Collection
 8,games.strategy.triplea.delegate.remote.IEditDelegate,changeUnitHitDamage,org.triplea.java.collections.IntegerMap,games.strategy.engine.data.Territory
-3,games.strategy.triplea.delegate.remote.IEditDelegate,changePUs,games.strategy.engine.data.GamePlayer,int
+13,games.strategy.triplea.delegate.remote.IEditDelegate,changeResource,games.strategy.engine.data.GamePlayer,java.lang.String,int
 10,games.strategy.triplea.delegate.remote.IEditDelegate,removeTechAdvance,games.strategy.engine.data.GamePlayer,java.util.Collection
 1,games.strategy.triplea.delegate.remote.IEditDelegate,addTechAdvance,games.strategy.engine.data.GamePlayer,java.util.Collection
 8,games.strategy.triplea.delegate.remote.IMoveDelegate,getTerritoriesWhereAirCantLand
