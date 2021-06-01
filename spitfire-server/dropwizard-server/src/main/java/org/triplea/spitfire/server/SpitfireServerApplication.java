@@ -100,7 +100,11 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
 
     if (configuration.isMapIndexingEnabled()) {
       environment.lifecycle().manage(MapsIndexingSchedule.build(configuration, jdbi));
-      log.info("Map indexing is enabled and has been scheduled");
+      log.info(
+          "Map indexing is enabled to run every:"
+              + " {} minutes with one map indexing request every {} seconds",
+          configuration.getMapIndexingPeriodMinutes(),
+          configuration.getIndexingTaskDelaySeconds());
     } else {
       log.info("Map indexing is disabled");
     }
