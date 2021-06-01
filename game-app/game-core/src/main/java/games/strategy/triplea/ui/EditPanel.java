@@ -71,6 +71,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Triple;
 
@@ -492,27 +493,27 @@ class EditPanel extends ActionPanel {
             currentAction = this;
             setWidgetActivation();
 
-            final Optional<GamePlayer> player = choosePlayer();
-            if (player.isEmpty()) {
+            final GamePlayer player = choosePlayer().orElse(null);
+            if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
 
-            final Optional<Resource> resource = chooseResource();
-            if (resource.isEmpty()) {
+            final Resource resource = chooseResource().orElse(null);
+            if (resource == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
 
-            final Optional<Integer> newTotal = chooseResourceValue(player.get(), resource.get());
-            if (newTotal.isEmpty()) {
+            final Integer newTotal = chooseResourceValue(player, resource).orElse(null);
+            if (newTotal == null) {
               cancelEditAction.actionPerformed(null);
               return;
             }
 
             final IEditDelegate delegate = EditPanel.this.frame.getEditDelegate();
             final String result =
-                delegate.changeResource(player.get(), resource.get().getName(), newTotal.get());
+                delegate.changeResource(player, resource.getName(), newTotal);
             if (result != null) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
@@ -550,7 +551,8 @@ class EditPanel extends ActionPanel {
           private Optional<Integer> chooseResourceValue(
               final GamePlayer player, final Resource resource) {
             final int oldTotal = player.getResources().getQuantity(resource.getName());
-            final JTextField totalField = new JTextField(String.valueOf(oldTotal), 4);
+            final IntTextField totalField = new IntTextField();
+            totalField.setValue(oldTotal);
             totalField.setMaximumSize(totalField.getPreferredSize());
             final int option =
                 JOptionPane.showOptionDialog(
@@ -565,13 +567,7 @@ class EditPanel extends ActionPanel {
             if (option != JOptionPane.OK_OPTION) {
               return Optional.empty();
             }
-            int newTotal = oldTotal;
-            try {
-              newTotal = Integer.parseInt(totalField.getText());
-            } catch (final Exception e) {
-              // ignore malformed input
-            }
-            return Optional.of(newTotal);
+            return Optional.of(totalField.getValue());
           }
         };
     addTechAction =
