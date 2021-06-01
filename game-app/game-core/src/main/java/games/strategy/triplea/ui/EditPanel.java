@@ -538,7 +538,6 @@ class EditPanel extends ActionPanel {
                 getData().getResourceList().getResources().stream()
                     .filter(r -> !r.getName().equals(Constants.VPS))
                     .collect(Collectors.toList());
-            final Resource resource;
             if (resources.size() == 1) {
               return Optional.of(resources.get(0));
             }
