@@ -39,7 +39,18 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
@@ -69,7 +80,7 @@ class EditPanel extends ActionPanel {
   private final Action performMoveAction;
   private final Action addUnitsAction;
   private final Action delUnitsAction;
-  private final Action changePUsAction;
+  private final Action changeResourcesAction;
   private final Action addTechAction;
   private final Action removeTechAction;
   private final Action changeUnitHitDamageAction;
@@ -472,7 +483,7 @@ class EditPanel extends ActionPanel {
             // continued in territorySelected() handler below
           }
         };
-    changePUsAction =
+    changeResourcesAction =
         new AbstractAction("Change Resources") {
           private static final long serialVersionUID = -2751668909341983795L;
 
@@ -965,7 +976,7 @@ class EditPanel extends ActionPanel {
     add(new JButton(addUnitsAction));
     add(new JButton(delUnitsAction));
     add(new JButton(changeTerritoryOwnerAction));
-    add(new JButton(changePUsAction));
+    add(new JButton(changeResourcesAction));
     if (Properties.getTechDevelopment(getData().getProperties())) {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
@@ -1021,7 +1032,7 @@ class EditPanel extends ActionPanel {
       addUnitsAction.setEnabled(false);
       delUnitsAction.setEnabled(false);
       changeTerritoryOwnerAction.setEnabled(false);
-      changePUsAction.setEnabled(false);
+      changeResourcesAction.setEnabled(false);
       addTechAction.setEnabled(false);
       removeTechAction.setEnabled(false);
       changeUnitHitDamageAction.setEnabled(false);
@@ -1032,7 +1043,7 @@ class EditPanel extends ActionPanel {
       addUnitsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       delUnitsAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
       changeTerritoryOwnerAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
-      changePUsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      changeResourcesAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       addTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       removeTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
       changeUnitHitDamageAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
