@@ -4,6 +4,8 @@ githubOrgForErrorReports: triplea-game
 githubRepoForErrorReports: ${ERROR_REPORT_GITHUB_REPO:-test}
 githubMapsOrgName: triplea-maps
 
+mapIndexingEnabled: ${MAP_INDEXING_ENABLED:-true}
+
 # if we are using any stubbing, we'll assert that this value is false.
 # this is to help guarantee that we do not accidentally use test configuration in prod.
 prod: ${PROD_FLAG:-false}

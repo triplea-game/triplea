@@ -7,13 +7,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.maps.MapsModuleDatabaseTestSupport;
 
-@Disabled
 @AllArgsConstructor
 @DataSet(value = "map_category.yml,map_index.yml", useSequenceFiltering = false)
+@ExtendWith(MapsModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
 class MapIndexDaoTest {
 

@@ -6,13 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
-@Disabled
 @DataSet(
     value =
         "temp_password/user_role.yml,"
@@ -21,6 +20,7 @@ import org.triplea.db.LobbyModuleDatabaseTestSupport;
     useSequenceFiltering = false)
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
 class TempPasswordDaoTest {
 
   private static final String USERNAME = "username";

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -123,7 +122,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
     final JPanel entries = new JPanel();
     entries.setLayout(new FlowLayout());
     entries.setBorder(BorderFactory.createEmptyBorder());
-    for (final Entry<String, Collection<Unit>> entry : unitsToChooseFrom.entrySet()) {
+    for (final Map.Entry<String, Collection<Unit>> entry : unitsToChooseFrom.entrySet()) {
       final String miniTitle = entry.getKey();
       final Collection<Unit> possibleTargets = entry.getValue();
       final JPanel panelChooser = new JPanel();

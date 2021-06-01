@@ -110,7 +110,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -1417,7 +1416,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     SwingUtilities.invokeLater(
         () -> {
           final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
-          for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
+          for (final Map.Entry<Territory, Collection<Unit>> entry :
+              possibleUnitsToAttack.entrySet()) {
             final List<Unit> units = new ArrayList<>(entry.getValue());
             final List<Unit> sortedUnits =
                 CasualtySelector.getCasualtyOrderOfLoss(
@@ -1494,7 +1494,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     throw new IllegalStateException("unitPanels should only contain 1 entry");
                   }
                   for (final IndividualUnitPanelGrouped terrChooser : unitPanels) {
-                    for (final Entry<String, IntegerMap<Unit>> entry :
+                    for (final Map.Entry<String, IntegerMap<Unit>> entry :
                         terrChooser.getSelected().entrySet()) {
                       selection.put(data.getMap().getTerritory(entry.getKey()), entry.getValue());
                     }
@@ -1588,7 +1588,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                             tuple.getFirst(),
                             scrambleTo,
                             data);
-                    for (final Entry<GamePlayer, ResourceCollection> playerAndCost :
+                    for (final Map.Entry<GamePlayer, ResourceCollection> playerAndCost :
                         map.entrySet()) {
                       if (playerFuelCost.containsKey(playerAndCost.getKey())) {
                         playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
@@ -1600,7 +1600,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   fuelCostPanel.removeAll();
                   boolean hasEnoughFuel = true;
                   int count = 0;
-                  for (final Entry<GamePlayer, ResourceCollection> entry :
+                  for (final Map.Entry<GamePlayer, ResourceCollection> entry :
                       playerFuelCost.entrySet()) {
                     final JLabel label = new JLabel(entry.getKey().getName() + ": ");
                     fuelCostPanel.add(

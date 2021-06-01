@@ -8,7 +8,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
@@ -377,13 +377,13 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
   private void selectGameFile() {
     try {
-      final DownloadedMapsListing downloadedMapsListing =
+      final InstalledMapsListing installedMapsListing =
           BackgroundTaskRunner.runInBackgroundAndReturn(
-              "Loading all available games...", DownloadedMapsListing::parseMapFiles);
+              "Loading all available games...", InstalledMapsListing::parseMapFiles);
 
       GameChooser.chooseGame(
           JOptionPane.getFrameForComponent(this),
-          downloadedMapsListing,
+          installedMapsListing,
           model.getGameName(),
           this::gameSelected);
     } catch (final InterruptedException e) {

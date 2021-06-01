@@ -18,10 +18,10 @@ import org.triplea.map.description.file.MapDescriptionYaml;
  * onto their hard drive.
  */
 @AllArgsConstructor
-public class DownloadedMapsListing {
-  private final Collection<DownloadedMap> downloadedMaps;
+public class InstalledMapsListing {
+  private final Collection<InstalledMap> installedMaps;
 
-  private DownloadedMapsListing() {
+  private InstalledMapsListing() {
     this(readMapYamlsAndGenerateMissingMapYamls());
   }
 
@@ -29,11 +29,11 @@ public class DownloadedMapsListing {
    * Reads the downloaded maps folder contents, parses those contents to find available games, and
    * returns the list of available games found.
    */
-  public static synchronized DownloadedMapsListing parseMapFiles() {
-    return new DownloadedMapsListing();
+  public static synchronized InstalledMapsListing parseMapFiles() {
+    return new InstalledMapsListing();
   }
 
-  private static Collection<DownloadedMap> readMapYamlsAndGenerateMissingMapYamls() {
+  private static Collection<InstalledMap> readMapYamlsAndGenerateMissingMapYamls() {
     // loop over all maps, find and parse a 'map.yml' file, if not found attempt to generate it
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
         .filter(Files::isDirectory)
@@ -43,14 +43,14 @@ public class DownloadedMapsListing {
                     .or(() -> MapDescriptionYaml.generateForMap(mapFolder)))
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .map(DownloadedMap::new)
+        .map(InstalledMap::new)
         .collect(Collectors.toList());
   }
 
   /** Returns the list of all installed game names. */
   public List<String> getSortedGameList() {
-    return downloadedMaps.stream()
-        .map(DownloadedMap::getGameNames)
+    return installedMaps.stream()
+        .map(InstalledMap::getGameNames)
         .flatMap(Collection::stream)
         .sorted()
         .collect(Collectors.toList());
@@ -62,9 +62,9 @@ public class DownloadedMapsListing {
    */
   public boolean isMapInstalled(final String mapName) {
     final String nameToMatch = normalizeName(mapName);
-    return downloadedMaps.stream()
-        .map(DownloadedMap::getMapName)
-        .map(DownloadedMapsListing::normalizeName)
+    return installedMaps.stream()
+        .map(InstalledMap::getMapName)
+        .map(InstalledMapsListing::normalizeName)
         .anyMatch(nameToMatch::equalsIgnoreCase);
   }
 
@@ -76,10 +76,10 @@ public class DownloadedMapsListing {
    * @return The full path to the game file; or {@code empty} if the game is not available.
    */
   public Optional<Path> findGameXmlPathByGameName(final String gameName) {
-    return downloadedMaps.stream()
-        .filter(downloadedMap -> downloadedMap.getGameNames().contains(gameName))
+    return installedMaps.stream()
+        .filter(installedMap -> installedMap.getGameNames().contains(gameName))
         .findAny()
-        .flatMap(downloadedMap -> downloadedMap.getGameXmlFilePath(gameName));
+        .flatMap(installedMap -> installedMap.getGameXmlFilePath(gameName));
   }
 
   public boolean hasGame(final String gameName) {
@@ -87,10 +87,10 @@ public class DownloadedMapsListing {
   }
 
   public Integer getMapVersionByName(final String mapName) {
-    return downloadedMaps.stream()
+    return installedMaps.stream()
         .filter(d -> d.getMapName().equals(mapName))
         .findAny()
-        .map(DownloadedMap::getMapVersion)
+        .map(InstalledMap::getMapVersion)
         .orElse(0);
   }
 
@@ -101,10 +101,10 @@ public class DownloadedMapsListing {
    */
   public Optional<Path> findContentRootForMapName(final String mapName) {
     final String nameToFind = normalizeName(mapName);
-    return downloadedMaps.stream()
+    return installedMaps.stream()
         .filter(d -> nameToFind.equals(normalizeName(d.getMapName())))
         .findAny()
-        .flatMap(DownloadedMap::findContentRoot);
+        .flatMap(InstalledMap::findContentRoot);
   }
 
   private static String normalizeName(final String mapName) {
@@ -124,21 +124,21 @@ public class DownloadedMapsListing {
    * selection.
    */
   public Collection<DefaultGameChooserEntry> createGameChooserEntries() {
-    return downloadedMaps.stream()
-        .map(DownloadedMapsListing::convertDownloadedMapToChooserEntries)
+    return installedMaps.stream()
+        .map(InstalledMapsListing::convertDownloadedMapToChooserEntries)
         .flatMap(Collection::stream)
         .sorted(Comparator.comparing(DefaultGameChooserEntry::getGameName))
         .collect(Collectors.toList());
   }
 
   private static Collection<DefaultGameChooserEntry> convertDownloadedMapToChooserEntries(
-      final DownloadedMap downloadedMap) {
+      final InstalledMap installedMap) {
 
-    return downloadedMap.getGameNames().stream()
+    return installedMap.getGameNames().stream()
         .map(
             gameName ->
                 DefaultGameChooserEntry.builder()
-                    .downloadedMap(downloadedMap)
+                    .installedMap(installedMap)
                     .gameName(gameName)
                     .build())
         .collect(Collectors.toList());

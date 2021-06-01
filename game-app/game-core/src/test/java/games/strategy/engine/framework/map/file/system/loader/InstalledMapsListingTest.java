@@ -12,12 +12,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
-class DownloadedMapsListingTest {
+class InstalledMapsListingTest {
 
-  final DownloadedMapsListing downloadedMapsListing =
-      new DownloadedMapsListing(
+  final InstalledMapsListing installedMapsListing =
+      new InstalledMapsListing(
           List.of(
-              new DownloadedMap(
+              new InstalledMap(
                   MapDescriptionYaml.builder()
                       .yamlFileLocation(Path.of("/path/map0/map.yml").toUri())
                       .mapName("map-name0")
@@ -29,7 +29,7 @@ class DownloadedMapsListingTest {
                                   .xmlFileName("path.xml")
                                   .build()))
                       .build()),
-              new DownloadedMap(
+              new InstalledMap(
                   MapDescriptionYaml.builder()
                       .yamlFileLocation(Path.of("/path/map1/map.yml").toUri())
                       .mapName("map-name1")
@@ -48,7 +48,7 @@ class DownloadedMapsListingTest {
 
   @Test
   void getSortedGamesList() {
-    final List<String> sortedGameNames = downloadedMapsListing.getSortedGameList();
+    final List<String> sortedGameNames = installedMapsListing.getSortedGameList();
 
     assertThat(sortedGameNames, hasSize(3));
     assertThat(sortedGameNames, hasItems("aGame0", "gameName0", "gameName1"));
@@ -58,15 +58,15 @@ class DownloadedMapsListingTest {
   void getMapVersionByName() {
     assertThat(
         "If a map does not exist, we default version value to '0'",
-        downloadedMapsListing.getMapVersionByName("DNE"),
+        installedMapsListing.getMapVersionByName("DNE"),
         is(0));
     assertThat(
         "This map in the listing has a version value of '0'",
-        downloadedMapsListing.getMapVersionByName("map-name0"),
+        installedMapsListing.getMapVersionByName("map-name0"),
         is(0));
     assertThat(
         "This map in the listing has a version value of '2'",
-        downloadedMapsListing.getMapVersionByName("map-name1"),
+        installedMapsListing.getMapVersionByName("map-name1"),
         is(2));
   }
 
@@ -81,7 +81,7 @@ class DownloadedMapsListingTest {
         "name0"
       })
   void isMapInstalled_NegativeCases(final String mapName) {
-    assertThat(downloadedMapsListing.isMapInstalled(mapName), is(false));
+    assertThat(installedMapsListing.isMapInstalled(mapName), is(false));
   }
 
   /** Verify match is not case sensitive with insignificant characters ignored */
@@ -98,6 +98,6 @@ class DownloadedMapsListingTest {
         "MAPNAME0"
       })
   void isMapInstalled_PositiveCases(final String mapName) {
-    assertThat(downloadedMapsListing.isMapInstalled(mapName), is(true));
+    assertThat(installedMapsListing.isMapInstalled(mapName), is(true));
   }
 }

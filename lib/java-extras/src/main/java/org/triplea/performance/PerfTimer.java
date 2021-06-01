@@ -10,15 +10,22 @@ import org.triplea.java.function.ThrowingSupplier;
 
 /**
  * Provides a high level API to the game engine for performance measurements. This class handles the
- * library details and sends output to 'PerformanceConsole.java' <br>
- * Example usage with auto-close try block: <code>
+ * library details and sends output to 'PerformanceConsole.java.
+ *
+ * <p>Example usage with auto-close try block:
+ *
+ * <pre>{@code
  * try(PerfTimer timer = PerfTimer.startTimer("timer_name_0")) {
  *   // code to be timed
  * }
- * </code> Example usage with inline runnable: <code>
- *   long someValue = PerfTimer.time("timer name", () -> exampleValueComputation());
- *   PerfTimer.time("timer name", () -> exampleCodeToBeTimed());
- * </code>
+ * }</pre>
+ *
+ * Example usage with inline runnable:
+ *
+ * <pre>{@code
+ * long someValue = PerfTimer.time("timer name", () -> exampleValueComputation());
+ * PerfTimer.time("timer name", () -> exampleCodeToBeTimed());
+ * }</pre>
  */
 @SuppressWarnings("unused") // used on-demand by dev where needed and removed afterwards.
 @Slf4j

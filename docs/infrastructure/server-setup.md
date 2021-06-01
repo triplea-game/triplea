@@ -53,3 +53,9 @@ This is needed for lobby server or any server that will be serving https traffic
 - Add the server to [inventory configuration](/infrastructure/ansible/inventory)
 - Commit the changes and submit for a PR. After the PR is merged, travis will run a deployment
   automatically deploying all needed configurations to the server.
+
+## Run Github Action "Provision"
+
+In github actions, find the "deploy server provisioning" action and run it. This is
+a one-time step.
+

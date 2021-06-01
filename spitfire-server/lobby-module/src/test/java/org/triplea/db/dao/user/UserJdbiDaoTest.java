@@ -7,18 +7,18 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.db.dao.user.role.UserRoleLookup;
 
-@Disabled
 @DataSet(value = "user/user_role.yml,user/lobby_user.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
 class UserJdbiDaoTest {
 
   private static final int USER_ID = 900000;

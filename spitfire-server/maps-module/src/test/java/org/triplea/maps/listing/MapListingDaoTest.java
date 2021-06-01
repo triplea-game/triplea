@@ -5,15 +5,17 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.maps.MapsModuleDatabaseTestSupport;
 
-@Disabled
 @DataSet(value = "map_category.yml,map_index.yml", useSequenceFiltering = false)
-class MapListingDaoTest extends MapsModuleDatabaseTestSupport {
+@ExtendWith(MapsModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
+class MapListingDaoTest {
 
   private final MapListingDao mapListingDao;
 

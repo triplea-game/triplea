@@ -38,10 +38,11 @@ package org.triplea.java;
  * @param <ViewModelT> The type of view model, view model listeners should generally be 1:1 to a
  *     view model.
  */
+@SuppressWarnings("UnescapedEntity")
 public interface ViewModelListener<ViewModelT> {
   /**
    * Called when view model state is updated and the view needs to also be updated. An
-   * implementation is expected to query the {@param viewModel} via 'getter' methods and update
+   * implementation is expected to query the {@code viewModel} via 'getter' methods and update
    * any/all UI components.
    *
    * @param viewModel A reference to the updated view model with latest state. Note, this parameter

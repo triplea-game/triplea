@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMap;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import java.nio.file.Path;
 import java.util.Optional;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class DefaultGameChooserEntry implements Comparable<DefaultGameChooserEntry> {
-  private final DownloadedMap downloadedMap;
+  private final InstalledMap installedMap;
   private final String gameName;
 
   @Override
@@ -27,7 +27,7 @@ public class DefaultGameChooserEntry implements Comparable<DefaultGameChooserEnt
     if (rhs instanceof DefaultGameChooserEntry) {
       final var chooserEntry = (DefaultGameChooserEntry) rhs;
       return chooserEntry.gameName.equals(gameName)
-          && downloadedMap.getMapName().equals(chooserEntry.downloadedMap.getMapName());
+          && installedMap.getMapName().equals(chooserEntry.installedMap.getMapName());
     } else {
       return false;
     }
@@ -35,14 +35,14 @@ public class DefaultGameChooserEntry implements Comparable<DefaultGameChooserEnt
 
   @Override
   public int hashCode() {
-    return gameName.hashCode() * downloadedMap.getMapName().hashCode();
+    return gameName.hashCode() * installedMap.getMapName().hashCode();
   }
 
   String readGameNotes() {
-    return downloadedMap.readGameNotes(gameName).orElse("");
+    return installedMap.readGameNotes(gameName).orElse("");
   }
 
   Optional<Path> getGameXmlFilePath() {
-    return downloadedMap.getGameXmlFilePath(gameName);
+    return installedMap.getGameXmlFilePath(gameName);
   }
 }

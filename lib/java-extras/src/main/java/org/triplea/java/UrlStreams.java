@@ -17,7 +17,7 @@ public final class UrlStreams {
   /** Used to obtain a connection from a given URL. */
   private final Function<URL, URLConnection> urlConnectionFactory;
 
-  protected UrlStreams() {
+  UrlStreams() {
     // By default just try open a connection, raise any exceptions encountered
     this.urlConnectionFactory =
         (url) -> {
@@ -30,7 +30,7 @@ public final class UrlStreams {
   }
 
   /** For test, a constructor that allows mock object injection. */
-  protected UrlStreams(final Function<URL, URLConnection> connectionFactory) {
+  UrlStreams(final Function<URL, URLConnection> connectionFactory) {
     this.urlConnectionFactory = connectionFactory;
   }
 

@@ -8,9 +8,9 @@ import java.net.URI;
 import java.util.Map;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpInteractionException;
-import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.lobby.login.LobbyLoginFeignClient;
 import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.spitfire.server.SpitfireServerTest;
@@ -48,7 +48,7 @@ class UserBannedFilterIntegrationTest extends SpitfireServerTest {
   }
 
   private static Map<String, Object> headersWithSystemId(final String systemId) {
-    return Map.of(SystemIdHeader.SYSTEM_ID_HEADER, systemId);
+    return Map.of(AuthenticationHeaders.SYSTEM_ID_HEADER, systemId);
   }
 
   @Test

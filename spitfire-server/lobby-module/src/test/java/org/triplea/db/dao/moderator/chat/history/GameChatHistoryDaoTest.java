@@ -6,16 +6,15 @@ import static org.hamcrest.core.Is.is;
 import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hamcrest.collection.IsCollectionWithSize;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
-@Disabled
 @DataSet(
     value =
         "game_chat_history/game_hosting_api_key.yml,"
@@ -24,6 +23,7 @@ import org.triplea.db.LobbyModuleDatabaseTestSupport;
     useSequenceFiltering = false)
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(DBUnitExtension.class)
 class GameChatHistoryDaoTest {
   private static final String SIR_HOSTS_A_LOT = "sir_hosts_a_lot";
   private static final String SIR_HOSTS_A_LITTLE = "sir_hosts_a_little";

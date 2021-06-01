@@ -3,7 +3,7 @@ package games.strategy.triplea;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.map.file.system.loader.DownloadedMapsListing;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
@@ -47,7 +47,7 @@ public class ResourceLoader implements Closeable {
     mapLocation =
         mapName == null || mapName.isBlank()
             ? null
-            : DownloadedMapsListing.parseMapFiles()
+            : InstalledMapsListing.parseMapFiles()
                 .findContentRootForMapName(mapName)
                 .orElseThrow(
                     () -> {

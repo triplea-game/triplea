@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 public final class CompletableFutureUtils {
 
   /**
-   * Invokes {@param exceptionHandler} with any exception thrown by {@code future} when it is
+   * Invokes {@code exceptionHandler} with any exception thrown by {@code future} when it is
    * complete. If {@code future} completes normally, no action is taken.
    */
   @SuppressWarnings("FutureReturnValueIgnored")

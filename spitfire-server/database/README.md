@@ -8,7 +8,7 @@ Stores:
   - lobby chat history
   - user ban information
   - moderator audit logs
-  - bug report history and rate limits 
+  - bug report history and rate limits
   - uploaded map information
 
 For more information see: [database documentation](/docs/development/database/)
@@ -24,4 +24,3 @@ For more information see: [database documentation](/docs/development/database/)
 
 The example data inserted into a local docker will create an admin user
 named "test" with password "test".
-
