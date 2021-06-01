@@ -27,7 +27,7 @@ public final class GameFileSelector {
    * pop-up.
    */
   public Optional<Path> selectGameFile(final Frame owner) {
-    final FileDialog fileDialog = new FileDialog(owner);
+    final FileDialog fileDialog = new FileDialog(owner, "Open Saved Game");
     fileDialog.setMode(FileDialog.LOAD);
     fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
     fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
