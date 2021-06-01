@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
  * and provides room for nicer APIs and additional functionality when asserted states fail. <br>
  * Example Usage:
  *
- * <pre><code>
+ * <pre>{@code
  * int methodCall() {
  *    int returnValue = doCalculation();
  *    Postconditions.assertState(returnValue > 0);
  *    return returnValue;
  * }
- * </code></pre>
+ * }</pre>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Postconditions {

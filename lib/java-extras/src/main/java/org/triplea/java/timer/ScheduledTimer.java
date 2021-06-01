@@ -9,24 +9,24 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Class for creating a class to be executed periodically. Sample usage:
  *
- * <pre><code>
- *   ScheduledTimer timer = Timers.newFixedRateTimer("thread-name")
- *      .period(20, TimeUnit.SECONDS)
- *      .delay(10, TimeUnit.SECONDS)
- *      .task(() -> executeTask());
- *   timer.start();
- *   timer.cancel();
- * </code></pre>
+ * <pre>{@code
+ * ScheduledTimer timer = Timers.newFixedRateTimer("thread-name")
+ *    .period(20, TimeUnit.SECONDS)
+ *    .delay(10, TimeUnit.SECONDS)
+ *    .task(() -> executeTask());
+ * timer.start();
+ * timer.cancel();
+ * }</pre>
  *
  * The scheduled timer can also be started at time of creation:
  *
- * <pre><code>
- *   ScheduledTimer timer = Timers.fixedRateTimer("thread-name")
- *      .period(20, TimeUnit.SECONDS)
- *      .task(() -> executeTask())
- *      .start();
- *   timer.cancel();
- * </code></pre>
+ * <pre>{@code
+ * ScheduledTimer timer = Timers.fixedRateTimer("thread-name")
+ *    .period(20, TimeUnit.SECONDS)
+ *    .task(() -> executeTask())
+ *    .start();
+ * timer.cancel();
+ * }</pre>
  */
 @Slf4j
 public class ScheduledTimer {

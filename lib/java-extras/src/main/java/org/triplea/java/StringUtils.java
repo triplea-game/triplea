@@ -55,15 +55,15 @@ public final class StringUtils {
   /**
    * Removes an ending suffix from a String. Example:
    *
-   * <pre>
+   * <pre>{@code
    * truncateEnding(input.xml, xml) -> input
-   * </pre>
+   * }</pre>
    *
    * <p>The original input will be returned if the ending is not found, eg:
    *
-   * <pre>
+   * <pre>{@code
    * truncateEnding(input, xml) -> input
-   * </pre>
+   * }</pre>
    *
    * @throws IllegalArgumentException Thrown if endingToTruncate parameter is empty.
    */
