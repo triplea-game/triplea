@@ -12,7 +12,7 @@ class MoveHelpMenu {
 
   Action buildMenu() {
     return SwingAction.of(
-        "Movement/Selection Help",
+        "Movement/Selection",
         e -> {
           // html formatted string
           final JEditorPane editorPane = new JEditorPane();
