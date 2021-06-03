@@ -6,6 +6,7 @@ import games.strategy.triplea.ui.UiContext;
 import java.awt.event.KeyEvent;
 import javax.swing.Action;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -43,6 +44,24 @@ public final class HelpMenu {
 
     menu.add(bugReportMenu).setMnemonic(KeyEvent.VK_B);
 
-    return menu;
+    menu.addSeparator();
+
+    final JMenuItem hostingLink = new JMenuItem("User Guide");
+    hostingLink.setMnemonic(KeyEvent.VK_H);
+    hostingLink.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE));
+    menu.add(hostingLink);
+
+    final JMenuItem warClub = new JMenuItem("TripleA Forum");
+    warClub.setMnemonic(KeyEvent.VK_W);
+    warClub.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
+    menu.add(warClub);
+
+    final JMenuItem donateLink = new JMenuItem("Donate");
+    donateLink.setMnemonic(KeyEvent.VK_O);
+    donateLink.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
+    menu.add(donateLink);return menu;
   }
 }
