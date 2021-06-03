@@ -62,6 +62,8 @@ public final class HelpMenu {
     donateLink.setMnemonic(KeyEvent.VK_O);
     donateLink.addActionListener(
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    menu.add(donateLink);return menu;
+    menu.add(donateLink);
+
+    return menu;
   }
 }
