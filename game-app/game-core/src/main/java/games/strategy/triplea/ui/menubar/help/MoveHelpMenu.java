@@ -9,11 +9,10 @@ import org.triplea.swing.SwingAction;
 
 @UtilityClass
 class MoveHelpMenu {
-  private static final String moveSelectionHelpTitle = "Movement/Selection Help (Keyboard & Mouse)";
 
   Action buildMenu() {
     return SwingAction.of(
-        moveSelectionHelpTitle,
+        "Movement/Selection Help",
         e -> {
           // html formatted string
           final JEditorPane editorPane = new JEditorPane();
@@ -23,7 +22,7 @@ class MoveHelpMenu {
               "<font size='+1'>Selecting Units</font><br>"
                   + "Clicking on a unit stack adds <u>1 unit</u> of the stack to the selection.<br>"
                   + "<b>CTRL-click on a unit stack</b> selects <u>All units in the stack</u>.<br>"
-                  + "<b>Shift-click on a territory/sea zone</b> selects"
+                  + "<b>Shift-click on a territory/sea zone</b> selects "
                   + "<u>All units in that zone</u>.<br>"
                   + "<b>Click on a zone</b> (not a unit) to <u>choose the units</u> "
                   + "to select from that zone.<br>"
@@ -57,7 +56,7 @@ class MoveHelpMenu {
                   + " scrolls the map in that direction.<br>"
                   + "<br>"
                   + "<font size='+1'> Changing the Map Zoom</font><br>"
-                  + "<b>Menu View>Zoom</b> to select the desired zoom level (maximum: 100%).<br>"
+                  + "<b>Menu View>Zoom</b> to select the desired zoom level (Maximum: 100%).<br>"
                   + "<b>Hold CTRL</b> with -/+ or Scroll the Mouse Wheel.<br>"
                   + "<br><font size='+1'> Other Tips</font><br>"
                   + "Press <b>F</b> to highlight <u>All units with movement left</u> "
@@ -67,7 +66,10 @@ class MoveHelpMenu {
           editorPane.setText(hints);
           final JScrollPane scroll = new JScrollPane(editorPane);
           JOptionPane.showMessageDialog(
-              null, scroll, moveSelectionHelpTitle, JOptionPane.PLAIN_MESSAGE);
+              null,
+              scroll,
+              "Movement/Selection Help (Keyboard & Mouse)",
+              JOptionPane.PLAIN_MESSAGE);
         });
   }
 }
