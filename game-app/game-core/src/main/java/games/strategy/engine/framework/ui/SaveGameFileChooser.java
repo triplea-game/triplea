@@ -23,7 +23,7 @@ public final class SaveGameFileChooser extends JFileChooser {
    *     cancelled the operation.
    */
   public static Path getSaveGameLocation(final Frame frame, final GameData gameData) {
-    final FileDialog fileDialog = new FileDialog(frame);
+    final FileDialog fileDialog = new FileDialog(frame, "Save Game as");
     fileDialog.setMode(FileDialog.SAVE);
     fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
     fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
