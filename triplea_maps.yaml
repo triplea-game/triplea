@@ -2290,3 +2290,11 @@
   description: |
     <br>
     <br>This is Global 40 Expansion. Adds House Rules from The Captain and Company.<br>
+- mapName: ww2v4_variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ww2v4_variants/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/ww2v4_variants/master/preview.png
+  description: |
+    <br>Maintenance-WW2v4: Adds maintenance costs to World World 2 v4
+    
