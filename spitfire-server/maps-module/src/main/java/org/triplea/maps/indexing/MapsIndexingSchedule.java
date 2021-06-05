@@ -19,10 +19,10 @@ public class MapsIndexingSchedule implements Managed {
 
   private final ScheduledTimer taskTimer;
 
-  MapsIndexingSchedule(final MapIndexingTask mapIndexingTask) {
+  MapsIndexingSchedule(final int indexingPeriodMinutes, final MapIndexingTask mapIndexingTask) {
     taskTimer =
         Timers.fixedRateTimer("thread-name")
-            .period(10, TimeUnit.MINUTES)
+            .period(indexingPeriodMinutes, TimeUnit.MINUTES)
             .delay(10, TimeUnit.SECONDS)
             .task(mapIndexingTask);
   }
@@ -40,6 +40,7 @@ public class MapsIndexingSchedule implements Managed {
             .build();
 
     return new MapsIndexingSchedule(
+        configuration.getMapIndexingPeriodMinutes(),
         MapIndexingTask.builder()
             .githubOrgName(configuration.getGithubMapsOrgName())
             .githubApiClient(githubApiClient)
@@ -51,6 +52,7 @@ public class MapsIndexingSchedule implements Managed {
                                 configuration.getGithubMapsOrgName(), repoName, "master")
                             .getLastCommitDate()))
             .mapIndexDao(jdbi.onDemand(MapIndexDao.class))
+            .indexingTaskDelaySeconds(configuration.getIndexingTaskDelaySeconds())
             .build());
   }
 

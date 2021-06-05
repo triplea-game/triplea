@@ -8,6 +8,8 @@ Environment=DATABASE_PASSWORD={{ lobby_db_password }}
 Environment=DB_URL={{ lobby_server_db_host }}:{{ lobby_server_db_port }}/{{ lobby_server_db_name }}
 Environment=ERROR_REPORT_GITHUB_REPO=triplea
 Environment=GITHUB_API_TOKEN={{ github_api_token }}
+Environment=MAP_INDEXING_PERIOD_MINUTES={{ map_indexing_period_minutes }}
+Environment=MAP_INDEXING_DELAY_SECONDS={{ map_indexing_task_delay_seconds }}
 WorkingDirectory={{ lobby_server_home_folder }}
 User={{ lobby_server_user }}
 Group={{ lobby_server_user }}

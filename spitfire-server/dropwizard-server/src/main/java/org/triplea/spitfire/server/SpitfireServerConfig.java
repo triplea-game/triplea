@@ -60,4 +60,12 @@ public class SpitfireServerConfig extends Configuration
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private boolean mapIndexingEnabled;
+
+  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Setter(onMethod_ = {@JsonProperty})
+  private int mapIndexingPeriodMinutes;
+
+  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Setter(onMethod_ = {@JsonProperty})
+  private int indexingTaskDelaySeconds;
 }

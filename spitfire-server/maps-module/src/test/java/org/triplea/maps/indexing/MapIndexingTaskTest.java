@@ -1,5 +1,6 @@
 package org.triplea.maps.indexing;
 
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,7 @@ class MapIndexingTaskTest {
             .mapIndexDao(mapIndexDao)
             .githubApiClient(githubApiClient)
             .mapIndexer(mapIndexer)
+            .indexingTaskDelaySeconds(0)
             .build();
   }
 
@@ -60,6 +62,6 @@ class MapIndexingTaskTest {
     mapIndexingTask.run();
 
     verify(mapIndexDao).removeMapsNotIn(List.of("https://uri-1", "https://uri-2"));
-    verify(mapIndexDao).upsert(MAP_INDEX_RESULT);
+    verify(mapIndexDao, timeout(300)).upsert(MAP_INDEX_RESULT);
   }
 }
