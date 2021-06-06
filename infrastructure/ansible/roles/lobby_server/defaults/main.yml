@@ -15,3 +15,14 @@ lobby_artifact_download: |
   "{{ github_releases_url }}/{{ lobby_version }}/{{ lobby_artifact }}"
 lobby_restart_on_new_deployment: true
 
+# How often to run map indexing. We need to be able to index all maps
+# before the next run starts to avoid overlapping runs. The smaller this
+# value the more responsive indexing will be to map updates.
+# 120 -> 2 hours in between runs -> (if indexing 360 / hour) -> 720 maps to be indexed per run
+map_indexing_period_minutes: 120
+
+# Indexing delay is how much of a backoff there is between indexing
+# each map. We need to keep this number to be under 1000 tasks per
+# hour to avoid rate limiting
+# 10 => 6 per minute => 360 per hour.
+map_indexing_task_delay_seconds: 10

@@ -6,4 +6,8 @@ public interface MapsModuleConfig {
   String getGithubApiToken();
 
   String getGithubWebServiceUrl();
+
+  int getMapIndexingPeriodMinutes();
+
+  int getIndexingTaskDelaySeconds();
 }
