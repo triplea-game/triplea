@@ -151,7 +151,7 @@ final class ViewMenu extends JMenu {
                   JOptionPane.showOptionDialog(
                       frame,
                       panel,
-                      "Choose Map Scale",
+                      "Choose Map Zoom",
                       JOptionPane.OK_CANCEL_OPTION,
                       JOptionPane.PLAIN_MESSAGE,
                       null,
