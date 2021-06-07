@@ -2,5 +2,6 @@
 
 set -eEu
 
+export VERSION=0
 ./run_ansible_production --limit botHosts -e update_maps=true
 
