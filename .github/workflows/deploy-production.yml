@@ -13,6 +13,6 @@ jobs:
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
           ./run_ansible_production
-        with:
+        env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
