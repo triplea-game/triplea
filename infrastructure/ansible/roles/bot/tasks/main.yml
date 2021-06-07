@@ -35,6 +35,7 @@
     - "{{ bot_maps_folder }}"
 
 - name: download maps on bot server
+  tags: update_maps
   command: "{{ admin_home }}/download-all-maps {{ update_maps }}"
 
 - name: deploy zip file if using latest
