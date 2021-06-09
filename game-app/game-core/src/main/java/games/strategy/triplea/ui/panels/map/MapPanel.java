@@ -19,9 +19,9 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.UnitIconProperties;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -835,8 +835,8 @@ public class MapPanel extends ImageScrollerLargeView {
     super.setScale(newScale);
     // setScale will check bounds, and normalize the scale correctly
     uiContext.setScale(scale);
-	  TripleAFrame frame = (TripleAFrame) SwingUtilities.getRoot(this);
-	  frame.displayMapZoom(scale);
+    final TripleAFrame frame = (TripleAFrame) SwingUtilities.getRoot(this);
+    frame.displayMapZoom(scale);
     repaint();
   }
 
@@ -846,7 +846,7 @@ public class MapPanel extends ImageScrollerLargeView {
     uiContext.setScale(scale);
     repaint();
   }
-  
+
   public void initSmallMap() {
     for (final Territory territory : gameData.getMap().getTerritories()) {
       smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
