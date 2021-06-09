@@ -96,7 +96,7 @@ subprojects {
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '3.0.1'
         jaxbImplVersion = '3.0.1'
-        jdbiVersion = '3.20.0'
+        jdbiVersion = '3.20.1'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.7.2'
         junitPlatformLauncherVersion = '1.7.2'
