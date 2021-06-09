@@ -492,7 +492,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     message.setFont(
         message.getFont().deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
     status.setPreferredSize(new Dimension(0, 0));
-    status.setText("");
 
     final JPanel bottomMessagePanel = new JPanel();
     bottomMessagePanel.setLayout(new GridBagLayout());
@@ -827,6 +826,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   void clearStatusMessage() {
     status.setText("");
     status.setIcon(null);
+  }
+
+  public void displayMapZoom(final Double zoom) {
+    status.setText(Math.round(zoom*100) + "%");
   }
 
   public void setStatusErrorMessage(final String msg) {
