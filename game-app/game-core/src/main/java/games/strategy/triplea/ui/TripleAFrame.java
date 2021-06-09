@@ -828,7 +828,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     status.setIcon(null);
   }
 
-  public void displayMapZoom(final Double zoom) {
+  public void displayMapZoom(final double zoom) {
     status.setText(Math.round(zoom*100) + "%");
   }
 
