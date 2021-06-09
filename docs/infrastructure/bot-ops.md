@@ -24,18 +24,6 @@ systemctl start bot@01.service
 
 ## Updating maps
 
-Done by hand from your local system.
-Requires access to vault secret
-
-```bash
-# setup vault_password file
-cd triplea/infrastructure
-echo "<vault secret>" > vault_password
-```
-
-Run update script:
-```bash
-cd triplea/infrastructure
-./run_ansible_update_bots
-```
+Done via github actions:
+  github.com > actions > 'run bot update maps' > run-action
 

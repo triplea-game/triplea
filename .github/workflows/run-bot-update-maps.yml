@@ -1,18 +1,18 @@
-name: Deploy Prerelease Server Provisioning
+name: Run - Update Bot Maps
 on:
   workflow_dispatch:
 jobs:
   deploy:
-    name: Deploy Prerelease Server Provisioning
+    name: Run Bot Update Maps
     runs-on: Ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Run Ansible to Provision Prerelease Servers
+      - name: Run Ansible to Deploy
         run: |
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          ./run_ansible_provision "ansible/inventory/prerelease"
+          ./run_ansible_update_bots
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
