@@ -1912,7 +1912,7 @@
 - mapName: Europe
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/europe/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/europe/master/preview.png
   description: |
     <br>
