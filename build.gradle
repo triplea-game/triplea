@@ -73,7 +73,7 @@ subprojects {
         checkstyleVersion = '8.23'
         commonsCliVersion = '1.4'
         commonsCodecVersion = '1.15'
-        commonsIoVersion = '2.9.0'
+        commonsIoVersion = '2.10.0'
         commonsMathVersion = '3.6.1'
         commonsTextVersion = '1.9'
         databaseRiderVersion = '1.23.1'
