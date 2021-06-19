@@ -15,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.github.MapRepoListing;
-import org.triplea.io.SimpleDownloader;
-import org.triplea.io.SimpleDownloader.DownloadException;
+import org.triplea.io.ContentDownloader;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -39,18 +38,7 @@ class MapIndexer implements Function<MapRepoListing, Optional<MapIndexResult>> {
   @Setter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   @Builder.Default
   private Function<URI, String> downloadFunction =
-      uri -> {
-        try {
-          return SimpleDownloader.downloadAsString(uri);
-        } catch (final DownloadException e) {
-          if (e.getStatusCode() == 404) {
-            log.info("Not found: {}", uri);
-          } else {
-            log.error("Error downloading: {}", e.getMessage(), e);
-          }
-          return null;
-        }
-      };
+      uri -> ContentDownloader.downloadAsString(uri).orElse(null);
 
   @Override
   public Optional<MapIndexResult> apply(final MapRepoListing mapRepoListing) {
