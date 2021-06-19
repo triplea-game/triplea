@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Optional;
 import javax.annotation.Nullable;
 import org.slf4j.LoggerFactory;
 
