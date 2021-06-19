@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Optional;
 import javax.annotation.Nullable;
 import org.slf4j.LoggerFactory;
 
@@ -69,10 +68,10 @@ public interface SelectionComponent<T> {
      * @param value The new setting value or {@code null} to clear the setting value.
      */
     default <T> void setValue(final GameSetting<T> gameSetting, final @Nullable T value) {
-      final Optional<String> validationErrorMessage = gameSetting.validateValue(value);
-      if (validationErrorMessage.isPresent()) {
+      // null values are always valid
+      if (value != null && gameSetting.validateValue(value).isPresent()) {
         LoggerFactory.getLogger(SelectionComponentFactory.class)
-            .warn("Setting not saved, invalid: {}", validationErrorMessage.get());
+            .warn("Setting not saved, invalid: {}", gameSetting.validateValue(value).get());
       } else {
         setValue(gameSetting, value, ValueSensitivity.INSENSITIVE);
       }
