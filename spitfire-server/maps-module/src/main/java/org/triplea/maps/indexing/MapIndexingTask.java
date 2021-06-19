@@ -1,110 +1,90 @@
 package org.triplea.maps.indexing;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.net.URI;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Deque;
+import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.http.client.github.MapRepoListing;
-import org.triplea.java.timer.Timers;
+import org.triplea.io.ContentDownloader;
+import org.triplea.yaml.YamlReader;
 
 /**
- * Task that runs a map indexing pass on all maps. The indexing will update database to reflect the
- * latest checked in across all map repositories.
+ * Given a map repo name and URI, reads pertinent indexing information.
  *
  * <ul>
- *   <li>Queries Github for list of map repos
- *   <li>Checks each map repo for a 'map.yml' and reads the map name and version
- *   <li>Deletes from database maps that have been removed
- *   <li>Upserts latest map info into database
+ *   <li>mapName: read from map.yml found in the repository
+ *   <li>lastCommitDate: github API is queried for the repo's master branch last commit date.
  * </ul>
  */
-@Builder
 @Slf4j
-class MapIndexingTask implements Runnable {
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
+class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingResult>> {
+  /* Function that uses github API to map a {repoName -> lastCommitDate} */
+  @Nonnull private final Function<String, Instant> lastCommitDateFetcher;
 
-  @Nonnull private final String githubOrgName;
-  @Nonnull private final MapIndexDao mapIndexDao;
-  @Nonnull private final GithubApiClient githubApiClient;
-  @Nonnull private final Function<MapRepoListing, Optional<MapIndexResult>> mapIndexer;
-  @Nonnull private final Integer indexingTaskDelaySeconds;
-
-  private int totalNumberMaps;
-  private long startTimeEpochMillis;
-  private int mapsDeleted;
-  private int mapsIndexed;
+  /* Function to download content as a string and log an info message if not found. */
+  @Setter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
+  @Builder.Default
+  private Function<URI, String> downloadFunction =
+      uri -> ContentDownloader.downloadAsString(uri).orElse(null);
 
   @Override
-  public void run() {
-    log.info("Map indexing started, github org: {}", githubOrgName);
-
-    startTimeEpochMillis = System.currentTimeMillis();
-
-    // get list of maps
-    final Collection<MapRepoListing> mapUris =
-        githubApiClient.listRepositories(githubOrgName).stream()
-            .sorted(Comparator.comparing(MapRepoListing::getName))
-            .collect(Collectors.toList());
-
-    totalNumberMaps = mapUris.size();
-
-    // remove deleted maps
-    mapsDeleted =
-        mapIndexDao.removeMapsNotIn(
-            mapUris.stream()
-                .map(MapRepoListing::getUri)
-                .map(URI::toString)
-                .collect(Collectors.toList()));
-
-    // start indexing - convert maps to index to a stack and then process that
-    // stack at a fixed rate to avoid rate limits.
-    final Deque<MapRepoListing> reposToIndex = new ArrayDeque<>(mapUris);
-    indexNextMapRepo(reposToIndex);
-  }
-
-  /**
-   * Recursive method to process a stack of map repo listings. On each iteration we wait a fixed
-   * delay, we then pop an element, process it, and then repeat until the stack is empty.
-   */
-  private void indexNextMapRepo(final Deque<MapRepoListing> reposToIndex) {
-    performIndexing(reposToIndex.pop());
-    if (reposToIndex.isEmpty()) {
-      notifyCompletion();
-    } else {
-      Timers.executeAfterDelay(
-          indexingTaskDelaySeconds, TimeUnit.SECONDS, () -> indexNextMapRepo(reposToIndex));
+  public Optional<MapIndexingResult> apply(final MapRepoListing mapRepoListing) {
+    final String mapName = readMapNameFromYaml(mapRepoListing);
+    if (mapName == null) {
+      return Optional.empty();
     }
+
+    final Instant lastCommitDate = lastCommitDateFetcher.apply(mapRepoListing.getName());
+    if (lastCommitDate == null) {
+      return Optional.empty();
+    }
+
+    return Optional.of(
+        MapIndexingResult.builder()
+            .mapName(mapName)
+            .mapRepoUri(mapRepoListing.getUri().toString())
+            .lastCommitDate(lastCommitDate)
+            .build());
   }
 
   /**
-   * Performs the actual indexing of a single map repo listing. Indexing is two parts, first we
-   * reach out to the repo to gather indexing informaton, second we upsert that info into database.
+   * Determines the expected location of a map.yml file, downloads it, reads and returns the
+   * 'map_name' attribute. Returns null if the file could not be found or otherwise could not be
+   * read.
    */
-  private void performIndexing(final MapRepoListing mapRepoListing) {
-    log.info("Indexing map: " + mapRepoListing.getName());
-    mapIndexer
-        .apply(mapRepoListing)
-        .ifPresent(
-            mapIndexResult -> {
-              mapIndexDao.upsert(mapIndexResult);
-              mapsIndexed++;
-            });
-  }
+  @VisibleForTesting
+  @Nullable
+  String readMapNameFromYaml(final MapRepoListing mapRepoListing) {
+    final URI mapYmlUri =
+        URI.create(mapRepoListing.getUri().toString() + "/blob/master/map.yml?raw=true");
 
-  private void notifyCompletion() {
-    log.info(
-        "Map indexing finished in {} ms, repos found: {}, repos with map.yml: {}, maps deleted: {}",
-        (System.currentTimeMillis() - startTimeEpochMillis),
-        totalNumberMaps,
-        mapsIndexed,
-        mapsDeleted);
+    final String mapYamlContents = downloadFunction.apply(mapYmlUri);
+    if (mapYamlContents == null) {
+      return null;
+    }
+
+    // parse and return the 'map_name' attribute from the YML file we just downloaded
+    try {
+      final Map<String, Object> mapYamlData = YamlReader.readMap(mapYamlContents);
+      return (String) mapYamlData.get("map_name");
+    } catch (final ClassCastException
+        | YamlReader.InvalidYamlFormatException
+        | NullPointerException e) {
+      log.error("Invalid map.yml data found at URI: {}, error: {}", mapYmlUri, e.getMessage());
+      return null;
+    }
   }
 }

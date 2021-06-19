@@ -19,10 +19,10 @@ import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.http.client.github.MapRepoListing;
 
 @ExtendWith(MockitoExtension.class)
-class MapIndexingTaskTest {
+class MapIndexingTaskRunnerTest {
 
-  static final MapIndexResult MAP_INDEX_RESULT =
-      MapIndexResult.builder()
+  static final MapIndexingResult MAP_INDEX_RESULT =
+      MapIndexingResult.builder()
           .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
           .mapName("map-name")
           .mapRepoUri("http://repo")
@@ -30,13 +30,13 @@ class MapIndexingTaskTest {
 
   @Mock MapIndexDao mapIndexDao;
   @Mock GithubApiClient githubApiClient;
-  @Mock Function<MapRepoListing, Optional<MapIndexResult>> mapIndexer;
-  MapIndexingTask mapIndexingTask;
+  @Mock Function<MapRepoListing, Optional<MapIndexingResult>> mapIndexer;
+  MapIndexingTaskRunner mapIndexingTaskRunner;
 
   @BeforeEach
   void setup() {
-    mapIndexingTask =
-        MapIndexingTask.builder()
+    mapIndexingTaskRunner =
+        MapIndexingTaskRunner.builder()
             .githubOrgName("ORG_NAME")
             .mapIndexDao(mapIndexDao)
             .githubApiClient(githubApiClient)
@@ -59,7 +59,7 @@ class MapIndexingTaskTest {
     when(mapIndexer.apply(repoListing1)).thenReturn(Optional.of(MAP_INDEX_RESULT));
     when(mapIndexer.apply(repoListing2)).thenReturn(Optional.empty());
 
-    mapIndexingTask.run();
+    mapIndexingTaskRunner.run();
 
     verify(mapIndexDao).removeMapsNotIn(List.of("https://uri-1", "https://uri-2"));
     verify(mapIndexDao, timeout(2000)).upsert(MAP_INDEX_RESULT);

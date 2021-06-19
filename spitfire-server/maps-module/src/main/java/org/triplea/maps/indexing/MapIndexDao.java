@@ -13,7 +13,7 @@ interface MapIndexDao {
           + "values(:mapName, :mapRepoUri, 1, :lastCommitDate)\n"
           + "on conflict(repo_url)\n"
           + "do update set map_name = :mapName, last_commit_date = :lastCommitDate")
-  void upsert(@BindBean MapIndexResult mapIndexResult);
+  void upsert(@BindBean MapIndexingResult mapIndexingResult);
 
   /** Deletes maps that are not in the parameter list from the map_index table. */
   @SqlUpdate("delete from map_index where repo_url not in(<mapUriList>)")

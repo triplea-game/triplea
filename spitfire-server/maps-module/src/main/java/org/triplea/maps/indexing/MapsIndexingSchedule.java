@@ -19,12 +19,13 @@ public class MapsIndexingSchedule implements Managed {
 
   private final ScheduledTimer taskTimer;
 
-  MapsIndexingSchedule(final int indexingPeriodMinutes, final MapIndexingTask mapIndexingTask) {
+  MapsIndexingSchedule(
+      final int indexingPeriodMinutes, final MapIndexingTaskRunner mapIndexingTaskRunner) {
     taskTimer =
         Timers.fixedRateTimer("thread-name")
             .period(indexingPeriodMinutes, TimeUnit.MINUTES)
             .delay(10, TimeUnit.SECONDS)
-            .task(mapIndexingTask);
+            .task(mapIndexingTaskRunner);
   }
 
   /**
@@ -41,11 +42,11 @@ public class MapsIndexingSchedule implements Managed {
 
     return new MapsIndexingSchedule(
         configuration.getMapIndexingPeriodMinutes(),
-        MapIndexingTask.builder()
+        MapIndexingTaskRunner.builder()
             .githubOrgName(configuration.getGithubMapsOrgName())
             .githubApiClient(githubApiClient)
             .mapIndexer(
-                new MapIndexer(
+                new MapIndexingTask(
                     repoName ->
                         githubApiClient
                             .fetchBranchInfo(
