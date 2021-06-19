@@ -11,7 +11,7 @@ import lombok.Value;
  */
 @Builder
 @Value
-public class MapIndexResult {
+public class MapIndexingResult {
   @Nonnull String mapName;
   @Nonnull String mapRepoUri;
   /** Date of the most recent commit to master. */

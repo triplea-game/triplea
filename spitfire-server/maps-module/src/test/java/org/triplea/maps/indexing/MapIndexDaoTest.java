@@ -23,7 +23,7 @@ class MapIndexDaoTest {
   @ExpectedDataSet(value = "expected/map_index_upsert_new.yml", orderBy = "map_name")
   void upsertCreatesNewRecords() {
     mapIndexDao.upsert(
-        MapIndexResult.builder()
+        MapIndexingResult.builder()
             .mapName("map-name-3")
             .mapRepoUri("http://map-repo-url-3")
             .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
@@ -34,7 +34,7 @@ class MapIndexDaoTest {
   @ExpectedDataSet(value = "expected/map_index_upsert_updated.yml", orderBy = "id")
   void upsertUpdatesRecords() {
     mapIndexDao.upsert(
-        MapIndexResult.builder()
+        MapIndexingResult.builder()
             .mapName("map-name-updated")
             .mapRepoUri("http://map-repo-url-2")
             .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
@@ -45,7 +45,7 @@ class MapIndexDaoTest {
   @ExpectedDataSet("map_index.yml")
   void upsertSameData() {
     mapIndexDao.upsert(
-        MapIndexResult.builder()
+        MapIndexingResult.builder()
             .mapName("map-name-2")
             .mapRepoUri("http://map-repo-url-2")
             .lastCommitDate(LocalDateTime.of(2016, 1, 1, 23, 59, 20).toInstant(ZoneOffset.UTC))
