@@ -119,7 +119,7 @@ final class ViewMenu extends JMenu {
               final JSpinner spinner = new JSpinner(model);
               final JPanel panel = new JPanel();
               panel.setLayout(new BorderLayout());
-              panel.add(new JLabel("Choose Map Scale Percentage"), BorderLayout.NORTH);
+              panel.add(new JLabel("Choose Map Zoom (%)"), BorderLayout.NORTH);
               panel.add(spinner, BorderLayout.CENTER);
               final JPanel buttons = new JPanel();
               final JButton fitWidth = new JButton("Fit Width");
