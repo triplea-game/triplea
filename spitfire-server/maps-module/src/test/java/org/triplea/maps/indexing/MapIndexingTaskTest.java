@@ -62,6 +62,6 @@ class MapIndexingTaskTest {
     mapIndexingTask.run();
 
     verify(mapIndexDao).removeMapsNotIn(List.of("https://uri-1", "https://uri-2"));
-    verify(mapIndexDao, timeout(300)).upsert(MAP_INDEX_RESULT);
+    verify(mapIndexDao, timeout(2000)).upsert(MAP_INDEX_RESULT);
   }
 }
