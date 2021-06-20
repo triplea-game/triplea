@@ -1,11 +1,15 @@
 package org.triplea.maps.indexing;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-interface MapIndexDao {
+public interface MapIndexDao {
 
   /** Upserts a map indexing result into the map_index table. */
   @SqlUpdate(
@@ -21,4 +25,7 @@ interface MapIndexDao {
   /** Deletes maps that are not in the parameter list from the map_index table. */
   @SqlUpdate("delete from map_index where repo_url not in(<mapUriList>)")
   int removeMapsNotIn(@BindList("mapUriList") List<String> mapUriList);
+
+  @SqlQuery("select last_commit_date from map_index where repo_url = :repoUrl")
+  Optional<Instant> getLastCommitDate(@Bind("repoUrl") String repoUrl);
 }

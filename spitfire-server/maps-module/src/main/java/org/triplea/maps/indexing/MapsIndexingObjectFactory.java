@@ -2,11 +2,16 @@ package org.triplea.maps.indexing;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.function.Function;
+import java.util.function.BiPredicate;
 import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.github.GithubApiClient;
+import org.triplea.http.client.github.MapRepoListing;
 import org.triplea.maps.MapsModuleConfig;
+import org.triplea.maps.indexing.tasks.CommitDateFetcher;
+import org.triplea.maps.indexing.tasks.MapDescriptionReader;
+import org.triplea.maps.indexing.tasks.MapNameReader;
+import org.triplea.maps.indexing.tasks.SkipMapIndexingCheck;
 
 @UtilityClass
 public class MapsIndexingObjectFactory {
@@ -16,33 +21,49 @@ public class MapsIndexingObjectFactory {
    */
   public static MapsIndexingSchedule buildMapsIndexingSchedule(
       final MapsModuleConfig configuration, final Jdbi jdbi) {
-    final var githubApiClient =
-        GithubApiClient.builder()
-            .uri(URI.create(configuration.getGithubWebServiceUrl()))
-            .authToken(configuration.getGithubApiToken())
-            .build();
-
-    return new MapsIndexingSchedule(
-        configuration.getMapIndexingPeriodMinutes(),
-        MapIndexingTaskRunner.builder()
-            .githubOrgName(configuration.getGithubMapsOrgName())
-            .githubApiClient(githubApiClient)
-            .mapIndexer(
-                new MapIndexingTask(
-                    lastCommitDateFetcher(githubApiClient, configuration.getGithubMapsOrgName())))
-            .mapIndexDao(jdbi.onDemand(MapIndexDao.class))
-            .indexingTaskDelaySeconds(configuration.getIndexingTaskDelaySeconds())
-            .build());
+    return MapsIndexingSchedule.builder()
+        .indexingPeriodMinutes(configuration.getMapIndexingPeriodMinutes())
+        .mapIndexingTaskRunner(mapIndexingTaskRunner(configuration, jdbi))
+        .build();
   }
 
-  /**
-   * Returns function that can fetch the last commit date for a given repository specified by name.
-   */
-  static Function<String, Instant> lastCommitDateFetcher(
-      final GithubApiClient githubApiClient, final String githubOrgName) {
-    return githubRepoName ->
-        githubApiClient
-            .fetchBranchInfo(githubOrgName, githubRepoName, "master")
-            .getLastCommitDate();
+  MapIndexingTaskRunner mapIndexingTaskRunner(
+      final MapsModuleConfig configuration, final Jdbi jdbi) {
+    final var githubApiClient =
+        githubApiClient(configuration.getGithubWebServiceUrl(), configuration.getGithubApiToken());
+
+    return MapIndexingTaskRunner.builder()
+        .githubOrgName(configuration.getGithubMapsOrgName())
+        .githubApiClient(githubApiClient)
+        .mapIndexer(
+            mapIndexingTask(
+                configuration.getGithubMapsOrgName(), githubApiClient, skipMapIndexingCheck(jdbi)))
+        .mapIndexDao(jdbi.onDemand(MapIndexDao.class))
+        .indexingTaskDelaySeconds(configuration.getIndexingTaskDelaySeconds())
+        .build();
+  }
+
+  GithubApiClient githubApiClient(final String webserviceUrl, final String apiToken) {
+    return GithubApiClient.builder().uri(URI.create(webserviceUrl)).authToken(apiToken).build();
+  }
+
+  MapIndexingTask mapIndexingTask(
+      final String githubMapsOrgName,
+      final GithubApiClient githubApiClient,
+      final BiPredicate<MapRepoListing, Instant> skipMapIndexingCheck) {
+    return MapIndexingTask.builder()
+        .lastCommitDateFetcher(
+            CommitDateFetcher.builder()
+                .githubApiClient(githubApiClient)
+                .githubOrgName(githubMapsOrgName)
+                .build())
+        .skipMapIndexingCheck(skipMapIndexingCheck)
+        .mapNameReader(MapNameReader.builder().build())
+        .mapDescriptionReader(new MapDescriptionReader())
+        .build();
+  }
+
+  BiPredicate<MapRepoListing, Instant> skipMapIndexingCheck(final Jdbi jdbi) {
+    return new SkipMapIndexingCheck(jdbi.onDemand(MapIndexDao.class));
   }
 }

@@ -2,6 +2,7 @@ package org.triplea.maps.indexing;
 
 import io.dropwizard.lifecycle.Managed;
 import java.util.concurrent.TimeUnit;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
@@ -15,6 +16,7 @@ public class MapsIndexingSchedule implements Managed {
 
   private final ScheduledTimer taskTimer;
 
+  @Builder
   MapsIndexingSchedule(
       final int indexingPeriodMinutes, final MapIndexingTaskRunner mapIndexingTaskRunner) {
     taskTimer =
