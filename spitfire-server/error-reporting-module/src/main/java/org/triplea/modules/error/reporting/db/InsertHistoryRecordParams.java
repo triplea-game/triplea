@@ -1,4 +1,4 @@
-package org.triplea.db.dao.error.reporting;
+package org.triplea.modules.error.reporting.db;
 
 import lombok.Builder;
 import lombok.Value;

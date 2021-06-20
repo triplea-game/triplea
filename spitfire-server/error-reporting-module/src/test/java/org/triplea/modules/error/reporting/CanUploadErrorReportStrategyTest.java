@@ -13,9 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.error.reporting.ErrorReportingDao;
 import org.triplea.http.client.error.report.CanUploadErrorReportResponse;
 import org.triplea.http.client.error.report.CanUploadRequest;
+import org.triplea.modules.error.reporting.db.ErrorReportingDao;
 
 @ExtendWith(MockitoExtension.class)
 class CanUploadErrorReportStrategyTest {
