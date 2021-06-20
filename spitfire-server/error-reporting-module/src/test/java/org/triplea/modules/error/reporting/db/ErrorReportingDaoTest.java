@@ -1,4 +1,4 @@
-package org.triplea.db.dao.error.reporting;
+package org.triplea.modules.error.reporting.db;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,10 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.triplea.db.LobbyModuleDatabaseTestSupport;
 
 @RequiredArgsConstructor
-@ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@ExtendWith(ErrorReportingModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
 final class ErrorReportingDaoTest {
   private final ErrorReportingDao errorReportingDao;
