@@ -18,13 +18,21 @@ public class MapIndexingResult {
   /** URI to the repo, typically something like: "https://github.com/triplea-maps/test-map/" */
   @Nonnull String mapRepoUri;
 
+  /**
+   * URI to download the map:
+   * "https://github.com/triplea-maps/test-map/archive/refs/heads/master.zip"
+   */
+  @Nonnull String downloadUri;
+
+  /** The size of the map download in bytes. */
+  @Nonnull Long mapDownloadSizeInBytes;
+
   /** Date of the most recent commit to master. */
   @Nonnull Instant lastCommitDate;
 
   /**
-   * Data that is parsed from description.html. If the file is missing or if contents are two long
-   * then a message should be inserted stated that the map author needs to fix the description.html
-   * file.
+   * Description data parsed from description.html. If description file is missing or too long, then
+   * this field will continue an error message with details on how to fix the missing description.
    */
-  String description;
+  @Nonnull String description;
 }

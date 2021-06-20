@@ -1,8 +1,8 @@
 package org.triplea.maps.indexing;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -14,6 +14,9 @@ class MapIndexingTaskTest {
 
   private static final Instant instant = Instant.now();
 
+  private static final MapRepoListing mapRepoListing =
+      MapRepoListing.builder().htmlUrl("http://url").name("repo name").build();
+
   @Test
   @DisplayName("On successful indexing, data is aggregated correctly")
   void verifyMapIndexingHappyCase() {
@@ -23,17 +26,22 @@ class MapIndexingTaskTest {
             .skipMapIndexingCheck((mapRepoListing, instant1) -> false)
             .mapNameReader(mapRepoListing -> Optional.of("map name"))
             .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.of(10L))
             .build();
 
     final var mapIndexingResult =
         mapIndexingTask
-            .apply(MapRepoListing.builder().htmlUrl("http://url").name("repo name").build())
+            .apply(mapRepoListing)
             .orElseThrow(() -> new IllegalStateException("Unexpected empty result, check logs.."));
 
     assertThat(mapIndexingResult.getMapName(), is("map name"));
     assertThat(mapIndexingResult.getLastCommitDate(), is(instant));
     assertThat(mapIndexingResult.getDescription(), is("description"));
-    assertThat(mapIndexingResult.getMapRepoUri(), is("http://url"));
+    assertThat(mapIndexingResult.getMapRepoUri(), is(mapRepoListing.getUri().toString()));
+    assertThat(
+        mapIndexingResult.getDownloadUri(),
+        is(mapRepoListing.getUri().toString() + "/archive/refs/heads/master.zip"));
+    assertThat(mapIndexingResult.getMapDownloadSizeInBytes(), is(10L));
   }
 
   @Test
@@ -45,18 +53,16 @@ class MapIndexingTaskTest {
             .skipMapIndexingCheck((mapRepoListing, instant1) -> false)
             .mapNameReader(mapRepoListing -> Optional.of("map name"))
             .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.of(10L))
             .build();
 
-    final var mapIndexingResult =
-        mapIndexingTask
-            .apply(MapRepoListing.builder().htmlUrl("http://url").name("repo name").build())
-            .orElse(null);
+    final var mapIndexingResult = mapIndexingTask.apply(mapRepoListing);
 
     assertThat(
         "No value indicates we skipped indexing, because last commit date fetcher"
             + "return an empty we expect indexing to have been skipped.",
         mapIndexingResult,
-        is(nullValue()));
+        isEmpty());
   }
 
   @Test
@@ -68,17 +74,35 @@ class MapIndexingTaskTest {
             .skipMapIndexingCheck((mapRepoListing, instant1) -> true)
             .mapNameReader(mapRepoListing -> Optional.of("map name"))
             .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.of(10L))
             .build();
 
-    final var mapIndexingResult =
-        mapIndexingTask
-            .apply(MapRepoListing.builder().htmlUrl("http://url").name("repo name").build())
-            .orElse(null);
+    final var mapIndexingResult = mapIndexingTask.apply(mapRepoListing);
 
     assertThat(
         "No value indicates we skipped indexing, because skip check returned true"
             + " we expect indexing to have been skipped.",
         mapIndexingResult,
-        is(nullValue()));
+        isEmpty());
+  }
+
+  @Test
+  @DisplayName("No result if we fail to download")
+  void verifyNoResultIfDownloadFails() {
+    final var mapIndexingTask =
+        MapIndexingTask.builder()
+            .lastCommitDateFetcher(repoListing -> Optional.of(instant))
+            .skipMapIndexingCheck((mapRepoListing, instant1) -> false)
+            .mapNameReader(mapRepoListing -> Optional.of("map name"))
+            .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.empty())
+            .build();
+
+    final var mapIndexingResult = mapIndexingTask.apply(mapRepoListing);
+
+    assertThat(
+        "Download size fetcher returned empty, failure to download, indexing skipped",
+        mapIndexingResult,
+        isEmpty());
   }
 }

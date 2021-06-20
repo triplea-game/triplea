@@ -43,5 +43,11 @@ public class MapIndexingIntegrationTest {
         "Description is downloaded from description.html",
         result.getDescription(),
         containsString("<br><b><em>by test</em></b>"));
+
+    assertThat(
+        result.getDownloadUri(),
+        is("https://github.com/triplea-maps/test-map/archive/refs/heads/master.zip"));
+
+    assertThat(result.getMapDownloadSizeInBytes() > 0, is(true));
   }
 }

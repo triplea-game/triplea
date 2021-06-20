@@ -17,6 +17,9 @@ create table map_index
     last_commit_date timestamptz  not null check (last_commit_date < now()),
     repo_url         varchar(256) not null unique check (repo_url like 'http%'),
     category_id      integer      not null references map_category (id),
+    description         varchar(3000) not null,
+    download_size_bytes integer       not null,
+    download_url        varchar(256)  not null unique check (download_url like 'http%'),
     date_created     timestamptz  not null default now(),
     date_updated     timestamptz  not null default now()
 );

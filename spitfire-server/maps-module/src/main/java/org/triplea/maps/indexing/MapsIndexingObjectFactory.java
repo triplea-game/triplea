@@ -9,6 +9,7 @@ import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.http.client.github.MapRepoListing;
 import org.triplea.maps.MapsModuleConfig;
 import org.triplea.maps.indexing.tasks.CommitDateFetcher;
+import org.triplea.maps.indexing.tasks.DownloadSizeFetcher;
 import org.triplea.maps.indexing.tasks.MapDescriptionReader;
 import org.triplea.maps.indexing.tasks.MapNameReader;
 import org.triplea.maps.indexing.tasks.SkipMapIndexingCheck;
@@ -60,6 +61,7 @@ public class MapsIndexingObjectFactory {
         .skipMapIndexingCheck(skipMapIndexingCheck)
         .mapNameReader(MapNameReader.builder().build())
         .mapDescriptionReader(new MapDescriptionReader())
+        .downloadSizeFetcher(new DownloadSizeFetcher())
         .build();
   }
 

@@ -31,6 +31,9 @@ class MapIndexDaoTest {
             .mapName("map-name-3")
             .mapRepoUri("http-map-repo-url-3")
             .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
+            .mapDownloadSizeInBytes(3080L)
+            .downloadUri("http-map-repo-3-download")
+            .description("description")
             .build());
   }
 
@@ -42,9 +45,13 @@ class MapIndexDaoTest {
             .mapName("map-name-updated")
             .mapRepoUri("http-map-repo-url-2")
             .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
+            .mapDownloadSizeInBytes(6789L)
+            .downloadUri("http-map-repo-3-download-updated-url")
+            .description("description-updated")
             .build());
   }
 
+  /** The data we are inserting matches what is present in map_index.yml */
   @Test
   @ExpectedDataSet("map_index.yml")
   void upsertSameData() {
@@ -52,8 +59,10 @@ class MapIndexDaoTest {
         MapIndexingResult.builder()
             .mapName("map-name-2")
             .mapRepoUri("http-map-repo-url-2")
-            .description("description-repo-2")
             .lastCommitDate(LocalDateTime.of(2016, 1, 1, 23, 59, 20).toInstant(ZoneOffset.UTC))
+            .mapDownloadSizeInBytes(1000L)
+            .downloadUri("http-map-repo-url-2/archives/master.zip")
+            .description("description-repo-2")
             .build());
   }
 

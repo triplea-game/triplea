@@ -204,4 +204,29 @@ public final class FileUtils {
       log.error("Failed to write file: {}, {}", fileToWrite.toAbsolutePath(), e.getMessage(), e);
     }
   }
+
+  /**
+   * Utility to delete file specified by the given path. This method handles any needed logging if
+   * the delete fails.
+   */
+  public static void delete(final Path pathToDelete) {
+    try {
+      Files.delete(pathToDelete);
+    } catch (final IOException e) {
+      log.error("Failed to delete file: {}, {}", pathToDelete.toAbsolutePath(), e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Creates a temp file, logs and returns an empty optional if there is a problem creating the temp
+   * file.
+   */
+  public static Optional<Path> createTempFile() {
+    try {
+      return Optional.of(Files.createTempFile("triplea-temp-file", ".temp"));
+    } catch (final IOException e) {
+      log.error("Failed to create temp file: {}", e.getMessage(), e);
+      return Optional.empty();
+    }
+  }
 }
