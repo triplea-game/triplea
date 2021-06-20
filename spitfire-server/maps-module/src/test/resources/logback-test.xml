@@ -10,4 +10,5 @@
     </root>
 
     <logger name="org.triplea.maps.indexing.MapIndexingTask" level="OFF"/>
+    <logger name="org.triplea.maps.indexing.tasks.DownloadSizeFetcher" level="OFF"/>
 </configuration>

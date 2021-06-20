@@ -26,6 +26,9 @@ class MapIndexingTaskRunnerTest {
           .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
           .mapName("map-name")
           .mapRepoUri("http://repo")
+          .downloadUri("http://repo-download")
+          .mapDownloadSizeInBytes(555L)
+          .description("description")
           .build();
 
   @Mock MapIndexDao mapIndexDao;

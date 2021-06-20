@@ -13,12 +13,18 @@ public interface MapIndexDao {
 
   /** Upserts a map indexing result into the map_index table. */
   @SqlUpdate(
-      "insert into map_index(map_name, repo_url, category_id, description, last_commit_date)\n"
-          + "values(:mapName, :mapRepoUri, 1, :description, :lastCommitDate)\n"
+      "insert into map_index("
+          + "    map_name, repo_url, category_id, description, "
+          + "    download_url, download_size_bytes, last_commit_date)\n"
+          + "values("
+          + "     :mapName, :mapRepoUri, 1, :description, "
+          + "     :downloadUri, :mapDownloadSizeInBytes, :lastCommitDate)\n"
           + "on conflict(repo_url)\n"
           + "do update set\n"
           + "   map_name = :mapName,"
           + "   description = :description,"
+          + "   download_url = :downloadUri,"
+          + "   download_size_bytes = :mapDownloadSizeInBytes,"
           + "   last_commit_date = :lastCommitDate")
   void upsert(@BindBean MapIndexingResult mapIndexingResult);
 
