@@ -29,7 +29,9 @@ public class ForgotPasswordController extends HttpController {
   public static ForgotPasswordController build(
       final LobbyModuleConfig lobbyModuleConfig, final Jdbi jdbi) {
     return ForgotPasswordController.builder()
-        .forgotPasswordModule(ForgotPasswordModule.build(lobbyModuleConfig.isProd(), jdbi))
+        .forgotPasswordModule(
+            ForgotPasswordModule.build(
+                lobbyModuleConfig.isGameHostConnectivityCheckEnabled(), jdbi))
         .build();
   }
 

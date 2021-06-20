@@ -39,7 +39,6 @@ class GithubApiClientTest {
 
     final Collection<MapRepoListing> repos =
         GithubApiClient.builder()
-            .authToken("test-token")
             .uri(URI.create(server.baseUrl()))
             .build()
             .listRepositories("example-org");
@@ -72,7 +71,6 @@ class GithubApiClientTest {
       final int expectedPageNumber, final WireMockServer server, final String response) {
     server.stubFor(
         get("/orgs/example-org/repos?per_page=100&page=" + expectedPageNumber)
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo("token test-token"))
             .willReturn(aResponse().withStatus(200).withBody(response)));
   }
 

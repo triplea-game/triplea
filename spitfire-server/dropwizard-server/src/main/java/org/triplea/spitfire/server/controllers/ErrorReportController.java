@@ -1,6 +1,5 @@
 package org.triplea.spitfire.server.controllers;
 
-import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -32,18 +31,15 @@ public class ErrorReportController extends HttpController {
   /** Factory method. */
   public static ErrorReportController build(
       final LobbyModuleConfig configuration, final Jdbi jdbi) {
-    final boolean isTest = configuration.getGithubApiToken().equals("test");
+
+    final boolean errorReportStubbingMode = !configuration.isErrorReportToGithubEnabled();
 
     final GithubApiClient githubApiClient =
         GithubApiClient.builder()
             .uri(URI.create(configuration.getGithubWebServiceUrl()))
             .authToken(configuration.getGithubApiToken())
-            .isTest(isTest)
+            .stubbingModeEnabled(errorReportStubbingMode)
             .build();
-
-    if (isTest) {
-      Preconditions.checkState(!configuration.isProd());
-    }
 
     return ErrorReportController.builder()
         .errorReportIngestion(
