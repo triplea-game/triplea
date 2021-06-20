@@ -27,7 +27,7 @@ public class SpitfireServerConfig extends Configuration
    */
   @Getter(onMethod_ = {@JsonProperty, @Override})
   @Setter(onMethod_ = {@JsonProperty})
-  private boolean prod;
+  private boolean gameHostConnectivityCheckEnabled;
 
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
@@ -68,4 +68,8 @@ public class SpitfireServerConfig extends Configuration
   @Getter(onMethod_ = {@JsonProperty, @Override})
   @Setter(onMethod_ = {@JsonProperty})
   private int indexingTaskDelaySeconds;
+
+  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Setter(onMethod_ = {@JsonProperty})
+  private boolean errorReportToGithubEnabled;
 }

@@ -37,7 +37,6 @@ public class MapsIndexingSchedule implements Managed {
         GithubApiClient.builder()
             .uri(URI.create(configuration.getGithubWebServiceUrl()))
             .authToken(configuration.getGithubApiToken())
-            .isTest(false)
             .build();
 
     return new MapsIndexingSchedule(

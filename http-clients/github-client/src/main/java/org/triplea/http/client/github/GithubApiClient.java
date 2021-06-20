@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.Builder;
 import org.triplea.http.client.HttpClient;
 
@@ -18,20 +19,25 @@ public class GithubApiClient {
   static final String STUBBED_RETURN_VALUE =
       "API-token==test--returned-a-stubbed-github-issue-link";
 
-  private final String authToken;
+  /**
+   * 'authToken' is optionally needed. If null, the client will still work but will have more
+   * restrictive API rate limits.
+   */
+  @Nullable private final String authToken;
+
   private final GithubApiFeignClient githubApiFeignClient;
   /**
-   * For local or integration testing, we may want to have a fake that does not actually call
-   * github. This method returns true if we are doing a fake call to github.
+   * Flag useful for testing, when set to true no API calls will be made and a hardcoded stubbed
+   * value of {@code STUBBED_RETURN_VALUE} will always be returned.
    */
-  private final boolean test;
+  private final boolean stubbingModeEnabled;
 
   @Builder
   public GithubApiClient(
-      @Nonnull final URI uri, @Nonnull final String authToken, final boolean isTest) {
+      @Nonnull final URI uri, @Nonnull final String authToken, final boolean stubbingModeEnabled) {
     githubApiFeignClient = new HttpClient<>(GithubApiFeignClient.class, uri).get();
     this.authToken = authToken;
-    this.test = isTest;
+    this.stubbingModeEnabled = stubbingModeEnabled;
   }
 
   /**
@@ -45,7 +51,7 @@ public class GithubApiClient {
       final String githubOrg,
       final String githubRepo,
       final CreateIssueRequest createIssueRequest) {
-    if (test) {
+    if (stubbingModeEnabled) {
       return new CreateIssueResponse(STUBBED_RETURN_VALUE);
     }
 
