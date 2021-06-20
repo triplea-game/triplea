@@ -121,7 +121,7 @@ public final class ContentDownloader implements CloseableDownloader {
         return Optional.empty();
       } else {
         log.warn(
-            "Check internent connection. Error downloading: {}, status: {}, error: {}",
+            "Check internet connection. Error downloading: {}, status: {}, error: {}",
             uri,
             e.getStatusCode(),
             e.getMessage());
