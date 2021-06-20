@@ -48,6 +48,7 @@ class MapIndexDaoTest {
         MapIndexingResult.builder()
             .mapName("map-name-2")
             .mapRepoUri("http-map-repo-url-2")
+            .description("description-repo-2")
             .lastCommitDate(LocalDateTime.of(2016, 1, 1, 23, 59, 20).toInstant(ZoneOffset.UTC))
             .build());
   }

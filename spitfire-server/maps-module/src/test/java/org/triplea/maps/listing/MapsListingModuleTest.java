@@ -40,12 +40,14 @@ class MapsListingModuleTest {
                     .name("map-name-1")
                     .lastCommitDate(commitDate1)
                     .categoryName("category-1")
+                    .description("description-1")
                     .build(),
                 MapListingRecord.builder()
                     .url("http://map-url-2")
                     .name("map-name-2")
                     .lastCommitDate(commitDate2)
                     .categoryName("category-2")
+                    .description("description-1")
                     .build()));
 
     final List<MapDownloadListing> results = mapsListingModule.get();

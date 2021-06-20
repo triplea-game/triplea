@@ -3,6 +3,7 @@ package org.triplea.maps.indexing;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.StringContains.containsString;
 
 import java.net.URI;
 import org.junit.jupiter.api.Test;
@@ -42,5 +43,9 @@ public class MapIndexingIntegrationTest {
         "Last commit date is parsed from an API call",
         result.getLastCommitDate(),
         is(notNullValue()));
+    assertThat(
+        "Description is downloaded from description.html",
+        result.getDescription(),
+        containsString("<br><b><em>by test</em></b>"));
   }
 }

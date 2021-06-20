@@ -13,5 +13,5 @@ public class MapDownloadListing {
   @Nonnull private final String mapName;
   @Nonnull private final Long lastCommitDateEpochMilli;
   @Nonnull private final String mapCategory;
-  private final String description;
+  @Nonnull private final String description;
 }
