@@ -57,7 +57,6 @@ class MapIndexingTaskRunnerTest {
     when(githubApiClient.listRepositories("ORG_NAME"))
         .thenReturn(List.of(repoListing1, repoListing2));
     when(mapIndexer.apply(repoListing1)).thenReturn(Optional.of(MAP_INDEX_RESULT));
-    when(mapIndexer.apply(repoListing2)).thenReturn(Optional.empty());
 
     mapIndexingTaskRunner.run();
 
