@@ -8,6 +8,7 @@ import org.triplea.http.client.maps.listing.MapDownloadListing;
 public class MapListingRecord {
   private final String name;
   private final String url;
+  private final String description;
   private final Instant lastCommitDate;
   private final String categoryName;
 
@@ -15,12 +16,14 @@ public class MapListingRecord {
   public MapListingRecord(
       @ColumnName("map_name") final String name,
       @ColumnName("repo_url") final String url,
+      @ColumnName("description") final String description,
       @ColumnName("last_commit_date") final Instant lastCommitDate,
       @ColumnName("category_name") final String categoryName) {
     this.url = url;
     this.name = name;
     this.lastCommitDate = lastCommitDate;
     this.categoryName = categoryName;
+    this.description = description;
   }
 
   MapDownloadListing toMapDownloadListing() {
@@ -29,6 +32,7 @@ public class MapListingRecord {
         .mapName(name)
         .lastCommitDateEpochMilli(lastCommitDate.toEpochMilli())
         .mapCategory(categoryName)
+        .description(description)
         .build();
   }
 }

@@ -96,6 +96,7 @@ public final class DownloadFileDescription {
     return DownloadFileDescription.builder()
         .url(mapDownloadListing.getUrl())
         .mapName(mapDownloadListing.getMapName())
+        .description(mapDownloadListing.getDescription())
         // TODO: PROJECT#17 replace with latest commit date
         .version(1)
         .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))

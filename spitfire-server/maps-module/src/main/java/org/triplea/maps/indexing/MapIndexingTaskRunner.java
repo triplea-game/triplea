@@ -86,7 +86,7 @@ class MapIndexingTaskRunner implements Runnable {
 
   /**
    * Performs the actual indexing of a single map repo listing. Indexing is two parts, first we
-   * reach out to the repo to gather indexing informaton, second we upsert that info into database.
+   * reach out to the repo to gather indexing information, second we upsert that info into database.
    */
   private void performIndexing(final MapRepoListing mapRepoListing) {
     log.info("Indexing map: " + mapRepoListing.getName());

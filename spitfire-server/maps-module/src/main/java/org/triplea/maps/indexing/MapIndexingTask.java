@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +30,8 @@ import org.triplea.yaml.YamlReader;
 @AllArgsConstructor
 @Builder
 class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingResult>> {
+  private static final int DESCRIPTION_COLUMN_DATABASE_MAX_LENGTH = 3000;
+
   /* Function that uses github API to map a {repoName -> lastCommitDate} */
   @Nonnull private final Function<String, Instant> lastCommitDateFetcher;
 
@@ -42,7 +43,7 @@ class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingRe
 
   @Override
   public Optional<MapIndexingResult> apply(final MapRepoListing mapRepoListing) {
-    final String mapName = readMapNameFromYaml(mapRepoListing);
+    final String mapName = readMapNameFromYaml(mapRepoListing).orElse(null);
     if (mapName == null) {
       return Optional.empty();
     }
@@ -54,12 +55,37 @@ class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingRe
       return Optional.empty();
     }
 
+    String description = downloadDescription(mapRepoListing).orElse(null);
+    if (description == null) {
+      description =
+          String.format(
+              "No description available for: %s"
+                  + "Contact the map author and request they add a 'description.html' file",
+              mapRepoListing.getUri());
+    } else if (description.length() > DESCRIPTION_COLUMN_DATABASE_MAX_LENGTH) {
+      description =
+          String.format(
+              "The description for this map is too long at %s characters. Max length is %s."
+                  + "Contact the map author for: %s"
+                  + ", and request they reduce the length of the file 'description.html'",
+              description.length(),
+              DESCRIPTION_COLUMN_DATABASE_MAX_LENGTH,
+              mapRepoListing.getUri());
+    }
+
     return Optional.of(
         MapIndexingResult.builder()
             .mapName(mapName)
             .mapRepoUri(mapRepoListing.getUri().toString())
             .lastCommitDate(lastCommitDate)
+            .description(description)
             .build());
+  }
+
+  private Optional<String> downloadDescription(final MapRepoListing mapRepoListing) {
+    final String descriptionUri =
+        mapRepoListing.getUri().toString() + "/blob/master/description.html?raw=true";
+    return ContentDownloader.downloadAsString(URI.create(descriptionUri));
   }
 
   /**
@@ -67,27 +93,25 @@ class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingRe
    * 'map_name' attribute. Returns null if the file could not be found or otherwise could not be
    * read.
    */
-  @VisibleForTesting
-  @Nullable
-  String readMapNameFromYaml(final MapRepoListing mapRepoListing) {
+  private Optional<String> readMapNameFromYaml(final MapRepoListing mapRepoListing) {
     final URI mapYmlUri =
         URI.create(mapRepoListing.getUri().toString() + "/blob/master/map.yml?raw=true");
 
     final String mapYamlContents = downloadFunction.apply(mapYmlUri);
     if (mapYamlContents == null) {
       log.warn("Could not index, missing map.yml. Expected URI: {}", mapYmlUri);
-      return null;
+      return Optional.empty();
     }
 
     // parse and return the 'map_name' attribute from the YML file we just downloaded
     try {
       final Map<String, Object> mapYamlData = YamlReader.readMap(mapYamlContents);
-      return (String) mapYamlData.get("map_name");
+      return Optional.of((String) mapYamlData.get("map_name"));
     } catch (final ClassCastException
         | YamlReader.InvalidYamlFormatException
         | NullPointerException e) {
       log.error("Invalid map.yml data found at URI: {}, error: {}", mapYmlUri, e.getMessage());
-      return null;
+      return Optional.empty();
     }
   }
 }
