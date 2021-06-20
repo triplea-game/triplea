@@ -49,6 +49,8 @@ class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingRe
 
     final Instant lastCommitDate = lastCommitDateFetcher.apply(mapRepoListing.getName());
     if (lastCommitDate == null) {
+      log.warn(
+          "Could not index map: {}, unable to fetch last commit date", mapRepoListing.getUri());
       return Optional.empty();
     }
 
@@ -73,6 +75,7 @@ class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingRe
 
     final String mapYamlContents = downloadFunction.apply(mapYmlUri);
     if (mapYamlContents == null) {
+      log.warn("Could not index, missing map.yml. Expected URI: {}", mapYmlUri);
       return null;
     }
 
