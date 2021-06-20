@@ -11,7 +11,7 @@ import lombok.Getter;
 public class MapDownloadListing {
   @Nonnull private final String url;
   @Nonnull private final String mapName;
-  @Nonnull private final long lastCommitDateEpochMilli;
+  @Nonnull private final Long lastCommitDateEpochMilli;
   @Nonnull private final String mapCategory;
   @Nonnull private final String description;
 }
