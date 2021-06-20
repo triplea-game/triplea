@@ -5,9 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.StringContains.containsString;
 
-import java.net.URI;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.http.client.github.MapRepoListing;
 
 /**
@@ -20,12 +18,10 @@ public class MapIndexingIntegrationTest {
   @Test
   void runIndexingOnTestMap() {
     final MapIndexingTask mapIndexingTaskRunner =
-        MapIndexingTask.builder()
-            .lastCommitDateFetcher(
-                MapsIndexingObjectFactory.lastCommitDateFetcher(
-                    GithubApiClient.builder().uri(URI.create("https://api.github.com")).build(),
-                    "triplea-maps"))
-            .build();
+        MapsIndexingObjectFactory.mapIndexingTask(
+            "triplea-maps",
+            MapsIndexingObjectFactory.githubApiClient("https://api.github.com", null),
+            (repo, repoLastCommitDate) -> false);
 
     final MapIndexingResult result =
         mapIndexingTaskRunner
