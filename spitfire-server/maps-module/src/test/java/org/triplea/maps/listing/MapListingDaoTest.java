@@ -31,7 +31,7 @@ class MapListingDaoTest {
     final var mapDownloadListing = results.get(0).toMapDownloadListing();
     assertThat(mapDownloadListing.getMapCategory(), is("category_name"));
     assertThat(mapDownloadListing.getMapName(), is("map-name"));
-    assertThat(mapDownloadListing.getUrl(), is("http://map-repo-url"));
+    assertThat(mapDownloadListing.getUrl(), is("http-map-repo-url"));
     assertThat(
         mapDownloadListing.getLastCommitDateEpochMilli(),
         is(LocalDateTime.of(2000, 12, 1, 23, 59, 20).toInstant(ZoneOffset.UTC).toEpochMilli()));
