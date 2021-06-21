@@ -10,6 +10,10 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * TODO: BattlePhase - This needs to be expanded so that it actually implements the unit abilities
+ * for a fight.
+ */
 @AllArgsConstructor
 public class BattlePhaseStep implements BattleStep {
 
@@ -21,7 +25,9 @@ public class BattlePhaseStep implements BattleStep {
   private BattleState.Side side;
 
   @Override
-  public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
+  public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    // this is just a placeholder for now but it will be expanded in a later PR
+  }
 
   @Override
   public List<String> getNames() {
