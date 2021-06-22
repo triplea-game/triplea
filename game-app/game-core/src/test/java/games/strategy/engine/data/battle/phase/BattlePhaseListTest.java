@@ -272,12 +272,12 @@ class BattlePhaseListTest {
           "There should only be one unit ability in this step.",
           step.getUnitAbilities(),
           hasSize(1));
-      final BattlePhaseList.UnitAbilityAndUnits unitAbilityAndUnits =
+      final BattlePhaseList.UnitAbilityAndUnitTypes unitAbilityAndUnitTypes =
           step.getUnitAbilities().iterator().next();
       assertThat(
           "And the only one unit ability should be the ability that was the result"
               + " of the conversion",
-          unitAbilityAndUnits.getUnitAbility(),
+          unitAbilityAndUnitTypes.getUnitAbility(),
           is(convertedAbility));
     }
 
@@ -377,6 +377,67 @@ class BattlePhaseListTest {
       final Collection<BattleStep> steps = battlePhaseList.getBattleSteps(battleState);
       assertThat(
           "No steps should exist as the infantry's ability was converted to empty",
+          steps,
+          is(empty()));
+    }
+
+    @Test
+    void multipleRemoveUnitsAbilityThroughConversion() {
+      final UnitType infantryUnitType = new UnitType("infantry", gameData);
+      final UnitType paratrooperUnitType = new UnitType("paratrooper", gameData);
+      final UnitType artilleryUnitType = new UnitType("artillery", gameData);
+
+      final BattleState battleState =
+          givenBattleStateBuilder()
+              .attacker(attacker)
+              .attackingUnits(
+                  List.of(
+                      infantryUnitType.createTemp(1, attacker).get(0),
+                      paratrooperUnitType.createTemp(1, attacker).get(0),
+                      artilleryUnitType.createTemp(1, attacker).get(0)))
+              .build();
+
+      final CombatUnitAbility infantryAbility =
+          CombatUnitAbility.builder()
+              .name("1")
+              .attachedUnitTypes(List.of(infantryUnitType))
+              .build();
+
+      final CombatUnitAbility paratrooperAbility =
+          CombatUnitAbility.builder()
+              .name("1")
+              .attachedUnitTypes(List.of(paratrooperUnitType))
+              .build();
+
+      battlePhaseList.addAbilityOrMergeAttached(
+          attacker,
+          ConvertUnitAbility.builder()
+              .name("convertInfantry")
+              .attachedUnitTypes(List.of(artilleryUnitType))
+              .teams(List.of(ConvertUnitAbility.Team.FRIENDLY))
+              .from(infantryAbility)
+              .build());
+
+      battlePhaseList.addAbilityOrMergeAttached(
+          attacker,
+          ConvertUnitAbility.builder()
+              .name("convertParatrooper")
+              .attachedUnitTypes(List.of(artilleryUnitType))
+              .teams(List.of(ConvertUnitAbility.Team.FRIENDLY))
+              .from(paratrooperAbility)
+              .build());
+
+      battlePhaseList
+          .getPhase(BattlePhaseList.DEFAULT_GENERAL_PHASE)
+          .ifPresent(
+              battlePhase -> {
+                battlePhase.addAbility(attacker, infantryAbility);
+                battlePhase.addAbility(attacker, paratrooperAbility);
+              });
+      final Collection<BattleStep> steps = battlePhaseList.getBattleSteps(battleState);
+      assertThat(
+          "No steps should exist as both the infantry and paratrooper's ability were converted"
+              + " to empty",
           steps,
           is(empty()));
     }

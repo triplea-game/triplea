@@ -89,36 +89,28 @@ public class BattlePhaseList {
 
     final Collection<ConvertUnitAbility> convertAbilities =
         units.stream()
-            .map(unit -> getConvertUnitAbilities(unit, ConvertUnitAbility.Team.FRIENDLY))
+            .map(unit -> filterConvertUnitAbilities(unit, ConvertUnitAbility.Team.FRIENDLY))
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
     convertAbilities.addAll(
         oppositeUnits.stream()
-            .map(unit -> getConvertUnitAbilities(unit, ConvertUnitAbility.Team.FOE))
+            .map(unit -> filterConvertUnitAbilities(unit, ConvertUnitAbility.Team.FOE))
             .flatMap(Collection::stream)
             .collect(Collectors.toList()));
-
-    final Map<CombatUnitAbility, CombatUnitAbility> fromToAbilities = new HashMap<>();
-    final Map<CombatUnitAbility, CombatUnitAbility> toFromAbilities = new HashMap<>();
-    for (final ConvertUnitAbility convertAbility : convertAbilities) {
-      fromToAbilities.put(convertAbility.getFrom(), convertAbility.getTo());
-      toFromAbilities.put(convertAbility.getTo(), convertAbility.getFrom());
-    }
 
     return phases.stream()
         .sorted(Comparator.comparingInt(BattlePhase::getOrder))
         .map(
             phase -> {
-              final Collection<CombatUnitAbility> abilities = getPhaseAbilities(units, phase);
-              final Collection<UnitAbilityAndUnits> unitAbilityAndUnits =
-                  getActiveAbilitiesAndUnits(fromToAbilities, toFromAbilities, abilities);
-              if (unitAbilityAndUnits.isEmpty()) {
-                return null;
-              } else {
-                return new BattlePhaseStep(
-                    phase.getName(), phase.getOrder(), unitAbilityAndUnits, side);
-              }
+              final Collection<CombatUnitAbility> phaseAbilities =
+                  findPhaseAbilitiesForUnits(units, phase);
+              final Collection<UnitAbilityAndUnitTypes> unitAbilityAndUnits =
+                  determineUnitAbilitiesAndUnitTypes(phaseAbilities, convertAbilities);
+              return unitAbilityAndUnits.isEmpty()
+                  ? null
+                  : new BattlePhaseStep(
+                      phase.getName(), phase.getOrder(), unitAbilityAndUnits, side);
             })
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
@@ -130,18 +122,20 @@ public class BattlePhaseList {
     GamePlayer owner;
   }
 
-  @Value
-  public static class UnitAbilityAndUnits {
-    CombatUnitAbility unitAbility;
-    Collection<UnitType> unitTypes;
-  }
-
-  private Collection<ConvertUnitAbility> getConvertUnitAbilities(
+  private Collection<ConvertUnitAbility> filterConvertUnitAbilities(
       final UnitTypeAndOwner unitTypeAndOwner, final ConvertUnitAbility.Team team) {
 
     return filterConvertAbilitiesForUnits(unitTypeAndOwner.getOwner(), unitTypeAndOwner.getType())
         .filter(convertUnitAbility -> convertUnitAbility.getTeams().contains(team))
         .collect(Collectors.toList());
+  }
+
+  private Collection<CombatUnitAbility> findPhaseAbilitiesForUnits(
+      final Collection<UnitTypeAndOwner> units, final BattlePhase phase) {
+    return units.stream()
+        .map(unitTypeAndOwner -> phase.getAbilities(unitTypeAndOwner.getOwner()))
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   private Stream<ConvertUnitAbility> filterConvertAbilitiesForUnits(
@@ -150,35 +144,57 @@ public class BattlePhaseList {
         .filter(ability -> ability.getAttachedUnitTypes().contains(unitType));
   }
 
-  private Collection<CombatUnitAbility> getPhaseAbilities(
-      final Collection<UnitTypeAndOwner> units, final BattlePhase phase) {
-    return units.stream()
-        .map(unitTypeAndOwner -> phase.getAbilities(unitTypeAndOwner.getOwner()))
-        .flatMap(Collection::stream)
-        .collect(Collectors.toSet());
-  }
-
-  private Collection<UnitAbilityAndUnits> getActiveAbilitiesAndUnits(
-      final Map<CombatUnitAbility, CombatUnitAbility> fromToAbilities,
-      final Map<CombatUnitAbility, CombatUnitAbility> toFromAbilities,
-      final Collection<CombatUnitAbility> abilities) {
+  /**
+   * Find the active unit abilities and their active unit types
+   *
+   * <p>A unit ability is active if it has any unit types. A unit ability might have different unit
+   * types if there is a conversion ability that changes the unit types attached.
+   *
+   * @param abilities All the available unit abilities
+   * @param convertAbilities Conversion abilities
+   * @return Active unit abilities and their active unit types
+   */
+  private Collection<UnitAbilityAndUnitTypes> determineUnitAbilitiesAndUnitTypes(
+      final Collection<CombatUnitAbility> abilities,
+      final Collection<ConvertUnitAbility> convertAbilities) {
     return abilities.stream()
+        // this ability will be converted to another ability so don't add it
+        .filter(
+            ability ->
+                convertAbilities.stream().noneMatch(convert -> convert.getFrom().equals(ability)))
         .map(
             ability -> {
-              // this ability will be converted to another ability so don't add it
-              if (fromToAbilities.containsKey(ability)) {
-                return null;
-              }
+              // find the unit types that are either attached to this ability or the old ability
+              // that this one is being converted from
+              final CombatUnitAbility convertedOrOriginalAbility =
+                  convertAbilities.stream()
+                      .filter(convert -> convert.getTo().equals(ability))
+                      .map(ConvertUnitAbility::getFrom)
+                      .findFirst()
+                      .orElse(ability);
               final Collection<UnitType> unitTypes =
-                  toFromAbilities.getOrDefault(ability, ability).getAttachedUnitTypes();
+                  convertedOrOriginalAbility.getAttachedUnitTypes();
+
               // this ability has no active units in the battle so don't add it
               if (unitTypes.isEmpty()) {
                 return null;
               }
-              return new UnitAbilityAndUnits(
-                  ability, toFromAbilities.getOrDefault(ability, ability).getAttachedUnitTypes());
+              return new UnitAbilityAndUnitTypes(ability, unitTypes);
             })
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
+  }
+
+  /**
+   * Tracks the actual unit types that are attached to a unit ability during a battle phase
+   *
+   * <p>A ConvertUnitAbility can change a unit ability to another one. The unit types from the old
+   * one need to be attached to the new one. But CombatUnitAbility should not be modified, so this
+   * holds the runtime attachment.
+   */
+  @Value
+  public static class UnitAbilityAndUnitTypes {
+    CombatUnitAbility unitAbility;
+    Collection<UnitType> unitTypes;
   }
 }

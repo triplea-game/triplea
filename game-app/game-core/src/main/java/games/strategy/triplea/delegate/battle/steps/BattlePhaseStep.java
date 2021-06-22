@@ -21,7 +21,10 @@ public class BattlePhaseStep implements BattleStep {
 
   @VisibleForTesting @Getter private String battlePhaseName;
   private int battlePhaseOrder;
-  @VisibleForTesting @Getter private Collection<BattlePhaseList.UnitAbilityAndUnits> unitAbilities;
+
+  @VisibleForTesting @Getter
+  private Collection<BattlePhaseList.UnitAbilityAndUnitTypes> unitAbilities;
+
   private BattleState.Side side;
 
   @Override
