@@ -1,4 +1,4 @@
-package org.triplea.db.dao.error.reporting;
+package org.triplea.modules.error.reporting.db;
 
 import java.time.Instant;
 import java.util.Optional;

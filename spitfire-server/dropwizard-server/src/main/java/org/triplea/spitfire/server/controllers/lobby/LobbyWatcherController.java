@@ -44,7 +44,7 @@ public class LobbyWatcherController extends HttpController {
   @VisibleForTesting
   public static final String TEST_ONLY_GAME_POSTING_PATH = "/test-only/lobby/post-game";
 
-  @Nonnull private final Boolean isProd;
+  @Nonnull private final Boolean gameHostConnectivityCheckEnabled;
   @Nonnull private final GameListing gameListing;
   @Nonnull private final ChatUploadModule chatUploadModule;
   @Nonnull private final GamePostingModule gamePostingModule;
@@ -52,7 +52,7 @@ public class LobbyWatcherController extends HttpController {
   public static LobbyWatcherController build(
       final LobbyModuleConfig lobbyModuleConfig, final Jdbi jdbi, final GameListing gameListing) {
     return LobbyWatcherController.builder()
-        .isProd(lobbyModuleConfig.isProd())
+        .gameHostConnectivityCheckEnabled(lobbyModuleConfig.isGameHostConnectivityCheckEnabled())
         .gameListing(gameListing)
         .chatUploadModule(ChatUploadModule.build(jdbi, gameListing))
         .gamePostingModule(GamePostingModule.build(gameListing))
@@ -75,7 +75,7 @@ public class LobbyWatcherController extends HttpController {
   }
 
   /**
-   * A endpont available for non-prod-only that allows for integration tests to post games without
+   * A endpoint available for non-prod-only that allows for integration tests to post games without
    * actually hosting a game themselves (bypasses the reverse connectivity check).
    */
   @POST
@@ -86,7 +86,7 @@ public class LobbyWatcherController extends HttpController {
     Preconditions.checkArgument(gamePostingRequest != null);
     Preconditions.checkArgument(gamePostingRequest.getLobbyGame() != null);
 
-    return isProd
+    return gameHostConnectivityCheckEnabled
         ? Response.status(HttpStatus.NOT_FOUND_404).build()
         : Response.ok()
             .entity(

@@ -4,9 +4,9 @@ import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.error.reporting.ErrorReportingDao;
 import org.triplea.http.client.error.report.CanUploadErrorReportResponse;
 import org.triplea.http.client.error.report.CanUploadRequest;
+import org.triplea.modules.error.reporting.db.ErrorReportingDao;
 
 /**
  * Answers the question if a user can upload an error report. If the given title and version already

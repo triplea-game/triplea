@@ -1,5 +1,4 @@
 map_name: example map
-version: 0
 games:
   - game_name: Great Game
     file_name: game-file.xml

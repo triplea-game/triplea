@@ -8,6 +8,7 @@ public interface MapListingDao {
       "select"
           + "    m.map_name,"
           + "    m.repo_url,"
+          + "    m.description,"
           + "    m.last_commit_date,"
           + "    c.name as category_name"
           + "  from map_index m"

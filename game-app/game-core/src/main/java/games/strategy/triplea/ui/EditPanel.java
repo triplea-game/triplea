@@ -511,8 +511,7 @@ class EditPanel extends ActionPanel {
             }
 
             final IEditDelegate delegate = EditPanel.this.frame.getEditDelegate();
-            final String result =
-                delegate.changeResource(player, resource.getName(), newTotal);
+            final String result = delegate.changeResource(player, resource.getName(), newTotal);
             if (result != null) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),

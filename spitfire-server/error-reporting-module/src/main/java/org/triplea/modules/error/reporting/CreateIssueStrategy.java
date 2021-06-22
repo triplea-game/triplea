@@ -6,13 +6,13 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.error.reporting.ErrorReportingDao;
-import org.triplea.db.dao.error.reporting.InsertHistoryRecordParams;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.CreateIssueRequest;
 import org.triplea.http.client.github.CreateIssueResponse;
 import org.triplea.http.client.github.GithubApiClient;
+import org.triplea.modules.error.reporting.db.ErrorReportingDao;
+import org.triplea.modules.error.reporting.db.InsertHistoryRecordParams;
 
 /** Performs the steps for uploading an error report from the point of view of the server. */
 @Builder

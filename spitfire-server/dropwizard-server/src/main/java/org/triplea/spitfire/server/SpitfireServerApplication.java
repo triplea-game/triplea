@@ -16,7 +16,7 @@ import org.triplea.dropwizard.common.ServerConfiguration;
 import org.triplea.dropwizard.common.ServerConfiguration.WebsocketConfig;
 import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.maps.MapsModuleRowMappers;
-import org.triplea.maps.indexing.MapsIndexingSchedule;
+import org.triplea.maps.indexing.MapsIndexingObjectFactory;
 import org.triplea.modules.chat.ChatMessagingService;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
@@ -99,7 +99,9 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
     }
 
     if (configuration.isMapIndexingEnabled()) {
-      environment.lifecycle().manage(MapsIndexingSchedule.build(configuration, jdbi));
+      environment
+          .lifecycle()
+          .manage(MapsIndexingObjectFactory.buildMapsIndexingSchedule(configuration, jdbi));
       log.info(
           "Map indexing is enabled to run every:"
               + " {} minutes with one map indexing request every {} seconds",

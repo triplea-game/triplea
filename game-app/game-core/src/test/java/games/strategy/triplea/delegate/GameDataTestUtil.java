@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -22,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import junit.framework.AssertionFailedError;
 import lombok.experimental.UtilityClass;
 import org.junit.jupiter.api.Assertions;
 import org.triplea.java.collections.IntegerMap;
@@ -376,9 +376,7 @@ public final class GameDataTestUtil {
   }
 
   static void load(final Collection<Unit> units, final Route route) {
-    if (units.isEmpty()) {
-      throw new AssertionFailedError("No units");
-    }
+    Preconditions.checkArgument(!units.isEmpty());
     final MoveDelegate moveDelegate = moveDelegate(route.getStart().getData());
     final Collection<Unit> transports =
         route
@@ -388,33 +386,29 @@ public final class GameDataTestUtil {
     final Map<Unit, Unit> unitsToTransports =
         TransportUtils.mapTransports(route, units, transports);
     if (unitsToTransports.size() != units.size()) {
-      throw new AssertionFailedError("Not all units mapped to transports");
+      throw new IllegalStateException("Not all units mapped to transports");
     }
     final String error =
         moveDelegate.performMove(new MoveDescription(units, route, unitsToTransports));
     if (error != null) {
-      throw new AssertionFailedError("Illegal move:" + error);
+      throw new IllegalStateException("Illegal move:" + error);
     }
   }
 
   public static void move(final Collection<Unit> units, final Route route) {
-    if (units.isEmpty()) {
-      throw new AssertionFailedError("No units");
-    }
+    Preconditions.checkArgument(!units.isEmpty());
     final String error =
         moveDelegate(route.getStart().getData()).performMove(new MoveDescription(units, route));
     if (error != null) {
-      throw new AssertionFailedError("Illegal move:" + error);
+      throw new IllegalStateException("Illegal move:" + error);
     }
   }
 
   static void assertMoveError(final Collection<Unit> units, final Route route) {
-    if (units.isEmpty()) {
-      throw new AssertionFailedError("No units");
-    }
+    Preconditions.checkArgument(!units.isEmpty());
     final String error = moveDelegate(route.getStart().getData()).move(units, route);
     if (error == null) {
-      throw new AssertionFailedError("Should not be Legal move");
+      throw new IllegalStateException("Should not be Legal move");
     }
   }
 
@@ -424,14 +418,14 @@ public final class GameDataTestUtil {
     for (final IExecutable e : steps) {
       if (type.isInstance(e)) {
         if (indexOfType != -1) {
-          throw new AssertionFailedError("More than one instance:" + steps);
+          throw new IllegalStateException("More than one instance:" + steps);
         }
         indexOfType = index;
       }
       index++;
     }
     if (indexOfType == -1) {
-      throw new AssertionFailedError("No instance:" + steps);
+      throw new IllegalStateException("No instance:" + steps);
     }
     return indexOfType;
   }

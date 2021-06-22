@@ -8,7 +8,7 @@ lobby_server_db_host: "127.0.0.1"
 lobby_server_db_port: "5432"
 lobby_server_db_name: lobby_db
 lobby_server_db_user: lobby_user
-github_api_token: test
+github_api_token: ""
 lobby_artifact: triplea-dropwizard-server-{{ lobby_version }}.zip
 lobby_jar_file: triplea-dropwizard-server-{{ lobby_version }}.jar
 lobby_artifact_download: |

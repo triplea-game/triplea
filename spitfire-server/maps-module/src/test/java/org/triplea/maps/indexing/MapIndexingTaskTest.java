@@ -1,67 +1,108 @@
 package org.triplea.maps.indexing;
 
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
+import java.time.Instant;
 import java.util.Optional;
-import java.util.function.Function;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.http.client.github.MapRepoListing;
 
-@ExtendWith(MockitoExtension.class)
 class MapIndexingTaskTest {
 
-  static final MapIndexResult MAP_INDEX_RESULT =
-      MapIndexResult.builder()
-          .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
-          .mapName("map-name")
-          .mapRepoUri("http://repo")
-          .build();
+  private static final Instant instant = Instant.now();
 
-  @Mock MapIndexDao mapIndexDao;
-  @Mock GithubApiClient githubApiClient;
-  @Mock Function<MapRepoListing, Optional<MapIndexResult>> mapIndexer;
-  MapIndexingTask mapIndexingTask;
+  private static final MapRepoListing mapRepoListing =
+      MapRepoListing.builder().htmlUrl("http://url").name("repo name").build();
 
-  @BeforeEach
-  void setup() {
-    mapIndexingTask =
+  @Test
+  @DisplayName("On successful indexing, data is aggregated correctly")
+  void verifyMapIndexingHappyCase() {
+    final var mapIndexingTask =
         MapIndexingTask.builder()
-            .githubOrgName("ORG_NAME")
-            .mapIndexDao(mapIndexDao)
-            .githubApiClient(githubApiClient)
-            .mapIndexer(mapIndexer)
-            .indexingTaskDelaySeconds(0)
+            .lastCommitDateFetcher(repoListing -> Optional.of(instant))
+            .skipMapIndexingCheck((mapRepoListing, instant1) -> false)
+            .mapNameReader(mapRepoListing -> Optional.of("map name"))
+            .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.of(10L))
             .build();
+
+    final var mapIndexingResult =
+        mapIndexingTask
+            .apply(mapRepoListing)
+            .orElseThrow(() -> new IllegalStateException("Unexpected empty result, check logs.."));
+
+    assertThat(mapIndexingResult.getMapName(), is("map name"));
+    assertThat(mapIndexingResult.getLastCommitDate(), is(instant));
+    assertThat(mapIndexingResult.getDescription(), is("description"));
+    assertThat(mapIndexingResult.getMapRepoUri(), is(mapRepoListing.getUri().toString()));
+    assertThat(
+        mapIndexingResult.getDownloadUri(),
+        is(mapRepoListing.getUri().toString() + "/archive/refs/heads/master.zip"));
+    assertThat(mapIndexingResult.getMapDownloadSizeInBytes(), is(10L));
   }
 
   @Test
-  @DisplayName(
-      "Verify we fetch repos, run indexer, and then process results on non-empty indexed repos")
-  void runMapIndexing() {
-    final MapRepoListing repoListing1 =
-        MapRepoListing.builder().name("uri-1").htmlUrl("https://uri-1").build();
-    final MapRepoListing repoListing2 =
-        MapRepoListing.builder().name("uri-2").htmlUrl("https://uri-2").build();
+  @DisplayName("No result if there is a failure getting last commit date from repo")
+  void verifyNoResultIfLastCommitDateCannotBeObtained() {
+    final var mapIndexingTask =
+        MapIndexingTask.builder()
+            .lastCommitDateFetcher(repoListing -> Optional.empty())
+            .skipMapIndexingCheck((mapRepoListing, instant1) -> false)
+            .mapNameReader(mapRepoListing -> Optional.of("map name"))
+            .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.of(10L))
+            .build();
 
-    when(githubApiClient.listRepositories("ORG_NAME"))
-        .thenReturn(List.of(repoListing1, repoListing2));
-    when(mapIndexer.apply(repoListing1)).thenReturn(Optional.of(MAP_INDEX_RESULT));
-    when(mapIndexer.apply(repoListing2)).thenReturn(Optional.empty());
+    final var mapIndexingResult = mapIndexingTask.apply(mapRepoListing);
 
-    mapIndexingTask.run();
+    assertThat(
+        "No value indicates we skipped indexing, because last commit date fetcher"
+            + "return an empty we expect indexing to have been skipped.",
+        mapIndexingResult,
+        isEmpty());
+  }
 
-    verify(mapIndexDao).removeMapsNotIn(List.of("https://uri-1", "https://uri-2"));
-    verify(mapIndexDao, timeout(300)).upsert(MAP_INDEX_RESULT);
+  @Test
+  @DisplayName("No result if there skip check returns true")
+  void verifyNoResultIfIndexingIsSkipped() {
+    final var mapIndexingTask =
+        MapIndexingTask.builder()
+            .lastCommitDateFetcher(repoListing -> Optional.of(instant))
+            .skipMapIndexingCheck((mapRepoListing, instant1) -> true)
+            .mapNameReader(mapRepoListing -> Optional.of("map name"))
+            .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.of(10L))
+            .build();
+
+    final var mapIndexingResult = mapIndexingTask.apply(mapRepoListing);
+
+    assertThat(
+        "No value indicates we skipped indexing, because skip check returned true"
+            + " we expect indexing to have been skipped.",
+        mapIndexingResult,
+        isEmpty());
+  }
+
+  @Test
+  @DisplayName("No result if we fail to download")
+  void verifyNoResultIfDownloadFails() {
+    final var mapIndexingTask =
+        MapIndexingTask.builder()
+            .lastCommitDateFetcher(repoListing -> Optional.of(instant))
+            .skipMapIndexingCheck((mapRepoListing, instant1) -> false)
+            .mapNameReader(mapRepoListing -> Optional.of("map name"))
+            .mapDescriptionReader(mapRepoListing -> "description")
+            .downloadSizeFetcher(mapRepoListing -> Optional.empty())
+            .build();
+
+    final var mapIndexingResult = mapIndexingTask.apply(mapRepoListing);
+
+    assertThat(
+        "Download size fetcher returned empty, failure to download, indexing skipped",
+        mapIndexingResult,
+        isEmpty());
   }
 }
