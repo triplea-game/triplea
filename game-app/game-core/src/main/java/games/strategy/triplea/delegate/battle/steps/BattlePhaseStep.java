@@ -11,8 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * TODO: BattlePhase - This needs to be expanded so that it actually implements the unit abilities
- * for a fight.
+ * BattlePhase - This needs to be expanded so that it actually implements the unit abilities for a
+ * fight.
  */
 @AllArgsConstructor
 public class BattlePhaseStep implements BattleStep {
