@@ -59,10 +59,13 @@ public class DownloadMapsWindow extends JFrame {
 
   private final MapDownloadProgressPanel progressPanel;
 
+  private final DownloadMapsWindowUtils downloadMapsWindowUtils;
+
   private DownloadMapsWindow(
       final Collection<String> pendingDownloadMapNames,
       final List<DownloadFileDescription> allDownloads) {
     super("Download Maps");
+    downloadMapsWindowUtils = new DownloadMapsWindowUtils();
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -322,7 +325,7 @@ public class DownloadMapsWindow extends JFrame {
               newDescriptionPanelUpdatingSelectionListener(
                   mapSelections.get(0), descriptionPane, unsortedMaps, mapSizeLabel));
 
-      descriptionPane.setText(unsortedMaps.get(0).toHtmlString());
+      descriptionPane.setText(downloadMapsWindowUtils.toHtmlString(unsortedMaps.get(0)));
       descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -343,7 +346,7 @@ public class DownloadMapsWindow extends JFrame {
     return main;
   }
 
-  private static void newDescriptionPanelUpdatingSelectionListener(
+  private void newDescriptionPanelUpdatingSelectionListener(
       final String mapName,
       final JEditorPane descriptionPanel,
       final List<DownloadFileDescription> maps,
@@ -355,14 +358,14 @@ public class DownloadMapsWindow extends JFrame {
         .findAny()
         .ifPresent(
             map -> {
-              final String text = map.toHtmlString();
+              final String text = downloadMapsWindowUtils.toHtmlString(map);
               descriptionPanel.setText(text);
               descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
               updateMapUrlAndSizeLabel(map, mapSizeLabelToUpdate);
             });
   }
 
-  private static void updateMapUrlAndSizeLabel(
+  private void updateMapUrlAndSizeLabel(
       final DownloadFileDescription map, final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
     ThreadRunner.runInNewThread(
@@ -372,7 +375,7 @@ public class DownloadMapsWindow extends JFrame {
         });
   }
 
-  private static String newLabelText(final DownloadFileDescription map) {
+  private String newLabelText(final DownloadFileDescription map) {
     final String doubleSpace = "&nbsp;&nbsp;";
 
     final StringBuilder sb = new StringBuilder();
@@ -382,7 +385,7 @@ public class DownloadMapsWindow extends JFrame {
         .append(" v")
         .append(map.getVersion());
 
-    if (map.getInstallLocation().isEmpty()) {
+    if (!downloadMapsWindowUtils.isInstalled(map)) {
       final String mapUrl = map.getUrl();
       if (mapUrl != null) {
         DownloadConfiguration.downloadLengthReader()
@@ -397,12 +400,14 @@ public class DownloadMapsWindow extends JFrame {
     } else {
       sb.append(doubleSpace).append(" (");
       try {
-        sb.append(newSizeLabel(Files.size(map.getInstallLocation().get())));
+        sb.append(newSizeLabel(Files.size(downloadMapsWindowUtils.getInstallLocation(map).get())));
       } catch (final IOException e) {
         log.warn("Failed to read file size", e);
         sb.append("N/A");
       }
-      sb.append(")").append("<br>").append(map.getInstallLocation().get().toAbsolutePath());
+      sb.append(")")
+          .append("<br>")
+          .append(downloadMapsWindowUtils.getInstallLocation(map).get().toAbsolutePath());
     }
     sb.append("<br>");
     sb.append("</html>");
@@ -472,7 +477,7 @@ public class DownloadMapsWindow extends JFrame {
     return actionButton;
   }
 
-  private static Runnable removeAction(
+  private Runnable removeAction(
       final Supplier<List<String>> mapSelection,
       final List<DownloadFileDescription> maps,
       final Consumer<String> tableRemoveAction) {
@@ -483,7 +488,8 @@ public class DownloadMapsWindow extends JFrame {
               .filter(map -> selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
       if (!selectedMaps.isEmpty()) {
-        FileSystemAccessStrategy.remove(selectedMaps, tableRemoveAction);
+        FileSystemAccessStrategy.remove(
+            downloadMapsWindowUtils::delete, selectedMaps, tableRemoveAction);
       }
     };
   }

@@ -73,7 +73,6 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         .mapName("mapName " + url)
         .version(MAP_VERSION)
         .mapCategory(DownloadFileDescription.MapCategory.BEST)
-        .installLocation(Path.of("/"))
         .build();
   }
 
