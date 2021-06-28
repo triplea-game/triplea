@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.http.client.maps.listing.MapsListingClient;
+import org.triplea.http.client.maps.listing.MapsListingHttpClient;
 import org.triplea.spitfire.server.SpitfireServerTest;
 
 @SuppressWarnings("UnmatchedTest")
@@ -28,7 +29,7 @@ class MapsListingControllerTest extends SpitfireServerTest {
   private final MapsListingClient mapsListingClient;
 
   MapsListingControllerTest(final URI serverUri) {
-    mapsListingClient = new MapsListingClient(serverUri);
+    mapsListingClient = new MapsListingHttpClient(serverUri);
   }
 
   @Test

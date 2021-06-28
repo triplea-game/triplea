@@ -100,8 +100,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("MAP_ZOOM_FACTOR", 10);
   public static final ClientSetting<Path> mapFolderOverride =
       new PathClientSetting("MAP_FOLDER_OVERRIDE");
-  public static final ClientSetting<Path> mapListOverride =
-      new PathClientSetting("MAP_LIST_OVERRIDE");
   public static final ClientSetting<Boolean> notifyAllUnitsMoved =
       new BooleanClientSetting("NOTIFY_ALL_UNITS_MOVED", true);
   public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =

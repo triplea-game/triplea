@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.yaml.YamlReader;
 import org.triplea.yaml.YamlReader.InvalidYamlFormatException;
 
@@ -28,7 +29,7 @@ final class DownloadFileParser {
     img
   }
 
-  public static List<DownloadFileDescription> parse(final InputStream is) throws IOException {
+  public static List<MapDownloadListing> parse(final InputStream is) throws IOException {
     try {
       return parseImpl(is);
     } catch (final InvalidYamlFormatException e) {
@@ -36,10 +37,10 @@ final class DownloadFileParser {
     }
   }
 
-  private static List<DownloadFileDescription> parseImpl(final InputStream is) {
+  private static List<MapDownloadListing> parseImpl(final InputStream is) {
     final List<Map<String, Object>> yamlData = YamlReader.readList(is);
 
-    final List<DownloadFileDescription> downloads = new ArrayList<>();
+    final List<MapDownloadListing> downloads = new ArrayList<>();
     yamlData.stream()
         .map(Map.class::cast)
         .forEach(
@@ -56,7 +57,7 @@ final class DownloadFileParser {
 
               final String img = Strings.nullToEmpty((String) yaml.get(Tags.img.toString()));
               downloads.add(
-                  DownloadFileDescription.builder()
+                  MapDownloadListing.builder()
                       .downloadUrl(url)
                       .description(description)
                       .mapName(mapName)
