@@ -2,7 +2,6 @@ package games.strategy.engine.framework.map.listing;
 
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
-import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.net.URI;
@@ -18,11 +17,7 @@ import org.triplea.live.servers.LiveServersFetcher.LobbyAddressFetchException;
 @Slf4j
 public class MapListingFetcher {
 
-  private final InstalledMapsListing installedMapsListing;
-
-  private MapListingFetcher() {
-    installedMapsListing = InstalledMapsListing.parseMapFiles();
-  }
+  private MapListingFetcher() {}
 
   /**
    * Parses a map list source for a list of maps available for download. Multiple sources for the
@@ -59,7 +54,7 @@ public class MapListingFetcher {
       final List<MapDownloadListing> downloadListings) {
 
     return downloadListings.stream()
-        .map(map -> DownloadFileDescription.ofMapDownloadListing(map, installedMapsListing))
+        .map(DownloadFileDescription::ofMapDownloadListing)
         .collect(Collectors.toList());
   }
 }

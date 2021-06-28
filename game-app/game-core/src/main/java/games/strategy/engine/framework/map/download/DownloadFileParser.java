@@ -3,7 +3,6 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Strings;
-import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,7 +40,6 @@ final class DownloadFileParser {
     final List<Map<String, Object>> yamlData = YamlReader.readList(is);
 
     final List<DownloadFileDescription> downloads = new ArrayList<>();
-    final InstalledMapsListing installedMapsListing = InstalledMapsListing.parseMapFiles();
     yamlData.stream()
         .map(Map.class::cast)
         .forEach(
@@ -69,8 +67,6 @@ final class DownloadFileParser {
                       .version(version)
                       .mapCategory(mapCategory)
                       .img(img)
-                      .installLocation(
-                          installedMapsListing.findMapFolderByName(mapName).orElse(null))
                       .build());
             });
     return downloads;

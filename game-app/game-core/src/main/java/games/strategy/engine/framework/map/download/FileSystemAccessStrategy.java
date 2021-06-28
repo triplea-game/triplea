@@ -10,8 +10,10 @@ import org.triplea.swing.SwingComponents;
 @UtilityClass
 class FileSystemAccessStrategy {
 
-  static void remove(
-      final List<DownloadFileDescription> toRemove, final Consumer<String> removeAction) {
+  void remove(
+      final Function<DownloadFileDescription, Boolean> mapDeleteAction,
+      final List<DownloadFileDescription> toRemove,
+      final Consumer<String> removeAction) {
     SwingComponents.promptUser(
         "Remove Maps?",
         "<html>Will remove "
@@ -19,23 +21,25 @@ class FileSystemAccessStrategy {
             + " maps, are you sure? <br/>"
             + formatMapList(toRemove, DownloadFileDescription::getMapName)
             + "</html>",
-        newRemoveMapAction(toRemove, removeAction));
+        newRemoveMapAction(mapDeleteAction, toRemove, removeAction));
   }
 
   private static Runnable newRemoveMapAction(
-      final List<DownloadFileDescription> maps, final Consumer<String> removeAction) {
+      final Function<DownloadFileDescription, Boolean> mapDeleteAction,
+      final List<DownloadFileDescription> maps,
+      final Consumer<String> removeActionListeners) {
     return () -> {
       final List<DownloadFileDescription> deletes = new ArrayList<>();
 
       // delete the map files
       for (final DownloadFileDescription map : maps) {
-        if (map.delete()) {
+        if (mapDeleteAction.apply(map)) {
           deletes.add(map);
         }
       }
 
       if (!deletes.isEmpty()) {
-        deletes.stream().map(DownloadFileDescription::getMapName).forEach(removeAction);
+        deletes.stream().map(DownloadFileDescription::getMapName).forEach(removeActionListeners);
         final String message = newDialogMessage("Successfully removed.", deletes);
         showDialog(message, deletes, DownloadFileDescription::getMapName);
       }
