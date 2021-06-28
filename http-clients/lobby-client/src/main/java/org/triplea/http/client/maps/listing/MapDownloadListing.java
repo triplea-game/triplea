@@ -15,8 +15,10 @@ public class MapDownloadListing {
   private final String previewImageUrl;
 
   @Nonnull private final String mapName;
-  @Nonnull private final Long lastCommitDateEpochMilli;
+  private final Long lastCommitDateEpochMilli;
   @Nonnull private final String mapCategory;
   /** HTML description of the map. */
   @Nonnull private final String description;
+  /** @deprecated use lastCommitDateEpochMilli and file time stamps instead. */
+  @Deprecated private final Integer version;
 }

@@ -2,7 +2,6 @@ package games.strategy.triplea.settings;
 
 import static games.strategy.triplea.settings.SelectionComponentFactory.booleanRadioButtons;
 import static games.strategy.triplea.settings.SelectionComponentFactory.diceRollerOverrideSelection;
-import static games.strategy.triplea.settings.SelectionComponentFactory.filePath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
 import static games.strategy.triplea.settings.SelectionComponentFactory.lobbyOverrideSelection;
@@ -275,17 +274,6 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.useMapsServerBetaFeature);
-    }
-  },
-
-  MAP_LIST_OVERRIDE_BINDING(
-      "Map List Override",
-      SettingType.TESTING,
-      "Overrides the location of the map listing file. You can, for example, download "
-          + "a copy of the listing file, update it, and put the path to that file here.") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return filePath(ClientSetting.mapListOverride);
     }
   },
 
