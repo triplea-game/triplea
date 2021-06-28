@@ -25,7 +25,7 @@ public class MapDownloadSwingTable {
                 maps.stream()
                     .sorted(Comparator.comparing(DownloadFileDescription::getMapName))
                     .collect(Collectors.toList()))
-            .rowMapper(map -> List.of(map.getMapName(), map.getMapCategory().outputLabel))
+            .rowMapper(map -> List.of(map.getMapName(), map.getMapCategory()))
             .build();
   }
 
