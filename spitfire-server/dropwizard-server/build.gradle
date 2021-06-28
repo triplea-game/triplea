@@ -51,7 +51,6 @@ dependencies {
     implementation project(':http-clients:feign-common')
     implementation project(':http-clients:github-client')
     implementation project(':http-clients:lobby-client')
-    implementation project(':http-clients:maps-client')
     implementation project(':lib:java-extras')
     implementation project(':lib:websocket-client')
     implementation project(':lib:websocket-server')
