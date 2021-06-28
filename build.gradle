@@ -135,8 +135,7 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
-            '-Xlint:all,-processing',
-            '-Xmaxwarns', '15'
+            '-Xlint:none,-processing'
         ]
         options.encoding = 'UTF-8'
         options.errorprone {
@@ -172,6 +171,9 @@ subprojects {
             disable 'UnnecessaryLambda'
             // MissingSummary throws false positives on lombok @Builder annotations.
             disable 'MissingSummary'
+
+            disable 'UnescapedEntity'
+            disable 'InvalidBlockTag'
         }
         options.incremental = true
     }
