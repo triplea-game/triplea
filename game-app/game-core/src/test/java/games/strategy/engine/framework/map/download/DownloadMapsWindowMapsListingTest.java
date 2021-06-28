@@ -21,7 +21,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
 
   private static final DownloadFileDescription TEST_MAP =
       DownloadFileDescription.builder()
-          .url("")
+          .downloadUrl("")
           .mapName(MAP_NAME)
           .version(MAP_VERSION)
           .mapCategory("EXPERIMENTAL")
@@ -58,7 +58,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
 
   private static DownloadFileDescription newDownloadWithUrl(final String url) {
     return DownloadFileDescription.builder()
-        .url(url)
+        .downloadUrl(url)
         .description("description")
         .mapName("mapName " + url)
         .version(MAP_VERSION)
@@ -68,7 +68,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
 
   private static DownloadFileDescription newInstalledDownloadWithUrl(final String url) {
     return DownloadFileDescription.builder()
-        .url(url)
+        .downloadUrl(url)
         .description("description")
         .mapName("mapName " + url)
         .version(MAP_VERSION)

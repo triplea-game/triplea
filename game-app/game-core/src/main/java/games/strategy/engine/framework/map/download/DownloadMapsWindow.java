@@ -386,7 +386,7 @@ public class DownloadMapsWindow extends JFrame {
         .append(map.getVersion());
 
     if (!downloadMapsWindowUtils.isInstalled(map)) {
-      final String mapUrl = map.getUrl();
+      final String mapUrl = map.getDownloadUrl();
       if (mapUrl != null) {
         DownloadConfiguration.downloadLengthReader()
             .getDownloadLength(mapUrl)

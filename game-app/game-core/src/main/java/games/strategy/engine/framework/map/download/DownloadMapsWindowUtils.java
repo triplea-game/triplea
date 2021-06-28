@@ -57,8 +57,8 @@ class DownloadMapsWindowUtils {
 
   String toHtmlString(final DownloadFileDescription downloadFileDescription) {
     String text = "<h1>" + downloadFileDescription.getMapName() + "</h1>\n";
-    if (!downloadFileDescription.getImg().isEmpty()) {
-      text += "<img src='" + downloadFileDescription.getImg() + "' />\n";
+    if (!downloadFileDescription.getPreviewImageUrl().isEmpty()) {
+      text += "<img src='" + downloadFileDescription.getPreviewImageUrl() + "' />\n";
     }
     text += downloadFileDescription.getDescription();
     return text;
