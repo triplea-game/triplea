@@ -6,7 +6,6 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.mockito.Mockito.verify;
 
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -19,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 
 @SuppressWarnings("unused")
 @ExtendWith(MockitoExtension.class)
@@ -85,9 +85,15 @@ final class UpdatedMapsCheckTest {
   }
 
   @SuppressWarnings("SameParameterValue")
-  private static DownloadFileDescription buildDownloadDescription(
+  private static MapDownloadListing buildDownloadDescription(
       final String mapName, final int version) {
-    return DownloadFileDescription.builder().mapName(mapName).version(version).build();
+    return MapDownloadListing.builder()
+        .description("description")
+        .mapName(mapName)
+        .version(version)
+        .downloadUrl("url")
+        .mapCategory("category")
+        .build();
   }
 
   @Test

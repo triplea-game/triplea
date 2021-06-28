@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -29,11 +30,11 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
   private final JPanel labelGrid = new JPanelBuilder().gridLayout(0, 1).build();
   private final JPanel progressGrid = new JPanelBuilder().gridLayout(0, 1).build();
 
-  private final List<DownloadFileDescription> downloadList = new ArrayList<>();
-  private final Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
-  private final Map<DownloadFileDescription, JProgressBar> progressBars = Maps.newHashMap();
-  private final Map<DownloadFileDescription, MapDownloadProgressListener>
-      mapDownloadProgressListeners = Maps.newHashMap();
+  private final List<MapDownloadListing> downloadList = new ArrayList<>();
+  private final Map<MapDownloadListing, JLabel> labels = Maps.newHashMap();
+  private final Map<MapDownloadListing, JProgressBar> progressBars = Maps.newHashMap();
+  private final Map<MapDownloadListing, MapDownloadProgressListener> mapDownloadProgressListeners =
+      Maps.newHashMap();
 
   MapDownloadProgressPanel() {
     downloadCoordinator.addDownloadListener(this);
@@ -56,16 +57,16 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
     downloadCoordinator.cancelDownloads();
   }
 
-  void download(final Collection<DownloadFileDescription> newDownloads) {
+  void download(final Collection<MapDownloadListing> newDownloads) {
     newDownloads.forEach(downloadCoordinator::accept);
   }
 
   @Override
-  public void downloadStarted(final DownloadFileDescription download) {
+  public void downloadStarted(final MapDownloadListing download) {
     SwingUtilities.invokeLater(() -> getMapDownloadProgressListenerFor(download).downloadStarted());
   }
 
-  private MapDownloadProgressListener addDownload(final DownloadFileDescription download) {
+  private MapDownloadProgressListener addDownload(final MapDownloadListing download) {
     assert SwingUtilities.isEventDispatchThread();
 
     // add new downloads to the head of the list, this will allow the user to see newly added items
@@ -92,7 +93,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
     labelGrid.setLayout(new GridLayout(itemCount, 1));
     progressGrid.setLayout(new GridLayout(itemCount, 1));
 
-    for (final DownloadFileDescription download : downloadList) {
+    for (final MapDownloadListing download : downloadList) {
       labelGrid.add(labels.get(download));
       progressGrid.add(progressBars.get(download));
     }
@@ -101,19 +102,19 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
   }
 
   @Override
-  public void downloadUpdated(final DownloadFileDescription download, final long bytesReceived) {
+  public void downloadUpdated(final MapDownloadListing download, final long bytesReceived) {
     SwingUtilities.invokeLater(
         () -> getMapDownloadProgressListenerFor(download).downloadUpdated(bytesReceived));
   }
 
   @Override
-  public void downloadComplete(final DownloadFileDescription download) {
+  public void downloadComplete(final MapDownloadListing download) {
     SwingUtilities.invokeLater(
         () -> getMapDownloadProgressListenerFor(download).downloadCompleted());
   }
 
   private MapDownloadProgressListener getMapDownloadProgressListenerFor(
-      final DownloadFileDescription download) {
+      final MapDownloadListing download) {
     assert SwingUtilities.isEventDispatchThread();
 
     return mapDownloadProgressListeners.computeIfAbsent(download, this::addDownload);

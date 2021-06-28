@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background
@@ -34,7 +35,7 @@ public final class DownloadCoordinator {
     downloadListeners.remove(downloadListener);
   }
 
-  void accept(final DownloadFileDescription download) {
+  void accept(final MapDownloadListing download) {
     synchronized (lock) {
       if (isNewDownload(download)) {
         pendingDownloads.add(new DownloadFile(download, new Listener()));
@@ -43,7 +44,7 @@ public final class DownloadCoordinator {
     }
   }
 
-  private boolean isNewDownload(final DownloadFileDescription download) {
+  private boolean isNewDownload(final MapDownloadListing download) {
     assert Thread.holdsLock(lock);
 
     return !containsDownload(pendingDownloads, download)
@@ -51,7 +52,7 @@ public final class DownloadCoordinator {
   }
 
   private static boolean containsDownload(
-      final Collection<DownloadFile> downloadFiles, final DownloadFileDescription download) {
+      final Collection<DownloadFile> downloadFiles, final MapDownloadListing download) {
     return downloadFiles.stream().map(DownloadFile::getDownload).anyMatch(download::equals);
   }
 
@@ -106,17 +107,17 @@ public final class DownloadCoordinator {
 
   private final class Listener implements DownloadListener {
     @Override
-    public void downloadStarted(final DownloadFileDescription download) {
+    public void downloadStarted(final MapDownloadListing download) {
       downloadListeners.forEach(it -> it.downloadStarted(download));
     }
 
     @Override
-    public void downloadUpdated(final DownloadFileDescription download, final long bytesReceived) {
+    public void downloadUpdated(final MapDownloadListing download, final long bytesReceived) {
       downloadListeners.forEach(it -> it.downloadUpdated(download, bytesReceived));
     }
 
     @Override
-    public void downloadComplete(final DownloadFileDescription download) {
+    public void downloadComplete(final MapDownloadListing download) {
       downloadListeners.forEach(it -> it.downloadComplete(download));
 
       synchronized (lock) {

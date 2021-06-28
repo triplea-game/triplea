@@ -1,7 +1,6 @@
 package games.strategy.engine.auto.update;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
@@ -13,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import lombok.experimental.UtilityClass;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.swing.SwingComponents;
 
 @UtilityClass
@@ -43,8 +43,7 @@ class UpdatedMapsCheck {
       return;
     }
 
-    final List<DownloadFileDescription> availableToDownloadMaps =
-        MapListingFetcher.getMapDownloadList();
+    final List<MapDownloadListing> availableToDownloadMaps = MapListingFetcher.getMapDownloadList();
 
     if (availableToDownloadMaps.isEmpty()) {
       // A failure happened getting maps. User is already notified.
@@ -71,14 +70,14 @@ class UpdatedMapsCheck {
    *     installed version.
    */
   public static Collection<String> computeOutOfDateMaps(
-      final Collection<DownloadFileDescription> availableToDownloadMaps,
+      final Collection<MapDownloadListing> availableToDownloadMaps,
       final Function<String, Integer> mapVersionLookup) {
 
     final Collection<String> outOfDateMapNames = new ArrayList<>();
 
     // Loop over all available maps, check if we have that map present, its version,
     // and remember any whose version is less than what is available.
-    for (final DownloadFileDescription availableMap : availableToDownloadMaps) {
+    for (final MapDownloadListing availableMap : availableToDownloadMaps) {
       final int installedVersion = mapVersionLookup.apply(availableMap.getMapName());
       if (installedVersion < availableMap.getVersion()) {
         outOfDateMapNames.add(availableMap.getMapName());
