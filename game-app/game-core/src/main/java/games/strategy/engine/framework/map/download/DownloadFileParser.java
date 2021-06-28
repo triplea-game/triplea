@@ -51,12 +51,8 @@ final class DownloadFileParser {
 
               final Integer version = (Integer) yaml.get(Tags.version.toString());
 
-              final DownloadFileDescription.MapCategory mapCategory =
-                  optEnum(
-                      yaml,
-                      DownloadFileDescription.MapCategory.class,
-                      Tags.mapCategory.toString(),
-                      DownloadFileDescription.MapCategory.EXPERIMENTAL);
+              final String mapCategory =
+                  (String) yaml.getOrDefault(Tags.mapCategory.toString(), "EXPERIMENTAL");
 
               final String img = Strings.nullToEmpty((String) yaml.get(Tags.img.toString()));
               downloads.add(
@@ -70,16 +66,5 @@ final class DownloadFileParser {
                       .build());
             });
     return downloads;
-  }
-
-  private static <T extends Enum<T>> T optEnum(
-      final Map<?, ?> jsonObject, final Class<T> type, final String name, final T defaultValue) {
-    checkNotNull(jsonObject);
-    checkNotNull(type);
-    checkNotNull(name);
-    checkNotNull(defaultValue);
-
-    final String valueName = Strings.nullToEmpty((String) jsonObject.get(name));
-    return valueName.isEmpty() ? defaultValue : Enum.valueOf(type, valueName);
   }
 }

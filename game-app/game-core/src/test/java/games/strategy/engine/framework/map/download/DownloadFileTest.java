@@ -18,7 +18,7 @@ class DownloadFileTest {
             .description("description")
             .mapName("mapName")
             .version(0)
-            .mapCategory(DownloadFileDescription.MapCategory.BEST)
+            .mapCategory("BEST")
             .build();
     final DownloadFile testObj =
         new DownloadFile(downloadFileDescription, mock(DownloadListener.class));

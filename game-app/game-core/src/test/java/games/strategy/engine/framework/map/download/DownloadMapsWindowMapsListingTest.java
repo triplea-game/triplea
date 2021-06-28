@@ -24,7 +24,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
           .url("")
           .mapName(MAP_NAME)
           .version(MAP_VERSION)
-          .mapCategory(DownloadFileDescription.MapCategory.EXPERIMENTAL)
+          .mapCategory("EXPERIMENTAL")
           .build();
 
   @Test
@@ -62,7 +62,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         .description("description")
         .mapName("mapName " + url)
         .version(MAP_VERSION)
-        .mapCategory(DownloadFileDescription.MapCategory.BEST)
+        .mapCategory("BEST")
         .build();
   }
 
@@ -72,7 +72,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         .description("description")
         .mapName("mapName " + url)
         .version(MAP_VERSION)
-        .mapCategory(DownloadFileDescription.MapCategory.BEST)
+        .mapCategory("BEST")
         .build();
   }
 
