@@ -57,12 +57,12 @@ final class DownloadFileParser {
               final String img = Strings.nullToEmpty((String) yaml.get(Tags.img.toString()));
               downloads.add(
                   DownloadFileDescription.builder()
-                      .url(url)
+                      .downloadUrl(url)
                       .description(description)
                       .mapName(mapName)
                       .version(version)
                       .mapCategory(mapCategory)
-                      .img(img)
+                      .previewImageUrl(img)
                       .build());
             });
     return downloads;

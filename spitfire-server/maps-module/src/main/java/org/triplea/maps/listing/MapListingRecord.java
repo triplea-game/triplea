@@ -28,7 +28,7 @@ public class MapListingRecord {
 
   MapDownloadListing toMapDownloadListing() {
     return MapDownloadListing.builder()
-        .url(url)
+        .downloadUrl(url)
         .mapName(name)
         .lastCommitDateEpochMilli(lastCommitDate.toEpochMilli())
         .mapCategory(categoryName)

@@ -15,22 +15,23 @@ import org.triplea.http.client.maps.listing.MapDownloadListing;
 @Builder
 @AllArgsConstructor
 public final class DownloadFileDescription {
-  @EqualsAndHashCode.Include private final String url;
+  @EqualsAndHashCode.Include private final String downloadUrl;
   private final String description;
   private final String mapName;
   private final Integer version;
   private final String mapCategory;
-  private final String img;
+  private final String previewImageUrl;
 
   public static DownloadFileDescription ofMapDownloadListing(
       final MapDownloadListing mapDownloadListing) {
     return DownloadFileDescription.builder()
-        .url(mapDownloadListing.getUrl())
+        .downloadUrl(mapDownloadListing.getDownloadUrl())
         .mapName(mapDownloadListing.getMapName())
         .description(mapDownloadListing.getDescription())
         // TODO: PROJECT#17 replace with latest commit date
         .version(1)
         .mapCategory(mapDownloadListing.getMapCategory())
+        .previewImageUrl(mapDownloadListing.getPreviewImageUrl())
         .build();
   }
 }

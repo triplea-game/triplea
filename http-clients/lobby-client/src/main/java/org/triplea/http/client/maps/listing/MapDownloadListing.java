@@ -9,9 +9,14 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MapDownloadListing {
-  @Nonnull private final String url;
+  /** URL where the map can be downloaded. */
+  @Nonnull private final String downloadUrl;
+  /** URL of the preview image of the map. */
+  private final String previewImageUrl;
+
   @Nonnull private final String mapName;
   @Nonnull private final Long lastCommitDateEpochMilli;
   @Nonnull private final String mapCategory;
+  /** HTML description of the map. */
   @Nonnull private final String description;
 }

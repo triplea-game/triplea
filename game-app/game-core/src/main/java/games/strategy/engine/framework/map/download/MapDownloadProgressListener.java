@@ -43,7 +43,7 @@ final class MapDownloadProgressListener {
         () ->
             downloadLength =
                 DownloadConfiguration.downloadLengthReader()
-                    .getDownloadLength(download.getUrl())
+                    .getDownloadLength(download.getDownloadUrl())
                     .orElse(null));
   }
 

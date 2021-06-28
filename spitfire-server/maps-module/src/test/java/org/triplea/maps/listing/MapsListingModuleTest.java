@@ -55,12 +55,12 @@ class MapsListingModuleTest {
     // expected sort by map name, so first map should be id "1"
     assertThat(results.get(0).getMapName(), is("map-name-1"));
     assertThat(results.get(0).getLastCommitDateEpochMilli(), is(commitDate1.toEpochMilli()));
-    assertThat(results.get(0).getUrl(), is("http://map-url-1"));
+    assertThat(results.get(0).getDownloadUrl(), is("http://map-url-1"));
     assertThat(results.get(0).getMapCategory(), is("category-1"));
 
     assertThat(results.get(1).getMapName(), is("map-name-2"));
     assertThat(results.get(1).getLastCommitDateEpochMilli(), is(commitDate2.toEpochMilli()));
-    assertThat(results.get(1).getUrl(), is("http://map-url-2"));
+    assertThat(results.get(1).getDownloadUrl(), is("http://map-url-2"));
     assertThat(results.get(1).getMapCategory(), is("category-2"));
   }
 }

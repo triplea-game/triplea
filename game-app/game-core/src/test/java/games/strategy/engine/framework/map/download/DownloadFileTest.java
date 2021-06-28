@@ -14,7 +14,7 @@ class DownloadFileTest {
   void testBasicStartCancel() {
     final DownloadFileDescription downloadFileDescription =
         DownloadFileDescription.builder()
-            .url("url")
+            .downloadUrl("url")
             .description("description")
             .mapName("mapName")
             .version(0)

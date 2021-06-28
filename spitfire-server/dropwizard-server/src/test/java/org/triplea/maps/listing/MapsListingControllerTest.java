@@ -39,13 +39,13 @@ class MapsListingControllerTest extends SpitfireServerTest {
     assertThat(downloadListings.get(0).getMapName(), is("map-name"));
     assertThat(
         downloadListings.get(0).getLastCommitDateEpochMilli(), is(commitDate1.toEpochMilli()));
-    assertThat(downloadListings.get(0).getUrl(), is("http://map-repo-url"));
+    assertThat(downloadListings.get(0).getDownloadUrl(), is("http://map-repo-url"));
     assertThat(downloadListings.get(0).getMapCategory(), is("category_name"));
 
     assertThat(downloadListings.get(1).getMapName(), is("map-name-2"));
     assertThat(
         downloadListings.get(1).getLastCommitDateEpochMilli(), is(commitDate2.toEpochMilli()));
-    assertThat(downloadListings.get(1).getUrl(), is("http://map-repo-url-2"));
+    assertThat(downloadListings.get(1).getDownloadUrl(), is("http://map-repo-url-2"));
     assertThat(downloadListings.get(1).getMapCategory(), is("category_name"));
   }
 }

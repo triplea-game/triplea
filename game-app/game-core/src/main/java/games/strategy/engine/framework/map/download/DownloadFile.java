@@ -64,9 +64,9 @@ final class DownloadFile {
 
           try {
             DownloadConfiguration.contentReader()
-                .downloadToFile(download.getUrl(), targetTempFileToDownloadTo);
+                .downloadToFile(download.getDownloadUrl(), targetTempFileToDownloadTo);
           } catch (final IOException e) {
-            log.error("Failed to download: " + download.getUrl(), e);
+            log.error("Failed to download: " + download.getDownloadUrl(), e);
             return;
           } finally {
             watcher.stop();
