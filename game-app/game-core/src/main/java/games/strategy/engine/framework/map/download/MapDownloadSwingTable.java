@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.swing.JTableBuilder;
 
 /**
@@ -17,13 +18,13 @@ import org.triplea.swing.JTableBuilder;
 public class MapDownloadSwingTable {
   private final JTable table;
 
-  public MapDownloadSwingTable(final Collection<DownloadFileDescription> maps) {
+  public MapDownloadSwingTable(final Collection<MapDownloadListing> maps) {
     table =
-        JTableBuilder.<DownloadFileDescription>builder()
+        JTableBuilder.<MapDownloadListing>builder()
             .columnNames("Map", "Category")
             .rowData(
                 maps.stream()
-                    .sorted(Comparator.comparing(DownloadFileDescription::getMapName))
+                    .sorted(Comparator.comparing(MapDownloadListing::getMapName))
                     .collect(Collectors.toList()))
             .rowMapper(map -> List.of(map.getMapName(), map.getMapCategory()))
             .build();

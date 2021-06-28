@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 import org.triplea.io.FileUtils;
 import org.triplea.java.ThreadRunner;
 import org.triplea.map.description.file.MapDescriptionYaml;
@@ -24,18 +25,18 @@ final class DownloadFile {
     DONE
   }
 
-  private final DownloadFileDescription download;
+  private final MapDownloadListing download;
   private final DownloadListener downloadListener;
   private volatile DownloadState state = DownloadState.NOT_STARTED;
 
-  DownloadFile(final DownloadFileDescription download, final DownloadListener downloadListener) {
+  DownloadFile(final MapDownloadListing download, final DownloadListener downloadListener) {
     this.download = download;
     this.downloadListener = downloadListener;
 
     SwingUtilities.invokeLater(() -> downloadListener.downloadStarted(download));
   }
 
-  DownloadFileDescription getDownload() {
+  MapDownloadListing getDownload() {
     return download;
   }
 

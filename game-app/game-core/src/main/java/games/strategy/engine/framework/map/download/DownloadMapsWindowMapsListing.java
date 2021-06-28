@@ -9,23 +9,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.triplea.http.client.maps.listing.MapDownloadListing;
 
 @Getter
 class DownloadMapsWindowMapsListing {
 
-  private final List<DownloadFileDescription> available = new ArrayList<>();
-  private final List<DownloadFileDescription> installed = new ArrayList<>();
-  private final List<DownloadFileDescription> outOfDate = new ArrayList<>();
+  private final List<MapDownloadListing> available = new ArrayList<>();
+  private final List<MapDownloadListing> installed = new ArrayList<>();
+  private final List<MapDownloadListing> outOfDate = new ArrayList<>();
 
-  DownloadMapsWindowMapsListing(final Collection<DownloadFileDescription> downloads) {
+  DownloadMapsWindowMapsListing(final Collection<MapDownloadListing> downloads) {
     this(downloads, InstalledMapsListing.parseMapFiles());
   }
 
   @VisibleForTesting
   DownloadMapsWindowMapsListing(
-      final Collection<DownloadFileDescription> downloads,
+      final Collection<MapDownloadListing> downloads,
       final InstalledMapsListing installedMapsListing) {
-    for (final DownloadFileDescription download : downloads) {
+    for (final MapDownloadListing download : downloads) {
       if (download == null) {
         return;
       }
@@ -43,13 +44,11 @@ class DownloadMapsWindowMapsListing {
     }
   }
 
-  List<DownloadFileDescription> getAvailableExcluding(
-      final Collection<DownloadFileDescription> excluded) {
+  List<MapDownloadListing> getAvailableExcluding(final Collection<MapDownloadListing> excluded) {
     return available.stream().filter(not(excluded::contains)).collect(Collectors.toList());
   }
 
-  List<DownloadFileDescription> getOutOfDateExcluding(
-      final Collection<DownloadFileDescription> excluded) {
+  List<MapDownloadListing> getOutOfDateExcluding(final Collection<MapDownloadListing> excluded) {
     return outOfDate.stream().filter(not(excluded::contains)).collect(Collectors.toList());
   }
 }
