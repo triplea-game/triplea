@@ -2305,3 +2305,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/commandandconquer/master/preview.png
   description: |
     <br>Fight for Africa and Europe in mod inspired by the Command and Conquer series of games
+- mapName: Master of Empire
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Master_of_Empire/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Master_of_Empire/master/preview.png
+  description: |
+    <br>A hypothetical conflict between Eastern & Western Europe, using the Napoleonic Empires map & rule.
