@@ -2305,3 +2305,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/commandandconquer/master/preview.png
   description: |
     <br>Fight for Africa and Europe in mod inspired by the Command and Conquer series of games
+- mapName: 41 Oztea Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/41_Oztea_Variants/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/41_Oztea_Varians/master/preview.png
+  description: |
+    <br>Variants with different rules, using Oztea's 1941 setup for World War II Global
