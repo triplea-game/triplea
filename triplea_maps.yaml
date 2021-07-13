@@ -2266,7 +2266,7 @@
 - mapName: Young Grasshoppers Tournament Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/young_grasshoppers_tournament_edition/archive/master.zip
-  version: 4
+  version: 5
   img: https://raw.githubusercontent.com/triplea-maps/young_grasshoppers_tournament_edition/master/preview.png
   description: |
     <p>Young Grasshoppers Tournament Edition is based on the victory objective system
@@ -2312,3 +2312,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Master_of_Empire/master/preview.png
   description: |
     <br>A hypothetical conflict between Eastern & Western Europe, using the Napoleonic Empires map & rule.
+- mapName: 41 Oztea Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/41_oztea_variants/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/41_oztea_variants/master/preview.png
+  description: |
+    <br>Oztea's 1941 setup for the World War II Global, with various rules modifications
