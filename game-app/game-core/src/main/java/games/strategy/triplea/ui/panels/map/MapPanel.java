@@ -19,6 +19,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.UnitIconProperties;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
@@ -290,7 +291,7 @@ public class MapPanel extends ImageScrollerLargeView {
           @Override
           public void componentResized(final ComponentEvent e) {
             // Adjust scale factor to new window bounds
-            setScale(getScale());
+            setScaleResize(getScale());
           }
         });
     executor.execute(() -> recreateTiles(data, uiContext));
@@ -831,6 +832,15 @@ public class MapPanel extends ImageScrollerLargeView {
 
   @Override
   public void setScale(final double newScale) {
+    super.setScale(newScale);
+    // setScale will check bounds, and normalize the scale correctly
+    uiContext.setScale(scale);
+    final TripleAFrame frame = (TripleAFrame) SwingUtilities.getRoot(this);
+    frame.displayMapZoom(scale);
+    repaint();
+  }
+
+  public void setScaleResize(final double newScale) {
     super.setScale(newScale);
     // setScale will check bounds, and normalize the scale correctly
     uiContext.setScale(scale);
