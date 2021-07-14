@@ -41,7 +41,7 @@ public class MapImage {
       "PROPERTY_UNIT_HIT_DAMAGE_COLOR";
   private static final String PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING =
       "PROPERTY_UNIT_HIT_DAMAGE_OUTLINE";
-  private static final int MAP_FONT_SIZE_DEFAULT = 12;
+  private static final int MAP_FONT_SIZE_DEFAULT = 24;
   private static final Color TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_DEFAULT = Color.BLACK;
   private static final Color UNIT_COUNT_COLOR_DEFAULT = Color.WHITE;
   private static final Color UNIT_COUNT_OUTLINE_DEFAULT = Color.BLACK;
