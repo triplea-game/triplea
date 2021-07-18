@@ -2308,7 +2308,7 @@
 - mapName: 41 Oztea Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/41_oztea_variants/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/41_oztea_variants/master/preview.png
   description: |
     <br>Oztea's 1941 setup for the World War II Global, with various rules modifications
