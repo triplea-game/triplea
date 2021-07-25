@@ -2327,4 +2327,11 @@
   img: https://raw.githubusercontent.com/triplea-maps/Master_of_Empire/master/preview.png
   description: |
     <br>A hypothetical war between Eastern Europe and Western Europe, using the Napoleonic Empires map and rules
+- mapName: Great Lakes War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/greatlakeswar/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/greatlakeswar/master/preview.png
+  description: |
+    <br>Conflict around the North American Great Lakes, with both free-for-all and alliance scenarios
 
