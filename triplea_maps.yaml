@@ -2286,7 +2286,7 @@
 - mapName: Global 40 expansion
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_expansion/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description: |
     <br>
@@ -2305,10 +2305,17 @@
   img: https://raw.githubusercontent.com/triplea-maps/commandandconquer/master/preview.png
   description: |
     <br>Fight for Africa and Europe in mod inspired by the Command and Conquer series of games
+- mapName: Master of Empire
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Master_of_Empire/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Master_of_Empire/master/preview.png
+  description: |
+    <br>A hypothetical conflict between Eastern & Western Europe, using the Napoleonic Empires map & rule.
 - mapName: 41 Oztea Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/41_oztea_variants/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/41_oztea_variants/master/preview.png
   description: |
     <br>Oztea's 1941 setup for the World War II Global, with various rules modifications
@@ -2319,5 +2326,25 @@
   img: https://raw.githubusercontent.com/triplea-maps/ww2v6_variants/master/preview.png
   description: |
     <br>Variants for World War II V6, created by Cernel, WWIIv6 Factory & WWIIv6 No Capital
-    
-    
+- mapName: Genuine 39
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/genuine39/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/genuine39/master/preview.png
+  description: |
+    <br>Starting in 1939, the Nazi-Soviet alliance holds, but the French are prepared and the Americans enter the water early.
+    <br>Uses the New World Order map
+- mapName: Master of Empire
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Master_of_Empire/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Master_of_Empire/master/preview.png
+  description: |
+    <br>A hypothetical war between Eastern Europe and Western Europe, using the Napoleonic Empires map and rules
+- mapName: Great Lakes War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/greatlakeswar/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/greatlakeswar/master/preview.png
+  description: |
+    <br>Conflict around the North American Great Lakes, with both free-for-all and alliance scenarios
