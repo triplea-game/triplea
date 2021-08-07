@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
@@ -20,12 +21,12 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 public class ToolboxAccessLogClient {
   public static final String FETCH_ACCESS_LOG_PATH = "/moderator-toolbox/access-log";
 
-  private final AuthenticationHeaders authenticationHeaders;
+  private final Map<String, Object> authenticationHeaders;
   private final ToolboxAccessLogFeignClient client;
 
   public static ToolboxAccessLogClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new ToolboxAccessLogClient(
-        new AuthenticationHeaders(apiKey),
+        new AuthenticationHeaders(apiKey).createHeaders(),
         new HttpClient<>(ToolboxAccessLogFeignClient.class, serverUri).get());
   }
 
@@ -38,7 +39,7 @@ public class ToolboxAccessLogClient {
     checkArgument(pagingParams.getRowNumber() >= 0);
     checkArgument(pagingParams.getPageSize() > 0);
     return client.getAccessLog(
-        authenticationHeaders.createHeaders(),
+        authenticationHeaders,
         AccessLogRequest.builder()
             .accessLogSearchRequest(searchRequest)
             .pagingParams(pagingParams)

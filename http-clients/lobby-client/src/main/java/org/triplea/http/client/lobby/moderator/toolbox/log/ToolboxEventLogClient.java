@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
@@ -19,12 +20,12 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 public class ToolboxEventLogClient {
   public static final String AUDIT_HISTORY_PATH = "/moderator-toolbox/audit-history/lookup";
 
-  private final AuthenticationHeaders authenticationHeaders;
+  private final Map<String, Object> authenticationHeaders;
   private final ToolboxEventLogFeignClient client;
 
   public static ToolboxEventLogClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new ToolboxEventLogClient(
-        new AuthenticationHeaders(apiKey),
+        new AuthenticationHeaders(apiKey).createHeaders(),
         new HttpClient<>(ToolboxEventLogFeignClient.class, serverUri).get());
   }
 
@@ -33,6 +34,6 @@ public class ToolboxEventLogClient {
     checkArgument(pagingParams.getRowNumber() >= 0);
     checkArgument(pagingParams.getPageSize() > 0);
 
-    return client.lookupModeratorEvents(authenticationHeaders.createHeaders(), pagingParams);
+    return client.lookupModeratorEvents(authenticationHeaders, pagingParams);
   }
 }
