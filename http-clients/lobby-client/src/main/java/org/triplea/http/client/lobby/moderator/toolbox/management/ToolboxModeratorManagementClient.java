@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
@@ -23,41 +24,41 @@ public class ToolboxModeratorManagementClient {
   public static final String ADD_ADMIN_PATH = "/moderator-toolbox/admin/add-super-mod";
   public static final String ADD_MODERATOR_PATH = "/moderator-toolbox/admin/add-moderator";
 
-  private final AuthenticationHeaders httpHeaders;
+  private final Map<String, Object> httpHeaders;
   private final ToolboxModeratorManagementFeignClient client;
 
   public static ToolboxModeratorManagementClient newClient(
       final URI serverUri, final ApiKey apiKey) {
     return new ToolboxModeratorManagementClient(
-        new AuthenticationHeaders(apiKey),
+        new AuthenticationHeaders(apiKey).createHeaders(),
         new HttpClient<>(ToolboxModeratorManagementFeignClient.class, serverUri).get());
   }
 
   public List<ModeratorInfo> fetchModeratorList() {
-    return client.fetchModerators(httpHeaders.createHeaders());
+    return client.fetchModerators(httpHeaders);
   }
 
   public boolean isCurrentUserAdmin() {
-    return client.isAdmin(httpHeaders.createHeaders());
+    return client.isAdmin(httpHeaders);
   }
 
   public void removeMod(final String moderatorName) {
     checkArgument(moderatorName != null);
-    client.removeMod(httpHeaders.createHeaders(), moderatorName);
+    client.removeMod(httpHeaders, moderatorName);
   }
 
   public void addAdmin(final String moderatorName) {
     checkArgument(moderatorName != null);
-    client.addAdmin(httpHeaders.createHeaders(), moderatorName);
+    client.addAdmin(httpHeaders, moderatorName);
   }
 
   public boolean checkUserExists(final String usernameRequested) {
     checkArgument(usernameRequested.length() > 3);
-    return client.checkUserExists(httpHeaders.createHeaders(), usernameRequested);
+    return client.checkUserExists(httpHeaders, usernameRequested);
   }
 
   public void addModerator(final String username) {
     checkArgument(username != null);
-    client.addModerator(httpHeaders.createHeaders(), username);
+    client.addModerator(httpHeaders, username);
   }
 }
