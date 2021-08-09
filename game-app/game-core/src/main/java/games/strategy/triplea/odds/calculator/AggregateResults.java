@@ -66,17 +66,6 @@ public class AggregateResults {
         .orElseGet(ArrayList::new);
   }
 
-  double getAverageAttackingUnitsLeft() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    return results.stream()
-            .map(BattleResults::getRemainingAttackingUnits)
-            .mapToDouble(Collection::size)
-            .sum()
-        / results.size();
-  }
-
   /** First is Attacker, Second is Defender. */
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(
       final IntegerMap<UnitType> attackerCostsForTuv,
@@ -121,6 +110,17 @@ public class AggregateResults {
     final double attackerLost = attackerTuv - average.getFirst();
     final double defenderLost = defenderTuv - average.getSecond();
     return defenderLost - attackerLost;
+  }
+
+  double getAverageAttackingUnitsLeft() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    return results.stream()
+            .map(BattleResults::getRemainingAttackingUnits)
+            .mapToDouble(Collection::size)
+            .sum()
+        / results.size();
   }
 
   double getAverageAttackingUnitsLeftWhenAttackerWon() {
@@ -184,6 +184,13 @@ public class AggregateResults {
     return results.stream().filter(BattleResults::defenderWon).count() / (double) results.size();
   }
 
+  double getDrawPercent() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    return results.stream().filter(BattleResults::draw).count() / (double) results.size();
+  }
+
   /** Returns the average number of rounds fought across all simulations of the battle. */
   public double getAverageBattleRoundsFought() {
     if (results.isEmpty()) {
@@ -195,13 +202,6 @@ public class AggregateResults {
       return 1.0;
     }
     return count / (double) results.size();
-  }
-
-  double getDrawPercent() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    return results.stream().filter(BattleResults::draw).count() / (double) results.size();
   }
 
   public int getRollCount() {
