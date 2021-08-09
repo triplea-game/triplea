@@ -83,6 +83,39 @@ public class AggregateResults {
   }
 
   /**
+   * Returns the standard deviation of the TUV of units left over after the battle. The first
+   * component is Attacker, the second is Defender.
+   */
+  public Tuple<Double, Double> getAverageTuvOfUnitsLeftOverStandardDeviation(
+      final IntegerMap<UnitType> attackerCostsForTuv,
+      final IntegerMap<UnitType> defenderCostsForTuv) {
+    if (results.isEmpty()) {
+      return Tuple.of(0.0, 0.0);
+    }
+    final Tuple<Double, Double> mu =
+        getAverageTuvOfUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
+    final Double muAttacker = mu.getFirst();
+    final Double muDefender = mu.getSecond();
+    double attackerTuvSqrSum = 0;
+    double defenderTuvSqrSum = 0;
+    for (final BattleResults result : results) {
+      attackerTuvSqrSum +=
+          Math.pow(
+              TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv)
+                  - muAttacker,
+              2);
+      defenderTuvSqrSum +=
+          Math.pow(
+              TuvUtils.getTuv(result.getRemainingDefendingUnits(), defenderCostsForTuv)
+                  - muDefender,
+              2);
+    }
+    return Tuple.of(
+        Math.sqrt(attackerTuvSqrSum / results.size()),
+        Math.sqrt(defenderTuvSqrSum / results.size()));
+  }
+
+  /**
    * Returns the average TUV swing across all simulations of the battle.
    *
    * @return A positive value indicates the defender lost more unit value, on average, than the
@@ -112,6 +145,37 @@ public class AggregateResults {
     return defenderLost - attackerLost;
   }
 
+  /** Returns the standard deviation of the TUV swing. */
+  public double getAverageTuvSwingStandardDeviation(
+      final GamePlayer attacker, final GamePlayer defender, final GameData data) {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    // The Variance is invariant under a constant shift.  Thus, the variance of
+    // the TUV of left-over units and the variance of the TUV of lost units is
+    // the same as they differ only be the (constant) TUV the units at the
+    // start of the battle.
+    // The TUV swing is defender-TUV minus attacker-TUV.  Sadly, the variance
+    // of the difference of two sets cannot be calculated as the difference of
+    // the variances as "they mix" (covariance).  Therefore, we have to
+    // calculate the variance of the TUV swing "by hand".
+    final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, data);
+    final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTuv(defender, data);
+    final Tuple<Double, Double> mu =
+        getAverageTuvOfUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
+    final Double muAttacker = mu.getFirst();
+    final Double muDefender = mu.getSecond();
+    double sqrSum = 0;
+    for (final BattleResults result : results) {
+      final double swing =
+          -(TuvUtils.getTuv(result.getRemainingDefendingUnits(), defenderCostsForTuv) - muDefender)
+              + (TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv)
+                  - muAttacker);
+      sqrSum += swing * swing;
+    }
+    return Math.sqrt(sqrSum / results.size());
+  }
+
   public double getAverageAttackingUnitsLeft() {
     if (results.isEmpty()) {
       return 0.0;
@@ -121,6 +185,21 @@ public class AggregateResults {
             .mapToDouble(Collection::size)
             .sum()
         / results.size();
+  }
+
+  /** Returns the standard deviation of the attacking units left. */
+  double getAverageAttackingUnitsLeftStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    final double mu = getAverageAttackingUnitsLeft();
+    return Math.sqrt(
+        results.stream()
+                .map(BattleResults::getRemainingAttackingUnits)
+                .mapToDouble(Collection::size)
+                .map(x -> (x - mu) * (x - mu))
+                .sum()
+            / results.size());
   }
 
   public double getAverageAttackingUnitsLeftWhenAttackerWon() {
@@ -141,6 +220,26 @@ public class AggregateResults {
     return count / total;
   }
 
+  /** Returns the standard deviation of the attacking units left if the attacker won. */
+  double getAverageAttackingUnitsLeftWhenAttackerWonStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    final double mu = getAverageAttackingUnitsLeftWhenAttackerWon();
+    double count = 0;
+    double total = 0;
+    for (final BattleResults result : results) {
+      if (result.attackerWon()) {
+        count += Math.pow(result.getRemainingAttackingUnits().size() - mu, 2);
+        total += 1;
+      }
+    }
+    if (total <= 0) {
+      return 0;
+    }
+    return Math.sqrt(count / total);
+  }
+
   public double getAverageDefendingUnitsLeft() {
     if (results.isEmpty()) {
       return 0.0;
@@ -150,6 +249,21 @@ public class AggregateResults {
             .mapToDouble(Collection::size)
             .sum()
         / results.size();
+  }
+
+  /** Returns the standard deviation of the defending units left. */
+  double getAverageDefendingUnitsLeftStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    final double mu = getAverageDefendingUnitsLeft();
+    return Math.sqrt(
+        results.stream()
+                .map(BattleResults::getRemainingDefendingUnits)
+                .mapToDouble(Collection::size)
+                .map(x -> (x - mu) * (x - mu))
+                .sum()
+            / results.size());
   }
 
   public double getAverageDefendingUnitsLeftWhenDefenderWon() {
@@ -170,11 +284,44 @@ public class AggregateResults {
     return count / total;
   }
 
+  /** Returns the standard deviation of the defending units left if the defender won. */
+  double getAverageDefendingUnitsLeftWhenDefenderWonStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    final double mu = getAverageDefendingUnitsLeftWhenDefenderWon();
+    double count = 0;
+    double total = 0;
+    for (final BattleResults result : results) {
+      if (result.defenderWon()) {
+        count += Math.pow(result.getRemainingDefendingUnits().size() - mu, 2);
+        total += 1;
+      }
+    }
+    if (total <= 0) {
+      return 0;
+    }
+    return Math.sqrt(count / total);
+  }
+
   public double getAttackerWinPercent() {
     if (results.isEmpty()) {
       return 0.0;
     }
     return results.stream().filter(BattleResults::attackerWon).count() / (double) results.size();
+  }
+
+  /** Returns the standard deviation of the attacker wins percentage. */
+  public double getAttackerWinStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    // Winning is a Bernoulli Experiment with propability p = getAttackerWinPercent(),
+    // thus the variance is p(1-p).
+    // [Or do the math yourself: w = number of wins, n = num of battles, p = w/n
+    // Var = (w*(1-p)^2 + (n-w)*(0-p)^2)/n = ... = p(1-p)]
+    final double p = getAttackerWinPercent();
+    return Math.sqrt(p * (1 - p));
   }
 
   public double getDefenderWinPercent() {
@@ -184,11 +331,37 @@ public class AggregateResults {
     return results.stream().filter(BattleResults::defenderWon).count() / (double) results.size();
   }
 
+  /** Returns the standard deviation of the defender wins percentage. */
+  public double getDefenderWinStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    // Winning is a Bernoulli Experiment with propability p = getDefenderWinPercent(),
+    // thus the variance is p(1-p).
+    // [Or do the math yourself: w = number of wins, n = num of battles, p = w/n
+    // Var = (w*(1-p)^2 + (n-w)*(0-p)^2)/n = ... = p(1-p)]
+    final double p = getDefenderWinPercent();
+    return Math.sqrt(p * (1 - p));
+  }
+
   public double getDrawPercent() {
     if (results.isEmpty()) {
       return 0.0;
     }
     return results.stream().filter(BattleResults::draw).count() / (double) results.size();
+  }
+
+  /** Returns the standard deviation of the draw percentage. */
+  public double getDrawStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    // Drawing is a Bernoulli Experiment with propability p = getDrawPercent(),
+    // thus the variance is p(1-p).
+    // [Or do the math yourself: w = number of wins, n = num of battles, p = w/n
+    // Var = (w*(1-p)^2 + (n-w)*(0-p)^2)/n = ... = p(1-p)]
+    final double p = getDrawPercent();
+    return Math.sqrt(p * (1 - p));
   }
 
   /** Returns the average number of rounds fought across all simulations of the battle. */
@@ -200,6 +373,24 @@ public class AggregateResults {
     if (count == 0) {
       // If this is a 'fake' aggregate result, return 1.0
       return 1.0;
+    }
+    return count / (double) results.size();
+  }
+
+  /** Returns the standard deviation of the number of battle rounds. */
+  public double getAverageBattleRoundsFoughtStandardDeviation() {
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    final double mu = getAverageBattleRoundsFought();
+    final double count =
+        results.stream()
+            .mapToInt(BattleResults::getBattleRoundsFought)
+            .mapToDouble(x -> (x - mu) * (x - mu))
+            .sum();
+    if (count == 0) {
+      // If this is a 'fake' aggregate result, return 0.0
+      return 0.0;
     }
     return count / (double) results.size();
   }

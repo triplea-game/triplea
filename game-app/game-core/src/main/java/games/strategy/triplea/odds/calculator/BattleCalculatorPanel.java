@@ -29,7 +29,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -1262,9 +1261,17 @@ class BattleCalculatorPanel extends JPanel {
     if (results.get() == null) {
       setResultsToBlank();
     } else {
-      attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
-      defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
-      draw.setText(formatPercentage(results.get().getDrawPercent()));
+      attackerWin.setText(
+          formatPercentage(
+              results.get().getAttackerWinPercent(),
+              results.get().getAttackerWinStandardDeviation()));
+      defenderWin.setText(
+          formatPercentage(
+              results.get().getDefenderWinPercent(),
+              results.get().getDefenderWinStandardDeviation()));
+      draw.setText(
+          formatPercentage(
+              results.get().getDrawPercent(), results.get().getDrawStandardDeviation()));
       final boolean isLand = isLand();
       final List<Unit> mainCombatAttackers =
           CollectionUtils.getMatches(
@@ -1275,36 +1282,49 @@ class BattleCalculatorPanel extends JPanel {
       final int attackersTotal = mainCombatAttackers.size();
       final int defendersTotal = mainCombatDefenders.size();
       defenderLeft.setText(
-          formatValue(results.get().getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
+          formatValueWithTotal(
+              results.get().getAverageDefendingUnitsLeft(),
+              results.get().getAverageDefendingUnitsLeftStandardDeviation(),
+              defendersTotal));
       attackerLeft.setText(
-          formatValue(results.get().getAverageAttackingUnitsLeft()) + " / " + attackersTotal);
+          formatValueWithTotal(
+              results.get().getAverageAttackingUnitsLeft(),
+              results.get().getAverageAttackingUnitsLeftStandardDeviation(),
+              attackersTotal));
       defenderLeftWhenDefenderWon.setText(
-          formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon())
-              + " / "
-              + defendersTotal);
+          formatValueWithTotal(
+              results.get().getAverageDefendingUnitsLeftWhenDefenderWon(),
+              results.get().getAverageDefendingUnitsLeftWhenDefenderWonStandardDeviation(),
+              defendersTotal));
       attackerLeftWhenAttackerWon.setText(
-          formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon())
-              + " / "
-              + attackersTotal);
-      roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
+          formatValueWithTotal(
+              results.get().getAverageAttackingUnitsLeftWhenAttackerWon(),
+              results.get().getAverageAttackingUnitsLeftWhenAttackerWonStandardDeviation(),
+              attackersTotal));
+      roundsAverage.setText(
+          formatValue(
+              results.get().getAverageBattleRoundsFought(),
+              results.get().getAverageBattleRoundsFoughtStandardDeviation()));
       try {
         data.acquireReadLock();
         averageChangeInTuv.setText(
-            ""
-                + formatValue(
-                    results
-                        .get()
-                        .getAverageTuvSwing(
-                            getAttacker(),
-                            mainCombatAttackers,
-                            getDefender(),
-                            mainCombatDefenders,
-                            data)));
+            formatValue(
+                results
+                    .get()
+                    .getAverageTuvSwing(
+                        getAttacker(),
+                        mainCombatAttackers,
+                        getDefender(),
+                        mainCombatDefenders,
+                        data),
+                results
+                    .get()
+                    .getAverageTuvSwingStandardDeviation(getAttacker(), getDefender(), data)));
       } finally {
         data.releaseReadLock();
       }
       count.setText(results.get().getRollCount() + "");
-      time.setText(formatValue(results.get().getTime() / 1000.0) + " s");
+      time.setText(String.format("%4.2f s", results.get().getTime() / 1000.0));
     }
   }
 
@@ -1323,12 +1343,25 @@ class BattleCalculatorPanel extends JPanel {
     return location;
   }
 
-  private static String formatPercentage(final double percentage) {
-    return new DecimalFormat("#%").format(percentage);
+  /**
+   * Format percentages with standard deviation.
+   *
+   * @param percentage percentage as a number (not as a percentage, i.e. percentage = 0.01 means 1%)
+   * @param standardDeviation standard deviation as a number (not as percentage, i.e.
+   *     standardDeviation = 0.01 means ± 1%)
+   * @return the numbers formatted as string
+   */
+  private static String formatPercentage(final double percentage, final double standardDeviation) {
+    return String.format("%.0f%% ± %.0f%%", percentage * 100.0, standardDeviation * 100.0);
   }
 
-  private static String formatValue(final double value) {
-    return new DecimalFormat("#0.##").format(value);
+  private static String formatValueWithTotal(
+      final double value, final double standardDeviation, final int total) {
+    return String.format("%4.2f ± %4.2f / %d", value, standardDeviation, total);
+  }
+
+  private static String formatValue(final double value, final double standardDeviation) {
+    return String.format("%4.2f ± %4.2f", value, standardDeviation);
   }
 
   void addAttackingUnits(final List<Unit> unitsToAdd) {
