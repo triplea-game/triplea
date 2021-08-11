@@ -1,5 +1,21 @@
 # Documentation
 
+It is a goal to have all TripleA documentation in the '/docs' folder.
+
+Documentation is organized in two ways, first at a top level
+by the intended audience of the documentation. Second level
+will be the type of documentation:
+
+**tutorial / getting-started**: explanatory instructions intended to teach.
+Look here when getting started.
+
+**how-to**: cut and dry step-by-step instructions on how to do something
+
+**reference**: description of a topic or a process (EG: encyclopedia entry)
+
+**background**: explanation of how something came to be (EG: design or a decision doc)
+
+
 Most TripleA documentation is under the 'docs/' folder.
 This page describes how that documentation is organized.
 
@@ -7,14 +23,6 @@ Documentation organization is based on: <https://documentation.divio.com/>
 
 ## Types of Documentation
 
-**tutorial / getting-started**: explanatory instructions intended to teach.
-Look here when getting started.
-
-**how-to**: step-by-step instructions on how to do something
-
-**reference**: description of a topic or a process (EG: encyclopedia entry)
-
-**background**: explanation of how something came to be (EG: design or a decision doc)
 
 ## Documentation Folders
 
