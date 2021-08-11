@@ -36,17 +36,17 @@ class MapsListingModuleTest {
         .thenReturn(
             List.of(
                 MapListingRecord.builder()
-                    .url("http://map-url-1")
+                    .downloadUrl("http://map-url-1")
+                    .previewImageUrl("http-preview-url-1")
                     .name("map-name-1")
                     .lastCommitDate(commitDate1)
-                    .categoryName("category-1")
                     .description("description-1")
                     .build(),
                 MapListingRecord.builder()
-                    .url("http://map-url-2")
+                    .downloadUrl("http://map-url-2")
+                    .previewImageUrl("http-preview-url-2")
                     .name("map-name-2")
                     .lastCommitDate(commitDate2)
-                    .categoryName("category-2")
                     .description("description-1")
                     .build()));
 
@@ -56,11 +56,11 @@ class MapsListingModuleTest {
     assertThat(results.get(0).getMapName(), is("map-name-1"));
     assertThat(results.get(0).getLastCommitDateEpochMilli(), is(commitDate1.toEpochMilli()));
     assertThat(results.get(0).getDownloadUrl(), is("http://map-url-1"));
-    assertThat(results.get(0).getMapCategory(), is("category-1"));
+    assertThat(results.get(0).getPreviewImageUrl(), is("http-preview-url-1"));
 
     assertThat(results.get(1).getMapName(), is("map-name-2"));
     assertThat(results.get(1).getLastCommitDateEpochMilli(), is(commitDate2.toEpochMilli()));
     assertThat(results.get(1).getDownloadUrl(), is("http://map-url-2"));
-    assertThat(results.get(1).getMapCategory(), is("category-2"));
+    assertThat(results.get(1).getPreviewImageUrl(), is("http-preview-url-2"));
   }
 }

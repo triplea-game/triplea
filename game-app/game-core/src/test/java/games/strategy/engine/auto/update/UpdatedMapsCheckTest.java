@@ -92,7 +92,8 @@ final class UpdatedMapsCheckTest {
         .mapName(mapName)
         .version(version)
         .downloadUrl("url")
-        .mapCategory("category")
+        .previewImageUrl("preview-url")
+        .lastCommitDateEpochMilli(50L)
         .build();
   }
 

@@ -16,10 +16,11 @@ class DownloadFileTest {
     final MapDownloadListing mapDownloadListing =
         MapDownloadListing.builder()
             .downloadUrl("url")
+            .previewImageUrl("preview-url")
             .description("description")
             .mapName("mapName")
             .version(0)
-            .mapCategory("BEST")
+            .lastCommitDateEpochMilli(60L)
             .build();
     final DownloadFile testObj = new DownloadFile(mapDownloadListing, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));

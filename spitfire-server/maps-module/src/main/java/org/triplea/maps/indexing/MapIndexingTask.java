@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.github.MapRepoListing;
 import org.triplea.maps.indexing.tasks.DownloadUriCalculator;
+import org.triplea.maps.indexing.tasks.PreviewUriCalculator;
 
 /**
  * Given a map repo name and URI, reads pertinent indexing information. Indexing will be skipped if
@@ -47,6 +48,8 @@ class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingRe
 
     final String downloadUri = new DownloadUriCalculator().apply(mapRepoListing);
 
+    final String previewImageUri = new PreviewUriCalculator().apply(mapRepoListing);
+
     final Long downloadSize = downloadSizeFetcher.apply(mapRepoListing).orElse(null);
     if (downloadSize == null) {
       return Optional.empty();
@@ -59,6 +62,7 @@ class MapIndexingTask implements Function<MapRepoListing, Optional<MapIndexingRe
             .lastCommitDate(lastCommitDateOnRepo)
             .description(description)
             .downloadUri(downloadUri)
+            .previewImageUri(previewImageUri)
             .mapDownloadSizeInBytes(downloadSize)
             .build());
   }

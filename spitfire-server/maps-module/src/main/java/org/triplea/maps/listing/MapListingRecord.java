@@ -1,38 +1,43 @@
 package org.triplea.maps.listing;
 
 import java.time.Instant;
+import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapTag;
 
+@Getter
 public class MapListingRecord {
   private final String name;
-  private final String url;
+  private final String downloadUrl;
+  private final String previewImageUrl;
   private final String description;
   private final Instant lastCommitDate;
-  private final String categoryName;
 
   @Builder
   public MapListingRecord(
       @ColumnName("map_name") final String name,
-      @ColumnName("repo_url") final String url,
+      @ColumnName("download_url") final String downloadUrl,
+      @ColumnName("preview_image_url") final String previewImageUrl,
       @ColumnName("description") final String description,
-      @ColumnName("last_commit_date") final Instant lastCommitDate,
-      @ColumnName("category_name") final String categoryName) {
-    this.url = url;
+      @ColumnName("last_commit_date") final Instant lastCommitDate) {
     this.name = name;
-    this.lastCommitDate = lastCommitDate;
-    this.categoryName = categoryName;
+    this.downloadUrl = downloadUrl;
+    this.previewImageUrl = previewImageUrl;
     this.description = description;
+    this.lastCommitDate = lastCommitDate;
   }
 
-  MapDownloadListing toMapDownloadListing() {
+  public MapDownloadListing toMapDownloadItem(final List<MapTag> mapTags) {
     return MapDownloadListing.builder()
-        .downloadUrl(url)
+        .downloadUrl(downloadUrl)
+        .previewImageUrl(previewImageUrl)
         .mapName(name)
         .lastCommitDateEpochMilli(lastCommitDate.toEpochMilli())
-        .mapCategory(categoryName)
         .description(description)
+        .mapTags(mapTags)
         .build();
   }
 }

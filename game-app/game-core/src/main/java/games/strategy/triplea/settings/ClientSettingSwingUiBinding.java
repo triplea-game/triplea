@@ -267,16 +267,6 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
-  USE_MAPS_SERVER_BETA_FEATURE(
-      "Use Maps Server (Beta)",
-      SettingType.TESTING,
-      "Toggles whether to use the in 'beta' map server") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.useMapsServerBetaFeature);
-    }
-  },
-
   LOBBY_URI_OVERRIDE_BINDING("Lobby URI Override", SettingType.TESTING, "Overrides the lobby URI") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {

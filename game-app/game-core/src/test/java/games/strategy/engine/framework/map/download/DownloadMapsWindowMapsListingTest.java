@@ -23,10 +23,11 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
   private static final MapDownloadListing TEST_MAP =
       MapDownloadListing.builder()
           .downloadUrl("")
+          .previewImageUrl("")
           .mapName(MAP_NAME)
           .version(MAP_VERSION)
-          .mapCategory("EXPERIMENTAL")
           .description("description")
+          .lastCommitDateEpochMilli(10L)
           .build();
 
   @Test
@@ -61,20 +62,22 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
   private static MapDownloadListing newDownloadWithUrl(final String url) {
     return MapDownloadListing.builder()
         .downloadUrl(url)
+        .previewImageUrl(url)
         .description("description")
         .mapName("mapName " + url)
         .version(MAP_VERSION)
-        .mapCategory("BEST")
+        .lastCommitDateEpochMilli(40L)
         .build();
   }
 
   private static MapDownloadListing newInstalledDownloadWithUrl(final String url) {
     return MapDownloadListing.builder()
         .downloadUrl(url)
+        .previewImageUrl(url)
         .description("description")
         .mapName("mapName " + url)
         .version(MAP_VERSION)
-        .mapCategory("BEST")
+        .lastCommitDateEpochMilli(30L)
         .build();
   }
 
