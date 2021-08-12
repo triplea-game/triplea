@@ -3,7 +3,7 @@
 ## Assumptions
 
 - Some familiarity with 'git' is assumed
-- Some familiarity with a favorite
+- If using windows, you are using something like cygwin to run git commands
 
 ## Setup Instructions
 
