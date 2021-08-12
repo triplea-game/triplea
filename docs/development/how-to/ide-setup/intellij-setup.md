@@ -1,12 +1,23 @@
-## *IntelliJ* Setup
+# *IntelliJ* Setup
 
-Setting up *IntelliJ* is pretty simple.  There are a few plugins to install with the associated settings, and some settings to download and import.
+## Tasks to be performed
 
-Plugin installation can be initiated from the JetBrains Marketplace web page, by clicking "Install to IDE" link from each plugin's page.
+- open the TripleA project from source code
+- install plugins, configure associated settings
+- download and import IDEA settings file
 
-Note: The below instructions reference IntelliJ Settings, which are accessible via: `IntelliJ IDEA > Preferences` for macOS or `File > Settings` on other platforms.
+Approximate time to complete: 10 - 30 minutes
+
+### Open Project
+- In IDEA, **File > Open** and select the build.gradle file that is located at
+  the top level of the project. (**Tip** by selecting gradle file, IDEA will
+  preconfigure the project as a gradle project)
 
 ### Plugins:
+
+Note: **Settings** menu is accessible via, `File > Settings`  or (on Mac OS): `IntelliJ IDEA > Preferences`
+
+Plugin installation can be initiated from the JetBrains Marketplace web page, by clicking "Install to IDE" link from each plugin's page.
   1. *Google Java Format* [plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format)
         1. **Settings* > google-java-format Settings**
         1.  Check 'enable'
@@ -17,9 +28,11 @@ Note: The below instructions reference IntelliJ Settings, which are accessible v
             1. load checkstyle file by clicking on the "plus" and navigating to the file .\IdeaProjects\triplea\config\checkstyle (If you can't find it, you can download it from [the repository](https://github.com/triplea-game/triplea/blob/master/config/checkstyle/checkstyle.xml))
             1. set checkstyle version
             1. set to scan all sources
+            1. **WARNING** latest checkstyle version is not compatible with the XML file that is checked in,
+               you need to use an older checkstyle version in IDE (#7788)
       ![Screenshot from 2020-10-18 19-18-46
       ](https://user-images.githubusercontent.com/12397753/96394543-271e2700-1177-11eb-9460-24e2e235d60d.png)
-  1. *Save Actions*
+  1. *Save Actions (optional)*
         1. **Settings > Other settings > Save Actions**
         1. Select 'Activate save actions on save'
         1. configure in settings to add 'final' to local variables and class variables.
@@ -32,3 +45,4 @@ Note: The below instructions reference IntelliJ Settings, which are accessible v
   1. *File > Import Settings*
   1. Select file: [.ide-intellij/intellij-settings.zip
    ](https://github.com/triplea-game/triplea/blob/master/.ide-intellij/intellij-settings.zip)
+

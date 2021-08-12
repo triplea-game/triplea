@@ -1,6 +1,6 @@
-## Add TripleA main repository 'upstream' as a git remote
+# Git Help and Typical Commands
 
-One-time, add the upstream remote
+## (one-time) Add TripleA main repository 'upstream' as a git remote
 
 ```
 cd triplea/
@@ -10,21 +10,29 @@ git remote add upstream git@github.com:triplea-game/triplea.git
 ## Typical workflow
 
 ```
-cd triplea/
+cd ~/work/triplea/
 git checkout master
+
+## Refresh to latest code
+# Update local 'master' with the latest code from the main project
 git pull --rebase upstream master/
 
-## This next step is optional to keep your remote 'master' branch in-sync
+# Update 'fork' repository with latest 'master'
 git push origin master/
 
+## Start feature branch work flow, create a branch
 git checkout -b "my-feature-branch-name"
 
 ## do work
 git add <new-files>
 git commit .
-## enter in a commit message
+## Enter in a commit message and save,
+## Double check files committed message looks good.
+
+# push the branch to your fork
 git push origin
+## Check the output, look for the 'create PR' link
+## Follow the 'create PR' web link
 ```
 
-With the above done, you'll get a link in the push output that can
-create a PR. Read more about [pull requests here](../reference/dev-process/pull-requests.md).
+Read more about TripleA's  [pull requests process here](../reference/dev-process/pull-requests.md).

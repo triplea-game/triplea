@@ -2,7 +2,6 @@
 
 Hosts database migrations and docker to run a database locally.
 
-
 Stores:
   - users
   - lobby chat history
@@ -12,7 +11,6 @@ Stores:
   - uploaded map information
 
 For more information see: [database documentation](/docs/development/database/)
-
 
 ## Working with database locally
 

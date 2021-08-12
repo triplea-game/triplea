@@ -1,5 +1,9 @@
 # Eclipse Setup
 
+**These instructions may be out of date!!!**
+
+**If you use eclipse, please update this document**
+
 ##  Plugins:
   - ***Buildship Gradle Integration***
      1. [Install Plugin](https://marketplace.eclipse.org/content/buildship-gradle-integration)
