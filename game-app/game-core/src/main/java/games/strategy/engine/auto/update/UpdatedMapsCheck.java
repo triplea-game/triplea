@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import lombok.experimental.UtilityClass;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.swing.SwingComponents;
 
 @UtilityClass
@@ -43,7 +43,7 @@ class UpdatedMapsCheck {
       return;
     }
 
-    final List<MapDownloadListing> availableToDownloadMaps = MapListingFetcher.getMapDownloadList();
+    final List<MapDownloadItem> availableToDownloadMaps = MapListingFetcher.getMapDownloadList();
 
     if (availableToDownloadMaps.isEmpty()) {
       // A failure happened getting maps. User is already notified.
@@ -70,14 +70,14 @@ class UpdatedMapsCheck {
    *     installed version.
    */
   public static Collection<String> computeOutOfDateMaps(
-      final Collection<MapDownloadListing> availableToDownloadMaps,
+      final Collection<MapDownloadItem> availableToDownloadMaps,
       final Function<String, Integer> mapVersionLookup) {
 
     final Collection<String> outOfDateMapNames = new ArrayList<>();
 
     // Loop over all available maps, check if we have that map present, its version,
     // and remember any whose version is less than what is available.
-    for (final MapDownloadListing availableMap : availableToDownloadMaps) {
+    for (final MapDownloadItem availableMap : availableToDownloadMaps) {
       final int installedVersion = mapVersionLookup.apply(availableMap.getMapName());
       if (installedVersion < availableMap.getVersion()) {
         outOfDateMapNames.add(availableMap.getMapName());

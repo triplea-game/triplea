@@ -34,7 +34,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.swing.JButtonBuilder;
@@ -63,8 +63,7 @@ public class DownloadMapsWindow extends JFrame {
   private final DownloadMapsWindowUtils downloadMapsWindowUtils;
 
   private DownloadMapsWindow(
-      final Collection<String> pendingDownloadMapNames,
-      final List<MapDownloadListing> allDownloads) {
+      final Collection<String> pendingDownloadMapNames, final List<MapDownloadItem> allDownloads) {
     super("Download Maps");
     downloadMapsWindowUtils = new DownloadMapsWindowUtils();
 
@@ -76,7 +75,7 @@ public class DownloadMapsWindow extends JFrame {
     setIconImage(EngineImageLoader.loadFrameIcon());
     progressPanel = new MapDownloadProgressPanel();
 
-    final Set<MapDownloadListing> pendingDownloads = new HashSet<>();
+    final Set<MapDownloadItem> pendingDownloads = new HashSet<>();
     final Collection<String> unknownMapNames = new ArrayList<>();
     for (final String mapName : pendingDownloadMapNames) {
       findMap(mapName, allDownloads)
@@ -209,7 +208,7 @@ public class DownloadMapsWindow extends JFrame {
               });
     }
 
-    private static List<MapDownloadListing> getMapDownloadListInBackground()
+    private static List<MapDownloadItem> getMapDownloadListInBackground()
         throws InterruptedException {
       return BackgroundTaskRunner.runInBackgroundAndReturn(
           "Downloading list of available maps...", MapListingFetcher::getMapDownloadList);
@@ -217,7 +216,7 @@ public class DownloadMapsWindow extends JFrame {
 
     private void createAndShow(
         final Collection<String> mapNamesToDownload,
-        final List<MapDownloadListing> availableDownloads) {
+        final List<MapDownloadItem> availableDownloads) {
       assert SwingUtilities.isEventDispatchThread();
       assert state == State.INITIALIZING;
       assert window == null;
@@ -267,11 +266,11 @@ public class DownloadMapsWindow extends JFrame {
     return sb.toString();
   }
 
-  private static Optional<MapDownloadListing> findMap(
-      final String mapName, final List<MapDownloadListing> games) {
+  private static Optional<MapDownloadItem> findMap(
+      final String mapName, final List<MapDownloadItem> games) {
 
     final String normalizedName = normalizeName(mapName);
-    for (final MapDownloadListing download : games) {
+    for (final MapDownloadItem download : games) {
       if (download.getMapName().equalsIgnoreCase(mapName)
           || normalizedName.equals(normalizeName(download.getMapName()))) {
         return Optional.of(download);
@@ -285,12 +284,12 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private JTabbedPane newAvailableInstalledTabbedPanel(
-      final List<MapDownloadListing> downloads, final Set<MapDownloadListing> pendingDownloads) {
+      final List<MapDownloadItem> downloads, final Set<MapDownloadItem> pendingDownloads) {
     final DownloadMapsWindowMapsListing mapList = new DownloadMapsWindowMapsListing(downloads);
 
     final JTabbedPane tabbedPane = new JTabbedPane();
 
-    final List<MapDownloadListing> outOfDateDownloads =
+    final List<MapDownloadItem> outOfDateDownloads =
         mapList.getOutOfDateExcluding(pendingDownloads);
     // For the UX, always show an available maps tab, even if it is empty
     final JPanel available =
@@ -310,7 +309,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private JPanel newMapSelectionPanel(
-      final List<MapDownloadListing> unsortedMaps, final MapAction action) {
+      final List<MapDownloadItem> unsortedMaps, final MapAction action) {
     final JPanel main = new JPanelBuilder().border(30).borderLayout().build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
@@ -349,7 +348,7 @@ public class DownloadMapsWindow extends JFrame {
   private void newDescriptionPanelUpdatingSelectionListener(
       final String mapName,
       final JEditorPane descriptionPanel,
-      final List<MapDownloadListing> maps,
+      final List<MapDownloadItem> maps,
       final JLabel mapSizeLabelToUpdate) {
 
     // find the map description by map name and update the map download detail panel
@@ -365,7 +364,7 @@ public class DownloadMapsWindow extends JFrame {
             });
   }
 
-  private void updateMapUrlAndSizeLabel(final MapDownloadListing map, final JLabel mapSizeLabel) {
+  private void updateMapUrlAndSizeLabel(final MapDownloadItem map, final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
     ThreadRunner.runInNewThread(
         () -> {
@@ -374,7 +373,7 @@ public class DownloadMapsWindow extends JFrame {
         });
   }
 
-  private String newLabelText(final MapDownloadListing map) {
+  private String newLabelText(final MapDownloadItem map) {
     final String doubleSpace = "&nbsp;&nbsp;";
 
     final StringBuilder sb = new StringBuilder();
@@ -424,7 +423,7 @@ public class DownloadMapsWindow extends JFrame {
   private JPanel newButtonsPanel(
       final MapAction action,
       final Supplier<List<String>> mapSelection,
-      final List<MapDownloadListing> maps,
+      final List<MapDownloadItem> maps,
       final Consumer<String> tableRemoveAction) {
 
     return new JPanelBuilder()
@@ -450,7 +449,7 @@ public class DownloadMapsWindow extends JFrame {
   private JButton buildMapActionButton(
       final MapAction action,
       final Supplier<List<String>> mapSelection,
-      final List<MapDownloadListing> maps,
+      final List<MapDownloadItem> maps,
       final Consumer<String> tableRemoveAction) {
     final JButton actionButton;
 
@@ -478,11 +477,11 @@ public class DownloadMapsWindow extends JFrame {
 
   private Runnable removeAction(
       final Supplier<List<String>> mapSelection,
-      final List<MapDownloadListing> maps,
+      final List<MapDownloadItem> maps,
       final Consumer<String> tableRemoveAction) {
     return () -> {
       final List<String> selectedValues = mapSelection.get();
-      final List<MapDownloadListing> selectedMaps =
+      final List<MapDownloadItem> selectedMaps =
           maps.stream()
               .filter(map -> selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
@@ -495,11 +494,11 @@ public class DownloadMapsWindow extends JFrame {
 
   private Runnable installAction(
       final Supplier<List<String>> mapSelection,
-      final List<MapDownloadListing> maps,
+      final List<MapDownloadItem> maps,
       final Consumer<String> tableRemoveAction) {
     return () -> {
       final List<String> selectedValues = mapSelection.get();
-      final List<MapDownloadListing> downloadList =
+      final List<MapDownloadItem> downloadList =
           maps.stream()
               .filter(map -> selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
@@ -508,7 +507,7 @@ public class DownloadMapsWindow extends JFrame {
         progressPanel.download(downloadList);
       }
 
-      downloadList.stream().map(MapDownloadListing::getMapName).forEach(tableRemoveAction);
+      downloadList.stream().map(MapDownloadItem::getMapName).forEach(tableRemoveAction);
     };
   }
 }

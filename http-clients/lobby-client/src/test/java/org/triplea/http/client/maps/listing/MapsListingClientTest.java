@@ -14,16 +14,16 @@ import ru.lanwen.wiremock.ext.WiremockResolver;
 
 class MapsListingClientTest extends WireMockTest {
 
-  private static final List<MapDownloadListing> mapsListingResponse =
+  private static final List<MapDownloadItem> mapsListingResponse =
       List.of(
-          MapDownloadListing.builder()
+          MapDownloadItem.builder()
               .mapName("map-1")
               .description("description-1")
               .downloadUrl("http://download-url")
               .previewImageUrl("http://preview-url")
               .lastCommitDateEpochMilli(10L)
               .build(),
-          MapDownloadListing.builder()
+          MapDownloadItem.builder()
               .mapName("map-2")
               .description("description-2")
               .downloadUrl("http://download-url-2")

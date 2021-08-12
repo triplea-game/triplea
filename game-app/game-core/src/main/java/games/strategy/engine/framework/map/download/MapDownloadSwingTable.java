@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapTag;
 import org.triplea.swing.JTableBuilder;
 
@@ -20,7 +20,7 @@ import org.triplea.swing.JTableBuilder;
 public class MapDownloadSwingTable {
   private final JTable table;
 
-  public MapDownloadSwingTable(final Collection<MapDownloadListing> maps) {
+  public MapDownloadSwingTable(final Collection<MapDownloadItem> maps) {
     // Build a jtable that has n+1 columns, the first column (+1) is the map name,
     // the 'n' columns are one for each tag.
     // Note, not all maps have all tags (potentially sparse), we will display a blank
@@ -32,7 +32,7 @@ public class MapDownloadSwingTable {
     // Get the full set of all tag names in display order
     final List<String> tagNames =
         maps.stream()
-            .map(MapDownloadListing::getMapTags)
+            .map(MapDownloadItem::getMapTags)
             .flatMap(Collection::stream)
             .sorted(Comparator.comparing(MapTag::getDisplayOrder))
             .map(MapTag::getName)
@@ -42,11 +42,11 @@ public class MapDownloadSwingTable {
     columnNames.addAll(tagNames); // .stream().map(MapTag::getName).collect(Collectors.toList()));
 
     table =
-        JTableBuilder.<MapDownloadListing>builder()
+        JTableBuilder.<MapDownloadItem>builder()
             .columnNames(columnNames)
             .rowData(
                 maps.stream()
-                    .sorted(Comparator.comparing(MapDownloadListing::getMapName))
+                    .sorted(Comparator.comparing(MapDownloadItem::getMapName))
                     .collect(Collectors.toList()))
             .rowMapper(mapDownloadListing -> rowMapper(mapDownloadListing, tagNames))
             .build();
@@ -57,12 +57,12 @@ public class MapDownloadSwingTable {
    * row, map name and then each of the map's tag values.
    */
   private List<String> rowMapper(
-      final MapDownloadListing mapDownloadListing, final List<String> mapTags) {
+      final MapDownloadItem mapDownloadItem, final List<String> mapTags) {
     final List<String> rowValues = new ArrayList<>();
-    rowValues.add(mapDownloadListing.getMapName());
+    rowValues.add(mapDownloadItem.getMapName());
 
     for (final String tag : mapTags) {
-      final String tagValue = mapDownloadListing.getTagValue(tag);
+      final String tagValue = mapDownloadItem.getTagValue(tag);
       rowValues.add(tagValue);
     }
     return rowValues;

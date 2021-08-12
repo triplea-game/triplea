@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.ThreadRunner;
 
 /**
@@ -18,11 +18,11 @@ final class MapDownloadProgressListener {
 
   private static final int MAX_PROGRESS_VALUE = 100;
 
-  private final MapDownloadListing download;
+  private final MapDownloadItem download;
   private final JProgressBar progressBar;
   @Nullable private volatile Long downloadLength;
 
-  MapDownloadProgressListener(final MapDownloadListing download, final JProgressBar progressBar) {
+  MapDownloadProgressListener(final MapDownloadItem download, final JProgressBar progressBar) {
     this.download = download;
     this.progressBar = progressBar;
 
