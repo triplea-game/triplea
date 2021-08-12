@@ -8,5 +8,5 @@ import java.util.List;
 public interface MapsListingClient {
   String MAPS_LISTING_PATH = "/maps/listing";
 
-  List<MapDownloadListing> fetchMapDownloads();
+  List<MapDownloadItem> fetchMapDownloads();
 }

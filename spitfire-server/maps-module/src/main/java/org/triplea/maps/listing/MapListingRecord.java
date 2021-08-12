@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapTag;
 
 @Getter
@@ -30,8 +30,8 @@ public class MapListingRecord {
     this.lastCommitDate = lastCommitDate;
   }
 
-  public MapDownloadListing toMapDownloadItem(final List<MapTag> mapTags) {
-    return MapDownloadListing.builder()
+  public MapDownloadItem toMapDownloadItem(final List<MapTag> mapTags) {
+    return MapDownloadItem.builder()
         .downloadUrl(downloadUrl)
         .previewImageUrl(previewImageUrl)
         .mapName(name)

@@ -16,7 +16,7 @@ public class MapsListingHttpClient implements MapsListingClient {
   }
 
   @Override
-  public List<MapDownloadListing> fetchMapDownloads() {
+  public List<MapDownloadItem> fetchMapDownloads() {
     return mapsListingFeignClient.fetchMapListing(AuthenticationHeaders.systemIdHeaders());
   }
 }

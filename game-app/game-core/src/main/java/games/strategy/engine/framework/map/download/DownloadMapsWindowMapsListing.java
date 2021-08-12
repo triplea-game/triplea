@@ -9,24 +9,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 
 @Getter
 class DownloadMapsWindowMapsListing {
 
-  private final List<MapDownloadListing> available = new ArrayList<>();
-  private final List<MapDownloadListing> installed = new ArrayList<>();
-  private final List<MapDownloadListing> outOfDate = new ArrayList<>();
+  private final List<MapDownloadItem> available = new ArrayList<>();
+  private final List<MapDownloadItem> installed = new ArrayList<>();
+  private final List<MapDownloadItem> outOfDate = new ArrayList<>();
 
-  DownloadMapsWindowMapsListing(final Collection<MapDownloadListing> downloads) {
+  DownloadMapsWindowMapsListing(final Collection<MapDownloadItem> downloads) {
     this(downloads, InstalledMapsListing.parseMapFiles());
   }
 
   @VisibleForTesting
   DownloadMapsWindowMapsListing(
-      final Collection<MapDownloadListing> downloads,
+      final Collection<MapDownloadItem> downloads,
       final InstalledMapsListing installedMapsListing) {
-    for (final MapDownloadListing download : downloads) {
+    for (final MapDownloadItem download : downloads) {
       if (download == null) {
         return;
       }
@@ -44,11 +44,11 @@ class DownloadMapsWindowMapsListing {
     }
   }
 
-  List<MapDownloadListing> getAvailableExcluding(final Collection<MapDownloadListing> excluded) {
+  List<MapDownloadItem> getAvailableExcluding(final Collection<MapDownloadItem> excluded) {
     return available.stream().filter(not(excluded::contains)).collect(Collectors.toList());
   }
 
-  List<MapDownloadListing> getOutOfDateExcluding(final Collection<MapDownloadListing> excluded) {
+  List<MapDownloadItem> getOutOfDateExcluding(final Collection<MapDownloadItem> excluded) {
     return outOfDate.stream().filter(not(excluded::contains)).collect(Collectors.toList());
   }
 }

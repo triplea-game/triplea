@@ -13,15 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
   private static final String MAP_NAME = "new_test_order";
   private static final int MAP_VERSION = 10;
 
-  private static final MapDownloadListing TEST_MAP =
-      MapDownloadListing.builder()
+  private static final MapDownloadItem TEST_MAP =
+      MapDownloadItem.builder()
           .downloadUrl("")
           .previewImageUrl("")
           .mapName(MAP_NAME)
@@ -46,21 +46,21 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
   void testAvailableExcluding() {
     final InstalledMapsListing installedMapsListing = new InstalledMapsListing(List.of());
 
-    final MapDownloadListing download1 = newDownloadWithUrl("url1");
-    final MapDownloadListing download2 = newDownloadWithUrl("url2");
-    final MapDownloadListing download3 = newDownloadWithUrl("url3");
+    final MapDownloadItem download1 = newDownloadWithUrl("url1");
+    final MapDownloadItem download2 = newDownloadWithUrl("url2");
+    final MapDownloadItem download3 = newDownloadWithUrl("url3");
     final DownloadMapsWindowMapsListing downloadMapsWindowMapsListing =
         new DownloadMapsWindowMapsListing(
             List.of(download1, download2, download3), installedMapsListing);
 
-    final List<MapDownloadListing> available =
+    final List<MapDownloadItem> available =
         downloadMapsWindowMapsListing.getAvailableExcluding(List.of(download1, download3));
 
     assertThat(available, is(List.of(download2)));
   }
 
-  private static MapDownloadListing newDownloadWithUrl(final String url) {
-    return MapDownloadListing.builder()
+  private static MapDownloadItem newDownloadWithUrl(final String url) {
+    return MapDownloadItem.builder()
         .downloadUrl(url)
         .previewImageUrl(url)
         .description("description")
@@ -70,8 +70,8 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         .build();
   }
 
-  private static MapDownloadListing newInstalledDownloadWithUrl(final String url) {
-    return MapDownloadListing.builder()
+  private static MapDownloadItem newInstalledDownloadWithUrl(final String url) {
+    return MapDownloadItem.builder()
         .downloadUrl(url)
         .previewImageUrl(url)
         .description("description")
@@ -132,9 +132,9 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
 
   @Test
   void testOutOfDateExcluding() {
-    final MapDownloadListing download1 = newInstalledDownloadWithUrl("url1");
-    final MapDownloadListing download2 = newInstalledDownloadWithUrl("url2");
-    final MapDownloadListing download3 = newInstalledDownloadWithUrl("url3");
+    final MapDownloadItem download1 = newInstalledDownloadWithUrl("url1");
+    final MapDownloadItem download2 = newInstalledDownloadWithUrl("url2");
+    final MapDownloadItem download3 = newInstalledDownloadWithUrl("url3");
 
     final InstalledMapsListing installedMapsListing =
         buildIndexWithMapVersions(
@@ -147,7 +147,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         new DownloadMapsWindowMapsListing(
             List.of(download1, download2, download3), installedMapsListing);
 
-    final List<MapDownloadListing> outOfDate =
+    final List<MapDownloadItem> outOfDate =
         downloadMapsWindowMapsListing.getOutOfDateExcluding(List.of(download1, download3));
 
     assertThat(outOfDate, is(List.of(download2)));

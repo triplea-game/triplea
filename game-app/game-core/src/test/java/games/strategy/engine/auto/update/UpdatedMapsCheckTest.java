@@ -18,7 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 
 @SuppressWarnings("unused")
 @ExtendWith(MockitoExtension.class)
@@ -85,9 +85,8 @@ final class UpdatedMapsCheckTest {
   }
 
   @SuppressWarnings("SameParameterValue")
-  private static MapDownloadListing buildDownloadDescription(
-      final String mapName, final int version) {
-    return MapDownloadListing.builder()
+  private static MapDownloadItem buildDownloadDescription(final String mapName, final int version) {
+    return MapDownloadItem.builder()
         .description("description")
         .mapName(mapName)
         .version(version)

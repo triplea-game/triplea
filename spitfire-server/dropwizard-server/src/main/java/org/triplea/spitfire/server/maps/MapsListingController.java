@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapsListingClient;
 import org.triplea.maps.listing.MapListingDao;
 import org.triplea.maps.listing.MapsListingModule;
@@ -20,7 +20,7 @@ import org.triplea.maps.listing.MapsListingModule;
 @Produces(MediaType.APPLICATION_JSON)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapsListingController {
-  private final Supplier<List<MapDownloadListing>> downloadListingSupplier;
+  private final Supplier<List<MapDownloadItem>> downloadListingSupplier;
 
   public static MapsListingController build(final Jdbi jdbi) {
     return new MapsListingController(new MapsListingModule(jdbi.onDemand(MapListingDao.class)));
@@ -28,7 +28,7 @@ public class MapsListingController {
 
   @GET
   @Path(MapsListingClient.MAPS_LISTING_PATH)
-  public List<MapDownloadListing> fetchAvailableMaps() {
+  public List<MapDownloadItem> fetchAvailableMaps() {
     return downloadListingSupplier.get();
   }
 }

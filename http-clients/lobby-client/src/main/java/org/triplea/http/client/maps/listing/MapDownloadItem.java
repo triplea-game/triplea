@@ -8,12 +8,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Represents a map that can be downloaded. This data object contains information on how to render a
+ * preview and description of the map, as well as the needed URLs to download the map itself.
+ */
 @Builder
 @AllArgsConstructor
 @Getter
 @ToString
 @EqualsAndHashCode
-public class MapDownloadListing {
+public class MapDownloadItem {
   /** URL where the map can be downloaded. */
   @Nonnull private final String downloadUrl;
   /** URL of the preview image of the map. */

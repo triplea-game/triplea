@@ -17,5 +17,5 @@ public interface MapsListingFeignClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   @RequestLine("GET " + MapsListingClient.MAPS_LISTING_PATH)
-  List<MapDownloadListing> fetchMapListing(@HeaderMap Map<String, Object> headers);
+  List<MapDownloadItem> fetchMapListing(@HeaderMap Map<String, Object> headers);
 }

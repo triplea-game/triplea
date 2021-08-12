@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 
 /** Various logic methods used by DownloadMapsWindows. */
@@ -18,17 +18,17 @@ class DownloadMapsWindowUtils {
     installedMapsListing = InstalledMapsListing.parseMapFiles();
   }
 
-  public boolean isInstalled(final MapDownloadListing mapDownloadListing) {
-    return getInstallLocation(mapDownloadListing).isPresent();
+  public boolean isInstalled(final MapDownloadItem mapDownloadItem) {
+    return getInstallLocation(mapDownloadItem).isPresent();
   }
 
   /** File reference for where to install the file, empty if not installed. */
-  Optional<Path> getInstallLocation(final MapDownloadListing mapDownloadListing) {
-    return installedMapsListing.findMapFolderByName(mapDownloadListing.getMapName());
+  Optional<Path> getInstallLocation(final MapDownloadItem mapDownloadItem) {
+    return installedMapsListing.findMapFolderByName(mapDownloadItem.getMapName());
   }
 
-  boolean delete(final MapDownloadListing mapDownloadListing) {
-    final Path installLocation = getInstallLocation(mapDownloadListing).orElse(null);
+  boolean delete(final MapDownloadItem mapDownloadItem) {
+    final Path installLocation = getInstallLocation(mapDownloadItem).orElse(null);
     if (installLocation == null) {
       return true;
     }
@@ -56,12 +56,12 @@ class DownloadMapsWindowUtils {
     }
   }
 
-  String toHtmlString(final MapDownloadListing mapDownloadListing) {
-    String text = "<h1>" + mapDownloadListing.getMapName() + "</h1>\n";
-    if (!mapDownloadListing.getPreviewImageUrl().isEmpty()) {
-      text += "<img src='" + mapDownloadListing.getPreviewImageUrl() + "' />\n";
+  String toHtmlString(final MapDownloadItem mapDownloadItem) {
+    String text = "<h1>" + mapDownloadItem.getMapName() + "</h1>\n";
+    if (!mapDownloadItem.getPreviewImageUrl().isEmpty()) {
+      text += "<img src='" + mapDownloadItem.getPreviewImageUrl() + "' />\n";
     }
-    text += mapDownloadListing.getDescription();
+    text += mapDownloadItem.getDescription();
     return text;
   }
 }

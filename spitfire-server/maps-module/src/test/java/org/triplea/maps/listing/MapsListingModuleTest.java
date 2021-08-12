@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 
 @ExtendWith(MockitoExtension.class)
 class MapsListingModuleTest {
@@ -50,7 +50,7 @@ class MapsListingModuleTest {
                     .description("description-1")
                     .build()));
 
-    final List<MapDownloadListing> results = mapsListingModule.get();
+    final List<MapDownloadItem> results = mapsListingModule.get();
     assertThat(results, hasSize(2));
     // expected sort by map name, so first map should be id "1"
     assertThat(results.get(0).getMapName(), is("map-name-1"));

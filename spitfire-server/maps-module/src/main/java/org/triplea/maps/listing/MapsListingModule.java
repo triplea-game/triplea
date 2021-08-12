@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 
 @AllArgsConstructor
-public class MapsListingModule implements Supplier<List<MapDownloadListing>> {
+public class MapsListingModule implements Supplier<List<MapDownloadItem>> {
 
   private final MapListingDao mapListingDao;
 
@@ -17,14 +17,14 @@ public class MapsListingModule implements Supplier<List<MapDownloadListing>> {
    * MapDownloadItem} and return a sorted list by map name.
    */
   @Override
-  public List<MapDownloadListing> get() {
+  public List<MapDownloadItem> get() {
     return mapListingDao.fetchMapListings().stream()
         .map(this::databaseRecordToDownloadItemFunction)
-        .sorted(Comparator.comparing(MapDownloadListing::getMapName))
+        .sorted(Comparator.comparing(MapDownloadItem::getMapName))
         .collect(Collectors.toList());
   }
 
-  private MapDownloadListing databaseRecordToDownloadItemFunction(
+  private MapDownloadItem databaseRecordToDownloadItemFunction(
       final MapListingRecord mapListingRecord) {
     final var mapTagsFetchedFromDatabase =
         mapListingDao.fetchMapTagsForMapName(mapListingRecord.getName()).stream()
