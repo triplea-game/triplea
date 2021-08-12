@@ -24,6 +24,12 @@ public class MapIndexingResult {
    */
   @Nonnull String downloadUri;
 
+  /**
+   * URI to download preview image, eg:
+   * https://raw.githubusercontent.com/triplea-maps/napoleonic_empires/master/preview.png
+   */
+  @Nonnull String previewImageUri;
+
   /** The size of the map download in bytes. */
   @Nonnull Long mapDownloadSizeInBytes;
 

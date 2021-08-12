@@ -10,15 +10,22 @@ delete
 from access_log;
 delete
 from user_role;
+delete
+from map_index;
+delete
+from map_tag_values;
+delete
+from tag_type;
+
 
 insert into user_role(id, name)
-values (1, 'ADMIN'), -- user can add/remove admins and add/remove moderators, has boot/ban privileges
+values (1, 'ADMIN'),     -- user can add/remove admins and add/remove moderators, has boot/ban privileges
        (2, 'MODERATOR'), -- user has boot/ban privileges
-       (3, 'PLAYER'), -- standard registered user
+       (3, 'PLAYER'),    -- standard registered user
        (4, 'ANONYMOUS'), -- users that are not registered, they do not have an entry in lobby_user table
        (5, 'HOST'); -- AKA LobbyWatcher, special connection for hosts to send game updates to lobby
 
-insert into lobby_user(id, username, email, user_role_id,  bcrypt_password)
+insert into lobby_user(id, username, email, user_role_id, bcrypt_password)
 values (1000, 'test', 'email@email.com', (select id from user_role where name = 'ADMIN'),
         '$2a$10$Ut3tvElEhPPr4s5wPd4dFuOvY25fa4r5XH3T7ucFTr5gJsotZl5d6'), -- password = 'test'
        (1001, 'user1', 'email@email.com', (select id from user_role where name = 'PLAYER'),
@@ -82,3 +89,19 @@ values (1000, 'ACTION_1', 'TARGET_1'),
        (1000, 'ACTION_48', 'TARGET_48'),
        (1000, 'ACTION_49', 'TARGET_49'),
        (1000, 'ACTION_50', 'TARGET_50');
+
+insert into map_index
+(id, map_name, last_commit_date, repo_url,
+ description, download_size_bytes, download_url,
+ preview_image_url)
+values (1, 'test-map', now() - interval '1 days', 'http://repo-url',
+        'map description', 1024, 'http://download-url',
+        'http://preview-image');
+
+insert into tag_type (id, name, type, display_order)
+values (1, 'Category', 'STRING', 1),
+       (2, 'Rating', 'STAR', 2);
+
+insert into map_tag_values (map_id, tag_type_id, tag_value)
+values (1, 1, 'BEST'),
+       (1, 2, '5');

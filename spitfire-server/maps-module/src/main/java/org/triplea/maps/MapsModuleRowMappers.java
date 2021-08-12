@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.triplea.maps.listing.MapListingRecord;
+import org.triplea.maps.listing.MapTagRecord;
 
 /** Utility to get connections to the Postgres lobby database. */
 @UtilityClass
@@ -14,6 +15,9 @@ public final class MapsModuleRowMappers {
    * objects.
    */
   public static List<RowMapperFactory> rowMappers() {
-    return List.of(ConstructorMapper.factory(MapListingRecord.class));
+    return List.of(
+        ConstructorMapper.factory(MapListingRecord.class),
+        ConstructorMapper.factory(MapTagRecord.class) //
+        );
   }
 }

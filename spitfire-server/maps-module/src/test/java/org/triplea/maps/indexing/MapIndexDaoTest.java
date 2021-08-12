@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.maps.MapsModuleDatabaseTestSupport;
 
 @AllArgsConstructor
-@DataSet(value = "map_category.yml,map_index.yml", useSequenceFiltering = false)
+@DataSet(value = "map_index.yml", useSequenceFiltering = false)
 @ExtendWith(MapsModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
 class MapIndexDaoTest {
@@ -33,6 +33,7 @@ class MapIndexDaoTest {
             .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
             .mapDownloadSizeInBytes(3080L)
             .downloadUri("http-map-repo-3-download")
+            .previewImageUri("http-preview-image-url-3")
             .description("description")
             .build());
   }
@@ -47,6 +48,7 @@ class MapIndexDaoTest {
             .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
             .mapDownloadSizeInBytes(6789L)
             .downloadUri("http-map-repo-3-download-updated-url")
+            .previewImageUri("http-preview-image-url-3")
             .description("description-updated")
             .build());
   }
@@ -62,6 +64,7 @@ class MapIndexDaoTest {
             .lastCommitDate(LocalDateTime.of(2016, 1, 1, 23, 59, 20).toInstant(ZoneOffset.UTC))
             .mapDownloadSizeInBytes(1000L)
             .downloadUri("http-map-repo-url-2/archives/master.zip")
+            .previewImageUri("http-preview-image-url-2")
             .description("description-repo-2")
             .build());
   }

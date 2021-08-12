@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.triplea.http.client.maps.listing.MapDownloadListing;
+import org.triplea.http.client.maps.listing.MapTag;
 import org.triplea.swing.JTableBuilder;
 
 /**
@@ -19,15 +21,51 @@ public class MapDownloadSwingTable {
   private final JTable table;
 
   public MapDownloadSwingTable(final Collection<MapDownloadListing> maps) {
+    // Build a jtable that has n+1 columns, the first column (+1) is the map name,
+    // the 'n' columns are one for each tag.
+    // Note, not all maps have all tags (potentially sparse), we will display a blank
+    // value if a map does not have a given tag.
+
+    final List<String> columnNames = new ArrayList<>();
+    columnNames.add("Map");
+
+    // Get the full set of all tag names in display order
+    final List<String> tagNames =
+        maps.stream()
+            .map(MapDownloadListing::getMapTags)
+            .flatMap(Collection::stream)
+            .sorted(Comparator.comparing(MapTag::getDisplayOrder))
+            .map(MapTag::getName)
+            .distinct()
+            .collect(Collectors.toList());
+
+    columnNames.addAll(tagNames); // .stream().map(MapTag::getName).collect(Collectors.toList()));
+
     table =
         JTableBuilder.<MapDownloadListing>builder()
-            .columnNames("Map", "Category")
+            .columnNames(columnNames)
             .rowData(
                 maps.stream()
                     .sorted(Comparator.comparing(MapDownloadListing::getMapName))
                     .collect(Collectors.toList()))
-            .rowMapper(map -> List.of(map.getMapName(), map.getMapCategory()))
+            .rowMapper(mapDownloadListing -> rowMapper(mapDownloadListing, tagNames))
             .build();
+  }
+
+  /**
+   * Given a download item and a set of tags (in correct display order), returns values for a table
+   * row, map name and then each of the map's tag values.
+   */
+  private List<String> rowMapper(
+      final MapDownloadListing mapDownloadListing, final List<String> mapTags) {
+    final List<String> rowValues = new ArrayList<>();
+    rowValues.add(mapDownloadListing.getMapName());
+
+    for (final String tag : mapTags) {
+      final String tagValue = mapDownloadListing.getTagValue(tag);
+      rowValues.add(tagValue);
+    }
+    return rowValues;
   }
 
   public JTable getSwingComponent() {

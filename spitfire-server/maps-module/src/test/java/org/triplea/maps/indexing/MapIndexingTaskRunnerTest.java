@@ -27,6 +27,7 @@ class MapIndexingTaskRunnerTest {
           .mapName("map-name")
           .mapRepoUri("http://repo")
           .downloadUri("http://repo-download")
+          .previewImageUri("http://preview")
           .mapDownloadSizeInBytes(555L)
           .description("description")
           .build();
