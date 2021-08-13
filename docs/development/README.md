@@ -2,7 +2,8 @@
 
 ## Getting Started
 
-* You'll need an IDE, IDEA or Eclipse and then [setup plugins and formatter](./ide-setup)
+* You'll need an IDE, IDEA (preferred) or Eclipse and then
+  [setup plugins and formatter](./how-to/ide-setup)
 
 * Create a fork of triplea-game/triplea
 
