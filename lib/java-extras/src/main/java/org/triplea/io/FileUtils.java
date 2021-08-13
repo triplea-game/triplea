@@ -229,4 +229,8 @@ public final class FileUtils {
       return Optional.empty();
     }
   }
+
+  public static void deleteDirectory(final Path path) throws IOException {
+    org.apache.commons.io.FileUtils.deleteDirectory(path.toFile());
+  }
 }

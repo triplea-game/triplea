@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -111,5 +112,23 @@ final class FileUtilsTest {
     final Optional<String> contentRead = FileUtils.readContents(testFile);
 
     assertThat(contentRead, isPresent());
+  }
+
+  /**
+   * Creates a non-empty directory, run delete, verify directory is deleted. Linux systems
+   * will fail the delete operation if the directory is not empty, this test verifies
+   * that we do a recursive delete before removing the directory.
+   */
+  @Test
+  void deleteDirectory() throws IOException {
+    final Path directory = Path.of("directory");
+    Files.createDirectory(directory);
+    // create a file in the directory so that it is non-empty
+    Files.createFile(directory.resolve("touch-file"));
+    assertThat("Precondition, make sure the directory exists", Files.exists(directory), is(true));
+
+    FileUtils.deleteDirectory(directory);
+
+    assertThat(Files.exists(directory), is(false));
   }
 }

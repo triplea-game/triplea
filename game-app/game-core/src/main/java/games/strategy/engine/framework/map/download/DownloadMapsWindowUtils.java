@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.io.FileUtils;
 import org.triplea.java.Interruptibles;
 
 /** Various logic methods used by DownloadMapsWindows. */
@@ -34,7 +35,7 @@ class DownloadMapsWindowUtils {
     }
 
     try {
-      Files.delete(installLocation);
+      FileUtils.deleteDirectory(installLocation);
     } catch (final IOException e) {
       log.warn(
           "Unable to delete maps files.<br>Manual removal may be necessary: {}<br>{}",
