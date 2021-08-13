@@ -7,12 +7,13 @@
 
 ```
 ## start database
-./servers/database/start_docker_db
+./spitfire-server/database/start_docker_db
 
 ## connect to database to inspect data
-./servers/database/connect_to_docker_db
+./spitfire-server/database/connect_to_docker_db
 
 ## drop schema, data and recreate
-./servers/database/reset_docker_db
+./spitfire-server/database/reset_docker_db
 ```
 
+The game-headed client can be configured in 'settings > testing' to us the local server.

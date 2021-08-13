@@ -2,6 +2,8 @@
 
 ## Getting Started
 
+* Take a look at some of our [how-to documentations](./how-to>)
+
 * You'll need an IDE, IDEA (preferred) or Eclipse and then
   [setup plugins and formatter](./how-to/ide-setup)
 
