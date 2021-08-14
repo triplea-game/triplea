@@ -17,8 +17,8 @@
     owner: "{{ lobby_server_user }}"
     group: "{{ lobby_server_user }}"
 
-- name: deploy zip artifact file if using latest
-  when: using_latest|bool
+- name: upload zip artifact file (prerelease build)
+  tags: [prerelease, deploy]
   register: deploy_artifact
   copy:
     src: "{{ lobby_artifact }}"
@@ -26,8 +26,8 @@
     owner: "{{ lobby_server_user }}"
     group: "{{ lobby_server_user }}"
 
-- name: download zip artifact file if not using latest
-  when: not using_latest|bool
+- name: download zip artifact file (release build)
+  tags: [release, deploy]
   register: deploy_artifact
   get_url:
     url: "{{ lobby_artifact_download }}"
@@ -36,6 +36,7 @@
     group: "{{ lobby_server_user }}"
 
 - name: extract zip file
+  tags: [deploy]
   unarchive:
     remote_src: yes
     src: "{{ lobby_server_home_folder }}/{{ lobby_artifact }}"
@@ -44,6 +45,7 @@
     group: "{{ lobby_server_user }}"
 
 - name: install systemd service script
+  tags: [deploy]
   register: service_script
   template:
     src: lobby_server.service.j2
@@ -51,11 +53,13 @@
     mode: "644"
 
 - name: reload systemd
+  tags: [deploy]
   when: service_script.changed
   systemd:
     daemon_reload: yes
 
 - name: restart service if new artifact was deployed
+  tags: [deploy]
   when: (lobby_restart_on_new_deployment) and ((deploy_artifact.changed) or (service_script.changed))
   service:
     name: lobby_server

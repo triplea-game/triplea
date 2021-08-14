@@ -34,11 +34,10 @@ function addPrivateSshKeyToAgent() {
 function runDeployment() {
   ansible-playbook \
     --extra-vars "version=$VERSION" \
-    --extra-vars "using_latest=true" \
+    --skip-tags release \
     --vault-password-file "$VAULT_PASSWORD_FILE" \
     --inventory ansible/inventory/prerelease \
-   "$@" \
-   ansible/site.yml
+   "$@" ansible/site.yml
 }
 
 function runCleanup() {

@@ -22,8 +22,8 @@
     owner: flyway
     group: flyway
 
-- name: copy flyway migrations zip if deploying latest
-  when: using_latest|bool
+- name: copy flyway migrations zip (prerelease build only)
+  tags: [deploy, prerelease]
   copy:
     src: "migrations.zip"
     dest: "/home/flyway/migrations.zip"
@@ -31,8 +31,8 @@
     owner: flyway
     group: flyway
 
-- name: download flyway migrations if deploying a specific version
-  when: not using_latest|bool
+- name: download flyway migrations (release build only)
+  tags: [deploy, release]
   get_url:
     url: "{{ migrations_url }}"
     dest: "/home/flyway/migrations.zip"
@@ -48,6 +48,7 @@
     path : "{{ flyway_extracted_location }}/migrations"
 
 - name: extract migrations
+  tags: [deploy]
   unarchive:
      src: "/home/flyway/migrations.zip"
      remote_src: true
@@ -57,6 +58,7 @@
      group: flyway
 
 - name: run flyway
+  tags: [deploy]
   command: |
      {{ flyway_extracted_location }}/flyway
           -X
@@ -75,3 +77,4 @@
   loop_control:
     label: "{{ item.migration_dir }}"
   no_log: true
+
