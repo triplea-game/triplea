@@ -3,6 +3,8 @@
 - Local database is run on docker containers
 - You will need to install docker
 
+Docker for Mac can be obtained at: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
+
 ## Operations
 
 ```
@@ -15,4 +17,3 @@
 ## drop schema, data and recreate
 ./servers/database/reset_docker_db
 ```
-

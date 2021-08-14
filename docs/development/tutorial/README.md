@@ -1,17 +1,6 @@
 # NEW DEVELOPER GETTING STARTED!
 
-## Assumptions
 
-- Some familiarity with 'git' is assumed
-- If using windows, you are using something like cygwin to run git commands
-
-## Setup Instructions
-
-- Fork the triplea repository: <https://github.com/triplea-game/triplea>
-- Using a Git client (command line or GUI like 'github desktop'), clone
-  your fork locally, eg:
-  ```git clone git@github.com:<your username>/triplea.git```
-  
 - Setup IDE: [/docs/development/how-to/ide-setup](../how-to/ide-setup>)
 
 ## Further, typical git commands and submitting PRs
