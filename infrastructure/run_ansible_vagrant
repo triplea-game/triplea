@@ -19,10 +19,10 @@ version=$(sed 's/.*=\s*//' $(find .. -path "*/src/main/*" -name "product.propert
 .include/build_latest_artifacts "$version"
 
 unbuffer ansible-playbook --diff --verbose \
-    "$@" --extra-vars "using_latest=true" \
     --extra-vars "version=$version" \
+    --skip-tags release \
     --inventory-file ansible/inventory/vagrant \
-    ansible/site.yml \
+    $@ ansible/site.yml \
   | tee output \
   | sed 's|\\n|\n|g'
 rm output
