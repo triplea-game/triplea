@@ -20,7 +20,8 @@ jobs:
           eval "$(ssh-agent -s)"
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          ./run_ansible_prerelease $(.build/set-build-number ${{ github.run_number }})
+          .build/set-build-number ${{ github.run_number }}
+          ./run_ansible --deploy-type minimal --environment prerelease
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
