@@ -12,8 +12,7 @@ postgres_user_db_password: postgres
 #  user: the name of the application user that can access
 #     the database
 #  password: the database password for the application user
-databases:
-  - name: "lobby_db"
-    user: "{{ lobby_db_user }}"
-    password: "{{ lobby_db_password }}"
+database_name: "lobby_db"
+database_user: "{{ lobby_db_user }}"
+database_password: "{{ lobby_db_password }}"
 
