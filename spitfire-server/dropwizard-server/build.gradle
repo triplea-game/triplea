@@ -31,6 +31,10 @@ task release(group: 'release', dependsOn: portableInstaller) {
 
 shadowJar {
     archiveClassifier.set ''
+    // mergeServiceFiles is needed by dropwizard
+    // Without this configuration parsing breaks and is unable to find connector type 'http' for
+    // the following YAML snippet:  server: {applicationConnectors: [{type: http, port: 8080}]
+    mergeServiceFiles()
 }
 
 configurations {

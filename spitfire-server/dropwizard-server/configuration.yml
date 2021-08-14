@@ -71,3 +71,14 @@ logging:
   loggers:
     # Set this to DEBUG to troubleshoot HTTP 400 "Unable to process JSON" errors.
     io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper: INFO
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+      # useForwardedHeaders is important for when behind a reverse proxy (NGINX)
+      # Without this 'getRemoteAddr' will return the IP of the reverse proxy server.
+      # By default when building locally useForwardedPorts should be 'false', but
+      # for all other environments that do have a NGINX server, the value should be
+      # set to true.
+      useForwardedHeaders: ${USE_FORWARDED_HEADERS:-false}
