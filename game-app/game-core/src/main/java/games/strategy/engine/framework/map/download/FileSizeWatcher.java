@@ -32,7 +32,9 @@ final class FileSizeWatcher {
     return () -> {
       while (!stop) {
         try {
-          progressListener.accept(Files.size(fileToWatch));
+          if (Files.exists(fileToWatch)) {
+            progressListener.accept(Files.size(fileToWatch));
+          }
         } catch (final IOException e) {
           log.error("Failed to read filesize", e);
         }
