@@ -48,7 +48,7 @@
 
 
 - name: download zip file (release build only)
-  tags: [releases, deploy]
+  tags: [release, deploy]
   get_url:
     url: "{{ zip_download }}"
     dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
