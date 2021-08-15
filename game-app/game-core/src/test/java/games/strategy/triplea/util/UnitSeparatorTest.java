@@ -127,7 +127,7 @@ class UnitSeparatorTest {
     UnitAttachment.get(drake).setMovement(4);
     UnitAttachment.get(drake).setIsAir(true);
 
-    final List<Unit> units = new ArrayList<>();
+   final List<Unit> units = new ArrayList<>();
     units.addAll(drake.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);

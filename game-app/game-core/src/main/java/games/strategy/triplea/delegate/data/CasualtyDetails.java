@@ -81,6 +81,41 @@ public class CasualtyDetails extends CasualtyList {
     killed.removeAll(
         killed.stream()
             .filter(matcher)
+            .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()))
+        ;
+
+    for(final Map.Entry<UnitOwner, List<Unit>> oldTargetUnitsOfOneOwnerAndType :
+        oldTargetUnitsToTakeHits.entrySet()) {
+      final List<Unit> allTargetUnitsOfOwnerAndTypeThatCanTakeHits = new ArrayList<>(
+          targetsGroupedByOwnerAndType.get(oldTargetUnitsOfOneOwnerAndType.getKey()));
+
+      allTargetUnitsOfOwnerAndTypeThatCanTakeHits.sort(comparator.reversed());
+
+
+      int hitsToRedistributeToUnit;
+      final Iterator<Unit> unitIterator = allTargetUnitsOfOwnerAndTypeThatCanTakeHits.iterator();
+      for(int hitsToRedistribute = oldTargetUnitsOfOneOwnerAndType.getValue().size();
+          hitsToRedistribute > 0;
+          hitsToRedistribute -= hitsToRedistributeToUnit){
+        final Unit unit = unitIterator.next();
+
+        hitsToRedistributeToUnit =
+            Math.min(unit.hitsUnitCanTakeHitWithoutBeingKilled(),hitsToRedistribute);
+
+        for(int i = 0; i < hitsToRedistributeToUnit; ++i) {
+          damaged.add(unit);
+        }
+      }
+    }
+
+    killed.addAll(
+        killedWithCorrectOrder.stream()
+            .filter(unit -> !killed.contains(unit))
+            .collect(Collectors.toList()));
+
+    killed.removeAll(
+        killed.stream()
+            .filter(matcher)
             .filter(unit -> !killedWithCorrectOrder.contains(unit))
             .collect(Collectors.toList()));
   }

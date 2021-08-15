@@ -132,6 +132,49 @@ public final class UnitChooser extends JPanel {
     layoutEntries();
   }
 
+  UnitChooser(
+      final Collection<Unit> units,
+      final CasualtyList defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean movementForAirUnitsOnly,
+      final boolean allowMultipleHits,
+      final UiContext uiContext) {
+    this(dependent, allowMultipleHits, uiContext, null);
+    final List<Unit> combinedList = defaultSelections.getDamaged();
+    // TODO: this adds it to the default selections list, is this intended?
+    combinedList.addAll(defaultSelections.getKilled());
+    createEntries(
+        units,
+        UnitSeparator.SeparatorCategories.builder()
+            .dependents(dependent)
+            .retreatPossibility(retreatPossibility)
+            .movementForAirUnitsOnly(movementForAirUnitsOnly)
+            .build(),
+        combinedList);
+    layoutEntries();
+  }
+
+  UnitChooser(
+      final Collection<Unit> units,
+      final CasualtyList defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean movementForAirUnitsOnly,
+      final boolean allowMultipleHits,
+      final UiContext uiContext) {
+    this(dependent, allowMultipleHits, uiContext, null);
+    final List<Unit> combinedList = defaultSelections.getDamaged();
+    // TODO: this adds it to the default selections list, is this intended?
+    combinedList.addAll(defaultSelections.getKilled());
+    createEntries(
+        units,
+        UnitSeparator.SeparatorCategories.builder()
+            .dependents(dependent)
+            .movementForAirUnitsOnly(movementForAirUnitsOnly)
+            .build(),
+        combinedList);
+    layoutEntries();
+  }
+
   public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
@@ -768,6 +811,10 @@ public final class UnitChooser extends JPanel {
       return resourceLoader
           .loadBufferedImage("misc", fileName)
           .orElseThrow(() -> new IllegalStateException("Missing image: " + fileName));
+    }
+
+    private @NonNull BufferedImage loadGenericUnitsImage(final String fileName) {
+      return resourceLoader.loadBufferedImage("units", "generic", fileName).orElseThrow();
     }
 
     @VisibleForTesting

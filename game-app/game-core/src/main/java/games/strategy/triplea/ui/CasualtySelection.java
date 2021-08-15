@@ -106,8 +106,8 @@ public class CasualtySelection {
                 availWidth,
                 size.width
                     + (size.height > availHeight
-                        ? chooserScrollPane.getVerticalScrollBar().getPreferredSize().width
-                        : 0)),
+                    ? chooserScrollPane.getVerticalScrollBar().getPreferredSize().width
+                    : 0)),
             Math.min(availHeight, size.height)));
 
     dialog.setVisible(true);
