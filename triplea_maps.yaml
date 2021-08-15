@@ -2348,3 +2348,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/greatlakeswar/master/preview.png
   description: |
     <br>Conflict around the North American Great Lakes, with both free-for-all and alliance scenarios
+- mapName: Hearts of Iron 2-Europe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/HOI2Europe/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/HOI2Europe/master/preview.png
+  description: |
+    <br>World War II in Europe starting in 1941, using a modified version of the New World Order map with many new unit types and a special rule for Russian Winter
