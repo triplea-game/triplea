@@ -1,5 +1,5 @@
 package games.strategy.triplea.delegate.battle.casualty;
-// Test
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
