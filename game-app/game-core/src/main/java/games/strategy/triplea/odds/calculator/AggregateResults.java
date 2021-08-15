@@ -21,6 +21,13 @@ import org.triplea.util.Tuple;
 /**
  * A container for the results of multiple battle simulation runs.
  *
+ * <p>This class wraps a collection of {@code BattleResult}s and provides methods to query certain
+ * statistical properties, e.g. the win probability, or the standard deviation for the number of
+ * unit left.
+ *
+ * <p>This class does not restrict the battle result to come from the same battle setup. If this is
+ * desired, the user must ensure that this property hold.
+ *
  * <p>Note on bias correction: Given a set of data points there are different variances (or standard
  * deviations). If the data set for which the variance is calculated contains not all possible
  * observations/states, i.e. is a subset, then bias correction should be applied. This is because
@@ -34,22 +41,51 @@ public class AggregateResults {
   private final List<BattleResults> results;
   @Getter @Setter private long time;
 
+  /**
+   * Creates a new aggregator and sets the internal storage size to {@code expectedCount}. Choosing
+   * a good estimate reduces the number of reallocations of the internal storage once it hits its
+   * limit.
+   *
+   * @param expectedCount number of expected results to store
+   */
   public AggregateResults(final int expectedCount) {
     results = new ArrayList<>(expectedCount);
   }
 
+  /**
+   * Creates a new aggregator and populates it with thr battle results {@code results}.
+   *
+   * @param results the battle results to add to this aggregator.
+   */
   public AggregateResults(final List<BattleResults> results) {
     this.results = new ArrayList<>(results);
   }
 
+  /**
+   * Add the battle result {@code result} to this aggregator.
+   *
+   * @param result the battle result to add.
+   */
   public void addResult(final BattleResults result) {
     results.add(result);
   }
 
+  /**
+   * Add all battle results in {@code results} to this aggregator.
+   *
+   * @param results the battle results to add
+   */
   public void addResults(final Collection<BattleResults> results) {
     this.results.addAll(results);
   }
 
+  /**
+   * Returns the stored battle results.
+   *
+   * <p>Note: The returned list is the encapsulated list and not a copy.
+   *
+   * @return list of all battle results
+   */
   public List<BattleResults> getResults() {
     return results;
   }
@@ -79,7 +115,14 @@ public class AggregateResults {
         .orElseGet(ArrayList::new);
   }
 
-  /** First is Attacker, Second is Defender. */
+  /**
+   * Returns the average TUV value of the units left over.
+   *
+   * @param attackerCostsForTuv lookup table assigning the TUV value to the attacking units
+   * @param defenderCostsForTuv lookup table assigning the TUV value to the defending units
+   * @return tuple of the average TUV value of the units left over. First is Attacker, Second is
+   *     Defender.
+   */
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(
       final IntegerMap<UnitType> attackerCostsForTuv,
       final IntegerMap<UnitType> defenderCostsForTuv) {
@@ -101,6 +144,11 @@ public class AggregateResults {
   /**
    * Returns the standard deviation of the TUV of units left over after the battle. The first
    * component is Attacker, the second is Defender.
+   *
+   * @param attackerCostsForTuv lookup table assigning the TUV value to the attacking units
+   * @param defenderCostsForTuv lookup table assigning the TUV value to the defending units
+   * @return tuple of the standard deviation of the TUV value of the units left over. First is
+   *     Attacker, Second is Defender.
    */
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOverStandardDeviation(
       final IntegerMap<UnitType> attackerCostsForTuv,
@@ -124,6 +172,18 @@ public class AggregateResults {
   /**
    * Returns the average TUV swing across all simulations of the battle.
    *
+   * <p>Note: The result of this function only makes sense for battle with the same initial setup,
+   * e.g. results coming from simulations of the same battle. The {@code attackers} and {@code
+   * defenders} are the units attacking and defending in this setup, respectively.
+   *
+   * <p>{@code attacker}, {@code defender} and {@code data} are used to derive the TUV values of the
+   * units.
+   *
+   * @param attacker the attacking player
+   * @param attackers a collection with the attacking units
+   * @param defender the defending player
+   * @param defenders a collection with the defending units
+   * @param data the game data
    * @return A positive value indicates the defender lost more unit value, on average, than the
    *     attacker (i.e. the attacker "won"). A negative value indicates the attacker lost more unit
    *     value, on average, than the defender (i.e. the defender "won"). Zero indicates the attacker
@@ -160,7 +220,21 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : defenderStartingTuv - attackerStartingTuv + m;
   }
 
-  /** Returns the standard deviation of the TUV swing. */
+  /**
+   * Returns the standard deviation of the TUV swing.
+   *
+   * <p>Note: The result of this function only makes sense for battle with the same initial setup,
+   * e.g. results coming from simulations of the same battle. The {@code attackers} and {@code
+   * defenders} are the units attacking and defending in this setup, respectively.
+   *
+   * <p>{@code attacker}, {@code defender} and {@code data} are used to derive the TUV values of the
+   * units.
+   *
+   * @param attacker the attacking player
+   * @param defender the defending player
+   * @param data the game data
+   * @return the standard deviation for the TUV swing of the battles.
+   */
   public double getAverageTuvSwingStandardDeviation(
       final GamePlayer attacker, final GamePlayer defender, final GameData data) {
     // The variance is invariant under a constant shift.  Thus, the variance of
@@ -183,6 +257,11 @@ public class AggregateResults {
     return Double.isNaN(s) ? 0 : s;
   }
 
+  /**
+   * Returns the average number of attacking units surviving the battles.
+   *
+   * @return the average of surviving attacking units
+   */
   public double getAverageAttackingUnitsLeft() {
     final Mean mean = new Mean();
     final double m =
@@ -195,7 +274,11 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the attacking units left. */
+  /**
+   * Returns the standard deviation of the attacking units left.
+   *
+   * @return the standard deviation of the attacking units left.
+   */
   double getAverageAttackingUnitsLeftStandardDeviation() {
     // The 'true' argument means calculate the variance using bias correction.
     final StandardDeviation stdDev = new StandardDeviation(true);
@@ -209,6 +292,12 @@ public class AggregateResults {
     return Double.isNaN(s) ? 0 : s;
   }
 
+  /**
+   * Returns the average number of attacking units surviving the battles restricted to the battles
+   * where the attacker won.
+   *
+   * @return the average of surviving attacking units or 0 if the attacker did not win any battles.
+   */
   public double getAverageAttackingUnitsLeftWhenAttackerWon() {
     final Mean mean = new Mean();
     final double m =
@@ -222,7 +311,13 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the attacking units left if the attacker won. */
+  /**
+   * Returns the standard deviation of the number of attacking units surviving the battles
+   * restricted to the battles where the attacker won.
+   *
+   * @return the standard deviation of surviving attacking units or 0 if the attacker did not win
+   *     any battles.
+   */
   double getAverageAttackingUnitsLeftWhenAttackerWonStandardDeviation() {
     // The 'true' argument means calculate the variance using bias correction.
     final StandardDeviation stdDev = new StandardDeviation(true);
@@ -237,6 +332,11 @@ public class AggregateResults {
     return Double.isNaN(s) ? 0 : s;
   }
 
+  /**
+   * Returns the average number of defending units surviving the battles.
+   *
+   * @return the average of surviving defending units
+   */
   public double getAverageDefendingUnitsLeft() {
     final Mean mean = new Mean();
     final double m =
@@ -249,7 +349,11 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the defending units left. */
+  /**
+   * Returns the standard deviation of the defending units left.
+   *
+   * @return the standard deviation of the defending units left.
+   */
   double getAverageDefendingUnitsLeftStandardDeviation() {
     // The 'true' argument means calculate the variance using bias correction.
     final StandardDeviation stdDev = new StandardDeviation(true);
@@ -263,6 +367,12 @@ public class AggregateResults {
     return Double.isNaN(s) ? 0 : s;
   }
 
+  /**
+   * Returns the average number of defending units surviving the battles restricted to the battles
+   * where the defender won.
+   *
+   * @return the average of surviving defending units or 0 if the defender did not win any battles.
+   */
   public double getAverageDefendingUnitsLeftWhenDefenderWon() {
     final Mean mean = new Mean();
     final double m =
@@ -276,7 +386,13 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the defending units left if the defender won. */
+  /**
+   * Returns the standard deviation of the number of defending units surviving the battles
+   * restricted to the battles where the defender won.
+   *
+   * @return the standard deviation of surviving defending units or 0 if the defender did not win
+   *     any battles.
+   */
   double getAverageDefendingUnitsLeftWhenDefenderWonStandardDeviation() {
     // The 'true' argument means calculate the variance using bias correction.
     final StandardDeviation stdDev = new StandardDeviation(true);
@@ -291,6 +407,13 @@ public class AggregateResults {
     return Double.isNaN(s) ? 0 : s;
   }
 
+  /**
+   * Returns the average number of battles won by the attacker. This can be interpreted as the
+   * probability that the attacker wins given all aggregated battles started with the same initial
+   * setup.
+   *
+   * @return the average number of battles won by the attacker
+   */
   public double getAttackerWinPercent() {
     final Mean mean = new Mean();
     final double m =
@@ -300,7 +423,11 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the attacker wins percentage. */
+  /**
+   * Returns the standard deviation of the number of battles won by the attacker.
+   *
+   * @return the standard deviation of the number of battles won by the attacker
+   */
   public double getAttackerWinStandardDeviation() {
     if (results.isEmpty()) {
       return 0.0;
@@ -313,6 +440,13 @@ public class AggregateResults {
     return AggregateResults.getBernoulliExperimentStandardDeviation(p);
   }
 
+  /**
+   * Returns the average number of battles won by the defender. This can be interpreted as the
+   * probability that the defender wins given all aggregated battles started with the same initial
+   * setup.
+   *
+   * @return the average number of battles won by the defender
+   */
   public double getDefenderWinPercent() {
     final Mean mean = new Mean();
     final double m =
@@ -322,7 +456,11 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the defender wins percentage. */
+  /**
+   * Returns the standard deviation of the number of battles won by the defender.
+   *
+   * @return the standard deviation of the number of battles won by the defender
+   */
   public double getDefenderWinStandardDeviation() {
     if (results.isEmpty()) {
       return 0.0;
@@ -335,6 +473,12 @@ public class AggregateResults {
     return AggregateResults.getBernoulliExperimentStandardDeviation(p);
   }
 
+  /**
+   * Returns the average number of battles drawn. This can be interpreted as the probability that a
+   * battle ends in a draw given all aggregated battles started with the same initial setup.
+   *
+   * @return the average number of battles won by the defender
+   */
   public double getDrawPercent() {
     final Mean mean = new Mean();
     final double m =
@@ -343,7 +487,11 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the draw percentage. */
+  /**
+   * Returns the standard deviation of the number of battles drawn.
+   *
+   * @return the standard deviation of the number of battles drawn.
+   */
   public double getDrawStandardDeviation() {
     if (results.isEmpty()) {
       return 0.0;
@@ -370,7 +518,11 @@ public class AggregateResults {
     return Math.sqrt(p * (1 - p));
   }
 
-  /** Returns the average number of rounds fought across all simulations of the battle. */
+  /**
+   * Returns the average number of rounds fought across all simulations of the battle.
+   *
+   * @return the average number of rounds fought
+   */
   public double getAverageBattleRoundsFought() {
     final Mean mean = new Mean();
     final double m =
@@ -379,7 +531,11 @@ public class AggregateResults {
     return Double.isNaN(m) ? 0 : m;
   }
 
-  /** Returns the standard deviation of the number of battle rounds. */
+  /**
+   * Returns the standard deviation of the number of battle rounds.
+   *
+   * @return the standard deviation of the number of battle rounds.
+   */
   public double getAverageBattleRoundsFoughtStandardDeviation() {
     // The 'true' argument means calculate the variance using bias correction.
     final StandardDeviation stdDev = new StandardDeviation(true);
@@ -390,6 +546,11 @@ public class AggregateResults {
     return Double.isNaN(s) ? 0 : s;
   }
 
+  /**
+   * Returns the number of battles aggregated by this instance.
+   *
+   * @return number of aggregated battles
+   */
   public int getRollCount() {
     return results.size();
   }
