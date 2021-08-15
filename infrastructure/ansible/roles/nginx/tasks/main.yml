@@ -69,6 +69,7 @@
   changed_when: false
 
 - name: deploy nginx sites_enabled configuation
+  tags: [deploy]
   template:
     src: etc_nginx_sites_enabled_default.j2
     dest: /etc/nginx/sites-enabled/default
@@ -83,6 +84,7 @@
   with_items: "{{ nginx_allowed_ports }}"
 
 - name: restart nginx if config changed
+  tags: [deploy]
   when: |
     (nginx_config_changed.changed) 
       or (has_cert_key.stat.exists == false) 

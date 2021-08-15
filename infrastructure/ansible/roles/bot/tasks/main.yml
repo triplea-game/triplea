@@ -12,6 +12,7 @@
     system: yes
 
 - name: deploy scripts to admin home
+  tags: [deploy]
   template:
     src: "{{ item }}.j2"
     dest: "{{ admin_home }}/{{ item }}"
@@ -35,8 +36,8 @@
     - "{{ bot_maps_folder }}"
 
 - name: download maps on bot server
-  tags: update_maps
-  command: "{{ admin_home }}/download-all-maps {{ update_maps }}"
+  tags: [update_maps]
+  command: "{{ admin_home }}/download-all-maps"
 
 - name: deploy zip file (prerelease build only)
   tags: [prerelease, deploy]

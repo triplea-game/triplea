@@ -12,7 +12,7 @@ jobs:
         run: |
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          ./run_ansible_update_bots
+          ./run_ansible --tags update_maps --environment production
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
