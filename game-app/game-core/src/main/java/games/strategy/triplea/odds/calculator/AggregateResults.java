@@ -25,7 +25,7 @@ public class AggregateResults {
     results = new ArrayList<>(expectedCount);
   }
 
-  AggregateResults(final List<BattleResults> results) {
+  public AggregateResults(final List<BattleResults> results) {
     this.results = new ArrayList<>(results);
   }
 
@@ -112,7 +112,7 @@ public class AggregateResults {
     return defenderLost - attackerLost;
   }
 
-  double getAverageAttackingUnitsLeft() {
+  public double getAverageAttackingUnitsLeft() {
     if (results.isEmpty()) {
       return 0.0;
     }
@@ -123,7 +123,7 @@ public class AggregateResults {
         / results.size();
   }
 
-  double getAverageAttackingUnitsLeftWhenAttackerWon() {
+  public double getAverageAttackingUnitsLeftWhenAttackerWon() {
     if (results.isEmpty()) {
       return 0.0;
     }
@@ -141,7 +141,7 @@ public class AggregateResults {
     return count / total;
   }
 
-  double getAverageDefendingUnitsLeft() {
+  public double getAverageDefendingUnitsLeft() {
     if (results.isEmpty()) {
       return 0.0;
     }
@@ -152,7 +152,7 @@ public class AggregateResults {
         / results.size();
   }
 
-  double getAverageDefendingUnitsLeftWhenDefenderWon() {
+  public double getAverageDefendingUnitsLeftWhenDefenderWon() {
     if (results.isEmpty()) {
       return 0.0;
     }
@@ -177,14 +177,14 @@ public class AggregateResults {
     return results.stream().filter(BattleResults::attackerWon).count() / (double) results.size();
   }
 
-  double getDefenderWinPercent() {
+  public double getDefenderWinPercent() {
     if (results.isEmpty()) {
       return 0.0;
     }
     return results.stream().filter(BattleResults::defenderWon).count() / (double) results.size();
   }
 
-  double getDrawPercent() {
+  public double getDrawPercent() {
     if (results.isEmpty()) {
       return 0.0;
     }
