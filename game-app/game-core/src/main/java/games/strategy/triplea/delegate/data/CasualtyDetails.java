@@ -78,20 +78,8 @@ public class CasualtyDetails extends CasualtyList {
             getKilled().stream()
                 .filter(matcher)
                 .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList())));
-// The following, old code ignores that units can have different hit points
-// in @param targets
-// and is therefore wrong
-/*    final List<Unit> damaged =
-        ensureUnitsAreTakenFirst(
-            comparator,
-            targetsGroupedByOwnerAndType,
-            getDamaged().stream()
-                .filter(matcher)
-                .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList())));
-*/
-// Here is the replacement that takes the hit points
-// in @param targets into account
-    final List<Unit> damaged = new ArrayList<Unit>();
+
+    final List<Unit> damaged = new ArrayList<>();
 
     final Map<UnitOwner, List<Unit>> oldTargetAirUnitsToTakeHits =
         getDamaged().stream()
@@ -99,19 +87,14 @@ public class CasualtyDetails extends CasualtyList {
             .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()))
         ;
 
-    for( Map.Entry<UnitOwner, List<Unit>> entry : oldTargetAirUnitsToTakeHits.entrySet() ) {
+    for(final Map.Entry<UnitOwner, List<Unit>> entry : oldTargetAirUnitsToTakeHits.entrySet()) {
       final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
       final int hitPointsOfType = ua.getHitPoints();
 
       final List<Unit> allTargetUnitsOfOwnerAndTypeThatCanTakeHits = new ArrayList<>(
-          targetsGroupedByOwnerAndType.get( entry.getKey() ) );
+          targetsGroupedByOwnerAndType.get(entry.getKey()));
 
-// The following code line, which is commented out, is functionally equivalent to the old code.
-//      allTargetUnitsOfOwnerAndTypeThatCanTakeHits.sort( comparator );
-// But why should it be better to have units with many hits to have less movement points?
-// If units with many hits have more unit points, you can better bring them to safety.
-// Therefore the sort order is reversed:
-      allTargetUnitsOfOwnerAndTypeThatCanTakeHits.sort( comparator.reversed() );
+      allTargetUnitsOfOwnerAndTypeThatCanTakeHits.sort(comparator.reversed());
 
       final int hits = entry.getValue().size();
 
