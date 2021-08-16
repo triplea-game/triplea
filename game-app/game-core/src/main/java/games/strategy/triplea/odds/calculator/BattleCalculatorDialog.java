@@ -159,10 +159,4 @@ public class BattleCalculatorDialog extends JDialog {
     lastPosition = new Point(getLocation());
     super.dispose();
   }
-
-  @Override
-  public void setVisible(final boolean vis) {
-    super.setVisible(vis);
-    panel.selectCalculateButton();
-  }
 }

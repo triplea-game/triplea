@@ -1133,6 +1133,7 @@ class BattleCalculatorPanel extends JPanel {
                     () -> {
                       calculateButton.setText("Calculate Odds");
                       calculateButton.setEnabled(true);
+                      calculateButton.requestFocusInWindow();
                     }));
 
     calculator.setGameData(data);
@@ -1501,10 +1502,6 @@ class BattleCalculatorPanel extends JPanel {
       setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(gamePlayer)));
       return this;
     }
-  }
-
-  void selectCalculateButton() {
-    calculateButton.requestFocus();
   }
 
   private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameState data) {
