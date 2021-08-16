@@ -94,8 +94,9 @@ class CasualtyDetailsTest {
   }
 
   @Test
-  void damageLowestMovementAirUnitsWhenOnlyOneTypeIsAvailable() {
+  void damageHighestMovementAirUnitsWhenOnlyOneTypeIsAvailable() {
     final UnitType fighter = givenUnitType("fighter");
+    UnitAttachment.get(fighter).setHitPoints(2);
     UnitAttachment.get(fighter).setMovement(4);
     UnitAttachment.get(fighter).setIsAir(true);
 
@@ -113,9 +114,9 @@ class CasualtyDetailsTest {
         originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
 
     assertThat(
-        "The second air unit has no movement left so it should be damaged",
+        "The first air unit has one movement left so it should be damaged",
         updatedDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(1))));
+        is(containsInAnyOrder(units.get(0))));
   }
 
   @Test
@@ -152,11 +153,13 @@ class CasualtyDetailsTest {
   }
 
   @Test
-  void damageLowestMovementAirUnitsInTwoTypes() {
+  void damageHighestMovementAirUnitsInTwoTypes() {
     final UnitType fighter = givenUnitType("fighter");
+    UnitAttachment.get(fighter).setHitPoints(2);
     UnitAttachment.get(fighter).setMovement(4);
     UnitAttachment.get(fighter).setIsAir(true);
     final UnitType bomber = givenUnitType("bomber");
+    UnitAttachment.get(bomber).setHitPoints(3);
     UnitAttachment.get(bomber).setMovement(6);
     UnitAttachment.get(bomber).setIsAir(true);
 
@@ -179,9 +182,9 @@ class CasualtyDetailsTest {
         originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
 
     assertThat(
-        "The second and fourth air unit have no movement left so it should be damaged",
+        "The first and third air unit have one movement left so they should be damaged",
         updatedDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(1), units.get(3))));
+        is(containsInAnyOrder(units.get(0), units.get(2))));
   }
 
   @Test

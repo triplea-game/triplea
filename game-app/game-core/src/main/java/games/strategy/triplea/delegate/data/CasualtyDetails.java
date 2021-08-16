@@ -98,16 +98,18 @@ public class CasualtyDetails extends CasualtyList {
 
       final int hits = entry.getValue().size();
 
+      int hitsTaken = 0;
       for (final Unit unit : allTargetUnitsOfOwnerAndTypeThatCanTakeHits) {
         // Stop if we have already selected as many hits as there are targets
-        if (damaged.size() >= hits) {
+        if (hitsTaken >= hits) {
           break;
         }
 
         for (int hitPointsUnitCanTakeWithoutBeingKilled = hitPointsOfType - (1 + unit.getHits());
-             hitPointsUnitCanTakeWithoutBeingKilled > 0 && damaged.size() < hits;
+             hitPointsUnitCanTakeWithoutBeingKilled > 0 && hitsTaken < hits;
              hitPointsUnitCanTakeWithoutBeingKilled--) {
           damaged.add(unit);
+          ++hitsTaken;
         }
       }
     }
