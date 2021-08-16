@@ -75,11 +75,6 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
 
     showOdds.addActionListener(
         e -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
-    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
-        frame,
-        KeyCode.B,
-        () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
-
     addAttackers.addActionListener(e -> BattleCalculatorDialog.addAttackers(currentTerritory));
     addDefenders.addActionListener(e -> BattleCalculatorDialog.addDefenders(currentTerritory));
     addBattleCalculatorKeyBindings(frame);
@@ -96,17 +91,22 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   }
 
   /**
-   * Adds the battle calculator key bindings (CTRL-A, CTRL-D) to the frame {@code frame}. When
-   * triggered the {@code addAttackers(Territory)} and {@code addDefenders(Territory)} methods of
-   * the battle calculator are triggered with the current territory of this TerritoryDetailPanel.
+   * Adds the battle calculator key bindings (CTRL-A, CTRL-D, CTRL-B) to the frame {@code jframe}.
+   * When triggered the {@code addAttackers(Territory)}, {@code addDefenders(Territory)} and {@code
+   * show(TripleAFrame, Territory, History)} methods of the battle calculator are triggered with the
+   * TripleAFrame, current territory and history of this TerritoryDetailPanel.
    *
-   * @param frame the frame to add the key bindings to
+   * @param jframe the frame to add the key bindings to
    */
-  public void addBattleCalculatorKeyBindings(final JFrame frame) {
+  public void addBattleCalculatorKeyBindings(final JFrame jframe) {
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
-        frame, KeyCode.A, () -> BattleCalculatorDialog.addAttackers(currentTerritory));
+        jframe,
+        KeyCode.B,
+        () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
-        frame, KeyCode.D, () -> BattleCalculatorDialog.addDefenders(currentTerritory));
+        jframe, KeyCode.A, () -> BattleCalculatorDialog.addAttackers(currentTerritory));
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
+        jframe, KeyCode.D, () -> BattleCalculatorDialog.addDefenders(currentTerritory));
   }
 
   /**
@@ -115,6 +115,10 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
    * @param dialog the dialog to add the key bindings to
    */
   public void addBattleCalculatorKeyBindings(final JDialog dialog) {
+    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
+        dialog,
+        KeyCode.B,
+        () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         dialog, KeyCode.A, () -> BattleCalculatorDialog.addAttackers(currentTerritory));
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
