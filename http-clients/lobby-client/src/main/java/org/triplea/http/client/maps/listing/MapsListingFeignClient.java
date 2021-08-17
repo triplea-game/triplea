@@ -12,7 +12,7 @@ import org.triplea.http.client.HttpConstants;
 public interface MapsListingFeignClient {
 
   /**
-   * Creates a new issue on github.com.
+   * Fetches a list of available maps from the server.
    *
    * @throws FeignException Thrown on non-2xx responses.
    */
