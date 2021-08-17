@@ -44,8 +44,10 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,6 +56,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -543,12 +546,14 @@ public class BattleDisplay extends JPanel {
                 public void actionPerformed(final ActionEvent e) {
                   actionButton.setEnabled(false);
                   final String messageText = message + " " + btnText + ".";
+                  final boolean movement = unitsOfSameOwnerAndTypeHaveDifferentMovement(selectFrom);
                   if (chooser == null || chooserScrollPane == null) {
                     chooser =
                         new UnitChooser(
                             selectFrom,
                             defaultCasualties,
                             dependents,
+                            movement,
                             allowMultipleHitsPerUnit,
                             uiContext);
                     chooser.setTitle(messageText);
@@ -611,6 +616,27 @@ public class BattleDisplay extends JPanel {
                     continueLatch.countDown();
                   }
                   actionButton.setEnabled(true);
+                }
+
+                private boolean unitsOfSameOwnerAndTypeHaveDifferentMovement(
+                    final Collection<Unit> units) {
+                  final Map<UnitOwner, List<Unit>> unitsGroupedByOwnerAndType =
+                      units.stream()
+                          .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
+
+                  for (UnitOwner ownerAndType : unitsGroupedByOwnerAndType.keySet()) {
+                    final Iterator<Unit> unitsOfSameOwnerAndType =
+                        unitsGroupedByOwnerAndType.get(ownerAndType).iterator();
+
+                    final BigDecimal movementOfFirstUnit =
+                        unitsOfSameOwnerAndType.next().getMovementLeft();
+
+                    while (unitsOfSameOwnerAndType.hasNext())
+                      if (!unitsOfSameOwnerAndType.next().getMovementLeft().equals(movementOfFirstUnit))
+                        return true;
+                  }
+
+                  return false;
                 }
               });
         });

@@ -7,6 +7,7 @@ import games.strategy.triplea.util.UnitOwner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -81,36 +82,37 @@ public class CasualtyDetails extends CasualtyList {
 
     final List<Unit> damaged = new ArrayList<>();
 
-    final Map<UnitOwner, List<Unit>> oldTargetAirUnitsToTakeHits =
+    final Map<UnitOwner, List<Unit>> oldTargetUnitsToTakeHits =
         getDamaged().stream()
             .filter(matcher)
             .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()))
         ;
 
-    for(final Map.Entry<UnitOwner, List<Unit>> entry : oldTargetAirUnitsToTakeHits.entrySet()) {
-      final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
+    for(final Map.Entry<UnitOwner, List<Unit>> oldTargetUnitsOfOneOwnerAndType :
+        oldTargetUnitsToTakeHits.entrySet()) {
+      final UnitAttachment ua =
+          UnitAttachment.get(oldTargetUnitsOfOneOwnerAndType.getKey().getType());
       final int hitPointsOfType = ua.getHitPoints();
 
       final List<Unit> allTargetUnitsOfOwnerAndTypeThatCanTakeHits = new ArrayList<>(
-          targetsGroupedByOwnerAndType.get(entry.getKey()));
+          targetsGroupedByOwnerAndType.get(oldTargetUnitsOfOneOwnerAndType.getKey()));
 
       allTargetUnitsOfOwnerAndTypeThatCanTakeHits.sort(comparator.reversed());
 
-      final int hits = entry.getValue().size();
 
-      int hitsTaken = 0;
-      for (final Unit unit : allTargetUnitsOfOwnerAndTypeThatCanTakeHits) {
-        // Stop if we have already selected as many hits as there are targets
-        if (hitsTaken >= hits) {
-          break;
-        }
+      int hitsToRedistributeToUnit;
+      final Iterator<Unit> unitIterator = allTargetUnitsOfOwnerAndTypeThatCanTakeHits.iterator();
+      for(int hitsToRedistribute = oldTargetUnitsOfOneOwnerAndType.getValue().size();
+          hitsToRedistribute > 0;
+          hitsToRedistribute -= hitsToRedistributeToUnit){
+        final Unit unit = unitIterator.next();
+        final int hitPointsUnitCanTakeWithoutBeingKilled = hitPointsOfType - (1 + unit.getHits());
 
-        for (int hitPointsUnitCanTakeWithoutBeingKilled = hitPointsOfType - (1 + unit.getHits());
-             hitPointsUnitCanTakeWithoutBeingKilled > 0 && hitsTaken < hits;
-             hitPointsUnitCanTakeWithoutBeingKilled--) {
+        hitsToRedistributeToUnit =
+            Math.min(hitPointsUnitCanTakeWithoutBeingKilled,hitsToRedistribute);
+
+        for(int i = 0; i < hitsToRedistributeToUnit; ++i)
           damaged.add(unit);
-          ++hitsTaken;
-        }
       }
     }
 

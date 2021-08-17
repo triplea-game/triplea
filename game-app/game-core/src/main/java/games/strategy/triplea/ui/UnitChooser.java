@@ -102,6 +102,27 @@ public final class UnitChooser extends JPanel {
     layoutEntries();
   }
 
+  UnitChooser(
+      final Collection<Unit> units,
+      final CasualtyList defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean movement,
+      final boolean allowMultipleHits,
+      final UiContext uiContext) {
+    this(dependent, allowMultipleHits, uiContext, null);
+    final List<Unit> combinedList = defaultSelections.getDamaged();
+    // TODO: this adds it to the default selections list, is this intended?
+    combinedList.addAll(defaultSelections.getKilled());
+    createEntries(
+        units,
+        UnitSeparator.SeparatorCategories.builder()
+            .dependents(dependent)
+            .movement(movement)
+            .build(),
+        combinedList);
+    layoutEntries();
+  }
+
   public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,

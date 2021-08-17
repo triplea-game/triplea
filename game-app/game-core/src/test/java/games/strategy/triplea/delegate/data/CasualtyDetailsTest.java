@@ -22,7 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CasualtyDetailsTest {
 
   @Mock private GameData gameData;
-  @Mock private GamePlayer player;
+  private GamePlayer player1 = new GamePlayer("player1", gameData);
+  private GamePlayer player2 = new GamePlayer("player2", gameData);
 
   private UnitType givenUnitType(final String name) {
     final UnitType unitType = new UnitType(name, gameData);
@@ -36,7 +37,7 @@ class CasualtyDetailsTest {
     final UnitType infantry = givenUnitType("infantry");
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     final List<Unit> killed = new ArrayList<>();
     killed.add(units.get(0));
@@ -55,7 +56,7 @@ class CasualtyDetailsTest {
     final UnitType infantry = givenUnitType("infantry");
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     final List<Unit> damaged = new ArrayList<>();
     damaged.add(units.get(0));
@@ -76,7 +77,7 @@ class CasualtyDetailsTest {
     UnitAttachment.get(fighter).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -101,7 +102,7 @@ class CasualtyDetailsTest {
     UnitAttachment.get(fighter).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -129,8 +130,8 @@ class CasualtyDetailsTest {
     UnitAttachment.get(bomber).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
-    units.addAll(bomber.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
+    units.addAll(bomber.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -164,8 +165,8 @@ class CasualtyDetailsTest {
     UnitAttachment.get(bomber).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
-    units.addAll(bomber.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
+    units.addAll(bomber.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -188,12 +189,41 @@ class CasualtyDetailsTest {
   }
 
   @Test
+  void damageHighestMovementAirUnitsWithTwoOwners() {
+    final UnitType fighter = givenUnitType("fighter");
+    UnitAttachment.get(fighter).setHitPoints(2);
+    UnitAttachment.get(fighter).setMovement(4);
+    UnitAttachment.get(fighter).setIsAir(true);
+
+    final List<Unit> units = new ArrayList<>();
+    units.addAll(fighter.createTemp(2, player1));
+    units.addAll(fighter.createTemp(1, player2));
+
+    units.get(0).setAlreadyMoved(BigDecimal.ONE);
+    units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
+    units.get(2).setAlreadyMoved(BigDecimal.valueOf(2));
+
+    final List<Unit> damaged = new ArrayList<>();
+    damaged.add(units.get(0));
+    damaged.add(units.get(2));
+
+    final CasualtyDetails originalDetails = new CasualtyDetails(List.of(), damaged, true);
+    final CasualtyDetails updatedDetails =
+        originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
+
+    assertThat(
+        "The first and third air unit have one movement left so they should be damaged",
+        updatedDetails.getDamaged(),
+        is(containsInAnyOrder(units.get(0), units.get(2))));
+  }
+
+  @Test
   void killPositiveMarineBonusLastIfAmphibious() {
     final UnitType infantry = givenUnitType("infantry");
     UnitAttachment.get(infantry).setIsMarine(1);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     units.get(0).setWasAmphibious(true);
     units.get(1).setWasAmphibious(false);
@@ -217,7 +247,7 @@ class CasualtyDetailsTest {
     UnitAttachment.get(infantry).setIsMarine(-1);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     units.get(0).setWasAmphibious(false);
     units.get(1).setWasAmphibious(true);
