@@ -56,6 +56,28 @@ class BattleDisplayTest {
   }
 
   @Test
+  void testPlayerMay_Movement_onlyUnitsWithMoreThanOneHitpointLeftCount() {
+    final GamePlayer player = new GamePlayer("player", gameData);
+    final UnitType dragon = givenUnitType("Dragon");
+    UnitAttachment.get(dragon).setHitPoints(2);
+    UnitAttachment.get(dragon).setMovement(4);
+    UnitAttachment.get(dragon).setIsAir(true);
+
+    final List<Unit> units = new ArrayList<>();
+    units.addAll(dragon.createTemp(2, player));
+
+    units.get(0).setHits(1);
+    units.get(1).setHits(1);
+
+    units.get(0).setAlreadyMoved(BigDecimal.ONE);
+    units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
+
+    assertThat(
+        "Air units with only one hitpoint left should not cause that the player can choose",
+        !BattleDisplay.playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
+  }
+
+  @Test
   void testPlayerMayChooseToDistributeHitsToUnitsWithDifferentMovement_noAirUnits() {
     final UnitType mechInfantry = givenUnitType("mech infantry");
     UnitAttachment.get(mechInfantry).setHitPoints(2);
