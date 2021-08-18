@@ -21,9 +21,9 @@ final class PoliticalActionAttachmentTest {
     private final GamePlayer player2 = new GamePlayer("player2", gameData);
     private final GamePlayer player3 = new GamePlayer("player3", gameData);
     private final RelationshipType relationshipType1 =
-        new RelationshipType("relationshipType1", gameData);
+        RelationshipType.get("relationshipType1", gameData);
     private final RelationshipType relationshipType2 =
-        new RelationshipType("relationshipType2", gameData);
+        RelationshipType.get("relationshipType2", gameData);
     private final PoliticalActionAttachment politicalActionAttachment =
         new PoliticalActionAttachment("politicalActionAttachment", null, gameData);
 
@@ -85,8 +85,8 @@ final class PoliticalActionAttachmentTest {
               new GamePlayer("blackPlayerId", gameData))
           .withPrefabValues(
               RelationshipType.class,
-              new RelationshipType("redRelationshipType", gameData),
-              new RelationshipType("blackRelationshipType", gameData))
+              RelationshipType.get("redRelationshipType", gameData),
+              RelationshipType.get("blackRelationshipType", gameData))
           .verify();
     }
   }

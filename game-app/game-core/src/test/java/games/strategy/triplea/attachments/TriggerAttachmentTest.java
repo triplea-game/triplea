@@ -206,7 +206,7 @@ class TriggerAttachmentTest {
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final RelationshipType relationshipType =
-          new RelationshipType("someRelationshipType", gameData);
+          RelationshipType.get("someRelationshipType", gameData);
       relationshipType.addAttachment(
           "relationshipTypeAttachment", new RelationshipTypeAttachment(null, null, gameData));
       gameData.getRelationshipTypeList().addRelationshipType(relationshipType);
@@ -312,9 +312,9 @@ class TriggerAttachmentTest {
       gameData.getPlayerList().addPlayerId(playerFuryondy);
 
       final RelationshipType existingRelationshipType =
-          new RelationshipType(Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL, gameData);
+          RelationshipType.get(Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL, gameData);
       final RelationshipType newRelationshipType =
-          new RelationshipType(Constants.RELATIONSHIP_ARCHETYPE_ALLIED, gameData);
+          RelationshipType.get(Constants.RELATIONSHIP_ARCHETYPE_ALLIED, gameData);
       final RelationshipTypeList relationshipTypeList = gameData.getRelationshipTypeList();
       relationshipTypeList.addRelationshipType(existingRelationshipType);
       relationshipTypeList.addRelationshipType(newRelationshipType);

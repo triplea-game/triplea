@@ -546,14 +546,16 @@ public class BattleDisplay extends JPanel {
                 public void actionPerformed(final ActionEvent e) {
                   actionButton.setEnabled(false);
                   final String messageText = message + " " + btnText + ".";
-                  final boolean movement = unitsOfSameOwnerAndTypeHaveDifferentMovement(selectFrom);
+                  final boolean movementForAirUnitsOnly =
+                      playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(selectFrom);
+
                   if (chooser == null || chooserScrollPane == null) {
                     chooser =
                         new UnitChooser(
                             selectFrom,
                             defaultCasualties,
                             dependents,
-                            movement,
+                            movementForAirUnitsOnly,
                             allowMultipleHitsPerUnit,
                             uiContext);
                     chooser.setTitle(messageText);
@@ -618,32 +620,54 @@ public class BattleDisplay extends JPanel {
                   actionButton.setEnabled(true);
                 }
 
-                private boolean unitsOfSameOwnerAndTypeHaveDifferentMovement(
-                    final Collection<Unit> units) {
-                  final Map<UnitOwner, List<Unit>> unitsGroupedByOwnerAndType =
-                      units.stream()
-                          .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
-
-                  for (UnitOwner ownerAndType : unitsGroupedByOwnerAndType.keySet()) {
-                    final Iterator<Unit> unitsOfSameOwnerAndType =
-                        unitsGroupedByOwnerAndType.get(ownerAndType).iterator();
-
-                    final BigDecimal movementOfFirstUnit =
-                        unitsOfSameOwnerAndType.next().getMovementLeft();
-
-                    while (unitsOfSameOwnerAndType.hasNext())
-                      if (!unitsOfSameOwnerAndType.next().getMovementLeft().equals(movementOfFirstUnit))
-                        return true;
-                  }
-
-                  return false;
-                }
               });
         });
     uiContext.addShutdownLatch(continueLatch);
     Interruptibles.await(continueLatch);
     uiContext.removeShutdownLatch(continueLatch);
     return casualtyDetails.get();
+  }
+
+  /**
+   * This method determines whether the system should let the player choose
+   * how to distribute hits between units of the same owner and type
+   * differentiating by the movement points left.
+   *
+   * This is only considered to be the case if there are
+   * - air units
+   * - that can take damage without bing killed
+   *   (i.e. that have more than one hitpoint left) and
+   * - that have different movement points left.
+   *
+   * @param units among which the hits have to distributed
+   * @return {@code true} iff the system should let the player choose
+   */
+
+  static boolean playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(
+      final Collection<Unit> units) {
+    final Map<UnitOwner, List<Unit>> unitsGroupedByOwnerAndType =
+        units.stream()
+            .filter(Matches.unitIsAir())
+            .filter(Unit::canTakeHitWithoutBeingKilled)
+            .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
+
+    for (final UnitOwner ownerAndType : unitsGroupedByOwnerAndType.keySet()) {
+      final Iterator<Unit> unitsOfSameOwnerAndType =
+          unitsGroupedByOwnerAndType.get(ownerAndType).iterator();
+
+      final BigDecimal movementOfFirstUnit =
+          unitsOfSameOwnerAndType.next().getMovementLeft();
+
+      while (unitsOfSameOwnerAndType.hasNext()) {
+        final Unit next = unitsOfSameOwnerAndType.next();
+
+        if (!next.getMovementLeft().equals(movementOfFirstUnit)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   private void initLayout() {

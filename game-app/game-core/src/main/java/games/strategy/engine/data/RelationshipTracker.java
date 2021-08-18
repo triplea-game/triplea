@@ -34,7 +34,7 @@ public class RelationshipTracker extends GameDataComponent {
    */
   public void setRelationship(
       final GamePlayer p1, final GamePlayer p2, final RelationshipType relationshipType) {
-    relationships.put(new RelatedPlayers(p1, p2), new Relationship(relationshipType));
+    relationships.put(RelatedPlayers.get(p1, p2), new Relationship(relationshipType));
   }
 
   /**
@@ -43,15 +43,23 @@ public class RelationshipTracker extends GameDataComponent {
    */
   public void setRelationship(
       final GamePlayer p1, final GamePlayer p2, final RelationshipType r, final int roundValue) {
-    relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
+    relationships.put(RelatedPlayers.get(p1, p2), new Relationship(r, roundValue));
   }
 
   public RelationshipType getRelationshipType(final GamePlayer p1, final GamePlayer p2) {
     return getRelationship(p1, p2).getRelationshipType();
   }
 
+  public RelationshipType getRelationshipType(final  RelatedPlayers p1p2) {
+    return getRelationship(p1p2).getRelationshipType();
+  }
+
+  public Relationship getRelationship(final RelatedPlayers p1p2) {
+    return relationships.get(p1p2);
+  }
+
   public Relationship getRelationship(final GamePlayer p1, final GamePlayer p2) {
-    return relationships.get(new RelatedPlayers(p1, p2));
+    return getRelationship(RelatedPlayers.get(p1, p2));
   }
 
   public Set<Relationship> getRelationships(final GamePlayer player1) {
@@ -66,7 +74,7 @@ public class RelationshipTracker extends GameDataComponent {
   }
 
   public int getRoundRelationshipWasCreated(final GamePlayer p1, final GamePlayer p2) {
-    return relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
+    return relationships.get(RelatedPlayers.get(p1, p2)).getRoundCreated();
   }
 
   /**
@@ -201,13 +209,36 @@ public class RelationshipTracker extends GameDataComponent {
    */
   public static final class RelatedPlayers implements Serializable {
     private static final long serialVersionUID = 2124258606502106751L;
+    private static final Map<GamePlayer,Map<GamePlayer,RelatedPlayers>> relatedPlayers =
+        new HashMap<>();
 
     private final GamePlayer player1;
     private final GamePlayer player2;
 
-    RelatedPlayers(final GamePlayer player1, final GamePlayer player2) {
+    private RelatedPlayers(final GamePlayer player1, final GamePlayer player2) {
       this.player1 = player1;
       this.player2 = player2;
+    }
+
+    /**
+     * Returns the {@code RelatedPlayers} object for {@code player1} and {@code player2}
+     * avoiding to create an object if possible (by caching used objects).
+     *
+     */
+    public static RelatedPlayers get(final GamePlayer player1, final GamePlayer player2) {
+      Map<GamePlayer,RelatedPlayers> relationsOfPlayer1 = relatedPlayers.get(player1);
+      if(relationsOfPlayer1 == null) {
+        relationsOfPlayer1 = new HashMap<>();
+        relatedPlayers.put(player1, relationsOfPlayer1);
+      }
+
+      RelatedPlayers p1p2 = relationsOfPlayer1.get(player2);
+      if(p1p2 == null) {
+        p1p2 = new RelatedPlayers(player1,player2);
+        relationsOfPlayer1.put(player2,p1p2);
+      }
+
+      return p1p2;
     }
 
     @Override

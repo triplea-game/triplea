@@ -499,6 +499,14 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return alreadyMoved.compareTo(BigDecimal.ZERO) > 0;
   }
 
+  public int hitsUnitCanTakeHitWithoutBeingKilled() {
+    return getUnitAttachment().getHitPoints() -1 -hits;
+  }
+
+  public boolean canTakeHitWithoutBeingKilled() {
+    return hitsUnitCanTakeHitWithoutBeingKilled() > 0;
+  }
+
   /**
    * Avoid calling this method, it checks every territory on the map. To undeprecate we should
    * optimize this to halt on the first territory we have found with a transporting unit, or

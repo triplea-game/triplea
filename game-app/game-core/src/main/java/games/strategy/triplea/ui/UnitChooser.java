@@ -106,7 +106,7 @@ public final class UnitChooser extends JPanel {
       final Collection<Unit> units,
       final CasualtyList defaultSelections,
       final Map<Unit, Collection<Unit>> dependent,
-      final boolean movement,
+      final boolean movementForAirUnitsOnly,
       final boolean allowMultipleHits,
       final UiContext uiContext) {
     this(dependent, allowMultipleHits, uiContext, null);
@@ -117,7 +117,7 @@ public final class UnitChooser extends JPanel {
         units,
         UnitSeparator.SeparatorCategories.builder()
             .dependents(dependent)
-            .movement(movement)
+            .movementForAirUnitsOnly(movementForAirUnitsOnly)
             .build(),
         combinedList);
     layoutEntries();

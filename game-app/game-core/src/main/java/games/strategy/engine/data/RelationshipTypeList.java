@@ -75,7 +75,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
       final GameData data)
       throws GameParseException {
     // create a new relationshipType with the name from the constant
-    final RelationshipType relationshipType = new RelationshipType(relationshipTypeConstant, data);
+    final RelationshipType relationshipType = RelationshipType.get(relationshipTypeConstant, data);
     // create a new attachment to attach to this type
     final RelationshipTypeAttachment at =
         new RelationshipTypeAttachment(
