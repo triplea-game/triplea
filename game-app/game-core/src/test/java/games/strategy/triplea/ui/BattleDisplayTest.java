@@ -2,29 +2,23 @@ package games.strategy.triplea.ui;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.gameparser.GameParser;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.attachments.UnitAttachment;
-import java.io.File;
+import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.injection.Injections;
 
 class BattleDisplayTest {
-  @Mock private GameData gameData;
+  private GameData gameData = TestMapGameData.REVISED.getGameData();
   private GamePlayer player1 = new GamePlayer("player1", gameData);
   private GamePlayer player2 = new GamePlayer("player2", gameData);
 
@@ -44,18 +38,13 @@ class BattleDisplayTest {
 
   @Test
   void testPlayerMayChooseToDistributeHitsToUnitsWithDifferentMovement_simplePositiveCase() {
-    Injections.init(constructInjections());
-    final File file = new File("./src/test/resources/revised_test.xml");
-    final Path fPath = file.toPath();
-    final Optional<GameData> oGameData = GameParser.parse(fPath);
-    gameData = oGameData.get();
     final GamePlayer player = new GamePlayer("player", gameData);
     final UnitType dragon = givenUnitType("Dragon");
     UnitAttachment.get(dragon).setHitPoints(2);
     UnitAttachment.get(dragon).setMovement(4);
     UnitAttachment.get(dragon).setIsAir(true);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
@@ -72,7 +61,7 @@ class BattleDisplayTest {
     UnitAttachment.get(mechInfantry).setHitPoints(2);
     UnitAttachment.get(mechInfantry).setMovement(4);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(mechInfantry.createTemp(2, player1));
     units.addAll(mechInfantry.createTemp(1, player2));
 
@@ -81,8 +70,8 @@ class BattleDisplayTest {
     units.get(2).setAlreadyMoved(BigDecimal.valueOf(2));
 
     assertThat(
-        "Non-air units should not affect if the player chooses between units"+
-        " with different movement points",
+        "Non-air units should not affect if the player chooses between units"
+            +" with different movement points",
         !BattleDisplay.playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
   }
 }

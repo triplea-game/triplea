@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.data;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.UnitOwner;
 import java.util.ArrayList;
@@ -106,8 +105,9 @@ public class CasualtyDetails extends CasualtyList {
         hitsToRedistributeToUnit =
             Math.min(unit.hitsUnitCanTakeHitWithoutBeingKilled(),hitsToRedistribute);
 
-        for(int i = 0; i < hitsToRedistributeToUnit; ++i)
+        for(int i = 0; i < hitsToRedistributeToUnit; ++i) {
           damaged.add(unit);
+        }
       }
     }
 

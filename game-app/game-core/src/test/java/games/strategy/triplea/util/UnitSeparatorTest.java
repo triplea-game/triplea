@@ -14,7 +14,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GameDataTestUtil;
-import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
@@ -32,7 +31,8 @@ class UnitSeparatorTest {
   @Mock
   private GameData gameData;
   private GamePlayer player1 = new GamePlayer("player1", gameData);
-  private GamePlayer player2 = new GamePlayer("player2", gameData);
+
+  @Mock private MapData mockMapData;
 
   private UnitType givenUnitType(final String name) {
     final UnitType unitType = new UnitType(name, gameData);
@@ -40,8 +40,6 @@ class UnitSeparatorTest {
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
     return unitType;
   }
-
-  @Mock private MapData mockMapData;
 
   @Test
   void testGetSortedUnitCategories() {
@@ -107,18 +105,18 @@ class UnitSeparatorTest {
     UnitAttachment.get(dragon).setMovement(4);
     UnitAttachment.get(dragon).setIsAir(true);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
-    UnitSeparator.SeparatorCategories separatorCategories =
+    final UnitSeparator.SeparatorCategories separatorCategories =
         UnitSeparator.SeparatorCategories.builder()
             .movementForAirUnitsOnly(true)
             .build();
 
-    Set<UnitCategory> categories = UnitSeparator.categorize( units, separatorCategories );
+    final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
     assertThat(
         "Air units with different movement points left should be in different categories",
@@ -126,24 +124,25 @@ class UnitSeparatorTest {
   }
 
   @Test
-  void testCategorizeWithAirUnitsWithDifferentMovement_insensitiveToAirUnitsWithTypeWithOneHitPoint() {
+  void
+  testCategorizeWithAirUnitsWithDifferentMovement_insensitiveToAirUnitsWithTypeWithOneHitPoint() {
     final UnitType drake = givenUnitType("Drake");
     UnitAttachment.get(drake).setHitPoints(1);
     UnitAttachment.get(drake).setMovement(4);
     UnitAttachment.get(drake).setIsAir(true);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(drake.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
-    UnitSeparator.SeparatorCategories separatorCategories =
+    final UnitSeparator.SeparatorCategories separatorCategories =
         UnitSeparator.SeparatorCategories.builder()
             .movementForAirUnitsOnly(true)
             .build();
 
-    Set<UnitCategory> categories = UnitSeparator.categorize( units, separatorCategories );
+    final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
     assertThat(
         "Air units with type with one hit point should be in the same category",
@@ -151,37 +150,38 @@ class UnitSeparatorTest {
   }
 
   @Test
-  void testCategorizeWithAirUnitsWithDifferentMovement_regardingAirUnitsInsensitiveToMovementFlag() {
+  void
+  testCategorizeWithAirUnitsWithDifferentMovement_regardingAirUnitsInsensitiveToMovementFlag() {
     final UnitType dragon = givenUnitType("Dragon");
     UnitAttachment.get(dragon).setHitPoints(2);
     UnitAttachment.get(dragon).setMovement(4);
     UnitAttachment.get(dragon).setIsAir(true);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
-    UnitSeparator.SeparatorCategories separatorCategories =
+    final UnitSeparator.SeparatorCategories separatorCategories =
         UnitSeparator.SeparatorCategories.builder()
             .movementForAirUnitsOnly(true)
             .build();
 
-    Set<UnitCategory> categories = UnitSeparator.categorize( units, separatorCategories );
+    final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
-    UnitSeparator.SeparatorCategories separatorCategoriesIncludingMovement =
+    final UnitSeparator.SeparatorCategories separatorCategoriesIncludingMovement =
         UnitSeparator.SeparatorCategories.builder()
             .movement(true)
             .movementForAirUnitsOnly(true)
             .build();
 
-    Set<UnitCategory> categoriesWithMovementFlag =
-        UnitSeparator.categorize( units, separatorCategoriesIncludingMovement );
+    final Set<UnitCategory> categoriesWithMovementFlag =
+        UnitSeparator.categorize(units, separatorCategoriesIncludingMovement);
 
     assertThat(
         "Categorization of air units should be the same regardless of the pure movement flag",
-        categories.equals( categoriesWithMovementFlag ));
+        categories.equals(categoriesWithMovementFlag));
   }
 
   @Test
@@ -191,7 +191,7 @@ class UnitSeparatorTest {
     UnitAttachment.get(dragon).setMovement(4);
     UnitAttachment.get(dragon).setIsAir(true);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
@@ -200,16 +200,16 @@ class UnitSeparatorTest {
     units.get(0).setHits(1);
     units.get(1).setHits(1);
 
-    UnitSeparator.SeparatorCategories separatorCategories =
+    final UnitSeparator.SeparatorCategories separatorCategories =
         UnitSeparator.SeparatorCategories.builder()
             .movementForAirUnitsOnly(true)
             .build();
 
-    Set<UnitCategory> categories = UnitSeparator.categorize( units, separatorCategories );
+    final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
     assertThat(
-        "Categorization of air units should take into account hit points by type "+
-            "but not hit points the unit has already taken",
+        "Categorization of air units should take into account hit points by type "
+            +"but not hit points the unit has already taken",
         categories.size() == 2);
   }
 
@@ -220,17 +220,17 @@ class UnitSeparatorTest {
     UnitAttachment.get(dragon).setMovement(4);
     UnitAttachment.get(dragon).setIsAir(true);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
 
     units.get(0).setHits(1);
 
-    UnitSeparator.SeparatorCategories separatorCategories =
+    final UnitSeparator.SeparatorCategories separatorCategories =
         UnitSeparator.SeparatorCategories.builder()
             .movementForAirUnitsOnly(true)
             .build();
 
-    Set<UnitCategory> categories = UnitSeparator.categorize( units, separatorCategories );
+    final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
     assertThat(
         "units with different hits should be in different categories",
@@ -248,7 +248,7 @@ class UnitSeparatorTest {
     UnitAttachment.get(battleship).setMovement(4);
     UnitAttachment.get(battleship).setIsSea(true);
 
-    List<Unit> units = new ArrayList<>();
+    final List<Unit> units = new ArrayList<>();
     units.addAll(tank.createTemp(2, player1));
     units.addAll(battleship.createTemp(2, player1));
 
@@ -257,12 +257,12 @@ class UnitSeparatorTest {
     units.get(2).setAlreadyMoved(BigDecimal.ONE);
     units.get(3).setAlreadyMoved(BigDecimal.valueOf(2));
 
-    UnitSeparator.SeparatorCategories separatorCategories =
+    final UnitSeparator.SeparatorCategories separatorCategories =
         UnitSeparator.SeparatorCategories.builder()
             .movementForAirUnitsOnly(true)
             .build();
 
-    Set<UnitCategory> categories = UnitSeparator.categorize( units, separatorCategories );
+    final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
     assertThat(
         "Non-Air units with different movement points left should be in the same category",

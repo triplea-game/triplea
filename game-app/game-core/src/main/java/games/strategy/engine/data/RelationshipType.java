@@ -6,7 +6,7 @@ import java.util.Map;
 
 /** A type of relationship (e.g. allied, at war, etc.) available between players. */
 public class RelationshipType extends NamedAttachable {
-  private static final long serialVersionUID = 5348310616624709971L;
+  private static final long serialVersionUID = -2243024389101608996L;
   private static final Map<GameData, Map<String,RelationshipType>> relationshipTypes =
       new HashMap<>();
 

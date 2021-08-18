@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import com.google.common.base.Preconditions;
 import games.strategy.triplea.delegate.Matches;
 import java.io.Serializable;
 import java.util.Collection;
@@ -208,7 +209,7 @@ public class RelationshipTracker extends GameDataComponent {
    * either the key (p1, p2) or (p2, p1).
    */
   public static final class RelatedPlayers implements Serializable {
-    private static final long serialVersionUID = 2124258606502106751L;
+    private static final long serialVersionUID = 588212896071367696L;
     private static final Map<GamePlayer,Map<GamePlayer,RelatedPlayers>> relatedPlayers =
         new HashMap<>();
 
@@ -226,6 +227,9 @@ public class RelationshipTracker extends GameDataComponent {
      *
      */
     public static RelatedPlayers get(final GamePlayer player1, final GamePlayer player2) {
+      Preconditions.checkNotNull(player1);
+      Preconditions.checkNotNull(player2);
+
       Map<GamePlayer,RelatedPlayers> relationsOfPlayer1 = relatedPlayers.get(player1);
       if(relationsOfPlayer1 == null) {
         relationsOfPlayer1 = new HashMap<>();
