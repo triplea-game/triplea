@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.KeyCode;
@@ -99,6 +100,14 @@ public class BattleCalculatorDialog extends JDialog {
       dialog.setLocation(lastPosition);
     }
     dialog.setVisible(true);
+    // On some desktop environments, there is an odd behaviour: The new battle calculator dialog is
+    // not put at the front if the last user-interaction was to move the window of an already
+    // existing battle calculator dialog.  Oddly enough, calling toFront() directly here (before or
+    // after setVisible(true)) has no effect either, but delaying the call to the end of the queue
+    // of the Event Dispatch Thread solves the issue (though you can see the new dialog in the
+    // background for an blink of an eye).
+    // Tested with Cinnamon Desktop 4.8.5.
+    SwingUtilities.invokeLater(dialog::toFront);
     taFrame.getUiContext().addShutdownWindow(dialog);
   }
 
@@ -159,11 +168,5 @@ public class BattleCalculatorDialog extends JDialog {
     instances.remove(this);
     lastPosition = new Point(getLocation());
     super.dispose();
-  }
-
-  @Override
-  public void setVisible(final boolean vis) {
-    super.setVisible(vis);
-    panel.selectCalculateButton();
   }
 }
