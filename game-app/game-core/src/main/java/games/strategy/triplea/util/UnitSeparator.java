@@ -94,9 +94,7 @@ public class UnitSeparator {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (separatorCategories.movement
           || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))
-          || (separatorCategories.movementForAirUnitsOnly
-              && UnitAttachment.get(current.getType()).getIsAir()
-              && UnitAttachment.get(current.getType()).getHitPoints() > 1)
+          || (separatorCategories.movementForAirUnitsOnly && isRelevantAirUnit(current))
       ) {
         unitMovement = current.getMovementLeft();
       }
@@ -133,5 +131,10 @@ public class UnitSeparator {
       }
     }
     return new TreeSet<>(categories.keySet());
+  }
+
+  private static boolean isRelevantAirUnit(final Unit unit) {
+    return UnitAttachment.get(unit.getType()).getIsAir()
+        && UnitAttachment.get(unit.getType()).getHitPoints() > 1;
   }
 }

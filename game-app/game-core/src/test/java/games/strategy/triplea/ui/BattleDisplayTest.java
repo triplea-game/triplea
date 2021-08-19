@@ -7,15 +7,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.config.product.ProductVersionReader;
-import org.triplea.injection.Injections;
 
 class BattleDisplayTest {
   private GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -27,13 +24,6 @@ class BattleDisplayTest {
     final UnitAttachment unitAttachment = new UnitAttachment(name, unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
     return unitType;
-  }
-
-  private static Injections constructInjections() {
-    return Injections.builder()
-        .engineVersion(new ProductVersionReader().getVersion())
-        .playerTypes(new ArrayList<PlayerTypes.Type>())
-        .build();
   }
 
   @Test

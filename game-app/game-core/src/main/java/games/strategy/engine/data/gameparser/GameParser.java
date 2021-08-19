@@ -390,7 +390,7 @@ public final class GameParser {
   private void parseRelationshipTypes(final RelationshipTypes relationshipTypes) {
     relationshipTypes.getRelationshipTypes().stream()
         .map(RelationshipTypes.RelationshipType::getName)
-        .map(name -> RelationshipType.get(name, data))
+        .map(name -> new RelationshipType(name, data))
         .forEach(data.getRelationshipTypeList()::addRelationshipType);
   }
 
