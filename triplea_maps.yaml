@@ -2348,3 +2348,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/greatlakeswar/master/preview.png
   description: |
     <br>Conflict around the North American Great Lakes, with both free-for-all and alliance scenarios
+- mapName: WW2v5-FreeCiv Art
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/WW2v5-Freeciv_Art/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/WW2v5-Freeciv_Art/master/preview.png
+  description: |
+    <br>World War 2 version 5, using art from the game FreeCiv instead of the usual unit icons. For information on FreeCiv, see freeciv.org
