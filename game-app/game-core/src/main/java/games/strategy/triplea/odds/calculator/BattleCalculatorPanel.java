@@ -957,14 +957,6 @@ class BattleCalculatorPanel extends JPanel {
 
     defenderCombo.addActionListener(
         e -> {
-          data.acquireReadLock();
-          try {
-            if (data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-              attackerCombo.setSelectedItem(getEnemy(getDefender()));
-            }
-          } finally {
-            data.releaseReadLock();
-          }
           setDefendingUnits(
               defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
                   ? defendingUnitsPanel.getUnits()
@@ -973,14 +965,6 @@ class BattleCalculatorPanel extends JPanel {
         });
     attackerCombo.addActionListener(
         e -> {
-          data.acquireReadLock();
-          try {
-            if (data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-              defenderCombo.setSelectedItem(getEnemy(getAttacker()));
-            }
-          } finally {
-            data.releaseReadLock();
-          }
           setAttackingUnits(null);
           setWidgetActivation();
         });
@@ -1375,21 +1359,6 @@ class BattleCalculatorPanel extends JPanel {
 
   private boolean isLand() {
     return landBattleCheckBox.isSelected();
-  }
-
-  private GamePlayer getEnemy(final GamePlayer player) {
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (data.getRelationshipTracker().isAtWar(player, gamePlayer)) {
-        return gamePlayer;
-      }
-    }
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (!data.getRelationshipTracker().isAllied(player, gamePlayer)) {
-        return gamePlayer;
-      }
-    }
-    // TODO: do we allow fighting allies in the battle calc?
-    throw new IllegalStateException("No enemies or non-allies for :" + player);
   }
 
   private void setResultsToBlank() {
