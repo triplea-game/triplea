@@ -115,9 +115,9 @@ final class FileUtilsTest {
   }
 
   /**
-   * Creates a non-empty directory, run delete, verify directory is deleted. Linux systems
-   * will fail the delete operation if the directory is not empty, this test verifies
-   * that we do a recursive delete before removing the directory.
+   * Creates a non-empty directory, run delete, verify directory is deleted. Linux systems will fail
+   * the delete operation if the directory is not empty, this test verifies that we do a recursive
+   * delete before removing the directory.
    */
   @Test
   void deleteDirectory() throws IOException {
