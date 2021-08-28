@@ -17,10 +17,10 @@ jobs:
           echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
       - name: Deploy to Prerelease
         run: |
+          .build/set-build-number ${{ github.run_number }}
           eval "$(ssh-agent -s)"
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          .build/set-build-number ${{ github.run_number }}
           ./run_ansible --deploy-type minimal --environment prerelease
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
