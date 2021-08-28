@@ -89,7 +89,6 @@ class BattleCalculatorPanel extends JPanel {
   private final PlayerUnitsPanel defendingUnitsPanel;
   private final JComboBox<GamePlayer> attackerCombo;
   private final JComboBox<GamePlayer> defenderCombo;
-  private final JComboBox<GamePlayer> swapSidesCombo;
   private final JLabel attackerUnitsTotalNumber = new JLabel();
   private final JLabel defenderUnitsTotalNumber = new JLabel();
   private final JLabel attackerUnitsTotalTuv = new JLabel();
@@ -120,7 +119,6 @@ class BattleCalculatorPanel extends JPanel {
       }
       attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
-      swapSidesCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
       if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
         territoryEffectsJList = null;
@@ -152,7 +150,6 @@ class BattleCalculatorPanel extends JPanel {
     }
     defenderCombo.setRenderer(new PlayerRenderer());
     attackerCombo.setRenderer(new PlayerRenderer());
-    swapSidesCombo.setRenderer(new PlayerRenderer());
     defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
     attackingUnitsPanel = new PlayerUnitsPanel(data, uiContext, false);
     numRuns.setColumns(4);
@@ -1016,6 +1013,7 @@ class BattleCalculatorPanel extends JPanel {
         e -> {
           attackerOrderOfLosses = null;
           defenderOrderOfLosses = null;
+          final GamePlayer newAttacker = getDefender();
           final List<Unit> newAttackers =
               CollectionUtils.getMatches(
                   defendingUnitsPanel.getUnits(),
@@ -1023,13 +1021,13 @@ class BattleCalculatorPanel extends JPanel {
                       .and(
                           Matches.unitCanBeInBattle(
                               true, isLand(), 1, hasMaxRounds(isLand(), data), true, List.of())));
+          final GamePlayer newDefender = getAttacker();
           final List<Unit> newDefenders =
               CollectionUtils.getMatches(
                   attackingUnitsPanel.getUnits(),
                   Matches.unitCanBeInBattle(true, isLand(), 1, true));
-          swapSidesCombo.setSelectedItem(getAttacker());
-          attackerCombo.setSelectedItem(getDefender());
-          defenderCombo.setSelectedItem(getSwapSides());
+          setAttacker(newAttacker);
+          setDefender(newDefender);
           setAttackingUnits(newAttackers);
           setDefendingUnits(newDefenders);
           setWidgetActivation();
@@ -1163,10 +1161,6 @@ class BattleCalculatorPanel extends JPanel {
 
   void setDefender(final GamePlayer gamePlayer) {
     defenderCombo.setSelectedItem(gamePlayer);
-  }
-
-  private GamePlayer getSwapSides() {
-    return (GamePlayer) swapSidesCombo.getSelectedItem();
   }
 
   private boolean isAmphibiousBattle() {
