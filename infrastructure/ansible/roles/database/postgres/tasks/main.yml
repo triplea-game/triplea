@@ -24,7 +24,6 @@
 
 - name: Set postgres user password
   become_user: postgres
-  no_log: true
   postgresql_user:
     name: postgres
     login_password: "{{ postgres_user_db_password }}"
