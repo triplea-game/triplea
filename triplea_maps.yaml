@@ -2348,3 +2348,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/greatlakeswar/master/preview.png
   description: |
     <br>Conflict around the North American Great Lakes, with both free-for-all and alliance scenarios
+- mapName: Cold War 4th Edition
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Cold_War_1950_4th_edition/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Cold_War_1950_4th_edition/master/preview.png
+  description: |
+    <br>A hypothetical World War 3 starting in 1950 using the Pact of Steel map
