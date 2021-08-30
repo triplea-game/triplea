@@ -1,4 +1,4 @@
-.vagrant
+vagrant/.vagrant
 .ansible
 *-console.log
 ansible/*.retry

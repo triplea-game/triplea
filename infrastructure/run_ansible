@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 ENVIRONMENT_VAGRANT=vagrant
 ENVIRONMENT_PRERELEASE=prerelease
@@ -10,19 +10,18 @@ DEPLOY_TYPE_FULL=full
 DEPLOY_TYPE_MINIMAL=minimal
 
 
-# This script is used to execute prerelease deployments by building artifacts
-# and then deploying them via ansible.
+# This script orchestrates deployments via ansible. If a prerelease deployment is done then
+# fresh artifacts are built and deployed.
 
 function usage() {
   echo "usage: $0 [options]"
   echo ""
   echo "Examples:"
-  echo "$0"
+  echo "$0 --environment $ENVIRONMENT_VAGRANT"
   echo "$0 --environment $ENVIRONMENT_PRERELEASE --deploy-type $DEPLOY_TYPE_MINIMAL"
   echo ""
   echo "[options]"
   echo "  --environment [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRERELEASE|$ENVIRONMENT_PRODUCTION]"
-  echo "      Defaults to '$$ENVIRONMENT_VAGRANT'"
   echo "      The target environment for the deployment."
   echo "         $ENVIRONMENT_VAGRANT is an environment that can be launched locally via a VM"
   echo "  --deploy-type [$DEPLOY_TYPE_MINIMAL|$DEPLOY_TYPE_FULL]"
@@ -36,8 +35,13 @@ function usage() {
 }
 
 DEPLOY_TYPE="$DEPLOY_TYPE_FULL"
-ENVIRONMENT="$ENVIRONMENT_VAGRANT"
+ENVIRONMENT=""
 TAGS=""
+
+if [[ $# -eq 0 ]]; then
+  usage
+fi
+
 
 while [[ $# -gt 1 ]]; do
   key="$1"
@@ -80,6 +84,11 @@ while [[ $# -gt 1 ]]; do
       ;;
   esac
 done
+
+if [ -z "$ENVIRONMENT" ]; then
+  echo "Missing arg: --environment"
+  usage
+fi
 
 ANSIBLE_ARG_TAGS=""
 if [[ "$DEPLOY_TYPE" == "$DEPLOY_TYPE_MINIMAL" && -n "${TAGS:-}" ]]; then
@@ -146,6 +155,6 @@ ansible-playbook \
 # Do Cleanup
 if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
   echo "Cleanup, removing old kernel patches.."
-  ansible -i ansible/inventory/prerelease all --become-user=root -m shell -a \
+  ansible -i ansible/inventory/$ENVIRONMENT all --become-user=root -m shell -a \
     "sudo apt autoremove -y"
 fi

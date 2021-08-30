@@ -5,13 +5,6 @@
 # use an application database user.
 postgres_user_db_password: postgres
 
-# Definition of application databases. Each list element will
-# be one database created on the postgres database.
-# Each database should define:
-#  name: the name of the database
-#  user: the name of the application user that can access
-#     the database
-#  password: the database password for the application user
 database_name: "lobby_db"
 database_user: "{{ lobby_db_user }}"
 database_password: "{{ lobby_db_password }}"

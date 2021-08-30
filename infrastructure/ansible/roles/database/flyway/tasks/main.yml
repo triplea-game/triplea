@@ -57,15 +57,20 @@
      owner: flyway
      group: flyway
 
+- name: deploy file (flyway_home)/conf/flyway.conf
+  template:
+    src: flyway.conf.j2
+    dest: "{{ flyway_extracted_location }}/conf/flyway.conf"
+    mode: "0644"
+    owner: flyway
+    group: flyway
+
 - name: run flyway
   tags: [deploy]
   command: |
      {{ flyway_extracted_location }}/flyway
           -X
-          -user={{ item.user }}
-          -password={{ item.password }}
-          -url={{ item.url }}
-          -locations=filesystem:{{ flyway_extracted_location }}/migrations/{{ item.migration_dir }}
+          -locations=filesystem:{{ flyway_extracted_location }}/migrations/{{ flyway_migration_dir }}
           migrate
   register: flyway
   changed_when: '"is up to date. No migration necessary" not in flyway.stdout'
@@ -73,8 +78,4 @@
      (flyway.rc != 0) or
      ("Successfully validated 0 migrations" in flyway.stdout) or
      ("WARNING: No migrations found. Are your locations set up correctly?" in flyway.stdout)
-  loop: "{{ flyway_args }}"
-  loop_control:
-    label: "{{ item.migration_dir }}"
-  no_log: true
 
