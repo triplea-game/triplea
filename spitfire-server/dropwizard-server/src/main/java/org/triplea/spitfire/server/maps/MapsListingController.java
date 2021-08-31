@@ -11,7 +11,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
-import org.triplea.http.client.maps.listing.MapsListingClient;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.maps.listing.MapListingDao;
 import org.triplea.maps.listing.MapsListingModule;
 
@@ -27,7 +27,7 @@ public class MapsListingController {
   }
 
   @GET
-  @Path(MapsListingClient.MAPS_LISTING_PATH)
+  @Path(MapsClient.MAPS_LISTING_PATH)
   public List<MapDownloadItem> fetchAvailableMaps() {
     return downloadListingSupplier.get();
   }

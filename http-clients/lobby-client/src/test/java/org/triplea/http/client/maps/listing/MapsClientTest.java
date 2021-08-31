@@ -12,7 +12,7 @@ import org.triplea.http.client.WireMockTest;
 import org.triplea.test.common.JsonUtil;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
-class MapsListingClientTest extends WireMockTest {
+class MapsClientTest extends WireMockTest {
 
   private static final List<MapDownloadItem> mapsListingResponse =
       List.of(
