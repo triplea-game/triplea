@@ -51,11 +51,11 @@ public class RelationshipTracker extends GameDataComponent {
   }
 
   public RelationshipType getRelationshipType(final  RelatedPlayers p1p2) {
-    return getRelationship( p1p2 ).getRelationshipType();
+    return getRelationship(p1p2).getRelationshipType();
   }
 
-  public Relationship getRelationship(final RelatedPlayers p1p2 ) {
-    return relationships.get( p1p2 );
+  public Relationship getRelationship(final RelatedPlayers p1p2) {
+    return relationships.get(p1p2);
   }
 
   public Relationship getRelationship(final GamePlayer p1, final GamePlayer p2) {
