@@ -11,7 +11,7 @@ import java.net.URI;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.http.client.maps.listing.MapsListingHttpClient;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.spitfire.server.SpitfireServerTestExtension;
 
 @AllArgsConstructor
@@ -24,7 +24,7 @@ class MapsListingControllerTest {
   /** Invoke the maps listing endpoint and verify response data is present. */
   @Test
   void invokeMapsListingEndpoint() {
-    final var result = new MapsListingHttpClient(localhost).fetchMapDownloads();
+    final var result = new MapsClient(localhost).fetchMapDownloads();
 
     assertThat(result, hasSize(2));
     for (int i = 0; i < 2; i++) {
