@@ -2355,3 +2355,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Cold_War_1950_4th_edition/master/preview.png
   description: |
     <br>A hypothetical World War 3 starting in 1950 using the Pact of Steel map
+- mapName: Anglo-American Nazi War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Anglo-American_Nazi_War/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Anglo-American_Nazi_War/master/preview.png
+  description: |
+    <br>In this hypothetical scenario, the Molotov-Ribbrentrop pact has held, while the US & UK have defeated Japan.
