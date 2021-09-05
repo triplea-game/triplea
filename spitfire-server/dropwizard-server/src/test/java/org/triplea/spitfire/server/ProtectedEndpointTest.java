@@ -47,7 +47,7 @@ public abstract class ProtectedEndpointTest<T> {
       final AllowedUserRole allowedUserRole, final Consumer<T> methodRunner) {
     Preconditions.checkNotNull(allowedUserRole);
 
-    methodRunner.accept(clientBuilder.apply(localhost, allowedUserRole.getAllowedKey()));
+    methodRunner.accept(clientBuilder.apply(localhost, allowedUserRole.getApiKey()));
 
     allowedUserRole
         .getDisallowedKeys()
@@ -80,8 +80,7 @@ public abstract class ProtectedEndpointTest<T> {
       final AllowedUserRole allowedUserRole, final Function<T, X> methodRunner) {
     Preconditions.checkNotNull(allowedUserRole);
 
-    final X value =
-        methodRunner.apply(clientBuilder.apply(localhost, allowedUserRole.getAllowedKey()));
+    final X value = methodRunner.apply(clientBuilder.apply(localhost, allowedUserRole.getApiKey()));
     assertThat(value, is(notNullValue()));
 
     allowedUserRole
@@ -111,7 +110,7 @@ public abstract class ProtectedEndpointTest<T> {
     Preconditions.checkNotNull(allowedUserRole);
 
     assertThat(
-        methodRunner.apply(clientBuilder.apply(localhost, allowedUserRole.getAllowedKey())),
+        methodRunner.apply(clientBuilder.apply(localhost, allowedUserRole.getApiKey())),
         not(empty()));
 
     allowedUserRole

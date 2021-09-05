@@ -3,13 +3,24 @@
 set -u
 
 function main() {
-   set -x
   .build/setup-database
-  ./gradlew --quiet test jacocoTestReport --exclude-task :smoke-testing:test
+  ./gradlew test jacocoTestReport \
+     --exclude-task :smoke-testing:test \
+     --exclude-task :spitfire-server:lobby-module:test \
+     --exclude-task :spitfire-server:maps-module:test \
+     --exclude-task :spitfire-server:dropwizard-server:test
   result="$?"
-  set +x
-  # Run coverage reports only if tests passed
 
+  if [ "$result" = 0 ]; then
+  ./gradlew \
+     :spitfire-server:lobby-module:test \
+     :spitfire-server:maps-module:test \
+     :spitfire-server:dropwizard-server:test
+
+     result="$?"
+  fi
+
+  # Run coverage reports only if tests passed
   if [ "$result" = 0 ]; then
     echo "Uploading test coverage reports"
     # upload coverage report to codecov - https://github.com/codecov/example-gradle

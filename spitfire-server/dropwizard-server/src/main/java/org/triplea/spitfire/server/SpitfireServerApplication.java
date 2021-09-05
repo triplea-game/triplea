@@ -44,7 +44,8 @@ import org.triplea.spitfire.server.controllers.user.account.ForgotPasswordContro
 import org.triplea.spitfire.server.controllers.user.account.LoginController;
 import org.triplea.spitfire.server.controllers.user.account.PlayerInfoController;
 import org.triplea.spitfire.server.controllers.user.account.UpdateAccountController;
-import org.triplea.spitfire.server.maps.MapsListingController;
+import org.triplea.spitfire.server.maps.MapTagAdminController;
+import org.triplea.spitfire.server.maps.MapsController;
 import org.triplea.web.socket.GameConnectionWebSocket;
 import org.triplea.web.socket.GenericWebSocket;
 import org.triplea.web.socket.PlayerConnectionWebSocket;
@@ -173,6 +174,7 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
         UpdateAccountController.build(jdbi),
 
         // maps module controllers
-        MapsListingController.build(jdbi));
+        MapsController.build(jdbi),
+        MapTagAdminController.build(jdbi));
   }
 }

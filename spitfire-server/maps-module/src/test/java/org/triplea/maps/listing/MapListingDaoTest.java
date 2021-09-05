@@ -8,12 +8,11 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.maps.MapsModuleDatabaseTestSupport;
 
-@DataSet(value = "map_index.yml,map_tag_values.yml", useSequenceFiltering = false)
+@DataSet(value = "map_index.yml,map_tag_value.yml", useSequenceFiltering = false)
 @ExtendWith(MapsModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
 class MapListingDaoTest {
@@ -36,33 +35,5 @@ class MapListingDaoTest {
     assertThat(
         mapDownloadListing.getLastCommitDate().toEpochMilli(),
         is(LocalDateTime.of(2000, 12, 1, 23, 59, 20).toInstant(ZoneOffset.UTC).toEpochMilli()));
-  }
-
-  @Test
-  void verifyFetchMapTags() {
-    var mapTags =
-        mapListingDao.fetchMapTagsForMapName("map-name").stream()
-            .map(MapTagRecord::toMapTag)
-            .collect(Collectors.toList());
-    assertThat(mapTags, hasSize(2));
-    assertThat(mapTags.get(0).getName(), is("Category"));
-    assertThat(mapTags.get(0).getType(), is("STRING"));
-    assertThat(mapTags.get(0).getDisplayOrder(), is(1));
-    assertThat(mapTags.get(0).getValue(), is("Best"));
-
-    assertThat(mapTags.get(1).getName(), is("Rating"));
-    assertThat(mapTags.get(1).getType(), is("STAR"));
-    assertThat(mapTags.get(1).getDisplayOrder(), is(2));
-    assertThat(mapTags.get(1).getValue(), is("5"));
-
-    mapTags =
-        mapListingDao.fetchMapTagsForMapName("map-name-2").stream()
-            .map(MapTagRecord::toMapTag)
-            .collect(Collectors.toList());
-    assertThat(mapTags, hasSize(1));
-    assertThat(mapTags.get(0).getName(), is("Category"));
-    assertThat(mapTags.get(0).getType(), is("STRING"));
-    assertThat(mapTags.get(0).getDisplayOrder(), is(1));
-    assertThat(mapTags.get(0).getValue(), is("New"));
   }
 }

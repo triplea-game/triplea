@@ -29,6 +29,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -469,5 +470,30 @@ public final class SwingComponents {
   public static void redraw(final Component component) {
     component.revalidate();
     component.repaint();
+  }
+
+  /**
+   * Creates a 'Help' button that opens a window displaying help text.
+   *
+   * @param helpWindowTitle The title displayed on the help window
+   * @param helpWindowText The (HTML) text displayed in the help window.
+   */
+  public static JButton helpButton(final String helpWindowTitle, final String helpWindowText) {
+    return new JButtonBuilder()
+        .title("Help")
+        .actionListener(
+            () ->
+                new JDialogBuilder()
+                    .title(helpWindowTitle)
+                    .add(
+                        new JPanelBuilder()
+                            .border(20)
+                            .borderLayout()
+                            .addCenter(new JLabel("<html>" + helpWindowText))
+                            .build())
+                    .escapeKeyCloses()
+                    .alwaysOnTop()
+                    .buildAndShow())
+        .build();
   }
 }
