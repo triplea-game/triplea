@@ -80,6 +80,14 @@ For detailed steps on building the project, see:
 - [how-to/launch-local-database.md](./how-to/launch-local-database.md])
 - [how-to/typical-git-workflow.md](./how-to/typical-git-workflow.md)
 
+## Coding Style Guide & Expectations
+
+- Code formatting is google java format
+- Checkstyle will verify low level code style standards
+- Generally write tests for new and modified code
+
+Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
+
 
 # Pitfalls and Pain Points to be aware of
 
