@@ -2,6 +2,8 @@
 
 ## Before Getting Started
 - [Install IDE](./how-to/ide-setup) (favor choosing IDEA)
+  - Create as a gradle project (file > open project > select the build.gradle file))
+  - Usually TripleA and lobby are started from within IDE, look for checked in 'run configurations'.
 - Install docker
   - Docker for Mac can be obtained at: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
 
