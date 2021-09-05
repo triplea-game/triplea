@@ -30,13 +30,13 @@ public class JDialogBuilder {
 
   private JFrame parent;
   private String title;
+  private boolean alwaysOnTop;
   private Dimension size;
   private final List<Function<JDialog, Component>> components = new ArrayList<>();
   private boolean escapeKeyCloses;
 
   /** Constructs a JDialog. */
   public JDialog build() {
-    Preconditions.checkNotNull(parent);
     Preconditions.checkNotNull(title);
 
     final JDialog dialog = new JDialog(parent, title);
@@ -47,6 +47,7 @@ public class JDialogBuilder {
       SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, dialog::dispose);
     }
     dialog.setLocationRelativeTo(parent);
+    dialog.setAlwaysOnTop(alwaysOnTop);
     dialog.pack();
     Optional.ofNullable(size).ifPresent(dialog::setSize);
     return dialog;
@@ -104,6 +105,11 @@ public class JDialogBuilder {
 
   public JDialogBuilder escapeKeyCloses() {
     escapeKeyCloses = true;
+    return this;
+  }
+
+  public JDialogBuilder alwaysOnTop() {
+    alwaysOnTop = true;
     return this;
   }
 }

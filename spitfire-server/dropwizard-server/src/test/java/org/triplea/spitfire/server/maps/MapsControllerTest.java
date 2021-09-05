@@ -12,13 +12,15 @@ import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.maps.listing.MapsClient;
+import org.triplea.spitfire.server.SpitfireDatabaseTestSupport;
 import org.triplea.spitfire.server.SpitfireServerTestExtension;
 
 @AllArgsConstructor
 @ExtendWith(SpitfireServerTestExtension.class)
+@ExtendWith(SpitfireDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
-@DataSet(value = "map_index.yml,map_tag_values.yml", useSequenceFiltering = false)
-class MapsListingControllerTest {
+@DataSet(value = "map_index.yml,map_tag_value.yml", useSequenceFiltering = false)
+class MapsControllerTest {
   private final URI localhost;
 
   /** Invoke the maps listing endpoint and verify response data is present. */
@@ -43,7 +45,6 @@ class MapsListingControllerTest {
 
     assertThat(result.get(1).getMapTags(), hasSize(1));
     assertThat(result.get(1).getMapTags().get(0).getName(), is(notNullValue()));
-    assertThat(result.get(1).getMapTags().get(0).getType(), is(notNullValue()));
     assertThat(result.get(1).getMapTags().get(0).getValue(), is(notNullValue()));
     assertThat(
         "Display order should always be a positive value",

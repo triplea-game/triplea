@@ -1,6 +1,8 @@
 package org.triplea.spitfire.database;
 
 import com.github.database.rider.junit5.DBUnitExtension;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +24,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  * database is wiped clean.
  *
  * <p>Second, this extension will constructor or test method parameter inject any classes that can
- * be instantiated via a 'Jdbi.onDemand(class)' call.
+ * be instantiated via a 'Jdbi.onDemand(class)' or 'new DaoClass(jdbi)'.
  */
 @ExtendWith(DBUnitExtension.class)
 public abstract class DbRiderTestExtension
@@ -61,6 +63,14 @@ public abstract class DbRiderTestExtension
   public boolean supportsParameter(
       final ParameterContext parameterContext, final ExtensionContext extensionContext)
       throws ParameterResolutionException {
+
+    // check if there is a one-arg (JDBI) constructor
+    try {
+      parameterContext.getParameter().getType().getConstructor(Jdbi.class);
+      return true;
+    } catch (final NoSuchMethodException e) {
+      // no-op, object is constructed potentially another way
+    }
     try {
       jdbi.onDemand(parameterContext.getParameter().getType());
       return true;
@@ -73,6 +83,18 @@ public abstract class DbRiderTestExtension
   public Object resolveParameter(
       final ParameterContext parameterContext, final ExtensionContext extensionContext)
       throws ParameterResolutionException {
+
+    // try to create the class using constructor that accepts one Jdbi
+    try {
+      final Constructor<?> constructor =
+          parameterContext.getParameter().getType().getConstructor(Jdbi.class);
+      return constructor.newInstance(jdbi);
+    } catch (final NoSuchMethodException
+        | InvocationTargetException
+        | IllegalAccessException
+        | InstantiationException e) {
+      // no-op, object is constructed via 'jdbi.onDemand'
+    }
 
     return jdbi.onDemand(parameterContext.getParameter().getType());
   }

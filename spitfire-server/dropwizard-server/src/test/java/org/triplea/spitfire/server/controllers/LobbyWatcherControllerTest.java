@@ -53,7 +53,7 @@ class LobbyWatcherControllerTest extends ProtectedEndpointTest<LobbyWatcherClien
     verifyEndpoint(
         client ->
             client.uploadChatMessage(
-                AllowedUserRole.HOST.getAllowedKey(),
+                AllowedUserRole.HOST.getApiKey(),
                 ChatUploadParams.builder()
                     .fromPlayer(UserName.of("player"))
                     .chatMessage("chat")

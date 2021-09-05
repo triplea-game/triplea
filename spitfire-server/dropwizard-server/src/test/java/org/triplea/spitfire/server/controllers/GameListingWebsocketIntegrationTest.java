@@ -86,8 +86,7 @@ class GameListingWebsocketIntegrationTest extends SpitfireServerTest {
     gamePostingTestOverrideClient =
         new HttpClient<>(GamePostingTestOverrideClient.class, localhost).get();
 
-    lobbyWatcherClient =
-        LobbyWatcherClient.newClient(localhost, AllowedUserRole.HOST.getAllowedKey());
+    lobbyWatcherClient = LobbyWatcherClient.newClient(localhost, AllowedUserRole.HOST.getApiKey());
 
     final var playerToLobbyConnection =
         new PlayerToLobbyConnection(
@@ -120,7 +119,7 @@ class GameListingWebsocketIntegrationTest extends SpitfireServerTest {
   private String postGame() {
     return gamePostingTestOverrideClient
         .postGame(
-            new AuthenticationHeaders(AllowedUserRole.HOST.getAllowedKey()).createHeaders(),
+            new AuthenticationHeaders(AllowedUserRole.HOST.getApiKey()).createHeaders(),
             GAME_POSTING_REQUEST)
         .getGameId();
   }

@@ -11,11 +11,13 @@ from access_log;
 delete
 from user_role;
 delete
+from map_tag_value;
+delete
 from map_index;
 delete
-from map_tag_values;
+from map_tag_allowed_value;
 delete
-from tag_type;
+from map_tag;
 
 
 insert into user_role(id, name)
@@ -98,10 +100,14 @@ values (1, 'test-map', now() - interval '1 days', 'http://repo-url',
         'map description', 1024, 'http://download-url',
         'http://preview-image');
 
-insert into tag_type (id, name, type, display_order)
-values (1, 'Category', 'STRING', 1),
-       (2, 'Rating', 'STAR', 2);
+insert into map_tag (id, name, display_order)
+values (1000, 'Rating', 1),
+       (2000, 'Category', 2);
 
-insert into map_tag_values (map_id, tag_type_id, tag_value)
-values (1, 1, 'BEST'),
-       (1, 2, '5');
+insert into map_tag_allowed_value (id, map_tag_id, value)
+values (300, 1000, '1'),
+       (301, 1000, '2'),
+       (302, 1000, '3'),
+       (400, 2000, 'Complete'),
+       (401, 2000, 'Awesome');
+

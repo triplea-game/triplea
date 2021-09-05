@@ -32,7 +32,6 @@ class MapsClientTest extends WireMockTest {
               .mapTags(
                   List.of(
                       MapTag.builder()
-                          .type("STRING")
                           .displayOrder(1)
                           .name("tag-name")
                           .value("tag-value")

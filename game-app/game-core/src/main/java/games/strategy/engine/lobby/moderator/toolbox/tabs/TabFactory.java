@@ -5,6 +5,8 @@ import games.strategy.engine.lobby.moderator.toolbox.tabs.bad.words.BadWordsTab;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.banned.names.BannedUsernamesTab;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.banned.users.BannedUsersTab;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.event.log.EventLogTab;
+import games.strategy.engine.lobby.moderator.toolbox.tabs.maps.MapsTab;
+import games.strategy.engine.lobby.moderator.toolbox.tabs.maps.MapsTabModel;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.moderators.ModeratorsTab;
 import java.awt.Component;
 import javax.annotation.Nonnull;
@@ -28,6 +30,7 @@ public final class TabFactory {
         .addTab("Banned Users", buildBannedUsersTab())
         .addTab("Event Log", buildEventLogTab())
         .addTab("Moderators", buildModeratorsTab())
+        .addTab("Maps", buildMapsTab())
         .build();
   }
 
@@ -57,6 +60,21 @@ public final class TabFactory {
     return new ModeratorsTab(
             frame, httpModeratorToolboxClient.getToolboxModeratorManagementClient())
         .get();
+  }
+
+  private Component buildMapsTab() {
+    return MapsTab.builder()
+        .parentWindowHeight(frame.getWidth())
+        .mapsTabModel(buildMapsTabModel())
+        .build()
+        .get();
+  }
+
+  private MapsTabModel buildMapsTabModel() {
+    return MapsTabModel.builder()
+        .mapsClient(httpModeratorToolboxClient.getMapsClient())
+        .mapTagAdminClient(httpModeratorToolboxClient.getMapTagAdminClient())
+        .build();
   }
 
   private Component buildEventLogTab() {

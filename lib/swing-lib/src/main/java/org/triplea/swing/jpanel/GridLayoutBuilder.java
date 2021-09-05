@@ -3,6 +3,7 @@ package org.triplea.swing.jpanel;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.swing.JPanel;
 import lombok.AccessLevel;
@@ -26,6 +27,11 @@ public class GridLayoutBuilder {
 
   public GridLayoutBuilder add(final Component component) {
     components.add(component);
+    return this;
+  }
+
+  public GridLayoutBuilder addAll(final Collection<Component> components) {
+    components.forEach(this::add);
     return this;
   }
 }
