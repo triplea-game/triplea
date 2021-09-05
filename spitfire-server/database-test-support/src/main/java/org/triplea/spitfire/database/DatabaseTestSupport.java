@@ -1,7 +1,5 @@
 package org.triplea.spitfire.database;
 
-import org.triplea.test.common.database.DbRiderTestExtension;
-
 public abstract class DatabaseTestSupport extends DbRiderTestExtension {
   @Override
   protected String getDatabaseUser() {

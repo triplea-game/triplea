@@ -1,4 +1,4 @@
-package org.triplea.test.common.database;
+package org.triplea.spitfire.database;
 
 import com.github.database.rider.junit5.DBUnitExtension;
 import java.net.URL;
