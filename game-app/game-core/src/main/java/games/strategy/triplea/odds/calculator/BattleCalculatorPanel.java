@@ -1095,6 +1095,19 @@ class BattleCalculatorPanel extends JPanel {
           }
         }
 
+        // In the above code, if the territory owner and the current player are the same, then
+        // attacker and defender are. Since we cannot infer whether the user wants to defend the
+        // territory or attack with the units in that territory, we cannot refine this setup
+        // further. To not break the user's habits, we solve this by falling back to the legacy
+        // behaviour and force the attacker and defender to be on non-allied teams.
+        if (data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
+          if (location.isWater() && players.isEmpty()) {
+            getEnemy(getAttacker()).ifPresent(this::setDefender);
+          } else {
+            getEnemy(getDefender()).ifPresent(this::setAttacker);
+          }
+        }
+
         setAttackingUnits(
             location.getUnitCollection().getMatches(Matches.unitIsOwnedBy(getAttacker())));
         setDefendingUnits(
@@ -1359,6 +1372,27 @@ class BattleCalculatorPanel extends JPanel {
 
   private boolean isLand() {
     return landBattleCheckBox.isSelected();
+  }
+
+  /**
+   * Get a suitable enemy for {@code player}. First checks for players at war, if none found, checks
+   * for non-allied players, if still no foe was found, returns an empty Optional.
+   *
+   * @param player the player to find a foe for
+   * @return Optional with not an ally or an empty Optional
+   */
+  private Optional<GamePlayer> getEnemy(final GamePlayer player) {
+    for (final GamePlayer gamePlayer : data.getPlayerList()) {
+      if (data.getRelationshipTracker().isAtWar(player, gamePlayer)) {
+        return Optional.of(gamePlayer);
+      }
+    }
+    for (final GamePlayer gamePlayer : data.getPlayerList()) {
+      if (!data.getRelationshipTracker().isAllied(player, gamePlayer)) {
+        return Optional.of(gamePlayer);
+      }
+    }
+    return Optional.empty();
   }
 
   private void setResultsToBlank() {
