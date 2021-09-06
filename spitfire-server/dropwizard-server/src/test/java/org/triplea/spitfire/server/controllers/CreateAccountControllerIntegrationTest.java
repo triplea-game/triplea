@@ -4,19 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.java.Sha512Hasher;
-import org.triplea.spitfire.server.BasicEndpointTest;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(value = "integration/user_role.yml", useSequenceFiltering = false)
-class CreateAccountControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient> {
+class CreateAccountControllerIntegrationTest extends ControllerIntegrationTest {
   private static final String USERNAME = "user-name";
   private static final String EMAIL = "email@email.com";
   private static final String PASSWORD = Sha512Hasher.hashPasswordWithSalt("pass");
@@ -25,25 +21,36 @@ class CreateAccountControllerIntegrationTest extends BasicEndpointTest<LobbyLogi
   private static final String EMAIL_1 = "email1@email.com";
   private static final String PASSWORD_1 = Sha512Hasher.hashPasswordWithSalt("pass_1");
 
+  private final LobbyLoginClient client;
+
   CreateAccountControllerIntegrationTest(final URI localhost) {
-    super(localhost, LobbyLoginClient::newClient);
+    this.client = LobbyLoginClient.newClient(localhost);
   }
 
   @Test
-  void createAccount() {
-    final CreateAccountResponse result =
-        verifyEndpointReturningObject(client -> client.createAccount(USERNAME, EMAIL, PASSWORD));
+  void badRequests() {
+    assertBadRequest(() -> client.login(null, null));
+    assertBadRequest(() -> client.createAccount(null, null, null));
+    assertBadRequest(() -> client.createAccount("user", "email@email.com", null));
+    assertBadRequest(() -> client.createAccount("user", null, "password"));
+    assertBadRequest(() -> client.createAccount(null, "email@email.com", "password"));
+  }
 
+  @Test
+  void createAccountAndDoLogin() {
+    final CreateAccountResponse result = client.createAccount(USERNAME, EMAIL, PASSWORD);
     assertThat(result, is(CreateAccountResponse.SUCCESS_RESPONSE));
+
+    // verify login with the new account
+    final var loginResponse = client.login(USERNAME, PASSWORD);
+    assertThat(loginResponse.isSuccess(), is(true));
   }
 
   @Test
   void duplicateAccountCreateFails() {
-    verifyEndpointReturningObject(client -> client.createAccount(USERNAME_1, EMAIL_1, PASSWORD_1));
+    client.createAccount(USERNAME_1, EMAIL_1, PASSWORD_1);
 
-    final CreateAccountResponse result =
-        verifyEndpointReturningObject(
-            client -> client.createAccount(USERNAME_1, EMAIL_1, PASSWORD_1));
+    final CreateAccountResponse result = client.createAccount(USERNAME_1, EMAIL_1, PASSWORD_1);
 
     assertThat(result, is(not(CreateAccountResponse.SUCCESS_RESPONSE)));
   }

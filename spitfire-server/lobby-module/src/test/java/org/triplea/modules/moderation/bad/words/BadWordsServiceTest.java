@@ -34,7 +34,7 @@ class BadWordsServiceTest {
   void removeBadWordSuccessCase() {
     when(badWordsDao.removeBadWord(TEST_VALUE)).thenReturn(1);
 
-    assertThat(badWordsService.removeBadWord(MODERATOR_ID, TEST_VALUE), is(true));
+    badWordsService.removeBadWord(MODERATOR_ID, TEST_VALUE);
 
     verify(moderatorAuditHistoryDao)
         .addAuditRecord(
@@ -43,15 +43,6 @@ class BadWordsServiceTest {
                 .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_BAD_WORD)
                 .actionTarget(TEST_VALUE)
                 .build());
-  }
-
-  @Test
-  void removeBadWordFailureCase() {
-    when(badWordsDao.removeBadWord(TEST_VALUE)).thenReturn(0);
-
-    assertThat(badWordsService.removeBadWord(MODERATOR_ID, TEST_VALUE), is(false));
-
-    verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
   }
 
   @Test

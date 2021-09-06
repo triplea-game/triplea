@@ -26,6 +26,10 @@ public class LobbyLoginResponse {
    */
   private final boolean passwordChangeRequired;
 
+  public boolean isSuccess() {
+    return apiKey != null;
+  }
+
   public String getFailReason() {
     Preconditions.checkState(failReason == null ^ apiKey == null);
     return failReason;

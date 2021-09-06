@@ -2,14 +2,12 @@ package org.triplea.http.client.maps.tag.admin;
 
 import java.net.URI;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.GenericServerResponse;
 import org.triplea.http.client.HttpClient;
 
 /** Http client for 'map tag' administrative functionality. EG: updating a maps tag value. */
-@Slf4j
 public class MapTagAdminClient {
   public static final String GET_MAP_TAGS_META_DATA_PATH = "/maps/list-tags";
   public static final String UPDATE_MAP_TAG_PATH = "/maps/update-tag";
@@ -27,13 +25,8 @@ public class MapTagAdminClient {
   }
 
   public List<MapTagMetaData> fetchTagsMetaData() {
-    try {
-      return mapTagAdminClient.fetchAllowedMapTagValues(
-          new AuthenticationHeaders(apiKey).createHeaders());
-    } catch (final Exception e) {
-      log.warn("Error fetching tag information from server: " + e.getMessage(), e);
-      return List.of();
-    }
+    return mapTagAdminClient.fetchAllowedMapTagValues(
+        new AuthenticationHeaders(apiKey).createHeaders());
   }
 
   public GenericServerResponse updateMapTag(final UpdateMapTagRequest updateMapTagRequest) {

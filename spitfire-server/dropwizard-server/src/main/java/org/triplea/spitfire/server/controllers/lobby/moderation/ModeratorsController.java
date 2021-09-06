@@ -47,7 +47,6 @@ public class ModeratorsController extends HttpController {
 
   @GET
   @Path(ToolboxModeratorManagementClient.IS_ADMIN_PATH)
-  @RolesAllowed(UserRole.MODERATOR)
   public Response isAdmin(@Auth final AuthenticatedUser authenticatedUser) {
     return Response.ok().entity(authenticatedUser.getUserRole().equals(UserRole.ADMIN)).build();
   }

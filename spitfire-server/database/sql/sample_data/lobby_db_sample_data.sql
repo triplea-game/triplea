@@ -1,4 +1,6 @@
 delete
+from temp_password_request;
+delete
 from moderator_action_history;
 delete
 from lobby_api_key;

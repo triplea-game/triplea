@@ -31,11 +31,7 @@ class MapsClientTest extends WireMockTest {
               .lastCommitDateEpochMilli(20L)
               .mapTags(
                   List.of(
-                      MapTag.builder()
-                          .displayOrder(1)
-                          .name("tag-name")
-                          .value("tag-value")
-                          .build()))
+                      MapTag.builder().displayOrder(1).name("tag-name").value("tag-value").build()))
               .build());
 
   private static MapsClient newClient(final WireMockServer wireMockServer) {

@@ -1,46 +1,89 @@
 package org.triplea.spitfire.server.controllers;
 
-import com.github.database.rider.core.api.dataset.DataSet;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.triplea.test.common.matchers.CollectionMatchers.containsMappedItem;
+import static org.triplea.test.common.matchers.CollectionMatchers.doesNotContainMappedItem;
+
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.ProtectedEndpointTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(
-    value = SpitfireServerTestExtension.LOBBY_USER_DATASET + ", integration/banned_user.yml",
-    useSequenceFiltering = false)
-class UserBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUserBanClient> {
+class UserBanControllerIntegrationTest extends ControllerIntegrationTest {
+
+  private final URI localhost;
+  private final ToolboxUserBanClient client;
 
   UserBanControllerIntegrationTest(final URI localhost) {
-    super(localhost, AllowedUserRole.MODERATOR, ToolboxUserBanClient::newClient);
+    this.localhost = localhost;
+    client = ToolboxUserBanClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
-  void getUserBans() {
-    verifyEndpointReturningCollection(ToolboxUserBanClient::getUserBans);
-  }
-
-  @Test
-  void removeUserBan() {
-    verifyEndpoint(client -> client.removeUserBan("xyz"));
-  }
-
-  @Test
-  void banUser() {
-    verifyEndpoint(
+  void mustBeAuthorized() {
+    assertNotAuthorized(
+        ControllerIntegrationTest.NOT_MODERATORS,
+        apiKey -> ToolboxUserBanClient.newClient(localhost, apiKey),
+        ToolboxUserBanClient::getUserBans,
         client ->
             client.banUser(
                 UserBanParams.builder()
+                    .ip("ip")
                     .minutesToBan(10)
-                    .systemId("$1$AA$AA7qDBliIofq8jOm4nMBB/")
-                    .ip("2.2.2.2")
-                    .username("name")
-                    .build()));
+                    .systemId("system-id")
+                    .username("username")
+                    .build()),
+        client -> client.removeUserBan("some-username"));
+  }
+
+  @Test
+  void listUserBans() {
+    assertThat(client.getUserBans(), is(not(empty())));
+  }
+
+  /** Get list of banned users. Unban the first item. */
+  @Test
+  void removeUserNameBan() {
+    final UserBanData firstItem = client.getUserBans().get(0);
+
+    assertThat(
+        client.getUserBans(), containsMappedItem(UserBanData::getBanId, firstItem.getBanId()));
+
+    client.removeUserBan(firstItem.getBanId());
+
+    assertThat(
+        client.getUserBans(),
+        doesNotContainMappedItem(UserBanData::getBanId, firstItem.getBanId()));
+  }
+
+  /**
+   * Generate a mostly unique user name. <br>
+   * Ensure user name is not already banned. <br>
+   * Add user name to banned users. <br>
+   * Verify banned users contains the new ban. <br>
+   */
+  @Test
+  void addUserNameBan() {
+    final String userNameToBan = "user-name-to-ban-" + UUID.randomUUID().toString().substring(0, 5);
+    assertThat(
+        client.getUserBans(), doesNotContainMappedItem(UserBanData::getUsername, userNameToBan));
+
+    client.banUser(
+        UserBanParams.builder()
+            .username(userNameToBan)
+            .systemId("system-id")
+            .minutesToBan(10)
+            .ip("55.55.55.55")
+            .build());
+
+    assertThat(client.getUserBans(), containsMappedItem(UserBanData::getUsername, userNameToBan));
   }
 }

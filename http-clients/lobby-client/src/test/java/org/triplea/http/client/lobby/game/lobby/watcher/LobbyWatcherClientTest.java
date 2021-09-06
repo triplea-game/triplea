@@ -11,7 +11,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.TestData;
@@ -100,7 +99,6 @@ class LobbyWatcherClientTest extends WireMockTest {
 
     newClient(wireMockServer)
         .uploadChatMessage(
-            ApiKey.newKey(),
             ChatUploadParams.builder()
                 .gameId("game-id")
                 .chatMessage("chat-message")

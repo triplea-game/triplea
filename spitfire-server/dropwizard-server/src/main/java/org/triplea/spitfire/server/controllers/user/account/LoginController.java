@@ -32,7 +32,8 @@ public class LoginController extends HttpController {
   @Path(LobbyLoginClient.LOGIN_PATH)
   public LobbyLoginResponse login(
       @Context final HttpServletRequest request, final LoginRequest loginRequest) {
-    Preconditions.checkNotNull(loginRequest);
+    Preconditions.checkArgument(loginRequest != null);
+    Preconditions.checkArgument(loginRequest.getName() != null);
     return loginModule.doLogin(
         loginRequest,
         request.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER),

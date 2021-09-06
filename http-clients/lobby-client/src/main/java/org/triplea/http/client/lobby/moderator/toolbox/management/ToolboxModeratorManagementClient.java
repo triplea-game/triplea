@@ -38,6 +38,7 @@ public class ToolboxModeratorManagementClient {
     return client.fetchModerators(httpHeaders);
   }
 
+  /** Checks with server if the current user is an 'admin' (moderators are not admin) */
   public boolean isCurrentUserAdmin() {
     return client.isAdmin(httpHeaders);
   }

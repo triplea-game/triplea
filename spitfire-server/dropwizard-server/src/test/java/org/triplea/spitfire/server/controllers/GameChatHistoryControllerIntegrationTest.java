@@ -1,25 +1,20 @@
 package org.triplea.spitfire.server.controllers;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.ProtectedEndpointTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(value = SpitfireServerTestExtension.LOBBY_USER_DATASET, useSequenceFiltering = false)
-class GameChatHistoryControllerIntegrationTest extends ProtectedEndpointTest<ModeratorChatClient> {
+class GameChatHistoryControllerIntegrationTest extends ControllerIntegrationTest {
+  private final ModeratorChatClient client;
 
   GameChatHistoryControllerIntegrationTest(final URI localhost) {
-    super(localhost, AllowedUserRole.MODERATOR, ModeratorChatClient::newClient);
+    client = ModeratorChatClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
   }
 
   @Test
   void fetchGameChatHistory() {
-    verifyEndpoint(client -> client.fetchChatHistoryForGame("game-id"));
+    client.fetchChatHistoryForGame("game-id");
   }
 }

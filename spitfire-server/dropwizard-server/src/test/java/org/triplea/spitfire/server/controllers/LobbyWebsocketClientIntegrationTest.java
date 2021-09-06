@@ -3,9 +3,9 @@ package org.triplea.spitfire.server.controllers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import java.time.Duration;
+import lombok.AllArgsConstructor;
 import org.awaitility.Awaitility;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.web.socket.WebsocketPaths;
-import org.triplea.spitfire.server.SpitfireServerTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @Disabled // Disabled until this can be made more reliable, seeing failure listed below
 /*
@@ -50,8 +49,9 @@ import org.triplea.spitfire.server.SpitfireServerTestExtension;
        Running database cleanup..
 */
 @SuppressWarnings("UnmatchedTest")
-@DataSet(value = SpitfireServerTestExtension.LOBBY_USER_DATASET, useSequenceFiltering = false)
-class LobbyWebsocketClientIntegrationTest extends SpitfireServerTest {
+@AllArgsConstructor
+class LobbyWebsocketClientIntegrationTest extends ControllerIntegrationTest {
+  private final URI localhost;
 
   @Test
   @DisplayName("Verify basic websocket operations: open, send, close")
