@@ -10,6 +10,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run Ansible to Provision Prerelease Servers
         run: |
+          pip install ansible==2.9.13
           .build/set-build-number ${{ github.run_number }}
           eval "$(ssh-agent -s)"
           cd infrastructure
