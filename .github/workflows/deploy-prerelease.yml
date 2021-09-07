@@ -17,6 +17,7 @@ jobs:
           echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
       - name: Deploy to Prerelease
         run: |
+          pip install ansible==2.9.13
           .build/set-build-number ${{ github.run_number }}
           eval "$(ssh-agent -s)"
           cd infrastructure
