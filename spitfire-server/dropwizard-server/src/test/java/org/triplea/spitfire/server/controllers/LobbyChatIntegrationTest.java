@@ -6,7 +6,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ChatParticipant;
@@ -26,8 +24,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMe
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
-import org.triplea.spitfire.server.SpitfireServerTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 /**
  * End-to-end test where we go through a chat sequence exercising all chat features. Runs through
@@ -54,11 +51,9 @@ import org.triplea.spitfire.server.SpitfireServerTestExtension;
  * that have joined. So we expect 'moderator' to be the only player in the connected list, when
  * chatter joins we expect both moderator and chatter to be in the connected event list.
  */
-@Disabled
 @SuppressWarnings({"UnmatchedTest", "SameParameterValue"})
-@DataSet(value = SpitfireServerTestExtension.LOBBY_USER_DATASET, useSequenceFiltering = false)
 @RequiredArgsConstructor
-class LobbyChatIntegrationTest extends SpitfireServerTest {
+class LobbyChatIntegrationTest extends ControllerIntegrationTest {
   private static final int MESSAGE_TIMEOUT = 3000;
 
   private static final String STATUS = "status";
@@ -104,7 +99,7 @@ class LobbyChatIntegrationTest extends SpitfireServerTest {
     final PlayerToLobbyConnection newModerator =
         new PlayerToLobbyConnection(
             localhost,
-            SpitfireServerTestExtension.MODERATOR_API_KEY,
+            ControllerIntegrationTest.MODERATOR,
             err -> {
               throw new AssertionError("Error on moderator: " + err);
             });
@@ -122,7 +117,7 @@ class LobbyChatIntegrationTest extends SpitfireServerTest {
     final PlayerToLobbyConnection newChatter =
         new PlayerToLobbyConnection(
             localhost,
-            SpitfireServerTestExtension.CHATTER_API_KEY,
+            ControllerIntegrationTest.PLAYER,
             err -> {
               throw new AssertionError("Error on chatter: " + err);
             });

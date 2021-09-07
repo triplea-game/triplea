@@ -68,6 +68,7 @@ dependencies {
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
     testImplementation project(':spitfire-server:database-test-support')
+    testImplementation project(':lib:test-common')
     testImplementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 }

@@ -1,30 +1,25 @@
 package org.triplea.spitfire.server.controllers;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.ProtectedEndpointTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(value = SpitfireServerTestExtension.LOBBY_USER_DATASET, useSequenceFiltering = false)
-class GameListingControllerTest extends ProtectedEndpointTest<GameListingClient> {
+class GameListingControllerTest extends ControllerIntegrationTest {
+  private final GameListingClient client;
 
-  GameListingControllerTest(final URI host) {
-    super(host, AllowedUserRole.HOST, GameListingClient::newClient);
+  GameListingControllerTest(final URI localhost) {
+    client = GameListingClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
   }
 
   @Test
   void fetchGames() {
-    verifyEndpoint(AllowedUserRole.ANONYMOUS, GameListingClient::fetchGameListing);
+    client.fetchGameListing();
   }
 
   @Test
   void bootGame() {
-    verifyEndpoint(AllowedUserRole.MODERATOR, client -> client.bootGame("game-id"));
+    client.bootGame("game-id");
   }
 }

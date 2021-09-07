@@ -27,7 +27,11 @@ public class CreateAccountController extends HttpController {
   @POST
   @Path(LobbyLoginClient.CREATE_ACCOUNT)
   public CreateAccountResponse createAccount(final CreateAccountRequest createAccountRequest) {
-    Preconditions.checkNotNull(createAccountRequest);
+    Preconditions.checkArgument(createAccountRequest != null);
+    Preconditions.checkArgument(createAccountRequest.getUsername() != null);
+    Preconditions.checkArgument(createAccountRequest.getEmail() != null);
+    Preconditions.checkArgument(createAccountRequest.getPassword() != null);
+
     return createAccountModule.apply(createAccountRequest);
   }
 }

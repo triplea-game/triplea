@@ -22,6 +22,10 @@ public class PlayerLobbyActionsClient {
         new HttpClient<>(PlayerLobbyActionsFeignClient.class, lobbyUri).get();
   }
 
+  public static PlayerLobbyActionsClient newClient(final URI lobbyUri, final ApiKey apiKey) {
+    return new PlayerLobbyActionsClient(lobbyUri, apiKey);
+  }
+
   public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
     return playerLobbyActionsFeignClient.fetchPlayerInformation(
         authenticationHeaders.createHeaders(), playerChatId.getValue());

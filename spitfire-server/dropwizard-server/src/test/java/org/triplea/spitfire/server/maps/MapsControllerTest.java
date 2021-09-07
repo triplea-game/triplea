@@ -5,28 +5,22 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 import java.net.URI;
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.maps.listing.MapsClient;
-import org.triplea.spitfire.server.SpitfireDatabaseTestSupport;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@AllArgsConstructor
-@ExtendWith(SpitfireServerTestExtension.class)
-@ExtendWith(SpitfireDatabaseTestSupport.class)
-@ExtendWith(DBUnitExtension.class)
-@DataSet(value = "map_index.yml,map_tag_value.yml", useSequenceFiltering = false)
-class MapsControllerTest {
-  private final URI localhost;
+class MapsControllerTest extends ControllerIntegrationTest {
+  private final MapsClient client;
+
+  MapsControllerTest(final URI localhost) {
+    this.client = new MapsClient(localhost);
+  }
 
   /** Invoke the maps listing endpoint and verify response data is present. */
   @Test
-  void invokeMapsListingEndpoint() {
-    final var result = new MapsClient(localhost).fetchMapDownloads();
+  void fetchMapDownloads() {
+    final var result = client.fetchMapDownloads();
 
     assertThat(result, hasSize(2));
     for (int i = 0; i < 2; i++) {
@@ -47,8 +41,8 @@ class MapsControllerTest {
     assertThat(result.get(1).getMapTags().get(0).getName(), is(notNullValue()));
     assertThat(result.get(1).getMapTags().get(0).getValue(), is(notNullValue()));
     assertThat(
-        "Display order should always be a positive value",
-        result.get(1).getMapTags().get(0).getDisplayOrder() > 0,
+        "Display order should always be a non-negative value",
+        result.get(1).getMapTags().get(0).getDisplayOrder() >= 0,
         is(true));
   }
 }

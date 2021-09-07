@@ -7,6 +7,8 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import java.net.URI;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.WireMockTest;
 import org.triplea.test.common.JsonUtil;
@@ -41,7 +43,7 @@ class LobbyLoginClientTest extends WireMockTest {
       CreateAccountResponse.builder().errorMessage("error").build();
 
   private static LobbyLoginClient newClient(final WireMockServer wireMockServer) {
-    return newClient(wireMockServer, LobbyLoginClient::newClient);
+    return newClient(wireMockServer, (Function<URI, LobbyLoginClient>) LobbyLoginClient::newClient);
   }
 
   @Test

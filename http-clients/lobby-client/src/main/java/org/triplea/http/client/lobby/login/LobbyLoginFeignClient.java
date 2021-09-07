@@ -8,7 +8,7 @@ import org.triplea.http.client.HttpConstants;
 
 /** Http client to authenticate a user with the lobby or create an account. */
 @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-public interface LobbyLoginFeignClient {
+interface LobbyLoginFeignClient {
   @RequestLine("POST " + LobbyLoginClient.LOGIN_PATH)
   LobbyLoginResponse login(@HeaderMap Map<String, Object> headerMap, LoginRequest loginRequest);
 

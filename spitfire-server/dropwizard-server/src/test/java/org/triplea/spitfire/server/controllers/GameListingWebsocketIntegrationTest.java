@@ -3,7 +3,6 @@ package org.triplea.spitfire.server.controllers;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
@@ -30,9 +29,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.SpitfireServerTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 import org.triplea.spitfire.server.TestData;
 import org.triplea.spitfire.server.controllers.lobby.LobbyWatcherController;
 
@@ -52,11 +49,10 @@ GameListingWebsocketIntegrationTest > Post a game, verify listener is notified F
         GameListingWebsocketIntegrationTest.java:94)
  */
 @SuppressWarnings("UnmatchedTest")
-@Disabled // Disabled due to flakiness, the above error is frequenlty seen and needs to be resolved.
+@Disabled // Disabled due to flakiness, the above error is frequently seen and needs to be resolved.
 @ExtendWith(MockitoExtension.class)
-@DataSet(value = "integration/game_hosting_api_key.yml,", useSequenceFiltering = false)
 @RequiredArgsConstructor
-class GameListingWebsocketIntegrationTest extends SpitfireServerTest {
+class GameListingWebsocketIntegrationTest extends ControllerIntegrationTest {
   private static final GamePostingRequest GAME_POSTING_REQUEST =
       GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
 
@@ -86,12 +82,12 @@ class GameListingWebsocketIntegrationTest extends SpitfireServerTest {
     gamePostingTestOverrideClient =
         new HttpClient<>(GamePostingTestOverrideClient.class, localhost).get();
 
-    lobbyWatcherClient = LobbyWatcherClient.newClient(localhost, AllowedUserRole.HOST.getApiKey());
+    lobbyWatcherClient = LobbyWatcherClient.newClient(localhost, ControllerIntegrationTest.HOST);
 
     final var playerToLobbyConnection =
         new PlayerToLobbyConnection(
             localhost,
-            SpitfireServerTestExtension.CHATTER_API_KEY,
+            ControllerIntegrationTest.PLAYER,
             error -> {
               throw new AssertionError(error);
             });
@@ -119,7 +115,7 @@ class GameListingWebsocketIntegrationTest extends SpitfireServerTest {
   private String postGame() {
     return gamePostingTestOverrideClient
         .postGame(
-            new AuthenticationHeaders(AllowedUserRole.HOST.getApiKey()).createHeaders(),
+            new AuthenticationHeaders(ControllerIntegrationTest.HOST).createHeaders(),
             GAME_POSTING_REQUEST)
         .getGameId();
   }

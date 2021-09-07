@@ -21,19 +21,15 @@ public class BadWordsService {
    *
    * @param moderatorUserId Database ID of the moderator requesting the action.
    * @param badWord The value to be removed.
-   * @return True if the value is removed, false otherwise.
    */
-  public boolean removeBadWord(final int moderatorUserId, final String badWord) {
-    final boolean success = badWordsDao.removeBadWord(badWord) == 1;
-    if (success) {
-      moderatorAuditHistoryDao.addAuditRecord(
-          ModeratorAuditHistoryDao.AuditArgs.builder()
-              .moderatorUserId(moderatorUserId)
-              .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_BAD_WORD)
-              .actionTarget(badWord)
-              .build());
-    }
-    return success;
+  public void removeBadWord(final int moderatorUserId, final String badWord) {
+    badWordsDao.removeBadWord(badWord);
+    moderatorAuditHistoryDao.addAuditRecord(
+        ModeratorAuditHistoryDao.AuditArgs.builder()
+            .moderatorUserId(moderatorUserId)
+            .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_BAD_WORD)
+            .actionTarget(badWord)
+            .build());
   }
 
   /**

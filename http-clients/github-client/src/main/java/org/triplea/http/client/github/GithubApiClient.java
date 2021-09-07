@@ -52,7 +52,8 @@ public class GithubApiClient {
       final String githubRepo,
       final CreateIssueRequest createIssueRequest) {
     if (stubbingModeEnabled) {
-      return new CreateIssueResponse(STUBBED_RETURN_VALUE);
+      return new CreateIssueResponse(
+          STUBBED_RETURN_VALUE + String.valueOf(Math.random()).substring(0, 5));
     }
 
     final Map<String, Object> tokens = buildAuthorizationHeaders();

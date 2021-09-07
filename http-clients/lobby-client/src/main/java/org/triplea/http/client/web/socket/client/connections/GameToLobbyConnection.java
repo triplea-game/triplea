@@ -85,7 +85,7 @@ public class GameToLobbyConnection {
   }
 
   public void sendChatMessageToLobby(final ChatUploadParams chatUploadParams) {
-    lobbyWatcherClient.uploadChatMessage(lobbyClient.getApiKey(), chatUploadParams);
+    lobbyWatcherClient.uploadChatMessage(chatUploadParams);
   }
 
   public void playerJoined(final String gameId, final UserName playerName) {

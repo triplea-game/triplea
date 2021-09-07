@@ -29,6 +29,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
+import org.triplea.java.IpAddressParser;
 import org.triplea.java.ThreadRunner;
 
 /** A Messenger that can have many clients connected to it. */
@@ -155,6 +156,10 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   @Override
   public boolean isPlayerBanned(final String ip, final String mac) {
+    if (IpAddressParser.fromString(ip).isAnyLocalAddress()) {
+      return false;
+    }
+
     return miniBannedIpAddresses.contains(ip)
         || miniBannedMacAddresses.contains(mac)
         || (gameToLobbyConnection != null && gameToLobbyConnection.isPlayerBanned(ip));

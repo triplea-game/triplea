@@ -5,38 +5,29 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.java.Sha512Hasher;
-import org.triplea.spitfire.server.BasicEndpointTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(
-    value =
-        SpitfireServerTestExtension.LOBBY_USER_DATASET + ", integration/temp_password_request.yml",
-    useSequenceFiltering = false)
-class LoginControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient> {
-
+class LoginControllerIntegrationTest extends ControllerIntegrationTest {
   private static final String USERNAME = "player";
-
   private static final String PASSWORD = Sha512Hasher.hashPasswordWithSalt("password");
   private static final String TEMP_PASSWORD = Sha512Hasher.hashPasswordWithSalt("temp-password");
   private static final String INVALID_PASSWORD = "invalid";
 
+  private final LobbyLoginClient client;
+
   LoginControllerIntegrationTest(final URI localhost) {
-    super(localhost, LobbyLoginClient::newClient);
+    client = LobbyLoginClient.newClient(localhost);
   }
 
   @Test
   void invalidLogin() {
-    final LobbyLoginResponse response =
-        verifyEndpointReturningObject(client -> client.login(USERNAME, INVALID_PASSWORD));
+    final LobbyLoginResponse response = client.login(USERNAME, INVALID_PASSWORD);
 
     assertThat(response.getFailReason(), notNullValue());
     assertThat(response.getApiKey(), nullValue());
@@ -45,8 +36,7 @@ class LoginControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient>
 
   @Test
   void validLogin() {
-    final LobbyLoginResponse response =
-        verifyEndpointReturningObject(client -> client.login(USERNAME, PASSWORD));
+    final LobbyLoginResponse response = client.login(USERNAME, PASSWORD);
 
     assertThat(response.getFailReason(), nullValue());
     assertThat(response.getApiKey(), notNullValue());
@@ -55,8 +45,7 @@ class LoginControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient>
 
   @Test
   void tempPasswordLogin() {
-    final LobbyLoginResponse response =
-        verifyEndpointReturningObject(client -> client.login(USERNAME, TEMP_PASSWORD));
+    final LobbyLoginResponse response = client.login(USERNAME, TEMP_PASSWORD);
 
     assertThat(response.getFailReason(), nullValue());
     assertThat(response.getApiKey(), notNullValue());

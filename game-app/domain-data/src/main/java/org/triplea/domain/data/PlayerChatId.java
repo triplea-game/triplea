@@ -27,6 +27,7 @@ public class PlayerChatId implements Serializable {
 
   public static PlayerChatId of(final String value) {
     Preconditions.checkNotNull(value);
+    Preconditions.checkArgument(!value.isBlank());
 
     return new PlayerChatId(value);
   }

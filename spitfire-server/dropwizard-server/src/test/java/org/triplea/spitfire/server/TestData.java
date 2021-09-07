@@ -2,17 +2,12 @@ package org.triplea.spitfire.server;
 
 import java.time.Instant;
 import lombok.experimental.UtilityClass;
-import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.spitfire.server.access.authentication.AuthenticatedUser;
 
 @UtilityClass
 public class TestData {
   public static final ApiKey API_KEY = ApiKey.of("test");
-
-  public static final AuthenticatedUser AUTHENTICATED_USER =
-      AuthenticatedUser.builder().userId(100).userRole(UserRole.PLAYER).apiKey(API_KEY).build();
 
   public static final LobbyGame LOBBY_GAME =
       LobbyGame.builder()

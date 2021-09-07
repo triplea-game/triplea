@@ -7,46 +7,43 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 import java.net.URI;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.HttpInteractionException;
+import org.triplea.http.client.GenericServerResponse;
 import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.http.client.maps.tag.admin.MapTagAdminClient;
 import org.triplea.http.client.maps.tag.admin.MapTagMetaData;
 import org.triplea.http.client.maps.tag.admin.UpdateMapTagRequest;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.SpitfireDatabaseTestSupport;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@AllArgsConstructor
-@ExtendWith(SpitfireServerTestExtension.class)
-@ExtendWith(SpitfireDatabaseTestSupport.class)
-@ExtendWith(DBUnitExtension.class)
-@DataSet(
-    value = SpitfireServerTestExtension.LOBBY_USER_DATASET + ",map_index.yml,map_tag_value.yml",
-    useSequenceFiltering = false)
-class MapTagAdminControllerTest {
+class MapTagAdminControllerTest extends ControllerIntegrationTest {
   private final URI localhost;
+  private final MapTagAdminClient client;
 
-  @ParameterizedTest
-  @ValueSource(strings = {AllowedUserRole.KeyValues.ANONYMOUS, AllowedUserRole.KeyValues.PLAYER})
-  void fetchMapTagMetaDataRequiresAuthentication(final String disallowedRoleKey) {
-    new MapTagAdminClient(localhost, ApiKey.of(disallowedRoleKey)).fetchTagsMetaData();
+  MapTagAdminControllerTest(final URI localhost) {
+    this.localhost = localhost;
+    this.client = new MapTagAdminClient(localhost, ControllerIntegrationTest.MODERATOR);
+  }
+
+  @Test
+  void requiresAuthentication() {
+    assertNotAuthorized(
+        ControllerIntegrationTest.NOT_MODERATORS,
+        apiKey -> new MapTagAdminClient(localhost, apiKey),
+        MapTagAdminClient::fetchTagsMetaData,
+        client ->
+            client.updateMapTag(
+                UpdateMapTagRequest.builder()
+                    .tagName("tag")
+                    .mapName("map")
+                    .newTagValue("value")
+                    .build()));
   }
 
   @Test
   void fetchMapTagMetaData() {
-    final List<MapTagMetaData> mapTagMetaData =
-        new MapTagAdminClient(localhost, AllowedUserRole.MODERATOR.getApiKey()).fetchTagsMetaData();
+    final List<MapTagMetaData> mapTagMetaData = client.fetchTagsMetaData();
 
     assertThat(mapTagMetaData, hasSize(2));
     for (final MapTagMetaData item : mapTagMetaData) {
@@ -56,41 +53,28 @@ class MapTagAdminControllerTest {
     }
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {AllowedUserRole.KeyValues.ANONYMOUS, AllowedUserRole.KeyValues.PLAYER})
-  void updateMapTagValueRequiresAuthentication(final String disallowedRoleKey) {
-    final HttpInteractionException exception =
-        Assertions.assertThrows(
-            HttpInteractionException.class,
-            () ->
-                new MapTagAdminClient(localhost, ApiKey.of(disallowedRoleKey))
-                    .updateMapTag(
-                        UpdateMapTagRequest.builder()
-                            .mapName("map-name")
-                            .tagName("tag-name")
-                            .newTagValue("new-tag-value")
-                            .build()));
-
-    assertThat(exception.status(), is(403));
-  }
-
   /**
-   * In this test we fetch a map listing and verify a known map should have a known tag value. We
-   * then send a request to update that tag value and we then repeat the listing request to verify
-   * the tag value is updated.
+   * In this test we:<br>
+   * - fetch a map listing<br>
+   * - update a tag value of the first map listing<br>
+   * - fetch map listing & verify tag value is updated<br>
    */
   @Test
   void updateMapTagValue() {
     assertThat(
         "Verify an initial state in database", getMapTagValue("map-name", "Rating"), is("2"));
 
-    new MapTagAdminClient(localhost, ApiKey.of(AllowedUserRole.KeyValues.MODERATOR))
-        .updateMapTag(
+    final GenericServerResponse serverResponse =
+        client.updateMapTag(
             UpdateMapTagRequest.builder()
                 .mapName("map-name")
                 .tagName("Rating")
                 .newTagValue("1")
                 .build());
+    assertThat(
+        "expecting tag to be updated successfully: " + serverResponse,
+        serverResponse.isSuccess(),
+        is(true));
 
     assertThat(
         "Verify tag value is now updated compared to the initial database state",
@@ -100,10 +84,10 @@ class MapTagAdminControllerTest {
 
   @SuppressWarnings("SameParameterValue")
   private String getMapTagValue(final String mapName, final String tagName) {
-    // Get map listing
+    // Get all maps listing
     final var mapListing = new MapsClient(localhost).fetchMapDownloads();
 
-    // find map
+    // find specific map from listing
     final var map =
         mapListing.stream()
             .filter(m -> m.getMapName().equals(mapName))
@@ -113,6 +97,7 @@ class MapTagAdminControllerTest {
                     new IllegalStateException(
                         "Unable to find map: " + mapName + ", in: " + mapListing));
 
+    // return tag value
     return map.getTagValue(tagName);
   }
 }
