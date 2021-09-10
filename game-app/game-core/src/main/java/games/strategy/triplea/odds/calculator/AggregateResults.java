@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -25,7 +26,7 @@ public class AggregateResults {
     results = new ArrayList<>(expectedCount);
   }
 
-  AggregateResults(final List<BattleResults> results) {
+  public AggregateResults(final List<BattleResults> results) {
     this.results = new ArrayList<>(results);
   }
 
@@ -66,35 +67,29 @@ public class AggregateResults {
         .orElseGet(ArrayList::new);
   }
 
-  double getAverageAttackingUnitsLeft() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    return results.stream()
-            .map(BattleResults::getRemainingAttackingUnits)
-            .mapToDouble(Collection::size)
-            .sum()
-        / results.size();
-  }
-
-  /** First is Attacker, Second is Defender. */
+  /**
+   * First is Attacker, Second is Defender.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code (NaN, NaN)} is returned.
+   */
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(
       final IntegerMap<UnitType> attackerCostsForTuv,
       final IntegerMap<UnitType> defenderCostsForTuv) {
-    if (results.isEmpty()) {
-      return Tuple.of(0.0, 0.0);
-    }
-    double attackerTuv = 0;
-    double defenderTuv = 0;
+    final Mean attackerTuvMean = new Mean();
+    final Mean defenderTuvMean = new Mean();
     for (final BattleResults result : results) {
-      attackerTuv += TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv);
-      defenderTuv += TuvUtils.getTuv(result.getRemainingDefendingUnits(), defenderCostsForTuv);
+      attackerTuvMean.increment(
+          TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv));
+      defenderTuvMean.increment(
+          TuvUtils.getTuv(result.getRemainingDefendingUnits(), defenderCostsForTuv));
     }
-    return Tuple.of(attackerTuv / results.size(), defenderTuv / results.size());
+    return Tuple.of(attackerTuvMean.getResult(), defenderTuvMean.getResult());
   }
 
   /**
    * Returns the average TUV swing across all simulations of the battle.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
    *
    * @return A positive value indicates the defender lost more unit value, on average, than the
    *     attacker (i.e. the attacker "won"). A negative value indicates the attacker lost more unit
@@ -107,101 +102,107 @@ public class AggregateResults {
       final GamePlayer defender,
       final Collection<Unit> defenders,
       final GameData data) {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
+    // The TUV swing is defenderTuvLost - attackerTuvLost and tuvLost = startingTuv - remainingTuv.
+    // Thus, the TUV swing of a singe battle is:
+    // TUV swing = defenderStartingTuv - attackerStartingTuv - defenderRemainingTuv +
+    // attackerRemainingTuv
+    //
+    // Because mean(x_i+c) = mean(x_i)+c for a constant c - the startingTuv in this case - we save
+    // some computations and add the startingTuv after we have calculated the mean.
     final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, data);
     final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTuv(defender, data);
-    final int attackerTuv = TuvUtils.getTuv(attackers, attackerCostsForTuv);
-    final int defenderTuv = TuvUtils.getTuv(defenders, defenderCostsForTuv);
-    // could we possibly cause a bug by comparing UnitType's from one game data, to a different game
-    // data's UnitTypes?
-    final Tuple<Double, Double> average =
-        getAverageTuvOfUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
-    final double attackerLost = attackerTuv - average.getFirst();
-    final double defenderLost = defenderTuv - average.getSecond();
-    return defenderLost - attackerLost;
+    final int attackerStartingTuv = TuvUtils.getTuv(attackers, attackerCostsForTuv);
+    final int defenderStartingTuv = TuvUtils.getTuv(defenders, defenderCostsForTuv);
+    final Mean mean = new Mean();
+    return defenderStartingTuv
+        - attackerStartingTuv
+        + mean.evaluate(
+            results.stream()
+                .mapToDouble(
+                    result ->
+                        TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv)
+                            - TuvUtils.getTuv(
+                                result.getRemainingDefendingUnits(), defenderCostsForTuv))
+                .toArray());
   }
 
-  double getAverageAttackingUnitsLeftWhenAttackerWon() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    double count = 0;
-    double total = 0;
-    for (final BattleResults result : results) {
-      if (result.attackerWon()) {
-        count += result.getRemainingAttackingUnits().size();
-        total += 1;
-      }
-    }
-    if (total <= 0) {
-      return 0;
-    }
-    return count / total;
+  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  public double getAverageAttackingUnitsLeft() {
+    final Mean mean = new Mean();
+    return mean.evaluate(
+        results.stream()
+            .map(BattleResults::getRemainingAttackingUnits)
+            .mapToDouble(Collection::size)
+            .toArray());
   }
 
-  double getAverageDefendingUnitsLeft() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    return results.stream()
+  /**
+   * If no battle results were added to this aggregator instance or if the attacker did not win any
+   * of those battles, then {@code NaN} is returned.
+   */
+  public double getAverageAttackingUnitsLeftWhenAttackerWon() {
+    final Mean mean = new Mean();
+    return mean.evaluate(
+        results.stream()
+            .filter(BattleResults::attackerWon)
+            .map(BattleResults::getRemainingAttackingUnits)
+            .mapToDouble(Collection::size)
+            .toArray());
+  }
+
+  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  public double getAverageDefendingUnitsLeft() {
+    final Mean mean = new Mean();
+    return mean.evaluate(
+        results.stream()
             .map(BattleResults::getRemainingDefendingUnits)
             .mapToDouble(Collection::size)
-            .sum()
-        / results.size();
+            .toArray());
   }
 
-  double getAverageDefendingUnitsLeftWhenDefenderWon() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    double count = 0;
-    double total = 0;
-    for (final BattleResults result : results) {
-      if (result.defenderWon()) {
-        count += result.getRemainingDefendingUnits().size();
-        total += 1;
-      }
-    }
-    if (total <= 0) {
-      return 0;
-    }
-    return count / total;
+  /**
+   * If no battle results were added to this aggregator instance or if the defender did not win any
+   * of those battles, then {@code NaN} is returned.
+   */
+  public double getAverageDefendingUnitsLeftWhenDefenderWon() {
+    final Mean mean = new Mean();
+    return mean.evaluate(
+        results.stream()
+            .filter(BattleResults::defenderWon)
+            .map(BattleResults::getRemainingDefendingUnits)
+            .mapToDouble(Collection::size)
+            .toArray());
   }
 
+  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
   public double getAttackerWinPercent() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    return results.stream().filter(BattleResults::attackerWon).count() / (double) results.size();
+    final Mean mean = new Mean();
+    return mean.evaluate(
+        results.stream().mapToDouble(result -> result.attackerWon() ? 1 : 0).toArray());
   }
 
-  double getDefenderWinPercent() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    return results.stream().filter(BattleResults::defenderWon).count() / (double) results.size();
+  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  public double getDefenderWinPercent() {
+    final Mean mean = new Mean();
+    return mean.evaluate(
+        results.stream().mapToDouble(result -> result.defenderWon() ? 1 : 0).toArray());
   }
 
-  /** Returns the average number of rounds fought across all simulations of the battle. */
+  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  public double getDrawPercent() {
+    final Mean mean = new Mean();
+    return mean.evaluate(results.stream().mapToDouble(result -> result.draw() ? 1 : 0).toArray());
+  }
+
+  /**
+   * Returns the average number of rounds fought across all simulations of the battle.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
+   */
   public double getAverageBattleRoundsFought() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    final long count = results.stream().mapToInt(BattleResults::getBattleRoundsFought).sum();
-    if (count == 0) {
-      // If this is a 'fake' aggregate result, return 1.0
-      return 1.0;
-    }
-    return count / (double) results.size();
-  }
-
-  double getDrawPercent() {
-    if (results.isEmpty()) {
-      return 0.0;
-    }
-    return results.stream().filter(BattleResults::draw).count() / (double) results.size();
+    final Mean mean = new Mean();
+    return mean.evaluate(
+        results.stream().mapToDouble(BattleResults::getBattleRoundsFought).toArray());
   }
 
   public int getRollCount() {

@@ -1257,6 +1257,10 @@ class BattleCalculatorPanel extends JPanel {
     if (results.get() == null) {
       setResultsToBlank();
     } else {
+      // All AggregateResults method return NaN if there are no battle results to aggregate over.
+      // For "unrestricted" average methods, this cannot happen as we ensure that at least 1 round
+      // is simulated. However, the ...IfAbcWon() methods restrict that set of results which might
+      // become empty. In this case we display N/A (not applicable) instead of NaN (not a number).
       attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
       defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
       draw.setText(formatPercentage(results.get().getDrawPercent()));
@@ -1273,14 +1277,16 @@ class BattleCalculatorPanel extends JPanel {
           formatValue(results.get().getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
       attackerLeft.setText(
           formatValue(results.get().getAverageAttackingUnitsLeft()) + " / " + attackersTotal);
+      final double avgDefIfDefWon = results.get().getAverageDefendingUnitsLeftWhenDefenderWon();
       defenderLeftWhenDefenderWon.setText(
-          formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon())
-              + " / "
-              + defendersTotal);
+          Double.isNaN(avgDefIfDefWon)
+              ? "N/A"
+              : formatValue(avgDefIfDefWon) + " / " + defendersTotal);
+      final double avgAttIfAttWon = results.get().getAverageAttackingUnitsLeftWhenAttackerWon();
       attackerLeftWhenAttackerWon.setText(
-          formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon())
-              + " / "
-              + attackersTotal);
+          Double.isNaN(avgAttIfAttWon)
+              ? "N/A"
+              : formatValue(avgAttIfAttWon) + " / " + attackersTotal);
       roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
       try {
         data.acquireReadLock();
