@@ -17,27 +17,64 @@ import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
-/** A container for the results of multiple battle simulation runs. */
+/**
+ * A container for the results of multiple battle simulation runs.
+ *
+ * <p>This class wraps a collection of {@code BattleResult}s and provides methods to query certain
+ * statistical properties over this set, e.g. the win probability, or the average number of units
+ * left.
+ *
+ * <p>This class does not restrict the added battle result to come from the same battle setup. If
+ * this is desired, the user must ensure that the results added have that property.
+ */
 public class AggregateResults {
   private final List<BattleResults> results;
   @Getter @Setter private long time;
 
+  /**
+   * Creates a new aggregator and sets the internal storage size to {@code expectedCount}. Choosing
+   * a good estimate reduces the number of reallocations of the internal storage when adding
+   * results.
+   *
+   * @param expectedCount number of expected results to store
+   */
   public AggregateResults(final int expectedCount) {
     results = new ArrayList<>(expectedCount);
   }
 
+  /**
+   * Creates a new aggregator and populates it with thr battle results {@code results}. Further
+   * results can later be added with the usual methods.
+   *
+   * @param results the battle results to add initially to this aggregator.
+   */
   public AggregateResults(final List<BattleResults> results) {
     this.results = new ArrayList<>(results);
   }
 
+  /**
+   * Add the battle result {@code result} to this aggregator.
+   *
+   * @param result the battle result to add.
+   */
   public void addResult(final BattleResults result) {
     results.add(result);
   }
 
+  /**
+   * Add all battle results in {@code results} to this aggregator.
+   *
+   * @param results the battle results to add
+   */
   public void addResults(final Collection<BattleResults> results) {
     this.results.addAll(results);
   }
 
+  /**
+   * Returns the stored battle results.
+   *
+   * <p>Note: The returned list is the encapsulated list and not a copy.
+   */
   public List<BattleResults> getResults() {
     return results;
   }
@@ -68,9 +105,14 @@ public class AggregateResults {
   }
 
   /**
-   * First is Attacker, Second is Defender.
+   * Returns the average TUV value of the units left over.
    *
    * <p>If no battle results were added to this aggregator instance, {@code (NaN, NaN)} is returned.
+   *
+   * @param attackerCostsForTuv lookup table assigning the TUV value to the attacking units
+   * @param defenderCostsForTuv lookup table assigning the TUV value to the defending units
+   * @return tuple of the average TUV value of the units left over. First is Attacker, Second is
+   *     Defender.
    */
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(
       final IntegerMap<UnitType> attackerCostsForTuv,
@@ -89,12 +131,26 @@ public class AggregateResults {
   /**
    * Returns the average TUV swing across all simulations of the battle.
    *
+   * <p>A positive value indicates the defender lost more unit value, on average, than the attacker
+   * (i.e. the attacker "won"). A negative value indicates the attacker lost more unit value, on
+   * average, than the defender (i.e. the defender "won"). Zero indicates the attacker and defender
+   * lost, on average, equal unit value (i.e. a tie).
+   *
    * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
    *
-   * @return A positive value indicates the defender lost more unit value, on average, than the
-   *     attacker (i.e. the attacker "won"). A negative value indicates the attacker lost more unit
-   *     value, on average, than the defender (i.e. the defender "won"). Zero indicates the attacker
-   *     and defender lost, on average, equal unit value (i.e. a tie).
+   * <p>Note: The result of this function only makes sense for battles with the same initial setup,
+   * e.g. results coming from simulations of the same battle. The {@code attackers} and {@code
+   * defenders} are the units initially attacking and defending in this setup, respectively.
+   *
+   * <p>{@code attacker}, {@code defender} and {@code data} are used to derive the TUV values of the
+   * units.
+   *
+   * @param attacker the attacking player
+   * @param attackers a collection with the attacking units
+   * @param defender the defending player
+   * @param defenders a collection with the defending units
+   * @param data the game data
+   * @return the average TUV swing
    */
   public double getAverageTuvSwing(
       final GamePlayer attacker,
@@ -126,7 +182,11 @@ public class AggregateResults {
                 .toArray());
   }
 
-  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  /**
+   * Returns the average number of attacking units surviving the battles.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
+   */
   public double getAverageAttackingUnitsLeft() {
     final Mean mean = new Mean();
     return mean.evaluate(
@@ -137,8 +197,11 @@ public class AggregateResults {
   }
 
   /**
-   * If no battle results were added to this aggregator instance or if the attacker did not win any
-   * of those battles, then {@code NaN} is returned.
+   * Returns the average number of attacking units surviving the battles restricted to the battles
+   * where the attacker won.
+   *
+   * <p>If no battle results were added to this aggregator instance or if the attacker did not win
+   * any of those battles, then {@code NaN} is returned.
    */
   public double getAverageAttackingUnitsLeftWhenAttackerWon() {
     final Mean mean = new Mean();
@@ -150,7 +213,11 @@ public class AggregateResults {
             .toArray());
   }
 
-  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  /**
+   * Returns the average number of defending units surviving the battles.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
+   */
   public double getAverageDefendingUnitsLeft() {
     final Mean mean = new Mean();
     return mean.evaluate(
@@ -161,8 +228,11 @@ public class AggregateResults {
   }
 
   /**
-   * If no battle results were added to this aggregator instance or if the defender did not win any
-   * of those battles, then {@code NaN} is returned.
+   * Returns the average number of defending units surviving the battles restricted to the battles
+   * where the defender won.
+   *
+   * <p>If no battle results were added to this aggregator instance or if the defender did not win
+   * any of those battles, then {@code NaN} is returned.
    */
   public double getAverageDefendingUnitsLeftWhenDefenderWon() {
     final Mean mean = new Mean();
@@ -174,21 +244,38 @@ public class AggregateResults {
             .toArray());
   }
 
-  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  /**
+   * Returns the average number of battles won by the attacker. This can be interpreted as the
+   * probability that the attacker wins given all aggregated battles started with the same initial
+   * setup.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
+   */
   public double getAttackerWinPercent() {
     final Mean mean = new Mean();
     return mean.evaluate(
         results.stream().mapToDouble(result -> result.attackerWon() ? 1 : 0).toArray());
   }
 
-  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  /**
+   * Returns the average number of battles won by the defender. This can be interpreted as the
+   * probability that the defender wins given all aggregated battles started with the same initial
+   * setup.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
+   */
   public double getDefenderWinPercent() {
     final Mean mean = new Mean();
     return mean.evaluate(
         results.stream().mapToDouble(result -> result.defenderWon() ? 1 : 0).toArray());
   }
 
-  /** If no battle results were added to this aggregator instance, {@code NaN} is returned. */
+  /**
+   * Returns the average number of battles drawn. This can be interpreted as the probability that a
+   * battle ends in a draw given all aggregated battles started with the same initial setup.
+   *
+   * <p>If no battle results were added to this aggregator instance, {@code NaN} is returned.
+   */
   public double getDrawPercent() {
     final Mean mean = new Mean();
     return mean.evaluate(results.stream().mapToDouble(result -> result.draw() ? 1 : 0).toArray());
@@ -205,6 +292,7 @@ public class AggregateResults {
         results.stream().mapToDouble(BattleResults::getBattleRoundsFought).toArray());
   }
 
+  /** Returns the number of battles aggregated by this instance. */
   public int getRollCount() {
     return results.size();
   }
