@@ -22,13 +22,14 @@
     state: started
     enabled: yes
 
-- name: Set postgres user password
-  become_user: postgres
-  postgresql_user:
-    name: postgres
-    login_password: "{{ postgres_user_db_password }}"
-    password: "{{ postgres_user_db_password }}"
-    encrypted: yes
+# Disabled, does not consistently work.
+#- name: Set postgres user password
+#  become_user: postgres
+#  postgresql_user:
+#    name: postgres
+#    login_password: "{{ postgres_user_db_password }}"
+#    password: "{{ postgres_user_db_password }}"
+#    encrypted: yes
 
 - name: Create application database users
   become_user: postgres
