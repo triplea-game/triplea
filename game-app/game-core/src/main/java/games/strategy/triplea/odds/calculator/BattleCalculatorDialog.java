@@ -1,9 +1,9 @@
 package games.strategy.triplea.odds.calculator;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.history.History;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.BorderLayout;
@@ -46,14 +46,11 @@ public class BattleCalculatorDialog extends JDialog {
    * Shows the Odds Calculator dialog and initializes it using the current state of the specified
    * territory.
    */
-  public static void show(final TripleAFrame taFrame, final Territory t, final History history) {
-    // Note: The history param may not be the same as taFrame.getGame().getData().getHistory() as
-    // GameData
-    // gets cloned when showing history with a different History instance that doesn't correspond to
-    // what's
-    // shown.
-    final BattleCalculatorPanel panel =
-        new BattleCalculatorPanel(taFrame.getGame().getData(), history, taFrame.getUiContext(), t);
+  public static void show(final TripleAFrame taFrame, final Territory t, final GameData data) {
+    // Note: The data param may not be the same as taFrame.getGame().getData() as GameData gets
+    // cloned when showing history with a different History instance that doesn't correspond to
+    // what's shown.
+    final BattleCalculatorPanel panel = new BattleCalculatorPanel(data, taFrame.getUiContext(), t);
     final BattleCalculatorDialog dialog = new BattleCalculatorDialog(panel, taFrame);
     dialog.pack();
 
