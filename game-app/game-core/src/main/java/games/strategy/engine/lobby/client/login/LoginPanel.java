@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.swing.JButtonBuilder;
@@ -228,10 +229,12 @@ final class LoginPanel extends JPanel {
       JOptionPane.showMessageDialog(
           this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (password.getPassword().length < 3 && !anonymousLogin.isSelected()) {
+    } else if (password.getPassword().length < LobbyConstants.PASSWORD_MIN_LENGTH
+        && !anonymousLogin.isSelected()) {
       JOptionPane.showMessageDialog(
           this,
-          "Passwords must be at least three characters long",
+          String.format(
+              "Passwords must be at least %s characters long", LobbyConstants.PASSWORD_MIN_LENGTH),
           "Invalid Password",
           JOptionPane.ERROR_MESSAGE);
       return;
