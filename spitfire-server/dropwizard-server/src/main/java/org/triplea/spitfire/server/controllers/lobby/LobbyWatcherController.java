@@ -18,6 +18,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
@@ -141,7 +142,8 @@ public class LobbyWatcherController extends HttpController {
     Preconditions.checkArgument(chatMessageUpload.getGameId() != null);
     Preconditions.checkArgument(chatMessageUpload.getApiKey() != null);
 
-    Preconditions.checkArgument(chatMessageUpload.getFromPlayer().length() <= UserName.MAX_LENGTH);
+    Preconditions.checkArgument(
+        chatMessageUpload.getFromPlayer().length() <= LobbyConstants.USERNAME_MAX_LENGTH);
     Preconditions.checkArgument(chatMessageUpload.getApiKey().length() <= ApiKey.MAX_LENGTH);
 
     if (!chatUploadModule.upload(chatMessageUpload)) {

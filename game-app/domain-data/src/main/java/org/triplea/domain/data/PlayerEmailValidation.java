@@ -20,6 +20,12 @@ public final class PlayerEmailValidation {
     final String localPart = word + "(?:\\." + word + ")*";
     final String email = localPart + "@" + domain;
     final String regex = "(\\s*" + email + "\\s*)*";
-    return emailAddress.matches(regex) ? null : "Invalid email address";
+    if (!emailAddress.matches(regex)) {
+      return "Invalid email address";
+    }
+    if (emailAddress.length() > LobbyConstants.EMAIL_MAX_LENGTH) {
+      return "Email address exceeds max length: " + LobbyConstants.EMAIL_MAX_LENGTH;
+    }
+    return null;
   }
 }

@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;
@@ -36,7 +37,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * </pre>
  */
 public final class BannedUsernamesTab implements Supplier<Component> {
-  private static final int MIN_LENGTH = 4;
   private final BannedUsernamesTabModel bannedUsernamesTabModel;
   private final BannedUsernamesTabActions bannedUsernamesTabActions;
 
@@ -78,8 +78,11 @@ public final class BannedUsernamesTab implements Supplier<Component> {
     final JTextField addField =
         JTextFieldBuilder.builder()
             .columns(10)
-            .maxLength(20)
-            .toolTip("Username to ban, must be at least " + MIN_LENGTH + " characters long")
+            .maxLength(LobbyConstants.USERNAME_MAX_LENGTH)
+            .toolTip(
+                "Username to ban, must be at least "
+                    + LobbyConstants.USERNAME_MIN_LENGTH
+                    + " characters long")
             .build();
 
     final JButton addButton =
@@ -92,7 +95,9 @@ public final class BannedUsernamesTab implements Supplier<Component> {
             .build();
 
     new DocumentListenerBuilder(
-            () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH))
+            () ->
+                addButton.setEnabled(
+                    addField.getText().trim().length() >= LobbyConstants.USERNAME_MIN_LENGTH))
         .attachTo(addField);
 
     return new JPanelBuilder()

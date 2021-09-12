@@ -16,10 +16,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class UserName implements Serializable {
-  public static final int MAX_LENGTH = 40;
 
   private static final long serialVersionUID = 8356372044000232198L;
-  private static final int MIN_LENGTH = 3;
   @Getter private final String value;
 
   public static UserName of(final String name) {
@@ -42,10 +40,10 @@ public class UserName implements Serializable {
    * @return Error message if username is not valid, otherwise returns an error message.
    */
   public static @Nullable String validate(final String username) {
-    if ((username == null) || (username.length() < MIN_LENGTH)) {
-      return "Name is too short (minimum " + MIN_LENGTH + " characters)";
-    } else if (username.length() > MAX_LENGTH) {
-      return "Name is too long (maximum " + MAX_LENGTH + " characters)";
+    if ((username == null) || (username.length() < LobbyConstants.USERNAME_MIN_LENGTH)) {
+      return "Name is too short (minimum " + LobbyConstants.USERNAME_MIN_LENGTH + " characters)";
+    } else if (username.length() > LobbyConstants.USERNAME_MAX_LENGTH) {
+      return "Name is too long (maximum " + LobbyConstants.USERNAME_MAX_LENGTH + " characters)";
     } else if (!username.matches("[a-zA-Z][0-9a-zA-Z_-]+")) {
       return "Name can only contain alphanumeric characters, hyphens (-), and underscores (_)";
     }
