@@ -68,8 +68,6 @@ public class ChatController implements IChatController {
     return CHAT_CHANNEL + chatName;
   }
 
-  @SuppressWarnings("FutureReturnValueIgnored") // false positive; see
-  // https://github.com/google/error-prone/issues/883
   private void startPinger() {
     pingThread.scheduleAtFixedRate(
         () -> {

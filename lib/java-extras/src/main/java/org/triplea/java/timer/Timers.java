@@ -21,7 +21,6 @@ public final class Timers {
    * @param delayTimeUnit The unit of the delay (eg: minutes, seconds).
    * @param runnable The task to be run.
    */
-  @SuppressWarnings("FutureReturnValueIgnored")
   public static void executeAfterDelay(
       final int delay, final TimeUnit delayTimeUnit, final Runnable runnable) {
     Preconditions.checkArgument(delay >= 0, "Delay must be non-negative, was %s", delay);

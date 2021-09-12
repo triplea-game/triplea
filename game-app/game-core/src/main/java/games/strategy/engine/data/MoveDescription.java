@@ -65,7 +65,6 @@ public class MoveDescription extends AbstractMoveDescription {
         HashMultiset.create(getUnits()), route, new HashMap<>(unitsToTransports), dependentUnits);
   }
 
-  @SuppressWarnings("UndefinedEquals")
   private static boolean collectionsAreEqual(final Collection<Unit> a, final Collection<Unit> b) {
     // https://stackoverflow.com/questions/1565214/is-there-a-way-to-check-if-two-collections-contain-the-same-elements-independen
     return HashMultiset.create(a).equals(HashMultiset.create(b));

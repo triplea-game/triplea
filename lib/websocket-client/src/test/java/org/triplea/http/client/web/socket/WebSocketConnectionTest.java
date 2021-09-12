@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@SuppressWarnings({"InnerClassMayBeStatic", "FutureReturnValueIgnored"})
+@SuppressWarnings("InnerClassMayBeStatic")
 class WebSocketConnectionTest {
   private static final URI INVALID_URI = URI.create("wss://server.invalid");
   private static final String MESSAGE = "message";
