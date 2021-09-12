@@ -31,7 +31,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * error message is intended to be user friendly, clicking 'show details' would show full details of
  * all error messages.
  */
-@SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
 public enum ErrorMessage {
   INSTANCE;
 

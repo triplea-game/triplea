@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 
 /** The possible time units and corresponding mappings. */
 @AllArgsConstructor
-@SuppressWarnings("ImmutableEnumChecker")
 enum ActionTimeUnit {
   MINUTES("Minutes", minutes -> (long) minutes),
 

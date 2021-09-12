@@ -1,5 +1,4 @@
 dependencies {
-    errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation project(':http-clients:github-client')

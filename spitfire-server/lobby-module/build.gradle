@@ -1,5 +1,4 @@
 dependencies {
-    errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "at.favre.lib:bcrypt:$bcryptVersion"
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
