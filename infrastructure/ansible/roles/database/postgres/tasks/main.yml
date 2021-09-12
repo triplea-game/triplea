@@ -22,21 +22,36 @@
     state: started
     enabled: yes
 
-# Disabled, does not consistently work.
-#- name: Set postgres user password
-#  become_user: postgres
-#  postgresql_user:
-#    name: postgres
-#    login_password: "{{ postgres_user_db_password }}"
-#    password: "{{ postgres_user_db_password }}"
-#    encrypted: yes
+- name: deploy file /etc/postgresql/12/main/pg_hba.conf
+  register: pg_hba
+  copy:
+    src: pg_hba.conf
+    dest: /etc/postgresql/12/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: "0640"
+
+- name: Reload  PostgreSQL if pg_hba.conf changed
+  when: pg_hba.changed
+  service:
+    name: postgresql
+    state: reloaded
+
+
+- name: Set postgres user password
+  become_user: postgres
+  postgresql_user:
+    name: postgres
+    login_password: "{{ postgres_user_db_password }}"
+    password: "{{ postgres_user_db_password }}"
+    encrypted: yes
 
 - name: Create application database users
   become_user: postgres
   postgresql_user:
     name: "{{ database_user }}"
     password: "{{ database_password }}"
-    login_password: "{{ database_password }}"
+    login_password: "{{ postgres_user_db_password }}"
     encrypted: yes
     state: "present"
 
@@ -45,6 +60,7 @@
   postgresql_db:
     name: "{{ database_name }}"
     owner: "{{ database_user }}"
+    login_password: "{{ postgres_user_db_password }}"
 
 - name: Ensure user has access to the database
   become_user: postgres
@@ -52,7 +68,7 @@
     db: "{{ database_name }}"
     name: "{{ database_user }}"
     password: "{{ database_password }}"
-    login_password: "{{ database_password }}"
+    login_password: "{{ postgres_user_db_password }}"
     encrypted: yes
     priv: "ALL"
     role_attr_flags: NOSUPERUSER,NOCREATEDB
@@ -64,7 +80,7 @@
 # user DB password.
 - name: set DB user passwords via CLI
   shell: >
-    echo "alter role {{ database_user }} with password '{{ database_password }}';"  | sudo -u postgres psql
+    echo "alter role {{ database_user }} with password '{{ database_password }}';"  | psql -U postgres
   environment:
     PGPASSWORD: "{{ postgres_user_db_password }}"
   changed_when: false
