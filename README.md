@@ -5,8 +5,6 @@ TripleA is a free to play, volunteer run, 100% open source gaming community.
   - ***[Bug Tracker](https://github.com/triplea-game/triplea/issues/new)***
   - ***[Developer Setup Guide](/docs/development/README.md)***
     - [![Maintainability](https://api.codeclimate.com/v1/badges/fa814ed45202485a92bf/maintainability)](https://codeclimate.com/github/triplea-game/triplea/maintainability)
-    [![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
-
 
 
 ![Game Board Screenshot](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
