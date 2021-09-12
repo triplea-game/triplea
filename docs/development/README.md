@@ -75,9 +75,8 @@ To connect to local lobby, from the game client:
 
 ## Reference
 
-For detailed steps on building the project, see:
+For more detailed steps on building the project, see:
 - [how-to/cli-build-commands.md](./how-to/cli-build-commands.md)
-- [how-to/launch-local-database.md](./how-to/launch-local-database.md])
 - [how-to/typical-git-workflow.md](./how-to/typical-git-workflow.md)
 
 ## Coding Style Guide & Expectations
