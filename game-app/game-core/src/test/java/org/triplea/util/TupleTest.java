@@ -34,6 +34,14 @@ class TupleTest {
     assertThat(nullTuple, not(Tuple.of("something else", (String) null)));
   }
 
+  @Test
+  void checkSwap() {
+    final Tuple<String, Integer> t1 = Tuple.of("hi", 123);
+    final Tuple<Integer, String> t2 = t1.swap();
+    assertThat(t2.getFirst(), is(123));
+    assertThat(t2.getSecond(), is("hi"));
+  }
+
   @Nested
   final class EqualsAndHashCodeTest {
     @Test

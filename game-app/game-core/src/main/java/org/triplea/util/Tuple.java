@@ -48,6 +48,18 @@ public final class Tuple<T, S> implements Serializable {
     return second;
   }
 
+  /**
+   * Return a new tuple with first and second component swapped.
+   *
+   * <pre>
+   * Tuple&lt;String, Integer> myTuple1 = Tuple.of("abc", 123);
+   * Tuple&lt;Integer, String> swappedTuple = myTuple.swap(); // (123, "abc")
+   * </pre>
+   */
+  public Tuple<S, T> swap() {
+    return new Tuple<>(second, first);
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
