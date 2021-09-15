@@ -145,9 +145,11 @@ public class DownloadMapsWindow extends JFrame {
    */
   public static void showDownloadMapsWindowAndDownload(
       final Collection<String> mapNamesToDownload) {
-    checkState(SwingUtilities.isEventDispatchThread());
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(() -> showDownloadMapsWindowAndDownload(mapNamesToDownload));
+      return;
+    }
     checkNotNull(mapNamesToDownload);
-
     SINGLETON_MANAGER.showAndDownload(mapNamesToDownload);
   }
 
@@ -294,11 +296,11 @@ public class DownloadMapsWindow extends JFrame {
     // For the UX, always show an available maps tab, even if it is empty
     final JPanel available =
         newMapSelectionPanel(mapList.getAvailableExcluding(pendingDownloads), MapAction.INSTALL);
-    tabbedPane.addTab("Available", available);
+    tabbedPane.addTab("New Maps", available);
 
     if (!outOfDateDownloads.isEmpty()) {
       final JPanel outOfDate = newMapSelectionPanel(outOfDateDownloads, MapAction.UPDATE);
-      tabbedPane.addTab("Update", outOfDate);
+      tabbedPane.addTab("Updates Available", outOfDate);
     }
 
     if (!mapList.getInstalled().isEmpty()) {
