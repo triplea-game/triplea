@@ -2355,3 +2355,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Cold_War_1950_4th_edition/master/preview.png
   description: |
     <br>A hypothetical World War 3 starting in 1950 using the Pact of Steel map
+- mapName: Pacific-Beta
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Pacific_Beta/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Pacific-Beta/master/preview.png
+  description: |
+    <br>The Pacific War. Based on the Axis & Allies: Pacific game.
