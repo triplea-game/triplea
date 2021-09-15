@@ -83,6 +83,7 @@ final class DownloadFile {
           ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
               .ifPresent(
                   installedMap -> {
+                    // create a map description YAML file for the map if it does not contain one
                     if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {
                       MapDescriptionYaml.generateForMap(installedMap);
                     }
