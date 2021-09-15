@@ -38,8 +38,8 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         new DownloadMapsWindowMapsListing(List.of(TEST_MAP), installedMapsListing);
 
     assertThat(downloadMapsWindowMapsListing.getAvailable(), hasSize(1));
-    assertThat(downloadMapsWindowMapsListing.getInstalled(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet(), is(empty()));
   }
 
   @Test
@@ -91,8 +91,8 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
             List.of(newInstalledDownloadWithUrl("url")), installedMapsListing);
 
     assertThat(downloadMapsWindowMapsListing.getAvailable(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getInstalled(), hasSize(1));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet(), hasSize(1));
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet(), is(empty()));
   }
 
   private static InstalledMapsListing buildIndexWithMapVersions(
@@ -126,8 +126,8 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
             List.of(newInstalledDownloadWithUrl("url")), installedMapsListing);
 
     assertThat(downloadMapsWindowMapsListing.getAvailable(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getInstalled(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate(), hasSize(1));
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet(), hasSize(1));
   }
 
   @Test

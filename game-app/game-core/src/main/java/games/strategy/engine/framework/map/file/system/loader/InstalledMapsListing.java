@@ -4,12 +4,16 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
@@ -61,11 +65,14 @@ public class InstalledMapsListing {
    * case-insensitive with spaces, dashes and underscores ignored.
    */
   public boolean isMapInstalled(final String mapName) {
+    return findInstalledMapByName(mapName).isPresent();
+  }
+
+  public Optional<InstalledMap> findInstalledMapByName(final String mapName) {
     final String nameToMatch = normalizeName(mapName);
     return installedMaps.stream()
-        .map(InstalledMap::getMapName)
-        .map(InstalledMapsListing::normalizeName)
-        .anyMatch(nameToMatch::equalsIgnoreCase);
+        .filter(map -> normalizeName(map.getMapName()).equalsIgnoreCase(nameToMatch))
+        .findAny();
   }
 
   /**
@@ -86,12 +93,8 @@ public class InstalledMapsListing {
     return findGameXmlPathByGameName(gameName).isPresent();
   }
 
-  public Integer getMapVersionByName(final String mapName) {
-    return installedMaps.stream()
-        .filter(d -> d.getMapName().equals(mapName))
-        .findAny()
-        .map(InstalledMap::getMapVersion)
-        .orElse(0);
+  public int getMapVersionByName(final String mapName) {
+    return findInstalledMapByName(mapName).map(InstalledMap::getMapVersion).orElse(0);
   }
 
   /**
@@ -142,5 +145,53 @@ public class InstalledMapsListing {
                     .gameName(gameName)
                     .build())
         .collect(Collectors.toList());
+  }
+
+  public Map<MapDownloadItem, InstalledMap> findOutOfDateMaps(
+      final Collection<MapDownloadItem> downloads) {
+    final Map<MapDownloadItem, InstalledMap> outOfDate = new HashMap<>();
+
+    for (final MapDownloadItem download : downloads) {
+      findInstalledMapByName(download.getMapName())
+          .ifPresent(
+              installedMap -> {
+                final int mapVersion = getMapVersionByName(download.getMapName());
+                if (download.getVersion() != null && download.getVersion() > mapVersion) {
+                  outOfDate.put(download, installedMap);
+                }
+              });
+    }
+    return outOfDate;
+  }
+
+  /**
+   * Given a map download list, finds the corresponding installed maps that are already installed on
+   * teh system. Note: out-of-date maps are not considered installed.
+   */
+  public Map<MapDownloadItem, InstalledMap> findInstalledMapsFromDownloadList(
+      final Collection<MapDownloadItem> downloads) {
+    final Map<MapDownloadItem, InstalledMap> installed = new HashMap<>();
+
+    for (final MapDownloadItem download : downloads) {
+      findInstalledMapByName(download.getMapName())
+          .ifPresent(installedMap -> installed.put(download, installedMap));
+    }
+
+    final Map<MapDownloadItem, InstalledMap> outOfDate = findOutOfDateMaps(downloads);
+    outOfDate.forEach(installed::remove);
+
+    return installed;
+  }
+
+  public Collection<MapDownloadItem> findNotInstalledMapsFromDownloadList(
+      final Collection<MapDownloadItem> downloads) {
+    final Collection<MapDownloadItem> notInstalled = new ArrayList<>();
+
+    for (final MapDownloadItem download : downloads) {
+      if (findInstalledMapByName(download.getMapName()).isEmpty()) {
+        notInstalled.add(download);
+      }
+    }
+    return notInstalled;
   }
 }
