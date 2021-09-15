@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.ui.background.WaitDialog;
-import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -102,11 +101,7 @@ class BattleCalculatorPanel extends JPanel {
   private final Territory location;
   private final JList<String> territoryEffectsJList;
 
-  BattleCalculatorPanel(
-      final GameData data,
-      final History history,
-      final UiContext uiContext,
-      final Territory location) {
+  BattleCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location) {
     this.data = data;
     this.uiContext = uiContext;
     this.location = location;
@@ -1055,7 +1050,7 @@ class BattleCalculatorPanel extends JPanel {
         landBattleCheckBox.setSelected(!location.isWater());
 
         // Default attacker to current player
-        final Optional<GamePlayer> currentPlayer = getCurrentPlayer(history);
+        final Optional<GamePlayer> currentPlayer = getCurrentPlayer();
         currentPlayer.ifPresent(this::setAttacker);
 
         // Get players with units sorted
@@ -1136,8 +1131,8 @@ class BattleCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  public Optional<GamePlayer> getCurrentPlayer(final History history) {
-    final Optional<GamePlayer> player = history.getActivePlayer();
+  public Optional<GamePlayer> getCurrentPlayer() {
+    final Optional<GamePlayer> player = data.getHistory().getActivePlayer();
     if (player.isPresent()) {
       return player;
     }
