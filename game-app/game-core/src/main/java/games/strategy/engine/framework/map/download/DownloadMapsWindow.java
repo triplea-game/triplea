@@ -61,12 +61,12 @@ public class DownloadMapsWindow extends JFrame {
 
   private final MapDownloadProgressPanel progressPanel;
 
-  private final DownloadMapsWindowUtils downloadMapsWindowUtils;
+  private final DownloadMapsWindowModel downloadMapsWindowModel;
 
   private DownloadMapsWindow(
       final Collection<String> pendingDownloadMapNames, final List<MapDownloadItem> allDownloads) {
     super("Download Maps");
-    downloadMapsWindowUtils = new DownloadMapsWindowUtils();
+    downloadMapsWindowModel = new DownloadMapsWindowModel();
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -332,7 +332,7 @@ public class DownloadMapsWindow extends JFrame {
               newDescriptionPanelUpdatingSelectionListener(
                   mapSelections.get(0), descriptionPane, unsortedMaps, mapSizeLabel));
 
-      descriptionPane.setText(downloadMapsWindowUtils.toHtmlString(unsortedMaps.get(0)));
+      descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.get(0)));
       descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -365,7 +365,7 @@ public class DownloadMapsWindow extends JFrame {
         .findAny()
         .ifPresent(
             map -> {
-              final String text = downloadMapsWindowUtils.toHtmlString(map);
+              final String text = downloadMapsWindowModel.toHtmlString(map);
               descriptionPanel.setText(text);
               descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
               updateMapUrlAndSizeLabel(map, mapSizeLabelToUpdate);
@@ -391,7 +391,7 @@ public class DownloadMapsWindow extends JFrame {
         .append(" v")
         .append(map.getVersion());
 
-    if (!downloadMapsWindowUtils.isInstalled(map)) {
+    if (!downloadMapsWindowModel.isInstalled(map)) {
       final String mapUrl = map.getDownloadUrl();
       if (mapUrl != null) {
         DownloadConfiguration.downloadLengthReader()
@@ -406,14 +406,14 @@ public class DownloadMapsWindow extends JFrame {
     } else {
       sb.append(doubleSpace).append(" (");
       try {
-        sb.append(newSizeLabel(Files.size(downloadMapsWindowUtils.getInstallLocation(map).get())));
+        sb.append(newSizeLabel(Files.size(downloadMapsWindowModel.getInstallLocation(map).get())));
       } catch (final IOException e) {
         log.warn("Failed to read file size", e);
         sb.append("N/A");
       }
       sb.append(")")
           .append("<br>")
-          .append(downloadMapsWindowUtils.getInstallLocation(map).get().toAbsolutePath());
+          .append(downloadMapsWindowModel.getInstallLocation(map).get().toAbsolutePath());
     }
     sb.append("<br>");
     sb.append("</html>");
@@ -495,7 +495,7 @@ public class DownloadMapsWindow extends JFrame {
               .collect(Collectors.toList());
       if (!selectedMaps.isEmpty()) {
         FileSystemAccessStrategy.remove(
-            downloadMapsWindowUtils::delete, selectedMaps, tableRemoveAction);
+            downloadMapsWindowModel::delete, selectedMaps, tableRemoveAction);
       }
     };
   }

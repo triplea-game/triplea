@@ -12,10 +12,10 @@ import org.triplea.java.Interruptibles;
 
 /** Various logic methods used by DownloadMapsWindows. */
 @Slf4j
-class DownloadMapsWindowUtils {
+class DownloadMapsWindowModel {
   private final InstalledMapsListing installedMapsListing;
 
-  DownloadMapsWindowUtils() {
+  DownloadMapsWindowModel() {
     installedMapsListing = InstalledMapsListing.parseMapFiles();
   }
 
