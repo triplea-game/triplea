@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -302,7 +303,12 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     if (!mapList.getInstalled().isEmpty()) {
-      final JPanel installed = newMapSelectionPanel(mapList.getInstalled(), MapAction.REMOVE);
+      final JPanel installed =
+          newMapSelectionPanel(
+              mapList.getInstalled().keySet().stream()
+                  .sorted(Comparator.comparing(m -> m.getMapName().toUpperCase()))
+                  .collect(Collectors.toList()),
+              MapAction.REMOVE);
       tabbedPane.addTab("Installed", installed);
     }
     return tabbedPane;

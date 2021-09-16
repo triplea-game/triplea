@@ -2,17 +2,12 @@ package games.strategy.engine.auto.update;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.mockito.Mockito.verify;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -73,17 +68,6 @@ final class UpdatedMapsCheckTest {
         NOW.minus(UpdatedMapsCheck.THRESHOLD_DAYS, ChronoUnit.DAYS).plusSeconds(60).toEpochMilli());
   }
 
-  @Test
-  void localMapIsCurrent() {
-    final var availableMaps = List.of(buildDownloadDescription("map name", 2));
-    final Function<String, Integer> mapVersionLookupFunction = anyMapName -> 2;
-
-    final Collection<String> result =
-        UpdatedMapsCheck.computeOutOfDateMaps(availableMaps, mapVersionLookupFunction);
-
-    assertThat(result, is(empty()));
-  }
-
   @SuppressWarnings("SameParameterValue")
   private static MapDownloadItem buildDownloadDescription(final String mapName, final int version) {
     return MapDownloadItem.builder()
@@ -94,38 +78,5 @@ final class UpdatedMapsCheckTest {
         .previewImageUrl("preview-url")
         .lastCommitDateEpochMilli(50L)
         .build();
-  }
-
-  @Test
-  void localMapIsAhead() {
-    final var availableMaps = List.of(buildDownloadDescription("map name", 2));
-    final Function<String, Integer> mapVersionLookupFunction = anyMapName -> 3;
-
-    final Collection<String> result =
-        UpdatedMapsCheck.computeOutOfDateMaps(availableMaps, mapVersionLookupFunction);
-
-    assertThat(result, is(empty()));
-  }
-
-  @Test
-  void localMapIsOutOfDate() {
-    final var availableMaps =
-        List.of(
-            buildDownloadDescription("isCurrent", 2),
-            buildDownloadDescription("new name version", 2));
-
-    // if version function receives 'isCurrent', we'll return the current version of '2',
-    // otherwise we'll return '1' which is less than the available current version.
-    final Function<String, Integer> mapVersionLookupFunction =
-        mapName -> mapName.equals("isCurrent") ? 2 : 1;
-
-    final Collection<String> result =
-        UpdatedMapsCheck.computeOutOfDateMaps(availableMaps, mapVersionLookupFunction);
-
-    assertThat(
-        "we stubbed an old version for the 'new map version', we expect it to"
-            + "be on the return list of out of date maps",
-        result,
-        hasItem("new name version"));
   }
 }
