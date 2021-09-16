@@ -50,10 +50,11 @@ class UpdatedMapsCheck {
       return;
     }
 
-    final InstalledMapsListing installedMapsListing = InstalledMapsListing.parseMapFiles();
-
     final Collection<String> outOfDateMapNames =
-        installedMapsListing.findOutOfDateMaps(availableToDownloadMaps).keySet().stream()
+        InstalledMapsListing.parseMapFiles()
+            .findOutOfDateMaps(availableToDownloadMaps)
+            .keySet()
+            .stream()
             .map(MapDownloadItem::getMapName)
             .sorted(Comparator.comparing(String::toUpperCase))
             .collect(Collectors.toList());
