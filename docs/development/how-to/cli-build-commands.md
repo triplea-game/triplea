@@ -1,7 +1,6 @@
 This page serves as reference for the various
 CLI build commands that can be run.
 
-
 ## Running Tests via CLI
 
 ```

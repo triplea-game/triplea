@@ -4,7 +4,6 @@ Hosts the code and configuration that controls deployments.
 
 Design and conventions is in the [/infrastructure/docs](./docs) folder.
 
-
 ## .orig files
 
 Any configuration files we will try to save copy of the default, original file that comes out of the box

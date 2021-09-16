@@ -3,7 +3,7 @@
 It is a goal to have all TripleA documentation in the '/docs' folder.
 
 Documentation is broadly organized by two top level folders, first
-by audience, second by documentation type. 
+by audience, second by documentation type.
 
 ## Documentation Audience
 
@@ -19,7 +19,6 @@ process, how to contribute, how to engage, where to communicate
 
 **infrastructre**: relates to software deployment and opeations,
 eg: bot setup, server setup, checking logs, checking and restarting services
-
 
 ## Documentation Types
 

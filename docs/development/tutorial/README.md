@@ -1,14 +1,11 @@
 # NEW DEVELOPER GETTING STARTED!
 
-
 - Setup IDE: [/docs/development/how-to/ide-setup](../how-to/ide-setup>)
 
 ## Further, typical git commands and submitting PRs
 
 - [/docs/development/how-to/typical-git-workflow](../how-to/typical-git-workflow.md)
 - [/docs/development/reference/dev-process/pull-requests.md](../reference/dev-process/pull-requests.md)
-
-
 
 ## Running the code
 
@@ -27,7 +24,6 @@ A local DB is also required for the 'verify' script to complete successfully.
 ./spitfire-server/database/start_docker_db
 ```
 
-
 ## Run verify script
 
 ```
@@ -37,7 +33,6 @@ A local DB is also required for the 'verify' script to complete successfully.
 Verify will run almost all of the PR checks locally. Verify builds the code, runs all tests,
 runs code scanners like PMD, checkstyle, and runs a set of custom code scanners that
 regex the code to enforce project specific code conventions.
-
 
 It is also often useful to run code formatting:
 ```
