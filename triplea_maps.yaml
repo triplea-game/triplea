@@ -2355,3 +2355,12 @@
   img: https://raw.githubusercontent.com/triplea-maps/Cold_War_1950_4th_edition/master/preview.png
   description: |
     <br>A hypothetical World War 3 starting in 1950 using the Pact of Steel map
+- mapName: World War I 1914
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world_war_i_1914/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_i_1914/master/preview.png
+  description: |
+    <br>An adaption of the Axis & Allies: 1914 game. Many rules of the boardgame are not implemented.
+    
+    
