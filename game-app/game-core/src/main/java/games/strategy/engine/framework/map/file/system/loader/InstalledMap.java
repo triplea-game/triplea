@@ -38,6 +38,7 @@ public class InstalledMap {
    * missing).
    */
   Optional<Path> findContentRoot() {
+    // contentRoot is cached to avoid searching on the file system
     if (contentRoot == null) {
       // relative to the 'map.yml' file location, search current and child directories for
       // a polygons file, the location of the polygons file is the map content root.
@@ -90,6 +91,9 @@ public class InstalledMap {
    * date of the map-download.
    */
   boolean isOutOfDate(final MapDownloadItem download) {
+    // we cache lastModifiedDate for two reasons:
+    // 1. *primarily* test can inject a value
+    // 2. avoid file system access
     if (lastModifiedDate == null) {
       lastModifiedDate = findContentRoot().flatMap(FileUtils::getLastModified).orElse(null);
       if (lastModifiedDate == null) {
