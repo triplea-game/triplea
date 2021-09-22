@@ -26,6 +26,7 @@ import org.triplea.util.LocalizeHtml;
 public class InstalledMap {
   @Nonnull private final MapDescriptionYaml mapDescriptionYaml;
   @Nullable private Instant lastModifiedDate;
+  @Nullable private Path contentRoot;
 
   public String getMapName() {
     return mapDescriptionYaml.getMapName();
@@ -37,10 +38,17 @@ public class InstalledMap {
    * missing).
    */
   Optional<Path> findContentRoot() {
-    // relative to the 'map.yml' file location, search current and child directories for
-    // a polygons file, the location of the polygons file is the map content root.
-    final Path mapYamlParentFolder = Path.of(mapDescriptionYaml.getYamlFileLocation()).getParent();
-    return FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE).map(Path::getParent);
+    if (contentRoot == null) {
+      // relative to the 'map.yml' file location, search current and child directories for
+      // a polygons file, the location of the polygons file is the map content root.
+      final Path mapYamlParentFolder =
+          Path.of(mapDescriptionYaml.getYamlFileLocation()).getParent();
+      contentRoot =
+          FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+              .map(Path::getParent)
+              .orElse(null);
+    }
+    return Optional.ofNullable(contentRoot);
   }
 
   /**
@@ -82,14 +90,14 @@ public class InstalledMap {
    * date of the map-download.
    */
   boolean isOutOfDate(final MapDownloadItem download) {
-    final Instant installedMapLastModified =
-        findContentRoot().flatMap(FileUtils::getLastModified).orElse(null);
-
-    if (installedMapLastModified == null) {
-      return false;
-    } else {
-      final Instant lastCommitDate = Instant.ofEpochMilli(download.getLastCommitDateEpochMilli());
-      return installedMapLastModified.isBefore(lastCommitDate);
+    if (lastModifiedDate == null) {
+      lastModifiedDate = findContentRoot().flatMap(FileUtils::getLastModified).orElse(null);
+      if (lastModifiedDate == null) {
+        return false;
+      }
     }
+
+    final Instant lastCommitDate = Instant.ofEpochMilli(download.getLastCommitDateEpochMilli());
+    return lastModifiedDate.isBefore(lastCommitDate);
   }
 }
