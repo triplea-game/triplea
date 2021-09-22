@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Singular;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
@@ -28,7 +29,6 @@ import org.triplea.io.FileUtils;
  *
  * <pre>
  *   map_name: [string]
- *   version: [number]
  *   games:
  *   - name: [string]
  *     xml_path: [string]
@@ -49,12 +49,13 @@ public class MapDescriptionYaml {
 
   @Nonnull private final URI yamlFileLocation;
   @Nonnull private final String mapName;
-  @Nonnull private final Integer mapVersion;
-  @Nonnull private final List<MapGame> mapGameList;
+
+  @Singular(value = "game")
+  @Nonnull
+  private final List<MapGame> mapGameList;
 
   interface YamlKeys {
     String MAP_NAME = "map_name";
-    String VERSION = "version";
     String GAMES_LIST = "games";
     String GAME_NAME = "game_name";
     String FILE_NAME = "file_name";

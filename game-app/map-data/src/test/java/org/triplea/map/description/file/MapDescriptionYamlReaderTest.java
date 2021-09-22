@@ -59,7 +59,6 @@ public class MapDescriptionYamlReaderTest {
               .orElseThrow();
 
       assertThat(mapDescriptionYaml.getMapName(), is("MapName"));
-      assertThat(mapDescriptionYaml.getMapVersion(), is(10));
       assertThat(mapDescriptionYaml.getMapGameList(), hasSize(2));
       assertThat(mapDescriptionYaml.getMapGameList().get(0).getGameName(), is("GameName0"));
       assertThat(

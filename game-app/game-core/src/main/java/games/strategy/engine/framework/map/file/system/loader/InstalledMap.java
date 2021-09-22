@@ -2,29 +2,33 @@ package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
 import org.triplea.util.LocalizeHtml;
 
 /** Object representing a map that is downloaded and installed. */
+@Builder
 @AllArgsConstructor
+@RequiredArgsConstructor
+@ToString
 public class InstalledMap {
-  private final MapDescriptionYaml mapDescriptionYaml;
+  @Nonnull private final MapDescriptionYaml mapDescriptionYaml;
+  @Nullable private Instant lastModifiedDate;
 
   public String getMapName() {
     return mapDescriptionYaml.getMapName();
-  }
-
-  /**
-   * Returns the map version value from the map.yml file, returns zero if there is no map.yml file.
-   */
-  int getMapVersion() {
-    return mapDescriptionYaml.getMapVersion();
   }
 
   /**
@@ -69,6 +73,23 @@ public class InstalledMap {
       return Optional.of(
           LocalizeHtml.localizeImgLinksInHtml(
               GameNotes.loadGameNotes(xmlPath.get(), gameName), mapContentRoot.get()));
+    }
+  }
+
+  /**
+   * Checks if this installed map is out of date compared to a given map-download. This is done by
+   * comparing the last modified date on the map installation folder compared to the last commit
+   * date of the map-download.
+   */
+  boolean isOutOfDate(final MapDownloadItem download) {
+    final Instant installedMapLastModified =
+        findContentRoot().flatMap(FileUtils::getLastModified).orElse(null);
+
+    if (installedMapLastModified == null) {
+      return false;
+    } else {
+      final Instant lastCommitDate = Instant.ofEpochMilli(download.getLastCommitDateEpochMilli());
+      return installedMapLastModified.isBefore(lastCommitDate);
     }
   }
 }

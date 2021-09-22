@@ -26,7 +26,6 @@ class MapDescriptionYamlTest {
         MapDescriptionYaml.builder()
             .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
             .mapName("map name")
-            .mapVersion(1)
             .mapGameList(
                 List.of(
                     MapDescriptionYaml.MapGame.builder() //
@@ -60,7 +59,6 @@ class MapDescriptionYamlTest {
         MapDescriptionYaml.builder()
             .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
             .mapName("map name")
-            .mapVersion(1)
             .mapGameList(
                 List.of(
                     MapDescriptionYaml.MapGame.builder() //
@@ -81,7 +79,6 @@ class MapDescriptionYamlTest {
         MapDescriptionYaml.builder()
             .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
             .mapName("map name")
-            .mapVersion(1)
             .mapGameList(
                 List.of(
                     MapDescriptionYaml.MapGame.builder() //

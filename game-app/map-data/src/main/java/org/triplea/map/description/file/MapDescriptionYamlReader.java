@@ -2,7 +2,6 @@ package org.triplea.map.description.file;
 
 import static org.triplea.map.description.file.MapDescriptionYaml.YamlKeys.GAMES_LIST;
 import static org.triplea.map.description.file.MapDescriptionYaml.YamlKeys.MAP_NAME;
-import static org.triplea.map.description.file.MapDescriptionYaml.YamlKeys.VERSION;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -59,7 +58,6 @@ class MapDescriptionYamlReader {
           MapDescriptionYaml.builder()
               .yamlFileLocation(ymlFile.toUri())
               .mapName(Strings.nullToEmpty((String) yamlData.get(MAP_NAME)))
-              .mapVersion((Integer) Optional.ofNullable(yamlData.get(VERSION)).orElse(0))
               .mapGameList(parseGameList(yamlData))
               .build();
 
