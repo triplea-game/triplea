@@ -42,7 +42,6 @@ class MapDescriptionYamlWriter {
   String toYamlString(final MapDescriptionYaml mapDescriptionYaml) {
     final Map<String, Object> data = new HashMap<>();
     data.put(MapDescriptionYaml.YamlKeys.MAP_NAME, mapDescriptionYaml.getMapName());
-    data.put(MapDescriptionYaml.YamlKeys.VERSION, mapDescriptionYaml.getMapVersion());
     // generate game list
     data.put(
         MapDescriptionYaml.YamlKeys.GAMES_LIST,

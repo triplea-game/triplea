@@ -385,24 +385,18 @@ public class DownloadMapsWindow extends JFrame {
     final String doubleSpace = "&nbsp;&nbsp;";
 
     final StringBuilder sb = new StringBuilder();
-    sb.append("<html>")
-        .append(map.getMapName())
-        .append(doubleSpace)
-        .append(" v")
-        .append(map.getVersion());
+    sb.append("<html>").append(map.getMapName()).append(doubleSpace);
 
     if (!downloadMapsWindowModel.isInstalled(map)) {
       final String mapUrl = map.getDownloadUrl();
-      if (mapUrl != null) {
-        DownloadConfiguration.downloadLengthReader()
-            .getDownloadLength(mapUrl)
-            .ifPresent(
-                downloadSize ->
-                    sb.append(doubleSpace)
-                        .append(" (")
-                        .append(newSizeLabel(downloadSize))
-                        .append(")"));
-      }
+      DownloadConfiguration.downloadLengthReader()
+          .getDownloadLength(mapUrl)
+          .ifPresent(
+              downloadSize ->
+                  sb.append(doubleSpace)
+                      .append(" (")
+                      .append(newSizeLabel(downloadSize))
+                      .append(")"));
     } else {
       sb.append(doubleSpace).append(" (");
       try {

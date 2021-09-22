@@ -27,10 +27,8 @@ public class MapDownloadItem {
   @Nonnull private final Long lastCommitDateEpochMilli;
   /** HTML description of the map. */
   @Nonnull private final String description;
-  /** @deprecated use lastCommitDateEpochMilli and file time stamps instead. */
-  @Deprecated private final Integer version;
 
-  /** Mapping of {tag name -> tag value} */
+  /** Additional meta data about the map, eg: categories, rating, etc... */
   private final List<MapTag> mapTags;
 
   /**

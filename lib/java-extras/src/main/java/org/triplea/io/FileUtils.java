@@ -12,6 +12,7 @@ import java.net.URL;
 import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -323,6 +324,23 @@ public final class FileUtils {
             dest.toAbsolutePath());
       }
       return false;
+    }
+  }
+
+  /**
+   * Returns the file system 'last modified' time stamp for a given path. Returns an empty if the
+   * path does not exist or if there are any errors reading the last modified time stamp.
+   */
+  public static Optional<Instant> getLastModified(final Path path) {
+    if (!Files.exists(path)) {
+      return Optional.empty();
+    }
+
+    try {
+      return Optional.of(Files.getLastModifiedTime(path).toInstant());
+    } catch (final IOException e) {
+      log.error("Unable to read file system at: " + path + ", " + e.getMessage(), e);
+      return Optional.empty();
     }
   }
 }

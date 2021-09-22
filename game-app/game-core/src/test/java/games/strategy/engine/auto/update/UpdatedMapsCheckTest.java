@@ -73,7 +73,6 @@ final class UpdatedMapsCheckTest {
     return MapDownloadItem.builder()
         .description("description")
         .mapName(mapName)
-        .version(version)
         .downloadUrl("url")
         .previewImageUrl("preview-url")
         .lastCommitDateEpochMilli(50L)

@@ -4,15 +4,17 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Singular;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
@@ -21,9 +23,10 @@ import org.triplea.map.description.file.MapDescriptionYaml;
  * Data structure for the list of available games, games that a player has downloaded or installed
  * onto their hard drive.
  */
+@Builder
 @AllArgsConstructor
 public class InstalledMapsListing {
-  private final Collection<InstalledMap> installedMaps;
+  @Singular private final Collection<InstalledMap> installedMaps;
 
   private InstalledMapsListing() {
     this(readMapYamlsAndGenerateMissingMapYamls());
@@ -93,10 +96,6 @@ public class InstalledMapsListing {
     return findGameXmlPathByGameName(gameName).isPresent();
   }
 
-  public int getMapVersionByName(final String mapName) {
-    return findInstalledMapByName(mapName).map(InstalledMap::getMapVersion).orElse(0);
-  }
-
   /**
    * Finds the 'root' of a map folder containing map content files. This will typically be a folder
    * called something like "downloadedMaps/mapName/map". Returns empty if no map with the given name
@@ -147,26 +146,25 @@ public class InstalledMapsListing {
         .collect(Collectors.toList());
   }
 
+  /** Find any installed maps that are out of date compared to available downloads. */
   public Map<MapDownloadItem, InstalledMap> findOutOfDateMaps(
       final Collection<MapDownloadItem> downloads) {
+
     final Map<MapDownloadItem, InstalledMap> outOfDate = new HashMap<>();
 
     for (final MapDownloadItem download : downloads) {
       findInstalledMapByName(download.getMapName())
-          .ifPresent(
-              installedMap -> {
-                final int mapVersion = getMapVersionByName(download.getMapName());
-                if (download.getVersion() != null && download.getVersion() > mapVersion) {
-                  outOfDate.put(download, installedMap);
-                }
-              });
+          .filter(installedMap -> installedMap.isOutOfDate(download))
+          .ifPresent(installedMap -> outOfDate.put(download, installedMap));
     }
     return outOfDate;
   }
 
   /**
-   * Given a map download list, finds the corresponding installed maps that are already installed on
-   * teh system. Note: out-of-date maps are not considered installed.
+   * Given a map download set, return the set of map-downloads that are installed on the file
+   * system.
+   *
+   * @return Map of input 'MapDownload' items mapped to the corresponding 'installed map'
    */
   public Map<MapDownloadItem, InstalledMap> findInstalledMapsFromDownloadList(
       final Collection<MapDownloadItem> downloads) {
@@ -177,15 +175,16 @@ public class InstalledMapsListing {
           .ifPresent(installedMap -> installed.put(download, installedMap));
     }
 
-    final Map<MapDownloadItem, InstalledMap> outOfDate = findOutOfDateMaps(downloads);
-    outOfDate.forEach(installed::remove);
-
     return installed;
   }
 
+  /**
+   * Given a set of map-downloads, returns the set of map-downloads that are not already installed
+   * on the file system.
+   */
   public Collection<MapDownloadItem> findNotInstalledMapsFromDownloadList(
       final Collection<MapDownloadItem> downloads) {
-    final Collection<MapDownloadItem> notInstalled = new ArrayList<>();
+    final Collection<MapDownloadItem> notInstalled = new HashSet<>();
 
     for (final MapDownloadItem download : downloads) {
       if (findInstalledMapByName(download.getMapName()).isEmpty()) {
