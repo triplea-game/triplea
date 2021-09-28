@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
-    id 'com.diffplug.spotless' version '5.15.1' apply false
+    id 'com.diffplug.spotless' version '5.15.2' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
