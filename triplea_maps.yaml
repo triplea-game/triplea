@@ -2362,3 +2362,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/ww2global40_ryuzaki/master/preview.png
   description: |
     <br>A better balanced setup for World War II Global Game
+- mapName: Lord of the Rings Middle Earth - Fords
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/middle_earth_Fords/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/middle_earth_Fords/master/preview.png
+  description: |
+    <br>The War of the Ring using The Lord of the Rings Middle Earth map, with most of the fords of the Anduin removed to increase the importance of Osgiliath
