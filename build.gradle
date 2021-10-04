@@ -94,7 +94,7 @@ subprojects {
         jdbiVersion = '3.22.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.8.1'
-        junitPlatformLauncherVersion = '1.8.0'
+        junitPlatformLauncherVersion = '1.8.1'
         logbackClassicVersion = '1.2.6'
         mockitoVersion = '3.12.4'
         openFeignVersion = '11.6'
