@@ -17,3 +17,11 @@ After that is done:
  - update github action secrets environment variable with the updated license key
   (done via github website > settings > secrets)
 
+## Install4j Config
+
+- Install install4j locally.
+- Launch install4j
+- Locate the *.install4j file checked into the code
+- Open the 'install4j' file as a project and 'save'
+- Commit the file updates and push
+
