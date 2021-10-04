@@ -8,6 +8,7 @@ import static org.triplea.test.common.StringToInputStream.asInputStream;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,7 @@ class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
     FetchingCache.liveServersCache = null;
   }
 
+  @Disabled
   @Test
   @DisplayName("End-to-end test parsing a sample configuration file")
   void verifyConfiguration() {
@@ -50,6 +52,7 @@ class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
         .thenReturn(asInputStream(TestDataFileReader.readContents(file)));
   }
 
+  @Disabled
   @Test
   @DisplayName("End-to-end test parsing the current servers.yml file")
   void verifyCurrentConfiguration() {

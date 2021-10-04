@@ -17,4 +17,5 @@ normal="\e[0m"
   :spitfire-server:dropwizard-server:test \
 && .build/code-convention-checks/run \
 && .build/find-unused-or-unmatched-tests/run \
+&& .build/check-links-and-yaml-syntax/run \
 && echo -e "${boldGreen}SUCCESS${normal}"
