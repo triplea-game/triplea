@@ -34,7 +34,7 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
   }
 
   private Optional<LiveServers> getOverride() {
-    return ClientSetting.lobbyUriOverride.getValue().map(this::buildLiverServersFromOverride);
+    return ClientSetting.lobbyUri.getValue().map(this::buildLiverServersFromOverride);
   }
 
   private LiveServers buildLiverServersFromOverride(final URI overrideUri) {
