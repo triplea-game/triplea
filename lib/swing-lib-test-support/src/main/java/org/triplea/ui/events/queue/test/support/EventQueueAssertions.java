@@ -40,7 +40,8 @@ public class EventQueueAssertions {
         .debug(
             controllerEvent ->
                 String.format(
-                    "Type received: %s, data change operation yielded (input -> output):\n%s\n->\n%s",
+                    "Type received: %s, data change operation yielded (input -> output):\n"
+                        + "%s\n->\n%s",
                     controllerEvent.getEventType(),
                     inputData,
                     controllerEvent.getViewDataUpdate().apply(expectedOutputData)))
