@@ -120,4 +120,9 @@ public class GithubApiClient {
     final Map<String, Object> tokens = buildAuthorizationHeaders();
     return githubApiFeignClient.getBranchInfo(tokens, org, repo, branch);
   }
+
+  public String fetchLatestVersion(final String org, final String repo) {
+    final Map<String, Object> tokens = buildAuthorizationHeaders();
+    return githubApiFeignClient.getLatestRelease(tokens, org, repo).getTagName();
+  }
 }

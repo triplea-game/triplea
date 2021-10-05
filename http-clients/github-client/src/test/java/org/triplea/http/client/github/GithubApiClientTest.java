@@ -96,4 +96,23 @@ class GithubApiClientTest {
         LocalDateTime.of(2021, 2, 4, 19, 30, 32).atOffset(ZoneOffset.UTC).toInstant();
     assertThat(branchInfoResponse.getLastCommitDate(), is(expectedLastCommitDate));
   }
+
+  @Test
+  void getLatestRelease(@WiremockResolver.Wiremock final WireMockServer server) {
+    final String exampleResponse =
+        TestDataFileReader.readContents("sample_responses/latest_release_response.json");
+    server.stubFor(
+        get("/repos/example-org/map-repo/releases/latest")
+            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo("token test-token"))
+            .willReturn(aResponse().withStatus(200).withBody(exampleResponse)));
+
+    final String latestVersion =
+        GithubApiClient.builder()
+            .authToken("test-token")
+            .uri(URI.create(server.baseUrl()))
+            .build()
+            .fetchLatestVersion("example-org", "map-repo");
+
+    assertThat(latestVersion, is("2.5.22294"));
+  }
 }
