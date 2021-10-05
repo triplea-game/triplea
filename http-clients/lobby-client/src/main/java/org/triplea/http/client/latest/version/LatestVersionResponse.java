@@ -1,5 +1,6 @@
 package org.triplea.http.client.latest.version;
 
+import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,5 +9,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class LatestVersionResponse {
-  private final String latestEngineVersion;
+  @Nonnull private final String latestEngineVersion;
 }

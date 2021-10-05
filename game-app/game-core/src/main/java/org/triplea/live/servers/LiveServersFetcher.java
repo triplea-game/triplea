@@ -3,6 +3,7 @@ package org.triplea.live.servers;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
@@ -10,6 +11,8 @@ import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
+import org.triplea.http.client.HttpInteractionException;
+import org.triplea.http.client.latest.version.LatestVersionClient;
 import org.triplea.injection.Injections;
 import org.triplea.io.CloseableDownloader;
 import org.triplea.io.ContentDownloader;
@@ -72,9 +75,17 @@ public class LiveServersFetcher {
 
   public Optional<Version> latestVersion() {
     try {
-      return Optional.of(liveServersFetcher.get().getLatestEngineVersion());
-    } catch (final IOException e) {
-      log.info("(No network connection?) Failed to get server properties", e);
+
+      final String latestVersion =
+          LatestVersionClient.newClient(ClientSetting.lobbyUri.getValueOrThrow())
+              .fetchLatestVersion()
+              .getLatestEngineVersion();
+      final var version = new Version(latestVersion);
+      return Optional.of(version);
+    } catch (final HttpInteractionException e) {
+      log.info(
+          "Unable to complete engine out-of-date check. " + "(Offline or server not available?)",
+          e);
       return Optional.empty();
     }
   }
