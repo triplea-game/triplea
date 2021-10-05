@@ -4,9 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -25,19 +23,6 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
 
   @Override
   public synchronized LiveServers get() throws IOException {
-    final Optional<LiveServers> override = getOverride();
-    if (override.isPresent()) {
-      return override.get();
-    }
-
-    return fetchLiveServers();
-  }
-
-  private Optional<LiveServers> getOverride() {
-    return ClientSetting.lobbyUri.getValue().map(this::buildLiverServersFromOverride);
-  }
-
-  private LiveServers buildLiverServersFromOverride(final URI overrideUri) {
     return LiveServers.builder()
         .latestEngineVersion(engineVersion)
         .servers(
@@ -45,17 +30,8 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
                 ServerProperties.builder()
                     .message("Override server")
                     .minEngineVersion(engineVersion)
-                    .uri(overrideUri)
+                    .uri(ClientSetting.lobbyUri.getValueOrThrow())
                     .build()))
         .build();
-  }
-
-  private LiveServers fetchLiveServers() throws IOException {
-    if (liveServersCache == null) {
-      try (CloseableDownloader downloader = contentDownloader.get()) {
-        liveServersCache = yamlParser.apply(downloader.getStream());
-      }
-    }
-    return liveServersCache;
   }
 }
