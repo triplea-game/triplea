@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URI;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -37,7 +38,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   private final ChatTransmitter chatTransmitter;
   private final LobbyGameTableModel tableModel;
 
-  public LobbyFrame(final LobbyClient lobbyClient, final ServerProperties serverProperties) {
+  public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     SwingComponents.addWindowClosedListener(this, GameRunner::exitGameIfNoWindowsVisible);
@@ -49,7 +50,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
             lobbyClient.getPlayerToLobbyConnection(), lobbyClient.getUserName());
     final Chat chat = new Chat(chatTransmitter);
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
-    chatMessagePanel.addServerMessage(serverProperties.getMessage());
+    chatMessagePanel.addServerMessage(lobbyClient.getLobbyMessage());
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::lobbyPlayerRightClickMenuActions);
@@ -58,7 +59,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         new LobbyGameTableModel(
             lobbyClient.isModerator(), lobbyClient.getPlayerToLobbyConnection());
     final LobbyGamePanel gamePanel =
-        new LobbyGamePanel(this, lobbyClient, serverProperties.getUri(), tableModel);
+        new LobbyGamePanel(this, lobbyClient, lobbyUri, tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);

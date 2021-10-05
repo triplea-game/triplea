@@ -44,8 +44,7 @@ public class LiveServersFetcher {
     this(
         new CurrentVersionSelector(new ProductVersionReader().getVersion()),
         FetchingCache.builder()
-            .contentDownloader(networkFetcher)
-            .yamlParser(new ServerYamlParser())
+//            .contentDownloader(networkFetcher)
             .engineVersion(engineVersion)
             .build());
   }
@@ -73,9 +72,8 @@ public class LiveServersFetcher {
     return Optional.of(serverProperties);
   }
 
-  public Optional<Version> latestVersion() {
+  public static Optional<Version> latestVersion() {
     try {
-
       final String latestVersion =
           LatestVersionClient.newClient(ClientSetting.lobbyUri.getValueOrThrow())
               .fetchLatestVersion()
@@ -84,7 +82,7 @@ public class LiveServersFetcher {
       return Optional.of(version);
     } catch (final HttpInteractionException e) {
       log.info(
-          "Unable to complete engine out-of-date check. " + "(Offline or server not available?)",
+          "Unable to complete engine out-of-date check. (Offline or server not available?)",
           e);
       return Optional.empty();
     }

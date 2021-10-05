@@ -17,8 +17,8 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
   /** Static cache so that cached value is shared across all instances. */
   @VisibleForTesting static LiveServers liveServersCache;
 
-  @Nonnull private final ThrowingSupplier<CloseableDownloader, IOException> contentDownloader;
-  @Nonnull private final Function<InputStream, LiveServers> yamlParser;
+//  @Nonnull private final ThrowingSupplier<CloseableDownloader, IOException> contentDownloader;
+//  @Nonnull private final Function<InputStream, LiveServers> yamlParser;
   @Nonnull private final Version engineVersion;
 
   @Override
@@ -28,7 +28,6 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
         .servers(
             List.of(
                 ServerProperties.builder()
-                    .message("Override server")
                     .minEngineVersion(engineVersion)
                     .uri(ClientSetting.lobbyUri.getValueOrThrow())
                     .build()))

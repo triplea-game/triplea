@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import feign.FeignException;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
@@ -31,13 +32,13 @@ public class LobbyLogin {
   private static final String CONNECTING_TO_LOBBY = "Connecting to lobby...";
   private final JFrame parentWindow;
 
-  private final ServerProperties serverProperties;
+  private final URI lobbyUri;
   private final LobbyLoginClient lobbyLoginClient;
 
-  public LobbyLogin(final JFrame parentWindow, final ServerProperties serverProperties) {
+  public LobbyLogin(final JFrame parentWindow, final URI lobbyUri) {
     this.parentWindow = parentWindow;
-    this.serverProperties = serverProperties;
-    lobbyLoginClient = LobbyLoginClient.newClient(serverProperties.getUri());
+    this.lobbyUri = lobbyUri;
+    this.lobbyLoginClient = LobbyLoginClient.newClient(lobbyUri);
   }
 
   /**
@@ -55,7 +56,7 @@ public class LobbyLogin {
               final boolean passwordChanged =
                   ChangePasswordPanel.doPasswordChange(
                       parentWindow,
-                      serverProperties.getUri(),
+                      lobbyUri,
                       loginResult.getApiKey(),
                       ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
 
@@ -227,7 +228,7 @@ public class LobbyLogin {
           BackgroundTaskRunner.runInBackgroundAndReturn(
                   "Sending forgot password request...",
                   () ->
-                      ForgotPasswordClient.newClient(serverProperties.getUri())
+                      ForgotPasswordClient.newClient(lobbyUri)
                           .sendForgotPasswordRequest(
                               AuthenticationHeaders.systemIdHeaders(),
                               ForgotPasswordRequest.builder()
