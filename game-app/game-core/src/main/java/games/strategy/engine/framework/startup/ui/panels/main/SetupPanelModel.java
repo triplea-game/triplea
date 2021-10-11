@@ -36,8 +36,6 @@ import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.injection.Injections;
-import org.triplea.live.servers.LiveServersFetcher;
-import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.SwingComponents;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
