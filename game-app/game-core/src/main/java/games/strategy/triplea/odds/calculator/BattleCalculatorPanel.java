@@ -1061,10 +1061,10 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void setupAttackerAndDefender() {
-    OpponentSelector.AttackerAndDefender aNd =
+    final OpponentSelector.AttackerAndDefender attAndDef =
         OpponentSelector.getAttackerAndDefender(location, data);
-    aNd.getAttacker().ifPresent(this::setAttacker);
-    aNd.getDefender().ifPresent(this::setDefender);
+    attAndDef.getAttacker().ifPresent(this::setAttacker);
+    attAndDef.getDefender().ifPresent(this::setDefender);
 
     // Now that the attacker and defender are determined, select their units on this territory.
     // For the defender this also includes allied units.
