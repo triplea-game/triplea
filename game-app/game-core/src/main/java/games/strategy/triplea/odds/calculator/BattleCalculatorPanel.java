@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -1060,14 +1062,26 @@ class BattleCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  /** Set initial attacker and defender. */
+  /**
+   * Set initial attacker and defender.
+   *
+   * <p>Please read the source code for the order of the players and conditions involved.
+   */
   private void setupAttackerAndDefender() {
     if (location == null) {
-      // If no location is given, we can assume that the current player wants to act somehow.  To
-      // this end set the attacker to the current player and choose any enemy as defender.  If
-      // either cannot be found, we leave the attacker/defender as is (i.e. player 1 in the list).
+      // If no location is given, we can assume that the current player wants to act somehow. To
+      // this end set the attacker to the current player and choose the defender by the ranking
+      // 1. an enemy
+      // 2. a neutral player
+      // 3. any player
       getCurrentPlayer().ifPresent(this::setAttacker);
-      getEnemy(getAttacker()).ifPresent(this::setDefender);
+      Stream.of(
+              enemiesAsStream(getAttacker()),
+              neutralPlayersAsStream(getAttacker()),
+              data.getPlayerList().stream())
+          .flatMap(s -> s)
+          .findFirst()
+          .ifPresent(this::setDefender);
       setDefendingUnits(null);
       setAttackingUnits(null);
       landBattleCheckBox.setSelected(true);
@@ -1076,58 +1090,119 @@ class BattleCalculatorPanel extends JPanel {
       try {
         landBattleCheckBox.setSelected(!location.isWater());
 
-        // Default attacker to current player
-        final Optional<GamePlayer> currentPlayer = getCurrentPlayer();
-        currentPlayer.ifPresent(this::setAttacker);
+        // When deciding for a player, usually a player with more units is more important and more
+        // likely to be meant, e.g. a territory with 10 units of player A and 1 unit of player B.
+        // Thus, we use lists and ordered streams.
+        final List<GamePlayer> playersWithUnits =
+            location.getUnitCollection().getPlayersByUnitCount();
+        final List<GamePlayer> playersAtWar =
+            playersWithUnits.stream()
+                .filter(
+                    Matches.isAtWarWithAnyOfThesePlayers(
+                        playersWithUnits, data.getRelationshipTracker()))
+                .collect(Collectors.toList());
 
-        // Get players with units sorted
-        final List<GamePlayer> players = location.getUnitCollection().getPlayersByUnitCount();
-        if (currentPlayer.isPresent() && players.contains(currentPlayer.get())) {
-          players.remove(currentPlayer.get());
-          players.add(0, currentPlayer.get());
-        }
-
-        // Check location to determine optimal attacker and defender
-        if (!location.isWater()) {
-          defenderCombo.setSelectedItem(location.getOwner());
-          for (final GamePlayer player : players) {
-            if (Matches.isAtWar(getDefender(), data.getRelationshipTracker()).test(player)) {
-              attackerCombo.setSelectedItem(player);
-              break;
-            }
-          }
+        final boolean isWarOnTerritory = !playersAtWar.isEmpty();
+        if (isWarOnTerritory) {
+          // A fight is in progress on the territory. Pick the attacker according to
+          // 1. current player if involved in the fight
+          // 2. player at war with the most units
+          final Optional<GamePlayer> currentPlayerIfAtWar =
+              getCurrentPlayer().filter(playersAtWar::contains);
+          Stream.concat(currentPlayerIfAtWar.stream(), playersAtWar.stream())
+              .findFirst()
+              .ifPresent(this::setAttacker);
+          // The defender is the strongest enemy of the attacker
+          playersAtWar.stream()
+              .filter(Matches.isAtWar(getAttacker(), data.getRelationshipTracker()))
+              .findFirst()
+              .ifPresent(this::setDefender);
         } else {
-          if (players.size() == 1) {
-            defenderCombo.setSelectedItem(players.get(0));
-          } else if (players.size() > 1) {
-            if (!data.getRelationshipTracker()
-                .isAtWarWithAnyOfThesePlayers(players.get(0), players)) {
-              defenderCombo.setSelectedItem(players.get(0));
+
+          // No fighting is going on. Assume an attack on this territory.
+          final boolean areUnitsOnTerritory = !playersWithUnits.isEmpty();
+          if (areUnitsOnTerritory) {
+            // Units are stationed on the territory
+            // Defender is picked according to:
+            // 1. current player if they have units on this territory
+            // 2. player with most units on this territory
+            final Optional<GamePlayer> currentPlayerIfHasUnits =
+                getCurrentPlayer().filter(playersWithUnits::contains);
+            Stream.concat(currentPlayerIfHasUnits.stream(), playersWithUnits.stream())
+                .findFirst()
+                .ifPresent(this::setDefender);
+            // Choose attacker according to
+            // 1. current player if hostile
+            // 2. any enemy
+            // 3. neutral parties
+            // 4. any player
+            final Optional<GamePlayer> currentPlayerHostile =
+                getCurrentPlayer()
+                    .filter(Matches.isAtWar(getDefender(), data.getRelationshipTracker()));
+            Stream.of(
+                    currentPlayerHostile.stream(),
+                    enemiesAsStream(getDefender()),
+                    neutralPlayersAsStream(getDefender()),
+                    data.getPlayerList().stream())
+                .flatMap(s -> s)
+                .findFirst()
+                .ifPresent(this::setAttacker);
+          } else {
+
+            // Empty territory.
+            final GamePlayer territoryOwner = location.getOwner();
+            if (!territoryOwner.isNull()) {
+              // If the location has an owner, use it as defender and pick the attacker as enemy if
+              // possible.
+              setDefender(territoryOwner);
+              // Pick the opponent with the following priorities:
+              // 1. current player if hostile
+              // 2. enemy on the same territory ordered by unit count
+              // 3. any enemy
+              // 4. current player if neutral (i.e. not allied and not at war)
+              // 4. neutral parties
+              // 5. any player
+              final Optional<GamePlayer> currentPlayerHostile =
+                  getCurrentPlayer()
+                      .filter(Matches.isAtWar(getDefender(), data.getRelationshipTracker()));
+              final Optional<GamePlayer> currentPlayerNeutral =
+                  getCurrentPlayer()
+                      .filter(
+                          Matches.isAtWar(getDefender(), data.getRelationshipTracker()).negate())
+                      .filter(
+                          Matches.isAllied(getDefender(), data.getRelationshipTracker()).negate());
+              Stream.of(
+                      currentPlayerHostile.stream(),
+                      playersWithUnits.stream()
+                          .filter(Matches.isAtWar(getDefender(), data.getRelationshipTracker())),
+                      enemiesAsStream(getDefender()),
+                      currentPlayerNeutral.stream(),
+                      neutralPlayersAsStream(getDefender()),
+                      data.getPlayerList().stream())
+                  .flatMap(s -> s)
+                  .findFirst()
+                  .ifPresent(this::setAttacker);
             } else {
-              attackerCombo.setSelectedItem(players.get(0));
-              for (final GamePlayer player : players) {
-                if (Matches.isAtWar(getAttacker(), data.getRelationshipTracker()).test(player)) {
-                  defenderCombo.setSelectedItem(player);
-                  break;
-                }
-              }
+
+              // Empty territory without owner. Assume the current player wants to attack.
+              // Pick defender by following priorities
+              // 1. enemy
+              // 2. neutral player
+              // 3. any player
+              getCurrentPlayer().ifPresent(this::setAttacker);
+              Stream.of(
+                      enemiesAsStream(getAttacker()),
+                      neutralPlayersAsStream(getAttacker()),
+                      data.getPlayerList().stream())
+                  .flatMap(s -> s)
+                  .findFirst()
+                  .ifPresent(this::setDefender);
             }
           }
         }
 
-        // In the above code, if the territory owner and the current player are the same, then
-        // attacker and defender are. Since we cannot infer whether the user wants to defend the
-        // territory or attack with the units in that territory, we cannot refine this setup
-        // further. To not break the user's habits, we solve this by falling back to the legacy
-        // behaviour and force the attacker and defender to be on non-allied teams.
-        if (data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-          if (location.isWater() && players.isEmpty()) {
-            getEnemy(getAttacker()).ifPresent(this::setDefender);
-          } else {
-            getEnemy(getDefender()).ifPresent(this::setAttacker);
-          }
-        }
-
+        // Now that the attacker and defender are determined, select their units on this territory.
+        // For the defender this also includes allied units.
         setAttackingUnits(
             location.getUnitCollection().getMatches(Matches.unitIsOwnedBy(getAttacker())));
         setDefendingUnits(
@@ -1140,12 +1215,32 @@ class BattleCalculatorPanel extends JPanel {
     }
   }
 
-  public Optional<GamePlayer> getCurrentPlayer() {
+  private Optional<GamePlayer> getCurrentPlayer() {
     final Optional<GamePlayer> player = data.getHistory().getActivePlayer();
     if (player.isPresent()) {
       return player;
     }
     return GamePlayer.asOptional(data.getSequence().getStep().getPlayerId());
+  }
+
+  /**
+   * Returns a stream of all players which are at war with player {@code p}.
+   *
+   * <p>The returned stream might be empty.
+   */
+  private Stream<GamePlayer> enemiesAsStream(final GamePlayer p) {
+    return data.getPlayerList().stream().filter(Matches.isAtWar(p, data.getRelationshipTracker()));
+  }
+
+  /**
+   * Returns a stream of all players which are neither allied nor at war with player {@code p}.
+   *
+   * <p>The returned stream might be empty.
+   */
+  private Stream<GamePlayer> neutralPlayersAsStream(final GamePlayer p) {
+    return data.getPlayerList().stream()
+        .filter(Matches.isAtWar(p, data.getRelationshipTracker()).negate())
+        .filter(Matches.isAllied(p, data.getRelationshipTracker()).negate());
   }
 
   GamePlayer getAttacker() {
@@ -1376,27 +1471,6 @@ class BattleCalculatorPanel extends JPanel {
 
   private boolean isLand() {
     return landBattleCheckBox.isSelected();
-  }
-
-  /**
-   * Get a suitable enemy for {@code player}. First checks for players at war, if none found, checks
-   * for non-allied players, if still no foe was found, returns an empty Optional.
-   *
-   * @param player the player to find a foe for
-   * @return Optional with not an ally or an empty Optional
-   */
-  private Optional<GamePlayer> getEnemy(final GamePlayer player) {
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (data.getRelationshipTracker().isAtWar(player, gamePlayer)) {
-        return Optional.of(gamePlayer);
-      }
-    }
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (!data.getRelationshipTracker().isAllied(player, gamePlayer)) {
-        return Optional.of(gamePlayer);
-      }
-    }
-    return Optional.empty();
   }
 
   private void setResultsToBlank() {
