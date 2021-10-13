@@ -2369,3 +2369,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/middle_earth_Fords/master/preview.png
   description: |
     <br>The War of the Ring using The Lord of the Rings Middle Earth map, with most of the fords of the Anduin removed to increase the importance of Osgiliath
+- mapName: Great War - The Last Stand, March 1918
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Great_War-TLS-March1918/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Great_War-TLS-March1918/master/preview.png
+  description: |
+    <br>World War One, starting in March 1918, on The Great War map
