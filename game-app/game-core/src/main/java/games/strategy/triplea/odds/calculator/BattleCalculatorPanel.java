@@ -1043,6 +1043,25 @@ class BattleCalculatorPanel extends JPanel {
     attackingUnitsPanel.addChangeListener(this::setWidgetActivation);
     defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
 
+    setupAttackerAndDefender();
+
+    calculator =
+        new ConcurrentBattleCalculator(
+            () ->
+                SwingUtilities.invokeLater(
+                    () -> {
+                      calculateButton.setText("Calculate Odds");
+                      calculateButton.setEnabled(true);
+                      calculateButton.requestFocusInWindow();
+                    }));
+
+    calculator.setGameData(data);
+    setWidgetActivation();
+    revalidate();
+  }
+
+  /** Set initial attacker and defender. */
+  private void setupAttackerAndDefender() {
     // use the one passed, not the one we found:
     if (location != null) {
       data.acquireReadLock();
@@ -1116,19 +1135,6 @@ class BattleCalculatorPanel extends JPanel {
       setDefendingUnits(null);
       setAttackingUnits(null);
     }
-    calculator =
-        new ConcurrentBattleCalculator(
-            () ->
-                SwingUtilities.invokeLater(
-                    () -> {
-                      calculateButton.setText("Calculate Odds");
-                      calculateButton.setEnabled(true);
-                      calculateButton.requestFocusInWindow();
-                    }));
-
-    calculator.setGameData(data);
-    setWidgetActivation();
-    revalidate();
   }
 
   public Optional<GamePlayer> getCurrentPlayer() {
