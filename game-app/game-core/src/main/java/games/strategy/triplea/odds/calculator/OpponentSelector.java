@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.triplea.util.Tuple;
+import lombok.Builder;
+import lombok.Value;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -20,12 +21,20 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class OpponentSelector {
 
+  /** Value object class for an attacker and defender tuple. */
+  @Builder
+  @Value
+  public static class AttackerAndDefender {
+    @Builder.Default private final Optional<GamePlayer> attacker = Optional.empty();
+    @Builder.Default private final Optional<GamePlayer> defender = Optional.empty();
+  }
+
   /**
    * Set initial attacker and defender.
    *
    * <p>Please read the source code for the order of the players and conditions involved.
    */
-  public static Tuple<Optional<GamePlayer>, Optional<GamePlayer>> getAttackerAndDefender(
+  public static AttackerAndDefender getAttackerAndDefender(
       final Territory territory, final GameData data) {
     if (territory == null) {
       // Not much to derive here. Pick attacker first, then defender and priorities the current
@@ -69,7 +78,10 @@ public class OpponentSelector {
             final GamePlayer defender = playersWithUnits.get(0);
             final Optional<GamePlayer> attacker =
                 getOpponentWithCurrentPlayerPriority(defender, data);
-            return Tuple.of(attacker, Optional.of(defender));
+            return AttackerAndDefender.builder()
+                .attacker(attacker)
+                .defender(Optional.of(defender))
+                .build();
           } else {
             // Empty territory.
             final GamePlayer territoryOwner = territory.getOwner();
@@ -79,7 +91,10 @@ public class OpponentSelector {
               final GamePlayer defender = territoryOwner;
               final Optional<GamePlayer> attacker =
                   getOpponentWithCurrentPlayerPriority(territoryOwner, data);
-              return Tuple.of(attacker, Optional.of(defender));
+              return AttackerAndDefender.builder()
+                  .attacker(attacker)
+                  .defender(Optional.of(defender))
+                  .build();
             } else {
               // Empty territory without owner. Pick attacker first, then defender and priorities
               // the current player if possible.
@@ -114,10 +129,10 @@ public class OpponentSelector {
    * <p>If the game has no players, empty optionals are returned.
    *
    * @param data the game data
-   * @return tuple of attacker (first) and defender (second)
+   * @return attacker and defender
    */
-  private static Tuple<Optional<GamePlayer>, Optional<GamePlayer>>
-      getAttackerAndDefenderWithCurrentPlayerPriority(final GameData data) {
+  private static AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority(
+      final GameData data) {
     return getAttackerAndDefenderWithPriorityList(
         getCurrentPlayer(data).stream().collect(Collectors.toList()), data);
   }
@@ -148,24 +163,26 @@ public class OpponentSelector {
    *
    * @param priorityPlayers an ordered list of players which should be considered first
    * @param data the game data
-   * @return tuple of attacker (first) and defender (second)
+   * @return attacker and defender
    */
-  private static Tuple<Optional<GamePlayer>, Optional<GamePlayer>>
-      getAttackerAndDefenderWithPriorityList(
-          final List<GamePlayer> priorityPlayers, final GameData data) {
+  private static AttackerAndDefender getAttackerAndDefenderWithPriorityList(
+      final List<GamePlayer> priorityPlayers, final GameData data) {
     // Attacker
     final Optional<GamePlayer> attacker =
         Stream.of(priorityPlayers.stream(), data.getPlayerList().stream())
             .flatMap(s -> s)
             .findFirst();
     if (attacker.isEmpty()) {
-      return Tuple.of(Optional.empty(), Optional.empty());
+      return AttackerAndDefender.builder()
+          .attacker(Optional.empty())
+          .defender(Optional.empty())
+          .build();
     }
     // Defender
     assert (!attacker.isEmpty());
     final Optional<GamePlayer> defender =
         getOpponentWithPriorityList(attacker.get(), priorityPlayers, data);
-    return Tuple.of(attacker, defender);
+    return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
   }
 
   /**

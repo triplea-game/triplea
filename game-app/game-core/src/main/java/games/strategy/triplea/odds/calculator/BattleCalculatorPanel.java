@@ -55,7 +55,6 @@ import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.Tuple;
 
 @Slf4j
 class BattleCalculatorPanel extends JPanel {
@@ -1062,10 +1061,10 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void setupAttackerAndDefender() {
-    Tuple<Optional<GamePlayer>, Optional<GamePlayer>> aNd =
+    OpponentSelector.AttackerAndDefender aNd =
         OpponentSelector.getAttackerAndDefender(location, data);
-    aNd.getFirst().ifPresent(this::setAttacker);
-    aNd.getSecond().ifPresent(this::setDefender);
+    aNd.getAttacker().ifPresent(this::setAttacker);
+    aNd.getDefender().ifPresent(this::setDefender);
 
     // Now that the attacker and defender are determined, select their units on this territory.
     // For the defender this also includes allied units.
