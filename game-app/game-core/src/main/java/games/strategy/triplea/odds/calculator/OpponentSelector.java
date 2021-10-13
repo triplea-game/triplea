@@ -43,65 +43,25 @@ public class OpponentSelector {
     } else {
       data.acquireReadLock();
       try {
-        // When deciding for a player, usually a player with more units is more important and more
+        // The attacker is the current player
+        final Optional<GamePlayer> attacker = getCurrentPlayer(data);
+
+        // If there is no current player, we cannot choose an opponent.
+        if (attacker.isEmpty()) {
+          return AttackerAndDefender.builder().build();
+        }
+
+        // Select the defender to be an enemy of the attacker if possible, preferring enemies in
+        // the given territory.
+        // When deciding for an enemy, usually a player with more units is more important and more
         // likely to be meant, e.g. a territory with 10 units of player A and 1 unit of player B.
         // Thus, we use lists and ordered streams.
         final List<GamePlayer> playersWithUnits =
             territory.getUnitCollection().getPlayersByUnitCount();
-        // Within the list, we want to prioritise the current player, so put them on the first spot.
-        getCurrentPlayer(data)
-            .ifPresent(
-                cp -> {
-                  if (playersWithUnits.contains(cp)) {
-                    playersWithUnits.remove(cp);
-                    playersWithUnits.add(0, cp);
-                  }
-                });
-        final List<GamePlayer> playersAtWar =
-            playersWithUnits.stream()
-                .filter(
-                    Matches.isAtWarWithAnyOfThesePlayers(
-                        playersWithUnits, data.getRelationshipTracker()))
-                .collect(Collectors.toList());
+        final Optional<GamePlayer> defender =
+            getOpponentWithPriorityList(attacker.get(), playersWithUnits, data);
 
-        final boolean isWarOnTerritory = !playersAtWar.isEmpty();
-        if (isWarOnTerritory) {
-          // Choose as attacker the player who is at war and has the most units and a suitable
-          // defender (both times prioritising the current player).
-          return getAttackerAndDefenderWithPriorityList(playersAtWar, data);
-        } else {
-          // No fighting is going on. Assume an attack on this territory and pick the defender
-          // first, then the attacker.
-          final boolean areUnitsOnTerritory = !playersWithUnits.isEmpty();
-          if (areUnitsOnTerritory) {
-            assert (!playersWithUnits.isEmpty());
-            final GamePlayer defender = playersWithUnits.get(0);
-            final Optional<GamePlayer> attacker =
-                getOpponentWithCurrentPlayerPriority(defender, data);
-            return AttackerAndDefender.builder()
-                .attacker(attacker)
-                .defender(Optional.of(defender))
-                .build();
-          } else {
-            // Empty territory.
-            final GamePlayer territoryOwner = territory.getOwner();
-            if (!territoryOwner.isNull()) {
-              // If the territory has an owner, use it as defender and pick the attacker as enemy if
-              // possible.
-              final GamePlayer defender = territoryOwner;
-              final Optional<GamePlayer> attacker =
-                  getOpponentWithCurrentPlayerPriority(territoryOwner, data);
-              return AttackerAndDefender.builder()
-                  .attacker(attacker)
-                  .defender(Optional.of(defender))
-                  .build();
-            } else {
-              // Empty territory without owner. Pick attacker first, then defender and priorities
-              // the current player if possible.
-              return getAttackerAndDefenderWithCurrentPlayerPriority(data);
-            }
-          }
-        }
+        return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
       } finally {
         data.releaseReadLock();
       }
