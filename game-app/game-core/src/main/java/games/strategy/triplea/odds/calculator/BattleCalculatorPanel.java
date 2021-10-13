@@ -1062,8 +1062,16 @@ class BattleCalculatorPanel extends JPanel {
 
   /** Set initial attacker and defender. */
   private void setupAttackerAndDefender() {
-    // use the one passed, not the one we found:
-    if (location != null) {
+    if (location == null) {
+      // If no location is given, we can assume that the current player wants to act somehow.  To
+      // this end set the attacker to the current player and choose any enemy as defender.  If
+      // either cannot be found, we leave the attacker/defender as is (i.e. player 1 in the list).
+      getCurrentPlayer().ifPresent(this::setAttacker);
+      getEnemy(getAttacker()).ifPresent(this::setDefender);
+      setDefendingUnits(null);
+      setAttackingUnits(null);
+      landBattleCheckBox.setSelected(true);
+    } else {
       data.acquireReadLock();
       try {
         landBattleCheckBox.setSelected(!location.isWater());
@@ -1129,11 +1137,6 @@ class BattleCalculatorPanel extends JPanel {
       } finally {
         data.releaseReadLock();
       }
-    } else {
-      landBattleCheckBox.setSelected(true);
-      defenderCombo.setSelectedItem(data.getPlayerList().getPlayers().iterator().next());
-      setDefendingUnits(null);
-      setAttackingUnits(null);
     }
   }
 
