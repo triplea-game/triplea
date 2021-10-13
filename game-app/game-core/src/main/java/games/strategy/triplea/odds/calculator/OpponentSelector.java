@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.triplea.util.Tuple;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with methods to pick players for the battle calculator.
@@ -16,10 +17,8 @@ import org.triplea.util.Tuple;
  * <p>Throughout the class the term "neutral player" is used, this denotes a player who is neither
  * at war nor allied with another player.
  */
+@UtilityClass
 public class OpponentSelector {
-
-  /** Utility class, no instances please. */
-  private OpponentSelector() {}
 
   /**
    * Set initial attacker and defender.
