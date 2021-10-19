@@ -1,4 +1,4 @@
-package org.triplea.java.cache;
+package org.triplea.java.cache.ttl;
 
 import java.util.Map;
 import java.util.Optional;

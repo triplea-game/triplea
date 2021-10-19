@@ -1,4 +1,4 @@
-package org.triplea.java.cache;
+package org.triplea.java.cache.ttl;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
