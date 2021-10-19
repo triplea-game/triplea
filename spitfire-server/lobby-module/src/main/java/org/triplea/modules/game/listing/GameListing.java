@@ -30,7 +30,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
-import org.triplea.java.cache.ExpiringAfterWriteCache;
+import org.triplea.java.cache.ExpiringAfterWriteTtlCache;
 import org.triplea.java.cache.TtlCache;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
@@ -82,7 +82,7 @@ public class GameListing {
         .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
         .playerMessagingBus(playerMessagingBus)
         .games(
-            new ExpiringAfterWriteCache<>(
+            new ExpiringAfterWriteTtlCache<>(
                 GameListingClient.KEEP_ALIVE_SECONDS,
                 TimeUnit.SECONDS,
                 new GameTtlExpiredListener(playerMessagingBus)))

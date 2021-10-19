@@ -5,13 +5,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * This is a "forgetful" cache. Data becomes inactive after a TTL (time-to-live) expires, inactive
- * data is removed from the cache and forgotton about. Data can be kept in the cache by periodically
- * and explicitly invoking 'refresh' on the cache to keep the data in-memory until the next TTL.
- *
- * <p>This useful for example when we need maintain client data and clients can drop-off. To avoid
- * retaining the data indefinetely, it expires with TTL if a client disconnects and stops
- * refreshing.
+ * This is a "forgetful" cache. Data becomes inactive after a TTL (time-to-live) expires. Differing
+ * implementations will renew the TTL of a cached item at different times. For example, TTL can be
+ * renewed for example on write, on read, or with an explicit TTL renew (refresh).
  *
  * @param <IdT> This is an ID for the key-value cache. The ID alone is used to 'refresh' the cache
  *     entry.
