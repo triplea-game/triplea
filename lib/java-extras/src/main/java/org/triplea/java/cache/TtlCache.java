@@ -4,11 +4,26 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * This is a "forgetful" cache. Data becomes inactive after a TTL (time-to-live) expires, inactive
+ * data is removed from the cache and forgotton about. Data can be kept in the cache by periodically
+ * and explicitly invoking 'refresh' on the cache to keep the data in-memory until the next TTL.
+ *
+ * <p>This useful for example when we need maintain client data and clients can drop-off. To avoid
+ * retaining the data indefinetely, it expires with TTL if a client disconnects and stops
+ * refreshing.
+ *
+ * @param <IdT> This is an ID for the key-value cache. The ID alone is used to 'refresh' the cache
+ *     entry.
+ * @param <ValueT> This is the cached value, keyed by an ID.
+ */
 public interface TtlCache<IdT, ValueT> {
 
   /**
-   * Extends the 'life' of a given entry and prevents cache expiration for another TTL. Returns true
-   * if an element existed and was refreshed, returns false if no such element existed.
+   * Extends the 'life' of a given entry and prevents cache expiration for another TTL.
+   *
+   * @return True if an element existed and was granted another TTL. False indicates the refresh is
+   *     too late and the item expired and was removed (or never existed to begin with).
    */
   boolean refresh(IdT id);
 
