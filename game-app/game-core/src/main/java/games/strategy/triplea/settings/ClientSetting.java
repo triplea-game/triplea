@@ -135,8 +135,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SOUND_ENABLED", true);
   public static final ClientSetting<Boolean> firstTimeThisVersion =
       new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
-  public static final ClientSetting<String> lastCheckForEngineUpdate =
-      new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE");
+  public static final ClientSetting<Long> lastCheckForEngineUpdate =
+      new LongClientSetting("LAST_CHECK_FOR_ENGINE_UPDATE_EPOCH_MILLI", 0);
   public static final ClientSetting<Long> lastCheckForMapUpdates =
       new LongClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES_EPOCH_MILLI", 0);
   public static final ClientSetting<Boolean> promptToDownloadTutorialMap =
