@@ -1,4 +1,4 @@
-package org.triplea.java.cache;
+package org.triplea.java.cache.ttl;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
@@ -15,11 +15,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class ExpiringAfterWriteCacheTest {
+class ExpiringAfterWriteTtlCacheTest {
 
   private static final String KEY = "key-value";
   private static final int VALUE = 100;
-  private ExpiringAfterWriteCache<String, Integer> realCache;
+  private ExpiringAfterWriteTtlCache<String, Integer> realCache;
 
   private String cacheRemovalKey;
   private Integer cacheRemovalValue;
@@ -31,7 +31,7 @@ class ExpiringAfterWriteCacheTest {
 
   @BeforeEach
   void setUp() {
-    realCache = new ExpiringAfterWriteCache<>(1, TimeUnit.MINUTES, cacheRemovalListener);
+    realCache = new ExpiringAfterWriteTtlCache<>(1, TimeUnit.MINUTES, cacheRemovalListener);
   }
 
   @Nested
