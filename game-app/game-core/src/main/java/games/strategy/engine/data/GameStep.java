@@ -4,6 +4,7 @@ import games.strategy.engine.delegate.IDelegate;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import javax.annotation.Nullable;
 
 /**
  * A single step in a game.
@@ -14,9 +15,9 @@ import java.util.Properties;
 public class GameStep extends GameDataComponent {
   private static final long serialVersionUID = -7944468945162840931L;
 
-  private final String name;
-  private final String displayName;
-  private final GamePlayer player;
+  @Nullable private final String name;
+  @Nullable private final String displayName;
+  @Nullable private final GamePlayer player;
   private final String delegateName;
   private int runCount = 0;
   private int maxRunCount = -1;
