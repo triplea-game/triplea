@@ -1,4 +1,4 @@
-package org.triplea.java.cache;
+package org.triplea.java.cache.ttl;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.java.cache.ttl.ExpiringAfterWriteTtlCache;
 
 class ExpiringAfterWriteTtlCacheTest {
 
