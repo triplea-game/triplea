@@ -6,7 +6,6 @@
 - Upload the new installer file to the 'assets' repository
 - Update triplea-game build actions (in folder .github/) to download the updated install4j
 
-
 ## License Key
 
 Install4j has a website to upgrade the install4j license key:
