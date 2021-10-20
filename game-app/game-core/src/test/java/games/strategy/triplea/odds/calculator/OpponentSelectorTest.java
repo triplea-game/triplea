@@ -64,14 +64,14 @@ public class OpponentSelectorTest {
     addTo(japan, infantry(gameData).create(100, germans));
     addTo(unitedKingdom, infantry(gameData).create(100, americans));
 
-    // Current Player is Russia
-    // FIXME: No move was made, so there is no active player in the game and this fails.
-    assertEquals(russians, gameData.getHistory().getActivePlayer());
-
     // Fight in Germany -> 100 Japanese defend
-    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(germany, gameData);
-    assertEquals(russians, attAndDef.getAttacker());
-    assertEquals(japanese, attAndDef.getDefender());
+    attAndDef =
+        OpponentSelector.builder()
+            .currentPlayer(russians)
+            .build()
+            .getAttackerAndDefender(germany, gameData);
+    assertEquals(russians, attAndDef.getAttacker().get());
+    assertEquals(japanese, attAndDef.getDefender().get());
 
     // Fight in Japan -> 100 Germans defend
     attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(japan, gameData);
