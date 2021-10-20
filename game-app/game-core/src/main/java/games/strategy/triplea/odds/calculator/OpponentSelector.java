@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with methods to pick players for the battle calculator.
@@ -18,7 +17,6 @@ import lombok.experimental.UtilityClass;
  * <p>Throughout the class the term "neutral player" is used, this denotes a player who is neither
  * at war nor allied with another player.
  */
-@UtilityClass
 public class OpponentSelector {
 
   /** Value object class for an attacker and defender tuple. */
@@ -29,12 +27,17 @@ public class OpponentSelector {
     @Builder.Default private final Optional<GamePlayer> defender = Optional.empty();
   }
 
+
+  public static OpponentSelector with(final GameData gameData) {
+    return new OpponentSelector();
+  }
+
   /**
    * Set initial attacker and defender.
    *
    * <p>Please read the source code for the order of the players and conditions involved.
    */
-  public static AttackerAndDefender getAttackerAndDefender(
+  public AttackerAndDefender getAttackerAndDefender(
       final Territory territory, final GameData data) {
     if (territory == null) {
       // Not much to derive here. Pick attacker first, then defender and priorities the current

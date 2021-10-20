@@ -32,17 +32,17 @@ public class OpponentSelectorTest {
     assertEquals(russians, gameData.getHistory().getActivePlayer());
 
     // Fight in Germany -> Germans defend
-    attAndDef = OpponentSelector.getAttackerAndDefender(germany, gameData);
+    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(germany, gameData);
     assertEquals(russians, attAndDef.getAttacker());
     assertEquals(germans, attAndDef.getDefender());
 
     // Fight in Japan -> Japans defend
-    attAndDef = OpponentSelector.getAttackerAndDefender(japan, gameData);
+    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(japan, gameData);
     assertEquals(russians, attAndDef.getAttacker());
     assertEquals(japanese, attAndDef.getDefender());
 
     // Fight in Britain -> Germans defend (British are allied; Germans are the first enemy)
-    attAndDef = OpponentSelector.getAttackerAndDefender(unitedKingdom, gameData);
+    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(unitedKingdom, gameData);
     assertEquals(russians, attAndDef.getAttacker());
     assertEquals(germans, attAndDef.getDefender());
   }
@@ -69,18 +69,18 @@ public class OpponentSelectorTest {
     assertEquals(russians, gameData.getHistory().getActivePlayer());
 
     // Fight in Germany -> 100 Japanese defend
-    attAndDef = OpponentSelector.getAttackerAndDefender(germany, gameData);
+    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(germany, gameData);
     assertEquals(russians, attAndDef.getAttacker());
     assertEquals(japanese, attAndDef.getDefender());
 
     // Fight in Japan -> 100 Germans defend
-    attAndDef = OpponentSelector.getAttackerAndDefender(japan, gameData);
+    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(japan, gameData);
     assertEquals(russians, attAndDef.getAttacker());
     assertEquals(germans, attAndDef.getDefender());
 
     // Fight in Britain -> Germans defend (British & Americans are allied; Germans are the first
     // enemy)
-    attAndDef = OpponentSelector.getAttackerAndDefender(unitedKingdom, gameData);
+    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(unitedKingdom, gameData);
     assertEquals(russians, attAndDef.getAttacker());
     assertEquals(germans, attAndDef.getDefender());
   }
@@ -105,7 +105,7 @@ public class OpponentSelectorTest {
     assertEquals(russians, gameData.getHistory().getActivePlayer());
 
     // Fight in Japan -> Japanese defend, Americans are allied
-    attAndDef = OpponentSelector.getAttackerAndDefender(japan, gameData);
+    attAndDef = OpponentSelector.with(gameData).getAttackerAndDefender(japan, gameData);
     assertEquals(russians, attAndDef.getAttacker());
     assertEquals(japanese, attAndDef.getDefender());
   }
