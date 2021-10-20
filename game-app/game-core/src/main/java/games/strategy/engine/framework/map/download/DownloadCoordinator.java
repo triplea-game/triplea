@@ -56,6 +56,7 @@ public final class DownloadCoordinator {
     return downloadFiles.stream().map(DownloadFile::getDownload).anyMatch(download::equals);
   }
 
+  /** Starts any downloads that can be started. */
   private void updateQueue() {
     assert Thread.holdsLock(lock);
 

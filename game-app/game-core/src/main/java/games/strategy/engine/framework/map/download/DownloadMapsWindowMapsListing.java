@@ -3,10 +3,12 @@ package games.strategy.engine.framework.map.download;
 import static java.util.function.Predicate.not;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
@@ -14,9 +16,9 @@ import org.triplea.http.client.maps.listing.MapDownloadItem;
 @Getter
 class DownloadMapsWindowMapsListing {
 
-  private final List<MapDownloadItem> available = new ArrayList<>();
-  private final List<MapDownloadItem> installed = new ArrayList<>();
-  private final List<MapDownloadItem> outOfDate = new ArrayList<>();
+  private final Collection<MapDownloadItem> available;
+  private final Map<MapDownloadItem, InstalledMap> installed;
+  private final Map<MapDownloadItem, InstalledMap> outOfDate;
 
   DownloadMapsWindowMapsListing(final Collection<MapDownloadItem> downloads) {
     this(downloads, InstalledMapsListing.parseMapFiles());
@@ -26,22 +28,10 @@ class DownloadMapsWindowMapsListing {
   DownloadMapsWindowMapsListing(
       final Collection<MapDownloadItem> downloads,
       final InstalledMapsListing installedMapsListing) {
-    for (final MapDownloadItem download : downloads) {
-      if (download == null) {
-        return;
-      }
 
-      if (!installedMapsListing.isMapInstalled(download.getMapName())) {
-        available.add(download);
-      } else {
-        final int mapVersion = installedMapsListing.getMapVersionByName(download.getMapName());
-        if (download.getVersion() != null && download.getVersion() > mapVersion) {
-          outOfDate.add(download);
-        } else {
-          installed.add(download);
-        }
-      }
-    }
+    outOfDate = installedMapsListing.findOutOfDateMaps(downloads);
+    installed = installedMapsListing.findInstalledMapsFromDownloadList(downloads);
+    available = installedMapsListing.findNotInstalledMapsFromDownloadList(downloads);
   }
 
   List<MapDownloadItem> getAvailableExcluding(final Collection<MapDownloadItem> excluded) {
@@ -49,6 +39,10 @@ class DownloadMapsWindowMapsListing {
   }
 
   List<MapDownloadItem> getOutOfDateExcluding(final Collection<MapDownloadItem> excluded) {
-    return outOfDate.stream().filter(not(excluded::contains)).collect(Collectors.toList());
+    final Collection<MapDownloadItem> downloads = outOfDate.keySet();
+    downloads.removeAll(excluded);
+    return downloads.stream()
+        .sorted(Comparator.comparing(MapDownloadItem::getMapName))
+        .collect(Collectors.toList());
   }
 }

@@ -1,4 +1,4 @@
-package org.triplea.java.cache;
+package org.triplea.java.cache.ttl;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -11,20 +11,22 @@ import java.util.function.BiConsumer;
 import lombok.Builder;
 
 /**
- * Cache that expires values when a TTL (time to live) expires. TTL timer starts when the value is
- * written and is renewed if the value is 'refreshed'. The cache will reliably invoke a
- * 'removeListener' at least once when cache items are removed or expired.
+ * TTL cache that sets a TTL on initial write and the TTL is only then extended by invoking
+ * 'refresh'.
+ *
+ * <p>This cache will reliably invoke a 'removeListener' at least once when cache items are removed
+ * or expired.
  *
  * @param <IdT> Type that identifies the keys of the map.
  * @param <ValueT> Type that is placed as a value in the map.
  */
-public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, ValueT> {
+public class ExpiringAfterWriteTtlCache<IdT, ValueT> implements TtlCache<IdT, ValueT> {
 
   private final Cache<IdT, ValueT> cache;
   private final BiConsumer<IdT, ValueT> removalListener;
 
   @Builder
-  public ExpiringAfterWriteCache(
+  public ExpiringAfterWriteTtlCache(
       final long duration, final TimeUnit timeUnit, final BiConsumer<IdT, ValueT> removalListener) {
     cache =
         Caffeine.newBuilder()

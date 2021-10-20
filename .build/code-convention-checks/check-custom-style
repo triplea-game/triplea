@@ -20,7 +20,7 @@ trap 'rm $javaFiles $sqlFiles' EXIT
 
 find . -type f -name "*.java" > "$javaFiles"
 find . -type f -name "*Test.java" > "$testFiles"
-find servers/database/src/main/resources -type f -name "*.sql" > "$sqlFiles"
+find spitfire-server/database/src/main/resources -type f -name "*.sql" > "$sqlFiles"
 
 status=0
 
@@ -31,7 +31,6 @@ function main() {
   removeUnusedLogAnnotations
   #preferSlf4jOverJavaLogging  
   databaseNamesAreLowerSnakeCase
-  databaseTablesAreSingular
   noTabsInSql
   useEmptyOverSizeEqualsZero
   useStaticImportsInTest
@@ -126,20 +125,6 @@ function databaseNamesAreLowerSnakeCase() {
   displayResult "$found"
 }
   
-
-function databaseTablesAreSingular() {
-  title "Database tables should be singular"
-  example "instead of 'create table words' use 'create table word'"
-  local found=0
-  
-  while read -r file; do
-    grep --color=auto -H -E -i "create table.*s$" "$file" && status=1 && found=1
-  done <<< "$(cat "$sqlFiles")"
-
-
-  displayResult "$found"
-}
-
 function noTabsInSql() {
   title "Use spaces in SQL and not tabs"
   local found=0

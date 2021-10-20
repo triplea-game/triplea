@@ -73,8 +73,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
 
-    showOdds.addActionListener(
-        e -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
+    showOdds.addActionListener(e -> BattleCalculatorDialog.show(frame, currentTerritory, gameData));
     addAttackers.addActionListener(e -> BattleCalculatorDialog.addAttackers(currentTerritory));
     addDefenders.addActionListener(e -> BattleCalculatorDialog.addDefenders(currentTerritory));
     addBattleCalculatorKeyBindings(frame);
@@ -100,9 +99,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
    */
   public void addBattleCalculatorKeyBindings(final JFrame jframe) {
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
-        jframe,
-        KeyCode.B,
-        () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
+        jframe, KeyCode.B, () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData));
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         jframe, KeyCode.A, () -> BattleCalculatorDialog.addAttackers(currentTerritory));
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
@@ -116,9 +113,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
    */
   public void addBattleCalculatorKeyBindings(final JDialog dialog) {
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
-        dialog,
-        KeyCode.B,
-        () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
+        dialog, KeyCode.B, () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData));
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         dialog, KeyCode.A, () -> BattleCalculatorDialog.addAttackers(currentTerritory));
     SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(

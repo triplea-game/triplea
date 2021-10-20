@@ -4,17 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class MapDescriptionYamlGeneratorTest {
 
   private Path exampleMapFolder;
-  private Path propertiesFilePath;
 
   @BeforeEach
   void setup() throws Exception {
@@ -24,9 +20,6 @@ class MapDescriptionYamlGeneratorTest {
                 .getClassLoader()
                 .getResource("map_description_yml_generator/example-map")
                 .toURI());
-
-    propertiesFilePath =
-        exampleMapFolder.resolveSibling(exampleMapFolder.getFileName().toString() + ".properties");
   }
 
   // functionality under test
@@ -39,41 +32,12 @@ class MapDescriptionYamlGeneratorTest {
     return MapDescriptionYamlReader.readFromMap(exampleMapFolder).orElseThrow();
   }
 
-  @Test
-  void noVersionFile() throws Exception {
-    Files.deleteIfExists(propertiesFilePath);
-
-    final MapDescriptionYaml mapDescriptionYaml = generateAndReadDescriptionYamlFile();
-
-    assertThat(
-        "Without a properties file present, map version should default to zero",
-        mapDescriptionYaml.getMapVersion(),
-        is(0));
-  }
-
-  @Test
-  void versionFileWithNoVersionValueInIt() throws Exception {
-    Files.writeString(propertiesFilePath, "mapVersion=");
-
-    final MapDescriptionYaml mapDescriptionYaml = generateAndReadDescriptionYamlFile();
-
-    assertThat(
-        "If the version file is invalid, or missing a version value, "
-            + "then map versions should default to zero.",
-        mapDescriptionYaml.getMapVersion(),
-        is(0));
-  }
-
   /** Verify data generated using a minimal map with properties file and two XML files. */
-  @ParameterizedTest
-  @ValueSource(strings = {"2", "2.0", "2.0.0"})
-  void verifyGeneration(final String versionValue) throws Exception {
-    Files.writeString(propertiesFilePath, "mapVersion=" + versionValue);
-
+  @Test
+  void verifyGeneration() {
     final MapDescriptionYaml mapDescriptionYaml = generateAndReadDescriptionYamlFile();
 
     assertThat(mapDescriptionYaml.getMapName(), is("example-map"));
-    assertThat(mapDescriptionYaml.getMapVersion(), is(versionValue.isBlank() ? 0 : 2));
     assertThat(mapDescriptionYaml.getMapGameList(), hasSize(2));
 
     assertThat(

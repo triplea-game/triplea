@@ -9,6 +9,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.awt.Frame;
 import java.net.URI;
@@ -73,15 +74,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
-  /**
-   * When set to true, lobby URI is hardcoded to localhost (http). Takes precedence over {@code
-   * lobbyOverrideUri}
-   */
-  public static final BooleanClientSetting lobbyUseLocalhostOverride =
-      new BooleanClientSetting("USE_LOCALHOST_LOBBY_OVERRIDE");
-  /** For testing, sets lobby URI to an arbitrary value. */
-  public static final ClientSetting<URI> lobbyUriOverride =
-      new UriClientSetting("LOBBY_URI_OVERRIDE");
+
+  /** URI of the lobby, can be toggled in settings to switch to a different lobby. */
+  public static final ClientSetting<URI> lobbyUri =
+      new UriClientSetting("LOBBY_URI", URI.create(UrlConstants.PROD_LOBBY));
 
   public static final ClientSetting<char[]> lobbyLoginName =
       new ProtectedStringClientSetting("LOBBY_LOGIN_NAME");
@@ -139,8 +135,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SOUND_ENABLED", true);
   public static final ClientSetting<Boolean> firstTimeThisVersion =
       new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
-  public static final ClientSetting<String> lastCheckForEngineUpdate =
-      new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE");
+  public static final ClientSetting<Long> lastCheckForEngineUpdate =
+      new LongClientSetting("LAST_CHECK_FOR_ENGINE_UPDATE_EPOCH_MILLI", 0);
   public static final ClientSetting<Long> lastCheckForMapUpdates =
       new LongClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES_EPOCH_MILLI", 0);
   public static final ClientSetting<Boolean> promptToDownloadTutorialMap =

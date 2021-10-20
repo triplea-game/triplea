@@ -80,8 +80,7 @@ final class GameMenu extends JMenu {
     }
     addMenuItemWithHotkey(
         SwingAction.of(
-            "Battle Calculator",
-            e -> BattleCalculatorDialog.show(frame, null, gameData.getHistory())),
+            "Battle Calculator", e -> BattleCalculatorDialog.show(frame, null, gameData)),
         KeyEvent.VK_B);
   }
 

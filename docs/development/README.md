@@ -12,7 +12,6 @@
 - Fork <https://github.com/triplea-game/triplea>
 - Clone your newly forked repository
 
-
 ## Compile and launch TripleA
 ```bash
 ./gradlew :game-app:game-headed:run
@@ -48,14 +47,13 @@ This will:
 ./spitfire-server/database/reset_docker_db
 ```
 
-
-## Launch local lobby: 
+## Launch local lobby:
 
 ```bash
 ./gradlew :spitfire-server:dropwizard-server:run
 ```
 
-To connect to local lobby, from the game client: 
+To connect to local lobby, from the game client:
   - 'settings > testing > local lobby'
   - play online
   - use 'test:test' to login to local lobby as a moderator
@@ -66,12 +64,11 @@ To connect to local lobby, from the game client:
 ./verify
 ```
 
-## Run formatting: 
+## Run formatting:
 
 ```
 ./format
 ```
-
 
 ## Reference
 
@@ -86,7 +83,6 @@ For more detailed steps on building the project, see:
 - Generally write tests for new and modified code
 
 Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
-
 
 # Pitfalls and Pain Points to be aware of
 

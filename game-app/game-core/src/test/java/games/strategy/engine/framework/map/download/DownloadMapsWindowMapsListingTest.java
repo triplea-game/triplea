@@ -9,6 +9,7 @@ import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,14 +19,12 @@ import org.triplea.map.description.file.MapDescriptionYaml;
 
 class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
   private static final String MAP_NAME = "new_test_order";
-  private static final int MAP_VERSION = 10;
 
   private static final MapDownloadItem TEST_MAP =
       MapDownloadItem.builder()
           .downloadUrl("")
           .previewImageUrl("")
           .mapName(MAP_NAME)
-          .version(MAP_VERSION)
           .description("description")
           .lastCommitDateEpochMilli(10L)
           .build();
@@ -38,8 +37,8 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         new DownloadMapsWindowMapsListing(List.of(TEST_MAP), installedMapsListing);
 
     assertThat(downloadMapsWindowMapsListing.getAvailable(), hasSize(1));
-    assertThat(downloadMapsWindowMapsListing.getInstalled(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet(), is(empty()));
   }
 
   @Test
@@ -65,83 +64,97 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         .previewImageUrl(url)
         .description("description")
         .mapName("mapName " + url)
-        .version(MAP_VERSION)
+        .lastCommitDateEpochMilli(Instant.now().toEpochMilli())
         .lastCommitDateEpochMilli(40L)
         .build();
   }
 
-  private static MapDownloadItem newInstalledDownloadWithUrl(final String url) {
-    return MapDownloadItem.builder()
-        .downloadUrl(url)
-        .previewImageUrl(url)
-        .description("description")
-        .mapName("mapName " + url)
-        .version(MAP_VERSION)
-        .lastCommitDateEpochMilli(30L)
-        .build();
-  }
-
+  /**
+   * - List of maps installed contains 1 <br>
+   * - List of available maps contains same 1 with an older last update date
+   *
+   * <p>Expecting this map to be listed as installed (and otherwise up-to-date).
+   */
   @Test
   void testInstalled() {
+    final MapDownloadItem installed = newDownloadWithUrl("url");
+
     final InstalledMapsListing installedMapsListing =
-        buildIndexWithMapVersions(Map.of("mapName url", MAP_VERSION));
+        buildInstalledMapsListing(
+            Map.of(installed.getMapName(), installed.getLastCommitDateEpochMilli() + 30));
 
     final DownloadMapsWindowMapsListing downloadMapsWindowMapsListing =
-        new DownloadMapsWindowMapsListing(
-            List.of(newInstalledDownloadWithUrl("url")), installedMapsListing);
+        new DownloadMapsWindowMapsListing(List.of(installed), installedMapsListing);
 
     assertThat(downloadMapsWindowMapsListing.getAvailable(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getInstalled(), hasSize(1));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet(), hasSize(1));
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet(), is(empty()));
   }
 
-  private static InstalledMapsListing buildIndexWithMapVersions(
-      final Map<String, Integer> mapNameToVersion) {
+  private static InstalledMapsListing buildInstalledMapsListing(
+      final Map<String, Long> mapNameToVersion) {
 
     return new InstalledMapsListing(
         mapNameToVersion.entrySet().stream()
             .map(
                 entry ->
-                    new InstalledMap(
-                        MapDescriptionYaml.builder()
-                            .yamlFileLocation(Path.of("/local/file").toUri())
-                            .mapName(entry.getKey())
-                            .mapVersion(entry.getValue())
-                            .mapGameList(
-                                List.of(
-                                    MapDescriptionYaml.MapGame.builder()
-                                        .xmlFileName("path.xml")
-                                        .gameName("game")
-                                        .build()))
-                            .build()))
+                    InstalledMap.builder()
+                        .lastModifiedDate(Instant.ofEpochMilli(entry.getValue()))
+                        .mapDescriptionYaml(
+                            MapDescriptionYaml.builder()
+                                .yamlFileLocation(Path.of("/local/file").toUri())
+                                .mapName(entry.getKey())
+                                .mapGameList(
+                                    List.of(
+                                        MapDescriptionYaml.MapGame.builder()
+                                            .xmlFileName("path.xml")
+                                            .gameName("game")
+                                            .build()))
+                                .build())
+                        .build())
             .collect(Collectors.toList()));
   }
 
+  /**
+   * - List of maps installed contains 1 <br>
+   * - List of available maps contains same 1 with a newer last update date
+   *
+   * <p>Expecting this map to be listed as out of date.
+   */
   @Test
   void testOutOfDate() {
+    final MapDownloadItem installed = newDownloadWithUrl("url");
+
     final InstalledMapsListing installedMapsListing =
-        buildIndexWithMapVersions(Map.of("mapName url", MAP_VERSION - 1));
+        buildInstalledMapsListing(
+            Map.of(installed.getMapName(), installed.getLastCommitDateEpochMilli() - 30));
+
     final DownloadMapsWindowMapsListing downloadMapsWindowMapsListing =
-        new DownloadMapsWindowMapsListing(
-            List.of(newInstalledDownloadWithUrl("url")), installedMapsListing);
+        new DownloadMapsWindowMapsListing(List.of(installed), installedMapsListing);
 
     assertThat(downloadMapsWindowMapsListing.getAvailable(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getInstalled(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate(), hasSize(1));
+    assertThat(
+        "we expect the one map available for download to be detected as installed",
+        downloadMapsWindowMapsListing.getInstalled().entrySet(),
+        hasSize(1));
+    assertThat(
+        "we expect the one map available for download to be detected as out of date",
+        downloadMapsWindowMapsListing.getOutOfDate().entrySet(),
+        hasSize(1));
   }
 
   @Test
   void testOutOfDateExcluding() {
-    final MapDownloadItem download1 = newInstalledDownloadWithUrl("url1");
-    final MapDownloadItem download2 = newInstalledDownloadWithUrl("url2");
-    final MapDownloadItem download3 = newInstalledDownloadWithUrl("url3");
+    final MapDownloadItem download1 = newDownloadWithUrl("url1");
+    final MapDownloadItem download2 = newDownloadWithUrl("url2");
+    final MapDownloadItem download3 = newDownloadWithUrl("url3");
 
     final InstalledMapsListing installedMapsListing =
-        buildIndexWithMapVersions(
+        buildInstalledMapsListing(
             Map.of(
-                download1.getMapName(), download1.getVersion() - 1,
-                download2.getMapName(), download2.getVersion() - 1,
-                download3.getMapName(), download3.getVersion() - 1));
+                download1.getMapName(), download1.getLastCommitDateEpochMilli() - 10,
+                download2.getMapName(), download1.getLastCommitDateEpochMilli() - 10,
+                download3.getMapName(), download1.getLastCommitDateEpochMilli() - 10));
 
     final DownloadMapsWindowMapsListing downloadMapsWindowMapsListing =
         new DownloadMapsWindowMapsListing(

@@ -13,6 +13,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -235,5 +236,21 @@ final class FileUtilsTest {
           Files.exists(src.resolve("temp-file")),
           is(true));
     }
+  }
+
+  @Test
+  void getLastModifiedForFileThatDoesNotExist() {
+    final Path doesNotExist = Path.of("DNE");
+
+    assertThat(FileUtils.getLastModified(doesNotExist), isEmpty());
+  }
+
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
+  @Test
+  void getLastModified() throws IOException {
+    final Path tempFile = Files.createTempFile("test", "txt");
+
+    assertThat(FileUtils.getLastModified(tempFile), isPresent());
+    assertThat(FileUtils.getLastModified(tempFile).get().isBefore(Instant.now()), is(true));
   }
 }
