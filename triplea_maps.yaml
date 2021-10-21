@@ -2376,3 +2376,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/middle_earth_Fords/master/preview.png
   description: |
     <br>The War of the Ring using The Lord of the Rings Middle Earth map, with most of the fords of the Anduin removed to increase the importance of Osgiliath
+- mapName: 2020
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/2020/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/2020/master/preview.png
+  description: |
+    <br>An alternate history where the United States has ceased to be a world power and WW3 has broken out between Canada/European Union vs Russia/China
