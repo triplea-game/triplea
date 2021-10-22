@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -38,7 +38,7 @@ public class OpponentSelector {
   // GameData object.
   @Builder.Default private final Collection<GamePlayer> players = new ArrayList(0);
   @Nullable private final GamePlayer currentPlayer;
-  @NonNull private final RelationshipTracker relationshipTracker;
+  @Nonnull private final RelationshipTracker relationshipTracker;
 
   public static OpponentSelector with(final GameData gameData) {
     try {
