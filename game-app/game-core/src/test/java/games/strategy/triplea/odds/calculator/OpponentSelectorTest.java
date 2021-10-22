@@ -27,11 +27,12 @@ public class OpponentSelectorTest {
     final GamePlayer germans = germans(gameData);
     final GamePlayer japanese = japanese(gameData);
     final List<GamePlayer> players = List.of(russians, germans, japanese);
-    final OpponentSelector opponentSelector = OpponentSelector.builder()
-        .players(players)
-        .currentPlayer(russians)
-        .relationshipTracker(gameData.getRelationshipTracker())
-        .build();
+    final OpponentSelector opponentSelector =
+        OpponentSelector.builder()
+            .players(players)
+            .currentPlayer(russians)
+            .relationshipTracker(gameData.getRelationshipTracker())
+            .build();
     OpponentSelector.AttackerAndDefender attAndDef;
 
     // Fight in Germany -> Germans defend
@@ -61,14 +62,15 @@ public class OpponentSelectorTest {
     final GamePlayer japanese = japanese(gameData);
     final GamePlayer americans = americans(gameData);
     final List<GamePlayer> players = List.of(russians, germans, japanese, americans);
-    final OpponentSelector opponentSelector = OpponentSelector.builder()
-        .players(players)
-        .currentPlayer(russians)
-        .relationshipTracker(gameData.getRelationshipTracker())
-        .build();
+    final OpponentSelector opponentSelector =
+        OpponentSelector.builder()
+            .players(players)
+            .currentPlayer(russians)
+            .relationshipTracker(gameData.getRelationshipTracker())
+            .build();
     OpponentSelector.AttackerAndDefender attAndDef;
 
-    // Fill up the lands
+    // Fill up the lands with additional units
     addTo(germany, infantry(gameData).create(100, japanese));
     addTo(japan, infantry(gameData).create(100, germans));
     addTo(unitedKingdom, infantry(gameData).create(100, americans));
@@ -93,21 +95,30 @@ public class OpponentSelectorTest {
   @Test
   void testMixedDefendersAlliesAndEnemies() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory japan = gameData.getMap().getTerritory("Japan");
     final GamePlayer russians = russians(gameData);
     final GamePlayer germans = germans(gameData);
     final GamePlayer japanese = japanese(gameData);
     final GamePlayer americans = americans(gameData);
     final List<GamePlayer> players = List.of(russians, germans, japanese, americans);
-    final OpponentSelector opponentSelector = OpponentSelector.builder()
-        .players(players)
-        .currentPlayer(russians)
-        .relationshipTracker(gameData.getRelationshipTracker())
-        .build();
+    final OpponentSelector opponentSelector =
+        OpponentSelector.builder()
+            .players(players)
+            .currentPlayer(russians)
+            .relationshipTracker(gameData.getRelationshipTracker())
+            .build();
     OpponentSelector.AttackerAndDefender attAndDef;
 
-    // Fill territory with a mix of allies and foes.
+    // Fill territory with an additional mix of allies and foes.
+    addTo(germany, infantry(gameData).create(200, americans));
+    addTo(germany, infantry(gameData).create(100, japanese));
     addTo(japan, infantry(gameData).create(100, americans));
+
+    // Fight in Germany -> Japanese defend, Americans are allied
+    attAndDef = opponentSelector.getAttackerAndDefender(japan);
+    assertEquals(russians, attAndDef.getAttacker().get());
+    assertEquals(japanese, attAndDef.getDefender().get());
 
     // Fight in Japan -> Japanese defend, Americans are allied
     attAndDef = opponentSelector.getAttackerAndDefender(japan);

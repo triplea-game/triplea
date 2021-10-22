@@ -40,7 +40,6 @@ public class OpponentSelector {
   @Nullable private final GamePlayer currentPlayer;
   @NonNull private final RelationshipTracker relationshipTracker;
 
-
   public static OpponentSelector with(final GameData gameData) {
     try {
       gameData.acquireReadLock();
@@ -111,8 +110,7 @@ public class OpponentSelector {
    * @return attacker and defender
    */
   private AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority() {
-    return getAttackerAndDefenderWithPriorityList(
-        List.of(currentPlayer));
+    return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer));
   }
 
   /**
@@ -146,9 +144,7 @@ public class OpponentSelector {
       final List<GamePlayer> priorityPlayers) {
     // Attacker
     final Optional<GamePlayer> attacker =
-        Stream.of(priorityPlayers.stream(), players.stream())
-            .flatMap(s -> s)
-            .findFirst();
+        Stream.of(priorityPlayers.stream(), players.stream()).flatMap(s -> s).findFirst();
     if (attacker.isEmpty()) {
       return AttackerAndDefender.builder()
           .attacker(Optional.empty())
@@ -215,10 +211,8 @@ public class OpponentSelector {
    * @param p the player to find an opponent for
    * @return an opponent. An empty optional is returned if the game has no players
    */
-  private Optional<GamePlayer> getOpponentWithCurrentPlayerPriority(
-      final GamePlayer p) {
-    return getOpponentWithPriorityList(
-        p, getCurrentPlayer().stream().collect(Collectors.toList()));
+  private Optional<GamePlayer> getOpponentWithCurrentPlayerPriority(final GamePlayer p) {
+    return getOpponentWithPriorityList(p, getCurrentPlayer().stream().collect(Collectors.toList()));
   }
 
   private Optional<GamePlayer> getCurrentPlayer() {
