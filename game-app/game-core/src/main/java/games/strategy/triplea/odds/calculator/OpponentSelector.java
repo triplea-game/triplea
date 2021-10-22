@@ -182,7 +182,7 @@ public class OpponentSelector {
     final Stream<GamePlayer> neutralsPriority =
         priorityPlayers.stream()
             .filter(Matches.isAtWar(p, data.getRelationshipTracker()).negate())
-            .filter(Matches.isAtWar(p, data.getRelationshipTracker()).negate());
+            .filter(Matches.isAllied(p, data.getRelationshipTracker()).negate());
     return Stream.of(
             enemiesPriority,
             playersAtWarWith(p, data),
