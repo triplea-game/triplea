@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -36,12 +38,14 @@ public class OpponentSelector {
   // GameData object.
   @Builder.Default private final Collection<GamePlayer> players = new ArrayList(0);
   @Nullable private final GamePlayer currentPlayer;
+  @NonNull private final RelationshipTracker relationshipTracker;
 
 
   public static OpponentSelector with(final GameData gameData) {
     return OpponentSelector.builder()
         .players(gameData.getPlayerList().getPlayers())
         .currentPlayer(gameData.getSequence().getStep().getPlayerId())
+        .relationshipTracker(gameData.getRelationshipTracker())
         .build();
   }
 
@@ -185,11 +189,11 @@ public class OpponentSelector {
   private Optional<GamePlayer> getOpponentWithPriorityList(
       final GamePlayer p, final List<GamePlayer> priorityPlayers, final GameData data) {
     final Stream<GamePlayer> enemiesPriority =
-        priorityPlayers.stream().filter(Matches.isAtWar(p, data.getRelationshipTracker()));
+        priorityPlayers.stream().filter(Matches.isAtWar(p, relationshipTracker));
     final Stream<GamePlayer> neutralsPriority =
         priorityPlayers.stream()
-            .filter(Matches.isAtWar(p, data.getRelationshipTracker()).negate())
-            .filter(Matches.isAllied(p, data.getRelationshipTracker()).negate());
+            .filter(Matches.isAtWar(p, relationshipTracker).negate())
+            .filter(Matches.isAllied(p, relationshipTracker).negate());
     return Stream.of(
             enemiesPriority,
             playersAtWarWith(p, data),
@@ -233,7 +237,7 @@ public class OpponentSelector {
    * <p>The returned stream might be empty.
    */
   private Stream<GamePlayer> playersAtWarWith(final GamePlayer p, final GameData data) {
-    return players.stream().filter(Matches.isAtWar(p, data.getRelationshipTracker()));
+    return players.stream().filter(Matches.isAtWar(p, relationshipTracker));
   }
 
   /**
@@ -243,7 +247,7 @@ public class OpponentSelector {
    */
   private Stream<GamePlayer> neutralPlayersTowards(final GamePlayer p, final GameData data) {
     return players.stream()
-        .filter(Matches.isAtWar(p, data.getRelationshipTracker()).negate())
-        .filter(Matches.isAllied(p, data.getRelationshipTracker()).negate());
+        .filter(Matches.isAtWar(p, relationshipTracker).negate())
+        .filter(Matches.isAllied(p, relationshipTracker).negate());
   }
 }

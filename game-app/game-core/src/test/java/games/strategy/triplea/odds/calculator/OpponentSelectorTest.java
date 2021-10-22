@@ -71,6 +71,7 @@ public class OpponentSelectorTest {
         OpponentSelector.builder()
             .players(players)
             .currentPlayer(russians)
+            .relationshipTracker(gameData.getRelationshipTracker())
             .build()
             .getAttackerAndDefender(germany, gameData);
     assertEquals(russians, attAndDef.getAttacker().get());
