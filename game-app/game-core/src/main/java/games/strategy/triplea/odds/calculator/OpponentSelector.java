@@ -135,7 +135,7 @@ public class OpponentSelector {
    * @param data the game data
    * @return attacker and defender
    */
-  private static AttackerAndDefender getAttackerAndDefenderWithPriorityList(
+  private AttackerAndDefender getAttackerAndDefenderWithPriorityList(
       final List<GamePlayer> priorityPlayers, final GameData data) {
     // Attacker
     final Optional<GamePlayer> attacker =
@@ -175,7 +175,7 @@ public class OpponentSelector {
    * @param data the game data
    * @return an opponent. An empty optional is returned if the game has no players
    */
-  private static Optional<GamePlayer> getOpponentWithPriorityList(
+  private Optional<GamePlayer> getOpponentWithPriorityList(
       final GamePlayer p, final List<GamePlayer> priorityPlayers, final GameData data) {
     final Stream<GamePlayer> enemiesPriority =
         priorityPlayers.stream().filter(Matches.isAtWar(p, data.getRelationshipTracker()));
@@ -225,7 +225,7 @@ public class OpponentSelector {
    *
    * <p>The returned stream might be empty.
    */
-  private static Stream<GamePlayer> playersAtWarWith(final GamePlayer p, final GameData data) {
+  private Stream<GamePlayer> playersAtWarWith(final GamePlayer p, final GameData data) {
     return data.getPlayerList().stream().filter(Matches.isAtWar(p, data.getRelationshipTracker()));
   }
 
@@ -234,7 +234,7 @@ public class OpponentSelector {
    *
    * <p>The returned stream might be empty.
    */
-  private static Stream<GamePlayer> neutralPlayersTowards(final GamePlayer p, final GameData data) {
+  private Stream<GamePlayer> neutralPlayersTowards(final GamePlayer p, final GameData data) {
     return data.getPlayerList().stream()
         .filter(Matches.isAtWar(p, data.getRelationshipTracker()).negate())
         .filter(Matches.isAllied(p, data.getRelationshipTracker()).negate());
