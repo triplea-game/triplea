@@ -195,26 +195,6 @@ public class OpponentSelector {
         .findFirst();
   }
 
-  /**
-   * Pick a suitable opponent for player {@code p} while prioritising the current player.
-   *
-   * <p>The opponent is chosen with the following priorities
-   *
-   * <ol>
-   *   <li>the current player if they is an enemy of {@code p}
-   *   <li>any enemy of {@code p}
-   *   <li>the current player if they is neutral towards {@code p}
-   *   <li>any neutral player (with respect to {@code p})
-   *   <li>any player
-   * </ol>
-   *
-   * @param p the player to find an opponent for
-   * @return an opponent. An empty optional is returned if the game has no players
-   */
-  private Optional<GamePlayer> getOpponentWithCurrentPlayerPriority(final GamePlayer p) {
-    return getOpponentWithPriorityList(p, getCurrentPlayer().stream().collect(Collectors.toList()));
-  }
-
   private Optional<GamePlayer> getCurrentPlayer() {
     return Optional.ofNullable(currentPlayer);
   }
