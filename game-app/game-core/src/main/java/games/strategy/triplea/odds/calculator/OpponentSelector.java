@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with methods to pick players for the battle calculator.
@@ -18,7 +19,7 @@ import lombok.experimental.UtilityClass;
  * <p>Throughout the class the term "neutral player" is used, this denotes a player who is neither
  * at war nor allied with another player.
  */
-@UtilityClass
+@Builder(access = AccessLevel.PACKAGE)
 public class OpponentSelector {
 
   /** Value object class for an attacker and defender tuple. */
@@ -29,12 +30,20 @@ public class OpponentSelector {
     @Builder.Default private final Optional<GamePlayer> defender = Optional.empty();
   }
 
+  @Nullable private final GamePlayer currentPlayer;
+
+  public static OpponentSelector with(final GameData gameData) {
+    return OpponentSelector.builder()
+        .currentPlayer(gameData.getSequence().getStep().getPlayerId())
+        .build();
+  }
+
   /**
    * Set initial attacker and defender.
    *
    * <p>Please read the source code for the order of the players and conditions involved.
    */
-  public static AttackerAndDefender getAttackerAndDefender(
+  public AttackerAndDefender getAttackerAndDefender(
       final Territory territory, final GameData data) {
     if (territory == null) {
       // Not much to derive here. Pick attacker first, then defender and priorities the current
@@ -43,15 +52,13 @@ public class OpponentSelector {
     } else {
       data.acquireReadLock();
       try {
-        // The attacker is the current player
-        final Optional<GamePlayer> attacker = getCurrentPlayer(data);
-
         // If there is no current player, we cannot choose an opponent.
-        if (attacker.isEmpty()) {
+        if (currentPlayer == null) {
           return AttackerAndDefender.builder().build();
         }
 
-        // Select the defender to be an enemy of the attacker if possible, preferring enemies in
+        // Select the defender to be an enemy of the current player if possible, preferring enemies
+        // in
         // the given territory.
         // When deciding for an enemy, usually a player with more units is more important and more
         // likely to be meant, e.g. a territory with 10 units of player A and 1 unit of player B.
@@ -59,9 +66,12 @@ public class OpponentSelector {
         final List<GamePlayer> playersWithUnits =
             territory.getUnitCollection().getPlayersByUnitCount();
         final Optional<GamePlayer> defender =
-            getOpponentWithPriorityList(attacker.get(), playersWithUnits, data);
+            getOpponentWithPriorityList(currentPlayer, playersWithUnits, data);
 
-        return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
+        return AttackerAndDefender.builder()
+            .attacker(Optional.ofNullable(currentPlayer))
+            .defender(defender)
+            .build();
       } finally {
         data.releaseReadLock();
       }
@@ -91,10 +101,10 @@ public class OpponentSelector {
    * @param data the game data
    * @return attacker and defender
    */
-  private static AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority(
+  private AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority(
       final GameData data) {
     return getAttackerAndDefenderWithPriorityList(
-        getCurrentPlayer(data).stream().collect(Collectors.toList()), data);
+        List.of(currentPlayer), data);
   }
 
   /**
@@ -200,18 +210,14 @@ public class OpponentSelector {
    * @param data the game data
    * @return an opponent. An empty optional is returned if the game has no players
    */
-  private static Optional<GamePlayer> getOpponentWithCurrentPlayerPriority(
+  private Optional<GamePlayer> getOpponentWithCurrentPlayerPriority(
       final GamePlayer p, final GameData data) {
     return getOpponentWithPriorityList(
-        p, getCurrentPlayer(data).stream().collect(Collectors.toList()), data);
+        p, getCurrentPlayer().stream().collect(Collectors.toList()), data);
   }
 
-  private static Optional<GamePlayer> getCurrentPlayer(final GameData data) {
-    final Optional<GamePlayer> player = data.getHistory().getActivePlayer();
-    if (player.isPresent()) {
-      return player;
-    }
-    return GamePlayer.asOptional(data.getSequence().getStep().getPlayerId());
+  private Optional<GamePlayer> getCurrentPlayer() {
+    return Optional.ofNullable(currentPlayer);
   }
 
   /**
