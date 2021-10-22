@@ -42,11 +42,16 @@ public class OpponentSelector {
 
 
   public static OpponentSelector with(final GameData gameData) {
-    return OpponentSelector.builder()
-        .players(gameData.getPlayerList().getPlayers())
-        .currentPlayer(gameData.getSequence().getStep().getPlayerId())
-        .relationshipTracker(gameData.getRelationshipTracker())
-        .build();
+    try {
+      gameData.acquireReadLock();
+      return OpponentSelector.builder()
+          .players(gameData.getPlayerList().getPlayers())
+          .currentPlayer(gameData.getSequence().getStep().getPlayerId())
+          .relationshipTracker(gameData.getRelationshipTracker())
+          .build();
+    } finally {
+      gameData.releaseReadLock();
+    }
   }
 
   /**
@@ -54,38 +59,32 @@ public class OpponentSelector {
    *
    * <p>Please read the source code for the order of the players and conditions involved.
    */
-  public AttackerAndDefender getAttackerAndDefender(
-      final Territory territory, final GameData data) {
+  public AttackerAndDefender getAttackerAndDefender(final Territory territory) {
     if (territory == null) {
       // Not much to derive here. Pick attacker first, then defender and priorities the current
       // player if possible.
-      return getAttackerAndDefenderWithCurrentPlayerPriority(data);
+      return getAttackerAndDefenderWithCurrentPlayerPriority();
     } else {
-      data.acquireReadLock();
-      try {
-        // If there is no current player, we cannot choose an opponent.
-        if (currentPlayer == null) {
-          return AttackerAndDefender.builder().build();
-        }
-
-        // Select the defender to be an enemy of the current player if possible, preferring enemies
-        // in
-        // the given territory.
-        // When deciding for an enemy, usually a player with more units is more important and more
-        // likely to be meant, e.g. a territory with 10 units of player A and 1 unit of player B.
-        // Thus, we use lists and ordered streams.
-        final List<GamePlayer> playersWithUnits =
-            territory.getUnitCollection().getPlayersByUnitCount();
-        final Optional<GamePlayer> defender =
-            getOpponentWithPriorityList(currentPlayer, playersWithUnits, data);
-
-        return AttackerAndDefender.builder()
-            .attacker(Optional.ofNullable(currentPlayer))
-            .defender(defender)
-            .build();
-      } finally {
-        data.releaseReadLock();
+      // If there is no current player, we cannot choose an opponent.
+      if (currentPlayer == null) {
+        return AttackerAndDefender.builder().build();
       }
+
+      // Select the defender to be an enemy of the current player if possible, preferring enemies
+      // in
+      // the given territory.
+      // When deciding for an enemy, usually a player with more units is more important and more
+      // likely to be meant, e.g. a territory with 10 units of player A and 1 unit of player B.
+      // Thus, we use lists and ordered streams.
+      final List<GamePlayer> playersWithUnits =
+          territory.getUnitCollection().getPlayersByUnitCount();
+      final Optional<GamePlayer> defender =
+          getOpponentWithPriorityList(currentPlayer, playersWithUnits);
+
+      return AttackerAndDefender.builder()
+          .attacker(Optional.ofNullable(currentPlayer))
+          .defender(defender)
+          .build();
     }
   }
 
@@ -109,13 +108,11 @@ public class OpponentSelector {
    *
    * <p>If the game has no players, empty optionals are returned.
    *
-   * @param data the game data
    * @return attacker and defender
    */
-  private AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority(
-      final GameData data) {
+  private AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority() {
     return getAttackerAndDefenderWithPriorityList(
-        List.of(currentPlayer), data);
+        List.of(currentPlayer));
   }
 
   /**
@@ -143,11 +140,10 @@ public class OpponentSelector {
    * <p>If the game has no players, empty optionals are returned.
    *
    * @param priorityPlayers an ordered list of players which should be considered first
-   * @param data the game data
    * @return attacker and defender
    */
   private AttackerAndDefender getAttackerAndDefenderWithPriorityList(
-      final List<GamePlayer> priorityPlayers, final GameData data) {
+      final List<GamePlayer> priorityPlayers) {
     // Attacker
     final Optional<GamePlayer> attacker =
         Stream.of(priorityPlayers.stream(), players.stream())
@@ -162,7 +158,7 @@ public class OpponentSelector {
     // Defender
     assert (!attacker.isEmpty());
     final Optional<GamePlayer> defender =
-        getOpponentWithPriorityList(attacker.get(), priorityPlayers, data);
+        getOpponentWithPriorityList(attacker.get(), priorityPlayers);
     return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
   }
 
@@ -183,11 +179,10 @@ public class OpponentSelector {
    *
    * @param p the player to find an opponent for
    * @param priorityPlayers an ordered list of players which should be considered first
-   * @param data the game data
    * @return an opponent. An empty optional is returned if the game has no players
    */
   private Optional<GamePlayer> getOpponentWithPriorityList(
-      final GamePlayer p, final List<GamePlayer> priorityPlayers, final GameData data) {
+      final GamePlayer p, final List<GamePlayer> priorityPlayers) {
     final Stream<GamePlayer> enemiesPriority =
         priorityPlayers.stream().filter(Matches.isAtWar(p, relationshipTracker));
     final Stream<GamePlayer> neutralsPriority =
@@ -196,9 +191,9 @@ public class OpponentSelector {
             .filter(Matches.isAllied(p, relationshipTracker).negate());
     return Stream.of(
             enemiesPriority,
-            playersAtWarWith(p, data),
+            playersAtWarWith(p),
             neutralsPriority,
-            neutralPlayersTowards(p, data),
+            neutralPlayersTowards(p),
             players.stream())
         .flatMap(s -> s)
         .findFirst();
@@ -218,13 +213,12 @@ public class OpponentSelector {
    * </ol>
    *
    * @param p the player to find an opponent for
-   * @param data the game data
    * @return an opponent. An empty optional is returned if the game has no players
    */
   private Optional<GamePlayer> getOpponentWithCurrentPlayerPriority(
-      final GamePlayer p, final GameData data) {
+      final GamePlayer p) {
     return getOpponentWithPriorityList(
-        p, getCurrentPlayer().stream().collect(Collectors.toList()), data);
+        p, getCurrentPlayer().stream().collect(Collectors.toList()));
   }
 
   private Optional<GamePlayer> getCurrentPlayer() {
@@ -236,7 +230,7 @@ public class OpponentSelector {
    *
    * <p>The returned stream might be empty.
    */
-  private Stream<GamePlayer> playersAtWarWith(final GamePlayer p, final GameData data) {
+  private Stream<GamePlayer> playersAtWarWith(final GamePlayer p) {
     return players.stream().filter(Matches.isAtWar(p, relationshipTracker));
   }
 
@@ -245,7 +239,7 @@ public class OpponentSelector {
    *
    * <p>The returned stream might be empty.
    */
-  private Stream<GamePlayer> neutralPlayersTowards(final GamePlayer p, final GameData data) {
+  private Stream<GamePlayer> neutralPlayersTowards(final GamePlayer p) {
     return players.stream()
         .filter(Matches.isAtWar(p, relationshipTracker).negate())
         .filter(Matches.isAllied(p, relationshipTracker).negate());
