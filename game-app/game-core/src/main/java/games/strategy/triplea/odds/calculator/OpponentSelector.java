@@ -195,10 +195,6 @@ public class OpponentSelector {
         .findFirst();
   }
 
-  private Optional<GamePlayer> getCurrentPlayer() {
-    return Optional.ofNullable(currentPlayer);
-  }
-
   /**
    * Returns a stream of all players which are at war with player {@code p}.
    *
