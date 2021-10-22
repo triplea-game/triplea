@@ -12,6 +12,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class OpponentSelectorTest {
@@ -57,6 +58,7 @@ public class OpponentSelectorTest {
     final GamePlayer germans = germans(gameData);
     final GamePlayer japanese = japanese(gameData);
     final GamePlayer americans = americans(gameData);
+    final List<GamePlayer> players = List.of(russians, germans, japanese, americans)
     OpponentSelector.AttackerAndDefender attAndDef;
 
     // Fill up the lands
@@ -67,6 +69,7 @@ public class OpponentSelectorTest {
     // Fight in Germany -> 100 Japanese defend
     attAndDef =
         OpponentSelector.builder()
+            .players(players)
             .currentPlayer(russians)
             .build()
             .getAttackerAndDefender(germany, gameData);

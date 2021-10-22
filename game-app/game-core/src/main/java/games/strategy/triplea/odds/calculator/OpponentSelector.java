@@ -4,6 +4,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,10 +32,15 @@ public class OpponentSelector {
     @Builder.Default private final Optional<GamePlayer> defender = Optional.empty();
   }
 
+  // Store all data needed for the selection process individually to be independent of the
+  // GameData object.
+  @Builder.Default private final Collection<GamePlayer> players = new ArrayList(0);
   @Nullable private final GamePlayer currentPlayer;
+
 
   public static OpponentSelector with(final GameData gameData) {
     return OpponentSelector.builder()
+        .players(gameData.getPlayerList().getPlayers())
         .currentPlayer(gameData.getSequence().getStep().getPlayerId())
         .build();
   }
@@ -139,7 +146,7 @@ public class OpponentSelector {
       final List<GamePlayer> priorityPlayers, final GameData data) {
     // Attacker
     final Optional<GamePlayer> attacker =
-        Stream.of(priorityPlayers.stream(), data.getPlayerList().stream())
+        Stream.of(priorityPlayers.stream(), players.stream())
             .flatMap(s -> s)
             .findFirst();
     if (attacker.isEmpty()) {
@@ -188,7 +195,7 @@ public class OpponentSelector {
             playersAtWarWith(p, data),
             neutralsPriority,
             neutralPlayersTowards(p, data),
-            data.getPlayerList().stream())
+            players.stream())
         .flatMap(s -> s)
         .findFirst();
   }
@@ -226,7 +233,7 @@ public class OpponentSelector {
    * <p>The returned stream might be empty.
    */
   private Stream<GamePlayer> playersAtWarWith(final GamePlayer p, final GameData data) {
-    return data.getPlayerList().stream().filter(Matches.isAtWar(p, data.getRelationshipTracker()));
+    return players.stream().filter(Matches.isAtWar(p, data.getRelationshipTracker()));
   }
 
   /**
@@ -235,7 +242,7 @@ public class OpponentSelector {
    * <p>The returned stream might be empty.
    */
   private Stream<GamePlayer> neutralPlayersTowards(final GamePlayer p, final GameData data) {
-    return data.getPlayerList().stream()
+    return players.stream()
         .filter(Matches.isAtWar(p, data.getRelationshipTracker()).negate())
         .filter(Matches.isAllied(p, data.getRelationshipTracker()).negate());
   }
