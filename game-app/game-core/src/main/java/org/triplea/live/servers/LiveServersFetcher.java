@@ -8,14 +8,16 @@ import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.latest.version.LatestVersionClient;
 import org.triplea.util.Version;
 
-/**
- * Fetches {@code LiveServers} information from network (or if already fetched, from cache). {@code
- * LiveServers} can be used to determine the latest TripleA version and the address of any lobbies
- * that can be connected to.
- */
 @Slf4j
 @UtilityClass
 public class LiveServersFetcher {
+
+  /**
+   * Queries the lobby-server for the latest game engine version.
+   *
+   * @return Empty optional if server fails to return a value, otherwise latest game engine version
+   *     as known to the lobby-server.
+   */
   public static Optional<Version> latestVersion() {
     try {
       final String latestVersion =
