@@ -111,7 +111,8 @@ class GithubApiClientTest {
             .authToken("test-token")
             .uri(URI.create(server.baseUrl()))
             .build()
-            .fetchLatestVersion("example-org", "map-repo");
+            .fetchLatestVersion("example-org", "map-repo")
+            .orElseThrow();
 
     assertThat(latestVersion, is("2.5.22294"));
   }

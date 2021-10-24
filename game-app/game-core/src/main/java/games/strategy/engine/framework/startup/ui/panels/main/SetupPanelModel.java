@@ -142,8 +142,7 @@ public class SetupPanelModel implements ServerSetupModel {
         .ifPresent(loginResult -> showLobbyWindow(loginResult, lobbyUri));
   }
 
-  private void showLobbyWindow(
-      final LoginResult loginResult, final URI lobbyUri) {
+  private void showLobbyWindow(final LoginResult loginResult, final URI lobbyUri) {
     final var lobbyClient = LobbyClient.newLobbyClient(lobbyUri, loginResult);
 
     final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyUri);

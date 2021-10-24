@@ -6,12 +6,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.HttpInteractionException;
 
 /** Can be used to interact with github's webservice API. */
+@Slf4j
 public class GithubApiClient {
 
   /** If this client is set to 'test' mode, we will return a stubbed response. */
@@ -121,8 +125,13 @@ public class GithubApiClient {
     return githubApiFeignClient.getBranchInfo(tokens, org, repo, branch);
   }
 
-  public String fetchLatestVersion(final String org, final String repo) {
+  public Optional<String> fetchLatestVersion(final String org, final String repo) {
     final Map<String, Object> tokens = buildAuthorizationHeaders();
-    return githubApiFeignClient.getLatestRelease(tokens, org, repo).getTagName();
+    try {
+      return Optional.of(githubApiFeignClient.getLatestRelease(tokens, org, repo).getTagName());
+    } catch (final HttpInteractionException e) {
+      log.info("No data received from server for latest engine version", e);
+      return Optional.empty();
+    }
   }
 }
