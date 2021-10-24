@@ -22,8 +22,7 @@ final class EngineVersionCheck {
     }
     ClientSetting.lastCheckForEngineUpdate.setValueAndFlush(Instant.now().toEpochMilli());
 
-    new LiveServersFetcher()
-        .latestVersion()
+    LiveServersFetcher.latestVersion()
         .filter(
             latestVersion ->
                 latestVersion.isGreaterThan(Injections.getInstance().getEngineVersion()))

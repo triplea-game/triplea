@@ -1,6 +1,7 @@
 package org.triplea.debug;
 
 import com.google.common.base.Preconditions;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dialog;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
@@ -13,7 +14,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.triplea.debug.error.reporting.UploadDecisionModule;
 import org.triplea.http.client.error.report.ErrorReportClient;
-import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
 import org.triplea.swing.SwingComponents;
@@ -118,12 +118,7 @@ public enum ErrorMessage {
   }
 
   private void setUploadRecord(final LoggerRecord logRecord) {
-    new LiveServersFetcher()
-        .lobbyUriForCurrentVersion()
-        .ifPresentOrElse(
-            uri -> activateUploadErrorReportButton(uri, logRecord),
-            // if no internet connection, do not show 'upload button' as it will not work anyways.
-            () -> INSTANCE.uploadButton.setVisible(false));
+    activateUploadErrorReportButton(ClientSetting.lobbyUri.getValueOrThrow(), logRecord);
   }
 
   private void activateUploadErrorReportButton(final URI lobbyUri, final LoggerRecord logRecord) {
