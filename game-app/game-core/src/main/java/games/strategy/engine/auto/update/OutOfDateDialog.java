@@ -4,16 +4,17 @@ import games.strategy.triplea.UrlConstants;
 import javax.swing.JOptionPane;
 import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.http.client.latest.version.LatestVersionResponse;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
-import org.triplea.util.Version;
 
 @UtilityClass
 class OutOfDateDialog {
-  static void showOutOfDateComponent(final Version latestVersionOut) {
+  static void showOutOfDateComponent(final LatestVersionResponse latestVersion) {
     final int result =
         JOptionPane.showOptionDialog(
             null,
-            new JEditorPaneWithClickableLinks(getOutOfDateMessage(latestVersionOut)),
+            new JEditorPaneWithClickableLinks(
+                getOutOfDateMessage(latestVersion.getLatestEngineVersion())),
             "TripleA is out of date!",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.PLAIN_MESSAGE,
@@ -26,7 +27,7 @@ class OutOfDateDialog {
     }
   }
 
-  private static String getOutOfDateMessage(final Version latestVersionOut) {
+  private static String getOutOfDateMessage(final String latestVersionOut) {
     return String.format(
         "<html>"
             + "<h2>TripleA %s is available!</h2>"

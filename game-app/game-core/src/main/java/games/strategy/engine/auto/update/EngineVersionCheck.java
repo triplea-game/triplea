@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import lombok.experimental.UtilityClass;
 import org.triplea.injection.Injections;
 import org.triplea.live.servers.LiveServersFetcher;
+import org.triplea.util.Version;
 
 @UtilityClass
 final class EngineVersionCheck {
@@ -22,7 +23,8 @@ final class EngineVersionCheck {
     LiveServersFetcher.latestVersion()
         .filter(
             latestVersion ->
-                latestVersion.isGreaterThan(Injections.getInstance().getEngineVersion()))
+                new Version(latestVersion.getLatestEngineVersion())
+                    .isGreaterThan(Injections.getInstance().getEngineVersion()))
         .ifPresent(OutOfDateDialog::showOutOfDateComponent);
   }
 
