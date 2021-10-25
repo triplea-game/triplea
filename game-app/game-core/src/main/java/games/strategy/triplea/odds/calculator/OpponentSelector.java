@@ -29,8 +29,16 @@ public class OpponentSelector {
   @Builder
   @Value
   public static class AttackerAndDefender {
-    @Builder.Default private final Optional<GamePlayer> attacker = Optional.empty();
-    @Builder.Default private final Optional<GamePlayer> defender = Optional.empty();
+    @Nullable private final GamePlayer attacker;
+    @Nullable private final GamePlayer defender;
+
+    public Optional<GamePlayer> getAttacker() {
+      return Optional.ofNullable(attacker);
+    }
+
+    public Optional<GamePlayer> getDefender() {
+      return Optional.ofNullable(defender);
+    }
   }
 
   @Builder.Default private final Collection<GamePlayer> players = new ArrayList(0);
@@ -75,8 +83,8 @@ public class OpponentSelector {
           getOpponentWithPriorityList(currentPlayer, playersWithUnits);
 
       return AttackerAndDefender.builder()
-          .attacker(Optional.ofNullable(currentPlayer))
-          .defender(defender)
+          .attacker(currentPlayer)
+          .defender(defender.orElse(null))
           .build();
     }
   }
@@ -127,16 +135,16 @@ public class OpponentSelector {
     final Optional<GamePlayer> attacker =
         Stream.of(priorityPlayers.stream(), players.stream()).flatMap(s -> s).findFirst();
     if (attacker.isEmpty()) {
-      return AttackerAndDefender.builder()
-          .attacker(Optional.empty())
-          .defender(Optional.empty())
-          .build();
+      return AttackerAndDefender.builder().attacker(null).defender(null).build();
     }
     // Defender
     assert (!attacker.isEmpty());
     final Optional<GamePlayer> defender =
         getOpponentWithPriorityList(attacker.get(), priorityPlayers);
-    return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
+    return AttackerAndDefender.builder()
+        .attacker(attacker.orElse(null))
+        .defender(defender.orElse(null))
+        .build();
   }
 
   /**
