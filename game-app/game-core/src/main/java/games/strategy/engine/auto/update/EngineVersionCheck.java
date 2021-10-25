@@ -23,10 +23,7 @@ final class EngineVersionCheck {
         .filter(
             latestVersion ->
                 latestVersion.isGreaterThan(Injections.getInstance().getEngineVersion()))
-        .ifPresent(
-            latestVersion ->
-                OutOfDateDialog.showOutOfDateComponent(
-                    latestVersion, Injections.getInstance().getEngineVersion()));
+        .ifPresent(OutOfDateDialog::showOutOfDateComponent);
   }
 
   @VisibleForTesting

@@ -15,21 +15,21 @@ import org.triplea.util.Version;
 
 @UtilityClass
 class OutOfDateDialog {
-  static void showOutOfDateComponent(final Version latestVersionOut, final Version currentVersion) {
+  static void showOutOfDateComponent(final Version latestVersionOut) {
     SwingUtilities.invokeLater(
         () ->
             EventThreadJOptionPane.showMessageDialog(
                 null,
-                buildComponent(latestVersionOut, currentVersion),
+                buildComponent(latestVersionOut),
                 "Update TripleA!",
                 JOptionPane.INFORMATION_MESSAGE));
   }
 
-  static Component buildComponent(final Version latestVersionOut, final Version currentVersion) {
+  static Component buildComponent(final Version latestVersionOut) {
     final JPanel panel = new JPanel(new BorderLayout());
 
     final JEditorPane intro =
-        new JEditorPaneWithClickableLinks(getOutOfDateMessage(latestVersionOut, currentVersion));
+        new JEditorPaneWithClickableLinks(getOutOfDateMessage(latestVersionOut));
 
     panel.add(intro, BorderLayout.NORTH);
 
@@ -39,16 +39,14 @@ class OutOfDateDialog {
   }
 
   private static String getOutOfDateMessage(
-      final Version latestVersionOut, final Version currentVersion) {
+      final Version latestVersionOut) {
     return String.format(
         "<html>"
             + "<h2>TripleA %s is available!</h2>"
-            + "<br>Your version: %s is out of date"
             + "<br><br>Click to download: <a class=\"external\" href=\"%s\">%s</a>"
             + "</a>"
             + "</html>",
         latestVersionOut,
-        currentVersion,
         UrlConstants.DOWNLOAD_WEBSITE,
         UrlConstants.DOWNLOAD_WEBSITE);
   }
