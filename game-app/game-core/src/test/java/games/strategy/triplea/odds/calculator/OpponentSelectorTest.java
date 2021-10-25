@@ -13,115 +13,116 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class OpponentSelectorTest {
 
-  @Test
-  void testSingleDefender() {
-    final GameData gameData = TestMapGameData.REVISED.getGameData();
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory japan = gameData.getMap().getTerritory("Japan");
-    final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
-    final GamePlayer russians = russians(gameData);
-    final GamePlayer germans = germans(gameData);
-    final GamePlayer japanese = japanese(gameData);
-    final List<GamePlayer> players = List.of(russians, germans, japanese);
-    final OpponentSelector opponentSelector =
+  private GameData gameData;
+  private Territory germany;
+  private Territory japan;
+  private Territory unitedKingdom;
+  private GamePlayer russians;
+  private GamePlayer germans;
+  private GamePlayer japanese;
+  private GamePlayer americans;
+  private List<GamePlayer> players;
+  private OpponentSelector opponentSelector;
+
+  @BeforeEach
+  void setupGame() {
+    gameData = TestMapGameData.REVISED.getGameData();
+    germany = gameData.getMap().getTerritory("Germany");
+    japan = gameData.getMap().getTerritory("Japan");
+    unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
+    russians = russians(gameData);
+    germans = germans(gameData);
+    japanese = japanese(gameData);
+    americans = americans(gameData);
+    players = List.of(russians, germans, japanese, americans);
+    opponentSelector =
         OpponentSelector.builder()
             .players(players)
             .currentPlayer(russians)
             .relationshipTracker(gameData.getRelationshipTracker())
             .build();
-    OpponentSelector.AttackerAndDefender attAndDef;
+  }
 
+  @Test
+  void testSingleDefender1() {
     // Fight in Germany -> Germans defend
-    attAndDef = opponentSelector.getAttackerAndDefender(germany);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(germans, attAndDef.getDefender().get());
-
-    // Fight in Japan -> Japans defend
-    attAndDef = opponentSelector.getAttackerAndDefender(japan);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(japanese, attAndDef.getDefender().get());
-
-    // Fight in Britain -> Germans defend (British are allied; Germans are the first enemy)
-    attAndDef = opponentSelector.getAttackerAndDefender(unitedKingdom);
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(germany);
     assertEquals(russians, attAndDef.getAttacker().get());
     assertEquals(germans, attAndDef.getDefender().get());
   }
 
   @Test
-  void testMultipleDefenders() {
-    final GameData gameData = TestMapGameData.REVISED.getGameData();
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory japan = gameData.getMap().getTerritory("Japan");
-    final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
-    final GamePlayer russians = russians(gameData);
-    final GamePlayer germans = germans(gameData);
-    final GamePlayer japanese = japanese(gameData);
-    final GamePlayer americans = americans(gameData);
-    final List<GamePlayer> players = List.of(russians, germans, japanese, americans);
-    final OpponentSelector opponentSelector =
-        OpponentSelector.builder()
-            .players(players)
-            .currentPlayer(russians)
-            .relationshipTracker(gameData.getRelationshipTracker())
-            .build();
-    OpponentSelector.AttackerAndDefender attAndDef;
-
-    // Fill up the lands with additional units
-    addTo(germany, infantry(gameData).create(100, japanese));
-    addTo(japan, infantry(gameData).create(100, germans));
-    addTo(unitedKingdom, infantry(gameData).create(100, americans));
-
-    // Fight in Germany -> 100 Japanese defend
-    attAndDef = opponentSelector.getAttackerAndDefender(germany);
+  void testSingleDefender2() {
+    // Fight in Japan -> Japans defend
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(japan);
     assertEquals(russians, attAndDef.getAttacker().get());
     assertEquals(japanese, attAndDef.getDefender().get());
+  }
 
-    // Fight in Japan -> 100 Germans defend
-    attAndDef = opponentSelector.getAttackerAndDefender(japan);
+  @Test
+  void testSingleDefender3() {
+    // Fight in Britain -> Germans defend (British are allied; Germans are the first enemy)
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(unitedKingdom);
     assertEquals(russians, attAndDef.getAttacker().get());
     assertEquals(germans, attAndDef.getDefender().get());
+  }
 
+  @Test
+  void testMultipleDefenders1() {
+    // Fight in Germany -> 100 Japanese defend
+    addTo(germany, infantry(gameData).create(100, japanese));
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(germany);
+    assertEquals(russians, attAndDef.getAttacker().get());
+    assertEquals(japanese, attAndDef.getDefender().get());
+  }
+
+  @Test
+  void testMultipleDefenders2() {
+    // Fight in Japan -> 100 Germans defend
+    addTo(japan, infantry(gameData).create(100, germans));
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(japan);
+    assertEquals(russians, attAndDef.getAttacker().get());
+    assertEquals(germans, attAndDef.getDefender().get());
+  }
+
+  @Test
+  void testMultipleDefenders3() {
     // Fight in Britain -> Germans defend (British & Americans are allied; Germans are the first
     // enemy)
-    attAndDef = opponentSelector.getAttackerAndDefender(unitedKingdom);
+    addTo(unitedKingdom, infantry(gameData).create(100, americans));
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(unitedKingdom);
     assertEquals(russians, attAndDef.getAttacker().get());
     assertEquals(germans, attAndDef.getDefender().get());
   }
 
   @Test
-  void testMixedDefendersAlliesAndEnemies() {
-    final GameData gameData = TestMapGameData.REVISED.getGameData();
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory japan = gameData.getMap().getTerritory("Japan");
-    final GamePlayer russians = russians(gameData);
-    final GamePlayer germans = germans(gameData);
-    final GamePlayer japanese = japanese(gameData);
-    final GamePlayer americans = americans(gameData);
-    final List<GamePlayer> players = List.of(russians, germans, japanese, americans);
-    final OpponentSelector opponentSelector =
-        OpponentSelector.builder()
-            .players(players)
-            .currentPlayer(russians)
-            .relationshipTracker(gameData.getRelationshipTracker())
-            .build();
-    OpponentSelector.AttackerAndDefender attAndDef;
-
-    // Fill territory with an additional mix of allies and foes.
+  void testMixedDefendersAlliesAndEnemies1() {
+    // Fight in Germany -> Japanese defend, Americans are allied
     addTo(germany, infantry(gameData).create(200, americans));
     addTo(germany, infantry(gameData).create(100, japanese));
-    addTo(japan, infantry(gameData).create(100, americans));
-
-    // Fight in Germany -> Japanese defend, Americans are allied
-    attAndDef = opponentSelector.getAttackerAndDefender(japan);
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(germany);
     assertEquals(russians, attAndDef.getAttacker().get());
     assertEquals(japanese, attAndDef.getDefender().get());
+  }
 
+  @Test
+  void testMixedDefendersAlliesAndEnemies2() {
     // Fight in Japan -> Japanese defend, Americans are allied
-    attAndDef = opponentSelector.getAttackerAndDefender(japan);
+    addTo(japan, infantry(gameData).create(100, americans));
+    final OpponentSelector.AttackerAndDefender attAndDef =
+        opponentSelector.getAttackerAndDefender(japan);
     assertEquals(russians, attAndDef.getAttacker().get());
     assertEquals(japanese, attAndDef.getDefender().get());
   }
