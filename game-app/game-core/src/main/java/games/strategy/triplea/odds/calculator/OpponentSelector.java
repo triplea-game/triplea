@@ -33,8 +33,6 @@ public class OpponentSelector {
     @Builder.Default private final Optional<GamePlayer> defender = Optional.empty();
   }
 
-  // Store all data needed for the selection process individually to be independent of the
-  // GameData object.
   @Builder.Default private final Collection<GamePlayer> players = new ArrayList(0);
   @Nullable private final GamePlayer currentPlayer;
   @Nonnull private final RelationshipTracker relationshipTracker;
@@ -59,8 +57,7 @@ public class OpponentSelector {
    */
   public AttackerAndDefender getAttackerAndDefender(final Territory territory) {
     if (territory == null) {
-      // Not much to derive here. Pick attacker first, then defender and priorities the current
-      // player if possible.
+      // Without territory, we cannot prioritize any players (except current player)
       return getAttackerAndDefenderWithCurrentPlayerPriority();
     } else {
       // If there is no current player, we cannot choose an opponent.
@@ -69,11 +66,9 @@ public class OpponentSelector {
       }
 
       // Select the defender to be an enemy of the current player if possible, preferring enemies
-      // in
-      // the given territory.
-      // When deciding for an enemy, usually a player with more units is more important and more
-      // likely to be meant, e.g. a territory with 10 units of player A and 1 unit of player B.
-      // Thus, we use lists and ordered streams.
+      // in the given territory. When deciding for an enemy, usually a player with more units is
+      // more important and more likely to be meant, e.g. a territory with 10 units of player A and
+      // 1 unit of player B. Thus, we use lists and ordered streams.
       final List<GamePlayer> playersWithUnits =
           territory.getUnitCollection().getPlayersByUnitCount();
       final Optional<GamePlayer> defender =
@@ -89,24 +84,11 @@ public class OpponentSelector {
   /**
    * First pick an attacker and then a suitable defender while prioritising the current player.
    *
-   * <p>The attacker is picked with following priorities
-   *
-   * <ol>
-   *   <li>the current player
-   *   <li>any player
-   * </ol>
-   *
-   * <p>The defender is chosen with the following priorities
-   *
-   * <ol>
-   *   <li>any enemy of the attacker
-   *   <li>any neutral player (with respect to the attacker)
-   *   <li>any player
-   * </ol>
-   *
-   * <p>If the game has no players, empty optionals are returned.
+   * <p>This is {@code getAttackerAndDefenderWithPriorityList()} with the priority list containing
+   * only the current player. See there for details.
    *
    * @return attacker and defender
+   * @see #getAttackerAndDefenderWithPriorityList(List)
    */
   private AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority() {
     return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer));
