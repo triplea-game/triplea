@@ -1,16 +1,11 @@
 package games.strategy.engine.auto.update;
 
 import games.strategy.triplea.UrlConstants;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
-import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
 
 @UtilityClass
@@ -20,44 +15,24 @@ class OutOfDateDialog {
         () ->
             EventThreadJOptionPane.showMessageDialog(
                 null,
-                buildComponent(latestVersionOut),
+                new JEditorPaneWithClickableLinks(getOutOfDateMessage(latestVersionOut)),
                 "Update TripleA!",
                 JOptionPane.INFORMATION_MESSAGE));
   }
 
-  static Component buildComponent(final Version latestVersionOut) {
-    final JPanel panel = new JPanel(new BorderLayout());
-
-    final JEditorPane intro =
-        new JEditorPaneWithClickableLinks(getOutOfDateMessage(latestVersionOut));
-
-    panel.add(intro, BorderLayout.NORTH);
-
-    final JEditorPane updates = new JEditorPaneWithClickableLinks(getOutOfDateReleaseUpdates());
-    panel.add(SwingComponents.newJScrollPane(updates));
-    return panel;
-  }
-
-  private static String getOutOfDateMessage(
-      final Version latestVersionOut) {
+  private static String getOutOfDateMessage(final Version latestVersionOut) {
     return String.format(
         "<html>"
             + "<h2>TripleA %s is available!</h2>"
             + "<br><br>Click to download: <a class=\"external\" href=\"%s\">%s</a>"
             + "</a>"
+            + "<br><br>"
+            + "Release notes:<br /><a class=\"external\" href=\"%s\">%s</a><br />"
             + "</html>",
         latestVersionOut,
         UrlConstants.DOWNLOAD_WEBSITE,
-        UrlConstants.DOWNLOAD_WEBSITE);
-  }
-
-  private static String getOutOfDateReleaseUpdates() {
-    return "<html><body>"
-        + "Link to full Change Log:<br /><a class=\"external\" href=\""
-        + UrlConstants.RELEASE_NOTES
-        + "\">"
-        + UrlConstants.RELEASE_NOTES
-        + "</a><br />"
-        + "</body></html>";
+        UrlConstants.DOWNLOAD_WEBSITE,
+        UrlConstants.RELEASE_NOTES,
+        UrlConstants.RELEASE_NOTES);
   }
 }
