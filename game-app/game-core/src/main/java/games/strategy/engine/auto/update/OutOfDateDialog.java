@@ -9,15 +9,6 @@ import org.triplea.swing.JEditorPaneWithClickableLinks;
 
 @UtilityClass
 class OutOfDateDialog {
-  public static void main(String[] args) {
-    showOutOfDateComponent(
-        LatestVersionResponse.builder()
-            .latestEngineVersion("1.1.1")
-            .releaseNotesUrl(UrlConstants.RELEASE_NOTES)
-            .downloadUrl(UrlConstants.DOWNLOAD_WEBSITE)
-            .build());
-  }
-
   static void showOutOfDateComponent(final LatestVersionResponse latestVersion) {
     final int result =
         JOptionPane.showOptionDialog(
