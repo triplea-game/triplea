@@ -30,6 +30,8 @@ class LatestVersionClientTest extends WireMockTest {
                         JsonUtil.toJson(
                             LatestVersionResponse.builder()
                                 .latestEngineVersion("123.xyz")
+                                .downloadUrl("download-url")
+                                .releaseNotesUrl("release-notes-url")
                                 .build()))));
 
     final LatestVersionResponse latestVersionResponse =
