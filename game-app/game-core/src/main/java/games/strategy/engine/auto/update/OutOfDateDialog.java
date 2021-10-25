@@ -21,7 +21,7 @@ class OutOfDateDialog {
             EventThreadJOptionPane.showMessageDialog(
                 null,
                 buildComponent(latestVersionOut, currentVersion),
-                "TripleA is out of date!",
+                "Update TripleA!",
                 JOptionPane.INFORMATION_MESSAGE));
   }
 
@@ -40,18 +40,17 @@ class OutOfDateDialog {
 
   private static String getOutOfDateMessage(
       final Version latestVersionOut, final Version currentVersion) {
-    return "<html>"
-        + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
-        + "<br />Your current version: "
-        + currentVersion
-        + "<br />Latest version available for download: "
-        + latestVersionOut
-        + "<br /><br />Click to download: <a class=\"external\" href=\""
-        + UrlConstants.DOWNLOAD_WEBSITE
-        + "\">"
-        + UrlConstants.DOWNLOAD_WEBSITE
-        + "</a>"
-        + "</html>";
+    return String.format(
+        "<html>"
+            + "<h2>TripleA %s is available!</h2>"
+            + "<br>Your version: %s is out of date"
+            + "<br><br>Click to download: <a class=\"external\" href=\"%s\">%s</a>"
+            + "</a>"
+            + "</html>",
+        latestVersionOut,
+        currentVersion,
+        UrlConstants.DOWNLOAD_WEBSITE,
+        UrlConstants.DOWNLOAD_WEBSITE);
   }
 
   private static String getOutOfDateReleaseUpdates() {
