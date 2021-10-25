@@ -4,17 +4,14 @@ import games.strategy.triplea.UrlConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import lombok.experimental.UtilityClass;
-import org.triplea.awt.OpenFileUtility;
 import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.JEditorPaneWithClickableLinks;
 import org.triplea.util.Version;
 
 @UtilityClass
@@ -31,25 +28,14 @@ class OutOfDateDialog {
 
   static Component buildComponent(final Version latestVersionOut, final Version currentVersion) {
     final JPanel panel = new JPanel(new BorderLayout());
+
     final JEditorPane intro =
-        new JEditorPane("text/html", getOutOfDateMessage(latestVersionOut, currentVersion));
-    intro.setEditable(false);
-    intro.setOpaque(false);
-    intro.setBorder(BorderFactory.createEmptyBorder());
-    final HyperlinkListener hyperlinkListener =
-        e -> {
-          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-            OpenFileUtility.openUrl(e.getDescription());
-          }
-        };
-    intro.addHyperlinkListener(hyperlinkListener);
+        new JEditorPaneWithClickableLinks(getOutOfDateMessage(latestVersionOut, currentVersion));
+
     panel.add(intro, BorderLayout.NORTH);
-    final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates());
-    updates.setEditable(false);
-    updates.setOpaque(false);
-    updates.setBorder(BorderFactory.createEmptyBorder());
-    updates.addHyperlinkListener(hyperlinkListener);
-    updates.setCaretPosition(0);
+
+    final JEditorPane updates = new JEditorPaneWithClickableLinks(getOutOfDateReleaseUpdates());
+
     final JScrollPane scroll = new JScrollPane(updates);
     panel.add(scroll, BorderLayout.CENTER);
     final Dimension maxDimension = panel.getPreferredSize();
