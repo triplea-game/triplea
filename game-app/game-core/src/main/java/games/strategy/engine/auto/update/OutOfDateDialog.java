@@ -1,6 +1,5 @@
 package games.strategy.engine.auto.update;
 
-import games.strategy.triplea.UrlConstants;
 import javax.swing.JOptionPane;
 import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
