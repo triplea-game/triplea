@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.latest.version.LatestVersionClient;
 import org.triplea.http.client.latest.version.LatestVersionResponse;
-import org.triplea.util.Version;
 
 @Slf4j
 @UtilityClass
