@@ -3,15 +3,14 @@ package games.strategy.engine.auto.update;
 import games.strategy.triplea.UrlConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
 
 @UtilityClass
@@ -35,14 +34,7 @@ class OutOfDateDialog {
     panel.add(intro, BorderLayout.NORTH);
 
     final JEditorPane updates = new JEditorPaneWithClickableLinks(getOutOfDateReleaseUpdates());
-
-    final JScrollPane scroll = new JScrollPane(updates);
-    panel.add(scroll, BorderLayout.CENTER);
-    final Dimension maxDimension = panel.getPreferredSize();
-    maxDimension.width = Math.min(maxDimension.width, 700);
-    maxDimension.height = Math.min(maxDimension.height, 480);
-    panel.setMaximumSize(maxDimension);
-    panel.setPreferredSize(maxDimension);
+    panel.add(SwingComponents.newJScrollPane(updates));
     return panel;
   }
 
