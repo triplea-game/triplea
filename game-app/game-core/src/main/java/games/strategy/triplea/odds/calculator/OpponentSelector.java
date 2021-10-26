@@ -64,15 +64,15 @@ public class OpponentSelector {
    * <p>Please read the source code for the order of the players and conditions involved.
    */
   public AttackerAndDefender getAttackerAndDefender(final Territory territory) {
+    // If there is no current player, we cannot choose an opponent.
+    if (currentPlayer == null) {
+      return AttackerAndDefender.builder().build();
+    }
+
     if (territory == null) {
       // Without territory, we cannot prioritize any players (except current player)
       return getAttackerAndDefenderWithCurrentPlayerPriority();
     } else {
-      // If there is no current player, we cannot choose an opponent.
-      if (currentPlayer == null) {
-        return AttackerAndDefender.builder().build();
-      }
-
       // Select the defender to be an enemy of the current player if possible, preferring enemies
       // in the given territory. When deciding for an enemy, usually a player with more units is
       // more important and more likely to be meant, e.g. a territory with 10 units of player A and
