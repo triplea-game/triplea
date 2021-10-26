@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.latest.version.LatestVersionClient;
-import org.triplea.util.Version;
+import org.triplea.http.client.latest.version.LatestVersionResponse;
 
 @Slf4j
 @UtilityClass
@@ -18,14 +18,11 @@ public class LiveServersFetcher {
    * @return Empty optional if server fails to return a value, otherwise latest game engine version
    *     as known to the lobby-server.
    */
-  public static Optional<Version> latestVersion() {
+  public static Optional<LatestVersionResponse> latestVersion() {
     try {
-      final String latestVersion =
+      return Optional.of(
           LatestVersionClient.newClient(ClientSetting.lobbyUri.getValueOrThrow())
-              .fetchLatestVersion()
-              .getLatestEngineVersion();
-      final var version = new Version(latestVersion);
-      return Optional.of(version);
+              .fetchLatestVersion());
     } catch (final HttpInteractionException e) {
       log.info(
           "Unable to complete engine out-of-date check. (Offline or server not available?)", e);

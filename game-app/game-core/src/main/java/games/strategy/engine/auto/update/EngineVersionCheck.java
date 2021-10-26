@@ -4,12 +4,10 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.settings.ClientSetting;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.injection.Injections;
 import org.triplea.live.servers.LiveServersFetcher;
-import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.util.Version;
 
 @UtilityClass
 final class EngineVersionCheck {
@@ -25,16 +23,9 @@ final class EngineVersionCheck {
     LiveServersFetcher.latestVersion()
         .filter(
             latestVersion ->
-                latestVersion.isGreaterThan(Injections.getInstance().getEngineVersion()))
-        .ifPresent(
-            latestVersion ->
-                SwingUtilities.invokeLater(
-                    () ->
-                        EventThreadJOptionPane.showMessageDialog(
-                            null,
-                            OutOfDateDialog.showOutOfDateComponent(latestVersion),
-                            "Please Update TripleA",
-                            JOptionPane.INFORMATION_MESSAGE)));
+                new Version(latestVersion.getLatestEngineVersion())
+                    .isGreaterThan(Injections.getInstance().getEngineVersion()))
+        .ifPresent(OutOfDateDialog::showOutOfDateComponent);
   }
 
   @VisibleForTesting

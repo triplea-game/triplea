@@ -27,6 +27,8 @@ public class LatestVersionController extends HttpController {
                 Response.ok(
                         LatestVersionResponse.builder() //
                             .latestEngineVersion(latest)
+                            .releaseNotesUrl("https://triplea-game.org/release_notes/")
+                            .downloadUrl("https://triplea-game.org/download/")
                             .build())
                     .build())
         .orElseGet(() -> Response.status(503, "Unable to fetch latest version").build());
