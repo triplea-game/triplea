@@ -79,6 +79,14 @@ public class OpponentSelector {
       // 1 unit of player B. Thus, we use lists and ordered streams.
       final List<GamePlayer> playersWithUnits =
           territory.getUnitCollection().getPlayersByUnitCount();
+      // Add the territory owner add the end of the priority list.  This way, when attacking an
+      // empty territory, the owner gets preferred even though they have no units in their land. In
+      // case the owner has units in the land, then they are already in the list but adding a second
+      // entry to the list doesn't impact the algorithm.
+      final GamePlayer territoryOwner = territory.getOwner();
+      if (territoryOwner != null) {
+        playersWithUnits.add(territoryOwner);
+      }
       final Optional<GamePlayer> defender =
           getOpponentWithPriorityList(currentPlayer, playersWithUnits);
 
