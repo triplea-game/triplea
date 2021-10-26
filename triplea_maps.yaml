@@ -2355,6 +2355,13 @@
   img: https://raw.githubusercontent.com/triplea-maps/Cold_War_1950_4th_edition/master/preview.png
   description: |
     <br>A hypothetical World War 3 starting in 1950 using the Pact of Steel map
+- mapName: Pacific-Beta
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Pacific_Beta/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Pacific_Beta/master/preview.png
+  description: |
+    <br>The Pacific War. Based on the Axis & Allies: Pacific game.
 - mapName: World War II Global 1940 Ryuzaki Setup
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2global40_ryuzaki/archive/master.zip
@@ -2376,3 +2383,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Great_War-TLS-March1918/master/preview.png
   description: |
     <br>World War One, starting in March 1918, on The Great War map
+- mapName: "2020"
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/2020/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/2020/master/preview.png
+  description: |
+    <br>An alternate history where the United States has ceased to be a world power and WW3 has broken out between Canada/European Union vs Russia/China

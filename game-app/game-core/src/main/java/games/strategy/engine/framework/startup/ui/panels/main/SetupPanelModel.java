@@ -22,7 +22,9 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LoginMode;
 import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dimension;
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
@@ -34,8 +36,6 @@ import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.injection.Injections;
-import org.triplea.live.servers.LiveServersFetcher;
-import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.SwingComponents;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
@@ -133,20 +133,19 @@ public class SetupPanelModel implements ServerSetupModel {
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void login() {
-    LiveServersFetcher.fetch().ifPresent(this::promptLobbyLogin);
+    promptLobbyLogin(ClientSetting.lobbyUri.getValueOrThrow());
   }
 
-  private void promptLobbyLogin(final ServerProperties serverProperties) {
-    new LobbyLogin(ui, serverProperties)
+  private void promptLobbyLogin(final URI lobbyUri) {
+    new LobbyLogin(ui, lobbyUri)
         .promptLogin(LoginMode.REGISTRATION_NOT_REQUIRED)
-        .ifPresent(loginResult -> showLobbyWindow(loginResult, serverProperties));
+        .ifPresent(loginResult -> showLobbyWindow(loginResult, lobbyUri));
   }
 
-  private void showLobbyWindow(
-      final LoginResult loginResult, final ServerProperties serverProperties) {
-    final var lobbyClient = LobbyClient.newLobbyClient(serverProperties.getUri(), loginResult);
+  private void showLobbyWindow(final LoginResult loginResult, final URI lobbyUri) {
+    final var lobbyClient = LobbyClient.newLobbyClient(lobbyUri, loginResult);
 
-    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, serverProperties);
+    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyUri);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }

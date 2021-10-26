@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
@@ -33,4 +34,7 @@ public class LoginResult {
    * in its response to indicate the user should be prompted with a password change prompt.
    */
   private final boolean passwordChangeRequired;
+
+  /** An optional Message from the lobby to the user. */
+  @Nullable private final String loginMessage;
 }

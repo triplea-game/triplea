@@ -1,6 +1,8 @@
 package org.triplea.maps.indexing;
 
+import io.dropwizard.lifecycle.Managed;
 import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.function.BiPredicate;
 import lombok.experimental.UtilityClass;
@@ -13,6 +15,7 @@ import org.triplea.maps.indexing.tasks.DownloadSizeFetcher;
 import org.triplea.maps.indexing.tasks.MapDescriptionReader;
 import org.triplea.maps.indexing.tasks.MapNameReader;
 import org.triplea.maps.indexing.tasks.SkipMapIndexingCheck;
+import org.triplea.server.lib.scheduled.tasks.ScheduledTask;
 
 @UtilityClass
 public class MapsIndexingObjectFactory {
@@ -20,11 +23,14 @@ public class MapsIndexingObjectFactory {
    * Factory method to create indexing task on a schedule. This does not start indexing, the
    * 'start()' method must be called for map indexing to begin.
    */
-  public static MapsIndexingSchedule buildMapsIndexingSchedule(
+  public static Managed buildMapsIndexingSchedule(
       final MapsModuleConfig configuration, final Jdbi jdbi) {
-    return MapsIndexingSchedule.builder()
-        .indexingPeriodMinutes(configuration.getMapIndexingPeriodMinutes())
-        .mapIndexingTaskRunner(mapIndexingTaskRunner(configuration, jdbi))
+
+    return ScheduledTask.builder()
+        .taskName("Map-Indexing")
+        .delay(Duration.ofSeconds(10))
+        .period(Duration.ofMinutes(configuration.getMapIndexingPeriodMinutes()))
+        .task(mapIndexingTaskRunner(configuration, jdbi))
         .build();
   }
 

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.triplea.maps.MapsModuleConfig;
 import org.triplea.modules.LobbyModuleConfig;
+import org.triplea.modules.latest.version.LatestVersionModuleConfig;
 
 /**
  * This configuration class represents the configuration values in the server YML configuration. An
@@ -17,7 +18,7 @@ import org.triplea.modules.LobbyModuleConfig;
  * YML configuration file.
  */
 public class SpitfireServerConfig extends Configuration
-    implements LobbyModuleConfig, MapsModuleConfig {
+    implements LobbyModuleConfig, MapsModuleConfig, LatestVersionModuleConfig {
   /**
    * Flag that indicates if we are running in production. This can be used to verify we do not have
    * any magic stubbing and to do any additional configuration checks to be really sure production
@@ -72,4 +73,16 @@ public class SpitfireServerConfig extends Configuration
   @Getter(onMethod_ = {@JsonProperty, @Override})
   @Setter(onMethod_ = {@JsonProperty})
   private boolean errorReportToGithubEnabled;
+
+  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Setter(onMethod_ = {@JsonProperty})
+  private String githubOrg;
+
+  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Setter(onMethod_ = {@JsonProperty})
+  private String githubRepo;
+
+  @Getter(onMethod_ = {@JsonProperty})
+  @Setter(onMethod_ = {@JsonProperty})
+  private boolean latestVersionFetcherEnabled;
 }

@@ -1,14 +1,25 @@
-package org.triplea.java.cache;
+package org.triplea.java.cache.ttl;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * This is a "forgetful" cache. Data becomes inactive after a TTL (time-to-live) expires. Differing
+ * implementations will renew the TTL of a cached item at different times. For example, TTL can be
+ * renewed for example on write, on read, or with an explicit TTL renew (refresh).
+ *
+ * @param <IdT> This is an ID for the key-value cache. The ID alone is used to 'refresh' the cache
+ *     entry.
+ * @param <ValueT> This is the cached value, keyed by an ID.
+ */
 public interface TtlCache<IdT, ValueT> {
 
   /**
-   * Extends the 'life' of a given entry and prevents cache expiration for another TTL. Returns true
-   * if an element existed and was refreshed, returns false if no such element existed.
+   * Extends the 'life' of a given entry and prevents cache expiration for another TTL.
+   *
+   * @return True if an element existed and was granted another TTL. False indicates the refresh is
+   *     too late and the item expired and was removed (or never existed to begin with).
    */
   boolean refresh(IdT id);
 

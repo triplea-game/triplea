@@ -1,11 +1,11 @@
 package org.triplea.spitfire.server;
 
 import com.codahale.metrics.MetricRegistry;
-import com.google.common.collect.ImmutableList;
 import io.dropwizard.Application;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.time.Duration;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
@@ -20,11 +20,13 @@ import org.triplea.maps.indexing.MapsIndexingObjectFactory;
 import org.triplea.modules.chat.ChatMessagingService;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
+import org.triplea.modules.latest.version.LatestVersionModule;
 import org.triplea.spitfire.server.access.authentication.ApiKeyAuthenticator;
 import org.triplea.spitfire.server.access.authentication.AuthenticatedUser;
 import org.triplea.spitfire.server.access.authorization.BannedPlayerFilter;
 import org.triplea.spitfire.server.access.authorization.RoleAuthorizer;
 import org.triplea.spitfire.server.controllers.ErrorReportController;
+import org.triplea.spitfire.server.controllers.latest.version.LatestVersionController;
 import org.triplea.spitfire.server.controllers.lobby.GameHostingController;
 import org.triplea.spitfire.server.controllers.lobby.GameListingController;
 import org.triplea.spitfire.server.controllers.lobby.LobbyWatcherController;
@@ -112,6 +114,22 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
       log.info("Map indexing is disabled");
     }
 
+    final LatestVersionModule latestVersionModule = new LatestVersionModule();
+    if (configuration.isLatestVersionFetcherEnabled()) {
+      log.info("Latest Engine Version Fetching running every 30 minutes");
+      environment
+          .lifecycle()
+          .manage(
+              latestVersionModule.buildRefreshSchedule(
+                  configuration,
+                  LatestVersionModule.RefreshConfiguration.builder()
+                      .delay(Duration.ofSeconds(10L))
+                      .period(Duration.ofMinutes(30L))
+                      .build()));
+    } else {
+      log.info("Latest Engine Version Fetching is disabled");
+    }
+
     serverConfiguration.registerRequestFilter(
         environment, BannedPlayerFilter.newBannedPlayerFilter(jdbi));
 
@@ -138,43 +156,35 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
     final var chatters = Chatters.build();
     ChatMessagingService.build(chatters, jdbi).configure(playerConnectionMessagingBus);
 
-    endPointControllers(
-            configuration, jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus)
+    final GameListing gameListing = GameListing.build(jdbi, playerConnectionMessagingBus);
+    List.of(
+            // lobby module controllers
+            AccessLogController.build(jdbi),
+            BadWordsController.build(jdbi),
+            CreateAccountController.build(jdbi),
+            DisconnectUserController.build(jdbi, chatters, playerConnectionMessagingBus),
+            ForgotPasswordController.build(configuration, jdbi),
+            GameChatHistoryController.build(jdbi),
+            GameHostingController.build(jdbi),
+            GameListingController.build(gameListing),
+            LobbyWatcherController.build(configuration, jdbi, gameListing),
+            LoginController.build(jdbi, chatters),
+            UsernameBanController.build(jdbi),
+            UserBanController.build(
+                jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus),
+            ErrorReportController.build(configuration, jdbi),
+            ModeratorAuditHistoryController.build(jdbi),
+            ModeratorsController.build(jdbi),
+            MuteUserController.build(chatters),
+            PlayerInfoController.build(jdbi, chatters, gameListing),
+            PlayersInGameController.build(gameListing),
+            RemoteActionsController.build(jdbi, gameConnectionMessagingBus),
+            UpdateAccountController.build(jdbi),
+
+            // maps module controllers
+            MapsController.build(jdbi),
+            MapTagAdminController.build(jdbi),
+            LatestVersionController.build(latestVersionModule))
         .forEach(controller -> environment.jersey().register(controller));
-  }
-
-  private List<Object> endPointControllers(
-      final SpitfireServerConfig appConfig,
-      final Jdbi jdbi,
-      final Chatters chatters,
-      final WebSocketMessagingBus playerMessagingBus,
-      final WebSocketMessagingBus gameMessagingBus) {
-    final GameListing gameListing = GameListing.build(jdbi, playerMessagingBus);
-    return ImmutableList.of(
-        // lobby module controllers
-        AccessLogController.build(jdbi),
-        BadWordsController.build(jdbi),
-        CreateAccountController.build(jdbi),
-        DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
-        ForgotPasswordController.build(appConfig, jdbi),
-        GameChatHistoryController.build(jdbi),
-        GameHostingController.build(jdbi),
-        GameListingController.build(gameListing),
-        LobbyWatcherController.build(appConfig, jdbi, gameListing),
-        LoginController.build(jdbi, chatters),
-        UsernameBanController.build(jdbi),
-        UserBanController.build(jdbi, chatters, playerMessagingBus, gameMessagingBus),
-        ErrorReportController.build(appConfig, jdbi),
-        ModeratorAuditHistoryController.build(jdbi),
-        ModeratorsController.build(jdbi),
-        MuteUserController.build(chatters),
-        PlayerInfoController.build(jdbi, chatters, gameListing),
-        PlayersInGameController.build(gameListing),
-        RemoteActionsController.build(jdbi, gameMessagingBus),
-        UpdateAccountController.build(jdbi),
-
-        // maps module controllers
-        MapsController.build(jdbi),
-        MapTagAdminController.build(jdbi));
   }
 }
