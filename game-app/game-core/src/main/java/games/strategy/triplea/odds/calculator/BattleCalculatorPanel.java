@@ -1044,6 +1044,11 @@ class BattleCalculatorPanel extends JPanel {
     defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
 
     setupAttackerAndDefender();
+    if (location == null) {
+      landBattleCheckBox.setSelected(true);
+    } else {
+      landBattleCheckBox.setSelected(!location.isWater());
+    }
 
     calculator =
         new ConcurrentBattleCalculator(
@@ -1065,22 +1070,8 @@ class BattleCalculatorPanel extends JPanel {
         OpponentSelector.with(data).getAttackerAndDefender(location);
     attAndDef.getAttacker().ifPresent(this::setAttacker);
     attAndDef.getDefender().ifPresent(this::setDefender);
-
-    // Now that the attacker and defender are determined, select their units on this territory.
-    // For the defender this also includes allied units.
-    if (location == null) {
-      landBattleCheckBox.setSelected(true);
-      setDefendingUnits(null);
-      setAttackingUnits(null);
-    } else {
-      landBattleCheckBox.setSelected(!location.isWater());
-      setAttackingUnits(
-          location.getUnitCollection().getMatches(Matches.unitIsOwnedBy(getAttacker())));
-      setDefendingUnits(
-          location
-              .getUnitCollection()
-              .getMatches(Matches.alliedUnit(getDefender(), data.getRelationshipTracker())));
-    }
+    setAttackingUnits(attAndDef.getAttackingUnits());
+    setDefendingUnits(attAndDef.getDefendingUnits());
   }
 
   GamePlayer getAttacker() {
