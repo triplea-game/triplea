@@ -1,11 +1,13 @@
 package games.strategy.triplea.odds.calculator;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.strategy.engine.data.GameData;
@@ -53,8 +55,8 @@ public class OpponentSelectorTest {
     // Fight in Germany -> Germans defend
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(germany);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(germans, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
   }
 
   @Test
@@ -62,8 +64,8 @@ public class OpponentSelectorTest {
     // Fight in Japan -> Japans defend
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(japan);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(japanese, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
   }
 
   @Test
@@ -71,8 +73,8 @@ public class OpponentSelectorTest {
     // Fight in Britain -> Germans defend (British are allied; Germans are the first enemy)
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(unitedKingdom);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(germans, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
   }
 
   @Test
@@ -81,8 +83,8 @@ public class OpponentSelectorTest {
     addTo(germany, infantry(gameData).create(100, japanese));
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(germany);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(japanese, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
   }
 
   @Test
@@ -91,8 +93,8 @@ public class OpponentSelectorTest {
     addTo(japan, infantry(gameData).create(100, germans));
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(japan);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(germans, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
   }
 
   @Test
@@ -102,8 +104,8 @@ public class OpponentSelectorTest {
     addTo(unitedKingdom, infantry(gameData).create(100, americans));
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(unitedKingdom);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(germans, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
   }
 
   @Test
@@ -113,8 +115,8 @@ public class OpponentSelectorTest {
     addTo(germany, infantry(gameData).create(100, japanese));
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(germany);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(japanese, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
   }
 
   @Test
@@ -123,7 +125,7 @@ public class OpponentSelectorTest {
     addTo(japan, infantry(gameData).create(100, americans));
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(japan);
-    assertEquals(russians, attAndDef.getAttacker().get());
-    assertEquals(japanese, attAndDef.getDefender().get());
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
   }
 }
