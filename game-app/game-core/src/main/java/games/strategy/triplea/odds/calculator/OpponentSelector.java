@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +32,8 @@ public class OpponentSelector {
   public static class AttackerAndDefender {
     @Nullable private final GamePlayer attacker;
     @Nullable private final GamePlayer defender;
+    @Builder.Default private final List<Unit> attackingUnits = List.of();
+    @Builder.Default private final List<Unit> defendingUnits = List.of();
 
     public Optional<GamePlayer> getAttacker() {
       return Optional.ofNullable(attacker);
@@ -70,8 +73,9 @@ public class OpponentSelector {
     }
 
     if (territory == null) {
-      // Without territory, we cannot prioritize any players (except current player)
-      return getAttackerAndDefenderWithCurrentPlayerPriority();
+      // Without territory, we cannot prioritize any players (except current player); no units to
+      // select.
+      return getAttackerAndDefenderWithCurrentPlayerPriority().build();
     } else {
       // Select the defender to be an enemy of the current player if possible, preferring enemies
       // in the given territory. When deciding for an enemy, usually a player with more units is
@@ -87,12 +91,25 @@ public class OpponentSelector {
       if (territoryOwner != null) {
         playersWithUnits.add(territoryOwner);
       }
-      final Optional<GamePlayer> defender =
-          getOpponentWithPriorityList(currentPlayer, playersWithUnits);
+      final GamePlayer attacker = currentPlayer;
+      final Optional<GamePlayer> defender = getOpponentWithPriorityList(attacker, playersWithUnits);
+      // Attacker fights alone; the defender can also use all the allied units.
+      final List<Unit> attackingUnits =
+          territory.getUnitCollection().getMatches(Matches.unitIsOwnedBy(attacker));
+      final List<Unit> defendingUnits =
+          defender
+              .map(
+                  p ->
+                      territory
+                          .getUnitCollection()
+                          .getMatches(Matches.alliedUnit(p, relationshipTracker)))
+              .orElseGet(List::of);
 
       return AttackerAndDefender.builder()
           .attacker(currentPlayer)
           .defender(defender.orElse(null))
+          .attackingUnits(attackingUnits)
+          .defendingUnits(defendingUnits)
           .build();
     }
   }
@@ -106,7 +123,8 @@ public class OpponentSelector {
    * @return attacker and defender
    * @see #getAttackerAndDefenderWithPriorityList(List)
    */
-  private AttackerAndDefender getAttackerAndDefenderWithCurrentPlayerPriority() {
+  private AttackerAndDefender.AttackerAndDefenderBuilder
+      getAttackerAndDefenderWithCurrentPlayerPriority() {
     return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer));
   }
 
@@ -137,13 +155,13 @@ public class OpponentSelector {
    * @param priorityPlayers an ordered list of players which should be considered first
    * @return attacker and defender
    */
-  private AttackerAndDefender getAttackerAndDefenderWithPriorityList(
+  private AttackerAndDefender.AttackerAndDefenderBuilder getAttackerAndDefenderWithPriorityList(
       final List<GamePlayer> priorityPlayers) {
     // Attacker
     final Optional<GamePlayer> attacker =
         Stream.of(priorityPlayers.stream(), players.stream()).flatMap(s -> s).findFirst();
     if (attacker.isEmpty()) {
-      return AttackerAndDefender.builder().attacker(null).defender(null).build();
+      return AttackerAndDefender.builder().attacker(null).defender(null);
     }
     // Defender
     assert (!attacker.isEmpty());
@@ -151,8 +169,7 @@ public class OpponentSelector {
         getOpponentWithPriorityList(attacker.get(), priorityPlayers);
     return AttackerAndDefender.builder()
         .attacker(attacker.orElse(null))
-        .defender(defender.orElse(null))
-        .build();
+        .defender(defender.orElse(null));
   }
 
   /**
