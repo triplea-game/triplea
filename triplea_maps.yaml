@@ -2390,3 +2390,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/2020/master/preview.png
   description: |
     <br>An alternate history where the United States has ceased to be a world power and WW3 has broken out between Canada/European Union vs Russia/China
+- mapName: Pearl Harbor 1941
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/PearlHarbor1941/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/PearlHarbor1941/master/preview.png
+  description: |
+    <br>World War Two on the Classic Map, starting with the Japanese attack on Pearl Harbor
