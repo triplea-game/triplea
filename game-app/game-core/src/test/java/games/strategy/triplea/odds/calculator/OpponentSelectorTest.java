@@ -27,51 +27,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.hamcrest.Matcher;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class OpponentSelectorTest {
 
-  private GameData gameData;
-  private Territory germany;
-  private Territory japan;
-  private Territory kenya;
-  private Territory russia;
-  private Territory unitedKingdom;
-  private Territory seaZone32;
-  private GamePlayer russians;
-  private GamePlayer germans;
-  private GamePlayer british;
-  private GamePlayer japanese;
-  private GamePlayer americans;
-  private List<GamePlayer> players;
-  private OpponentSelector opponentSelector;
-
-  @BeforeEach
-  void setupGame() {
-    gameData = TestMapGameData.REVISED.getGameData();
-    germany = gameData.getMap().getTerritory("Germany");
-    japan = gameData.getMap().getTerritory("Japan");
-    kenya = gameData.getMap().getTerritory("Kenya");
-    russia = gameData.getMap().getTerritory("Russia");
-    unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
-    seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
-    russians = russians(gameData);
-    germans = germans(gameData);
-    british = british(gameData);
-    japanese = japanese(gameData);
-    americans = americans(gameData);
-    players = List.of(russians, germans, british, japanese, americans);
-    opponentSelector =
-        OpponentSelector.builder()
-            .players(players)
-            .currentPlayer(russians)
-            .relationshipTracker(gameData.getRelationshipTracker())
-            .build();
-  }
+  private GameData gameData = TestMapGameData.REVISED.getGameData();
+  private GamePlayer russians = russians(gameData);
+  private GamePlayer germans = germans(gameData);
+  private GamePlayer british = british(gameData);
+  private GamePlayer japanese = japanese(gameData);
+  private GamePlayer americans = americans(gameData);
+  private List<GamePlayer> players = List.of(russians, germans, british, japanese, americans);
+  private OpponentSelector opponentSelector =
+      OpponentSelector.builder()
+          .players(players)
+          .currentPlayer(russians)
+          .relationshipTracker(gameData.getRelationshipTracker())
+          .build();
 
   @Test
   void testNoCurrentPlayer() {
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     opponentSelector =
         OpponentSelector.builder()
             .players(players)
@@ -102,6 +78,7 @@ public class OpponentSelectorTest {
   @Test
   void testSingleDefender1() {
     // Fight in Germany -> Germans defend
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Matcher<Unit>> expectedUnits =
         germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
@@ -117,8 +94,9 @@ public class OpponentSelectorTest {
   @Test
   void testSingleDefender2() {
     // Fight in Japan -> Japans defend
+    final Territory japan = gameData.getMap().getTerritory("Japan");
     final List<Matcher<Unit>> expectedUnits =
-        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
+        japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .collect(Collectors.toList());
     final OpponentSelector.AttackerAndDefender attAndDef =
@@ -132,6 +110,7 @@ public class OpponentSelectorTest {
   @Test
   void testSingleDefender3() {
     // Fight in Britain -> "some enemy" defends (British are allied
+    final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(unitedKingdom);
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
@@ -146,6 +125,7 @@ public class OpponentSelectorTest {
   @Test
   void testMultipleDefenders1() {
     // Fight in Germany -> 100 Japanese defend
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Unit> expectedUnits0 =
         germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans));
     expectedUnits0.addAll(infantry(gameData).create(100, japanese));
@@ -166,8 +146,9 @@ public class OpponentSelectorTest {
   @Test
   void testMultipleDefenders2() {
     // Fight in Japan -> 100 Germans defend
+    final Territory japan = gameData.getMap().getTerritory("Japan");
     final List<Unit> expectedUnits0 =
-        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese));
+        japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese));
     expectedUnits0.addAll(infantry(gameData).create(100, germans));
     final List<Matcher<Unit>> expectedUnits =
         expectedUnits0.stream()
@@ -187,6 +168,7 @@ public class OpponentSelectorTest {
   void testMultipleDefenders3() {
     // Fight in Britain -> Germans defend (British & Americans are allied; Germans are the first
     // enemy)
+    final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
     addTo(unitedKingdom, infantry(gameData).create(100, americans));
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(unitedKingdom);
@@ -199,6 +181,7 @@ public class OpponentSelectorTest {
   @Test
   void testMixedDefendersAlliesAndEnemies1() {
     // Fight in Germany -> Japanese defend, Americans are allied
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Unit> expectedUnits0 =
         germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans));
     expectedUnits0.addAll(infantry(gameData).create(100, japanese));
@@ -220,8 +203,9 @@ public class OpponentSelectorTest {
   @Test
   void testMixedDefendersAlliesAndEnemies2() {
     // Fight in Japan -> Japanese defend, Americans are allied
+    final Territory japan = gameData.getMap().getTerritory("Japan");
     final List<Matcher<Unit>> expectedUnits =
-        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
+        japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .collect(Collectors.toList());
     addTo(japan, infantry(gameData).create(100, americans));
@@ -236,6 +220,7 @@ public class OpponentSelectorTest {
   @Test
   void testNoDefender() {
     // Algorithm only ensures "some enemy" as defender
+    final Territory seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
     final OpponentSelector.AttackerAndDefender attAndDef =
         opponentSelector.getAttackerAndDefender(seaZone32);
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
@@ -250,6 +235,7 @@ public class OpponentSelectorTest {
   @Test
   void testNoDefenderOnEnemyTerritory() {
     // Fight in Kenya -> British (territory owner) defend
+    final Territory kenya = gameData.getMap().getTerritory("Kenya");
     opponentSelector =
         OpponentSelector.builder()
             .players(players)
@@ -270,6 +256,7 @@ public class OpponentSelectorTest {
   void testNoDefenderAllPlayersAllied() {
     // Every player is allied with every other player, i.e. there are no enemies. In this case the
     // algorithm only ensures "some player" as defender.
+    final Territory seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
     opponentSelector =
         OpponentSelector.builder()
             .players(List.of(russians, british, americans)) // only allies
@@ -289,8 +276,9 @@ public class OpponentSelectorTest {
   @Test
   void testAttackOnOwnTerritory() {
     // Fight in Russia -> russian army attacks, "some enemy" defends
+    final Territory russia = gameData.getMap().getTerritory("Russia");
     final List<Matcher<Unit>> expectedUnits =
-        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(russians)).stream()
+        russia.getUnitCollection().getMatches(Matches.unitIsOwnedBy(russians)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .collect(Collectors.toList());
     final OpponentSelector.AttackerAndDefender attAndDef =
