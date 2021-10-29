@@ -2397,3 +2397,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/PearlHarbor1941/master/preview.png
   description: |
     <br>World War Two on the Classic Map, starting with the Japanese attack on Pearl Harbor
+- mapName: Libyan Civil War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/wd_Libya/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/wd_Libya/master/preview.png
+  description: |
+    <br>The Libyan Civil War of 2010
