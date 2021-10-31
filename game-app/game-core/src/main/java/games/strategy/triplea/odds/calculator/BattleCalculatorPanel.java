@@ -1043,12 +1043,13 @@ class BattleCalculatorPanel extends JPanel {
     attackingUnitsPanel.addChangeListener(this::setWidgetActivation);
     defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
 
-    setupAttackerAndDefender();
+    // Note: Setting landBattleCheckBox resets the units. Thus, set the units after this.
     if (location == null) {
       landBattleCheckBox.setSelected(true);
     } else {
       landBattleCheckBox.setSelected(!location.isWater());
     }
+    setupAttackerAndDefender();
 
     calculator =
         new ConcurrentBattleCalculator(
