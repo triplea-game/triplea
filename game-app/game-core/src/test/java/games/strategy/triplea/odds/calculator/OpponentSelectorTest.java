@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -36,7 +37,8 @@ public class OpponentSelectorTest {
   private GamePlayer british = british(gameData);
   private GamePlayer japanese = japanese(gameData);
   private GamePlayer americans = americans(gameData);
-  private List<GamePlayer> players = List.of(russians, germans, british, japanese, americans);
+  private List<GamePlayer> players =
+      List.of(russians, germans, british, japanese, americans, GamePlayer.NULL_PLAYERID);
   private OpponentSelector opponentSelector =
       OpponentSelector.builder()
           .players(players)
@@ -227,6 +229,7 @@ public class OpponentSelectorTest {
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
     assertThat(gameData.getRelationshipTracker().isAtWar(attacker.get(), defender.get()), is(true));
+    assertThat(defender.get(), is(not(GamePlayer.NULL_PLAYERID)));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }

@@ -91,7 +91,7 @@ public class OpponentSelector {
       // case the owner has units in the land, then they are already in the list but adding a second
       // entry to the list doesn't impact the algorithm.
       final GamePlayer territoryOwner = territory.getOwner();
-      if (territoryOwner != null) {
+      if (territoryOwner != GamePlayer.NULL_PLAYERID) {
         playersWithUnits.add(territoryOwner);
       }
       final GamePlayer attacker = currentPlayer;
