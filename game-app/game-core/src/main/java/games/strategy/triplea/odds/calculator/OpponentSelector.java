@@ -32,6 +32,7 @@ public class OpponentSelector {
   public static class AttackerAndDefender {
     /** NONE = No attacker, no defender and no units. */
     public static final AttackerAndDefender NONE = AttackerAndDefender.builder().build();
+
     @Nullable private final GamePlayer attacker;
     @Nullable private final GamePlayer defender;
     @Builder.Default private final List<Unit> attackingUnits = List.of();
