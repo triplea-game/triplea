@@ -19,6 +19,8 @@ import org.triplea.util.Services;
 /** Provides methods to work with common file locations in a client installation. */
 @Slf4j
 public final class ClientFileSystemHelper {
+  private static Path codeSourceLocation = null;
+
   private ClientFileSystemHelper() {}
 
   /**
@@ -38,19 +40,32 @@ public final class ClientFileSystemHelper {
     }
   }
 
-  private static Path getCodeSourceFolder() throws IOException {
-    final ApplicationContext applicationContext = Services.loadAny(ApplicationContext.class);
-    final @Nullable CodeSource codeSource =
-        applicationContext.getMainClass().getProtectionDomain().getCodeSource();
-    if (codeSource == null) {
-      throw new IOException("code source is not available");
-    }
+  public static void setCodeSourceFolder(final Path sourceFolder) {
+    codeSourceLocation = sourceFolder;
+  }
 
-    final Path codeSourceLocation;
-    try {
-      codeSourceLocation = Path.of(codeSource.getLocation().toURI());
-    } catch (final URISyntaxException e) {
-      throw new IOException("code source location URI is malformed", e);
+  /**
+   * TripleA stores two folders, one for user content that survives between game installs, and a
+   * second that contains binaries. This method returns the 'user folder', which contains maps and
+   * save games.
+   *
+   * @return Folder that contains binaries. This folder
+   *     would contain e.g. resources that are not specific to a particular game.
+   */
+  public static Path getCodeSourceFolder() throws IOException {
+    if (codeSourceLocation == null) {
+      final ApplicationContext applicationContext = Services.loadAny(ApplicationContext.class);
+      final @Nullable CodeSource codeSource =
+          applicationContext.getMainClass().getProtectionDomain().getCodeSource();
+      if (codeSource == null) {
+        throw new IOException("code source is not available");
+      }
+
+      try {
+        codeSourceLocation = Path.of(codeSource.getLocation().toURI());
+      } catch (final URISyntaxException e) {
+        throw new IOException("code source location URI is malformed", e);
+      }
     }
 
     // code source location is either a jar file (installation) or a folder (dev environment)

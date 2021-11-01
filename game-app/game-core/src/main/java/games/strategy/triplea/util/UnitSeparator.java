@@ -39,9 +39,8 @@ public class UnitSeparator {
     @Builder.Default final boolean transportCost = false;
     /** whether to categorize transports by movement */
     @Builder.Default final boolean transportMovement = false;
-    /** whether to categorize by amphibious */
-    @Builder.Default final boolean amphibious = false;
-  }
+    /** whether to categorize by whether the unit can retreat or not */
+    @Builder.Default final boolean retreatPossibility = false;  }
 
   /**
    * Finds unit categories, removes not displayed, and then sorts them into logical order to display
@@ -106,9 +105,10 @@ public class UnitSeparator {
       if (separatorCategories.dependents != null) {
         currentDependents = separatorCategories.dependents.get(current);
       }
-      boolean unitAmphibious = false;
-      if (separatorCategories.amphibious) {
-        unitAmphibious = current.getWasAmphibious();
+      boolean canRetreat = true;
+      if (separatorCategories.retreatPossibility) {
+        // only time a unit can't retreat is if the unit was amphibious
+        canRetreat = !current.getWasAmphibious();
       }
       final boolean disabled = Matches.unitIsDisabled().test(current);
       final UnitCategory entry =
@@ -120,7 +120,7 @@ public class UnitSeparator {
               current.getUnitDamage(),
               disabled,
               unitTransportCost,
-              unitAmphibious);
+              canRetreat);
       // we test to see if we have the key using equals, then since
       // key maps to key, we retrieve it to add the unit to the correct category
       if (categories.containsKey(entry)) {

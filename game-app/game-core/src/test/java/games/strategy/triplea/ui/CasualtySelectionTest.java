@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.ui.CasualtySelection.playerMayChooseToDistributeHitsToUnitsWithDifferentMovement;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import games.strategy.engine.data.GameData;
@@ -14,12 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class BattleDisplayTest {
-  private GameData gameData = TestMapGameData.REVISED.getGameData();
-  private GamePlayer player1 = new GamePlayer("player1", gameData);
-  private GamePlayer player2 = new GamePlayer("player2", gameData);
+class CasualtySelectionTest {
+  CasualtySelectionTest() {
+    System.out.println("costrictiong CasualtySelectionTest");
+  }
 
-  private UnitType givenUnitType(final String name) {
+  private static final GameData gameData = TestMapGameData.BIG_WORLD_1942_V3.getGameData();
+  private static final GamePlayer player1 = new GamePlayer("player1", gameData);
+  private static final GamePlayer player2 = new GamePlayer("player2", gameData);
+  private static boolean windowClosed = false;
+
+
+  private static UnitType givenUnitType(final String name) {
     final UnitType unitType = new UnitType(name, gameData);
     final UnitAttachment unitAttachment = new UnitAttachment(name, unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
@@ -34,15 +41,14 @@ class BattleDisplayTest {
     UnitAttachment.get(dragon).setMovement(4);
     UnitAttachment.get(dragon).setIsAir(true);
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(dragon.createTemp(2, player));
+    final List<Unit> units = new ArrayList<>(dragon.createTemp(2, player));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
     assertThat(
         "Air units with different movement points should cause that the player can choose",
-        BattleDisplay.playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
+        playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
   }
 
   @Test
@@ -53,8 +59,7 @@ class BattleDisplayTest {
     UnitAttachment.get(dragon).setMovement(4);
     UnitAttachment.get(dragon).setIsAir(true);
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(dragon.createTemp(2, player));
+    final List<Unit> units = new ArrayList<>(dragon.createTemp(2, player));
 
     units.get(0).setHits(1);
     units.get(1).setHits(1);
@@ -64,7 +69,7 @@ class BattleDisplayTest {
 
     assertThat(
         "Air units with only one hitpoint left should not cause that the player can choose",
-        !BattleDisplay.playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
+        !playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
   }
 
   @Test
@@ -84,6 +89,6 @@ class BattleDisplayTest {
     assertThat(
         "Non-air units should not affect if the player chooses between units"
             +" with different movement points",
-        !BattleDisplay.playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
+        !playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
   }
 }

@@ -20,17 +20,14 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -127,28 +124,26 @@ public class CasualtySelector {
 
     CasualtyDetails casualtySelection =
         hitsRemaining >= totalHitpoints
-                || allTargetsOneTypeOneHitPoint(sortedTargetsToPickFrom, dependents)
+            || allTargetsOneTypeOneHitPoint(
+            sortedTargetsToPickFrom,
+            dependents,
+            Properties.getPartialAmphibiousRetreat(data.getProperties()))
             ? new CasualtyDetails(defaultCasualties, true)
             : tripleaPlayer.selectCasualties(
-                sortedTargetsToPickFrom,
-                dependents,
-                hitsRemaining,
-                text,
-                dice,
-                player,
-                combatValue.getFriendUnits(),
-                combatValue.getEnemyUnits(),
-                false,
-                List.of(),
-                defaultCasualties,
-                battleId,
-                battlesite,
-                allowMultipleHitsPerUnit);
-    final List<Unit> killed = casualtySelection.getKilled();
-    // if partial retreat is possible, kill amphibious units first
-    if (Properties.getPartialAmphibiousRetreat(data.getProperties())) {
-      killAmphibiousFirst(killed, sortedTargetsToPickFrom);
-    }
+            sortedTargetsToPickFrom,
+            dependents,
+            hitsRemaining,
+            text,
+            dice,
+            player,
+            combatValue.getFriendUnits(),
+            combatValue.getEnemyUnits(),
+            false,
+            List.of(),
+            defaultCasualties,
+            battleId,
+            battlesite,
+            allowMultipleHitsPerUnit);
 
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       final boolean isUnitWithMarineBonusAndWasAmphibiousKilled =
@@ -174,6 +169,7 @@ public class CasualtySelector {
     }
 
     final List<Unit> damaged = casualtySelection.getDamaged();
+    final List<Unit> killed = casualtySelection.getKilled();
     int numhits = killed.size();
     if (!allowMultipleHitsPerUnit) {
       damaged.clear();
@@ -198,7 +194,7 @@ public class CasualtySelector {
                 + " != number of hits to take "
                 + Math.min(hitsRemaining, totalHitpoints)
                 + ", for "
-                + casualtySelection.toString());
+                + casualtySelection);
       }
       return selectCasualties(
           player,
@@ -222,7 +218,7 @@ public class CasualtySelector {
             "Possible Infinite Loop: Cannot remove enough units of those types: targets "
                 + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom)
                 + ", for "
-                + casualtySelection.toString());
+                + casualtySelection);
       }
       return selectCasualties(
           player,
@@ -238,44 +234,6 @@ public class CasualtySelector {
           allowMultipleHitsPerUnit);
     }
     return casualtySelection;
-  }
-
-  private static void killAmphibiousFirst(final List<Unit> killed, final Collection<Unit> targets) {
-    // Get a list of all selected killed units that are NOT amphibious
-    final Predicate<Unit> match = Matches.unitIsLand().and(Matches.unitWasNotAmphibious());
-    final Collection<Unit> killedNonAmphibUnits =
-        new ArrayList<>(CollectionUtils.getMatches(killed, match));
-    // If all killed units are amphibious, just return them
-    if (killedNonAmphibUnits.isEmpty()) {
-      return;
-    }
-    // Get a list of all units that are amphibious and remove those that are killed
-    final Collection<Unit> allAmphibUnits =
-        new ArrayList<>(CollectionUtils.getMatches(targets, Matches.unitWasAmphibious()));
-    allAmphibUnits.removeAll(CollectionUtils.getMatches(killed, Matches.unitWasAmphibious()));
-    // Get a collection of the unit types of the amphib units
-    final Collection<UnitType> amphibTypes = new ArrayList<>();
-    for (final Unit unit : allAmphibUnits) {
-      final UnitType ut = unit.getType();
-      if (!amphibTypes.contains(ut)) {
-        amphibTypes.add(ut);
-      }
-    }
-    // For each killed unit- see if there is an amphib unit that can be killed instead
-    for (final Unit unit : killedNonAmphibUnits) {
-      if (amphibTypes.contains(unit.getType())) { // add a unit from the collection
-        final List<Unit> oneAmphibUnit =
-            CollectionUtils.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
-        if (!oneAmphibUnit.isEmpty()) {
-          final Unit amphibUnit = oneAmphibUnit.iterator().next();
-          killed.remove(unit);
-          killed.add(amphibUnit);
-          allAmphibUnits.remove(amphibUnit);
-        } else { // If there are no more units of that type, remove the type from the collection
-          amphibTypes.remove(unit.getType());
-        }
-      }
-    }
   }
 
   /**
@@ -344,16 +302,22 @@ public class CasualtySelector {
 
   /**
    * Checks if the given collections target are all of one category as defined by
-   * UnitSeparator.categorize and they are not two hit units.
+   * <code>UnitSeparator.categorize</code> and they are not two hit units.
    *
    * @param targets a collection of target units
    * @param dependents map of depend units for target units
    */
   private static boolean allTargetsOneTypeOneHitPoint(
-      final Collection<Unit> targets, final Map<Unit, Collection<Unit>> dependents) {
+      final Collection<Unit> targets,
+      final Map<Unit, Collection<Unit>> dependents,
+      final boolean separateByRetreatPossibility) {
     final Set<UnitCategory> categorized =
         UnitSeparator.categorize(
-            targets, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
+            targets,
+            UnitSeparator.SeparatorCategories.builder()
+                .retreatPossibility(separateByRetreatPossibility)
+                .dependents(dependents)
+                .build());
     if (categorized.size() == 1) {
       final UnitCategory unitCategory = categorized.iterator().next();
       return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;

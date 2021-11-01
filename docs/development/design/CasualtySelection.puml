@@ -1,0 +1,61 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+hide empty members
+
+class BattleDisplay
+
+class CasualtySelection
+
+class UnitChooser {
+    changedValue()
+}
+
+class UnitSeparator
+
+class UnitCategory
+
+class ChooserEntry {
+}
+
+class UnitChooserEntryIcon {
+    paint()
+}
+
+class ScrollableTextField
+
+class JComponent <<swing>>
+class JOptionPane <<swing>>
+class JPanel <<swing>>
+class JScrollPane <<swing>>
+
+skinparam class {
+    BackgroundColor #FFFFCC
+    BackgroundColor<<swing>> #DAE3F3
+}
+
+BattleDisplay "dialogParent" --> CasualtySelection : new
+
+CasualtySelection *-- "chooser\n" UnitChooser
+CasualtySelection --> JScrollPane : new
+CasualtySelection *- JOptionPane
+
+JScrollPane --> "view" UnitChooser
+JOptionPane o- JScrollPane
+
+JPanel <|- UnitChooser
+UnitChooser -> UnitSeparator : new
+UnitSeparator -> UnitCategory : new
+
+UnitChooser *-- "entries" ChooserEntry
+
+
+ChooserEntry *-"1" UnitCategory
+ChooserEntry *-- "1..*" UnitChooserEntryIcon
+ScrollableTextField <- ChooserEntry : new
+JPanel <|-- ScrollableTextField
+UnitChooser::changedValue <-- ScrollableTextField
+
+JComponent <|- UnitChooserEntryIcon
+
+@enduml

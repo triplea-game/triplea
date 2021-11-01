@@ -27,7 +27,6 @@ import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -35,13 +34,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,11 +46,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -518,8 +512,10 @@ public class BattleDisplay extends JPanel {
     final AtomicReference<CasualtyDetails> casualtyDetails =
         new AtomicReference<>(new CasualtyDetails());
     final CountDownLatch continueLatch = new CountDownLatch(1);
+
     SwingUtilities.invokeLater(
         () -> {
+
           final boolean isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
           if (!isEditMode) {
             dicePanel.setDiceRoll(dice);
@@ -529,138 +525,42 @@ public class BattleDisplay extends JPanel {
           final String countStr = isEditMode ? "" : "" + count;
           final String btnText =
               hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
+          final CasualtySelection csd = new CasualtySelection(
+              selectFrom,
+              dependents,
+              count,
+              message + " " + btnText + ".",
+              hit,
+              defaultCasualties,
+              allowMultipleHitsPerUnit,
+              uiContext,
+              BattleDisplay.this,
+              isEditMode
+          );
+
           actionButton.setAction(
-              new AbstractAction(btnText) {
-                private static final long serialVersionUID = -2156028313292233568L;
-                private UnitChooser chooser;
-                private JScrollPane chooserScrollPane;
+            new AbstractAction(btnText) {
+              @Override
+              public void actionPerformed(final ActionEvent e) {
+                actionButton.setEnabled(false);
 
-                @Override
-                public void actionPerformed(final ActionEvent e) {
-                  actionButton.setEnabled(false);
-                  final String messageText = message + " " + btnText + ".";
-                  final boolean movementForAirUnitsOnly =
-                      playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(selectFrom);
+                final CasualtyDetails selectedCasualties = csd.showModalDialog().orElse(null);
 
-                  if (chooser == null || chooserScrollPane == null) {
-                    chooser =
-                        new UnitChooser(
-                            selectFrom,
-                            defaultCasualties,
-                            dependents,
-                            movementForAirUnitsOnly,
-                            allowMultipleHitsPerUnit,
-                            uiContext);
-                    chooser.setTitle(messageText);
-                    if (isEditMode) {
-                      chooser.disableMax();
-                    } else {
-                      chooser.setMax(count);
-                    }
-                    chooserScrollPane = new JScrollPane(chooser);
-                    final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-                    final int availHeight = screenResolution.height - 130;
-                    final int availWidth = screenResolution.width - 30;
-                    chooserScrollPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-                    final Dimension size = chooserScrollPane.getPreferredSize();
-                    chooserScrollPane.setPreferredSize(
-                        new Dimension(
-                            Math.min(
-                                availWidth,
-                                size.width
-                                    + (size.height > availHeight
-                                        ? chooserScrollPane
-                                            .getVerticalScrollBar()
-                                            .getPreferredSize()
-                                            .width
-                                        : 0)),
-                            Math.min(availHeight, size.height)));
-                  }
-                  final String[] options = {"Ok", "Cancel"};
-                  final String focus =
-                      ClientSetting.spaceBarConfirmsCasualties.getValueOrThrow()
-                          ? options[0]
-                          : null;
-                  final int option =
-                      JOptionPane.showOptionDialog(
-                          BattleDisplay.this,
-                          chooserScrollPane,
-                          hit.getName() + " select casualties",
-                          JOptionPane.YES_NO_OPTION,
-                          JOptionPane.PLAIN_MESSAGE,
-                          null,
-                          options,
-                          focus);
-                  if (option != 0) {
-                    actionButton.setEnabled(true);
-                    return;
-                  }
-                  final List<Unit> killed = chooser.getSelected(false);
-                  final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
-                  if (!isEditMode && (killed.size() + damaged.size() != count)) {
-                    JOptionPane.showMessageDialog(
-                        BattleDisplay.this,
-                        "Wrong number of casualties selected",
-                        hit.getName() + " select casualties",
-                        JOptionPane.ERROR_MESSAGE);
-                  } else {
-                    final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
-                    casualtyDetails.set(response);
-                    dicePanel.removeAll();
-                    actionButton.setAction(nullAction);
-                    continueLatch.countDown();
-                  }
-                  actionButton.setEnabled(true);
+                if (selectedCasualties != null) {
+                  casualtyDetails.set(selectedCasualties);
+                  dicePanel.removeAll();
+                  continueLatch.countDown();
                 }
 
-              });
-        });
+                actionButton.setAction(nullAction);
+              }
+          });
+    });
+
     uiContext.addShutdownLatch(continueLatch);
     Interruptibles.await(continueLatch);
     uiContext.removeShutdownLatch(continueLatch);
     return casualtyDetails.get();
-  }
-
-  /**
-   * This method determines whether the system should let the player choose
-   * how to distribute hits between units of the same owner and type
-   * differentiating by the movement points left.
-   *
-   * This is only considered to be the case if there are
-   * - air units
-   * - that can take damage without bing killed
-   *   (i.e. that have more than one hitpoint left) and
-   * - that have different movement points left.
-   *
-   * @param units among which the hits have to distributed
-   * @return {@code true} iff the system should let the player choose
-   */
-
-  static boolean playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(
-      final Collection<Unit> units) {
-    final Map<UnitOwner, List<Unit>> unitsGroupedByOwnerAndType =
-        units.stream()
-            .filter(Matches.unitIsAir())
-            .filter(Unit::canTakeHitWithoutBeingKilled)
-            .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
-
-    for (final UnitOwner ownerAndType : unitsGroupedByOwnerAndType.keySet()) {
-      final Iterator<Unit> unitsOfSameOwnerAndType =
-          unitsGroupedByOwnerAndType.get(ownerAndType).iterator();
-
-      final BigDecimal movementOfFirstUnit =
-          unitsOfSameOwnerAndType.next().getMovementLeft();
-
-      while (unitsOfSameOwnerAndType.hasNext()) {
-        final Unit next = unitsOfSameOwnerAndType.next();
-
-        if (!next.getMovementLeft().equals(movementOfFirstUnit)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
   }
 
   private void initLayout() {
@@ -811,7 +711,7 @@ public class BattleDisplay extends JPanel {
     this.steps.listBattle(steps);
   }
 
-  private static JComponent getPlayerComponent(final GamePlayer gamePlayer) {
+  static JComponent getPlayerComponent(final GamePlayer gamePlayer) {
     final JLabel player = new JLabel(gamePlayer.getName());
     player.setBorder(new EmptyBorder(5, 5, 5, 5));
     player.setFont(player.getFont().deriveFont((float) 14));

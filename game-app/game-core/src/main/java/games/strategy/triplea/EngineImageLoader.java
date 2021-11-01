@@ -1,5 +1,6 @@
 package games.strategy.triplea;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import java.awt.Image;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +14,7 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class EngineImageLoader {
+  public final String ASSETS_FOLDER = "assets";
 
   public Image loadFrameIcon() {
     return loadImage("icons", "ta_icon.png");
@@ -24,7 +26,19 @@ public class EngineImageLoader {
    * @param path Path from assets folder to image, eg: loadImage("folder-in-assets", "image.png");
    */
   public Image loadImage(final String... path) {
-    final Path imageFilePath = createPathToImage(path);
+    Path imageFilePath = createPathToImage(path);
+
+    if (!Files.exists(imageFilePath)) {
+      try {
+        imageFilePath =
+            ClientFileSystemHelper.getCodeSourceFolder().resolve(createPathToImage(path));
+      } catch (final IOException e) {
+        throw new IllegalStateException(
+            "Error loading image at: ClientFileSystemHelper.getCodeSourceFolder(), "
+                + e.getMessage(),
+            e);
+      }
+    }
 
     if (!Files.exists(imageFilePath)) {
       throw new IllegalStateException(
@@ -39,8 +53,8 @@ public class EngineImageLoader {
     }
   }
 
-  private Path createPathToImage(final String... path) {
-    Path imageFilePath = Path.of("assets");
+  protected Path createPathToImage(final String... path) {
+    Path imageFilePath = Path.of(ASSETS_FOLDER);
     for (final String pathPart : path) {
       imageFilePath = imageFilePath.resolve(pathPart);
     }
