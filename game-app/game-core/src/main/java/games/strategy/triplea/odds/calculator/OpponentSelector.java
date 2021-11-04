@@ -147,18 +147,21 @@ public class OpponentSelector {
   private AttackerAndDefender getAttackerAndDefenderWithPriorityList(
       final List<GamePlayer> priorityPlayers) {
     // Attacker
-    final Optional<GamePlayer> attacker =
-        Stream.of(priorityPlayers.stream(), players.stream()).flatMap(s -> s).findFirst();
-    if (attacker.isEmpty()) {
+    final GamePlayer attacker =
+        Stream.of(priorityPlayers.stream(), players.stream())
+            .flatMap(s -> s)
+            .findFirst()
+            .orElse(null);
+    if (attacker == null) {
       return AttackerAndDefender.NONE;
     }
     // Defender
-    assert (!attacker.isEmpty());
-    final Optional<GamePlayer> defender =
-        getOpponentWithPriorityList(attacker.get(), priorityPlayers);
+    final GamePlayer defender =
+        getOpponentWithPriorityList(attacker, priorityPlayers)
+            .orElse(null);
     return AttackerAndDefender.builder()
-        .attacker(attacker.orElse(null))
-        .defender(defender.orElse(null))
+        .attacker(attacker)
+        .defender(defender)
         .build();
   }
 
