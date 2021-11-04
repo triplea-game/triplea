@@ -24,7 +24,7 @@ import lombok.Value;
  * at war nor allied with another player.
  */
 @Builder(access = AccessLevel.PACKAGE)
-public class OpponentSelector {
+public class AttackerAndDefenderSelector {
 
   /** Value object class for an attacker and defender tuple. */
   @Builder
@@ -51,10 +51,10 @@ public class OpponentSelector {
   @Nullable private final GamePlayer currentPlayer;
   @Nonnull private final RelationshipTracker relationshipTracker;
 
-  public static OpponentSelector with(final GameData gameData) {
+  public static AttackerAndDefenderSelector with(final GameData gameData) {
     try {
       gameData.acquireReadLock();
-      return OpponentSelector.builder()
+      return AttackerAndDefenderSelector.builder()
           .players(gameData.getPlayerList().getPlayers())
           .currentPlayer(gameData.getSequence().getStep().getPlayerId())
           .relationshipTracker(gameData.getRelationshipTracker())

@@ -29,7 +29,7 @@ import java.util.Optional;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
-public class OpponentSelectorTest {
+public class AttackerAndDefenderSelectorTest {
 
   private GameData gameData = TestMapGameData.REVISED.getGameData();
   private GamePlayer russians = russians(gameData);
@@ -39,8 +39,8 @@ public class OpponentSelectorTest {
   private GamePlayer americans = americans(gameData);
   private List<GamePlayer> players =
       List.of(russians, germans, british, japanese, americans, GamePlayer.NULL_PLAYERID);
-  private OpponentSelector opponentSelector =
-      OpponentSelector.builder()
+  private AttackerAndDefenderSelector attackerAndDefenderSelector =
+      AttackerAndDefenderSelector.builder()
           .players(players)
           .currentPlayer(russians)
           .relationshipTracker(gameData.getRelationshipTracker())
@@ -49,13 +49,13 @@ public class OpponentSelectorTest {
   @Test
   void testNoCurrentPlayer() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
-    opponentSelector =
-        OpponentSelector.builder()
+    attackerAndDefenderSelector =
+        AttackerAndDefenderSelector.builder()
             .players(players)
             .relationshipTracker(gameData.getRelationshipTracker())
             .build();
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(germany);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(germany);
     assertThat(attAndDef.getAttacker(), isEmpty());
     assertThat(attAndDef.getDefender(), isEmpty());
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -65,8 +65,8 @@ public class OpponentSelectorTest {
   @Test
   void testNoTerritory() {
     // Algorithm only ensures "some enemy" as defender
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(null);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(null);
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
@@ -84,8 +84,8 @@ public class OpponentSelectorTest {
         germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(germany);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(germany);
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -100,8 +100,8 @@ public class OpponentSelectorTest {
         japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(japan);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(japan);
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -112,8 +112,8 @@ public class OpponentSelectorTest {
   void testSingleDefender3() {
     // Fight in Britain -> "some enemy" defends (British are allied
     final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(unitedKingdom);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(unitedKingdom);
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
@@ -136,8 +136,8 @@ public class OpponentSelectorTest {
             .toArray(Matcher[]::new);
 
     addTo(germany, infantry(gameData).create(100, japanese));
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(germany);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(germany);
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -157,8 +157,8 @@ public class OpponentSelectorTest {
             .toArray(Matcher[]::new);
 
     addTo(japan, infantry(gameData).create(100, germans));
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(japan);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(japan);
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -171,8 +171,8 @@ public class OpponentSelectorTest {
     // enemy)
     final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
     addTo(unitedKingdom, infantry(gameData).create(100, americans));
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(unitedKingdom);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(unitedKingdom);
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -193,8 +193,8 @@ public class OpponentSelectorTest {
 
     addTo(germany, infantry(gameData).create(200, americans));
     addTo(germany, infantry(gameData).create(100, japanese));
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(germany);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(germany);
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -210,8 +210,8 @@ public class OpponentSelectorTest {
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
     addTo(japan, infantry(gameData).create(100, americans));
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(japan);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(japan);
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -222,8 +222,8 @@ public class OpponentSelectorTest {
   void testNoDefender() {
     // Algorithm only ensures "some enemy" as defender
     final Territory seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(seaZone32);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(seaZone32);
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
@@ -238,15 +238,15 @@ public class OpponentSelectorTest {
   void testNoDefenderOnEnemyTerritory() {
     // Fight in Kenya -> British (territory owner) defend
     final Territory kenya = gameData.getMap().getTerritory("Kenya");
-    opponentSelector =
-        OpponentSelector.builder()
+    attackerAndDefenderSelector =
+        AttackerAndDefenderSelector.builder()
             .players(players)
             .currentPlayer(germans) // An Enemy of the British
             .relationshipTracker(gameData.getRelationshipTracker())
             .build();
     final Territory territory = kenya;
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(territory);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(territory);
     assertThat(territory.getOwner(), is(equalTo(british)));
     assertThat(attAndDef.getAttacker(), isPresentAndIs(germans));
     assertThat(attAndDef.getDefender(), isPresentAndIs(british));
@@ -259,14 +259,14 @@ public class OpponentSelectorTest {
     // Every player is allied with every other player, i.e. there are no enemies. In this case the
     // algorithm only ensures "some player" as defender.
     final Territory seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
-    opponentSelector =
-        OpponentSelector.builder()
+    attackerAndDefenderSelector =
+        AttackerAndDefenderSelector.builder()
             .players(List.of(russians, british, americans)) // only allies
             .currentPlayer(russians)
             .relationshipTracker(gameData.getRelationshipTracker())
             .build();
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(seaZone32);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(seaZone32);
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
@@ -283,8 +283,8 @@ public class OpponentSelectorTest {
         russia.getUnitCollection().getMatches(Matches.unitIsOwnedBy(russians)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        opponentSelector.getAttackerAndDefender(russia);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender(russia);
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));

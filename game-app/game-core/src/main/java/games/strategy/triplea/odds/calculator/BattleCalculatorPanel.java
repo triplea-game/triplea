@@ -1067,8 +1067,8 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void setupAttackerAndDefender() {
-    final OpponentSelector.AttackerAndDefender attAndDef =
-        OpponentSelector.with(data).getAttackerAndDefender(location);
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        AttackerAndDefenderSelector.with(data).getAttackerAndDefender(location);
     attAndDef.getAttacker().ifPresent(this::setAttacker);
     attAndDef.getDefender().ifPresent(this::setDefender);
     setAttackingUnits(attAndDef.getAttackingUnits());
