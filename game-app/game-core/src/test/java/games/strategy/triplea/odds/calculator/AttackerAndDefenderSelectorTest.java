@@ -31,20 +31,20 @@ import org.junit.jupiter.api.Test;
 
 public class AttackerAndDefenderSelectorTest {
 
-  private GameData gameData = TestMapGameData.REVISED.getGameData();
-  private GamePlayer russians = russians(gameData);
-  private GamePlayer germans = germans(gameData);
-  private GamePlayer british = british(gameData);
-  private GamePlayer japanese = japanese(gameData);
-  private GamePlayer americans = americans(gameData);
-  private Territory germany = gameData.getMap().getTerritory("Germany");
-  private Territory japan = gameData.getMap().getTerritory("Japan");
-  private Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
-  private Territory seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
-  private Territory kenya = gameData.getMap().getTerritory("Kenya");
-  private Territory russia = gameData.getMap().getTerritory("Russia");
+  private final GameData gameData = TestMapGameData.REVISED.getGameData();
+  private final GamePlayer russians = russians(gameData);
+  private final GamePlayer germans = germans(gameData);
+  private final GamePlayer british = british(gameData);
+  private final GamePlayer japanese = japanese(gameData);
+  private final GamePlayer americans = americans(gameData);
+  private final Territory germany = gameData.getMap().getTerritory("Germany");
+  private final Territory japan = gameData.getMap().getTerritory("Japan");
+  private final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
+  private final Territory seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
+  private final Territory kenya = gameData.getMap().getTerritory("Kenya");
+  private final Territory russia = gameData.getMap().getTerritory("Russia");
 
-  private List<GamePlayer> players =
+  private final List<GamePlayer> players =
       List.of(russians, germans, british, japanese, americans, GamePlayer.NULL_PLAYERID);
 
   @Test
@@ -84,11 +84,14 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(gameData.getRelationshipTracker().isAtWar(attacker.get(), defender.get()), is(true));
+    assertThat(
+        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
+        is(true));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testSingleDefender1() {
     final AttackerAndDefenderSelector attackerAndDefenderSelector =
@@ -113,6 +116,7 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testSingleDefender2() {
     // Fight in Japan -> Japans defend
@@ -155,11 +159,14 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(gameData.getRelationshipTracker().isAtWar(attacker.get(), defender.get()), is(true));
+    assertThat(
+        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
+        is(true));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testMultipleDefenders1() {
     // Fight in Germany -> 100 Japanese defend
@@ -190,6 +197,7 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testMultipleDefenders2() {
     // Fight in Japan -> 100 Germans defend
@@ -240,6 +248,7 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testMixedDefendersAlliesAndEnemies1() {
     // Fight in Germany -> Japanese defend, Americans are allied
@@ -270,6 +279,7 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testMixedDefendersAlliesAndEnemies2() {
     // Fight in Japan -> Japanese defend, Americans are allied
@@ -313,8 +323,10 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(gameData.getRelationshipTracker().isAtWar(attacker.get(), defender.get()), is(true));
-    assertThat(defender.get(), is(not(GamePlayer.NULL_PLAYERID)));
+    assertThat(
+        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
+        is(true));
+    assertThat(defender.orElseThrow(), is(not(GamePlayer.NULL_PLAYERID)));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
@@ -363,6 +375,7 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testAttackOnOwnTerritory() {
     // Fight in Russia -> russian army attacks, "some enemy" defends
@@ -381,7 +394,9 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(gameData.getRelationshipTracker().isAtWar(attacker.get(), defender.get()), is(true));
+    assertThat(
+        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
+        is(true));
     final Matcher<Unit>[] expectedUnits =
         russia.getUnitCollection().getMatches(Matches.unitIsOwnedBy(russians)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
