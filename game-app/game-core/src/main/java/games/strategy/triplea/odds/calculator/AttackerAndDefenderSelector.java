@@ -50,13 +50,14 @@ public class AttackerAndDefenderSelector {
   @Nonnull private final Collection<GamePlayer> players;
   @Nullable private final GamePlayer currentPlayer;
   @Nonnull private final RelationshipTracker relationshipTracker;
+  @Nullable private final Territory territory;
 
   /**
    * Set initial attacker and defender.
    *
    * <p>Please read the source code for the order of the players and conditions involved.
    */
-  public AttackerAndDefender getAttackerAndDefender(final Territory territory) {
+  public AttackerAndDefender getAttackerAndDefender() {
     // If there is no current player, we cannot choose an opponent.
     if (currentPlayer == null) {
       return AttackerAndDefender.NONE;

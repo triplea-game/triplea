@@ -1073,8 +1073,9 @@ class BattleCalculatorPanel extends JPanel {
               .players(data.getPlayerList().getPlayers())
               .currentPlayer(data.getSequence().getStep().getPlayerId())
               .relationshipTracker(data.getRelationshipTracker())
+              .territory(location)
               .build()
-              .getAttackerAndDefender(location);
+              .getAttackerAndDefender();
 
       attAndDef.getAttacker().ifPresent(this::setAttacker);
       attAndDef.getDefender().ifPresent(this::setDefender);
