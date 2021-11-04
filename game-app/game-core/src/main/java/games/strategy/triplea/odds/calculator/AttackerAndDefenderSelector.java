@@ -1,12 +1,10 @@
 package games.strategy.triplea.odds.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 /**
@@ -24,6 +23,7 @@ import lombok.Value;
  * at war nor allied with another player.
  */
 @Builder(access = AccessLevel.PACKAGE)
+@RequiredArgsConstructor
 public class AttackerAndDefenderSelector {
 
   /** Value object class for an attacker and defender tuple. */
@@ -47,22 +47,9 @@ public class AttackerAndDefenderSelector {
     }
   }
 
-  @Builder.Default private final Collection<GamePlayer> players = new ArrayList<>(0);
+  @Nonnull private final Collection<GamePlayer> players;
   @Nullable private final GamePlayer currentPlayer;
   @Nonnull private final RelationshipTracker relationshipTracker;
-
-  public static AttackerAndDefenderSelector with(final GameData gameData) {
-    try {
-      gameData.acquireReadLock();
-      return AttackerAndDefenderSelector.builder()
-          .players(gameData.getPlayerList().getPlayers())
-          .currentPlayer(gameData.getSequence().getStep().getPlayerId())
-          .relationshipTracker(gameData.getRelationshipTracker())
-          .build();
-    } finally {
-      gameData.releaseReadLock();
-    }
-  }
 
   /**
    * Set initial attacker and defender.

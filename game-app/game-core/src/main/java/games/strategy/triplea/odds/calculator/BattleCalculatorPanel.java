@@ -50,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
@@ -1067,12 +1068,22 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void setupAttackerAndDefender() {
-    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
-        AttackerAndDefenderSelector.with(data).getAttackerAndDefender(location);
-    attAndDef.getAttacker().ifPresent(this::setAttacker);
-    attAndDef.getDefender().ifPresent(this::setDefender);
-    setAttackingUnits(attAndDef.getAttackingUnits());
-    setDefendingUnits(attAndDef.getDefendingUnits());
+    try {
+      final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+          AttackerAndDefenderSelector.builder()
+              .players(data.getPlayerList().getPlayers())
+              .currentPlayer(data.getSequence().getStep().getPlayerId())
+              .relationshipTracker(data.getRelationshipTracker())
+              .build()
+              .getAttackerAndDefender(location);
+
+      attAndDef.getAttacker().ifPresent(this::setAttacker);
+      attAndDef.getDefender().ifPresent(this::setDefender);
+      setAttackingUnits(attAndDef.getAttackingUnits());
+      setDefendingUnits(attAndDef.getDefendingUnits());
+    } finally {
+      data.releaseReadLock();
+    }
   }
 
   GamePlayer getAttacker() {
