@@ -47,7 +47,7 @@ public class OpponentSelector {
     }
   }
 
-  @Builder.Default private final Collection<GamePlayer> players = new ArrayList(0);
+  @Builder.Default private final Collection<GamePlayer> players = new ArrayList<>(0);
   @Nullable private final GamePlayer currentPlayer;
   @Nonnull private final RelationshipTracker relationshipTracker;
 
