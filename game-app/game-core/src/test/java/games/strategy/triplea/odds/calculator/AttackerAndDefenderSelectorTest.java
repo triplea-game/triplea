@@ -59,6 +59,7 @@ public class AttackerAndDefenderSelectorTest {
 
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     assertThat(attAndDef.getAttacker(), isEmpty());
     assertThat(attAndDef.getDefender(), isEmpty());
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -98,16 +99,17 @@ public class AttackerAndDefenderSelectorTest {
             .territory(germany)
             .build();
 
-    final Matcher<Unit>[] expectedUnits =
-        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans)).stream()
-            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
-            .toArray(Matcher[]::new);
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     // Fight in Germany -> Germans defend
     assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
+    final Matcher<Unit>[] expectedUnits =
+        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans)).stream()
+            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
+            .toArray(Matcher[]::new);
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
@@ -122,15 +124,16 @@ public class AttackerAndDefenderSelectorTest {
             .territory(japan)
             .build();
 
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender();
+
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
+    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     final Matcher<Unit>[] expectedUnits =
         japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
-    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
-        attackerAndDefenderSelector.getAttackerAndDefender();
-    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
-    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
@@ -147,6 +150,7 @@ public class AttackerAndDefenderSelectorTest {
 
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
@@ -176,8 +180,10 @@ public class AttackerAndDefenderSelectorTest {
             .toArray(Matcher[]::new);
 
     addTo(germany, infantry(gameData).create(100, japanese));
+
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -199,6 +205,9 @@ public class AttackerAndDefenderSelectorTest {
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
 
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
+    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     final List<Unit> expectedUnits0 =
         japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese));
     expectedUnits0.addAll(infantry(gameData).create(100, germans));
@@ -206,10 +215,6 @@ public class AttackerAndDefenderSelectorTest {
         expectedUnits0.stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
-
-    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-    assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
-    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
@@ -228,6 +233,7 @@ public class AttackerAndDefenderSelectorTest {
 
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
@@ -248,6 +254,12 @@ public class AttackerAndDefenderSelectorTest {
             .territory(germany)
             .build();
 
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender();
+
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
+    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     final List<Unit> expectedUnits0 =
         germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans));
     expectedUnits0.addAll(infantry(gameData).create(100, japanese));
@@ -255,12 +267,6 @@ public class AttackerAndDefenderSelectorTest {
         expectedUnits0.stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
-
-    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
-        attackerAndDefenderSelector.getAttackerAndDefender();
-    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
-    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
@@ -276,15 +282,16 @@ public class AttackerAndDefenderSelectorTest {
             .territory(japan)
             .build();
 
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        attackerAndDefenderSelector.getAttackerAndDefender();
+
+    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
+    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     final Matcher<Unit>[] expectedUnits =
         japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
             .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
             .toArray(Matcher[]::new);
-    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
-        attackerAndDefenderSelector.getAttackerAndDefender();
-    assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-    assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
-    assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
   }
 
@@ -301,6 +308,7 @@ public class AttackerAndDefenderSelectorTest {
     // Algorithm only ensures "some enemy" as defender
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
@@ -324,6 +332,7 @@ public class AttackerAndDefenderSelectorTest {
 
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     assertThat(kenya.getOwner(), is(equalTo(british)));
     assertThat(attAndDef.getAttacker(), isPresentAndIs(germans));
     assertThat(attAndDef.getDefender(), isPresentAndIs(british));
@@ -342,8 +351,10 @@ public class AttackerAndDefenderSelectorTest {
             .relationshipTracker(gameData.getRelationshipTracker())
             .territory(seaZone32)
             .build();
+
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
@@ -363,17 +374,18 @@ public class AttackerAndDefenderSelectorTest {
             .territory(russia)
             .build();
 
-    final Matcher<Unit>[] expectedUnits =
-        russia.getUnitCollection().getMatches(Matches.unitIsOwnedBy(russians)).stream()
-            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
-            .toArray(Matcher[]::new);
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         attackerAndDefenderSelector.getAttackerAndDefender();
+
     final Optional<GamePlayer> attacker = attAndDef.getAttacker();
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
     assertThat(gameData.getRelationshipTracker().isAtWar(attacker.get(), defender.get()), is(true));
+    final Matcher<Unit>[] expectedUnits =
+        russia.getUnitCollection().getMatches(Matches.unitIsOwnedBy(russians)).stream()
+            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
+            .toArray(Matcher[]::new);
     assertThat(attAndDef.getAttackingUnits(), containsInAnyOrder(expectedUnits));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
