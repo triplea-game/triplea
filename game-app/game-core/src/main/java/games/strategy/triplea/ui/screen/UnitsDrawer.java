@@ -22,7 +22,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.Tuple;
@@ -122,8 +121,8 @@ public class UnitsDrawer extends AbstractDrawable {
             .disabled(disabled)
             .build();
 
-    final Optional<Image> img = uiContext.getUnitImageFactory().getImage(imageKey);
-    if (img.isEmpty() && !uiContext.isShutDown()) {
+    final Image img = uiContext.getUnitImageFactory().getImage(imageKey).orElse(null);
+    if (img == null && !uiContext.isShutDown()) {
       final String imageName = imageKey.getBaseImageName();
       log.error(
           "MISSING UNIT IMAGE (won't be displayed): "
@@ -138,27 +137,27 @@ public class UnitsDrawer extends AbstractDrawable {
 
     final UnitFlagDrawMode drawMode =
         ClientSetting.unitFlagDrawMode.getValue().orElse(UnitFlagDrawMode.NONE);
-    if (img.isPresent()) {
+    if (img != null) {
       if (drawMode == UnitFlagDrawMode.LARGE_FLAG) {
         // If unit is not in the "excluded list" it will get drawn
         if (maxRange != 0) {
           final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
-          final int xoffset = img.get().getWidth(null) / 2 - flag.getWidth(null) / 2;
-          final int yoffset = img.get().getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;
+          final int xoffset = img.getWidth(null) / 2 - flag.getWidth(null) / 2;
+          final int yoffset = img.getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;
           graphics.drawImage(
               flag,
               (placementPoint.x - bounds.x) + xoffset,
               (placementPoint.y - bounds.y) + yoffset,
               null);
         }
-        drawUnit(graphics, img.get(), bounds, data);
+        drawUnit(graphics, img, bounds, data);
       } else if (drawMode == UnitFlagDrawMode.SMALL_FLAG) {
-        drawUnit(graphics, img.get(), bounds, data);
+        drawUnit(graphics, img, bounds, data);
         // If unit is not in the "excluded list" it will get drawn
         if (maxRange != 0) {
           final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
-          final int xoffset = img.get().getWidth(null) - flag.getWidth(null);
-          final int yoffset = img.get().getHeight(null) - flag.getHeight(null);
+          final int xoffset = img.getWidth(null) - flag.getWidth(null);
+          final int yoffset = img.getHeight(null) - flag.getHeight(null);
           // This Method draws the Flag in the lower right corner of the unit image. Since the
           // position is the upper
           // left corner we have to move the picture up by the height and left by the width.
@@ -169,7 +168,7 @@ public class UnitsDrawer extends AbstractDrawable {
               null);
         }
       } else {
-        drawUnit(graphics, img.get(), bounds, data);
+        drawUnit(graphics, img, bounds, data);
       }
     }
 
@@ -178,9 +177,9 @@ public class UnitsDrawer extends AbstractDrawable {
       final int stackSize = mapData.getDefaultUnitsStackSize();
       if (stackSize > 0) { // Display more units as a stack
         for (int i = 1; i < count && i < stackSize; i++) {
-          if (img.isPresent()) {
+          if (img != null) {
             graphics.drawImage(
-                img.get(),
+                img,
                 placementPoint.x + 2 * i - bounds.x,
                 placementPoint.y - 2 * i - bounds.y,
                 null);

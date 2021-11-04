@@ -26,6 +26,7 @@ status=0
 
 
 function main() {
+  avoidAssigningToOptionalVariables
   favorJava9CollectionsApi
   #referToCollectionsByInterfaceType
   removeUnusedLogAnnotations
@@ -56,6 +57,23 @@ function displayResult() {
   echo ""
   
 }
+
+function avoidAssigningToOptionalVariables() {
+  title "Use null local variables instead of optional local variables"
+  example "instead of 'Optional<Object> maybeObject = optionalMethod() use Object maybeObject = optionalMethod().orElseNull(null)"
+  local found=0
+
+
+  while read -r file; do
+    if grep --color=auto -EHn "Optional.*=" "$file"; then
+      found=1
+      status=1
+    fi
+  done <<< "$(cat "$javaFiles" | grep -v "Test.java$")"
+
+  displayResult "$found"
+}
+
 
 function favorJava9CollectionsApi() {
   title "Verifying preference to use List.of(), Map.of() and Set.of() compared to java.util.Collections.*"

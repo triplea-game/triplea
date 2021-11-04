@@ -155,13 +155,13 @@ public class MapDescriptionYaml {
    * then underneath that folder we search for a matching file name.
    */
   public Optional<Path> getGameXmlPathByGameName(final String gameName) {
-    final Optional<String> xmlFileName = findFileNameForGame(gameName);
-    final Optional<Path> gamesFolder = findGamesFolder();
+    final String xmlFileName = findFileNameForGame(gameName).orElse(null);
+    final Path gamesFolder = findGamesFolder().orElse(null);
 
-    if (xmlFileName.isEmpty() || gamesFolder.isEmpty()) {
+    if (xmlFileName == null || gamesFolder == null) {
       return Optional.empty();
     } else {
-      return searchForGameFile(gamesFolder.get(), xmlFileName.get());
+      return searchForGameFile(gamesFolder, xmlFileName);
     }
   }
 

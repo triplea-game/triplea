@@ -246,10 +246,10 @@ public class UnitImageFactory {
     final GamePlayer gamePlayer = imageKey.getPlayer();
     final UnitType type = imageKey.getType();
 
-    final Optional<URL> imageLocation = getBaseImageUrl(imageKey);
+    final URL imageLocation = getBaseImageUrl(imageKey).orElse(null);
     Image image = null;
-    if (imageLocation.isPresent()) {
-      image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());
+    if (imageLocation != null) {
+      image = Toolkit.getDefaultToolkit().getImage(imageLocation);
       Util.ensureImageLoaded(image);
       if (needToTransformImage(gamePlayer, type, mapData)) {
         image = convertToBufferedImage(image);

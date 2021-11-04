@@ -62,13 +62,13 @@ public final class TransportUtils {
     final Map<Unit, Unit> mapping = new HashMap<>();
     final IntegerMap<Unit> addedLoad = new IntegerMap<>();
     for (final Unit unit : canBeTransported) {
-      final Optional<Unit> transport =
-          loadUnitIntoFirstAvailableTransport(unit, canTransport, mapping, addedLoad);
+      final Unit transportLoaded =
+          loadUnitIntoFirstAvailableTransport(unit, canTransport, mapping, addedLoad).orElse(null);
 
-      // Move loaded transport to end of list
-      if (transport.isPresent()) {
-        canTransport.remove(transport.get());
-        canTransport.add(transport.get());
+      // Move transport loaded to end of list
+      if (transportLoaded != null) {
+        canTransport.remove(transportLoaded);
+        canTransport.add(transportLoaded);
       }
     }
     return mapping;
