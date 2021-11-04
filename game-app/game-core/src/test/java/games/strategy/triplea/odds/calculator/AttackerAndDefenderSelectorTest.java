@@ -24,6 +24,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.hamcrest.Matcher;
@@ -160,7 +161,6 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testMultipleDefenders1() {
     // Fight in Germany -> 100 Japanese defend
@@ -172,14 +172,6 @@ public class AttackerAndDefenderSelectorTest {
             .territory(germany)
             .build();
 
-    final List<Unit> expectedUnits0 =
-        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans));
-    expectedUnits0.addAll(infantry(gameData).create(100, japanese));
-    final Matcher<Unit>[] expectedUnits =
-        expectedUnits0.stream()
-            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
-            .toArray(Matcher[]::new);
-
     addTo(germany, infantry(gameData).create(100, japanese));
 
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
@@ -188,7 +180,18 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
-    assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
+    final List<Unit> expectedUnits = filterTerritoryUnitsByOwner(germany, germans, japanese);
+    assertThat(
+        attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits.toArray(Unit[]::new)));
+  }
+
+  private static List<Unit> filterTerritoryUnitsByOwner(
+      final Territory territory, final GamePlayer... gamePlayers) {
+    final List<Unit> units = new ArrayList<>();
+    for (final GamePlayer gamePlayer : gamePlayers) {
+      units.addAll(territory.getUnitCollection().getMatches(Matches.unitIsOwnedBy(gamePlayer)));
+    }
+    return units;
   }
 
   @SuppressWarnings("unchecked")
@@ -242,7 +245,6 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testMixedDefendersAlliesAndEnemies1() {
     // Fight in Germany -> Japanese defend, Americans are allied
@@ -263,17 +265,12 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
-    final List<Unit> expectedUnits0 =
-        germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(germans));
-    expectedUnits0.addAll(infantry(gameData).create(100, japanese));
-    final Matcher<Unit>[] expectedUnits =
-        expectedUnits0.stream()
-            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
-            .toArray(Matcher[]::new);
-    assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
+
+    final List<Unit> expectedUnits = filterTerritoryUnitsByOwner(germany, germans, japanese);
+    assertThat(
+        attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits.toArray(Unit[]::new)));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testMixedDefendersAlliesAndEnemies2() {
     // Fight in Japan -> Japanese defend, Americans are allied
@@ -292,11 +289,9 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
-    final Matcher<Unit>[] expectedUnits =
-        japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese)).stream()
-            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
-            .toArray(Matcher[]::new);
-    assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
+    final List<Unit> expectedUnits = filterTerritoryUnitsByOwner(japan, japanese);
+    assertThat(
+        attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits.toArray(Unit[]::new)));
   }
 
   @Test
@@ -369,7 +364,6 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testAttackOnOwnTerritory() {
     // Fight in Russia -> russian army attacks, "some enemy" defends
@@ -391,11 +385,9 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(
         gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
         is(true));
-    final Matcher<Unit>[] expectedUnits =
-        russia.getUnitCollection().getMatches(Matches.unitIsOwnedBy(russians)).stream()
-            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
-            .toArray(Matcher[]::new);
-    assertThat(attAndDef.getAttackingUnits(), containsInAnyOrder(expectedUnits));
+    assertThat(
+        attAndDef.getAttackingUnits(),
+        containsInAnyOrder(filterTerritoryUnitsByOwner(russia, russians).toArray(Unit[]::new)));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 }
