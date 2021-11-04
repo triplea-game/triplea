@@ -78,7 +78,7 @@ public class OpponentSelector {
     if (territory == null) {
       // Without territory, we cannot prioritize any players (except current player); no units to
       // select.
-      return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer)).build();
+      return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer));
     } else {
       // Select the defender to be an enemy of the current player if possible, preferring enemies
       // in the given territory. When deciding for an enemy, usually a player with more units is
@@ -144,13 +144,13 @@ public class OpponentSelector {
    * @param priorityPlayers an ordered list of players which should be considered first
    * @return attacker and defender
    */
-  private AttackerAndDefender.AttackerAndDefenderBuilder getAttackerAndDefenderWithPriorityList(
+  private AttackerAndDefender getAttackerAndDefenderWithPriorityList(
       final List<GamePlayer> priorityPlayers) {
     // Attacker
     final Optional<GamePlayer> attacker =
         Stream.of(priorityPlayers.stream(), players.stream()).flatMap(s -> s).findFirst();
     if (attacker.isEmpty()) {
-      return AttackerAndDefender.builder().attacker(null).defender(null);
+      return AttackerAndDefender.NONE;
     }
     // Defender
     assert (!attacker.isEmpty());
@@ -158,7 +158,8 @@ public class OpponentSelector {
         getOpponentWithPriorityList(attacker.get(), priorityPlayers);
     return AttackerAndDefender.builder()
         .attacker(attacker.orElse(null))
-        .defender(defender.orElse(null));
+        .defender(defender.orElse(null))
+        .build();
   }
 
   /**
