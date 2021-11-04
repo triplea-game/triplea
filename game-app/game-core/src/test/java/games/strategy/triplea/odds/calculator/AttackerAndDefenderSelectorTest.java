@@ -21,13 +21,11 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 public class AttackerAndDefenderSelectorTest {
@@ -180,21 +178,20 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
-    final List<Unit> expectedUnits = filterTerritoryUnitsByOwner(germany, germans, japanese);
     assertThat(
-        attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits.toArray(Unit[]::new)));
+        attAndDef.getDefendingUnits(),
+        containsInAnyOrder(filterTerritoryUnitsByOwner(germany, germans, japanese)));
   }
 
-  private static List<Unit> filterTerritoryUnitsByOwner(
+  private static Unit[] filterTerritoryUnitsByOwner(
       final Territory territory, final GamePlayer... gamePlayers) {
     final List<Unit> units = new ArrayList<>();
     for (final GamePlayer gamePlayer : gamePlayers) {
       units.addAll(territory.getUnitCollection().getMatches(Matches.unitIsOwnedBy(gamePlayer)));
     }
-    return units;
+    return units.toArray(Unit[]::new);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testMultipleDefenders2() {
     // Fight in Japan -> 100 Germans defend
@@ -213,14 +210,9 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
-    final List<Unit> expectedUnits0 =
-        japan.getUnitCollection().getMatches(Matches.unitIsOwnedBy(japanese));
-    expectedUnits0.addAll(infantry(gameData).create(100, germans));
-    final Matcher<Unit>[] expectedUnits =
-        expectedUnits0.stream()
-            .map(GameDataTestUtil.IsEquivalentUnit::equivalentTo)
-            .toArray(Matcher[]::new);
-    assertThat(attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits));
+    assertThat(
+        attAndDef.getDefendingUnits(),
+        containsInAnyOrder(filterTerritoryUnitsByOwner(japan, japanese, germans)));
   }
 
   @Test
@@ -265,10 +257,9 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
-
-    final List<Unit> expectedUnits = filterTerritoryUnitsByOwner(germany, germans, japanese);
     assertThat(
-        attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits.toArray(Unit[]::new)));
+        attAndDef.getDefendingUnits(),
+        containsInAnyOrder(filterTerritoryUnitsByOwner(germany, germans, japanese)));
   }
 
   @Test
@@ -289,9 +280,9 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
     assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
-    final List<Unit> expectedUnits = filterTerritoryUnitsByOwner(japan, japanese);
     assertThat(
-        attAndDef.getDefendingUnits(), containsInAnyOrder(expectedUnits.toArray(Unit[]::new)));
+        attAndDef.getDefendingUnits(),
+        containsInAnyOrder(filterTerritoryUnitsByOwner(japan, japanese)));
   }
 
   @Test
@@ -387,7 +378,7 @@ public class AttackerAndDefenderSelectorTest {
         is(true));
     assertThat(
         attAndDef.getAttackingUnits(),
-        containsInAnyOrder(filterTerritoryUnitsByOwner(russia, russians).toArray(Unit[]::new)));
+        containsInAnyOrder(filterTerritoryUnitsByOwner(russia, russians)));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
 }
