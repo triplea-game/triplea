@@ -109,7 +109,7 @@ public class OpponentSelector {
 
       return AttackerAndDefender.builder()
           .attacker(currentPlayer)
-          .defender(defender.orElse(null))
+          .defender(defender)
           .attackingUnits(attackingUnits)
           .defendingUnits(defendingUnits)
           .build();
@@ -179,23 +179,23 @@ public class OpponentSelector {
    *   <li>any player
    * </ol>
    *
-   * @param p the player to find an opponent for
+   * @param player the player to find an opponent for
    * @param priorityPlayers an ordered list of players which should be considered first
    * @return an opponent. An empty optional is returned if the game has no players
    */
   private Optional<GamePlayer> getOpponentWithPriorityList(
-      final GamePlayer p, final List<GamePlayer> priorityPlayers) {
+      final GamePlayer player, final List<GamePlayer> priorityPlayers) {
     final Stream<GamePlayer> enemiesPriority =
-        priorityPlayers.stream().filter(Matches.isAtWar(p, relationshipTracker));
+        priorityPlayers.stream().filter(Matches.isAtWar(player, relationshipTracker));
     final Stream<GamePlayer> neutralsPriority =
         priorityPlayers.stream()
-            .filter(Matches.isAtWar(p, relationshipTracker).negate())
-            .filter(Matches.isAllied(p, relationshipTracker).negate());
+            .filter(Matches.isAtWar(player, relationshipTracker).negate())
+            .filter(Matches.isAllied(player, relationshipTracker).negate());
     return Stream.of(
             enemiesPriority,
-            playersAtWarWith(p),
+            playersAtWarWith(player),
             neutralsPriority,
-            neutralPlayersTowards(p),
+            neutralPlayersTowards(player),
             players.stream())
         .flatMap(s -> s)
         .findFirst();
