@@ -78,7 +78,7 @@ public class OpponentSelector {
     if (territory == null) {
       // Without territory, we cannot prioritize any players (except current player); no units to
       // select.
-      return getAttackerAndDefenderWithCurrentPlayerPriority().build();
+      return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer)).build();
     } else {
       // Select the defender to be an enemy of the current player if possible, preferring enemies
       // in the given territory. When deciding for an enemy, usually a player with more units is
@@ -115,20 +115,6 @@ public class OpponentSelector {
           .defendingUnits(defendingUnits)
           .build();
     }
-  }
-
-  /**
-   * First pick an attacker and then a suitable defender while prioritising the current player.
-   *
-   * <p>This is {@code getAttackerAndDefenderWithPriorityList()} with the priority list containing
-   * only the current player. See there for details.
-   *
-   * @return attacker and defender
-   * @see #getAttackerAndDefenderWithPriorityList(List)
-   */
-  private AttackerAndDefender.AttackerAndDefenderBuilder
-      getAttackerAndDefenderWithCurrentPlayerPriority() {
-    return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer));
   }
 
   /**
