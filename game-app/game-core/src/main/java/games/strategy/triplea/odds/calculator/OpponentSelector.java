@@ -155,13 +155,8 @@ public class OpponentSelector {
       return AttackerAndDefender.NONE;
     }
     // Defender
-    final GamePlayer defender =
-        getOpponentWithPriorityList(attacker, priorityPlayers)
-            .orElse(null);
-    return AttackerAndDefender.builder()
-        .attacker(attacker)
-        .defender(defender)
-        .build();
+    final GamePlayer defender = getOpponentWithPriorityList(attacker, priorityPlayers).orElse(null);
+    return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
   }
 
   /**
