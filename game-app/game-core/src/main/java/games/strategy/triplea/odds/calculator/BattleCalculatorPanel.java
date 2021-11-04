@@ -953,12 +953,12 @@ class BattleCalculatorPanel extends JPanel {
           setDefendingUnits(
               defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
                   ? defendingUnitsPanel.getUnits()
-                  : null);
+                  : List.of());
           setWidgetActivation();
         });
     attackerCombo.addActionListener(
         e -> {
-          setAttackingUnits(null);
+          setAttackingUnits(List.of());
           setWidgetActivation();
         });
     amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
@@ -966,8 +966,8 @@ class BattleCalculatorPanel extends JPanel {
         e -> {
           attackerOrderOfLosses = null;
           defenderOrderOfLosses = null;
-          setDefendingUnits(null);
-          setAttackingUnits(null);
+          setDefendingUnits(List.of());
+          setAttackingUnits(List.of());
           setWidgetActivation();
         });
     calculateButton.addActionListener(e -> updateStats());
