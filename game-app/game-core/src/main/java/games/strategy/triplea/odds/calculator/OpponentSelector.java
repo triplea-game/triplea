@@ -95,18 +95,17 @@ public class OpponentSelector {
         playersWithUnits.add(territoryOwner);
       }
       final GamePlayer attacker = currentPlayer;
-      final Optional<GamePlayer> defender = getOpponentWithPriorityList(attacker, playersWithUnits);
       // Attacker fights alone; the defender can also use all the allied units.
+      final GamePlayer defender =
+          getOpponentWithPriorityList(attacker, playersWithUnits).orElse(null);
       final List<Unit> attackingUnits =
           territory.getUnitCollection().getMatches(Matches.unitIsOwnedBy(attacker));
       final List<Unit> defendingUnits =
-          defender
-              .map(
-                  p ->
-                      territory
-                          .getUnitCollection()
-                          .getMatches(Matches.alliedUnit(p, relationshipTracker)))
-              .orElseGet(List::of);
+          defender == null
+              ? List.of()
+              : territory
+                  .getUnitCollection()
+                  .getMatches(Matches.alliedUnit(defender, relationshipTracker));
 
       return AttackerAndDefender.builder()
           .attacker(currentPlayer)
