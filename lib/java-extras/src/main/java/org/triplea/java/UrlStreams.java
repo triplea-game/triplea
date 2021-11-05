@@ -67,7 +67,7 @@ public final class UrlStreams {
    */
   public static <T> Optional<T> openStream(
       final URI uri, final Function<InputStream, T> streamOperation) {
-    InputStream stream = openStream(uri).orElse(null);
+    final InputStream stream = openStream(uri).orElse(null);
     if (stream != null) {
       try (InputStream inputStream = stream) {
         return Optional.ofNullable(streamOperation.apply(inputStream));
