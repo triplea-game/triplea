@@ -35,14 +35,14 @@ public final class HttpProxy {
 
   /** Get the latest system proxy settings and apply them. */
   public static void updateSystemProxy() {
-    final Optional<InetSocketAddress> address = getSystemProxy();
+    final InetSocketAddress address = getSystemProxy().orElse(null);
     final @Nullable String host;
     final @Nullable Integer port;
-    if (address.isEmpty()) {
+    if (address == null) {
       host = null;
       port = null;
     } else {
-      host = Strings.nullToEmpty(address.get().getHostName()).trim();
+      host = Strings.nullToEmpty(addressget().getHostName()).trim();
       port = host.isEmpty() ? null : address.get().getPort();
     }
 

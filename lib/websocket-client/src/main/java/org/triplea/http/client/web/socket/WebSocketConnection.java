@@ -96,8 +96,7 @@ class WebSocketConnection {
    */
   private void sendPingTask() {
     if (!client.isOutputClosed()) {
-
-      final Optional<Boolean> pingSuccess =
+      final boolean pingSuccess =
           Retryable.<Boolean>builder()
               .withMaxAttempts(5)
               .withFixedBackOff(Duration.ofSeconds(3))
@@ -110,9 +109,10 @@ class WebSocketConnection {
                       return Optional.empty();
                     }
                   })
-              .buildAndExecute();
+              .buildAndExecute()
+              .orElse(false);
 
-      if (pingSuccess.isEmpty()) {
+      if (!pingSuccess) {
         log.warn(
             "Failed to send pings to server, retries exhausted. "
                 + "If the server does not receive pings then the connection to "

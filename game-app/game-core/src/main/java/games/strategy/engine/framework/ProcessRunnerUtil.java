@@ -7,7 +7,6 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 /** To hold various static utility methods for running a java program. */
@@ -21,17 +20,15 @@ final class ProcessRunnerUtil {
     commands.add("-classpath");
     commands.add(SystemProperties.getJavaClassPath());
 
-    final Optional<String> maxMemory =
-        ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-            .filter(s -> s.toLowerCase().startsWith("-xmx"))
-            .map(s -> s.substring(4))
-            .findFirst();
-    maxMemory.ifPresent(max -> commands.add("-Xmx" + max));
-    final Optional<String> maxStackSize =
-        ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-            .filter(s -> s.toLowerCase().startsWith("-xss"))
-            .findFirst();
-    maxStackSize.ifPresent(commands::add);
+    ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+        .filter(s -> s.toLowerCase().startsWith("-xmx"))
+        .map(s -> s.substring(4))
+        .findFirst()
+        .ifPresent(max -> commands.add("-Xmx" + max));
+    ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+        .filter(s -> s.toLowerCase().startsWith("-xss"))
+        .findFirst()
+        .ifPresent(commands::add);
     if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");

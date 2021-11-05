@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -91,8 +90,7 @@ public final class UnitIconProperties extends PropertyFile {
       throw new MalformedUnitIconDescriptorException(encodedIconId);
     }
     final String encodedUnitTypeId = iconIdTokens.get(0);
-    final Optional<String> conditionName =
-        (iconIdTokens.size() == 2) ? Optional.ofNullable(iconIdTokens.get(1)) : Optional.empty();
+    final String conditionName = (iconIdTokens.size() == 2) ? iconIdTokens.get(1) : null;
 
     final List<String> unitTypeIdTokens = Splitter.on('.').limit(3).splitToList(encodedUnitTypeId);
     if (unitTypeIdTokens.size() != 3) {
@@ -109,16 +107,13 @@ public final class UnitIconProperties extends PropertyFile {
       final GameData gameData, final ConditionSupplier conditionSupplier) {
     final String gameName = normalizeGameName(gameData);
     for (final UnitIconDescriptor unitIconDescriptor : unitIconDescriptors) {
-      if (unitIconDescriptor.matches(gameName)) {
-        unitIconDescriptor.conditionName.ifPresent(
-            conditionName -> {
-              final @Nullable ICondition condition =
-                  conditionSupplier.getCondition(
-                      unitIconDescriptor.playerName, conditionName, gameData);
-              if (condition != null) {
-                conditionsStatus.put(condition, false);
-              }
-            });
+      if (unitIconDescriptor.matches(gameName) && unitIconDescriptor.conditionName != null) {
+        final ICondition condition =
+            conditionSupplier.getCondition(
+                unitIconDescriptor.playerName, unitIconDescriptor.conditionName, gameData);
+        if (condition != null) {
+          conditionsStatus.put(condition, false);
+        }
       }
     }
     conditionsStatus = getTestedConditions(gameData);
@@ -152,14 +147,16 @@ public final class UnitIconProperties extends PropertyFile {
     final String gameName = normalizeGameName(gameData);
     for (final UnitIconDescriptor unitIconDescriptor : unitIconDescriptors) {
       if (unitIconDescriptor.matches(gameName, playerName, unitTypeName)) {
-        unitIconDescriptor.conditionName.ifPresentOrElse(
-            conditionName -> {
-              if (conditionsStatus.get(
-                  conditionSupplier.getCondition(playerName, conditionName, gameData))) {
-                imagePaths.add(unitIconDescriptor.unitIconPath);
-              }
-            },
-            () -> imagePaths.add(unitIconDescriptor.unitIconPath));
+
+        if (unitIconDescriptor.conditionName != null) {
+          if (conditionsStatus.get(
+              conditionSupplier.getCondition(
+                  playerName, unitIconDescriptor.conditionName, gameData))) {
+            imagePaths.add(unitIconDescriptor.unitIconPath);
+          }
+        } else {
+          imagePaths.add(unitIconDescriptor.unitIconPath);
+        }
       }
     }
     return imagePaths;
@@ -196,7 +193,7 @@ public final class UnitIconProperties extends PropertyFile {
     final String gameName;
     final String playerName;
     final String unitTypeName;
-    final Optional<String> conditionName;
+    @Nullable final String conditionName;
     final String unitIconPath;
 
     boolean matches(final String gameName) {

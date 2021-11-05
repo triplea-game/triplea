@@ -47,9 +47,9 @@ public class LoginModule {
   public LobbyLoginResponse doLogin(
       final LoginRequest loginRequest, final String systemId, final String ip) {
 
-    final Optional<String> nameValidationError = nameValidation.apply(loginRequest.getName());
-    if (nameValidationError.isPresent()) {
-      return LobbyLoginResponse.builder().failReason(nameValidationError.get()).build();
+    final String nameValidationError = nameValidation.apply(loginRequest.getName()).orElse(null);
+    if (nameValidationError != null) {
+      return LobbyLoginResponse.builder().failReason(nameValidationError).build();
     }
 
     if (Strings.nullToEmpty(loginRequest.getName()).isEmpty()

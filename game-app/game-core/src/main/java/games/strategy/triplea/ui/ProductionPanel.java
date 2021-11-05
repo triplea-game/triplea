@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -341,7 +340,7 @@ class ProductionPanel extends JPanel {
           name.getFont().deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
       final JLabel info = new JLabel("  ");
       final Color defaultForegroundLabelColor = name.getForeground();
-      Optional<ImageIcon> icon = Optional.empty();
+      ImageIcon icon = null;
       final StringBuilder tooltip = new StringBuilder();
       final Set<NamedAttachable> results = new HashSet<>(rule.getResults().keySet());
       final Iterator<NamedAttachable> iter = results.iterator();
@@ -352,7 +351,8 @@ class ProductionPanel extends JPanel {
           icon =
               uiContext
                   .getUnitImageFactory()
-                  .getIcon(ImageKey.builder().type(type).player(player).build());
+                  .getIcon(ImageKey.builder().type(type).player(player).build())
+                  .orElse(null);
           final UnitAttachment attach = UnitAttachment.get(type);
           final int attack = attach.getAttack(player);
           final int movement = attach.getMovement(player);
@@ -373,7 +373,7 @@ class ProductionPanel extends JPanel {
           }
         } else if (resourceOrUnit instanceof Resource) {
           final Resource resource = (Resource) resourceOrUnit;
-          icon = Optional.of(uiContext.getResourceImageFactory().getIcon(resource, true));
+          icon = uiContext.getResourceImageFactory().getIcon(resource, true);
           info.setText("resource");
           tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());
@@ -426,7 +426,9 @@ class ProductionPanel extends JPanel {
                 0));
       }
       final JPanel label = new JPanel();
-      icon.ifPresent(imageIcon -> label.add(new JLabel(imageIcon)));
+      if (icon != null) {
+        label.add(new JLabel(icon));
+      }
       label.add(costPanel);
 
       final ScrollableTextField textField = new ScrollableTextField(0, Integer.MAX_VALUE);

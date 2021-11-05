@@ -67,9 +67,9 @@ public final class UrlStreams {
    */
   public static <T> Optional<T> openStream(
       final URI uri, final Function<InputStream, T> streamOperation) {
-    final Optional<InputStream> stream = openStream(uri);
-    if (stream.isPresent()) {
-      try (InputStream inputStream = stream.get()) {
+    InputStream stream = openStream(uri).orElse(null)
+    if (stream != null) {
+      try (InputStream inputStream = stream) {
         return Optional.ofNullable(streamOperation.apply(inputStream));
       } catch (final IOException e) {
         log.error("Unable to open: " + uri + ", " + e.getMessage(), e);

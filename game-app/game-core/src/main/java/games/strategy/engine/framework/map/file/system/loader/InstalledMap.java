@@ -73,15 +73,15 @@ public class InstalledMap {
    * notes file cannot be found.
    */
   public Optional<String> readGameNotes(final String gameName) {
-    final Optional<Path> xmlPath = getGameXmlFilePath(gameName);
-    final Optional<Path> mapContentRoot = findContentRoot();
+    final Path xmlPath = getGameXmlFilePath(gameName).orElse(null);
+    final Path mapContentRoot = findContentRoot().orElse(null);
 
-    if (xmlPath.isEmpty() || mapContentRoot.isEmpty()) {
+    if (xmlPath == null || mapContentRoot == null) {
       return Optional.empty();
     } else {
       return Optional.of(
           LocalizeHtml.localizeImgLinksInHtml(
-              GameNotes.loadGameNotes(xmlPath.get(), gameName), mapContentRoot.get()));
+              GameNotes.loadGameNotes(xmlPath, gameName), mapContentRoot));
     }
   }
 

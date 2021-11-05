@@ -13,7 +13,6 @@ import games.strategy.triplea.image.UnitImageFactory;
 import java.awt.Image;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import javax.swing.JFrame;
 import org.triplea.java.collections.IntegerMap;
@@ -91,10 +90,11 @@ class EditProductionPanel extends ProductionPanel {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Optional<Image> unitImage =
-                  imageFactory.getImage(
-                      UnitImageFactory.ImageKey.builder().player(player).type(ut).build());
-              if (unitImage.isPresent()) {
+              final Image unitImage =
+                  imageFactory
+                      .getImage(UnitImageFactory.ImageKey.builder().player(player).type(ut).build())
+                      .orElse(null);
+              if (unitImage != null) {
                 unitsAllowed.add(ut);
                 final IntegerMap<NamedAttachable> result = new IntegerMap<>();
                 result.add(ut, 1);

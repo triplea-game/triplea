@@ -771,12 +771,11 @@ class ProPurchaseAi {
                       unusedLocalCarrierCapacity));
             }
           }
-          final Optional<ProPurchaseOption> optionalSelectedOption =
-              ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
-          if (optionalSelectedOption.isEmpty()) {
+          final ProPurchaseOption selectedOption =
+              ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense").orElse(null);
+          if (selectedOption == null) {
             break;
           }
-          final ProPurchaseOption selectedOption = optionalSelectedOption.get();
           if (selectedOption.isDestroyer()) {
             needDestroyer = false;
           }
@@ -1124,39 +1123,42 @@ class ProPurchaseAi {
             purchaseTerritories);
 
         // Select purchase option
-        Optional<ProPurchaseOption> optionalSelectedOption = Optional.empty();
+        ProPurchaseOption selectedOption = null;
         if (!selectFodderUnit && attackAndDefenseDifference > 0 && !landDefenseOptions.isEmpty()) {
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landDefenseOptions) {
             defenseEfficiencies.put(
                 ppo, ppo.getDefenseEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
-          optionalSelectedOption =
-              ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
+          selectedOption =
+              ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense")
+                  .orElse(null);
         } else if (!selectFodderUnit && !landAttackOptions.isEmpty()) {
           final Map<ProPurchaseOption, Double> attackEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landAttackOptions) {
             attackEfficiencies.put(
                 ppo, ppo.getAttackEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
-          optionalSelectedOption =
-              ProPurchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack");
+          selectedOption =
+              ProPurchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack")
+                  .orElse(null);
         } else if (!landFodderOptions.isEmpty()) {
           final Map<ProPurchaseOption, Double> fodderEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landFodderOptions) {
             fodderEfficiencies.put(
                 ppo, ppo.getFodderEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
-          optionalSelectedOption =
-              ProPurchaseUtils.randomizePurchaseOption(fodderEfficiencies, "Land Fodder");
-          if (optionalSelectedOption.isPresent()) {
-            addedFodderUnits += optionalSelectedOption.get().getQuantity();
+          selectedOption =
+              ProPurchaseUtils.randomizePurchaseOption(fodderEfficiencies, "Land Fodder")
+                  .orElse(null);
+
+          if (selectedOption != null) {
+            addedFodderUnits += selectedOption.getQuantity();
           }
         }
-        if (optionalSelectedOption.isEmpty()) {
+        if (selectedOption == null) {
           break;
         }
-        final ProPurchaseOption selectedOption = optionalSelectedOption.get();
 
         // Create new temp units
         resourceTracker.purchase(selectedOption);
@@ -1605,12 +1607,12 @@ class ProPurchaseAi {
                       unusedCarrierCapacity,
                       unusedLocalCarrierCapacity));
             }
-            final Optional<ProPurchaseOption> optionalSelectedOption =
-                ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
-            if (optionalSelectedOption.isEmpty()) {
+            final ProPurchaseOption selectedOption =
+                ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense")
+                    .orElse(null);
+            if (selectedOption == null) {
               break;
             }
-            final ProPurchaseOption selectedOption = optionalSelectedOption.get();
             if (selectedOption.isDestroyer()) {
               needDestroyer = false;
             }
