@@ -42,14 +42,15 @@ public class BattlePhase {
    */
   public CombatUnitAbility addAbilityOrMergeAttached(
       final GamePlayer player, final CombatUnitAbility unitAbility) {
-    final Optional<CombatUnitAbility> duplicateAbility =
+    final CombatUnitAbility duplicateAbility =
         abilities.computeIfAbsent(player, p -> new ArrayList<>()).stream()
             .filter(unitAbility::canMergeAttachedUnitTypes)
-            .findFirst();
-    if (duplicateAbility.isPresent()) {
+            .findFirst()
+            .orElse(null);
+    if (duplicateAbility != null) {
       // this ability already exists so combine the unit types that have this ability
-      duplicateAbility.get().mergeAttachedUnitTypes(unitAbility);
-      return duplicateAbility.get();
+      duplicateAbility.mergeAttachedUnitTypes(unitAbility);
+      return duplicateAbility;
     } else {
       abilities.get(player).add(unitAbility);
       return unitAbility;

@@ -25,9 +25,10 @@ public final class GameDataUtils {
       final GameData data, final boolean copyDelegates, final Version engineVersion) {
     final History temp = data.getHistory();
     data.resetHistory();
-    final Optional<GameData> dataCopy = cloneGameData(data, copyDelegates, engineVersion);
+    final GameData dataCopy = cloneGameData(data, copyDelegates, engineVersion)
+        .orElse(null);
     data.setHistory(temp);
-    return dataCopy;
+    return Optional.ofNullable(dataCopy);
   }
 
   /**

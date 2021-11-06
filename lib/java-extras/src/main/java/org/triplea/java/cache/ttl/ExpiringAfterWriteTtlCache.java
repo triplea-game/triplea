@@ -45,10 +45,10 @@ public class ExpiringAfterWriteTtlCache<IdT, ValueT> implements TtlCache<IdT, Va
 
   @Override
   public boolean refresh(final IdT id) {
-    final Optional<ValueT> value = get(id);
+    final ValueT value = get(id).orElse(null);
 
-    if (value.isPresent()) {
-      put(id, value.get());
+    if (value != null) {
+      put(id, value);
       return true;
     }
 

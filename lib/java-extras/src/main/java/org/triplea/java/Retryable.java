@@ -100,9 +100,9 @@ public class Retryable<T> {
    */
   public Optional<T> execute() {
     for (int i = 1; i < maxAttempts; i++) {
-      final Optional<T> result = taskRunner.get();
-      if (result.isPresent()) {
-        return result;
+      final T result = taskRunner.get().orElse(null);
+      if (result != null) {
+        return Optional.of(result);
       }
       threadSleeper.accept(fixedBackOff);
     }

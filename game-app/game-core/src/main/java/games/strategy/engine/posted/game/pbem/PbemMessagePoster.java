@@ -81,10 +81,10 @@ public class PbemMessagePoster implements Serializable {
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
-    final Optional<NodeBbForumPoster> forumPoster = newForumPoster();
+    final NodeBbForumPoster forumPoster = newForumPoster().orElse(null);
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
 
-    if (forumPoster.isPresent()) {
+    if (forumPoster != null) {
       saveGameSb.append(gameProperties.get(IForumPoster.TOPIC_ID)).append("_");
     }
     saveGameSb
@@ -92,11 +92,10 @@ public class PbemMessagePoster implements Serializable {
         .append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1));
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
     CompletableFuture<String> forumSuccess = null;
-    if (forumPoster.isPresent()) {
+    if (forumPoster != null) {
       try {
         forumSuccess =
             forumPoster
-                .get()
                 .postTurnSummary(
                     (gameNameAndInfo + "\n\n" + turnSummary),
                     "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber,
@@ -159,7 +158,7 @@ public class PbemMessagePoster implements Serializable {
             .append(forumSuccess.isDone() && !forumSuccess.isCancelled());
       }
       if (emailSender.isPresent()) {
-        sb.append(forumPoster.isPresent() ? " and to " : " to ");
+        sb.append(forumPoster != null ? " and to " : " to ");
         sb.append(gameProperties.get(IEmailSender.RECIPIENTS))
             .append(" success = ")
             .append(emailSuccess);

@@ -103,23 +103,24 @@ public final class GameParser {
    */
   public static Optional<GameData> parse(final Path xmlFile) {
     log.debug("Parsing game XML: {}", xmlFile.toAbsolutePath());
-    final Optional<GameData> gameData =
+    final GameData gameData =
         GameParser.parse(
-            xmlFile, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
+            xmlFile, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion())
+            .orElse(null);
 
     // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
     // using the 'map name' from 'map.yml'
-    if (gameData.isPresent()) {
+    if (gameData != null) {
       FileUtils.findFileInParentFolders(xmlFile, MapDescriptionYaml.MAP_YAML_FILE_NAME)
           .flatMap(MapDescriptionYaml::fromFile)
           .ifPresent(
               mapDescriptionYaml -> {
-                gameData.get().setGameName(mapDescriptionYaml.findGameNameFromXmlFileName(xmlFile));
-                gameData.get().setMapName(mapDescriptionYaml.getMapName());
+                gameData.setGameName(mapDescriptionYaml.findGameNameFromXmlFileName(xmlFile));
+                gameData.setMapName(mapDescriptionYaml.getMapName());
               });
     }
 
-    return gameData;
+    return Optional.ofNullable(gameData);
   }
 
   @VisibleForTesting

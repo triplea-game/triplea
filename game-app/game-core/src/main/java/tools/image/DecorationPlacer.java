@@ -817,13 +817,14 @@ public final class DecorationPlacer {
           && staticImageForPlacing != null
           && currentSelectedImage == null) {
         // create a new point here in this territory
-        final Optional<String> territoryName =
-            ToolsUtil.findTerritoryName(currentMousePoint, polygons);
-        if (territoryName.isPresent()) {
-          final List<Point> points = new ArrayList<>();
-          points.add(new Point(currentMousePoint));
-          currentImagePoints.put(territoryName.get(), Tuple.of(staticImageForPlacing, points));
-        }
+
+        ToolsUtil.findTerritoryName(currentMousePoint, polygons)
+            .ifPresent(
+                territoryName -> {
+                  final List<Point> points = new ArrayList<>();
+                  points.add(new Point(currentMousePoint));
+                  currentImagePoints.put(territoryName, Tuple.of(staticImageForPlacing, points));
+                });
       } else if (rightMouse && !ctrlDown && imagePointType.isCanHaveMultiplePoints()) {
         // if none selected find the image we are clicking on, and duplicate it (not replace/move
         // it)

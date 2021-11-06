@@ -692,8 +692,8 @@ final class SelectionComponentFactory {
             "Fetching Login Token...",
             () -> {
               final NodeBbTokenGenerator tokenGenerator = new NodeBbTokenGenerator(forumUrl);
-              final Optional<Integer> oldUserId = uidSetting.getValue();
-              final Optional<char[]> oldToken = tokenSetting.getValue();
+              final Integer oldUserId = uidSetting.getValue().orElse(null);
+              final char[] oldToken = tokenSetting.getValue().orElse(null);
               if (!usernameField.getText().isBlank()) {
                 final TokenInfo tokenInfo =
                     tokenGenerator.generateToken(
@@ -712,10 +712,9 @@ final class SelectionComponentFactory {
                 context.setValue(tokenSetting, null);
               }
 
-              oldUserId.ifPresent(
-                  userId ->
-                      oldToken.ifPresent(
-                          token -> tokenGenerator.revokeToken(new String(token), userId)));
+              if (oldUserId != null && oldToken != null) {
+                tokenGenerator.revokeToken(new String(oldToken), oldUserId);
+              }
             });
       }
 
