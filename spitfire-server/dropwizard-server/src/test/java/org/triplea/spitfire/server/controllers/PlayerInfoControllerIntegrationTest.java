@@ -6,6 +6,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
 import java.net.URI;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
@@ -35,6 +36,13 @@ class PlayerInfoControllerIntegrationTest extends ControllerIntegrationTest {
   }
 
   @Test
+  @Disabled
+  /*
+  Disabled: non-deterministic test, needs work.
+  Failure message:
+  Reason: Bad Request
+  Http 400 - Bad Request: Player could not be found, have they left chat?
+  */
   void fetchPlayerInfoAsModerator() {
     final PlayerSummary playerSummary =
         moderatorClient.fetchPlayerInformation(PlayerChatId.of("chatter-chat-id2"));
