@@ -2404,3 +2404,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/wd_Libya/master/preview.png
   description: |
     <br>The Libyan Civil War of 2010
+- mapName: Anti-Imperialism
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/anti_imperialism/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/anti_imperialism/master/preview.png
+  description: |
+    <br>A fictional scenerio where America takes on the rest of the world
