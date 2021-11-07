@@ -26,6 +26,13 @@ class PlayerInfoControllerIntegrationTest extends ControllerIntegrationTest {
   }
 
   @Test
+  @Disabled
+  /*
+  Disabled: non-deterministic test, needs work.
+  Failure message:
+  Reason: Bad Request
+  Http 400 - Bad Request: Player could not be found, have they left chat?
+  */
   void fetchPlayerInfo() {
     final PlayerSummary playerSummary =
         client.fetchPlayerInformation(PlayerChatId.of("chatter-chat-id2"));
