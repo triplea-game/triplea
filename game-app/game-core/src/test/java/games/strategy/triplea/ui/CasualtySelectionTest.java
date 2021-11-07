@@ -16,14 +16,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class CasualtySelectionTest {
-  CasualtySelectionTest() {
-    System.out.println("costrictiong CasualtySelectionTest");
-  }
-
   private static final GameData gameData = TestMapGameData.BIG_WORLD_1942_V3.getGameData();
   private static final GamePlayer player1 = new GamePlayer("player1", gameData);
   private static final GamePlayer player2 = new GamePlayer("player2", gameData);
-  private static boolean windowClosed = false;
 
 
   private static UnitType givenUnitType(final String name) {

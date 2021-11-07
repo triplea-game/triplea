@@ -14,7 +14,7 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class EngineImageLoader {
-  public final String ASSETS_FOLDER = "assets";
+  public static final String ASSETS_FOLDER = "assets";
 
   public Image loadFrameIcon() {
     return loadImage("icons", "ta_icon.png");
