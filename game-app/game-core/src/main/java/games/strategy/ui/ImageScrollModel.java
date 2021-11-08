@@ -10,10 +10,8 @@ import java.util.Collection;
  * <p>notifies its observers when changes occur.
  */
 public class ImageScrollModel {
-  @SuppressWarnings("checkstyle:MemberName")
   private int x;
 
-  @SuppressWarnings("checkstyle:MemberName")
   private int y;
 
   private int boxWidth = 5;
