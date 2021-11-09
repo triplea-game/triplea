@@ -8,11 +8,9 @@ public class MouseDetails {
   private final MouseEvent mouseEvent;
   // the x position of the event on the map
   // this is in absolute pixels of the unscaled map
-  @SuppressWarnings("checkstyle:MemberName")
   private final double x;
   // the y position of the event on the map
   // this is in absolute pixels of the unscaled map
-  @SuppressWarnings("checkstyle:MemberName")
   private final double y;
 
   public MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
