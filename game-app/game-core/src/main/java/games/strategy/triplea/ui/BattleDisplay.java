@@ -525,7 +525,7 @@ public class BattleDisplay extends JPanel {
           final String countStr = isEditMode ? "" : "" + count;
           final String btnText =
               hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
-          final CasualtySelection csd = new CasualtySelection(
+          final var casualtySelection = new CasualtySelection(
               selectFrom,
               dependents,
               count,
@@ -544,7 +544,8 @@ public class BattleDisplay extends JPanel {
               public void actionPerformed(final ActionEvent e) {
                 actionButton.setEnabled(false);
 
-                final CasualtyDetails selectedCasualties = csd.showModalDialog().orElse(null);
+                final CasualtyDetails selectedCasualties =
+                    casualtySelection.showModalDialog().orElse(null);
 
                 if (selectedCasualties != null) {
                   casualtyDetails.set(selectedCasualties);

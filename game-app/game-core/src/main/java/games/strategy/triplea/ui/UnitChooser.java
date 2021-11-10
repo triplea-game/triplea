@@ -623,12 +623,12 @@ public final class UnitChooser extends JPanel {
     public class UnitChooserEntryIcon extends JComponent {
       private static final long serialVersionUID = 591598594559651745L;
       private static final int PADDING = 6;
-      @VisibleForTesting public final UiContextDecoration ucd;
+      @VisibleForTesting public final UiContextDecoration uiContextDecoration;
       @VisibleForTesting public boolean damaged;
 
 
       UnitChooserEntryIcon(final boolean damaged) {
-        ucd = UiContextDecoration.get(uiContext);
+        uiContextDecoration = UiContextDecoration.get(uiContext);
         this.damaged = damaged;
 
         MapUnitTooltipManager.setUnitTooltip(
@@ -643,7 +643,7 @@ public final class UnitChooser extends JPanel {
 
         int index = 1;
         for (final UnitOwner holder : category.getDependents()) {
-          final int x = ucd.unitImageFactory.getUnitImageWidth() * index;
+          final int x = uiContextDecoration.unitImageFactory.getUnitImageWidth() * index;
           uiContext
               .getUnitImageFactory()
               .getImage(ImageKey.of(holder))
@@ -659,14 +659,14 @@ public final class UnitChooser extends JPanel {
 
       @Override
       public Dimension getPreferredSize() {
-        int width = ucd.unitImageFactory.getUnitImageWidth()
+        int width = uiContextDecoration.unitImageFactory.getUnitImageWidth()
                   * (1 + category.getDependents().size());
 
         if (spaceRequiredForNonWithdrawableIcon) {
-          width += ucd.nonWithdrawableImage.getWidth(null) + PADDING;
+          width += uiContextDecoration.nonWithdrawableImage.getWidth(null) + PADDING;
         }
 
-        final int height = ucd.unitImageFactory.getUnitImageHeight();
+        final int height = uiContextDecoration.unitImageFactory.getUnitImageHeight();
         return new Dimension(width, height);
       }
 
@@ -684,21 +684,21 @@ public final class UnitChooser extends JPanel {
    * and <code>UnitChooserEntryIcon</code> being a candidate to go into the presentation,
    * the method <code>getImage</code> should probably move to <code>UnitChooserEntryIcon</code>.
    *
-   * It's cant be there for the moment, because <code>UnitChooserEntryIcon</code> is an
+   * It can't be there for the moment, because <code>UnitChooserEntryIcon</code> is an
    * inner class, and static methods are not supported in inner classes at language level 11.)
    *
    * @param category category of the image
    * @param forceDamaged true iff the image should show a damaged unit
-   * @param uiContext context for loadig the image resource
-   * @return the unit image, possibly subscripted by the non-withdrawable-icon.
+   * @param uiContext context for loading the image resource
+   * @return the unit image, possibly decorated by the non-withdrawable-icon.
    */
 
   @VisibleForTesting
   public static Image getImage(final UnitCategory category,
                                final boolean forceDamaged,
                                final UiContext uiContext) {
-    final UiContextDecoration ucd = UiContextDecoration.get(uiContext);
-    final Image image = ucd.unitImageFactory
+    final var uiContextDecoration = UiContextDecoration.get(uiContext);
+    final Image image = uiContextDecoration.unitImageFactory
         .getImage(
             ImageKey.builder()
                 .type(category.getType())
@@ -710,12 +710,12 @@ public final class UnitChooser extends JPanel {
 
     return category.getCanRetreat()
         ? image
-        : ucd.getUnitImageWithNonWithdrawableImage(image);
+        : uiContextDecoration.getUnitImageWithNonWithdrawableImage(image);
   }
 
   /**
-   * if it would produce less code (e.g. using Kotlin), this would be a proper
-   * application if the decorator pattern.
+   * If it would produce less code (e.g. using Kotlin), <code>UiContextDecoration</code>
+   * would be a proper application if the decorator pattern.
    */
 
   static class UiContextDecoration {
@@ -769,7 +769,7 @@ public final class UnitChooser extends JPanel {
       BufferedImage uwImage = unitImageWithNonWithrawableImage.get(image);
       if(uwImage==null) {
         uwImage = new BufferedImage(
-            getXofNwi() + nonWithdrawableImage.getWidth(null),
+            getXofNonWithdrawableImage() + nonWithdrawableImage.getWidth(null),
             unitImageFactory.getUnitImageHeight(),
             BufferedImage.TYPE_INT_ARGB);
 
@@ -789,17 +789,17 @@ public final class UnitChooser extends JPanel {
     private void drawNonWithrawableImage(final Graphics2D g2d) {
       g2d.drawImage(
           nonWithdrawableImage,
-          getXofNwi(),
-          getYofNwi(),
+          getXofNonWithdrawableImage(),
+          getYofNonWithdrawableImage(),
           null);
     }
 
-    private int getYofNwi() {
+    private int getYofNonWithdrawableImage() {
       return (unitImageFactory.getUnitImageHeight()
           - nonWithdrawableImage.getHeight(null)) /2;
     }
 
-    private int getXofNwi() {
+    private int getXofNonWithdrawableImage() {
       return unitImageFactory.getUnitImageWidth() * 3 / 3;
     }
   }

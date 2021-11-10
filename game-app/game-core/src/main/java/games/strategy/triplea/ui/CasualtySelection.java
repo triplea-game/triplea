@@ -25,7 +25,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 /**
- * drives the casualty selection process
+ * drives the casualty selection process:
+ *
+ * <p>1. construct a {@code CasualtySelection} object e.g. {@code final var casualtySelection = new
+ * CasualtySelection([...]);}
+ *
+ * <p>2. call {@code showModelDialog} e.g.
+ * {@code final CasualtyDetails selectedCasualties =
+ *    casualtySelection.showModalDialog().orElse(null);}
  */
 
 public class CasualtySelection {

@@ -301,11 +301,11 @@ public class CasualtySelector {
   }
 
   /**
-   * Checks if the given collections target are all of one category as defined by
-   * <code>UnitSeparator.categorize</code> and they are not two hit units.
+   * Checks if the given targets are all of one category as defined by
+   * <code>UnitSeparator.categorize</code> and if they are not multiple hit units.
    *
    * @param targets a collection of target units
-   * @param dependents map of depend units for target units
+   * @param dependents map of dependent units for target units
    */
   private static boolean allTargetsOneTypeOneHitPoint(
       final Collection<Unit> targets,
