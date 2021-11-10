@@ -14,6 +14,10 @@ public class Awt {
   /**
    * @param image to return a buffered image of
    * @param requiredType type of the BufferedImage to return
+   *                     (from the value set of static ints of
+   *                     <code>java.awt.image.BufferedImage</code> that specify image types,
+   *                     e.g. <code>TYPE_3BYTE_BGR</code>)
+   *
    * @return a BufferedImage
    */
   public BufferedImage getBufferedImage(final Image image, final int requiredType) {
