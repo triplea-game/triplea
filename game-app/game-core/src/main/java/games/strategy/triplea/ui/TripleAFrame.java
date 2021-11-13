@@ -2363,10 +2363,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** Displays the map located in the directory/archive {@code mapdir}. */
   public void changeMapSkin(final String mapdir) {
     uiContext.setMapDir(data, mapdir);
-    // when changing skins, always show relief images
-    if (uiContext.getMapData().getHasRelief()) {
-      TileImageFactory.setShowReliefImages(true);
-    }
     mapPanel.setGameData(data);
     // update map panels to use new image
     mapPanel.changeImage(uiContext.getMapData().getMapDimensions());

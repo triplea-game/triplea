@@ -281,7 +281,7 @@ public class UiContext {
 
   public void setMapDir(final GameData data, final String mapDir) {
     internalSetMapDir(mapDir, data);
-    this.getMapData().verify(data);
+    mapData.verify(data);
     // set the default after internal succeeds, if an error is thrown we don't want to persist it
     final Preferences prefs = getPreferencesForMap(data.getMapName());
     prefs.put(MAP_SKIN_PREF, mapDir);
@@ -289,6 +289,10 @@ public class UiContext {
       prefs.flush();
     } catch (final BackingStoreException e) {
       log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
+    }
+    // when changing skins, always show relief images
+    if (mapData.getHasRelief()) {
+      TileImageFactory.setShowReliefImages(true);
     }
   }
 
