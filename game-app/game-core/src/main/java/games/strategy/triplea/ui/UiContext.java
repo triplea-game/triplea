@@ -279,7 +279,7 @@ public class UiContext {
     internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
   }
 
-  public void setMapDir(final GameData data, final String mapDir) {
+  public void changeMapSkin(final GameData data, final String mapDir) {
     internalSetMapDir(mapDir, data);
     mapData.verify(data);
     // set the default after internal succeeds, if an error is thrown we don't want to persist it
