@@ -253,7 +253,7 @@ public class UiContext {
   }
 
   /** Get the preferences for the map or map skin. */
-  static Preferences getPreferencesMapOrSkin(final String mapDir) {
+  private static Preferences getPreferencesMapOrSkin(final String mapDir) {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
