@@ -254,7 +254,7 @@ final class ViewMenu extends JMenu {
       mapMenuItem.addActionListener(
           e -> {
             try {
-              frame.updateMap(skins.get(key));
+              frame.changeMapSkin(skins.get(key));
               if (uiContext.getMapData().getHasRelief()) {
                 showMapDetails.setSelected(true);
               }
