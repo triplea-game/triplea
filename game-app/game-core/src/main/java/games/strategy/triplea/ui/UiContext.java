@@ -88,7 +88,7 @@ public class UiContext {
   UiContext() {}
 
   public static void setResourceLoader(final GameState gameData) {
-    resourceLoader = new ResourceLoader(getDefaultMapDir(gameData));
+    resourceLoader = new ResourceLoader(getDefaultMapDir(gameData.getMapName()));
   }
 
   private void internalSetMapDir(final String dir, final GameData data) {
@@ -257,8 +257,7 @@ public class UiContext {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
-  private static String getDefaultMapDir(final GameState data) {
-    final String mapName = data.getMapName();
+  private static String getDefaultMapDir(String mapName) {
     if (mapName == null || mapName.isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
@@ -277,7 +276,7 @@ public class UiContext {
   }
 
   public void setDefaultMapDir(final GameData data) {
-    internalSetMapDir(getDefaultMapDir(data), data);
+    internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
   }
 
   public void setMapDir(final GameData data, final String mapDir) {
