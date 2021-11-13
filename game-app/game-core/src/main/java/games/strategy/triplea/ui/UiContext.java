@@ -91,7 +91,7 @@ public class UiContext {
     resourceLoader = new ResourceLoader(getDefaultMapDir(gameData));
   }
 
-  protected void internalSetMapDir(final String dir, final GameData data) {
+  private void internalSetMapDir(final String dir, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
     }
