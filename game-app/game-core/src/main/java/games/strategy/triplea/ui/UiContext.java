@@ -123,8 +123,9 @@ public class UiContext {
       resourceLoader.close();
     }
 
-    Path mapPath = InstalledMapsListing.searchAllMapsForMapName(mapName)
-        .orElseThrow(() -> new MapNotFoundException(mapName));
+    Path mapPath =
+        InstalledMapsListing.searchAllMapsForMapName(mapName)
+            .orElseThrow(() -> new MapNotFoundException(mapName));
 
     resourceLoader = new ResourceLoader(mapPath);
     mapData = new MapData(mapPath);
@@ -288,18 +289,18 @@ public class UiContext {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
-  public void changeMapSkin(final GameData data, final String skinName) {
-    String mapDir = getSkinsWithPaths(data.getMapName()).get(skinName);
-    internalSetMapDir(mapDir, data);
-    mapData.verify(data);
+  public static UiContext changeMapSkin(GameData gameData, String skinName) {
     // set the default after internal succeeds, if an error is thrown we don't want to persist it
-    final Preferences prefs = getPreferencesForMap(data.getMapName());
-    prefs.put(MAP_SKIN_PREF, mapDir);
+    final Preferences prefs = getPreferencesForMap(mapName);
+    prefs.put(MAP_SKIN_PREF, skinName);
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
       log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
+    UiContext uiContext = new UiContext(gameData);
+    uiContext.getMapData().verify(gameData);
+    return uiContext;
   }
 
   public void removeShutdownHook(final Runnable hook) {
