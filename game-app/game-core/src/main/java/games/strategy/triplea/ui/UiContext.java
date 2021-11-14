@@ -26,6 +26,7 @@ import java.awt.Window;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -279,7 +281,8 @@ public class UiContext {
     internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
   }
 
-  public void changeMapSkin(final GameData data, final String mapDir) {
+  public void changeMapSkin(final GameData data, final String skinName) {
+    String mapDir = getSkinsWithPaths(data.getMapName()).get(skinName);
     internalSetMapDir(mapDir, data);
     mapData.verify(data);
     // set the default after internal succeeds, if an error is thrown we don't want to persist it
@@ -395,8 +398,23 @@ public class UiContext {
     }
   }
 
-  public static Map<String, String> getSkins(final String mapName) {
-    return getSkinsWithPaths(mapName);
+  @Getter
+  public static class MapSkin {
+    private final boolean currentSkin;
+    private final String skinName;
+
+    public MapSkin(String skinName) {
+      this.skinName = skinName;
+      currentSkin = skinName.equals(UiContext.getMapDir());
+    }
+  }
+
+  public static Collection<MapSkin> getSkins(final String mapName) {
+    return getSkinsWithPaths(mapName)
+        .values()
+        .stream()
+        .map(MapSkin::new)
+        .collect(Collectors.toList());
   }
 
   /** returns the map skins for the game data. returns is a map of display-name -> map directory */
