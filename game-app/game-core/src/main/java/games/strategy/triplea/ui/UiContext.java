@@ -87,12 +87,12 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  UiContext(final GameData data) {
-    internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
-  }
-
   public static void setResourceLoader(final GameState gameData) {
     resourceLoader = new ResourceLoader(getDefaultMapDir(gameData.getMapName()));
+  }
+
+  UiContext(final GameData data) {
+    internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
   }
 
   private void internalSetMapDir(final String dir, final GameData data) {
@@ -101,6 +101,7 @@ public class UiContext {
     }
     resourceLoader = new ResourceLoader(dir);
     mapData = new MapData(dir);
+    mapDir = dir;
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
@@ -116,7 +117,6 @@ public class UiContext {
     tileImageFactory.setMapDir(resourceLoader);
     // load map data
     mapImage.loadMaps(resourceLoader);
-    mapDir = dir;
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
