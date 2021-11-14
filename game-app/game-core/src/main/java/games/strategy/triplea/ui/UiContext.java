@@ -395,8 +395,12 @@ public class UiContext {
     }
   }
 
-  /** returns the map skins for the game data. returns is a map of display-name -> map directory */
   public static Map<String, String> getSkins(final String mapName) {
+    return getSkinsWithPaths(mapName);
+  }
+
+  /** returns the map skins for the game data. returns is a map of display-name -> map directory */
+  private static Map<String, String> getSkinsWithPaths(final String mapName) {
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
     skinsByDisplayName.put("Original", mapName);
     for (final Path path : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
