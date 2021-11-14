@@ -250,7 +250,7 @@ public final class AutoPlacementFinder {
         "Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
     textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
     final Map<String, List<Point>> placements = new HashMap<>();
-    final MapData mapData = new MapData(mapDir);
+    final MapData mapData = new MapData(mapFolderLocation);
     for (final String name : mapData.getTerritories()) {
       final Set<Polygon> containedPolygons = mapData.getContainedTerritoryPolygons(name);
       final List<Point> points =

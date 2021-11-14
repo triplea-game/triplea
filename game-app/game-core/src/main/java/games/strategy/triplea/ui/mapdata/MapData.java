@@ -129,20 +129,16 @@ public class MapData {
   @Nullable private final Image blockadeImage;
   @Nullable private final Image errorImage;
   @Nullable private final Image warningImage;
-  private final String mapNameDir;
+  private final Path mapPath;
 
-  public MapData(final String mapNameDir) {
-    this.mapNameDir = mapNameDir;
-    try (ResourceLoader loader = new ResourceLoader(mapNameDir)) {
+  public MapData(final Path mapPath) {
+    this.mapPath = mapPath;
+    try (ResourceLoader loader = new ResourceLoader(mapPath)) {
       try {
         if (loader.getResource(POLYGON_FILE) == null) {
           throw new IllegalStateException(
-              "Error in resource loading for map: "
-                  + mapNameDir
-                  + ". Unable to load file: "
-                  + POLYGON_FILE
-                  + ", searched these locations: "
-                  + loader.getSearchUrls());
+              String.format(
+                  "Error loading map: %s. Unable to load file: %s", mapPath, POLYGON_FILE));
         }
 
         place.putAll(readOptionalPlacementsOneToMany(loader, PLACEMENT_FILE));
@@ -767,7 +763,7 @@ public class MapData {
   }
 
   public Optional<Image> getTerritoryEffectImage(final String effectName) {
-    try (ResourceLoader loader = new ResourceLoader(mapNameDir)) {
+    try (ResourceLoader loader = new ResourceLoader(mapPath)) {
       // TODO: what does this cache buy us? should we still keep it?
       if (effectImages.get(effectName) != null) {
         return Optional.of(effectImages.get(effectName));

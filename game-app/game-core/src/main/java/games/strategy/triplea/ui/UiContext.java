@@ -3,9 +3,10 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
+import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
@@ -50,7 +51,7 @@ import org.triplea.sound.ClipPlayer;
 /** A place to find images and map data for a ui. */
 @Slf4j
 public class UiContext {
-  @Getter protected static String mapDir;
+  @Getter protected static String mapName;
   @Getter protected static ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
@@ -87,25 +88,53 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
+  public static void setResourceLoader(final Path mapPath) {
+    resourceLoader = new ResourceLoader(mapPath);
+  }
+
   UiContext(final GameData data) {
-    internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
+    if (data.getMapName() == null || data.getMapName().isBlank()) {
+      throw new IllegalStateException("Map name property not set on game");
+    }
+
+    String preferredSkinPath =
+        getPreferencesForMap(data.getMapName()) //
+            .get(MAP_SKIN_PREF, null);
+
+    if (preferredSkinPath == null) {
+      // return the default
+      internalSetMapDir(data.getMapName(), data);
+    } else {
+      try {
+        // check skin exists
+        new ResourceLoader(Path.of(preferredSkinPath)).close();
+        internalSetMapDir(preferredSkinPath, data);
+      } catch (final RuntimeException re) {
+        // an error, clear the skin
+        getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF);
+        // return the default
+        internalSetMapDir(data.getMapName(), data);
+      }
+    }
   }
 
-  public static void setResourceLoader(final GameState gameData) {
-    resourceLoader = new ResourceLoader(getDefaultMapDir(gameData.getMapName()));
-  }
-
-  private void internalSetMapDir(final String dir, final GameData data) {
+  private void internalSetMapDir(final String mapName, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
     }
-    resourceLoader = new ResourceLoader(dir);
-    mapData = new MapData(dir);
+
+    Path mapPath =
+        InstalledMapsListing.searchAllMapsForMapName(mapName)
+            .orElseThrow(() -> new MapNotFoundException(mapName));
+
+    resourceLoader = new ResourceLoader(mapPath);
+    mapData = new MapData(mapPath);
+    UiContext.mapName = mapName;
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
-        getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
-    scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
+        getPreferencesMapOrSkin(mapName).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
+    scale = getPreferencesMapOrSkin(mapName).getDouble(MAP_SCALE_PREF, 1);
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
@@ -113,10 +142,9 @@ public class UiContext {
     unitIconImageFactory.setResourceLoader(resourceLoader);
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
-    tileImageFactory.setMapDir(resourceLoader);
+    tileImageFactory.setResourceLoader(resourceLoader);
     // load map data
     mapImage.loadMaps(resourceLoader);
-    mapDir = dir;
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
@@ -231,7 +259,7 @@ public class UiContext {
 
   public void setUnitScaleFactor(final double scaleFactor) {
     unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
-    final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+    final Preferences prefs = getPreferencesMapOrSkin(mapName);
     prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
     try {
       prefs.flush();
@@ -242,7 +270,7 @@ public class UiContext {
 
   public void setScale(final double scale) {
     this.scale = scale;
-    final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+    final Preferences prefs = getPreferencesMapOrSkin(mapName);
     prefs.putDouble(MAP_SCALE_PREF, scale);
     try {
       prefs.flush();
@@ -261,40 +289,18 @@ public class UiContext {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
-  private static String getDefaultMapDir(String mapName) {
-    if (mapName == null || mapName.isBlank()) {
-      throw new IllegalStateException("Map name property not set on game");
-    }
-    final Preferences prefs = getPreferencesForMap(mapName);
-    final String mapDir = prefs.get(MAP_SKIN_PREF, mapName);
-    // check for existence
-    try {
-      new ResourceLoader(mapDir).close();
-    } catch (final RuntimeException re) {
-      // an error, clear the skin
-      prefs.remove(MAP_SKIN_PREF);
-      // return the default
-      return mapName;
-    }
-    return mapDir;
-  }
-
-  public void changeMapSkin(final GameData data, final String skinName) {
-    String mapDir = getSkinsWithPaths(data.getMapName()).get(skinName);
-    internalSetMapDir(mapDir, data);
-    mapData.verify(data);
+  public static UiContext changeMapSkin(GameData gameData, String skinName) {
     // set the default after internal succeeds, if an error is thrown we don't want to persist it
-    final Preferences prefs = getPreferencesForMap(data.getMapName());
-    prefs.put(MAP_SKIN_PREF, mapDir);
+    final Preferences prefs = getPreferencesForMap(mapName);
+    prefs.put(MAP_SKIN_PREF, skinName);
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
       log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
-    // when changing skins, always show relief images
-    if (mapData.getHasRelief()) {
-      TileImageFactory.setShowReliefImages(true);
-    }
+    UiContext uiContext = new UiContext(gameData);
+    uiContext.getMapData().verify(gameData);
+    return uiContext;
   }
 
   public void removeShutdownHook(final Runnable hook) {
@@ -403,7 +409,7 @@ public class UiContext {
 
     public MapSkin(String skinName) {
       this.skinName = skinName;
-      currentSkin = skinName.equals(UiContext.getMapDir());
+      currentSkin = skinName.equals(mapName);
     }
   }
 
