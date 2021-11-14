@@ -26,6 +26,7 @@ import java.awt.Window;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -85,13 +87,15 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  UiContext() {}
-
-  public static void setResourceLoader(final GameState gameData) {
-    resourceLoader = new ResourceLoader(getDefaultMapDir(gameData));
+  UiContext(final GameData data) {
+    internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
   }
 
-  protected void internalSetMapDir(final String dir, final GameData data) {
+  public static void setResourceLoader(final GameState gameData) {
+    resourceLoader = new ResourceLoader(getDefaultMapDir(gameData.getMapName()));
+  }
+
+  private void internalSetMapDir(final String dir, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
     }
@@ -253,12 +257,11 @@ public class UiContext {
   }
 
   /** Get the preferences for the map or map skin. */
-  static Preferences getPreferencesMapOrSkin(final String mapDir) {
+  private static Preferences getPreferencesMapOrSkin(final String mapDir) {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
-  private static String getDefaultMapDir(final GameState data) {
-    final String mapName = data.getMapName();
+  private static String getDefaultMapDir(String mapName) {
     if (mapName == null || mapName.isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
@@ -276,13 +279,10 @@ public class UiContext {
     return mapDir;
   }
 
-  public void setDefaultMapDir(final GameData data) {
-    internalSetMapDir(getDefaultMapDir(data), data);
-  }
-
-  public void setMapDir(final GameData data, final String mapDir) {
+  public void changeMapSkin(final GameData data, final String skinName) {
+    String mapDir = getSkinsWithPaths(data.getMapName()).get(skinName);
     internalSetMapDir(mapDir, data);
-    this.getMapData().verify(data);
+    mapData.verify(data);
     // set the default after internal succeeds, if an error is thrown we don't want to persist it
     final Preferences prefs = getPreferencesForMap(data.getMapName());
     prefs.put(MAP_SKIN_PREF, mapDir);
@@ -290,6 +290,10 @@ public class UiContext {
       prefs.flush();
     } catch (final BackingStoreException e) {
       log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
+    }
+    // when changing skins, always show relief images
+    if (mapData.getHasRelief()) {
+      TileImageFactory.setShowReliefImages(true);
     }
   }
 
@@ -392,8 +396,25 @@ public class UiContext {
     }
   }
 
+  @Getter
+  public static class MapSkin {
+    private final boolean currentSkin;
+    private final String skinName;
+
+    public MapSkin(String skinName) {
+      this.skinName = skinName;
+      currentSkin = skinName.equals(UiContext.getMapDir());
+    }
+  }
+
+  public static Collection<MapSkin> getSkins(final String mapName) {
+    return getSkinsWithPaths(mapName).values().stream()
+        .map(MapSkin::new)
+        .collect(Collectors.toList());
+  }
+
   /** returns the map skins for the game data. returns is a map of display-name -> map directory */
-  public static Map<String, String> getSkins(final String mapName) {
+  private static Map<String, String> getSkinsWithPaths(final String mapName) {
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
     skinsByDisplayName.put("Original", mapName);
     for (final Path path : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {

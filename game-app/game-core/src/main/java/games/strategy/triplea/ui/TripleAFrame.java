@@ -65,7 +65,6 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
@@ -683,8 +682,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
-    final UiContext uiContext = new UiContext();
-    uiContext.setDefaultMapDir(game.getData());
+    final UiContext uiContext = new UiContext(game.getData());
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
@@ -2361,12 +2359,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   /** Displays the map located in the directory/archive {@code mapdir}. */
-  public void updateMap(final String mapdir) {
-    uiContext.setMapDir(data, mapdir);
-    // when changing skins, always show relief images
-    if (uiContext.getMapData().getHasRelief()) {
-      TileImageFactory.setShowReliefImages(true);
-    }
+  public void changeMapSkin(final String skinName) {
+    uiContext.changeMapSkin(data, skinName);
     mapPanel.setGameData(data);
     // update map panels to use new image
     mapPanel.changeImage(uiContext.getMapData().getMapDimensions());
