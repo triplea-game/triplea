@@ -32,7 +32,7 @@ class StackTraceReportModel {
         .title(ErrorReportTitleFormatter.createTitle(stackTraceRecord))
         .body(
             ErrorReportBodyFormatter.buildBody(
-                view.readUserDescription(), UiContext.getMapDir(), stackTraceRecord, engineVersion))
+                view.readUserDescription(), UiContext.getMapName(), stackTraceRecord, engineVersion))
         .gameVersion(Injections.getInstance().getEngineVersion().toString())
         .build();
   }

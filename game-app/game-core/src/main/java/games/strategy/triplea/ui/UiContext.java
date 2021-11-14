@@ -49,7 +49,7 @@ import org.triplea.sound.ClipPlayer;
 /** A place to find images and map data for a ui. */
 @Slf4j
 public class UiContext {
-  @Getter protected static String mapDir;
+  @Getter protected static String mapName;
   @Getter protected static ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
@@ -109,18 +109,18 @@ public class UiContext {
   }
 
 
-  private void internalSetMapDir(final String dir, final GameData data) {
+  private void internalSetMapDir(final String mapName, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
     }
-    resourceLoader = new ResourceLoader(dir);
-    mapData = new MapData(dir);
-    mapDir = dir;
+    resourceLoader = new ResourceLoader(mapName);
+    mapData = new MapData(mapName);
+    UiContext.mapName = mapName;
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
-        getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
-    scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
+        getPreferencesMapOrSkin(mapName).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
+    scale = getPreferencesMapOrSkin(mapName).getDouble(MAP_SCALE_PREF, 1);
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
@@ -245,7 +245,7 @@ public class UiContext {
 
   public void setUnitScaleFactor(final double scaleFactor) {
     unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
-    final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+    final Preferences prefs = getPreferencesMapOrSkin(mapName);
     prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
     try {
       prefs.flush();
@@ -256,7 +256,7 @@ public class UiContext {
 
   public void setScale(final double scale) {
     this.scale = scale;
-    final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+    final Preferences prefs = getPreferencesMapOrSkin(mapName);
     prefs.putDouble(MAP_SCALE_PREF, scale);
     try {
       prefs.flush();
@@ -399,7 +399,7 @@ public class UiContext {
 
     public MapSkin(String skinName) {
       this.skinName = skinName;
-      currentSkin = skinName.equals(UiContext.getMapDir());
+      currentSkin = skinName.equals(mapName);
     }
   }
 
