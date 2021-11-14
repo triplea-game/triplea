@@ -94,20 +94,27 @@ public class UiContext {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
-    final Preferences prefs = getPreferencesForMap(data.getMapName());
-    final String mapDir = prefs.get(MAP_SKIN_PREF, data.getMapName());
-    // check for existence
-    try {
-      new ResourceLoader(mapDir).close();
-      internalSetMapDir(mapDir, data);
-    } catch (final RuntimeException re) {
-      // an error, clear the skin
-      prefs.remove(MAP_SKIN_PREF);
+
+    String preferredSkinPath =
+        getPreferencesForMap(data.getMapName()) //
+            .get(MAP_SKIN_PREF, null);
+
+    if (preferredSkinPath == null) {
       // return the default
       internalSetMapDir(data.getMapName(), data);
+    } else {
+      try {
+        // check skin exists
+        new ResourceLoader(preferredSkinPath).close();
+        internalSetMapDir(preferredSkinPath, data);
+      } catch (final RuntimeException re) {
+        // an error, clear the skin
+        getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF);
+        // return the default
+        internalSetMapDir(data.getMapName(), data);
+      }
     }
   }
-
 
   private void internalSetMapDir(final String mapName, final GameData data) {
     if (resourceLoader != null) {
