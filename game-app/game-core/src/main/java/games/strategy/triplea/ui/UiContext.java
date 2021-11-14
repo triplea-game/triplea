@@ -408,9 +408,7 @@ public class UiContext {
   }
 
   public static Collection<MapSkin> getSkins(final String mapName) {
-    return getSkinsWithPaths(mapName)
-        .values()
-        .stream()
+    return getSkinsWithPaths(mapName).values().stream()
         .map(MapSkin::new)
         .collect(Collectors.toList());
   }
