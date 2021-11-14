@@ -148,11 +148,16 @@ public class ClipPlayer {
   }
 
   public static synchronized void setResourceLoader(final ResourceLoader resourceLoader) {
-    // make a new clip player if we switch resource loaders (ie: if we switch maps)
-    if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
-      // make a new clip player with our new resource loader
-      clipPlayer = new ClipPlayer(resourceLoader);
-    }
+    // load the sounds in a background thread,
+    // avoids the pause where sounds do not load right away
+    ThreadRunner.runInNewThread(
+        () -> {
+          // make a new clip player if we switch resource loaders (ie: if we switch maps)
+          if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
+            // make a new clip player with our new resource loader
+            clipPlayer = new ClipPlayer(resourceLoader);
+          }
+        });
   }
 
   static boolean isSoundClipMuted(final String clipName) {
