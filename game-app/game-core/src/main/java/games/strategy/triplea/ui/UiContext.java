@@ -94,6 +94,25 @@ public class UiContext {
     internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
   }
 
+  private static String getDefaultMapDir(String mapName) {
+    if (mapName == null || mapName.isBlank()) {
+      throw new IllegalStateException("Map name property not set on game");
+    }
+    final Preferences prefs = getPreferencesForMap(mapName);
+    final String mapDir = prefs.get(MAP_SKIN_PREF, mapName);
+    // check for existence
+    try {
+      new ResourceLoader(mapDir).close();
+    } catch (final RuntimeException re) {
+      // an error, clear the skin
+      prefs.remove(MAP_SKIN_PREF);
+      // return the default
+      return mapName;
+    }
+    return mapDir;
+  }
+
+
   private void internalSetMapDir(final String dir, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
@@ -258,24 +277,6 @@ public class UiContext {
   /** Get the preferences for the map or map skin. */
   private static Preferences getPreferencesMapOrSkin(final String mapDir) {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
-  }
-
-  private static String getDefaultMapDir(String mapName) {
-    if (mapName == null || mapName.isBlank()) {
-      throw new IllegalStateException("Map name property not set on game");
-    }
-    final Preferences prefs = getPreferencesForMap(mapName);
-    final String mapDir = prefs.get(MAP_SKIN_PREF, mapName);
-    // check for existence
-    try {
-      new ResourceLoader(mapDir).close();
-    } catch (final RuntimeException re) {
-      // an error, clear the skin
-      prefs.remove(MAP_SKIN_PREF);
-      // return the default
-      return mapName;
-    }
-    return mapDir;
   }
 
   public void changeMapSkin(final GameData data, final String skinName) {
