@@ -87,7 +87,9 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  UiContext() {}
+  UiContext(final GameData data) {
+    internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
+  }
 
   public static void setResourceLoader(final GameState gameData) {
     resourceLoader = new ResourceLoader(getDefaultMapDir(gameData.getMapName()));
@@ -275,10 +277,6 @@ public class UiContext {
       return mapName;
     }
     return mapDir;
-  }
-
-  public void setDefaultMapDir(final GameData data) {
-    internalSetMapDir(getDefaultMapDir(data.getMapName()), data);
   }
 
   public void changeMapSkin(final GameData data, final String skinName) {
