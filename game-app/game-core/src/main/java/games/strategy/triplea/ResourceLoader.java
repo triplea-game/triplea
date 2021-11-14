@@ -2,7 +2,6 @@ package games.strategy.triplea;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.triplea.ui.OrderedProperties;
@@ -28,7 +27,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
 import org.triplea.java.UrlStreams;
-import org.triplea.swing.SwingComponents;
 
 /**
  * Utility for managing where images and property files for maps and units should be loaded from.
@@ -47,20 +45,8 @@ public class ResourceLoader implements Closeable {
     mapLocation =
         mapName == null || mapName.isBlank()
             ? null
-            : InstalledMapsListing.parseMapFiles()
-                .findContentRootForMapName(mapName)
-                .orElseThrow(
-                    () -> {
-                      SwingComponents.promptUser(
-                          "Download Map?",
-                          "Map missing: "
-                              + mapName
-                              + ", could not join game.\nWould you like to download the map now?"
-                              + "\nOnce the download completes, you may reconnect to this game.",
-                          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-
-                      return new MapNotFoundException(mapName);
-                    });
+            : InstalledMapsListing.searchAllMapsForMapName(mapName)
+                .orElseThrow(() -> new MapNotFoundException(mapName));
 
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map resources.

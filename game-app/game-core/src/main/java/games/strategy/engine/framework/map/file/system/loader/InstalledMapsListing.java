@@ -40,6 +40,10 @@ public class InstalledMapsListing {
     return new InstalledMapsListing();
   }
 
+  public static Optional<Path> searchAllMapsForMapName(String mapName) {
+    return parseMapFiles().findContentRootForMapName(mapName);
+  }
+
   private static Collection<InstalledMap> readMapYamlsAndGenerateMissingMapYamls() {
     // loop over all maps, find and parse a 'map.yml' file, if not found attempt to generate it
     return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
