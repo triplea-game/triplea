@@ -6,7 +6,6 @@
 - If there are UI updates, please include before & after screenshots
 -->
 
-
 ## Release Note
 <!--
 Include a release note if there is a bug fix or a visible change for players.
