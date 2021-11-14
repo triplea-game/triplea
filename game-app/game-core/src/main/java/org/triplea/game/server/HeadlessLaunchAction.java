@@ -51,7 +51,7 @@ public class HeadlessLaunchAction implements LaunchAction {
       final IGame game,
       final Set<Player> players,
       final Chat chat) {
-    UiContext.setResourceLoader(game.getData());
+    UiContext.setResourceLoader(game.getData().getMapName());
     return new HeadlessDisplay();
   }
 

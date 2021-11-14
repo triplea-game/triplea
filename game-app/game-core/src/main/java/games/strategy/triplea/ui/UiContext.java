@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.ResourceLoader;
@@ -87,8 +86,8 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  public static void setResourceLoader(final GameState gameData) {
-    resourceLoader = new ResourceLoader(getDefaultMapDir(gameData.getMapName()));
+  public static void setResourceLoader(final String mapName) {
+    resourceLoader = new ResourceLoader(mapName);
   }
 
   UiContext(final GameData data) {
