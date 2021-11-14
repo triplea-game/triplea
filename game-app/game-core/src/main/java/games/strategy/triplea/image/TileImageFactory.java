@@ -116,7 +116,7 @@ public final class TileImageFactory {
     }
   }
 
-  public void setMapDir(final ResourceLoader loader) {
+  public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
     imageCache.clear();
   }

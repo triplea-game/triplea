@@ -128,7 +128,7 @@ public class UiContext {
     unitIconImageFactory.setResourceLoader(resourceLoader);
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
-    tileImageFactory.setMapDir(resourceLoader);
+    tileImageFactory.setResourceLoader(resourceLoader);
     // load map data
     mapImage.loadMaps(resourceLoader);
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
