@@ -2,8 +2,6 @@ package games.strategy.triplea;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
-import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -41,12 +39,8 @@ public class ResourceLoader implements Closeable {
   @Getter private final List<URL> searchUrls;
   @Getter private final Path mapLocation;
 
-  public ResourceLoader(final String mapName) {
-    mapLocation =
-        mapName == null || mapName.isBlank()
-            ? null
-            : InstalledMapsListing.searchAllMapsForMapName(mapName)
-                .orElseThrow(() -> new MapNotFoundException(mapName));
+  public ResourceLoader(@Nullable final Path mapLocation) {
+    this.mapLocation = mapLocation;
 
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map resources.
@@ -66,13 +60,7 @@ public class ResourceLoader implements Closeable {
       loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
     } catch (final MalformedURLException e) {
       throw new IllegalArgumentException(
-          "Error creating file system paths with map: "
-              + mapName
-              + ", engine assets path: "
-              + gameAssetsDirectory.toAbsolutePath()
-              + ", and path to map: "
-              + mapLocation.toAbsolutePath(),
-          e);
+          "Error creating file system paths with map: " + mapLocation, e);
     }
   }
 
@@ -89,7 +77,7 @@ public class ResourceLoader implements Closeable {
    * is to be used in the launching screens before any map has been launched.
    */
   public static ResourceLoader getGameEngineAssetLoader() {
-    return new ResourceLoader("");
+    return new ResourceLoader((Path) null);
   }
 
   /**

@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -40,8 +39,7 @@ public final class TileImageFactory {
           .getDefaultScreenDevice()
           .getDefaultConfiguration();
   // maps image name to ImageRef
-  private final Map<String, SoftReference<Image>> imageCache =
-      Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, SoftReference<Image>> imageCache = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   static {
@@ -121,13 +119,6 @@ public final class TileImageFactory {
     imageCache.clear();
   }
 
-  private Image isImageLoaded(final String fileName) {
-    if (imageCache.get(fileName) == null) {
-      return null;
-    }
-    return imageCache.get(fileName).get();
-  }
-
   public Image getBaseTile(final int x, final int y) {
     final String fileName = getBaseTileImageName(x, y);
     if (resourceLoader.getResource(fileName) == null) {
@@ -146,9 +137,9 @@ public final class TileImageFactory {
       isDirty = false;
       imageCache.clear();
     }
-    final Image image = isImageLoaded(fileName);
-    if (image != null) {
-      return image;
+
+    if (imageCache.get(fileName) != null) {
+      return imageCache.get(fileName).get();
     }
     // This is null if there is no image
     final URL url = resourceLoader.getResource(fileName);

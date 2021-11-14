@@ -65,6 +65,7 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
@@ -2361,6 +2362,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** Displays the map located in the directory/archive {@code mapdir}. */
   public void changeMapSkin(final String skinName) {
     uiContext.changeMapSkin(data, skinName);
+    // when changing skins, always show relief images
+    if (uiContext.getMapData().getHasRelief()) {
+      TileImageFactory.setShowReliefImages(true);
+    }
+
     mapPanel.setGameData(data);
     // update map panels to use new image
     mapPanel.changeImage(uiContext.getMapData().getMapDimensions());

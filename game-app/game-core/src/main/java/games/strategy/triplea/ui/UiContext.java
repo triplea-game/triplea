@@ -5,6 +5,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
+import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
@@ -86,8 +88,8 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  public static void setResourceLoader(final String mapName) {
-    resourceLoader = new ResourceLoader(mapName);
+  public static void setResourceLoader(final Path mapPath) {
+    resourceLoader = new ResourceLoader(mapPath);
   }
 
   UiContext(final GameData data) {
@@ -105,7 +107,7 @@ public class UiContext {
     } else {
       try {
         // check skin exists
-        new ResourceLoader(preferredSkinPath).close();
+        new ResourceLoader(Path.of(preferredSkinPath)).close();
         internalSetMapDir(preferredSkinPath, data);
       } catch (final RuntimeException re) {
         // an error, clear the skin
@@ -120,8 +122,12 @@ public class UiContext {
     if (resourceLoader != null) {
       resourceLoader.close();
     }
-    resourceLoader = new ResourceLoader(mapName);
-    mapData = new MapData(mapName);
+
+    Path mapPath = InstalledMapsListing.searchAllMapsForMapName(mapName)
+        .orElseThrow(() -> new MapNotFoundException(mapName));
+
+    resourceLoader = new ResourceLoader(mapPath);
+    mapData = new MapData(mapPath);
     UiContext.mapName = mapName;
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
@@ -293,10 +299,6 @@ public class UiContext {
       prefs.flush();
     } catch (final BackingStoreException e) {
       log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
-    }
-    // when changing skins, always show relief images
-    if (mapData.getHasRelief()) {
-      TileImageFactory.setShowReliefImages(true);
     }
   }
 
