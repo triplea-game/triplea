@@ -146,11 +146,9 @@ public class UiContext {
     // load map data
     mapImage.loadMaps(resourceLoader);
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
-    // load the sounds in a background thread,
-    // avoids the pause where sounds dont load right away
     // change the resource loader (this allows us to play sounds the map folder, rather than just
     // default sounds)
-    new Thread(() -> ClipPlayer.setResourceLoader(resourceLoader), "TripleA sound loader").start();
+    ClipPlayer.setResourceLoader(resourceLoader);
     // load a new cursor
     cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
