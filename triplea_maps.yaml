@@ -2404,3 +2404,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/wd_Libya/master/preview.png
   description: |
     <br>The Libyan Civil War of 2010
+- mapName: TD-Kings Hill
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/TD-Kings_Hill/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/TD-Kings_Hill/master/preview.png
+  description: |
+    <br>An abstract, symmetrical, 2 vs 2 scenario with a number of continents
