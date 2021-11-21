@@ -713,10 +713,6 @@ public final class UnitChooser extends JPanel {
         : uiContextDecoration.getUnitImageWithNonWithdrawableImage(image);
   }
 
-  /**
-   * If it would produce less code (e.g. using Kotlin), <code>UiContextDecoration</code>
-   * would be a proper application if the decorator pattern.
-   */
 
   static class UiContextDecoration {
     private static UiContextDecoration latestUCD;
