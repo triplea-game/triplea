@@ -52,8 +52,6 @@ public class MapImage {
 
   private BufferedImage smallMapImage;
 
-
-
   public static Font getPropertyMapFont() {
     if (propertyMapFont == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
