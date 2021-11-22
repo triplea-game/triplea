@@ -56,7 +56,7 @@ class MapDescriptionYamlReader {
       final Map<String, Object> yamlData = YamlReader.readMap(inputStream);
       final MapDescriptionYaml mapDescriptionYaml =
           MapDescriptionYaml.builder()
-              .yamlFileLocation(ymlFile.toUri())
+              .yamlFileLocation(ymlFile)
               .mapName(Strings.nullToEmpty((String) yamlData.get(MAP_NAME)))
               .mapGameList(parseGameList(yamlData))
               .build();

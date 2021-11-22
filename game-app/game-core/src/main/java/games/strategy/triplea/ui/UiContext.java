@@ -111,7 +111,8 @@ public class UiContext {
         getPreferencesForMap(data.getMapName()) //
             .get(MAP_SKIN_PREF, null);
 
-    InstalledMapsListing.findMapSkin(data.getMapName(), preferredSkinPath)
+    InstalledMapsListing.parseMapFiles()
+        .findMapSkin(data.getMapName(), preferredSkinPath)
         .ifPresentOrElse(
             resourceLoadingPaths::add,
             () -> getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF));
