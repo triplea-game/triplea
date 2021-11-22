@@ -9,22 +9,21 @@ import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
+import org.triplea.io.PathUtils;
 import org.triplea.java.UrlStreams;
 
 /**
@@ -37,53 +36,29 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
 
-  @Getter private final List<URL> searchUrls;
-
-  public ResourceLoader(@Nonnull final Path mapLocation) {
-    this(mapLocation, null);
+  public ResourceLoader(@Nonnull final Path assetFolder) {
+    this(List.of(assetFolder));
   }
 
-  /**
-   * Creates a resource loader that will look for assets in the following order:<br>
-   * - map skin<br>
-   * - map<br>
-   * - game engine<br>
-   *
-   * @param mapLocation Location Nullable location of the map. We search for assets in a map first
-   *     before looking for pre-installed assets.
-   * @param skinLocation Nullable location of the current skin. The skin if specified will be the
-   *     first location where we will search for assets.
-   */
-  public ResourceLoader(@Nullable final Path mapLocation, @Nullable final Path skinLocation) {
-    // Add the assets folder from the game installation path. This assets folder supplements
-    // any map resources.
-    final Path gameAssetsDirectory =
+  public ResourceLoader(List<Path> assetPaths) {
+    List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).collect(Collectors.toList());
+
+    Path gameEngineAssets =
         findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
             .orElseThrow(GameAssetsNotFoundException::new);
+
+    searchUrls.add(PathUtils.toUrl(gameEngineAssets));
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
-    try {
-      searchUrls = new ArrayList<>();
-      if (skinLocation != null) {
-        searchUrls.add(skinLocation.toUri().toURL());
-      }
-      if (mapLocation != null) {
-        searchUrls.add(mapLocation.toUri().toURL());
-      }
-      searchUrls.add(gameAssetsDirectory.toUri().toURL());
-      loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
-    } catch (final MalformedURLException e) {
-      throw new IllegalArgumentException(
-          "Error creating file system paths with map: " + mapLocation, e);
-    }
+
+    loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
   }
 
   @VisibleForTesting
   ResourceLoader(final URLClassLoader loader) {
     this.loader = loader;
-    searchUrls = List.of();
   }
 
   /**
