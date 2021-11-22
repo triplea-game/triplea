@@ -89,7 +89,12 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  public static void setResourceLoader(final Path mapPath) {
+  public static void setResourceLoader(final GameData gameData) {
+    final Path mapPath =
+        InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
+            .orElseThrow(
+                () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
+
     resourceLoader = new ResourceLoader(mapPath);
     mapLocation = mapPath;
   }

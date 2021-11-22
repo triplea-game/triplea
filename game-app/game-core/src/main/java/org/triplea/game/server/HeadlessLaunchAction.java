@@ -53,13 +53,7 @@ public class HeadlessLaunchAction implements LaunchAction {
       final Set<Player> players,
       final Chat chat) {
 
-    Path mapPath =
-        InstalledMapsListing.searchAllMapsForMapName(game.getData().getMapName())
-            .orElseThrow(
-                () ->
-                    new IllegalStateException(
-                        "Unable to find map: " + game.getData().getMapName()));
-    UiContext.setResourceLoader(mapPath);
+    UiContext.setResourceLoader(game.getData());
     return new HeadlessDisplay();
   }
 
