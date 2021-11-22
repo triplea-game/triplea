@@ -24,7 +24,6 @@ import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.io.FileUtils;
 import org.triplea.io.ImageLoader;
 import org.triplea.java.UrlStreams;
 
@@ -112,6 +111,14 @@ public class ResourceLoader implements Closeable {
     }
   }
 
+  /**
+   * Searches from a starting directory for a given directory. If not found, recursively goes up to
+   * parent directories searching for the given directory.
+   *
+   * @param startDir The start of the search path.
+   * @param targetDirName The name of the directory to find (must be a directory, not a file)
+   * @return Path of the directory as found, otherwise empty.
+   */
   @VisibleForTesting
   static Optional<Path> findDirectory(final Path startDir, final String targetDirName) {
     for (Path currentDir = startDir; currentDir != null; currentDir = currentDir.getParent()) {
