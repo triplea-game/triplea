@@ -42,8 +42,7 @@ class GameNotesMenu {
 
   private static JComponent notesPanel(final String gameNotes) {
     final String localizedHtml =
-        LocalizeHtml.localizeImgLinksInHtml(
-            gameNotes.trim(), UiContext.getResourceLoader().getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(gameNotes.trim(), UiContext.getMapLocation());
 
     final JEditorPane gameNotesPane = new JEditorPane("text/html", localizedHtml);
     gameNotesPane.setEditable(false);

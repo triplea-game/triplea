@@ -52,6 +52,7 @@ import org.triplea.sound.ClipPlayer;
 @Slf4j
 public class UiContext {
   @Getter protected static String mapName;
+  @Getter protected static Path mapLocation;
   @Getter protected static ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
@@ -90,6 +91,7 @@ public class UiContext {
 
   public static void setResourceLoader(final Path mapPath) {
     resourceLoader = new ResourceLoader(mapPath);
+    mapLocation = mapPath;
   }
 
   UiContext(final GameData data) {
@@ -128,6 +130,7 @@ public class UiContext {
             .orElseThrow(() -> new MapNotFoundException(mapName));
 
     resourceLoader = new ResourceLoader(mapPath);
+    mapLocation = mapPath;
     mapData = new MapData(mapPath);
     UiContext.mapName = mapName;
     // DiceImageFactory needs loader and game data
