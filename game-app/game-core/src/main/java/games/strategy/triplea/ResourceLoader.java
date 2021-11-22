@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.io.FileUtils;
 import org.triplea.io.ImageLoader;
 import org.triplea.java.UrlStreams;
 
@@ -39,7 +41,7 @@ public class ResourceLoader implements Closeable {
   @Getter private final List<URL> searchUrls;
   @Getter private final Path mapLocation;
 
-  public ResourceLoader(@Nullable final Path mapLocation) {
+  public ResourceLoader(@Nonnull final Path mapLocation) {
     this(mapLocation, null);
   }
 
@@ -87,15 +89,6 @@ public class ResourceLoader implements Closeable {
     this.loader = loader;
     searchUrls = List.of();
     mapLocation = null;
-  }
-
-  /**
-   * Resource loader that loads generic sounds and images, no map loaded. A standard resource loader
-   * will look for map assets first before falling back to game engine assets. This resource loader
-   * is to be used in the launching screens before any map has been launched.
-   */
-  public static ResourceLoader getGameEngineAssetLoader() {
-    return new ResourceLoader((Path) null);
   }
 
   /**

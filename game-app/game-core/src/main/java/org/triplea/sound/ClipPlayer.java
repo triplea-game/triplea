@@ -230,7 +230,7 @@ public class ClipPlayer {
   public static void play(final String clipPath, final GamePlayer gamePlayer) {
     synchronized (ClipPlayer.class) {
       if (clipPlayer == null) {
-        clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
+        clipPlayer = new ClipPlayer(new ResourceLoader(Path.of("sounds")));
       }
     }
     clipPlayer.playClip(clipPath, gamePlayer);
