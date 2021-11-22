@@ -42,8 +42,7 @@ public class InstalledMap {
     if (contentRoot == null) {
       // relative to the 'map.yml' file location, search current and child directories for
       // a polygons file, the location of the polygons file is the map content root.
-      final Path mapYamlParentFolder =
-          Path.of(mapDescriptionYaml.getYamlFileLocation()).getParent();
+      final Path mapYamlParentFolder = mapDescriptionYaml.getYamlFileLocation().getParent();
       contentRoot =
           FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
               .map(Path::getParent)
@@ -103,5 +102,9 @@ public class InstalledMap {
 
     final Instant lastCommitDate = Instant.ofEpochMilli(download.getLastCommitDateEpochMilli());
     return lastModifiedDate.isBefore(lastCommitDate);
+  }
+
+  Optional<Path> findMapSkin(final String skinName) {
+    return Optional.empty();
   }
 }
