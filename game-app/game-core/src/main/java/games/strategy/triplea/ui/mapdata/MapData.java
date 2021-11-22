@@ -754,17 +754,17 @@ public class MapData {
   }
 
   public Optional<Image> getTerritoryEffectImage(final String effectName) {
-    if (effectImages.get(effectName) != null) {
-      return Optional.of(effectImages.get(effectName));
-    }
-    String largeImageName = "territoryEffects/" + effectName + "_large.png";
-    String standardImageName = "territoryEffects/" + effectName + ".png";
-    Image effectImage =
-        UiContext.getResourceLoader()
-            .loadImage(largeImageName)
-            .or(() -> UiContext.getResourceLoader().loadImage(standardImageName))
-            .orElse(null);
-    effectImages.put(effectName, effectImage);
-    return Optional.ofNullable(effectImage);
+    return Optional.ofNullable(
+        effectImages.computeIfAbsent(
+            effectName,
+            key -> {
+              String largeImageName = "territoryEffects/" + effectName + "_large.png";
+              String standardImageName = "territoryEffects/" + effectName + ".png";
+
+              return UiContext.getResourceLoader()
+                  .loadImage(largeImageName)
+                  .or(() -> UiContext.getResourceLoader().loadImage(standardImageName))
+                  .orElse(null);
+            }));
   }
 }
