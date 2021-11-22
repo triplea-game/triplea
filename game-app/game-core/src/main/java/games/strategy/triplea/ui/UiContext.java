@@ -126,7 +126,7 @@ public class UiContext {
       resourceLoader.close();
     }
     resourceLoader = new ResourceLoader(resourceLoadingPaths);
-    mapData = new MapData(mapPath);
+    mapData = new MapData(resourceLoader);
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
