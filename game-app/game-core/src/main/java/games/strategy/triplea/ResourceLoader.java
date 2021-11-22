@@ -40,6 +40,21 @@ public class ResourceLoader implements Closeable {
   @Getter private final Path mapLocation;
 
   public ResourceLoader(@Nullable final Path mapLocation) {
+    this(mapLocation, null);
+  }
+
+  /**
+   * Creates a resource loader that will look for assets in the following order:<br>
+   * - map skin<br>
+   * - map<br>
+   * - game engine<br>
+   *
+   * @param mapLocation Location Nullable location of the map. We search for assets in a map first
+   *     before looking for pre-installed assets.
+   * @param skinLocation Nullable location of the current skin. The skin if specified will be the
+   *     first location where we will search for assets.
+   */
+  public ResourceLoader(@Nullable final Path mapLocation, @Nullable final Path skinLocation) {
     this.mapLocation = mapLocation;
 
     // Add the assets folder from the game installation path. This assets folder supplements
@@ -53,6 +68,9 @@ public class ResourceLoader implements Closeable {
     // the assets folder.
     try {
       searchUrls = new ArrayList<>();
+      if (skinLocation != null) {
+        searchUrls.add(skinLocation.toUri().toURL());
+      }
       if (mapLocation != null) {
         searchUrls.add(mapLocation.toUri().toURL());
       }
