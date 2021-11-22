@@ -116,17 +116,16 @@ public class UiContext {
             resourceLoadingPaths::add,
             () -> getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF));
 
-    if (resourceLoader != null) {
-      resourceLoader.close();
-    }
-
     Path mapPath =
         InstalledMapsListing.searchAllMapsForMapName(data.getMapName())
             .orElseThrow(() -> new MapNotFoundException(data.getMapName()));
-
-    resourceLoadingPaths.add(mapPath);
-    resourceLoader = new ResourceLoader(resourceLoadingPaths);
     mapLocation = mapPath;
+    resourceLoadingPaths.add(mapPath);
+
+    if (resourceLoader != null) {
+      resourceLoader.close();
+    }
+    resourceLoader = new ResourceLoader(resourceLoadingPaths);
     mapData = new MapData(mapPath);
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
