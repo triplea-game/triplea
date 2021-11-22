@@ -67,7 +67,7 @@ public class UiContext {
   protected MapData mapData;
   @Getter @Setter protected LocalPlayers localPlayers;
 
-  @Getter protected double scale = 1;
+  @Getter protected double scale;
   private final TileImageFactory tileImageFactory = new TileImageFactory();
   private UnitImageFactory unitImageFactory;
   private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
@@ -76,12 +76,12 @@ public class UiContext {
   private final MapImage mapImage;
   private final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
-  private DiceImageFactory diceImageFactory;
+  private final DiceImageFactory diceImageFactory;
   private final PuImageFactory puImageFactory = new PuImageFactory();
   private boolean drawUnits = true;
-  private boolean drawTerritoryEffects = false;
+  private boolean drawTerritoryEffects;
 
-  @Getter private Cursor cursor = Cursor.getDefaultCursor();
+  @Getter private Cursor cursor;
 
   @Getter private boolean isShutDown = false;
 
@@ -131,7 +131,7 @@ public class UiContext {
     final double unitScale =
         getPreferencesMapOrSkin(data.getMapName())
             .getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
-    scale = getPreferencesMapOrSkin(data.getMapName()).getDouble(MAP_SCALE_PREF, 1);
+    scale = getPreferencesMapOrSkin(data.getMapName()).getDouble(MAP_SCALE_PREF, 1.0);
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
