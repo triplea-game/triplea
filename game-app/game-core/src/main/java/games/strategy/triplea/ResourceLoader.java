@@ -38,7 +38,6 @@ public class ResourceLoader implements Closeable {
   private final URLClassLoader loader;
 
   @Getter private final List<URL> searchUrls;
-  @Getter private final Path mapLocation;
 
   public ResourceLoader(@Nonnull final Path mapLocation) {
     this(mapLocation, null);
@@ -56,8 +55,6 @@ public class ResourceLoader implements Closeable {
    *     first location where we will search for assets.
    */
   public ResourceLoader(@Nullable final Path mapLocation, @Nullable final Path skinLocation) {
-    this.mapLocation = mapLocation;
-
     // Add the assets folder from the game installation path. This assets folder supplements
     // any map resources.
     final Path gameAssetsDirectory =
@@ -87,7 +84,6 @@ public class ResourceLoader implements Closeable {
   ResourceLoader(final URLClassLoader loader) {
     this.loader = loader;
     searchUrls = List.of();
-    mapLocation = null;
   }
 
   /**
