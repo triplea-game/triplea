@@ -52,6 +52,8 @@ public class MapImage {
 
   private BufferedImage smallMapImage;
 
+
+
   public static Font getPropertyMapFont() {
     if (propertyMapFont == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
@@ -240,7 +242,7 @@ public class MapImage {
     return smallMapImage;
   }
 
-  public void loadMaps(final ResourceLoader loader) {
+  public MapImage(final ResourceLoader loader) {
     final Image smallFromFile =
         loadImage(loader, Constants.SMALL_MAP_FILENAME, Constants.SMALL_MAP_EXTENSIONS);
     smallMapImage =

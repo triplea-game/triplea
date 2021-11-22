@@ -73,7 +73,7 @@ public class UiContext {
   private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
       new TerritoryEffectImageFactory();
-  private final MapImage mapImage = new MapImage();
+  private final MapImage mapImage;
   private final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
   private DiceImageFactory diceImageFactory;
@@ -127,22 +127,19 @@ public class UiContext {
     }
     resourceLoader = new ResourceLoader(resourceLoadingPaths);
     mapData = new MapData(resourceLoader);
-    // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
         getPreferencesMapOrSkin(data.getMapName())
             .getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
     scale = getPreferencesMapOrSkin(data.getMapName()).getDouble(MAP_SCALE_PREF, 1);
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
-    // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
     unitIconImageFactory.setResourceLoader(resourceLoader);
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setResourceLoader(resourceLoader);
-    // load map data
-    mapImage.loadMaps(resourceLoader);
+    mapImage = new MapImage(resourceLoader);
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
     // change the resource loader (this allows us to play sounds the map folder, rather than just
     // default sounds)
