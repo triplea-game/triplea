@@ -102,7 +102,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
                         .lastModifiedDate(Instant.ofEpochMilli(entry.getValue()))
                         .mapDescriptionYaml(
                             MapDescriptionYaml.builder()
-                                .yamlFileLocation(Path.of("/local/file").toUri())
+                                .yamlFileLocation(Path.of("/local/file"))
                                 .mapName(entry.getKey())
                                 .mapGameList(
                                     List.of(

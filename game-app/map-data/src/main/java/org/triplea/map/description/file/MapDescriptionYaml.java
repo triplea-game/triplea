@@ -210,7 +210,7 @@ public class MapDescriptionYaml {
   /** Find 'games' folder starting from map.yml parent folder. */
   private Optional<Path> findGamesFolder() {
     final Path mapFolder = yamlFileLocation.getParent();
-    final Optional<Path> gamesFolder = FileUtils.find(mapFolder, 5, "games");
+    final Optional<Path> gamesFolder = FileUtils.findOne(mapFolder, 5, "games");
 
     if (gamesFolder.isEmpty()) {
       log.warn("No 'games' folder found under location: {}", mapFolder.toAbsolutePath());
@@ -220,7 +220,7 @@ public class MapDescriptionYaml {
 
   /** Search 'games' folder for a game-xml-file. */
   private Optional<Path> searchForGameFile(final Path gamesFolder, final String xmlFileName) {
-    final Optional<Path> gameFile = FileUtils.find(gamesFolder, 3, xmlFileName);
+    final Optional<Path> gameFile = FileUtils.findOne(gamesFolder, 3, xmlFileName);
     if (gameFile.isEmpty()) {
       log.warn(
           "Failed to find game file: {}, within directory tree rooted at: {}",

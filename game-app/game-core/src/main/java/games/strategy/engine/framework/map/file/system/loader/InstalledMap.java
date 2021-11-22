@@ -15,6 +15,7 @@ import lombok.ToString;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
+import org.triplea.map.description.file.SkinDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
 import org.triplea.util.LocalizeHtml;
 
@@ -44,7 +45,7 @@ public class InstalledMap {
       // a polygons file, the location of the polygons file is the map content root.
       final Path mapYamlParentFolder = mapDescriptionYaml.getYamlFileLocation().getParent();
       contentRoot =
-          FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+          FileUtils.findOne(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
               .map(Path::getParent)
               .orElse(null);
     }
@@ -104,7 +105,16 @@ public class InstalledMap {
     return lastModifiedDate.isBefore(lastCommitDate);
   }
 
-  Optional<Path> findMapSkin(final String skinName) {
-    return Optional.empty();
+  public Optional<Path> findMapSkin(String skinName) {
+    Path mapPath = mapDescriptionYaml.getYamlFileLocation().getParent();
+    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 4, "skin.yml");
+
+    return skinYamlFiles.stream()
+        .map(SkinDescriptionYaml::readSkinDescriptionYamlFile)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .filter(skinDescriptionYaml -> skinDescriptionYaml.getSkinName().equalsIgnoreCase(skinName))
+        .findAny()
+        .map(SkinDescriptionYaml::getFilePath);
   }
 }

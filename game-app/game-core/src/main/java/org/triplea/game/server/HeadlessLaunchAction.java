@@ -6,7 +6,6 @@ import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
