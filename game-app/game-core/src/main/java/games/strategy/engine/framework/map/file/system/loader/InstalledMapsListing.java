@@ -55,6 +55,10 @@ public class InstalledMapsListing {
         .collect(Collectors.toList());
   }
 
+  public static Optional<Path> findMapSkin(final String mapName, final String preferredSkinPath) {
+    return Optional.empty();
+  }
+
   /** Returns the list of all installed game names. */
   public List<String> getSortedGameList() {
     return installedMaps.stream()

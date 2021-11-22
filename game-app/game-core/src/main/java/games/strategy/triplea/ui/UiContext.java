@@ -103,46 +103,37 @@ public class UiContext {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
+    UiContext.mapName = data.getMapName();
+
+    List<Path> resourceLoadingPaths = new ArrayList<>();
 
     String preferredSkinPath =
         getPreferencesForMap(data.getMapName()) //
             .get(MAP_SKIN_PREF, null);
 
-    if (preferredSkinPath == null) {
-      // return the default
-      internalSetMapDir(data.getMapName(), data);
-    } else {
-      try {
-        // check skin exists
-        new ResourceLoader(Path.of(preferredSkinPath)).close();
-        internalSetMapDir(preferredSkinPath, data);
-      } catch (final RuntimeException re) {
-        // an error, clear the skin
-        getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF);
-        // return the default
-        internalSetMapDir(data.getMapName(), data);
-      }
-    }
-  }
+    InstalledMapsListing.findMapSkin(data.getMapName(), preferredSkinPath)
+        .ifPresentOrElse(
+            resourceLoadingPaths::add,
+            () -> getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF));
 
-  private void internalSetMapDir(final String mapName, final GameData data) {
     if (resourceLoader != null) {
       resourceLoader.close();
     }
 
     Path mapPath =
-        InstalledMapsListing.searchAllMapsForMapName(mapName)
-            .orElseThrow(() -> new MapNotFoundException(mapName));
+        InstalledMapsListing.searchAllMapsForMapName(data.getMapName())
+            .orElseThrow(() -> new MapNotFoundException(data.getMapName()));
 
-    resourceLoader = new ResourceLoader(mapPath);
+    resourceLoadingPaths.add(mapPath);
+    resourceLoader = new ResourceLoader(resourceLoadingPaths);
     mapLocation = mapPath;
     mapData = new MapData(mapPath);
-    UiContext.mapName = mapName;
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
-        getPreferencesMapOrSkin(mapName).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
-    scale = getPreferencesMapOrSkin(mapName).getDouble(MAP_SCALE_PREF, 1);
+        getPreferencesMapOrSkin(data.getMapName())
+            .getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
+    scale = getPreferencesMapOrSkin(data.getMapName()).getDouble(MAP_SCALE_PREF, 1);
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
