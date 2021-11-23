@@ -2411,3 +2411,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/TD-Kings_Hill/master/preview.png
   description: |
     <br>An abstract, symmetrical, 2 vs 2 scenario with a number of continents
+- mapName: Master of Europa
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/MasterofEuropa/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/MasterofEuropa/master/preview.png
+  description: |
+    <br>WW2 in Europe starting in 1939 on the New World Order map
