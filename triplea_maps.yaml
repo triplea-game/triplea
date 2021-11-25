@@ -2418,3 +2418,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/MasterofEuropa/master/preview.png
   description: |
     <br>WW2 in Europe starting in 1939 on the New World Order map
+- mapName: Caravan
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Caravan/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Caravan/master/preview.png
+  description: |
+    <br>In the deep, dark woods, a trade route is under threat from armed brigands. Can the town merchants get their goods through the forest paths safely?
