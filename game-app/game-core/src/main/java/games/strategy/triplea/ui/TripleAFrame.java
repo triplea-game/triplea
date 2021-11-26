@@ -199,7 +199,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
   private HistorySynchronizer historySyncher;
-  private final UiContext uiContext;
+  private UiContext uiContext;
   private final JPanel mapAndChatPanel;
   private final ChatPanel chatPanel;
   private final CommentPanel commentPanel;
@@ -683,8 +683,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
-    final UiContext uiContext = new UiContext();
-    uiContext.setDefaultMapDir(game.getData());
+    final UiContext uiContext = new UiContext(game.getData());
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
@@ -2361,12 +2360,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   /** Displays the map located in the directory/archive {@code mapdir}. */
-  public void updateMap(final String mapdir) {
-    uiContext.setMapDir(data, mapdir);
+  public void changeMapSkin(final String skinName) {
+    uiContext = UiContext.changeMapSkin(data, skinName);
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {
       TileImageFactory.setShowReliefImages(true);
     }
+
     mapPanel.setGameData(data);
     // update map panels to use new image
     mapPanel.changeImage(uiContext.getMapData().getMapDimensions());

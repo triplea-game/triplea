@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
-    id 'com.diffplug.spotless' version '5.17.1' apply false
+    id 'com.diffplug.spotless' version '6.0.0' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -64,7 +64,7 @@ subprojects {
         awaitilityVersion = '4.1.1'
         bcryptVersion = '0.9.0'
         caffeineVersion = '3.0.4'
-        checkstyleVersion = '8.23'
+        checkstyleVersion = '8.45'
         commonsCliVersion = '1.5.0'
         commonsCodecVersion = '1.15'
         commonsIoVersion = '2.11.0'
@@ -89,12 +89,12 @@ subprojects {
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '3.0.2'
         jaxbImplVersion = '3.0.2'
-        jdbiVersion = '3.23.0'
+        jdbiVersion = '3.24.1'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.8.1'
         junitPlatformLauncherVersion = '1.8.1'
-        logbackClassicVersion = '1.2.6'
-        mockitoVersion = '4.0.0'
+        logbackClassicVersion = '1.2.7'
+        mockitoVersion = '4.1.0'
         openFeignVersion = '11.7'
         postgresqlVersion = '42.3.1'
         snakeYamlVersion = '2.3'

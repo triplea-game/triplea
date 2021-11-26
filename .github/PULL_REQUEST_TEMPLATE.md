@@ -1,17 +1,12 @@
+## Change Summary & Additional Notes
 
-<!-- If multiple commits please summarize the change above. -->
-
-## Testing
-<!-- Describe any manual testing performed below. -->
-
-## Screens Shots
-<!-- If there are UI updates, include screenshots below -->
-
-## Additional Notes to Reviewer
-<!-- Add any additional details that would be helpful to reviewers -->
+<!--
+- If multiple commits, summarize what has changed
+- Mention any manual testing done.
+- If there are UI updates, please include before & after screenshots
+-->
 
 ## Release Note
-
 <!--
 Include a release note if there is a bug fix or a visible change for players.
 For format & syntax help, see:

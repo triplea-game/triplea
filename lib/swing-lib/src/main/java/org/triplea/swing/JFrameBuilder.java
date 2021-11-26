@@ -31,7 +31,7 @@ public class JFrameBuilder {
     EXIT
   }
 
-  private CloseBehavior closeBehavior;
+  private CloseBehavior closeBehavior = CloseBehavior.DISPOSE;
 
   private final Collection<Function<JFrame, Component>> children = new ArrayList<>();
   private boolean escapeClosesWindow;
@@ -93,12 +93,10 @@ public class JFrameBuilder {
     Optional.ofNullable(parent).ifPresent(frame::setLocationRelativeTo);
     Optional.ofNullable(layoutManager).ifPresent(frame.getContentPane()::setLayout);
 
-    if (closeBehavior != null) {
-      if (closeBehavior == CloseBehavior.DISPOSE) {
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      } else {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      }
+    if (closeBehavior == CloseBehavior.EXIT) {
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    } else {
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     children.stream().map(component -> component.apply(frame)).forEach(frame::add);

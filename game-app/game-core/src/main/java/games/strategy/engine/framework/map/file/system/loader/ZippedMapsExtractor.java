@@ -17,6 +17,7 @@ import org.triplea.io.FileUtils;
 import org.triplea.io.ZipExtractor;
 import org.triplea.io.ZipExtractor.FileSystemException;
 import org.triplea.io.ZipExtractor.ZipReadException;
+import org.triplea.map.description.file.MapDescriptionYaml;
 
 /**
  * Responsible to find downloaded maps and unzip any that are zipped. Any 'bad' map zips that we
@@ -50,7 +51,12 @@ public class ZippedMapsExtractor {
             zippedMaps.forEach(
                 mapZip -> {
                   try {
-                    unzipMap(mapZip);
+                    unzipMap(mapZip)
+                        // check if the unzipped map has a 'map.yaml' file
+                        .filter(installPath -> MapDescriptionYaml.fromMap(installPath).isEmpty())
+                        // if no 'map.yaml' file exists, attempt to generate one.
+                        // Before 2.6 maps did not include a 'map.yaml' file and were zipped.
+                        .ifPresent(MapDescriptionYaml::generateForMap);
                   } catch (final ZipReadException zipReadException) {
                     // Problem reading the zip, move it to a folder so that the user does
                     // not repeatedly see an error trying to read this zip.

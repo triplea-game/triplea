@@ -55,6 +55,9 @@ public final class DebugMenu extends JMenu {
               add(playerDebugMenu);
               renderDebugOption(option.getOptions()).forEach(playerDebugMenu::add);
             });
+    if (menuItemsAndFactories.isEmpty() && debugOptions.isEmpty()) {
+      setVisible(false);
+    }
   }
 
   private Collection<JMenuItem> renderDebugOption(final Collection<AiPlayerDebugOption> options) {

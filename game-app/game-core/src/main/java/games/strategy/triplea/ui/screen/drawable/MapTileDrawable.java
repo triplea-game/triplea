@@ -14,10 +14,8 @@ import java.awt.RenderingHints;
 public abstract class MapTileDrawable extends AbstractDrawable {
   protected boolean noImage = false;
 
-  @SuppressWarnings("checkstyle:MemberName")
   protected final int x;
 
-  @SuppressWarnings("checkstyle:MemberName")
   protected final int y;
 
   protected final UiContext uiContext;
