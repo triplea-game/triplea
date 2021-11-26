@@ -918,8 +918,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** We do NOT want to block the next player from beginning their turn. */
   public void notifyError(final String message) {
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(
-            message, UiContext.getResourceLoader().getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -955,8 +954,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return;
     }
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(
-            message, UiContext.getResourceLoader().getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
