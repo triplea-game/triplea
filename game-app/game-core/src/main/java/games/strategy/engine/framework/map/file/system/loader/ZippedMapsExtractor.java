@@ -145,13 +145,11 @@ public class ZippedMapsExtractor {
       return Optional.empty();
     }
 
-    // move properties file if it exists
+    // delete properties file if it exists
     final Path propertiesFile =
         mapZip.resolveSibling(mapZip.getFileName().toString() + ".properties");
     if (Files.exists(propertiesFile)) {
-      Files.move(
-          propertiesFile,
-          extractionTarget.resolveSibling(extractionTarget.getFileName() + ".properties"));
+      FileUtils.delete(propertiesFile);
     }
 
     final boolean successfullyExtracted = Files.exists(extractionTarget);
