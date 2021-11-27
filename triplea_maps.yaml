@@ -2425,3 +2425,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Caravan/master/preview.png
   description: |
     <br>In the deep, dark woods, a trade route is under threat from armed brigands. Can the town merchants get their goods through the forest paths safely?
+- mapName: Chess
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Chess/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Chess/master/preview.png
+  description: |
+    <br>An abstract, chess-inspired game
