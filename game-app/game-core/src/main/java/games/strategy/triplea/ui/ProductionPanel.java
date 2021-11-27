@@ -373,7 +373,7 @@ class ProductionPanel extends JPanel {
           }
         } else if (resourceOrUnit instanceof Resource) {
           final Resource resource = (Resource) resourceOrUnit;
-          icon = Optional.of(uiContext.getResourceImageFactory().getIcon(resource, true));
+          icon = Optional.of(uiContext.getResourceImageFactory().getLargeIcon(resource.getName()));
           info.setText("resource");
           tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());

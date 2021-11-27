@@ -376,7 +376,7 @@ public class MapRouteDrawer {
       graphics.setColor(new Color(200, 0, 0));
       for (final Resource resource : movementFuelCost.getResourcesCopy().keySet()) {
         try {
-          resourceImageFactory.getIcon(resource, false).paintIcon(null, graphics, x, 2);
+          resourceImageFactory.getIcon(resource.getName()).paintIcon(null, graphics, x, 2);
         } catch (final IllegalStateException e) {
           graphics.drawString(resource.getName().substring(0, 1), x, MESSAGE_TEXT_Y);
         }
