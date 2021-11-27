@@ -261,7 +261,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               final JLabel territoryEffectLabel = new JLabel();
               territoryEffectLabel.setToolTipText(territoryEffect.getName());
               territoryEffectLabel.setIcon(
-                  uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect, false));
+                  uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
               territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
               territoryInfo.add(
                   territoryEffectLabel,

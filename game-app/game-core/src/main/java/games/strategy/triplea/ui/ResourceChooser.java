@@ -89,7 +89,7 @@ class ResourceChooser extends JOptionPane {
         final boolean cellHasFocus) {
       super.getListCellRendererComponent(
           list, ((Resource) value).getName(), index, isSelected, cellHasFocus);
-      setIcon(uiContext.getResourceImageFactory().getIcon(((Resource) value), false));
+      setIcon(uiContext.getResourceImageFactory().getIcon(((Resource) value).getName()));
       return this;
     }
   }

@@ -236,7 +236,9 @@ public class SimpleUnitPanel extends JPanel {
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
       label.setIcon(
-          uiContext.getResourceImageFactory().getIcon(unit, style == Style.LARGE_ICONS_COLUMN));
+          style == Style.LARGE_ICONS_COLUMN
+          ? uiContext.getResourceImageFactory().getLargeIcon(unit.getName())
+              :          uiContext.getResourceImageFactory().getIcon(unit.getName()));
     }
     add(label);
   }
