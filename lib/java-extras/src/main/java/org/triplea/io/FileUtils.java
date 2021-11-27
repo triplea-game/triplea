@@ -82,7 +82,7 @@ public final class FileUtils {
    * @param fileName The name of the file to be search for.
    * @return A file matching the given name or empty if not found.
    */
-  public Optional<Path> findOne(final Path searchRoot, final int maxDepth, final String fileName) {
+  public Optional<Path> findAny(final Path searchRoot, final int maxDepth, final String fileName) {
     return find(searchRoot, maxDepth, fileName).stream().findAny();
   }
 

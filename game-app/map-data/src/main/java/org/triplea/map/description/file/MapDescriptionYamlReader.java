@@ -37,7 +37,7 @@ class MapDescriptionYamlReader {
      * 'map.yml' file at depth 2, eg: 'map_folder-master/map_folder/map/map.yml'.
      */
     final int maxMapYmlSearchDepth = 2;
-    return FileUtils.findOne(
+    return FileUtils.findAny(
         mapFolder, maxMapYmlSearchDepth, MapDescriptionYaml.MAP_YAML_FILE_NAME);
   }
 
