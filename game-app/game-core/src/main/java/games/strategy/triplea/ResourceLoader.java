@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
 import org.triplea.io.PathUtils;
@@ -36,11 +37,15 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
 
+  @Getter
+  private final List<Path> assetPaths;
+
   public ResourceLoader(@Nonnull final Path assetFolder) {
     this(List.of(assetFolder));
   }
 
   public ResourceLoader(List<Path> assetPaths) {
+    this.assetPaths = assetPaths;
     List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).collect(Collectors.toList());
 
     Path gameEngineAssets =
@@ -59,6 +64,7 @@ public class ResourceLoader implements Closeable {
   @VisibleForTesting
   ResourceLoader(final URLClassLoader loader) {
     this.loader = loader;
+    this.assetPaths = List.of();
   }
 
   /**
@@ -163,8 +169,7 @@ public class ResourceLoader implements Closeable {
     final URL url = getResource(imageName);
     if (url == null) {
       // this is actually pretty common that we try to read images that are not there. Let the
-      // caller
-      // decide if this is an error or not.
+      // caller decide if this is an error or not.
       return Optional.empty();
     }
     try {

@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
@@ -27,24 +26,19 @@ import java.awt.Window;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.io.FileUtils;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
 
@@ -52,11 +46,14 @@ import org.triplea.sound.ClipPlayer;
 @Slf4j
 public class UiContext {
   @Getter protected static String mapName;
+  @Getter protected static String skinName;
   @Getter protected static Path mapLocation;
   @Getter protected static ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
   static final String MAP_SCALE_PREF = "MapScale";
+
+  private static final String ORIGINAL_SKIN_NAME = "Original";
 
   private static final String MAP_SKIN_PREF = "MapSkin";
   private static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
@@ -110,6 +107,7 @@ public class UiContext {
     String preferredSkinPath =
         getPreferencesForMap(data.getMapName()) //
             .get(MAP_SKIN_PREF, null);
+    UiContext.skinName = preferredSkinPath;
 
     InstalledMapsListing.parseMapFiles()
         .findMapSkin(data.getMapName(), preferredSkinPath)
@@ -253,7 +251,8 @@ public class UiContext {
 
   public void setUnitScaleFactor(final double scaleFactor) {
     unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
-    final Preferences prefs = getPreferencesMapOrSkin(mapName);
+    final Preferences prefs =
+        getPreferencesMapOrSkin(Optional.ofNullable(skinName).orElse(mapName));
     prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
     try {
       prefs.flush();
@@ -264,7 +263,8 @@ public class UiContext {
 
   public void setScale(final double scale) {
     this.scale = scale;
-    final Preferences prefs = getPreferencesMapOrSkin(mapName);
+    final Preferences prefs =
+        getPreferencesMapOrSkin(Optional.ofNullable(skinName).orElse(mapName));
     prefs.putDouble(MAP_SCALE_PREF, scale);
     try {
       prefs.flush();
@@ -284,9 +284,13 @@ public class UiContext {
   }
 
   public static UiContext changeMapSkin(GameData gameData, String skinName) {
-    // set the default after internal succeeds, if an error is thrown we don't want to persist it
     final Preferences prefs = getPreferencesForMap(mapName);
-    prefs.put(MAP_SKIN_PREF, skinName);
+
+    if (skinName.equals(ORIGINAL_SKIN_NAME)) {
+      prefs.put(MAP_SKIN_PREF, skinName);
+    } else {
+      prefs.remove(MAP_SKIN_PREF);
+    }
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
@@ -403,36 +407,20 @@ public class UiContext {
 
     public MapSkin(String skinName) {
       this.skinName = skinName;
-      currentSkin = skinName.equals(mapName);
+      currentSkin = skinName.equals(UiContext.skinName);
     }
   }
 
-  public static Collection<MapSkin> getSkins(final String mapName) {
-    return getSkinsWithPaths(mapName).values().stream()
+  public static List<MapSkin> getSkins(final String mapName) {
+    List<MapSkin> skins = new ArrayList<>();
+    skins.add(new MapSkin(ORIGINAL_SKIN_NAME));
+
+    InstalledMapsListing.parseMapFiles().findInstalledMapByName(mapName).stream()
+        .flatMap(installedMap -> installedMap.getSkinNames().stream())
+        .sorted()
         .map(MapSkin::new)
-        .collect(Collectors.toList());
-  }
-
-  /** returns the map skins for the game data. returns is a map of display-name -> map directory */
-  private static Map<String, String> getSkinsWithPaths(final String mapName) {
-    final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
-    skinsByDisplayName.put("Original", mapName);
-    for (final Path path : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
-      final String fileName = path.getFileName().toString();
-      if (mapSkinNameMatchesMapName(fileName, mapName)) {
-        final String displayName =
-            fileName.replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
-        skinsByDisplayName.put(displayName, fileName);
-      }
-    }
-    return skinsByDisplayName;
-  }
-
-  private static boolean mapSkinNameMatchesMapName(final String mapSkin, final String mapName) {
-    return mapSkin.startsWith(mapName)
-        && mapSkin.toLowerCase().contains("skin")
-        && mapSkin.contains("-")
-        && !mapSkin.endsWith("properties");
+        .forEach(skins::add);
+    return skins;
   }
 
   private static void runHook(final Runnable hook) {

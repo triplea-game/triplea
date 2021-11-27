@@ -107,7 +107,7 @@ public class InstalledMap {
 
   public Optional<Path> findMapSkin(String skinName) {
     Path mapPath = mapDescriptionYaml.getYamlFileLocation().getParent();
-    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 4, "skin.yml");
+    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 7, "skin.yml");
 
     return skinYamlFiles.stream()
         .map(SkinDescriptionYaml::readSkinDescriptionYamlFile)
@@ -115,6 +115,20 @@ public class InstalledMap {
         .map(Optional::get)
         .filter(skinDescriptionYaml -> skinDescriptionYaml.getSkinName().equalsIgnoreCase(skinName))
         .findAny()
-        .map(SkinDescriptionYaml::getFilePath);
+        .map(SkinDescriptionYaml::getFilePath)
+        .map(Path::getParent);
+  }
+
+  public Collection<String> getSkinNames() {
+    Path mapPath = mapDescriptionYaml.getYamlFileLocation().getParent();
+    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 4, "skin.yml");
+
+    return skinYamlFiles.stream()
+        .map(SkinDescriptionYaml::readSkinDescriptionYamlFile)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(SkinDescriptionYaml::getSkinName)
+        .sorted()
+        .collect(Collectors.toList());
   }
 }

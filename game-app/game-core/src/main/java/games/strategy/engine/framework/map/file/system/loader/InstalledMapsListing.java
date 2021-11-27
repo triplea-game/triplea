@@ -128,7 +128,7 @@ public class InstalledMapsListing {
 
   public Optional<Path> findMapSkin(final String mapName, final String skinName) {
     return installedMaps.stream()
-        .filter(d -> mapName.equals(normalizeName(d.getMapName())))
+        .filter(d -> normalizeName(mapName).equals(normalizeName(d.getMapName())))
         .findAny()
         .flatMap(installedMap -> installedMap.findMapSkin(skinName));
   }
