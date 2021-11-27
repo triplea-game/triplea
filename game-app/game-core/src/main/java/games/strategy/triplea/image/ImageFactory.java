@@ -4,8 +4,6 @@ import games.strategy.triplea.ResourceLoader;
 import java.awt.Image;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
@@ -15,12 +13,10 @@ import javax.imageio.ImageIO;
  * the EDT.
  */
 public class ImageFactory {
-  private final Map<String, Image> images = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
-    images.clear();
   }
 
   protected Image getImage(final String key1, final String key2, final boolean throwIfNotFound) {
@@ -32,21 +28,17 @@ public class ImageFactory {
   }
 
   protected Image getImage(final String key, final boolean throwIfNotFound) {
-    if (!images.containsKey(key) || (throwIfNotFound && images.get(key) == null)) {
-      final URL url = resourceLoader.getResource(key);
-      if (url == null) {
-        if (throwIfNotFound) {
-          throw new IllegalStateException("Image Not Found:" + key);
-        }
-        images.put(key, null);
-        return null;
+    final URL url = resourceLoader.getResource(key);
+    if (url == null) {
+      if (throwIfNotFound) {
+        throw new IllegalStateException("Image Not Found:" + key);
       }
-      try {
-        images.put(key, ImageIO.read(url));
-      } catch (final IOException e) {
-        throw new IllegalStateException(e);
-      }
+      return null;
     }
-    return images.get(key);
+    try {
+      return ImageIO.read(url);
+    } catch (final IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }
