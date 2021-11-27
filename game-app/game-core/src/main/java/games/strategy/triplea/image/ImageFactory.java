@@ -4,6 +4,10 @@ import games.strategy.triplea.ResourceLoader;
 import java.awt.Image;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import javax.imageio.ImageIO;
 
 /**
@@ -19,24 +23,37 @@ public class ImageFactory {
     resourceLoader = loader;
   }
 
-  protected Image getImage(final String key1, final String key2, final boolean throwIfNotFound) {
-    final Image i1 = getImage(key1, false);
-    if (i1 != null) {
-      return i1;
-    }
-    return getImage(key2, throwIfNotFound);
+  /**
+   * Returns an image provide an 'image key'. Additional keys can be provided as fallback values.
+   *
+   * @throws IllegalStateException thrown if none of the image keys can be found
+   */
+  protected Image getImageOrThrow(final String key, String... additionalKeys) {
+    return getImage(key, additionalKeys)
+        .orElseThrow(() -> new IllegalStateException("Image Not Found:" + key));
   }
 
-  protected Image getImage(final String key, final boolean throwIfNotFound) {
-    final URL url = resourceLoader.getResource(key);
-    if (url == null) {
-      if (throwIfNotFound) {
-        throw new IllegalStateException("Image Not Found:" + key);
-      }
-      return null;
-    }
+  /**
+   * Returns an image provide an 'image key'. Additional keys can be provided as fallback values.
+   *
+   * @return An empty optional if no image can be found under any key, otherwise a loaded image is
+   *     returned.
+   */
+  protected Optional<Image> getImage(final String key, String... additionalKeys) {
+    List<String> keys = new ArrayList<>(additionalKeys.length + 1);
+    keys.add(key);
+    keys.addAll(Arrays.asList(additionalKeys));
+
+    return keys.stream() //
+        .map(resourceLoader::getResource)
+        .findFirst()
+        .map(this::loadImageFromUrl);
+  }
+
+  private Image loadImageFromUrl(URL url) {
     try {
-      // use cache refers whether to "use a disk based cache" or to use a memory based cache
+      // use cache refers whether to "use a disk based cache" or to use a memory based
+      // cache
       ImageIO.setUseCache(false);
       return ImageIO.read(url);
     } catch (final IOException e) {

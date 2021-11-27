@@ -13,7 +13,7 @@ public class UnitIconImageFactory extends ImageFactory {
 
   public List<Image> getImages(final String player, final String unitType, final GameData data) {
     return UnitIconProperties.getInstance(data).getImagePaths(player, unitType, data).stream()
-        .map(imagePath -> getImage(PREFIX + imagePath, false))
+        .map(imagePath -> getImage(PREFIX + imagePath).orElse(null))
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
