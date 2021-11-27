@@ -15,6 +15,7 @@ import lombok.ToString;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
+import org.triplea.map.description.file.SkinDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
 import org.triplea.util.LocalizeHtml;
 
@@ -42,10 +43,9 @@ public class InstalledMap {
     if (contentRoot == null) {
       // relative to the 'map.yml' file location, search current and child directories for
       // a polygons file, the location of the polygons file is the map content root.
-      final Path mapYamlParentFolder =
-          Path.of(mapDescriptionYaml.getYamlFileLocation()).getParent();
+      final Path mapYamlParentFolder = mapDescriptionYaml.getYamlFileLocation().getParent();
       contentRoot =
-          FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+          FileUtils.findAny(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
               .map(Path::getParent)
               .orElse(null);
     }
@@ -103,5 +103,32 @@ public class InstalledMap {
 
     final Instant lastCommitDate = Instant.ofEpochMilli(download.getLastCommitDateEpochMilli());
     return lastModifiedDate.isBefore(lastCommitDate);
+  }
+
+  public Optional<Path> findMapSkin(String skinName) {
+    Path mapPath = mapDescriptionYaml.getYamlFileLocation().getParent();
+    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 7, "skin.yml");
+
+    return skinYamlFiles.stream()
+        .map(SkinDescriptionYaml::readSkinDescriptionYamlFile)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .filter(skinDescriptionYaml -> skinDescriptionYaml.getSkinName().equalsIgnoreCase(skinName))
+        .findAny()
+        .map(SkinDescriptionYaml::getFilePath)
+        .map(Path::getParent);
+  }
+
+  public Collection<String> getSkinNames() {
+    Path mapPath = mapDescriptionYaml.getYamlFileLocation().getParent();
+    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 4, "skin.yml");
+
+    return skinYamlFiles.stream()
+        .map(SkinDescriptionYaml::readSkinDescriptionYamlFile)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(SkinDescriptionYaml::getSkinName)
+        .sorted()
+        .collect(Collectors.toList());
   }
 }

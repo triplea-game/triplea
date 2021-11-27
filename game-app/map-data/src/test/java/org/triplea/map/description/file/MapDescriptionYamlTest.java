@@ -24,7 +24,7 @@ class MapDescriptionYamlTest {
   static List<MapDescriptionYaml> isValid() {
     return List.of(
         MapDescriptionYaml.builder()
-            .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
+            .yamlFileLocation(Path.of("/path/on/disk/map.yml"))
             .mapName("map name")
             .mapGameList(
                 List.of(
@@ -57,7 +57,7 @@ class MapDescriptionYamlTest {
   void findGameNameFromXmlFileName_PositiveCase() {
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYaml.builder()
-            .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
+            .yamlFileLocation(Path.of("/path/on/disk/map.yml"))
             .mapName("map name")
             .mapGameList(
                 List.of(
@@ -77,7 +77,7 @@ class MapDescriptionYamlTest {
   void findGameNameFromXmlFileName_NegativeCase() {
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYaml.builder()
-            .yamlFileLocation(Path.of("/path/on/disk/map.yml").toUri())
+            .yamlFileLocation(Path.of("/path/on/disk/map.yml"))
             .mapName("map name")
             .mapGameList(
                 List.of(

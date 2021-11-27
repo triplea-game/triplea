@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
@@ -27,24 +26,19 @@ import java.awt.Window;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.io.FileUtils;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
 
@@ -52,10 +46,14 @@ import org.triplea.sound.ClipPlayer;
 @Slf4j
 public class UiContext {
   @Getter protected static String mapName;
+  @Getter protected static String skinName;
+  @Getter protected static Path mapLocation;
   @Getter protected static ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
   static final String MAP_SCALE_PREF = "MapScale";
+
+  private static final String ORIGINAL_SKIN_NAME = "Original";
 
   private static final String MAP_SKIN_PREF = "MapSkin";
   private static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
@@ -66,21 +64,21 @@ public class UiContext {
   protected MapData mapData;
   @Getter @Setter protected LocalPlayers localPlayers;
 
-  @Getter protected double scale = 1;
+  @Getter protected double scale;
   private final TileImageFactory tileImageFactory = new TileImageFactory();
   private UnitImageFactory unitImageFactory;
   private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
       new TerritoryEffectImageFactory();
-  private final MapImage mapImage = new MapImage();
+  private final MapImage mapImage;
   private final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
-  private DiceImageFactory diceImageFactory;
+  private final DiceImageFactory diceImageFactory;
   private final PuImageFactory puImageFactory = new PuImageFactory();
   private boolean drawUnits = true;
-  private boolean drawTerritoryEffects = false;
+  private boolean drawTerritoryEffects;
 
-  @Getter private Cursor cursor = Cursor.getDefaultCursor();
+  @Getter private Cursor cursor;
 
   @Getter private boolean isShutDown = false;
 
@@ -88,63 +86,59 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  public static void setResourceLoader(final Path mapPath) {
+  public static void setResourceLoader(final GameData gameData) {
+    final Path mapPath =
+        InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
+            .orElseThrow(
+                () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
+
     resourceLoader = new ResourceLoader(mapPath);
+    mapLocation = mapPath;
   }
 
   UiContext(final GameData data) {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
+    UiContext.mapName = data.getMapName();
+
+    List<Path> resourceLoadingPaths = new ArrayList<>();
 
     String preferredSkinPath =
         getPreferencesForMap(data.getMapName()) //
             .get(MAP_SKIN_PREF, null);
+    UiContext.skinName = preferredSkinPath;
 
-    if (preferredSkinPath == null) {
-      // return the default
-      internalSetMapDir(data.getMapName(), data);
-    } else {
-      try {
-        // check skin exists
-        new ResourceLoader(Path.of(preferredSkinPath)).close();
-        internalSetMapDir(preferredSkinPath, data);
-      } catch (final RuntimeException re) {
-        // an error, clear the skin
-        getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF);
-        // return the default
-        internalSetMapDir(data.getMapName(), data);
-      }
-    }
-  }
+    InstalledMapsListing.parseMapFiles()
+        .findMapSkin(data.getMapName(), preferredSkinPath)
+        .ifPresentOrElse(
+            resourceLoadingPaths::add,
+            () -> getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF));
 
-  private void internalSetMapDir(final String mapName, final GameData data) {
+    Path mapPath =
+        InstalledMapsListing.searchAllMapsForMapName(data.getMapName())
+            .orElseThrow(() -> new MapNotFoundException(data.getMapName()));
+    mapLocation = mapPath;
+    resourceLoadingPaths.add(mapPath);
+
     if (resourceLoader != null) {
       resourceLoader.close();
     }
-
-    Path mapPath =
-        InstalledMapsListing.searchAllMapsForMapName(mapName)
-            .orElseThrow(() -> new MapNotFoundException(mapName));
-
-    resourceLoader = new ResourceLoader(mapPath);
-    mapData = new MapData(mapPath);
-    UiContext.mapName = mapName;
-    // DiceImageFactory needs loader and game data
+    resourceLoader = new ResourceLoader(resourceLoadingPaths);
+    mapData = new MapData(resourceLoader);
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
-        getPreferencesMapOrSkin(mapName).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
-    scale = getPreferencesMapOrSkin(mapName).getDouble(MAP_SCALE_PREF, 1);
+        getPreferencesMapOrSkin(data.getMapName())
+            .getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
+    scale = getPreferencesMapOrSkin(data.getMapName()).getDouble(MAP_SCALE_PREF, 1.0);
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
-    // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
     unitIconImageFactory.setResourceLoader(resourceLoader);
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setResourceLoader(resourceLoader);
-    // load map data
-    mapImage.loadMaps(resourceLoader);
+    mapImage = new MapImage(resourceLoader);
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
     // change the resource loader (this allows us to play sounds the map folder, rather than just
     // default sounds)
@@ -257,7 +251,8 @@ public class UiContext {
 
   public void setUnitScaleFactor(final double scaleFactor) {
     unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
-    final Preferences prefs = getPreferencesMapOrSkin(mapName);
+    final Preferences prefs =
+        getPreferencesMapOrSkin(Optional.ofNullable(skinName).orElse(mapName));
     prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
     try {
       prefs.flush();
@@ -268,7 +263,8 @@ public class UiContext {
 
   public void setScale(final double scale) {
     this.scale = scale;
-    final Preferences prefs = getPreferencesMapOrSkin(mapName);
+    final Preferences prefs =
+        getPreferencesMapOrSkin(Optional.ofNullable(skinName).orElse(mapName));
     prefs.putDouble(MAP_SCALE_PREF, scale);
     try {
       prefs.flush();
@@ -288,9 +284,13 @@ public class UiContext {
   }
 
   public static UiContext changeMapSkin(GameData gameData, String skinName) {
-    // set the default after internal succeeds, if an error is thrown we don't want to persist it
     final Preferences prefs = getPreferencesForMap(mapName);
-    prefs.put(MAP_SKIN_PREF, skinName);
+
+    if (skinName.equals(ORIGINAL_SKIN_NAME)) {
+      prefs.put(MAP_SKIN_PREF, skinName);
+    } else {
+      prefs.remove(MAP_SKIN_PREF);
+    }
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
@@ -407,36 +407,20 @@ public class UiContext {
 
     public MapSkin(String skinName) {
       this.skinName = skinName;
-      currentSkin = skinName.equals(mapName);
+      currentSkin = skinName.equals(UiContext.skinName);
     }
   }
 
-  public static Collection<MapSkin> getSkins(final String mapName) {
-    return getSkinsWithPaths(mapName).values().stream()
+  public static List<MapSkin> getSkins(final String mapName) {
+    List<MapSkin> skins = new ArrayList<>();
+    skins.add(new MapSkin(ORIGINAL_SKIN_NAME));
+
+    InstalledMapsListing.parseMapFiles().findInstalledMapByName(mapName).stream()
+        .flatMap(installedMap -> installedMap.getSkinNames().stream())
+        .sorted()
         .map(MapSkin::new)
-        .collect(Collectors.toList());
-  }
-
-  /** returns the map skins for the game data. returns is a map of display-name -> map directory */
-  private static Map<String, String> getSkinsWithPaths(final String mapName) {
-    final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
-    skinsByDisplayName.put("Original", mapName);
-    for (final Path path : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
-      final String fileName = path.getFileName().toString();
-      if (mapSkinNameMatchesMapName(fileName, mapName)) {
-        final String displayName =
-            fileName.replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
-        skinsByDisplayName.put(displayName, fileName);
-      }
-    }
-    return skinsByDisplayName;
-  }
-
-  private static boolean mapSkinNameMatchesMapName(final String mapSkin, final String mapName) {
-    return mapSkin.startsWith(mapName)
-        && mapSkin.toLowerCase().contains("skin")
-        && mapSkin.contains("-")
-        && !mapSkin.endsWith("properties");
+        .forEach(skins::add);
+    return skins;
   }
 
   private static void runHook(final Runnable hook) {

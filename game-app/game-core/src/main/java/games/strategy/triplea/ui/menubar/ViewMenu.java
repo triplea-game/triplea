@@ -79,7 +79,9 @@ final class ViewMenu extends JMenu {
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
       addShowTerritoryEffects();
     }
-    addMapSkinsMenu();
+    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
+      addMapSkinsMenu();
+    }
     addShowMapDetails();
     addShowMapBlends();
     addMapFontAndColorEditorMenu();

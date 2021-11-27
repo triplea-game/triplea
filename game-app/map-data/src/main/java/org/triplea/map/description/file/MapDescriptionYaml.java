@@ -2,7 +2,6 @@ package org.triplea.map.description.file;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -47,7 +46,9 @@ public class MapDescriptionYaml {
   private static final int MAX_GAME_NAME_LENGTH = 70;
   private static final int MAX_MAP_NAME_LENGTH = 70;
 
-  @Nonnull private final URI yamlFileLocation;
+  /** The location on disk where we read this 'map description yaml' data. */
+  @Nonnull private final Path yamlFileLocation;
+
   @Nonnull private final String mapName;
 
   @Singular(value = "game")
@@ -208,8 +209,8 @@ public class MapDescriptionYaml {
 
   /** Find 'games' folder starting from map.yml parent folder. */
   private Optional<Path> findGamesFolder() {
-    final Path mapFolder = Path.of(yamlFileLocation).getParent();
-    final Optional<Path> gamesFolder = FileUtils.find(mapFolder, 5, "games");
+    final Path mapFolder = yamlFileLocation.getParent();
+    final Optional<Path> gamesFolder = FileUtils.findAny(mapFolder, 5, "games");
 
     if (gamesFolder.isEmpty()) {
       log.warn("No 'games' folder found under location: {}", mapFolder.toAbsolutePath());
@@ -219,7 +220,7 @@ public class MapDescriptionYaml {
 
   /** Search 'games' folder for a game-xml-file. */
   private Optional<Path> searchForGameFile(final Path gamesFolder, final String xmlFileName) {
-    final Optional<Path> gameFile = FileUtils.find(gamesFolder, 3, xmlFileName);
+    final Optional<Path> gameFile = FileUtils.findAny(gamesFolder, 3, xmlFileName);
     if (gameFile.isEmpty()) {
       log.warn(
           "Failed to find game file: {}, within directory tree rooted at: {}",

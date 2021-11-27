@@ -82,17 +82,23 @@ public final class FileUtils {
    * @param fileName The name of the file to be search for.
    * @return A file matching the given name or empty if not found.
    */
-  public Optional<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
+  public Optional<Path> findAny(final Path searchRoot, final int maxDepth, final String fileName) {
+    return find(searchRoot, maxDepth, fileName).stream().findAny();
+  }
+
+  public Collection<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
     Preconditions.checkArgument(Files.isDirectory(searchRoot), searchRoot.toAbsolutePath());
     Preconditions.checkArgument(Files.exists(searchRoot), searchRoot.toAbsolutePath());
     Preconditions.checkArgument(maxDepth > -1);
     Preconditions.checkArgument(!fileName.isBlank());
     try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
-      return files.filter(f -> f.getFileName().toString().equals(fileName)).findAny();
+      return files
+          .filter(f -> f.getFileName().toString().equals(fileName))
+          .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error(
           "Unable to access files in: " + searchRoot.toAbsolutePath() + ", " + e.getMessage(), e);
-      return Optional.empty();
+      return List.of();
     }
   }
 

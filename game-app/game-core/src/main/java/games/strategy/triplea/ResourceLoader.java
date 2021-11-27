@@ -9,21 +9,22 @@ import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.ImageLoader;
+import org.triplea.io.PathUtils;
 import org.triplea.java.UrlStreams;
 
 /**
@@ -36,48 +37,33 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
 
-  @Getter private final List<URL> searchUrls;
-  @Getter private final Path mapLocation;
+  @Getter private final List<Path> assetPaths;
 
-  public ResourceLoader(@Nullable final Path mapLocation) {
-    this.mapLocation = mapLocation;
+  public ResourceLoader(@Nonnull final Path assetFolder) {
+    this(List.of(assetFolder));
+  }
 
-    // Add the assets folder from the game installation path. This assets folder supplements
-    // any map resources.
-    final Path gameAssetsDirectory =
+  public ResourceLoader(List<Path> assetPaths) {
+    this.assetPaths = assetPaths;
+    List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).collect(Collectors.toList());
+
+    Path gameEngineAssets =
         findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
             .orElseThrow(GameAssetsNotFoundException::new);
+
+    searchUrls.add(PathUtils.toUrl(gameEngineAssets));
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
-    try {
-      searchUrls = new ArrayList<>();
-      if (mapLocation != null) {
-        searchUrls.add(mapLocation.toUri().toURL());
-      }
-      searchUrls.add(gameAssetsDirectory.toUri().toURL());
-      loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
-    } catch (final MalformedURLException e) {
-      throw new IllegalArgumentException(
-          "Error creating file system paths with map: " + mapLocation, e);
-    }
+
+    loader = new URLClassLoader(searchUrls.toArray(URL[]::new));
   }
 
   @VisibleForTesting
   ResourceLoader(final URLClassLoader loader) {
     this.loader = loader;
-    searchUrls = List.of();
-    mapLocation = null;
-  }
-
-  /**
-   * Resource loader that loads generic sounds and images, no map loaded. A standard resource loader
-   * will look for map assets first before falling back to game engine assets. This resource loader
-   * is to be used in the launching screens before any map has been launched.
-   */
-  public static ResourceLoader getGameEngineAssetLoader() {
-    return new ResourceLoader((Path) null);
+    this.assetPaths = List.of();
   }
 
   /**
@@ -101,6 +87,14 @@ public class ResourceLoader implements Closeable {
     }
   }
 
+  /**
+   * Searches from a starting directory for a given directory. If not found, recursively goes up to
+   * parent directories searching for the given directory.
+   *
+   * @param startDir The start of the search path.
+   * @param targetDirName The name of the directory to find (must be a directory, not a file)
+   * @return Path of the directory as found, otherwise empty.
+   */
   @VisibleForTesting
   static Optional<Path> findDirectory(final Path startDir, final String targetDirName) {
     for (Path currentDir = startDir; currentDir != null; currentDir = currentDir.getParent()) {
@@ -174,8 +168,7 @@ public class ResourceLoader implements Closeable {
     final URL url = getResource(imageName);
     if (url == null) {
       // this is actually pretty common that we try to read images that are not there. Let the
-      // caller
-      // decide if this is an error or not.
+      // caller decide if this is an error or not.
       return Optional.empty();
     }
     try {

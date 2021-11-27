@@ -57,7 +57,7 @@ class MapDescriptionYamlGenerator {
 
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYaml.builder()
-            .yamlFileLocation(mapYmlTargetFileLocation.toUri())
+            .yamlFileLocation(mapYmlTargetFileLocation)
             .mapName(mapName)
             .mapGameList(games)
             .build();

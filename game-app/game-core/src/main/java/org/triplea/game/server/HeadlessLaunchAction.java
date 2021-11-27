@@ -6,7 +6,6 @@ import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
@@ -53,13 +52,7 @@ public class HeadlessLaunchAction implements LaunchAction {
       final Set<Player> players,
       final Chat chat) {
 
-    Path mapPath =
-        InstalledMapsListing.searchAllMapsForMapName(game.getData().getMapName())
-            .orElseThrow(
-                () ->
-                    new IllegalStateException(
-                        "Unable to find map: " + game.getData().getMapName()));
-    UiContext.setResourceLoader(mapPath);
+    UiContext.setResourceLoader(game.getData());
     return new HeadlessDisplay();
   }
 

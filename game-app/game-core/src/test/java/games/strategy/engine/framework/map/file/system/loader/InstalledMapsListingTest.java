@@ -26,7 +26,7 @@ class InstalledMapsListingTest {
               InstalledMap.builder()
                   .mapDescriptionYaml(
                       MapDescriptionYaml.builder()
-                          .yamlFileLocation(Path.of("/path/map0/map.yml").toUri())
+                          .yamlFileLocation(Path.of("/path/map0/map.yml"))
                           .mapName("map-name0")
                           .game(
                               MapDescriptionYaml.MapGame.builder()
@@ -39,7 +39,7 @@ class InstalledMapsListingTest {
               InstalledMap.builder()
                   .mapDescriptionYaml(
                       MapDescriptionYaml.builder()
-                          .yamlFileLocation(Path.of("/path/map1/map.yml").toUri())
+                          .yamlFileLocation(Path.of("/path/map1/map.yml"))
                           .mapName("map-name1")
                           .game(
                               MapDescriptionYaml.MapGame.builder()

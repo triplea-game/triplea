@@ -28,8 +28,8 @@ import org.triplea.map.description.file.MapDescriptionYaml;
 public class InstalledMapsListing {
   @Singular private final Collection<InstalledMap> installedMaps;
 
-  private InstalledMapsListing() {
-    this(readMapYamlsAndGenerateMissingMapYamls());
+  private InstalledMapsListing(Path folder) {
+    this(readMapYamlsAndGenerateMissingMapYamls(folder));
   }
 
   /**
@@ -37,16 +37,20 @@ public class InstalledMapsListing {
    * returns the list of available games found.
    */
   public static synchronized InstalledMapsListing parseMapFiles() {
-    return new InstalledMapsListing();
+    return parseMapFiles(ClientFileSystemHelper.getUserMapsFolder());
+  }
+
+  public static synchronized InstalledMapsListing parseMapFiles(Path folder) {
+    return new InstalledMapsListing(folder);
   }
 
   public static Optional<Path> searchAllMapsForMapName(String mapName) {
     return parseMapFiles().findContentRootForMapName(mapName);
   }
 
-  private static Collection<InstalledMap> readMapYamlsAndGenerateMissingMapYamls() {
+  private static Collection<InstalledMap> readMapYamlsAndGenerateMissingMapYamls(Path folder) {
     // loop over all maps, find and parse a 'map.yml' file, if not found attempt to generate it
-    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).stream()
+    return FileUtils.listFiles(folder).stream()
         .filter(Files::isDirectory)
         .map(MapDescriptionYaml::fromMap)
         .filter(Optional::isPresent)
@@ -120,6 +124,13 @@ public class InstalledMapsListing {
    */
   public Optional<Path> findMapFolderByName(final String mapName) {
     return findContentRootForMapName(mapName).map(Path::getParent);
+  }
+
+  public Optional<Path> findMapSkin(final String mapName, final String skinName) {
+    return installedMaps.stream()
+        .filter(d -> normalizeName(mapName).equals(normalizeName(d.getMapName())))
+        .findAny()
+        .flatMap(installedMap -> installedMap.findMapSkin(skinName));
   }
 
   /**

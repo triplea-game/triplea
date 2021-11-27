@@ -22,7 +22,7 @@ class MapDescriptionYamlWriter {
   static Optional<Path> writeYmlPojoToFile(final MapDescriptionYaml mapDescriptionYaml) {
 
     final String yamlString = toYamlString(mapDescriptionYaml);
-    final Path mapYmlTargetPath = Path.of(mapDescriptionYaml.getYamlFileLocation());
+    final Path mapYmlTargetPath = mapDescriptionYaml.getYamlFileLocation();
 
     try {
       Files.writeString(mapYmlTargetPath, yamlString);

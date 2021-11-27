@@ -24,8 +24,7 @@ public final class TooltipProperties extends PropertyFile {
 
     final String customTip = getToolTip(unitType, gamePlayer, false);
     if (!customTip.isEmpty()) {
-      return LocalizeHtml.localizeImgLinksInHtml(
-          customTip, UiContext.getResourceLoader().getMapLocation());
+      return LocalizeHtml.localizeImgLinksInHtml(customTip, UiContext.getMapLocation());
     }
     final String generated =
         UnitAttachment.get(unitType)
@@ -34,8 +33,7 @@ public final class TooltipProperties extends PropertyFile {
     final String appendedTip = getToolTip(unitType, gamePlayer, true);
     if (!appendedTip.isEmpty()) {
       return generated
-          + LocalizeHtml.localizeImgLinksInHtml(
-              appendedTip, UiContext.getResourceLoader().getMapLocation());
+          + LocalizeHtml.localizeImgLinksInHtml(appendedTip, UiContext.getMapLocation());
     }
     return generated;
   }
