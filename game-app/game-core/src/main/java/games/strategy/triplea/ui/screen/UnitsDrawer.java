@@ -151,9 +151,9 @@ public class UnitsDrawer extends AbstractDrawable {
               (placementPoint.y - bounds.y) + yoffset,
               null);
         }
-        drawUnit(graphics, img.get(), bounds, data);
+        drawUnit(graphics, img.get(), bounds);
       } else if (drawMode == UnitFlagDrawMode.SMALL_FLAG) {
-        drawUnit(graphics, img.get(), bounds, data);
+        drawUnit(graphics, img.get(), bounds);
         // If unit is not in the "excluded list" it will get drawn
         if (maxRange != 0) {
           final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
@@ -169,7 +169,7 @@ public class UnitsDrawer extends AbstractDrawable {
               null);
         }
       } else {
-        drawUnit(graphics, img.get(), bounds, data);
+        drawUnit(graphics, img.get(), bounds);
       }
     }
 
@@ -234,8 +234,7 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   /** This draws the given image onto the given graphics object. */
-  private void drawUnit(
-      final Graphics2D graphics, final Image image, final Rectangle bounds, final GameData data) {
+  private void drawUnit(final Graphics2D graphics, final Image image, final Rectangle bounds) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
   }
 
