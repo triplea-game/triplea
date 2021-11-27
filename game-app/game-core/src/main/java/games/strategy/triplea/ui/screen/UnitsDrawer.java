@@ -237,15 +237,6 @@ public class UnitsDrawer extends AbstractDrawable {
   private void drawUnit(
       final Graphics2D graphics, final Image image, final Rectangle bounds, final GameData data) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
-
-    // draw unit icons in top right corner
-    final List<Image> unitIcons =
-        uiContext.getUnitIconImageFactory().getImages(playerName, unitType, data);
-    for (final Image unitIcon : unitIcons) {
-      final int xoffset = image.getWidth(null) - unitIcon.getWidth(null);
-      graphics.drawImage(
-          unitIcon, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y), null);
-    }
   }
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
