@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.imageio.ImageIO;
 
@@ -34,7 +35,7 @@ public class ImageFactory {
   }
 
   /**
-   * Returns an image provide an 'image key'. Additional keys can be provided as fallback values.
+   * Returns an image provided an 'image key'. Additional keys can be provided as fallback values.
    *
    * @return An empty optional if no image can be found under any key, otherwise a loaded image is
    *     returned.
@@ -46,6 +47,7 @@ public class ImageFactory {
 
     return keys.stream() //
         .map(resourceLoader::getResource)
+        .filter(Objects::nonNull)
         .findFirst()
         .map(this::loadImageFromUrl);
   }
