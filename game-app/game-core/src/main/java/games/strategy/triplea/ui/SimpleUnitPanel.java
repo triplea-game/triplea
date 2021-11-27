@@ -237,8 +237,8 @@ public class SimpleUnitPanel extends JPanel {
     } else if (unit instanceof Resource) {
       label.setIcon(
           style == Style.LARGE_ICONS_COLUMN
-          ? uiContext.getResourceImageFactory().getLargeIcon(unit.getName())
-              :          uiContext.getResourceImageFactory().getIcon(unit.getName()));
+              ? uiContext.getResourceImageFactory().getLargeIcon(unit.getName())
+              : uiContext.getResourceImageFactory().getIcon(unit.getName()));
     }
     add(label);
   }
