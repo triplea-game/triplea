@@ -125,7 +125,7 @@ public class TerritoryNameDrawable extends AbstractDrawable {
     }
     // draw the PUs.
     if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
-      final Image img = uiContext.getPuImageFactory().getPuImage(ta.getProduction());
+      final Image img = uiContext.getPuImageFactory().getPuImage(ta.getProduction()).orElse(null);
       final String prod = Integer.valueOf(ta.getProduction()).toString();
       final Optional<Point> place = mapData.getPuPlacementPoint(territory);
       // if pu_place.txt is specified draw there
