@@ -37,8 +37,7 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
 
-  @Getter
-  private final List<Path> assetPaths;
+  @Getter private final List<Path> assetPaths;
 
   public ResourceLoader(@Nonnull final Path assetFolder) {
     this(List.of(assetFolder));
