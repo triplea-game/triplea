@@ -36,6 +36,8 @@ public class ImageFactory {
       return null;
     }
     try {
+      // use cache refers whether to "use a disk based cache" or to use a memory based cache
+      ImageIO.setUseCache(false);
       return ImageIO.read(url);
     } catch (final IOException e) {
       throw new IllegalStateException(e);
