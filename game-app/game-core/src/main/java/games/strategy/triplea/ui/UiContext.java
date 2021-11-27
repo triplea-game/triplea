@@ -14,7 +14,6 @@ import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TerritoryEffectImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -71,7 +70,6 @@ public class UiContext {
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
       new TerritoryEffectImageFactory();
   private final MapImage mapImage;
-  private final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
   private final DiceImageFactory diceImageFactory;
   private final PuImageFactory puImageFactory = new PuImageFactory();
@@ -134,7 +132,6 @@ public class UiContext {
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
-    unitIconImageFactory.setResourceLoader(resourceLoader);
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setResourceLoader(resourceLoader);
@@ -196,10 +193,6 @@ public class UiContext {
 
   public MapImage getMapImage() {
     return mapImage;
-  }
-
-  public UnitIconImageFactory getUnitIconImageFactory() {
-    return unitIconImageFactory;
   }
 
   public FlagIconImageFactory getFlagImageFactory() {
