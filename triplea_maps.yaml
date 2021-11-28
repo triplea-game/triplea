@@ -2432,3 +2432,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Chess/master/preview.png
   description: |
     <br>An abstract, chess-inspired game
+- mapName: Big World Logistics Mod
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/big_world_logistics_mod/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_logistics_mod/master/preview.png
+  description: |
+    <br>World War 2 with supply lines required on the Big World Map
