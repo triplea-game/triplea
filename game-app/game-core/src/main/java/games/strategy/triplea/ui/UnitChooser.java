@@ -738,6 +738,7 @@ public final class UnitChooser extends JPanel {
         : uiContextDecoration.getUnitImageWithNonWithdrawableImage(image);
   }
 
+
   static class UiContextDecoration {
     private static UiContextDecoration latestUCD;
 
@@ -864,7 +865,6 @@ public final class UnitChooser extends JPanel {
     public static double getNonWithdrawableImageHeight(final int unitImageHeight) {
       return unitImageHeight / 2.0;
     }
-
 
     static UiContextDecoration get(final UiContext uiContext) {
       if(latestUCD==null || latestUCD.uiContext != uiContext) {
