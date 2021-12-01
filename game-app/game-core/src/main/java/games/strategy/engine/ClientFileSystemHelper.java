@@ -19,7 +19,7 @@ import org.triplea.util.Services;
 /** Provides methods to work with common file locations in a client installation. */
 @Slf4j
 public final class ClientFileSystemHelper {
-  private static Path codeSourceLocation = null;
+  private static Path codeSourceLocation;
 
   private ClientFileSystemHelper() {}
 

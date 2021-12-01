@@ -1,4 +1,8 @@
 @startuml
+'To be displayed in a development environment, this PlantUML file may require a plugin,
+'e.g. https://plugins.jetbrains.com/plugin/7017-plantuml-integration
+'See https://plantuml.com/de/running
+
 'https://plantuml.com/class-diagram
 
 hide empty members
@@ -58,4 +62,13 @@ UnitChooser::changedValue <-- ScrollableTextField
 
 JComponent <|- UnitChooserEntryIcon
 
+
+note as N1
+    This diagram shows relationships around CasualtySelection
+    and UnitChooser and can provide orientation
+    when refactoring this structure - e.g. in order to reduce the
+    dependency to the AWT classes.
+
+    21.Nov.2021
+end note
 @enduml

@@ -197,7 +197,7 @@ public class ResourceLoader implements Closeable {
   }
 
   public Optional<Image> loadImage(final String imageName) {
-    final URL url = getResource(imageName.toString());
+    final URL url = getResource(imageName);
     if (url == null) {
       // this is actually pretty common that we try to read images that are not there. Let the
       // caller

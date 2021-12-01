@@ -40,7 +40,8 @@ public class UnitSeparator {
     /** whether to categorize transports by movement */
     @Builder.Default final boolean transportMovement = false;
     /** whether to categorize by whether the unit can retreat or not */
-    @Builder.Default final boolean retreatPossibility = false;  }
+    @Builder.Default final boolean retreatPossibility = false;
+  }
 
   /**
    * Finds unit categories, removes not displayed, and then sorts them into logical order to display

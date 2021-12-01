@@ -2,6 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +26,7 @@ public class EngineImageLoader {
    *
    * @param path Path from assets folder to image, eg: loadImage("folder-in-assets", "image.png");
    */
-  public Image loadImage(final String... path) {
+  public BufferedImage loadImage(final String... path) {
     Path imageFilePath = createPathToImage(path);
 
     if (!Files.exists(imageFilePath)) {

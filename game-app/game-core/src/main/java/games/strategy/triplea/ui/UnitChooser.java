@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -33,8 +34,16 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import lombok.AllArgsConstructor;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Awt;
+
+/**
+ * This is the <code>JPanel</code> that shows the units to choose
+ * including the controls to make the choice.
+ *
+ * It's used by many different use cases like placing units or
+ * choosing which units take hits in a battle round.
+ */
 
 public final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
@@ -418,6 +427,15 @@ public final class UnitChooser extends JPanel {
     total = -1;
   }
 
+  /**
+   * Represents the units of a particluar <code>UnitCategory</code>
+   * (maybe under particular circumstances like carrying some other units or
+   * being withdrawable) by showing the respective <code>UnitChooserEntryIcon</code>
+   * and the controls to set the number of units of that <code>UnitCategory</code>
+   * (maybe under the particular circumstances)
+   * chosen for the purpose/case, in which the containing <cod>UnitChooser</cod> is being used.
+   */
+
   @VisibleForTesting
   public final class ChooserEntry {
     @VisibleForTesting public final UnitCategory category;
@@ -619,6 +637,13 @@ public final class UnitChooser extends JPanel {
       hitTexts.forEach(field -> field.addChangeListener(listener));
     }
 
+    /**
+     * Represents units of a particular <code>UnitCategory</code>
+     * (maybe under particular circumstances like carrying some other units or
+     * being withdrawable) by showing the image of that particular <code>UnitCategory</code>
+     * (maybe decorated by some images indicating the particular circumstances).
+     */
+
     @VisibleForTesting
     public class UnitChooserEntryIcon extends JComponent {
       private static final long serialVersionUID = 591598594559651745L;
@@ -713,11 +738,6 @@ public final class UnitChooser extends JPanel {
         : uiContextDecoration.getUnitImageWithNonWithdrawableImage(image);
   }
 
-  /**
-   * If it would produce less code (e.g. using Kotlin), <code>UiContextDecoration</code>
-   * would be a proper application if the decorator pattern.
-   */
-
   static class UiContextDecoration {
     private static UiContextDecoration latestUCD;
 
@@ -725,37 +745,126 @@ public final class UnitChooser extends JPanel {
     public final UiContext uiContext;
     @VisibleForTesting
     public final UnitImageFactory unitImageFactory;
-    private final BufferedImage nonWithdrawableImage;
+    @VisibleForTesting
+    public final BufferedImage nonWithdrawableImage;
     private final Map<Image,BufferedImage> unitImageWithNonWithrawableImage =
         Collections.synchronizedMap(new HashMap<>());
 
     private UiContextDecoration(final UiContext uiContext) {
       this.uiContext = uiContext;
-      final int imageHeightInGame = uiContext.getUnitImageFactory().getUnitImageHeight();
-      Image img = uiContext.loadImage("misc/non-withdrawable_small.png").orElseThrow();
-      double scaleChange = 1.0;
-      if (imageHeightInGame < 2*img.getHeight(null)) {
-        scaleChange = 2.0*img.getHeight(null) / imageHeightInGame;
-      } else {
-        final Image imageBig = uiContext.loadImage("misc/non-withdrawable.png").orElseThrow();
-        if (imageHeightInGame >= 2*imageBig.getHeight(null)) {
-          img = imageBig;
-          if (imageHeightInGame >= 4*img.getHeight(null)) {
-            scaleChange = 2.0*img.getHeight(null) / imageHeightInGame;
-          }
-        }
+      final var unitImageFactory = uiContext.getUnitImageFactory();
+      final int unitImageHeight = unitImageFactory.getUnitImageHeight();
+      final double nonWithdrawableImageHeight = getNonWithdrawableImageHeight(unitImageHeight);
+      nonWithdrawableImage = loadNonWidthdrawableImage((int) nonWithdrawableImageHeight);
+
+      final double scaleChange =
+          (double) nonWithdrawableImage.getHeight() / nonWithdrawableImageHeight;
+      // scaleChange is the factor by which the scale factor of this.unitImageFactory
+      // must be larger than the scale factor of uiContext.getUnitImageFactory()
+      // so the non-withdrawable image has the right size in comparison to the unit icon.
+
+      final double scaleFactor = scaleChange * unitImageFactory.getScaleFactor();
+      // With this scaleFactor the unit images will have the correct height in relation
+      // to the non-withdrawable image.
+      // The relation is controlled by getNonWithdrawableImageHeight. By the time of writing
+      // this, getNonWithdrawableImageHeight makes the non-withdrawable image half as high as
+      // the unit images.
+      // At the time of writing this, there are two variants of the non-whithdrawable image
+      // being 24 pixels resp. 32 pixels high.
+      // So the unit image will be either 48 pixels or 32 pixels high.
+
+      this.unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
+
+      assert nonWithdrawableImage.getHeight()
+          == getNonWithdrawableImageHeight(this.unitImageFactory.getUnitImageHeight());
+    }
+
+    @AllArgsConstructor
+    public
+    enum ImageType {
+      TYPE_3BYTE_BGR(BufferedImage.TYPE_3BYTE_BGR),
+      TYPE_4BYTE_ABGR(BufferedImage.TYPE_4BYTE_ABGR),
+      TYPE_4BYTE_ABGR_PRE(BufferedImage.TYPE_4BYTE_ABGR_PRE),
+      TYPE_BYTE_BINARY(BufferedImage.TYPE_BYTE_BINARY),
+      TYPE_BYTE_GRAY(BufferedImage.TYPE_BYTE_GRAY),
+      TYPE_BYTE_INDEXED(BufferedImage.TYPE_BYTE_INDEXED),
+      TYPE_CUSTOM(BufferedImage.TYPE_CUSTOM),
+      TYPE_INT_ARGB(BufferedImage.TYPE_INT_ARGB),
+      TYPE_INT_ARGB_PRE(BufferedImage.TYPE_INT_ARGB_PRE),
+      TYPE_INT_BGR(BufferedImage.TYPE_INT_BGR),
+      TYPE_INT_RGB(BufferedImage.TYPE_INT_RGB),
+      TYPE_USHORT_555_RGB(BufferedImage.TYPE_USHORT_555_RGB),
+      TYPE_USHORT_565_RGB(BufferedImage.TYPE_USHORT_565_RGB),
+      TYPE_USHORT_GRAY(BufferedImage.TYPE_USHORT_GRAY);
+
+      final int awtImageCode;
+    }
+
+    /**
+     * @param image to return a buffered image of
+     * @param requiredType type of the BufferedImage to return
+     *                     (from the value set of static ints of
+     *                     <code>java.awt.image.BufferedImage</code> that specify image types,
+     *                     e.g. <code>TYPE_3BYTE_BGR</code>)
+     *
+     * @return a BufferedImage
+     */
+    @VisibleForTesting
+    public static BufferedImage getBufferedImage(final Image image, final ImageType requiredType) {
+      if (image instanceof BufferedImage
+          && ((BufferedImage) image).getType() == requiredType.awtImageCode) {
+        return (BufferedImage) image;
       }
 
-      final UnitImageFactory uif = uiContext.getUnitImageFactory();
-      unitImageFactory = uif.withScaleFactor(scaleChange*uif.getScaleFactor());
+      final BufferedImage ret = new BufferedImage(
+          image.getWidth(null),
+          image.getHeight(null),
+          requiredType.awtImageCode);
 
-      final int targetHeight = unitImageFactory.getUnitImageWidth() / 2;
-      final double scaleOfNwi = (double) targetHeight / (double) img.getHeight(null);
-      final int targetWidth = (int) ((double) img.getWidth(null) * scaleOfNwi);
-      nonWithdrawableImage = Awt.getBufferedImage(
-          img.getScaledInstance(targetWidth, targetHeight, Image.SCALE_DEFAULT),
-          BufferedImage.TYPE_INT_ARGB);
+      final Graphics2D g2d = ret.createGraphics();
+      g2d.drawImage(image,0,0, null);
+      g2d.dispose();
+
+      return ret;
     }
+
+    /**
+     * @param nonWithdrawableImageHeight height the non-withdrawable image
+     *  would have in the came - but not on the <code>UnitChooser</code>,
+     *  because on the <code>UnitChooser</code> a specific scale is being used to make sure
+     *  that the non-withdrawable image can reasonably be displayed with its original height,
+     *  i.e. unscaled.
+     *
+     * @return the non-withdrawable image best matching the unit image height
+     *  given the proportion between non-withdrawable imagehight and unit image height
+     *  determined by <code>getNonWithdrawableImageHeight</code>.
+     */
+
+    private static BufferedImage loadNonWidthdrawableImage(final int nonWithdrawableImageHeight) {
+      final BufferedImage imgSmall = loadGenericUnitsImage("non-withdrawable_small.png");
+
+      if (nonWithdrawableImageHeight <= imgSmall.getHeight(null)) {
+        return imgSmall;
+      } else {
+        final BufferedImage imgBig = loadGenericUnitsImage("non-withdrawable.png");
+
+        return nonWithdrawableImageHeight < imgBig.getHeight(null) ? imgSmall : imgBig;
+      }
+    }
+
+    private static BufferedImage loadGenericUnitsImage(final String fileName) {
+      return EngineImageLoader.loadImage("units","generic", fileName);
+    }
+
+    /** Controls the height of the non-withdrawable image
+     * in relation to the height of the unit images.
+     */
+
+    @VisibleForTesting
+    public static double getNonWithdrawableImageHeight(final int unitImageHeight) {
+      return unitImageHeight / 2.0;
+    }
+
 
     static UiContextDecoration get(final UiContext uiContext) {
       if(latestUCD==null || latestUCD.uiContext != uiContext) {
