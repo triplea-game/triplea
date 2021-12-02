@@ -952,12 +952,12 @@ class BattleCalculatorPanel extends JPanel {
           setDefendingUnits(
               defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
                   ? defendingUnitsPanel.getUnits()
-                  : null);
+                  : List.of());
           setWidgetActivation();
         });
     attackerCombo.addActionListener(
         e -> {
-          setAttackingUnits(null);
+          setAttackingUnits(List.of());
           setWidgetActivation();
         });
     amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
@@ -965,8 +965,8 @@ class BattleCalculatorPanel extends JPanel {
         e -> {
           attackerOrderOfLosses = null;
           defenderOrderOfLosses = null;
-          setDefendingUnits(null);
-          setAttackingUnits(null);
+          setDefendingUnits(List.of());
+          setAttackingUnits(List.of());
           setWidgetActivation();
         });
     calculateButton.addActionListener(e -> updateStats());
@@ -1043,79 +1043,14 @@ class BattleCalculatorPanel extends JPanel {
     attackingUnitsPanel.addChangeListener(this::setWidgetActivation);
     defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
 
-    // use the one passed, not the one we found:
-    if (location != null) {
-      data.acquireReadLock();
-      try {
-        landBattleCheckBox.setSelected(!location.isWater());
-
-        // Default attacker to current player
-        final Optional<GamePlayer> currentPlayer = getCurrentPlayer();
-        currentPlayer.ifPresent(this::setAttacker);
-
-        // Get players with units sorted
-        final List<GamePlayer> players = location.getUnitCollection().getPlayersByUnitCount();
-        if (currentPlayer.isPresent() && players.contains(currentPlayer.get())) {
-          players.remove(currentPlayer.get());
-          players.add(0, currentPlayer.get());
-        }
-
-        // Check location to determine optimal attacker and defender
-        if (!location.isWater()) {
-          defenderCombo.setSelectedItem(location.getOwner());
-          for (final GamePlayer player : players) {
-            if (Matches.isAtWar(getDefender(), data.getRelationshipTracker()).test(player)) {
-              attackerCombo.setSelectedItem(player);
-              break;
-            }
-          }
-        } else {
-          if (players.size() == 1) {
-            defenderCombo.setSelectedItem(players.get(0));
-          } else if (players.size() > 1) {
-            if (!data.getRelationshipTracker()
-                .isAtWarWithAnyOfThesePlayers(players.get(0), players)) {
-              defenderCombo.setSelectedItem(players.get(0));
-            } else {
-              attackerCombo.setSelectedItem(players.get(0));
-              for (final GamePlayer player : players) {
-                if (Matches.isAtWar(getAttacker(), data.getRelationshipTracker()).test(player)) {
-                  defenderCombo.setSelectedItem(player);
-                  break;
-                }
-              }
-            }
-          }
-        }
-
-        // In the above code, if the territory owner and the current player are the same, then
-        // attacker and defender are. Since we cannot infer whether the user wants to defend the
-        // territory or attack with the units in that territory, we cannot refine this setup
-        // further. To not break the user's habits, we solve this by falling back to the legacy
-        // behaviour and force the attacker and defender to be on non-allied teams.
-        if (data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-          if (location.isWater() && players.isEmpty()) {
-            getEnemy(getAttacker()).ifPresent(this::setDefender);
-          } else {
-            getEnemy(getDefender()).ifPresent(this::setAttacker);
-          }
-        }
-
-        setAttackingUnits(
-            location.getUnitCollection().getMatches(Matches.unitIsOwnedBy(getAttacker())));
-        setDefendingUnits(
-            location
-                .getUnitCollection()
-                .getMatches(Matches.alliedUnit(getDefender(), data.getRelationshipTracker())));
-      } finally {
-        data.releaseReadLock();
-      }
-    } else {
+    // Note: Setting landBattleCheckBox resets the units. Thus, set the units after this.
+    if (location == null) {
       landBattleCheckBox.setSelected(true);
-      defenderCombo.setSelectedItem(data.getPlayerList().getPlayers().iterator().next());
-      setDefendingUnits(null);
-      setAttackingUnits(null);
+    } else {
+      landBattleCheckBox.setSelected(!location.isWater());
     }
+    setupAttackerAndDefender();
+
     calculator =
         new ConcurrentBattleCalculator(
             () ->
@@ -1131,12 +1066,24 @@ class BattleCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  public Optional<GamePlayer> getCurrentPlayer() {
-    final Optional<GamePlayer> player = data.getHistory().getActivePlayer();
-    if (player.isPresent()) {
-      return player;
+  private void setupAttackerAndDefender() {
+    try {
+      final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+          AttackerAndDefenderSelector.builder()
+              .players(data.getPlayerList().getPlayers())
+              .currentPlayer(data.getSequence().getStep().getPlayerId())
+              .relationshipTracker(data.getRelationshipTracker())
+              .territory(location)
+              .build()
+              .getAttackerAndDefender();
+
+      attAndDef.getAttacker().ifPresent(this::setAttacker);
+      attAndDef.getDefender().ifPresent(this::setDefender);
+      setAttackingUnits(attAndDef.getAttackingUnits());
+      setDefendingUnits(attAndDef.getDefendingUnits());
+    } finally {
+      data.releaseReadLock();
     }
-    return GamePlayer.asOptional(data.getSequence().getStep().getPlayerId());
   }
 
   GamePlayer getAttacker() {
@@ -1367,27 +1314,6 @@ class BattleCalculatorPanel extends JPanel {
 
   private boolean isLand() {
     return landBattleCheckBox.isSelected();
-  }
-
-  /**
-   * Get a suitable enemy for {@code player}. First checks for players at war, if none found, checks
-   * for non-allied players, if still no foe was found, returns an empty Optional.
-   *
-   * @param player the player to find a foe for
-   * @return Optional with not an ally or an empty Optional
-   */
-  private Optional<GamePlayer> getEnemy(final GamePlayer player) {
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (data.getRelationshipTracker().isAtWar(player, gamePlayer)) {
-        return Optional.of(gamePlayer);
-      }
-    }
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (!data.getRelationshipTracker().isAllied(player, gamePlayer)) {
-        return Optional.of(gamePlayer);
-      }
-    }
-    return Optional.empty();
   }
 
   private void setResultsToBlank() {
