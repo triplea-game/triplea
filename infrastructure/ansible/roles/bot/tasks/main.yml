@@ -77,7 +77,7 @@
   tags: [deploy]
   template:
     src: run_server.j2
-    dest: "{{ bot_folder }}/run_server"
+    dest: "{{ bot_install_home }}/run_server"
     mode: "755"
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
