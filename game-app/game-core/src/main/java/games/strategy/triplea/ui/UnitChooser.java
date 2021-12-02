@@ -34,7 +34,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import lombok.AllArgsConstructor;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -738,7 +737,6 @@ public final class UnitChooser extends JPanel {
         : uiContextDecoration.getUnitImageWithNonWithdrawableImage(image);
   }
 
-
   static class UiContextDecoration {
     private static UiContextDecoration latestUCD;
 
@@ -778,55 +776,6 @@ public final class UnitChooser extends JPanel {
 
       assert nonWithdrawableImage.getHeight()
           == getNonWithdrawableImageHeight(this.unitImageFactory.getUnitImageHeight());
-    }
-
-    @AllArgsConstructor
-    public
-    enum ImageType {
-      TYPE_3BYTE_BGR(BufferedImage.TYPE_3BYTE_BGR),
-      TYPE_4BYTE_ABGR(BufferedImage.TYPE_4BYTE_ABGR),
-      TYPE_4BYTE_ABGR_PRE(BufferedImage.TYPE_4BYTE_ABGR_PRE),
-      TYPE_BYTE_BINARY(BufferedImage.TYPE_BYTE_BINARY),
-      TYPE_BYTE_GRAY(BufferedImage.TYPE_BYTE_GRAY),
-      TYPE_BYTE_INDEXED(BufferedImage.TYPE_BYTE_INDEXED),
-      TYPE_CUSTOM(BufferedImage.TYPE_CUSTOM),
-      TYPE_INT_ARGB(BufferedImage.TYPE_INT_ARGB),
-      TYPE_INT_ARGB_PRE(BufferedImage.TYPE_INT_ARGB_PRE),
-      TYPE_INT_BGR(BufferedImage.TYPE_INT_BGR),
-      TYPE_INT_RGB(BufferedImage.TYPE_INT_RGB),
-      TYPE_USHORT_555_RGB(BufferedImage.TYPE_USHORT_555_RGB),
-      TYPE_USHORT_565_RGB(BufferedImage.TYPE_USHORT_565_RGB),
-      TYPE_USHORT_GRAY(BufferedImage.TYPE_USHORT_GRAY);
-
-      final int awtImageCode;
-    }
-
-    /**
-     * @param image to return a buffered image of
-     * @param requiredType type of the BufferedImage to return
-     *                     (from the value set of static ints of
-     *                     <code>java.awt.image.BufferedImage</code> that specify image types,
-     *                     e.g. <code>TYPE_3BYTE_BGR</code>)
-     *
-     * @return a BufferedImage
-     */
-    @VisibleForTesting
-    public static BufferedImage getBufferedImage(final Image image, final ImageType requiredType) {
-      if (image instanceof BufferedImage
-          && ((BufferedImage) image).getType() == requiredType.awtImageCode) {
-        return (BufferedImage) image;
-      }
-
-      final BufferedImage ret = new BufferedImage(
-          image.getWidth(null),
-          image.getHeight(null),
-          requiredType.awtImageCode);
-
-      final Graphics2D g2d = ret.createGraphics();
-      g2d.drawImage(image,0,0, null);
-      g2d.dispose();
-
-      return ret;
     }
 
     /**
