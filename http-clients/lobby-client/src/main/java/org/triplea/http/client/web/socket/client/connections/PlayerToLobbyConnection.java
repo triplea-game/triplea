@@ -34,8 +34,8 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUp
  */
 public class PlayerToLobbyConnection {
   @Getter private final HttpLobbyClient httpLobbyClient;
-  private GameListingClient gameListingClient;
-  private WebSocket webSocket;
+  private final GameListingClient gameListingClient;
+  private final WebSocket webSocket;
 
   @Builder
   public PlayerToLobbyConnection(
@@ -46,7 +46,7 @@ public class PlayerToLobbyConnection {
     webSocket =
         GenericWebSocketClient.builder()
             .errorHandler(errorHandler)
-            .websocketUri(URI.create(lobbyUri.toString() + WebsocketPaths.PLAYER_CONNECTIONS))
+            .websocketUri(URI.create(lobbyUri + WebsocketPaths.PLAYER_CONNECTIONS))
             .build();
     webSocket.connect();
     gameListingClient = httpLobbyClient.newGameListingClient();
@@ -63,10 +63,6 @@ public class PlayerToLobbyConnection {
 
   public void bootGame(final String gameId) {
     gameListingClient.bootGame(gameId);
-  }
-
-  public void changePassword(final String password) {
-    httpLobbyClient.getUserAccountClient().changePassword(password);
   }
 
   public void close() {
