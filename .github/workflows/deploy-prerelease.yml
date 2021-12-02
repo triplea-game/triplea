@@ -25,4 +25,8 @@ jobs:
           ./run_ansible --deploy-type minimal --environment prerelease
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-
+      - name: Clean up Old Deployments
+        run: |
+          # Keep only the 5 most recent deployments
+          for i in $(ls -t /home/bot/ | grep -v "maps$" | sed -n '5,$p'); do sudo -u bot rm -rfv /home/bot/$i; done;
+          for i in $(ls -t /home/lobby_server/ | sed -n '5,$p'); do sudo -u lobby_server rm -rfv /home/lobby_server/$i; done;
