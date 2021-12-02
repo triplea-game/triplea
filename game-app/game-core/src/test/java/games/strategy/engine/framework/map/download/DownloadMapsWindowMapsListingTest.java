@@ -27,6 +27,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
           .mapName(MAP_NAME)
           .description("description")
           .lastCommitDateEpochMilli(10L)
+          .downloadSizeInBytes(750L)
           .build();
 
   @Test
@@ -66,6 +67,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
         .mapName("mapName " + url)
         .lastCommitDateEpochMilli(Instant.now().toEpochMilli())
         .lastCommitDateEpochMilli(40L)
+        .downloadSizeInBytes(500L)
         .build();
   }
 

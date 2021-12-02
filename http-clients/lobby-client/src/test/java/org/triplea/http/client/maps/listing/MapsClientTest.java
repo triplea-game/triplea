@@ -22,6 +22,7 @@ class MapsClientTest extends WireMockTest {
               .downloadUrl("http://download-url")
               .previewImageUrl("http://preview-url")
               .lastCommitDateEpochMilli(10L)
+              .downloadSizeInBytes(300L)
               .build(),
           MapDownloadItem.builder()
               .mapName("map-2")
@@ -29,6 +30,7 @@ class MapsClientTest extends WireMockTest {
               .downloadUrl("http://download-url-2")
               .previewImageUrl("http://preview-url-2")
               .lastCommitDateEpochMilli(20L)
+              .downloadSizeInBytes(100L)
               .mapTags(
                   List.of(
                       MapTag.builder().displayOrder(1).name("tag-name").value("tag-value").build()))

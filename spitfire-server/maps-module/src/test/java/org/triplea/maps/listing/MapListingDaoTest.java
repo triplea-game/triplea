@@ -30,6 +30,7 @@ class MapListingDaoTest {
     final var mapDownloadListing = results.get(0);
     assertThat(mapDownloadListing.getName(), is("map-name"));
     assertThat(mapDownloadListing.getDownloadUrl(), is("http-map-repo-url/archives/master.zip"));
+    assertThat(mapDownloadListing.getDownloadSizeBytes(), is(4000L));
     assertThat(mapDownloadListing.getPreviewImageUrl(), is("http-preview-image-url"));
     assertThat(mapDownloadListing.getDescription(), is("description-repo-1"));
     assertThat(

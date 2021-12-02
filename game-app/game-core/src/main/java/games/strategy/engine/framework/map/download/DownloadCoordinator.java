@@ -108,11 +108,6 @@ public final class DownloadCoordinator {
 
   private final class Listener implements DownloadListener {
     @Override
-    public void downloadStarted(final MapDownloadItem download) {
-      downloadListeners.forEach(it -> it.downloadStarted(download));
-    }
-
-    @Override
     public void downloadUpdated(final MapDownloadItem download, final long bytesReceived) {
       downloadListeners.forEach(it -> it.downloadUpdated(download, bytesReceived));
     }

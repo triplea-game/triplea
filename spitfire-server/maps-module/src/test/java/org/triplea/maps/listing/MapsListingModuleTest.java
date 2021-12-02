@@ -46,6 +46,7 @@ class MapsListingModuleTest {
                     .name("map-name-1")
                     .lastCommitDate(commitDate1)
                     .description("description-1")
+                    .downloadSizeBytes(10L)
                     .build(),
                 MapListingRecord.builder()
                     .downloadUrl("http://map-url-2")
@@ -53,6 +54,7 @@ class MapsListingModuleTest {
                     .name("map-name-2")
                     .lastCommitDate(commitDate2)
                     .description("description-2")
+                    .downloadSizeBytes(20L)
                     .build(),
                 MapListingRecord.builder()
                     .downloadUrl("http://map-url-3")
@@ -60,6 +62,7 @@ class MapsListingModuleTest {
                     .name("map-name-3")
                     .lastCommitDate(commitDate3)
                     .description("description-3")
+                    .downloadSizeBytes(30L)
                     .build()));
 
     when(mapTagsDao.fetchAllMapTags())
@@ -95,6 +98,7 @@ class MapsListingModuleTest {
     assertThat(results.get(0).getLastCommitDateEpochMilli(), is(commitDate1.toEpochMilli()));
     assertThat(results.get(0).getDownloadUrl(), is("http://map-url-1"));
     assertThat(results.get(0).getPreviewImageUrl(), is("http-preview-url-1"));
+    assertThat(results.get(0).getDownloadSizeInBytes(), is(10L));
     assertThat(results.get(0).getTagValue("tag-name-1"), is("tag-name-1-value"));
     assertThat(results.get(0).getTagValue("tag-name-2"), is("tag-name-2-value"));
 
@@ -102,10 +106,12 @@ class MapsListingModuleTest {
     assertThat(results.get(1).getLastCommitDateEpochMilli(), is(commitDate2.toEpochMilli()));
     assertThat(results.get(1).getDownloadUrl(), is("http://map-url-2"));
     assertThat(results.get(1).getPreviewImageUrl(), is("http-preview-url-2"));
+    assertThat(results.get(1).getDownloadSizeInBytes(), is(20L));
 
     assertThat(results.get(2).getMapName(), is("map-name-3"));
     assertThat(results.get(2).getLastCommitDateEpochMilli(), is(commitDate3.toEpochMilli()));
     assertThat(results.get(2).getDownloadUrl(), is("http://map-url-3"));
     assertThat(results.get(2).getPreviewImageUrl(), is("http-preview-url-3"));
+    assertThat(results.get(2).getDownloadSizeInBytes(), is(30L));
   }
 }
