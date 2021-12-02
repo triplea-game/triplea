@@ -35,6 +35,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -388,19 +389,16 @@ public class DownloadMapsWindow extends JFrame {
     sb.append("<html>").append(map.getMapName()).append(doubleSpace);
 
     if (!downloadMapsWindowModel.isInstalled(map)) {
-      final String mapUrl = map.getDownloadUrl();
-      DownloadConfiguration.downloadLengthReader()
-          .getDownloadLength(mapUrl)
-          .ifPresent(
-              downloadSize ->
-                  sb.append(doubleSpace)
-                      .append(" (")
-                      .append(newSizeLabel(downloadSize))
-                      .append(")"));
+      sb.append(doubleSpace)
+          .append(" (")
+          .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
+          .append(")");
     } else {
       sb.append(doubleSpace).append(" (");
       try {
-        sb.append(newSizeLabel(Files.size(downloadMapsWindowModel.getInstallLocation(map).get())));
+        sb.append(
+            FileUtils.byteCountToDisplaySize(
+                Files.size(downloadMapsWindowModel.getInstallLocation(map).get())));
       } catch (final IOException e) {
         log.warn("Failed to read file size", e);
         sb.append("N/A");
@@ -413,13 +411,6 @@ public class DownloadMapsWindow extends JFrame {
     sb.append("</html>");
 
     return sb.toString();
-  }
-
-  private static String newSizeLabel(final long bytes) {
-    final long kiloBytes = (bytes / 1024);
-    final long megaBytes = kiloBytes / 1024;
-    final long kbDigits = ((kiloBytes % 1000) / 100);
-    return megaBytes + "." + kbDigits + " MB";
   }
 
   private JPanel newButtonsPanel(

@@ -115,6 +115,7 @@ class InstalledMapsListingTest {
                     .downloadUrl("url")
                     .description("description")
                     .previewImageUrl("url")
+                    .downloadSizeInBytes(333L)
                     .build(),
                 MapDownloadItem.builder()
                     .mapName("map-name1")
@@ -123,6 +124,7 @@ class InstalledMapsListingTest {
                     .downloadUrl("url")
                     .description("description")
                     .previewImageUrl("url")
+                    .downloadSizeInBytes(888L)
                     .build()));
 
     assertThat(results.values(), doesNotContainMappedItem(InstalledMap::getMapName, "map-name0"));

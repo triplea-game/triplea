@@ -38,13 +38,6 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
   MapDownloadProgressPanel() {
     downloadCoordinator.addDownloadListener(this);
-    addPendingDownloads();
-  }
-
-  private void addPendingDownloads() {
-    downloadCoordinator.getPendingDownloads().stream()
-        .map(DownloadFile::getDownload)
-        .forEach(this::downloadStarted);
   }
 
   @Override
@@ -62,8 +55,22 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
   }
 
   @Override
-  public void downloadStarted(final MapDownloadItem download) {
-    SwingUtilities.invokeLater(() -> getMapDownloadProgressListenerFor(download).downloadStarted());
+  public void downloadUpdated(final MapDownloadItem download, final long bytesReceived) {
+    SwingUtilities.invokeLater(
+        () -> getMapDownloadProgressListenerFor(download).downloadUpdated(bytesReceived));
+  }
+
+  @Override
+  public void downloadComplete(final MapDownloadItem download) {
+    SwingUtilities.invokeLater(
+        () -> getMapDownloadProgressListenerFor(download).downloadCompleted());
+  }
+
+  private MapDownloadProgressListener getMapDownloadProgressListenerFor(
+      final MapDownloadItem download) {
+    assert SwingUtilities.isEventDispatchThread();
+
+    return mapDownloadProgressListeners.computeIfAbsent(download, this::addDownload);
   }
 
   private MapDownloadProgressListener addDownload(final MapDownloadItem download) {
@@ -76,7 +83,8 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
     // space at the end of the label so the text does not end right at the progress bar
     labels.put(download, new JLabel(download.getMapName() + "  "));
-    final JProgressBar progressBar = new JProgressBar();
+    final JProgressBar progressBar = new JProgressBar(0, 100);
+    progressBar.setStringPainted(true);
     progressBars.put(download, progressBar);
 
     rebuildPanel();
@@ -99,24 +107,5 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
     }
 
     SwingComponents.redraw(this);
-  }
-
-  @Override
-  public void downloadUpdated(final MapDownloadItem download, final long bytesReceived) {
-    SwingUtilities.invokeLater(
-        () -> getMapDownloadProgressListenerFor(download).downloadUpdated(bytesReceived));
-  }
-
-  @Override
-  public void downloadComplete(final MapDownloadItem download) {
-    SwingUtilities.invokeLater(
-        () -> getMapDownloadProgressListenerFor(download).downloadCompleted());
-  }
-
-  private MapDownloadProgressListener getMapDownloadProgressListenerFor(
-      final MapDownloadItem download) {
-    assert SwingUtilities.isEventDispatchThread();
-
-    return mapDownloadProgressListeners.computeIfAbsent(download, this::addDownload);
   }
 }

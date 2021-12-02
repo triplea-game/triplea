@@ -15,6 +15,7 @@ public class MapListingRecord {
   private final String previewImageUrl;
   private final String description;
   private final Instant lastCommitDate;
+  private final Long downloadSizeBytes;
 
   @Builder
   public MapListingRecord(
@@ -22,17 +23,20 @@ public class MapListingRecord {
       @ColumnName("download_url") final String downloadUrl,
       @ColumnName("preview_image_url") final String previewImageUrl,
       @ColumnName("description") final String description,
-      @ColumnName("last_commit_date") final Instant lastCommitDate) {
+      @ColumnName("last_commit_date") final Instant lastCommitDate,
+      @ColumnName("download_size_bytes") final Long downloadSizeBytes) {
     this.name = name;
     this.downloadUrl = downloadUrl;
     this.previewImageUrl = previewImageUrl;
     this.description = description;
     this.lastCommitDate = lastCommitDate;
+    this.downloadSizeBytes = downloadSizeBytes;
   }
 
   public MapDownloadItem toMapDownloadItem(final List<MapTag> mapTags) {
     return MapDownloadItem.builder()
         .downloadUrl(downloadUrl)
+        .downloadSizeInBytes(downloadSizeBytes)
         .previewImageUrl(previewImageUrl)
         .mapName(name)
         .lastCommitDateEpochMilli(lastCommitDate.toEpochMilli())

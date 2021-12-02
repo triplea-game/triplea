@@ -31,6 +31,8 @@ public class MapDownloadItem {
   /** Additional meta data about the map, eg: categories, rating, etc... */
   private final List<MapTag> mapTags;
 
+  @Nonnull private final Long downloadSizeInBytes;
+
   /**
    * Finds a tag by name and returns its corresponding value. If the tag is not found or has a null
    * value, an empty string is returned instead.

@@ -9,6 +9,7 @@ public interface MapListingDao {
       "select"
           + "    m.map_name,"
           + "    m.download_url,"
+          + "    m.download_size_bytes,"
           + "    m.preview_image_url,"
           + "    m.description,"
           + "    m.last_commit_date"
