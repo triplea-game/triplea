@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import org.triplea.java.Postconditions;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -431,7 +432,6 @@ public final class UnitChooser extends JPanel {
    * (maybe under particular circumstances like carrying some other units or
    * being withdrawable) by showing the respective <code>UnitChooserEntryIcon</code>
    * and the controls to set the number of units of that <code>UnitCategory</code>
-   * (maybe under the particular circumstances)
    * chosen for the purpose/case, in which the containing <cod>UnitChooser</cod> is being used.
    */
 
@@ -774,8 +774,8 @@ public final class UnitChooser extends JPanel {
 
       this.unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
 
-      assert nonWithdrawableImage.getHeight()
-          == getNonWithdrawableImageHeight(this.unitImageFactory.getUnitImageHeight());
+      Postconditions.assertState(nonWithdrawableImage.getHeight()
+          == getNonWithdrawableImageHeight(this.unitImageFactory.getUnitImageHeight()));
     }
 
     /**
