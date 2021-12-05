@@ -22,7 +22,7 @@ class GameNotesTest {
     FileUtils.writeToFile(gameXmlPath, "dummy content");
     gameXmlPath.toFile().deleteOnExit();
 
-    final String result = GameNotes.loadGameNotes(gameXmlPath, "Game Name");
+    final String result = GameNotes.loadGameNotes(gameXmlPath);
 
     assertThat(
         result,

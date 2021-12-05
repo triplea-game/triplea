@@ -546,7 +546,7 @@ public class GameData implements Serializable, GameState {
     // From the game-xml file name, we can find the game-notes file.
     return findMapDescriptionYaml()
         .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()))
-        .map(gameFilePath -> GameNotes.loadGameNotes(gameFilePath, getGameName()))
+        .map(GameNotes::loadGameNotes)
         .orElse("");
   }
 
