@@ -327,7 +327,7 @@ final class ViewMenu extends JMenu {
   private void addMapFontAndColorEditorMenu() {
     final Action mapFontOptions =
         SwingAction.of(
-            "Edit Map Font and Color",
+            "Map Font and Color",
             e -> {
               final List<IEditableProperty<?>> properties = new ArrayList<>();
               final NumberProperty fontsize =
@@ -386,7 +386,7 @@ final class ViewMenu extends JMenu {
                   JOptionPane.showOptionDialog(
                       frame,
                       ui,
-                      "Edit Map Font and Color",
+                      "Map Font and Color",
                       JOptionPane.YES_NO_CANCEL_OPTION,
                       JOptionPane.PLAIN_MESSAGE,
                       null,
@@ -455,7 +455,7 @@ final class ViewMenu extends JMenu {
 
     final JMenu flagDisplayMenu = new JMenu();
     flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
-    flagDisplayMenu.setText("Flag Display Mode");
+    flagDisplayMenu.setText("Flag Display");
     final ButtonGroup flagsDisplayGroup = new ButtonGroup();
 
     final JRadioButtonMenuItem noFlags =
