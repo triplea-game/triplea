@@ -81,7 +81,7 @@ public class InstalledMap {
     } else {
       return Optional.of(
           LocalizeHtml.localizeImgLinksInHtml(
-              GameNotes.loadGameNotes(xmlPath.get(), gameName), mapContentRoot.get()));
+              GameNotes.loadGameNotes(xmlPath.get()), mapContentRoot.get()));
     }
   }
 

@@ -11,13 +11,12 @@ import org.triplea.java.StringUtils;
 public class GameNotes {
   /**
    * Given the path to an XML file, reads an expected corresponding game notes and returns the
-   * contents of that file. Returns empty if the game notes file does not exist or if there are any
-   * errors reading the file.
+   * contents of that file. Returns an empty String if the game notes file does not exist or if
+   * there are any errors reading the file.
    *
    * @param xmlGameFile Path to game-xml file whose game notes we will be loading.
-   * @param gameName Name of the game, will be embedded into the game notes as a title.
    */
-  public static String loadGameNotes(final Path xmlGameFile, final String gameName) {
+  public static String loadGameNotes(final Path xmlGameFile) {
     Preconditions.checkArgument(
         Files.exists(xmlGameFile),
         "Error, expected file did not exist: " + xmlGameFile.toAbsolutePath());
@@ -28,10 +27,7 @@ public class GameNotes {
     final String notesFileName = createExpectedNotesFileName(xmlGameFile);
     final Path notesFile = xmlGameFile.resolveSibling(notesFileName);
 
-    final String gameNotes =
-        Files.exists(notesFile) ? FileUtils.readContents(notesFile).orElse("") : "";
-    return String.format(
-        "<h1>%s</h1>Path: %s<br>%s", gameName, xmlGameFile.toAbsolutePath(), gameNotes);
+    return Files.exists(notesFile) ? FileUtils.readContents(notesFile).orElse("") : "";
   }
 
   /**
