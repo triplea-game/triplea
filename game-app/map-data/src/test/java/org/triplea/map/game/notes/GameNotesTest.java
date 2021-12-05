@@ -24,14 +24,7 @@ class GameNotesTest {
 
     final String result = GameNotes.loadGameNotes(gameXmlPath);
 
-    assertThat(
-        result,
-        is(
-            "<h1>Game Name</h1>"
-                + "Path: "
-                + gameXmlPath.toAbsolutePath()
-                + "<br>"
-                + "<blink>Game notes!</blink>"));
+    assertThat(result, is("<blink>Game notes!</blink>"));
   }
 
   @Test
