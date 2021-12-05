@@ -5,7 +5,7 @@
 
 - name: install certbot and python for certbot on nginx
   apt:
-    update_cache: yes
+    state: present
     name:
       - certbot
       - python3-certbot-nginx
