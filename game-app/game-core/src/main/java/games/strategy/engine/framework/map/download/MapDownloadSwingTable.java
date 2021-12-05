@@ -39,7 +39,7 @@ public class MapDownloadSwingTable {
             .distinct()
             .collect(Collectors.toList());
 
-    columnNames.addAll(tagNames); // .stream().map(MapTag::getName).collect(Collectors.toList()));
+    columnNames.addAll(tagNames);
 
     table =
         JTableBuilder.<MapDownloadItem>builder()
