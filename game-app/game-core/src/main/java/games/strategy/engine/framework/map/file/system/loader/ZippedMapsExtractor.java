@@ -142,6 +142,7 @@ public class ZippedMapsExtractor {
     final boolean folderReplaced =
         FileUtils.replaceFolder(tempFolderWithExtractedMap, extractionTarget);
     if (!folderReplaced) {
+      FileUtils.deleteDirectory(tempFolder);
       return Optional.empty();
     }
 
