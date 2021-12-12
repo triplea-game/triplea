@@ -2439,3 +2439,20 @@
   img: https://raw.githubusercontent.com/triplea-maps/big_world_logistics_mod/master/preview.png
   description: |
     <br>World War 2 with supply lines required on the Big World Map
+- mapName: Aggression 1942
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/aggression_1942/archive/master.zip
+  version: 3
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1942/master/preview.png
+  description: |
+   <br>
+   <ul>
+     <li><b>Follows v3 type rules.</b></li>
+     <li><b>Only 1 battle rounds.</b></li>
+     <li><b>Units have 1 upkeep and movement costs.</b></li>
+     <li><b>Factory and aaGuns are destroyed when captured.</b></li>
+     <li><b>Victory is achieved by controlling 5 capitals.</b></li>
+     <li><b>Balance hasn't extensivelt tested yet. Still in progress.</b></li>
+     <li><b>By Navalland</b></li>
+   </ul>
+   <br>
