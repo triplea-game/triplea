@@ -58,7 +58,7 @@ function printLogs() {
 
 
 function buildJars() {
-  ./gradlew --parallel \
+  ./gradlew \
      :spitfire-server:dropwizard-server:shadowJar \
      :game-app:game-headless:shadowJar \
      :smoke-testing:shadowJar 
