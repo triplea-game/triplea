@@ -49,8 +49,8 @@ public final class ClientFileSystemHelper {
    * second that contains binaries. This method returns the 'user folder', which contains maps and
    * save games.
    *
-   * @return Folder that contains binaries. This folder
-   *     would contain e.g. resources that are not specific to a particular game.
+   * @return Folder that contains binaries. This folder would contain e.g. resources that are not
+   *     specific to a particular game.
    */
   public static Path getCodeSourceFolder() throws IOException {
     if (codeSourceLocation == null) {

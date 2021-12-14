@@ -50,7 +50,7 @@ public class RelationshipTracker extends GameDataComponent {
     return getRelationship(p1, p2).getRelationshipType();
   }
 
-  public RelationshipType getRelationshipType(final  RelatedPlayers p1p2) {
+  public RelationshipType getRelationshipType(final RelatedPlayers p1p2) {
     return getRelationship(p1p2).getRelationshipType();
   }
 
