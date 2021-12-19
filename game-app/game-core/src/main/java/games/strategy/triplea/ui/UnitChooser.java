@@ -2,8 +2,8 @@ package games.strategy.triplea.ui;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
@@ -23,17 +23,19 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.Postconditions;
 import org.triplea.java.collections.IntegerMap;
 
@@ -42,8 +44,8 @@ import org.triplea.java.collections.IntegerMap;
  * and - depending on the respective context - additional attributes like damage, movement points
  * left, or whether they can be withdrawn.
  *
- * <p>The dialog is used by many different use cases like placing units or choosing which units take
- * hits in a battle round.
+ * <p>The dialog is used by various use cases like placing units or choosing which units take hits
+ * in a battle round.
  */
 public final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
@@ -58,7 +60,6 @@ public final class UnitChooser extends JPanel {
   private final boolean allowMultipleHits;
   private JButton autoSelectButton;
   private JButton selectNoneButton;
-  private final UiContext uiContext;
   private final Predicate<Collection<Unit>> match;
   private final ScrollableTextFieldListener textFieldListener =
       new ScrollableTextFieldListener() {
@@ -104,7 +105,7 @@ public final class UnitChooser extends JPanel {
       final Predicate<Collection<Unit>> match) {
     dependents = dependent;
     this.allowMultipleHits = allowMultipleHits;
-    this.uiContext = uiContext;
+    NonWithdrawableFactory.makeSureNonWithdrawableFactoryMatchesUiContext(uiContext);
     this.match = match;
   }
 
@@ -233,11 +234,21 @@ public final class UnitChooser extends JPanel {
     spaceRequiredForNonWithdrawableIcon =
         units.stream()
             .anyMatch(
-                unit ->
-                    unit.getOwner() != null
-                        && Properties.getPartialAmphibiousRetreat(
-                            unit.getOwner().getData().getProperties())
-                        && unit.getWasAmphibious());
+                unit -> {
+                  Postconditions.assertState(
+                      unit.getOwner() != null,
+                      "Contract problem: All units in UnitChooser are expected to have an owner,"
+                          + " but now one appeared to how none.");
+
+                  Postconditions.assertState(
+                      unit.getOwner().getData() != null,
+                      "All units owners are expected to relate to a gameData object,"
+                          + "but now one appeared to how none.");
+
+                  return Properties.getPartialAmphibiousRetreat(
+                          unit.getOwner().getData().getProperties())
+                      && unit.getWasAmphibious();
+                });
 
     final Collection<UnitCategory> categories =
         UnitSeparator.categorize(units, separatorCategories);
@@ -644,11 +655,9 @@ public final class UnitChooser extends JPanel {
     public class UnitChooserEntryIcon extends JComponent {
       private static final long serialVersionUID = 591598594559651745L;
       private static final int PADDING = 6;
-      @VisibleForTesting public final UiContextDecoration uiContextDecoration;
       @VisibleForTesting public boolean damaged;
 
       UnitChooserEntryIcon(final boolean damaged) {
-        uiContextDecoration = UiContextDecoration.get(uiContext);
         this.damaged = damaged;
 
         MapUnitTooltipManager.setUnitTooltip(
@@ -659,14 +668,20 @@ public final class UnitChooser extends JPanel {
       public void paint(final Graphics g) {
         super.paint(g);
 
-        g.drawImage(getImage(category, damaged, uiContext), 0, 0, this);
+        NonWithdrawableFactory.getImage(
+                ImageKey.builder()
+                    .type(category.getType())
+                    .player(category.getOwner())
+                    .damaged(damaged || category.hasDamageOrBombingUnitDamage())
+                    .disabled(category.getDisabled())
+                    .build(),
+                /*nonWithdrawable =*/ !category.getCanRetreat())
+            .ifPresent(image -> g.drawImage(image, 0, 0, this));
 
         int index = 1;
         for (final UnitOwner holder : category.getDependents()) {
-          final int x = uiContextDecoration.unitImageFactory.getUnitImageWidth() * index;
-          uiContext
-              .getUnitImageFactory()
-              .getImage(ImageKey.of(holder))
+          final int x = NonWithdrawableFactory.getUnitImageWidth() * index;
+          NonWithdrawableFactory.getImage(ImageKey.of(holder), false)
               .ifPresent(image1 -> g.drawImage(image1, x, 0, this));
           index++;
         }
@@ -680,14 +695,13 @@ public final class UnitChooser extends JPanel {
       @Override
       public Dimension getPreferredSize() {
         int width =
-            uiContextDecoration.unitImageFactory.getUnitImageWidth()
-                * (1 + category.getDependents().size());
+            NonWithdrawableFactory.getUnitImageWidth() * (1 + category.getDependents().size());
 
         if (spaceRequiredForNonWithdrawableIcon) {
-          width += uiContextDecoration.nonWithdrawableImage.getWidth(null) + PADDING;
+          width += NonWithdrawableFactory.getNonWithdrawableImageWidth() + PADDING;
         }
 
-        final int height = uiContextDecoration.unitImageFactory.getUnitImageHeight();
+        final int height = NonWithdrawableFactory.getUnitImageHeight();
         return new Dimension(width, height);
       }
 
@@ -698,57 +712,72 @@ public final class UnitChooser extends JPanel {
     }
   }
 
-  /**
-   * once <code>UnitChooser</code> is divided up in a model and a presentation
-   *
-   * <p>(With <code>ChooserEntry</code> being a candidate to go into the model and <code>
-   * UnitChooserEntryIcon</code> being a candidate to go into the presentation, the method <code>
-   * getImage</code> should probably move to <code>UnitChooserEntryIcon</code>.
-   *
-   * <p>It can't be there for the moment, because <code>UnitChooserEntryIcon</code> is an inner
-   * class, and static methods are not supported in inner classes at language level 11.)
-   *
-   * @param category category of the image
-   * @param forceDamaged true iff the image should show a damaged unit
-   * @param uiContext context for loading the image resource
-   * @return the unit image, possibly decorated by the non-withdrawable-icon.
-   */
-  @VisibleForTesting
-  public static Image getImage(
-      final UnitCategory category, final boolean forceDamaged, final UiContext uiContext) {
-    final var uiContextDecoration = UiContextDecoration.get(uiContext);
-    final Image image =
-        uiContextDecoration
-            .unitImageFactory
-            .getImage(
-                ImageKey.builder()
-                    .type(category.getType())
-                    .player(category.getOwner())
-                    .damaged(forceDamaged || category.hasDamageOrBombingUnitDamage())
-                    .disabled(category.getDisabled())
-                    .build())
-            .orElseThrow();
+  /** delivers unit images decorated with non withdrawable images */
+  @UtilityClass
+  static final class NonWithdrawableFactory {
+    private ResourceLoader resourceLoader = null;
+    private UnitImageFactory unitImageFactory = null;
+    private final Map<Image, Image> images = new HashMap<>();
+    private BufferedImage nonWithdrawableImage = null;
+    private UnitImageFactory unitImageFactoryForDecoractedImages = null;
 
-    return category.getCanRetreat()
-        ? image
-        : uiContextDecoration.getUnitImageWithNonWithdrawableImage(image);
-  }
+    public void makeSureNonWithdrawableFactoryMatchesUiContext(final UiContext uiContext) {
+      if (resourceLoader != UiContext.getResourceLoader()
+          || unitImageFactory != uiContext.getUnitImageFactory()) {
+        images.clear();
+        resourceLoader = UiContext.getResourceLoader();
+        unitImageFactory = uiContext.getUnitImageFactory();
+        nonWithdrawableImage = null;
+        unitImageFactoryForDecoractedImages = null;
+      }
+    }
 
-  static class UiContextDecoration {
-    private static UiContextDecoration latestUCD;
+    public Optional<Image> getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
+      final var undecoratedImage = unitImageFactory.getImage(imageKey);
 
-    @VisibleForTesting public final UiContext uiContext;
-    @VisibleForTesting public final UnitImageFactory unitImageFactory;
+      return nonWithdrawable && undecoratedImage.isPresent()
+          ? getImage(undecoratedImage.get())
+          : undecoratedImage;
+    }
+
+    private Optional<Image> getImage(final Image undecoratedImage) {
+      final var cachedImage = images.get(undecoratedImage);
+      if (cachedImage != null) {
+        return Optional.of(cachedImage);
+      }
+
+      final var unitImageWithNonWithdrawableImage =
+          new BufferedImage(
+              getXofNonWithdrawableImage() + getNonWithdrawableImage().getWidth(),
+              unitImageFactoryForDecoractedImages.getUnitImageHeight(),
+              BufferedImage.TYPE_INT_ARGB);
+
+      final Graphics2D g2d = unitImageWithNonWithdrawableImage.createGraphics();
+
+      drawNonWithrawableImage(g2d);
+      g2d.drawImage(undecoratedImage, 0, 0, null);
+
+      g2d.dispose();
+
+      images.put(undecoratedImage, unitImageWithNonWithdrawableImage);
+
+      return Optional.of(unitImageWithNonWithdrawableImage);
+    }
+
+    private @NonNull BufferedImage loadGenericUnitsImage(final String fileName) {
+      return resourceLoader.loadBufferedImage("units", "generic", fileName).orElseThrow();
+    }
 
     @VisibleForTesting
-    public final BufferedImage nonWithdrawableImage; // TODO: make nonWithdrawableImage lazy
+    public @NonNull BufferedImage getNonWithdrawableImage() {
+      if (nonWithdrawableImage == null) {
+        loadNonWithdrawableImage();
+      }
 
-    private final Map<Image, BufferedImage> unitImageWithNonWithrawableImage =
-        Collections.synchronizedMap(new HashMap<>());
+      return nonWithdrawableImage;
+    }
 
-    private UiContextDecoration(final UiContext uiContext) {
-      this.uiContext = uiContext;
-      final var unitImageFactory = uiContext.getUnitImageFactory();
+    private void loadNonWithdrawableImage() {
       final int unitImageHeight = unitImageFactory.getUnitImageHeight();
       final double nonWithdrawableImageHeight = getNonWithdrawableImageHeight(unitImageHeight);
       nonWithdrawableImage = loadNonWithdrawableImage((int) nonWithdrawableImageHeight);
@@ -769,11 +798,12 @@ public final class UnitChooser extends JPanel {
       // being 24 pixels resp. 32 pixels high.
       // So the unit image will be either 48 pixels or 32 pixels high.
 
-      this.unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
+      unitImageFactoryForDecoractedImages = unitImageFactory.withScaleFactor(scaleFactor);
 
       Postconditions.assertState(
           nonWithdrawableImage.getHeight()
-              == getNonWithdrawableImageHeight(this.unitImageFactory.getUnitImageHeight()));
+              == getNonWithdrawableImageHeight(
+                  unitImageFactoryForDecoractedImages.getUnitImageHeight()));
     }
 
     /**
@@ -785,7 +815,7 @@ public final class UnitChooser extends JPanel {
      *     between non-withdrawable imagehight and unit image height determined by <code>
      *     getNonWithdrawableImageHeight</code>.
      */
-    private static BufferedImage loadNonWithdrawableImage(final int nonWithdrawableImageHeight) {
+    private BufferedImage loadNonWithdrawableImage(final int nonWithdrawableImageHeight) {
       final BufferedImage imgSmall = loadGenericUnitsImage("non-withdrawable_small.png");
 
       if (nonWithdrawableImageHeight <= imgSmall.getHeight(null)) {
@@ -797,8 +827,22 @@ public final class UnitChooser extends JPanel {
       }
     }
 
-    private static BufferedImage loadGenericUnitsImage(final String fileName) {
-      return EngineImageLoader.loadImage("units", "generic", fileName);
+    private void drawNonWithrawableImage(final Graphics2D g2d) {
+      g2d.drawImage(
+          getNonWithdrawableImage(),
+          getXofNonWithdrawableImage(),
+          getYofNonWithdrawableImage(),
+          null);
+    }
+
+    private int getYofNonWithdrawableImage() {
+      return (unitImageFactoryForDecoractedImages.getUnitImageHeight()
+              - nonWithdrawableImage.getHeight())
+          / 2;
+    }
+
+    private int getXofNonWithdrawableImage() {
+      return unitImageFactoryForDecoractedImages.getUnitImageWidth() * 3 / 3;
     }
 
     /**
@@ -806,51 +850,29 @@ public final class UnitChooser extends JPanel {
      * images.
      */
     @VisibleForTesting
-    public static double getNonWithdrawableImageHeight(final int unitImageHeight) {
+    public double getNonWithdrawableImageHeight(final int unitImageHeight) {
       return unitImageHeight / 2.0;
     }
 
-    static UiContextDecoration get(final UiContext uiContext) {
-      if (latestUCD == null || latestUCD.uiContext != uiContext) {
-        latestUCD = new UiContextDecoration(uiContext);
+    int getUnitImageWidth() {
+      return getUnitImageFactoryForDecoractedImages().getUnitImageWidth();
+    }
+
+    @VisibleForTesting
+    public @NonNull UnitImageFactory getUnitImageFactoryForDecoractedImages() {
+      if (unitImageFactoryForDecoractedImages == null) {
+        loadNonWithdrawableImage();
       }
 
-      return latestUCD;
+      return unitImageFactoryForDecoractedImages;
     }
 
-    Image getUnitImageWithNonWithdrawableImage(final Image image) {
-      BufferedImage uwImage = unitImageWithNonWithrawableImage.get(image);
-      if (uwImage == null) {
-        uwImage =
-            new BufferedImage(
-                getXofNonWithdrawableImage() + nonWithdrawableImage.getWidth(null),
-                unitImageFactory.getUnitImageHeight(),
-                BufferedImage.TYPE_INT_ARGB);
-
-        final Graphics2D g2d = uwImage.createGraphics();
-
-        drawNonWithrawableImage(g2d);
-        g2d.drawImage(image, 0, 0, null);
-
-        g2d.dispose();
-
-        unitImageWithNonWithrawableImage.put(image, uwImage);
-      }
-
-      return uwImage;
+    int getUnitImageHeight() {
+      return getUnitImageFactoryForDecoractedImages().getUnitImageHeight();
     }
 
-    private void drawNonWithrawableImage(final Graphics2D g2d) {
-      g2d.drawImage(
-          nonWithdrawableImage, getXofNonWithdrawableImage(), getYofNonWithdrawableImage(), null);
-    }
-
-    private int getYofNonWithdrawableImage() {
-      return (unitImageFactory.getUnitImageHeight() - nonWithdrawableImage.getHeight(null)) / 2;
-    }
-
-    private int getXofNonWithdrawableImage() {
-      return unitImageFactory.getUnitImageWidth() * 3 / 3;
+    int getNonWithdrawableImageWidth() {
+      return getNonWithdrawableImage().getWidth();
     }
   }
 }
