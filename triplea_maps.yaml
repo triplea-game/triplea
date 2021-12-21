@@ -2456,3 +2456,11 @@
      <li><b>By Navalland</b></li>
    </ul>
    <br>
+- mapName: Hearts of Iron 2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Hearts_of_Iron2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Hearts_of_Iron2/master/preview.png
+  description: |
+   <br>Scenarios for each year from 1941 to 1944 on a large-scale map with units inspired by the game Hearts of Iron.
+   
