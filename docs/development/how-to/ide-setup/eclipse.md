@@ -23,7 +23,7 @@
 
 ## Formatter
 1. [Install Google Java Format Plugin](https://github.com/google/google-java-format#eclipse)
-   * ***Important*** Use the unofficial 1.7 version available here: https://github.com/google/google-java-format/files/2774507/google-java-format-eclipse-plugin-1.7.0.jar.zip
+   *[OLD ***Important*** Use the unofficial 1.7 version available here: https://github.com/google/google-java-format/files/2774507/google-java-format-eclipse-plugin-1.7.0.jar.zip]
    * Download the 1.7 version, unzip it, and move the extracted 'jar' file to the eclipse 'dropins' folder.
 1. *Project > Java Code Style > Formatter*
    1. Import profile, select the Triplea formatter file: [triplea/.ide-eclipse/format/triplea-eclipse-java-google-style.xml
@@ -53,5 +53,22 @@ Should look like this when configured: <br />
   - [EGit in Eclipse](http://www.eclipse.org/egit/) - with [tutorial
       ](http://www.vogella.com/tutorials/EclipseGit/article.html)
   - Run Configurations are checked in
-  - Run `./gradlew downloadAssets` one time to get images downloaded
-
+  - Run `./gradlew downloadAssets` (Windows: `gradlew.bat downloadAssets`) once in the main triplea folder to get images downloaded
+  - Run also the following commands (Windows: `gradlew.bat`) once in the main triplea folder if errors occur during gradle build for any of the tasks
+    - `./gradlew :spotlessApply`
+    - `./gradlew :game-app:spotlessApply`
+    - `./gradlew :http-clients:spotlessApply`
+    - `./gradlew :lib:spotlessApply`
+    - `./gradlew :smoke-testing:spotlessApply`
+    - `./gradlew :spitfire-server:spotlessApply`
+    - `./gradlew :game-app:ai:spotlessApply`
+    - `./gradlew :game-app:domain-data:spotlessApply`
+    - `./gradlew :game-app:game-core:spotlessApply`
+    - `./gradlew :game-app:game-headed:spotlessApply`
+    - `./gradlew :game-app:game-headless:spotlessApply`
+    - `./gradlew :game-app:game-relay-server:spotlessApply`
+    - `./gradlew :game-app:map-data:spotlessApply`
+    - `./gradlew :http-clients:feign-common:spotlessApply
+    - `./gradlew :http-clients:github-client:spotlessApply
+    - `./gradlew :http-clients:lobby-client:spotlessApply
+    - `./gradlew :lib:java-extras:spotlessApply
