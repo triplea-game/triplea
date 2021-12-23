@@ -1,0 +1,6 @@
+dependencies {
+    implementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
+    implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+}

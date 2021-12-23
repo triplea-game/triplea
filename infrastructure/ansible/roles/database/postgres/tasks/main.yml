@@ -1,5 +1,4 @@
 - name: Ensure latest bash and ssl
-  become: true
   apt:
     state: latest
     name:
@@ -9,7 +8,6 @@
       - libssl-doc
 
 - name: Install PostgreSQL
-  become: true
   apt:
     state: present
     name:
@@ -24,10 +22,24 @@
     state: started
     enabled: yes
 
+- name: deploy file /etc/postgresql/12/main/pg_hba.conf
+  register: pg_hba
+  copy:
+    src: pg_hba.conf
+    dest: /etc/postgresql/12/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: "0640"
+
+- name: Reload  PostgreSQL if pg_hba.conf changed
+  when: pg_hba.changed
+  service:
+    name: postgresql
+    state: reloaded
+
+
 - name: Set postgres user password
-  become: true
   become_user: postgres
-  no_log: true
   postgresql_user:
     name: postgres
     login_password: "{{ postgres_user_db_password }}"
@@ -35,43 +47,41 @@
     encrypted: yes
 
 - name: Create application database users
-  become: true
   become_user: postgres
   postgresql_user:
-    name: "{{ item.user }}"
-    password: "{{ item.password }}"
-    login_password: "{{ item.password }}"
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+    login_password: "{{ postgres_user_db_password }}"
     encrypted: yes
     state: "present"
-  loop: "{{ databases }}"
-  loop_control:
-    label: "{{ item.user }}"
-  no_log: true
 
 - name: Create application databases
-  become: true
   become_user: postgres
   postgresql_db:
-    name: "{{ item.name }}"
-    owner: "{{ item.user }}"
-  loop: "{{ databases }}"
-  loop_control:
-    label: "{{ item.name }}"
+    name: "{{ database_name }}"
+    owner: "{{ database_user }}"
+    login_password: "{{ postgres_user_db_password }}"
 
 - name: Ensure user has access to the database
-  become: true
   become_user: postgres
   postgresql_user:
-    db: "{{ item.name }}"
-    name: "{{ item.user }}"
-    password: "{{ item.password }}"
-    login_password: "{{ item.password }}"
+    db: "{{ database_name }}"
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+    login_password: "{{ postgres_user_db_password }}"
     encrypted: yes
     priv: "ALL"
     role_attr_flags: NOSUPERUSER,NOCREATEDB
     state: "present"
-  loop: "{{ databases }}"
-  loop_control:
-    label: "{{ item.name }} {{ item.user }}"
-  no_log: true
 
+# This is a hack because the previous tasks were supposed to set
+# the DB level password for our DB user, but it typically does not.
+# To achieve this, we'll run the native SQL commands to set the
+# user DB password.
+- name: set DB user passwords via CLI
+  shell: >
+    echo "alter role {{ database_user }} with password '{{ database_password }}';"  | psql -U postgres
+  environment:
+    PGPASSWORD: "{{ postgres_user_db_password }}"
+  changed_when: false
+  no_log: true

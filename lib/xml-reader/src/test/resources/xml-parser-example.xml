@@ -1,0 +1,20 @@
+<library>
+    <name libraryName="Central Library"/>
+
+    <mostRead>
+        <magazine title="War Gaming" isbn="123"/>
+        <book title="Strategy" isbn="789"/>
+    </mostRead>
+
+    <inventory>
+        <book name="Crossing the Atlantic"/>
+        <book name="The Battle of the Bulge"/>
+        <cdrom name="Pacific Conflict"/>
+        <gaming>
+            <dvd name="How to Win Revised"/>
+            <dvd name="Game of TripleA"/>
+            <bluRay name="NWO Lebowski"/>
+        </gaming>
+    </inventory>
+
+</library>

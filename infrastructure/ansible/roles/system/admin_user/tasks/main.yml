@@ -1,11 +1,9 @@
 - name: create admin group
-  become: true
   group:
     name: admin
     state: present
 
 - name: create the admin user (triplea) for maintainers to SSH to the system
-  become: true
   user:
     name: "{{ admin_user }}"
     shell: /bin/bash
@@ -14,7 +12,6 @@
     groups: admin,adm
 
 - name: Allow the admin user to have passwordless sudo
-  become: true
   lineinfile:
     dest: /etc/sudoers
     state: present
@@ -23,7 +20,6 @@
     validate: 'visudo -cf %s'
 
 - name: create ssh directory
-  become: true
   file:
     path: "{{ admin_home }}/.ssh/"
     state: directory
@@ -32,7 +28,6 @@
     group: "{{ admin_user }}"
 
 - name: copy authorized keys file
-  become: true
   copy:
     src: authorized_keys
     dest: "{{ admin_home }}/.ssh/authorized_keys"

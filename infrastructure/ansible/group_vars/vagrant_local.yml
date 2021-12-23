@@ -1,0 +1,3 @@
+lobby_uri: "http://localhost:8080"
+lobby_db_password: "lobby"
+bot_numbers: ["01", "02"]

@@ -1,26 +1,16 @@
+## Change Summary & Additional Notes
 
 <!--
-  Commit comment above summarizing the update.  If multiple commits please
-  summarize the change above. 
-  Code standards and PR guidelines can be found at:
-  <https://github.com/triplea-game/triplea/wiki/Contribution-Guidelines>
+- If multiple commits, summarize what has changed
+- Mention any manual testing done.
+- If there are UI updates, please include before & after screenshots
 -->
 
-## Testing
-<!-- Describe any manual testing performed below. -->
-
-## Screens Shots
-<!-- If there are UI updates, include screenshots below -->
-
-## Additional Notes to Reviewer
-<!-- Add any additional details that would be helpful to reviewers -->
-
 ## Release Note
-
 <!--
 Include a release note if there is a bug fix or a visible change for players.
 For format & syntax help, see:
-https://github.com/triplea-game/triplea/wiki/PR-Release-Notes
+https://github.com/triplea-game/triplea/blob/master/docs/development/reference/pr-release-notes.md
 -->
 
 <!--RELEASE_NOTE--><!--END_RELEASE_NOTE-->

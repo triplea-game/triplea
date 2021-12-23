@@ -1,6 +1,6 @@
 ext.getProductVersion = {
     def props = new Properties()
-    def productPropertiesFile = project(':game-core').file('src/main/resources/META-INF/triplea/product.properties')
+    def productPropertiesFile = project(':game-app:game-core').file('src/main/resources/META-INF/triplea/product.properties')
     productPropertiesFile.withInputStream { props.load(it) }
     def productVersion = props.getProperty('version')
     if (!productVersion) {

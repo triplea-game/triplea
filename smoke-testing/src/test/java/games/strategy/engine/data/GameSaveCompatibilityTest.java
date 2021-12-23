@@ -5,20 +5,27 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import games.strategy.engine.framework.GameDataManager;
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.triplea.test.common.Integration;
+import org.triplea.config.product.ProductVersionReader;
 
 @SuppressWarnings("UnmatchedTest")
-@Integration
 class GameSaveCompatibilityTest {
 
   @ParameterizedTest
   @MethodSource
-  void loadSaveGames(final File saveGame) throws Exception {
-    final GameData gameData = GameDataManager.loadGame(saveGame);
+  void loadSaveGames(final Path saveGame) throws Exception {
+    final GameData gameData;
+    try (InputStream inputStream = Files.newInputStream(saveGame)) {
+      gameData =
+          GameDataManager.loadGame(new ProductVersionReader().getVersion(), inputStream)
+              .orElseThrow();
+    }
 
     assertThat(gameData.getAttachmentOrderAndValues(), is(notNullValue()));
     assertThat(gameData.getAllianceTracker().getAlliances(), is(notNullValue()));
@@ -27,7 +34,6 @@ class GameSaveCompatibilityTest {
     assertThat(gameData.getDiceSides(), is(notNullValue()));
     assertThat(gameData.getGameLoader(), is(notNullValue()));
     assertThat(gameData.getGameName(), is(notNullValue()));
-    assertThat(gameData.getGameVersion(), is(notNullValue()));
     assertThat(gameData.getHistory().getActivePlayer(), is(notNullValue()));
     assertThat(gameData.getHistory().getLastNode(), is(notNullValue()));
     assertThat(gameData.getMap().getTerritories(), is(notNullValue()));
@@ -50,7 +56,7 @@ class GameSaveCompatibilityTest {
   }
 
   @SuppressWarnings("unused")
-  static Collection<File> loadSaveGames() {
+  static Collection<Path> loadSaveGames() throws IOException {
     return TestDataFileLister.listFilesInTestResourcesDirectory("save-games");
   }
 }

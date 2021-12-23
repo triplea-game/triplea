@@ -1,0 +1,1 @@
+Test data with ISO-8859 characters: 

@@ -1,22 +1,17 @@
 - name: apt install nginx
-  become: true
   apt:
     name: nginx
     state: present
 
-
 - name: generate dhparam.pem
-  become: true
   shell:
     cmd: openssl dhparam -out {{ dhparams_pem_file }} 4096
     creates: "{{ dhparams_pem_file }}"
 
 - name: set permissions of dhparam.pem
-  become: true
   file:
     dest: "{{ dhparams_pem_file }}"
     mode: 600
-
 
 - name: check for SSL cert key
   stat:
@@ -31,13 +26,11 @@
   changed_when: false
 
 - name: create SSL keys if needed
-  become: true
   when: (has_cert_key.stat.exists == false) or (has_cert.stat.exists == false)
   command: |
        openssl req -x509 -nodes -days 365 \
           -newkey rsa:4096 -keyout {{ ssl_cert_key }} -out {{ ssl_cert }} \
           -batch -subj '/CN=localhost' -sha256 -addext "subjectAltName = IP:127.0.0.1, IP:::1"
-
 
 - name: check for letsencrypt cert key
   stat:
@@ -57,7 +50,6 @@
     cert_key: "{{ lets_encrypt_cert_key }}; # managed by Certbot;"
   changed_when: false
 
-
 - name: check for lets_encrypt cert
   stat:
     path: "{{ lets_encrypt_cert }}"
@@ -76,16 +68,14 @@
     cert: "{{ lets_encrypt_cert }}; # managed by Certbot;"
   changed_when: false
 
-
 - name: deploy nginx sites_enabled configuation
-  become: true
+  tags: [deploy]
   template:
     src: etc_nginx_sites_enabled_default.j2
     dest: /etc/nginx/sites-enabled/default
   register: nginx_config_changed
 
 - name: allow ports
-  become: true
   tags: firewall
   ufw:
     rule: allow
@@ -94,17 +84,16 @@
   with_items: "{{ nginx_allowed_ports }}"
 
 - name: restart nginx if config changed
+  tags: [deploy]
   when: |
     (nginx_config_changed.changed) 
       or (has_cert_key.stat.exists == false) 
       or (has_cert.stat.exists == false)
-  become: true
   systemd:
     name: nginx
     state: restarted
 
 - name: ensure nginx is started
-  become: true
   systemd:
     name: nginx
     state: started

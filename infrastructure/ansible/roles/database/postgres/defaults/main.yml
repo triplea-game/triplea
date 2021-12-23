@@ -3,20 +3,9 @@
 # database and has full privileges. Typically the
 # postgres account should not be used, instead
 # use an application database user.
-postgres_user_db_password: postgres_vagrant
+postgres_user_db_password: postgres
 
-# Definition of application databases. Each list element will
-# be one database created on the postgres database.
-# Each database should define:
-#  name: the name of the database
-#  user: the name of the application user that can access
-#     the database
-#  password: the database password for the application user
-databases:
-  - name: "lobby_db"
-    user: "{{ lobby_db_user }}"
-    password: "{{ lobby_db_password }}"
-  - name: "maps_db"
-    user: "{{ maps_db_user }}"
-    password: "{{ maps_db_password }}"
+database_name: "lobby_db"
+database_user: "{{ lobby_db_user }}"
+database_password: "{{ lobby_db_password }}"
 

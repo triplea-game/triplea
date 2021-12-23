@@ -1,0 +1,113 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.1'
+    id 'com.install4j.gradle' version '9.0.5'
+    id 'de.undercouch.download' version '4.1.2'
+}
+
+archivesBaseName = "$group-$name"
+mainClassName = 'org.triplea.game.client.HeadedGameRunner'
+
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+dependencies {
+    implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
+    implementation project(":game-app:ai")
+    implementation project(":game-app:game-core")
+    implementation project(":game-app:map-data")
+    implementation project(":lib:java-extras")
+    implementation project(":lib:swing-lib")
+    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation project(":lib:test-common")
+}
+
+install4j {
+    // If you wish to build the installers, you must install install4j and define the "install4jHomeDir" property on the
+    // command line (e.g. -Pinstall4jHomeDir=...) or in your personal Gradle properties (e.g. ~/.gradle/gradle.properties).
+    installDir = file(project.findProperty('install4jHomeDir') ?: '.')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+clean.doFirst {
+  delete "$projectDir/.assets/"
+  delete "$projectDir/assets/"
+}
+
+task downloadAssets {
+    doLast {
+        download {
+            src "https://github.com/triplea-game/assets/releases/download/42/game_headed_assets.zip"
+            dest "$projectDir/.assets/assets.zip"
+            overwrite false
+        }
+        copy {
+            from zipTree(file("$projectDir/.assets/assets.zip"))
+            into "$projectDir/assets/"
+        }
+    }
+}
+
+run {
+    dependsOn downloadAssets
+}
+
+task downloadPlatformInstallerAssets(group: 'release', dependsOn: downloadAssets) {
+    doLast {
+        [
+            'install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz',
+        ].each { path ->
+            download {
+                src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
+                dest "$buildDir/assets/$path"
+                overwrite false
+            }
+        }
+    }
+}
+
+task platformInstallers(
+        type: com.install4j.gradle.Install4jTask,
+        group: 'release',
+        dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
+    projectFile = file('build.install4j')
+    release = version
+
+    doLast {
+        ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('.triplea-root')
+    from(file('assets')) {
+        into 'assets'
+    }
+    from(file('dice_servers')) {
+        into 'dice_servers'
+    }
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: [portableInstaller, platformInstallers]) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files + [
+            file("$releasesDir/TripleA_${version}_macos.dmg"),
+            file("$releasesDir/TripleA_${version}_unix.sh"),
+            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
+            file("$releasesDir/TripleA_${version}_windows-64bit.exe")
+        ])
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}

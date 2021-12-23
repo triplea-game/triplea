@@ -1,0 +1,8 @@
+- name: apt install standard utilities and packages
+  apt:
+    state: present
+    name:
+      - htop
+      - iftop
+      - unzip
+

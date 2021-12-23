@@ -3,7 +3,19 @@
 boldGreen="\e[1m\e[92m"
 normal="\e[0m"
 
-./gradlew --parallel spotlessApply check \
-&& .travis/stages/verify/code-convention-checks/run \
-&& .travis/stages/verify/find-unused-or-unmatched-tests/run \
+# Note, we cannot run database tests in parallel as they conflict with
+# each other, so we run them in serial after running all other gradle checks
+./gradlew --parallel spotlessApply \
+  -x :spitfire-server:lobby-module:test \
+  -x :spitfire-server:maps-module:test \
+  -x :spitfire-server:dropwizard-server:test \
+  check \
+&& spitfire-server/database/start_docker_db \
+&& ./gradlew \
+  :spitfire-server:lobby-module:test \
+  :spitfire-server:maps-module:test \
+  :spitfire-server:dropwizard-server:test \
+&& .build/code-convention-checks/run \
+&& .build/find-unused-or-unmatched-tests/run \
+&& .build/check-links-and-yaml-syntax/run \
 && echo -e "${boldGreen}SUCCESS${normal}"

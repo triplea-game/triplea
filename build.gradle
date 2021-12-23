@@ -1,16 +1,11 @@
-import net.ltgt.gradle.errorprone.CheckSeverity
-
 plugins {
     id 'java'
-    id 'com.github.ben-manes.versions' version '0.29.0'
-    id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
-    id 'net.ltgt.errorprone' version '1.2.1' apply false
-    id 'com.diffplug.spotless' version '5.1.0' apply false
+    id 'com.github.ben-manes.versions' version '0.39.0'
+    id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
+    id 'com.diffplug.spotless' version '6.0.5' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
-
-description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 
 ext {
     schemasDir = file('config/triplea/schemas')
@@ -54,7 +49,6 @@ subprojects {
     apply plugin: 'jacoco'
     apply plugin: 'java'
     apply plugin: 'pmd'
-    apply plugin: 'net.ltgt.errorprone'
     apply plugin: 'io.franzbecker.gradle-lombok'
 
     apply from: rootProject.file('gradle/scripts/release.gradle')
@@ -66,55 +60,59 @@ subprojects {
     version = getProductVersion()
 
     ext {
-        awaitilityVersion = '4.0.3'
+        apacheHttpComponentsVersion = '4.5.13'
+        awaitilityVersion = '4.1.1'
         bcryptVersion = '0.9.0'
-        caffeineVersion = '2.8.1'
-        checkstyleVersion = '8.23'
-        commonsCliVersion = '1.4'
-        commonsCodecVersion = '1.14'
-        commonsIoVersion = '2.7'
+        caffeineVersion = '3.0.5'
+        checkstyleVersion = '8.45'
+        commonsCliVersion = '1.5.0'
+        commonsCodecVersion = '1.15'
+        commonsIoVersion = '2.11.0'
         commonsMathVersion = '3.6.1'
-        databaseRiderVersion = '1.7.3'
-        dropwizardVersion = '1.3.15'
+        commonsTextVersion = '1.9'
+        databaseRiderVersion = '1.32.0'
+        dropwizardVersion = '2.0.27'
         dropwizardWebsocketsVersion = '1.3.14'
-        equalsVerifierVersion = '3.4.1'
-        errorProneVersion = '2.3.4'
-        feignCoreVersion = '10.2.3'
-        feignGsonVersion = '10.2.0'
-        gsonVersion = '2.8.6'
-        guavaVersion = '29.0-jre'
+        equalsVerifierVersion = '3.8.1'
+        feignCoreVersion = '11.7'
+        feignGsonVersion = '11.7'
+        javaWebSocketVersion = '1.5.2'
+        gsonVersion = '2.8.9'
+        guavaVersion = '31.0.1-jre'
         hamcrestJsonVersion = '0.2'
         hamcrestOptionalVersion = '2.0.0'
         hamcrestVersion = '2.0.0.0'
-        jacksonDataTypeVersion = '2.11.1'
-        jakartaMailVersion = '1.6.5'
-        javaWebsocketVersion = '1.5.1'
+        jacksonDataTypeVersion = '2.13.1'
+        jakartaMailVersion = '2.0.1'
+        javaWebsocketVersion = '1.5.2'
         javaxActivationVersion = '1.1.1'
         jaxbApiVersion = '2.3.1'
-        jaxbCoreVersion = '2.3.0.1'
-        jaxbImplVersion = '2.3.3'
-        jdbiVersion = '3.14.1'
+        jaxbCoreVersion = '3.0.2'
+        jaxbImplVersion = '3.0.2'
+        jdbiVersion = '3.25.0'
         jlayerVersion = '1.0.1.4'
-        junitJupiterVersion = '5.6.2'
-        junitPlatformLauncherVersion = '1.5.2' // do not upgrade this to beyond 1.5.2 without testing IDEA test runner.
-        mockitoVersion = '3.4.6'
-        openFeignVersion = '10.5.1'
-        postgresqlVersion = '42.2.14'
-        rateLimitjVersion = '0.6.0'
-        snakeYamlVersion = '2.1'
-        sonatypeGoodiesPrefsVersion = '2.3.1'
-        substanceVersion = '2.5.1'
+        junitJupiterVersion = '5.8.2'
+        junitPlatformLauncherVersion = '1.8.2'
+        logbackClassicVersion = '1.2.9'
+        mockitoVersion = '4.2.0'
+        openFeignVersion = '11.7'
+        postgresqlVersion = '42.3.1'
+        snakeYamlVersion = '2.3'
+        sonatypeGoodiesPrefsVersion = '2.3.2-01'
+        substanceVersion = '4.5.0'
         wireMockJunit5Version = '1.3.1'
-        wireMockVersion = '2.21.0'
-        xchartVersion = '3.6.4'
+        wireMockVersion = '2.27.2'
+        xchartVersion = '3.8.1'
+        xmlUnitCore = '2.8.4'
+        xmlUnitMatchers = '2.8.3'
     }
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        errorprone "com.google.errorprone:error_prone_core:$errorProneVersion"
+        implementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
         implementation "com.google.guava:guava:$guavaVersion"
         testImplementation "com.github.npathai:hamcrest-optional:$hamcrestOptionalVersion"
         testImplementation "nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion"
@@ -129,50 +127,42 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
-            '-Xlint:all,-processing',
-            '-Xmaxwarns', '15'
+            '-Xlint:none,-processing'
         ]
         options.encoding = 'UTF-8'
-        options.errorprone {
-            check 'ByteBufferBackingArray', CheckSeverity.ERROR
-            check 'CatchAndPrintStackTrace', CheckSeverity.ERROR
-            check 'ClassCanBeStatic', CheckSeverity.ERROR
-            check 'DefaultCharset', CheckSeverity.ERROR
-            check 'EqualsGetClass', CheckSeverity.ERROR
-            check 'EqualsIncompatibleType', CheckSeverity.ERROR
-            check 'EqualsUnsafeCast', CheckSeverity.ERROR
-            check 'FutureReturnValueIgnored', CheckSeverity.ERROR
-            check 'ImmutableEnumChecker', CheckSeverity.ERROR
-            check 'InconsistentCapitalization', CheckSeverity.ERROR
-            check 'JdkObsolete', CheckSeverity.ERROR
-            check 'MissingOverride', CheckSeverity.ERROR
-            check 'MutableConstantField', CheckSeverity.ERROR
-            check 'NonAtomicVolatileUpdate', CheckSeverity.ERROR
-            check 'ObjectToString', CheckSeverity.ERROR
-            check 'OperatorPrecedence', CheckSeverity.ERROR
-            check 'PrivateConstructorForUtilityClass', CheckSeverity.ERROR
-            check 'ReferenceEquality', CheckSeverity.ERROR
-            check 'StringSplitter', CheckSeverity.ERROR
-            check 'ThreadPriorityCheck', CheckSeverity.ERROR
-            check 'UndefinedEquals', CheckSeverity.ERROR
-            check 'UnnecessaryParentheses', CheckSeverity.ERROR
-            check 'UnsafeReflectiveConstructionCast', CheckSeverity.ERROR
-            check 'UnsynchronizedOverridesSynchronized', CheckSeverity.ERROR
-            check 'WaitNotInLoop', CheckSeverity.ERROR
-            disable 'UnusedVariable' // Workaround for https://github.com/google/error-prone/issues/1250
-        }
-        options.errorprone.errorproneArgs = ['-Xep:Finally:OFF'] // Workaround for https://github.com/google/error-prone/issues/1257
         options.incremental = true
     }
 
     tasks.withType(Test).configureEach {
         testLogging {
             exceptionFormat = 'full'
+            showStandardStreams = true
         }
     }
 
-    check {
-        dependsOn 'integTest'
+    // Add a summary of failed test case to the end of execution
+    //   https://stackoverflow.com/questions/43917709/how-do-i-show-a-list-of-all-the-test-failures-after-completion-of-a-gradle-task
+    // add a collection to track failedTests
+    ext.failedTests = []
+
+    // add a testlistener to all tasks of type Test
+    tasks.withType(Test) {
+        afterTest { TestDescriptor descriptor, TestResult result ->
+            if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+                failedTests << ["${descriptor.className}::${descriptor.name}"]
+            }
+        }
+    }
+
+    // print out tracked failed tests when the build has finished
+    gradle.buildFinished {
+        if(!failedTests.empty){
+            println "Failed tests for ${project.name}:"
+            failedTests.each { failedTest ->
+                println failedTest
+            }
+            println ""
+        }
     }
 
     checkstyle {
@@ -192,12 +182,6 @@ subprojects {
         exclude '**/map-xmls/*.xml'
     }
 
-    compileTestJava {
-        options.errorprone {
-            check 'ClassCanBeStatic', CheckSeverity.OFF
-        }
-    }
-
     jacocoTestReport {
         reports {
             xml.enabled = true
@@ -207,8 +191,8 @@ subprojects {
     }
 
     lombok {
-        version = '1.18.12'
-        sha256 = '49381508ecb02b3c173368436ef71b24c0d4418ad260e6cc98becbcf4b345406'
+        version = '1.18.20'
+        sha256 = 'ce947be6c2fbe759fbbe8ef3b42b6825f814c98c8853f1013f2d9630cedf74b0'
     }
 
     pmd {
@@ -226,14 +210,6 @@ subprojects {
     }
 
     test {
-        useJUnitPlatform {
-            excludeTags 'integration'
-        }
-    }
-
-    task integTest(type: Test) {
-        useJUnitPlatform {
-            includeTags 'integration'
-        }
+        useJUnitPlatform()
     }
 }

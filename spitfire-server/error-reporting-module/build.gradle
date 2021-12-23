@@ -1,0 +1,13 @@
+dependencies {
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
+    implementation project(':http-clients:github-client')
+    implementation project(':http-clients:lobby-client')
+    implementation project(':lib:java-extras')
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
+    testImplementation project(":lib:java-extras")
+    testImplementation project(":lib:test-common")
+    testImplementation project(":spitfire-server:database-test-support")
+}

@@ -1,21 +1,24 @@
 [prerelease]
 prerelease.triplea-game.org
 
-[support]
-support01.triplea-game.org
+[prerelease:vars]
+lobby_uri="https://prerelease.triplea-game.org"
+bot_numbers=["01", "02"]
 
-[postgresHosts:children]
+[vault:children]
 prerelease
 
-[dropwizardHosts:children]
+[database:children]
+prerelease
+
+[lobbyServer:children]
+prerelease
+
+[mapsServer:children]
 prerelease
 
 [botHosts:children]
 prerelease
 
-[linode:children]
-prerelease
-
 [letsEncrypt:children]
-dropwizardHosts
-
+lobbyServer

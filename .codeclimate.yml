@@ -4,12 +4,20 @@ version: "2"
 # https://docs.codeclimate.com/docs/maintainability#section-checks
 # https://docs.codeclimate.com/docs/advanced-configuration
 checks:
+  return-statements:
+    enabled: false
+  argument-count:
+    config:
+      threshold: 5
   method-complexity:
     config:
-      threshold: 7
+      threshold: 25
   method-lines:
     config:
-      threshold: 30
+      threshold: 50
+  file-lines:
+    config:
+      threshold: 1000
   similar-code:
     config:
       threshold: 80
@@ -24,14 +32,6 @@ plugins:
   # https://docs.codeclimate.com/docs/codenarc
   codenarc:
     enabled: true
-  # https://docs.codeclimate.com/docs/markdownlint
-  markdownlint:
-    enabled: true
-    checks:
-      MD006:
-        # Disable "Consider starting bulleted lists at the beginning of the line"
-        enabled: false
-
   # https://docs.codeclimate.com/docs/shellcheck
   shellcheck:
     enabled: true

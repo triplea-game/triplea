@@ -1,0 +1,28 @@
+lobby_server_user: lobby_server
+lobby_version: "{{ version }}"
+lobby_server_home_folder: "/home/{{ lobby_server_user }}/{{ lobby_version }}"
+lobby_server_error_report_github_org: "triplea-game"
+lobby_server_error_report_github_repo: "test"
+lobby_server_error_report_github_token: "test"
+lobby_server_db_host: "127.0.0.1"
+lobby_server_db_port: "5432"
+lobby_server_db_name: lobby_db
+lobby_server_db_user: lobby_user
+github_api_token: ""
+lobby_artifact: triplea-dropwizard-server-{{ lobby_version }}.zip
+lobby_jar_file: triplea-dropwizard-server-{{ lobby_version }}.jar
+lobby_artifact_download: |
+  "{{ github_releases_url }}/{{ lobby_version }}/{{ lobby_artifact }}"
+lobby_restart_on_new_deployment: true
+
+# How often to run map indexing. We need to be able to index all maps
+# before the next run starts to avoid overlapping runs. The smaller this
+# value the more responsive indexing will be to map updates.
+# 120 -> 2 hours in between runs -> (if indexing 360 / hour) -> 720 maps to be indexed per run
+map_indexing_period_minutes: 120
+
+# Indexing delay is how much of a backoff there is between indexing
+# each map. We need to keep this number to be under 1000 tasks per
+# hour to avoid rate limiting
+# 10 => 6 per minute => 360 per hour.
+map_indexing_task_delay_seconds: 10

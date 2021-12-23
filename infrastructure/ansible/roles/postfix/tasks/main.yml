@@ -1,11 +1,9 @@
 - name: Install postfix
-  become: true
   apt:
     state: present
     name: postfix
 
 - name: Deploy postfix config
-  become: true
   template:
     src: main.cf.j2
     dest: /etc/postfix/main.cf
@@ -15,14 +13,12 @@
   register: postfix_config
 
 - name: Restart postfix if config changes
-  become: true
   when: postfix_config.changed
   systemd:
     name: postfix
     state: restarted
 
 - name: Ensure postfix is started
-  become: true
   systemd:
     name: postfix
     state: started

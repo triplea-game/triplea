@@ -1,0 +1,2942 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="270BC" version="1.6"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Oea"/>
+    <territory name="Tanais"/>
+    <territory name="Pella"/>
+    <territory name="Veldidena"/>
+    <territory name="Sparta"/>
+    <territory name="Croton"/>
+    <territory name="Siwa"/>
+    <territory name="Barcino"/>
+    <territory name="Sirmium"/>
+    <territory name="Halicarnassus"/>
+    <territory name="Cestra Regina"/>
+    <territory name="Arretium"/>
+    <territory name="Memphis"/>
+    <territory name="Aquincum"/>
+    <territory name="Thessalonica"/>
+    <territory name="Euphrates"/>
+    <territory name="Melitene"/>
+    <territory name="Larissa"/>
+    <territory name="Brigantium"/>
+    <territory name="Corinth"/>
+    <territory name="Siga"/>
+    <territory name="Albana"/>
+    <territory name="Byzantium"/>
+    <territory name="Jerusalem"/>
+    <territory name="Elusa"/>
+    <territory name="Pergamum"/>
+    <territory name="Hermopolis"/>
+    <territory name="Thenae"/>
+    <territory name="Theveste"/>
+    <territory name="Alexandria"/>
+    <territory name="Pax Julia"/>
+    <territory name="Majar"/>
+    <territory name="Tolosa"/>
+    <territory name="Salmantica"/>
+    <territory name="Roma"/>
+    <territory name="Pessinus"/>
+    <territory name="Berenice"/>
+    <territory name="Damascus"/>
+    <territory name="Petra"/>
+    <territory name="Vindonissa"/>
+    <territory name="Edessa"/>
+    <territory name="Salonae"/>
+    <territory name="Napoca"/>
+    <territory name="Cartenna"/>
+    <territory name="Babylon"/>
+    <territory name="Sarmizegetusa"/>
+    <territory name="Heraclea Pontica"/>
+    <territory name="Tavium"/>
+    <territory name="Salamis"/>
+    <territory name="Volubilis"/>
+    <territory name="Athens"/>
+    <territory name="Caralis"/>
+    <territory name="Phasis"/>
+    <territory name="Sinope"/>
+    <territory name="Sanina"/>
+    <territory name="SZ 78" water="true"/>
+    <territory name="SZ 79" water="true"/>
+    <territory name="Ninive"/>
+    <territory name="SZ 76" water="true"/>
+    <territory name="SZ 77" water="true"/>
+    <territory name="SZ 74" water="true"/>
+    <territory name="Verona"/>
+    <territory name="SZ 75" water="true"/>
+    <territory name="SZ 72" water="true"/>
+    <territory name="SZ 73" water="true"/>
+    <territory name="SZ 70" water="true"/>
+    <territory name="SZ 71" water="true"/>
+    <territory name="Antioch"/>
+    <territory name="Thapsus"/>
+    <territory name="Sabrata"/>
+    <territory name="Axiopolis"/>
+    <territory name="Theodesia"/>
+    <territory name="Palantia"/>
+    <territory name="Thamea"/>
+    <territory name="Delphi"/>
+    <territory name="Cale"/>
+    <territory name="SZ 69" water="true"/>
+    <territory name="Amida"/>
+    <territory name="SZ 65" water="true"/>
+    <territory name="SZ 66" water="true"/>
+    <territory name="Trapezus"/>
+    <territory name="SZ 67" water="true"/>
+    <territory name="Nexuana"/>
+    <territory name="SZ 68" water="true"/>
+    <territory name="SZ 61" water="true"/>
+    <territory name="Armavira"/>
+    <territory name="SZ 62" water="true"/>
+    <territory name="SZ 63" water="true"/>
+    <territory name="SZ 64" water="true"/>
+    <territory name="Sardis"/>
+    <territory name="SZ 60" water="true"/>
+    <territory name="Tibiscum"/>
+    <territory name="Tarraco"/>
+    <territory name="Banasa"/>
+    <territory name="Gerrha"/>
+    <territory name="Aleria"/>
+    <territory name="Messana"/>
+    <territory name="Philippopolis"/>
+    <territory name="Lauriacum"/>
+    <territory name="Mediolanum"/>
+    <territory name="Castulo"/>
+    <territory name="Narbo"/>
+    <territory name="Carthago Nova"/>
+    <territory name="Cyrene"/>
+    <territory name="Toletum"/>
+    <territory name="Massilia"/>
+    <territory name="Carthago"/>
+    <territory name="Tarsus"/>
+    <territory name="Vindobona"/>
+    <territory name="Tyras"/>
+    <territory name="SZ 80" water="true"/>
+    <territory name="SZ 81" water="true"/>
+    <territory name="SZ 82" water="true"/>
+    <territory name="SZ 83" water="true"/>
+    <territory name="SZ 84" water="true"/>
+    <territory name="SZ 85" water="true"/>
+    <territory name="SZ 86" water="true"/>
+    <territory name="SZ 87" water="true"/>
+    <territory name="SZ 88" water="true"/>
+    <territory name="Hatra"/>
+    <territory name="Vologesia"/>
+    <territory name="Syracuse"/>
+    <territory name="Capua"/>
+    <territory name="SZ 31" water="true"/>
+    <territory name="Auzia"/>
+    <territory name="SZ 30" water="true"/>
+    <territory name="Odessus"/>
+    <territory name="SZ 37" water="true"/>
+    <territory name="SZ 36" water="true"/>
+    <territory name="SZ 39" water="true"/>
+    <territory name="SZ 38" water="true"/>
+    <territory name="Susa"/>
+    <territory name="SZ 33" water="true"/>
+    <territory name="Logdunum"/>
+    <territory name="Stabula"/>
+    <territory name="SZ 32" water="true"/>
+    <territory name="SZ 35" water="true"/>
+    <territory name="SZ 34" water="true"/>
+    <territory name="Palmyra"/>
+    <territory name="SZ 29" water="true"/>
+    <territory name="Salapia"/>
+    <territory name="Cydonia"/>
+    <territory name="Hispatis"/>
+    <territory name="Acci"/>
+    <territory name="SZ 20" water="true"/>
+    <territory name="Seleucia"/>
+    <territory name="Ctesiphon"/>
+    <territory name="Bostra"/>
+    <territory name="Senio"/>
+    <territory name="Sinda"/>
+    <territory name="Istropolis"/>
+    <territory name="Gades"/>
+    <territory name="SZ 28" water="true"/>
+    <territory name="SZ 27" water="true"/>
+    <territory name="SZ 26" water="true"/>
+    <territory name="SZ 25" water="true"/>
+    <territory name="Pompaelo"/>
+    <territory name="SZ 24" water="true"/>
+    <territory name="Igilgili"/>
+    <territory name="Satala"/>
+    <territory name="SZ 23" water="true"/>
+    <territory name="SZ 22" water="true"/>
+    <territory name="SZ 21" water="true"/>
+    <territory name="Sardica"/>
+    <territory name="Ecbatana"/>
+    <territory name="SZ 18" water="true"/>
+    <territory name="SZ 19" water="true"/>
+    <territory name="Singidinum"/>
+    <territory name="Capsa"/>
+    <territory name="Durostorum"/>
+    <territory name="SZ 51" water="true"/>
+    <territory name="SZ 50" water="true"/>
+    <territory name="SZ 53" water="true"/>
+    <territory name="Palma"/>
+    <territory name="SZ 52" water="true"/>
+    <territory name="Lilybaeum"/>
+    <territory name="SZ 55" water="true"/>
+    <territory name="SZ 54" water="true"/>
+    <territory name="SZ 57" water="true"/>
+    <territory name="Genua"/>
+    <territory name="SZ 56" water="true"/>
+    <territory name="Tarentum"/>
+    <territory name="SZ 59" water="true"/>
+    <territory name="SZ 58" water="true"/>
+    <territory name="Sarai"/>
+    <territory name="Rhodos"/>
+    <territory name="Cirta"/>
+    <territory name="Apollonia"/>
+    <territory name="SZ 42" water="true"/>
+    <territory name="SZ 41" water="true"/>
+    <territory name="SZ 40" water="true"/>
+    <territory name="Cyropolis"/>
+    <territory name="Zama"/>
+    <territory name="SZ 46" water="true"/>
+    <territory name="SZ 45" water="true"/>
+    <territory name="Paraetonium"/>
+    <territory name="SZ 44" water="true"/>
+    <territory name="SZ 43" water="true"/>
+    <territory name="Nicaea"/>
+    <territory name="SZ 49" water="true"/>
+    <territory name="Alesia"/>
+    <territory name="Hippo Regius"/>
+    <territory name="SZ 48" water="true"/>
+    <territory name="SZ 47" water="true"/>
+    <territory name="Gazaca"/>
+    <territory name="Leptis Magna"/>
+    <territory name="Olisipo"/>
+    <territory name="Sidon"/>
+    <territory name="Dodona"/>
+    <territory name="Artaxata"/>
+    <territory name="Ariminum"/>
+    <territory name="Emesa"/>
+    <territory name="Nemausus"/>
+    <territory name="Valentia"/>
+    <territory name="Teredon"/>
+    <territory name="Patavium"/>
+    <territory name="Emerita Augusta"/>
+    <territory name="Paliurus"/>
+    <territory name="Pharan"/>
+    <territory name="Attalia"/>
+    <territory name="Azara"/>
+    <territory name="Tingis"/>
+    <territory name="Nicopolis"/>
+    <territory name="Olbia"/>
+    <territory name="SZ 10" water="true"/>
+    <territory name="Melita"/>
+    <territory name="SZ 11" water="true"/>
+    <territory name="SZ 12" water="true"/>
+    <territory name="SZ 13" water="true"/>
+    <territory name="SZ 14" water="true"/>
+    <territory name="SZ 15" water="true"/>
+    <territory name="SZ 16" water="true"/>
+    <territory name="SZ 17" water="true"/>
+    <territory name="Persepolis"/>
+    <territory name="Cesaraugusta"/>
+    <territory name="SZ 08" water="true"/>
+    <territory name="SZ 07" water="true"/>
+    <territory name="Pityus"/>
+    <territory name="Aemona"/>
+    <territory name="Aelana"/>
+    <territory name="SZ 09" water="true"/>
+    <territory name="Corduba"/>
+    <territory name="SZ 01" water="true"/>
+    <territory name="Namnetes"/>
+    <territory name="SZ 02" water="true"/>
+    <territory name="SZ 05" water="true"/>
+    <territory name="SZ 06" water="true"/>
+    <territory name="SZ 03" water="true"/>
+    <territory name="SZ 04" water="true"/>
+    <territory name="Lucus Augusti"/>
+    <territory name="Scallabis"/>
+    <territory name="Burdigala"/>
+    <territory name="Augustoritum"/>
+    <!-- Territory Connections -->
+    <!-- SeaZone Connections -->
+    <connection t1="SZ 01" t2="SZ 02"/>
+    <connection t1="SZ 01" t2="SZ 07"/>
+    <connection t1="SZ 01" t2="SZ 08"/>
+    <connection t1="SZ 02" t2="SZ 03"/>
+    <connection t1="SZ 02" t2="SZ 07"/>
+    <connection t1="SZ 03" t2="SZ 04"/>
+    <connection t1="SZ 03" t2="SZ 05"/>
+    <connection t1="SZ 03" t2="SZ 06"/>
+    <connection t1="SZ 03" t2="SZ 07"/>
+    <connection t1="SZ 04" t2="SZ 05"/>
+    <connection t1="SZ 05" t2="SZ 06"/>
+    <connection t1="SZ 06" t2="SZ 07"/>
+    <connection t1="SZ 07" t2="SZ 08"/>
+    <connection t1="SZ 08" t2="SZ 09"/>
+    <connection t1="SZ 09" t2="SZ 10"/>
+    <connection t1="SZ 10" t2="SZ 11"/>
+    <connection t1="SZ 11" t2="SZ 12"/>
+    <connection t1="SZ 12" t2="SZ 13"/>
+    <connection t1="SZ 12" t2="SZ 14"/>
+    <connection t1="SZ 14" t2="SZ 15"/>
+    <connection t1="SZ 15" t2="SZ 16"/>
+    <connection t1="SZ 16" t2="SZ 17"/>
+    <connection t1="SZ 16" t2="SZ 29"/>
+    <connection t1="SZ 17" t2="SZ 18"/>
+    <connection t1="SZ 17" t2="SZ 29"/>
+    <connection t1="SZ 18" t2="SZ 19"/>
+    <connection t1="SZ 18" t2="SZ 22"/>
+    <connection t1="SZ 18" t2="SZ 29"/>
+    <connection t1="SZ 18" t2="SZ 30"/>
+    <connection t1="SZ 19" t2="SZ 20"/>
+    <connection t1="SZ 19" t2="SZ 22"/>
+    <connection t1="SZ 20" t2="SZ 21"/>
+    <connection t1="SZ 20" t2="SZ 22"/>
+    <connection t1="SZ 20" t2="SZ 23"/>
+    <connection t1="SZ 20" t2="SZ 24"/>
+    <connection t1="SZ 21" t2="SZ 24"/>
+    <connection t1="SZ 21" t2="SZ 25"/>
+    <connection t1="SZ 22" t2="SZ 23"/>
+    <connection t1="SZ 22" t2="SZ 30"/>
+    <connection t1="SZ 22" t2="SZ 31"/>
+    <connection t1="SZ 23" t2="SZ 24"/>
+    <connection t1="SZ 23" t2="SZ 31"/>
+    <connection t1="SZ 24" t2="SZ 25"/>
+    <connection t1="SZ 24" t2="SZ 26"/>
+    <connection t1="SZ 24" t2="SZ 27"/>
+    <connection t1="SZ 25" t2="SZ 27"/>
+    <connection t1="SZ 25" t2="SZ 28"/>
+    <connection t1="SZ 26" t2="SZ 27"/>
+    <connection t1="SZ 26" t2="SZ 32"/>
+    <connection t1="SZ 26" t2="SZ 33"/>
+    <connection t1="SZ 27" t2="SZ 28"/>
+    <connection t1="SZ 27" t2="SZ 33"/>
+    <connection t1="SZ 27" t2="SZ 34"/>
+    <connection t1="SZ 28" t2="SZ 34"/>
+    <connection t1="SZ 29" t2="SZ 30"/>
+    <connection t1="SZ 30" t2="SZ 31"/>
+    <connection t1="SZ 31" t2="SZ 32"/>
+    <connection t1="SZ 32" t2="SZ 33"/>
+    <connection t1="SZ 32" t2="SZ 36"/>
+    <connection t1="SZ 33" t2="SZ 34"/>
+    <connection t1="SZ 33" t2="SZ 36"/>
+    <connection t1="SZ 34" t2="SZ 35"/>
+    <connection t1="SZ 35" t2="SZ 40"/>
+    <connection t1="SZ 35" t2="SZ 43"/>
+    <connection t1="SZ 35" t2="SZ 44"/>
+    <connection t1="SZ 36" t2="SZ 37"/>
+    <connection t1="SZ 36" t2="SZ 38"/>
+    <connection t1="SZ 37" t2="SZ 38"/>
+    <connection t1="SZ 37" t2="SZ 39"/>
+    <connection t1="SZ 38" t2="SZ 39"/>
+    <connection t1="SZ 38" t2="SZ 40"/>
+    <connection t1="SZ 39" t2="SZ 40"/>
+    <connection t1="SZ 39" t2="SZ 41"/>
+    <connection t1="SZ 40" t2="SZ 41"/>
+    <connection t1="SZ 40" t2="SZ 42"/>
+    <connection t1="SZ 40" t2="SZ 43"/>
+    <connection t1="SZ 41" t2="SZ 42"/>
+    <connection t1="SZ 42" t2="SZ 43"/>
+    <connection t1="SZ 42" t2="SZ 51"/>
+    <connection t1="SZ 42" t2="SZ 52"/>
+    <connection t1="SZ 43" t2="SZ 44"/>
+    <connection t1="SZ 43" t2="SZ 50"/>
+    <connection t1="SZ 43" t2="SZ 51"/>
+    <connection t1="SZ 44" t2="SZ 45"/>
+    <connection t1="SZ 44" t2="SZ 50"/>
+    <connection t1="SZ 45" t2="SZ 46"/>
+    <connection t1="SZ 45" t2="SZ 50"/>
+    <connection t1="SZ 46" t2="SZ 47"/>
+    <connection t1="SZ 47" t2="SZ 48"/>
+    <connection t1="SZ 48" t2="SZ 49"/>
+    <connection t1="SZ 50" t2="SZ 51"/>
+    <connection t1="SZ 50" t2="SZ 53"/>
+    <connection t1="SZ 51" t2="SZ 52"/>
+    <connection t1="SZ 51" t2="SZ 53"/>
+    <connection t1="SZ 52" t2="SZ 53"/>
+    <connection t1="SZ 52" t2="SZ 54"/>
+    <connection t1="SZ 53" t2="SZ 54"/>
+    <connection t1="SZ 53" t2="SZ 55"/>
+    <connection t1="SZ 53" t2="SZ 67"/>
+    <connection t1="SZ 54" t2="SZ 55"/>
+    <connection t1="SZ 55" t2="SZ 56"/>
+    <connection t1="SZ 55" t2="SZ 67"/>
+    <connection t1="SZ 56" t2="SZ 57"/>
+    <connection t1="SZ 56" t2="SZ 64"/>
+    <connection t1="SZ 57" t2="SZ 58"/>
+    <connection t1="SZ 57" t2="SZ 63"/>
+    <connection t1="SZ 57" t2="SZ 64"/>
+    <connection t1="SZ 58" t2="SZ 59"/>
+    <connection t1="SZ 58" t2="SZ 63"/>
+    <connection t1="SZ 59" t2="SZ 60"/>
+    <connection t1="SZ 59" t2="SZ 63"/>
+    <connection t1="SZ 60" t2="SZ 61"/>
+    <connection t1="SZ 60" t2="SZ 62"/>
+    <connection t1="SZ 60" t2="SZ 63"/>
+    <connection t1="SZ 61" t2="SZ 62"/>
+    <connection t1="SZ 62" t2="SZ 63"/>
+    <connection t1="SZ 62" t2="SZ 64"/>
+    <connection t1="SZ 62" t2="SZ 65"/>
+    <connection t1="SZ 63" t2="SZ 64"/>
+    <connection t1="SZ 64" t2="SZ 65"/>
+    <connection t1="SZ 64" t2="SZ 66"/>
+    <connection t1="SZ 65" t2="SZ 66"/>
+    <connection t1="SZ 65" t2="SZ 68"/>
+    <connection t1="SZ 66" t2="SZ 67"/>
+    <connection t1="SZ 66" t2="SZ 68"/>
+    <connection t1="SZ 67" t2="SZ 68"/>
+    <connection t1="SZ 68" t2="SZ 69"/>
+    <connection t1="SZ 69" t2="SZ 70"/>
+    <connection t1="SZ 70" t2="SZ 71"/>
+    <connection t1="SZ 71" t2="SZ 72"/>
+    <connection t1="SZ 72" t2="SZ 73"/>
+    <connection t1="SZ 72" t2="SZ 75"/>
+    <connection t1="SZ 72" t2="SZ 76"/>
+    <connection t1="SZ 73" t2="SZ 74"/>
+    <connection t1="SZ 73" t2="SZ 75"/>
+    <connection t1="SZ 74" t2="SZ 75"/>
+    <connection t1="SZ 75" t2="SZ 76"/>
+    <connection t1="SZ 75" t2="SZ 80"/>
+    <connection t1="SZ 76" t2="SZ 77"/>
+    <connection t1="SZ 76" t2="SZ 79"/>
+    <connection t1="SZ 76" t2="SZ 80"/>
+    <connection t1="SZ 77" t2="SZ 78"/>
+    <connection t1="SZ 77" t2="SZ 79"/>
+    <connection t1="SZ 78" t2="SZ 79"/>
+    <connection t1="SZ 79" t2="SZ 80"/>
+    <connection t1="SZ 80" t2="SZ 81"/>
+    <connection t1="SZ 82" t2="SZ 83"/>
+    <connection t1="SZ 83" t2="SZ 84"/>
+    <connection t1="SZ 84" t2="SZ 85"/>
+    <connection t1="SZ 85" t2="SZ 86"/>
+    <!-- SeaZone to Land Connections -->
+    <connection t1="SZ 04" t2="Namnetes"/>
+    <connection t1="SZ 05" t2="Burdigala"/>
+    <connection t1="SZ 05" t2="Elusa"/>
+    <connection t1="SZ 05" t2="Pompaelo"/>
+    <connection t1="SZ 06" t2="Pompaelo"/>
+    <connection t1="SZ 06" t2="Lucus Augusti"/>
+    <connection t1="SZ 06" t2="Brigantium"/>
+    <connection t1="SZ 07" t2="Brigantium"/>
+    <connection t1="SZ 08" t2="Brigantium"/>
+    <connection t1="SZ 09" t2="Brigantium"/>
+    <connection t1="SZ 09" t2="Cale"/>
+    <connection t1="SZ 09" t2="Olisipo"/>
+    <connection t1="SZ 10" t2="Olisipo"/>
+    <connection t1="SZ 10" t2="Emerita Augusta"/>
+    <connection t1="SZ 10" t2="Pax Julia"/>
+    <connection t1="SZ 11" t2="Pax Julia"/>
+    <connection t1="SZ 11" t2="Hispatis"/>
+    <connection t1="SZ 12" t2="Hispatis"/>
+    <connection t1="SZ 12" t2="Gades"/>
+    <connection t1="SZ 12" t2="Tingis"/>
+    <connection t1="SZ 12" t2="Banasa"/>
+    <connection t1="SZ 13" t2="Banasa"/>
+    <connection t1="SZ 14" t2="Gades"/>
+    <connection t1="SZ 14" t2="Tingis"/>
+    <connection t1="SZ 14" t2="Acci"/>
+    <connection t1="SZ 14" t2="Siga"/>
+    <connection t1="SZ 15" t2="Acci"/>
+    <connection t1="SZ 15" t2="Siga"/>
+    <connection t1="SZ 15" t2="Carthago Nova"/>
+    <connection t1="SZ 15" t2="Cartenna"/>
+    <connection t1="SZ 16" t2="Carthago Nova"/>
+    <connection t1="SZ 16" t2="Cartenna"/>
+    <connection t1="SZ 16" t2="Valentia"/>
+    <connection t1="SZ 16" t2="Igilgili"/>
+    <connection t1="SZ 17" t2="Valentia"/>
+    <connection t1="SZ 17" t2="Tarraco"/>
+    <connection t1="SZ 17" t2="Barcino"/>
+    <connection t1="SZ 17" t2="Palma"/>
+    <connection t1="SZ 18" t2="Barcino"/>
+    <connection t1="SZ 18" t2="Palma"/>
+    <connection t1="SZ 19" t2="Barcino"/>
+    <connection t1="SZ 19" t2="Narbo"/>
+    <connection t1="SZ 19" t2="Massilia"/>
+    <connection t1="SZ 20" t2="Massilia"/>
+    <connection t1="SZ 21" t2="Massilia"/>
+    <connection t1="SZ 21" t2="Genua"/>
+    <connection t1="SZ 21" t2="Aleria"/>
+    <connection t1="SZ 21" t2="Arretium"/>
+    <connection t1="SZ 23" t2="Caralis"/>
+    <connection t1="SZ 24" t2="Caralis"/>
+    <connection t1="SZ 24" t2="Aleria"/>
+    <connection t1="SZ 25" t2="Arretium"/>
+    <connection t1="SZ 25" t2="Roma"/>
+    <connection t1="SZ 26" t2="Caralis"/>
+    <connection t1="SZ 28" t2="Roma"/>
+    <connection t1="SZ 28" t2="Capua"/>
+    <connection t1="SZ 29" t2="Palma"/>
+    <connection t1="SZ 29" t2="Igilgili"/>
+    <connection t1="SZ 30" t2="Igilgili"/>
+    <connection t1="SZ 30" t2="Hippo Regius"/>
+    <connection t1="SZ 31" t2="Hippo Regius"/>
+    <connection t1="SZ 31" t2="Caralis"/>
+    <connection t1="SZ 31" t2="Carthago"/>
+    <connection t1="SZ 32" t2="Caralis"/>
+    <connection t1="SZ 32" t2="Carthago"/>
+    <connection t1="SZ 33" t2="Lilybaeum"/>
+    <connection t1="SZ 34" t2="Capua"/>
+    <connection t1="SZ 34" t2="Lilybaeum"/>
+    <connection t1="SZ 34" t2="Messana"/>
+    <connection t1="SZ 35" t2="Capua"/>
+    <connection t1="SZ 35" t2="Messana"/>
+    <connection t1="SZ 35" t2="Croton"/>
+    <connection t1="SZ 35" t2="Syracuse"/>
+    <connection t1="SZ 36" t2="Carthago"/>
+    <connection t1="SZ 36" t2="Lilybaeum"/>
+    <connection t1="SZ 36" t2="Thapsus"/>
+    <connection t1="SZ 36" t2="Melita"/>
+    <connection t1="SZ 37" t2="Thapsus"/>
+    <connection t1="SZ 37" t2="Melita"/>
+    <connection t1="SZ 37" t2="Thenae"/>
+    <connection t1="SZ 37" t2="Sabrata"/>
+    <connection t1="SZ 38" t2="Lilybaeum"/>
+    <connection t1="SZ 38" t2="Syracuse"/>
+    <connection t1="SZ 39" t2="Sabrata"/>
+    <connection t1="SZ 39" t2="Oea"/>
+    <connection t1="SZ 40" t2="Syracuse"/>
+    <connection t1="SZ 41" t2="Leptis Magna"/>
+    <connection t1="SZ 41" t2="Berenice"/>
+    <connection t1="SZ 41" t2="Cyrene"/>
+    <connection t1="SZ 42" t2="Cyrene"/>
+    <connection t1="SZ 44" t2="Croton"/>
+    <connection t1="SZ 44" t2="Tarentum"/>
+    <connection t1="SZ 45" t2="Tarentum"/>
+    <connection t1="SZ 45" t2="Dodona"/>
+    <connection t1="SZ 45" t2="Delphi"/>
+    <connection t1="SZ 46" t2="Tarentum"/>
+    <connection t1="SZ 46" t2="Apollonia"/>
+    <connection t1="SZ 46" t2="Salonae"/>
+    <connection t1="SZ 47" t2="Tarentum"/>
+    <connection t1="SZ 47" t2="Salapia"/>
+    <connection t1="SZ 47" t2="Salonae"/>
+    <connection t1="SZ 47" t2="Senio"/>
+    <connection t1="SZ 48" t2="Salapia"/>
+    <connection t1="SZ 48" t2="Senio"/>
+    <connection t1="SZ 48" t2="Ariminum"/>
+    <connection t1="SZ 49" t2="Senio"/>
+    <connection t1="SZ 49" t2="Ariminum"/>
+    <connection t1="SZ 49" t2="Patavium"/>
+    <connection t1="SZ 50" t2="Delphi"/>
+    <connection t1="SZ 50" t2="Athens"/>
+    <connection t1="SZ 50" t2="Corinth"/>
+    <connection t1="SZ 50" t2="Sparta"/>
+    <connection t1="SZ 52" t2="Cyrene"/>
+    <connection t1="SZ 52" t2="Paliurus"/>
+    <connection t1="SZ 53" t2="Sparta"/>
+    <connection t1="SZ 54" t2="Paliurus"/>
+    <connection t1="SZ 54" t2="Paraetonium"/>
+    <connection t1="SZ 55" t2="Cydonia"/>
+    <connection t1="SZ 55" t2="Paraetonium"/>
+    <connection t1="SZ 56" t2="Cydonia"/>
+    <connection t1="SZ 56" t2="Alexandria"/>
+    <connection t1="SZ 57" t2="Alexandria"/>
+    <connection t1="SZ 57" t2="Memphis"/>
+    <connection t1="SZ 58" t2="Memphis"/>
+    <connection t1="SZ 58" t2="Pharan"/>
+    <connection t1="SZ 59" t2="Pharan"/>
+    <connection t1="SZ 59" t2="Jerusalem"/>
+    <connection t1="SZ 59" t2="Sidon"/>
+    <connection t1="SZ 60" t2="Sidon"/>
+    <connection t1="SZ 60" t2="Salamis"/>
+    <connection t1="SZ 61" t2="Antioch"/>
+    <connection t1="SZ 61" t2="Tarsus"/>
+    <connection t1="SZ 61" t2="Attalia"/>
+    <connection t1="SZ 61" t2="Salamis"/>
+    <connection t1="SZ 62" t2="Attalia"/>
+    <connection t1="SZ 62" t2="Halicarnassus"/>
+    <connection t1="SZ 62" t2="Salamis"/>
+    <connection t1="SZ 64" t2="Cydonia"/>
+    <connection t1="SZ 65" t2="Halicarnassus"/>
+    <connection t1="SZ 65" t2="Rhodos"/>
+    <connection t1="SZ 66" t2="Cydonia"/>
+    <connection t1="SZ 66" t2="Rhodos"/>
+    <connection t1="SZ 67" t2="Sparta"/>
+    <connection t1="SZ 67" t2="Cydonia"/>
+    <connection t1="SZ 67" t2="Rhodos"/>
+    <connection t1="SZ 67" t2="Corinth"/>
+    <connection t1="SZ 67" t2="Athens"/>
+    <connection t1="SZ 68" t2="Halicarnassus"/>
+    <connection t1="SZ 68" t2="Rhodos"/>
+    <connection t1="SZ 68" t2="Athens"/>
+    <connection t1="SZ 68" t2="Sardis"/>
+    <connection t1="SZ 69" t2="Athens"/>
+    <connection t1="SZ 69" t2="Sardis"/>
+    <connection t1="SZ 69" t2="Larissa"/>
+    <connection t1="SZ 69" t2="Thessalonica"/>
+    <connection t1="SZ 70" t2="Larissa"/>
+    <connection t1="SZ 70" t2="Sardis"/>
+    <connection t1="SZ 70" t2="Thessalonica"/>
+    <connection t1="SZ 70" t2="Byzantium"/>
+    <connection t1="SZ 70" t2="Pergamum"/>
+    <connection t1="SZ 71" t2="Byzantium"/>
+    <connection t1="SZ 71" t2="Pergamum"/>
+    <connection t1="SZ 71" t2="Nicaea"/>
+    <connection t1="SZ 71" t2="Odessus"/>
+    <connection t1="SZ 72" t2="Nicaea"/>
+    <connection t1="SZ 72" t2="Odessus"/>
+    <connection t1="SZ 72" t2="Heraclea Pontica"/>
+    <connection t1="SZ 72" t2="Istropolis"/>
+    <connection t1="SZ 73" t2="Istropolis"/>
+    <connection t1="SZ 74" t2="Istropolis"/>
+    <connection t1="SZ 74" t2="Tyras"/>
+    <connection t1="SZ 74" t2="Olbia"/>
+    <connection t1="SZ 74" t2="Tanais"/>
+    <connection t1="SZ 74" t2="Theodesia"/>
+    <connection t1="SZ 75" t2="Theodesia"/>
+    <connection t1="SZ 76" t2="Heraclea Pontica"/>
+    <connection t1="SZ 76" t2="Sinope"/>
+    <connection t1="SZ 77" t2="Sinope"/>
+    <connection t1="SZ 78" t2="Trapezus"/>
+    <connection t1="SZ 78" t2="Phasis"/>
+    <connection t1="SZ 78" t2="Pityus"/>
+    <connection t1="SZ 79" t2="Pityus"/>
+    <connection t1="SZ 79" t2="Sinda"/>
+    <connection t1="SZ 80" t2="Sinda"/>
+    <connection t1="SZ 80" t2="Theodesia"/>
+    <connection t1="SZ 81" t2="Sinda"/>
+    <connection t1="SZ 81" t2="Theodesia"/>
+    <connection t1="SZ 81" t2="Tanais"/>
+    <connection t1="SZ 81" t2="Azara"/>
+    <connection t1="SZ 82" t2="Sarai"/>
+    <connection t1="SZ 83" t2="Sarai"/>
+    <connection t1="SZ 83" t2="Albana"/>
+    <connection t1="SZ 84" t2="Sarai"/>
+    <connection t1="SZ 84" t2="Albana"/>
+    <connection t1="SZ 84" t2="Sanina"/>
+    <connection t1="SZ 85" t2="Sanina"/>
+    <connection t1="SZ 86" t2="Sanina"/>
+    <connection t1="SZ 86" t2="Cyropolis"/>
+    <connection t1="SZ 87" t2="Persepolis"/>
+    <connection t1="SZ 87" t2="Babylon"/>
+    <connection t1="SZ 87" t2="Teredon"/>
+    <connection t1="SZ 88" t2="Memphis"/>
+    <connection t1="SZ 88" t2="Pharan"/>
+    <connection t1="SZ 88" t2="Jerusalem"/>
+    <connection t1="SZ 88" t2="Aelana"/>
+    <!-- Land to Land Connections -->
+    <connection t1="Brigantium" t2="Lucus Augusti"/>
+    <connection t1="Brigantium" t2="Cale"/>
+    <connection t1="Cale" t2="Lucus Augusti"/>
+    <connection t1="Cale" t2="Olisipo"/>
+    <connection t1="Cale" t2="Scallabis"/>
+    <connection t1="Cale" t2="Salmantica"/>
+    <connection t1="Olisipo" t2="Scallabis"/>
+    <connection t1="Olisipo" t2="Emerita Augusta"/>
+    <connection t1="Emerita Augusta" t2="Salmantica"/>
+    <connection t1="Emerita Augusta" t2="Pax Julia"/>
+    <connection t1="Emerita Augusta" t2="Hispatis"/>
+    <connection t1="Emerita Augusta" t2="Scallabis"/>
+    <connection t1="Hispatis" t2="Pax Julia"/>
+    <connection t1="Hispatis" t2="Salmantica"/>
+    <connection t1="Hispatis" t2="Corduba"/>
+    <connection t1="Hispatis" t2="Acci"/>
+    <connection t1="Hispatis" t2="Gades"/>
+    <connection t1="Acci" t2="Gades"/>
+    <connection t1="Acci" t2="Corduba"/>
+    <connection t1="Acci" t2="Carthago Nova"/>
+    <connection t1="Salmantica" t2="Scallabis"/>
+    <connection t1="Salmantica" t2="Lucus Augusti"/>
+    <connection t1="Salmantica" t2="Palantia"/>
+    <connection t1="Salmantica" t2="Toletum"/>
+    <connection t1="Salmantica" t2="Castulo"/>
+    <connection t1="Salmantica" t2="Corduba"/>
+    <connection t1="Corduba" t2="Carthago Nova"/>
+    <connection t1="Corduba" t2="Castulo"/>
+    <connection t1="Castulo" t2="Carthago Nova"/>
+    <connection t1="Castulo" t2="Valentia"/>
+    <connection t1="Castulo" t2="Toletum"/>
+    <connection t1="Valentia" t2="Carthago Nova"/>
+    <connection t1="Valentia" t2="Tarraco"/>
+    <connection t1="Valentia" t2="Toletum"/>
+    <connection t1="Toletum" t2="Tarraco"/>
+    <connection t1="Toletum" t2="Palantia"/>
+    <connection t1="Toletum" t2="Cesaraugusta"/>
+    <connection t1="Palantia" t2="Lucus Augusti"/>
+    <connection t1="Palantia" t2="Pompaelo"/>
+    <connection t1="Palantia" t2="Cesaraugusta"/>
+    <connection t1="Pompaelo" t2="Lucus Augusti"/>
+    <connection t1="Pompaelo" t2="Cesaraugusta"/>
+    <connection t1="Pompaelo" t2="Elusa"/>
+    <connection t1="Tarraco" t2="Valentia"/>
+    <connection t1="Tarraco" t2="Cesaraugusta"/>
+    <connection t1="Tarraco" t2="Barcino"/>
+    <connection t1="Cesaraugusta" t2="Elusa"/>
+    <connection t1="Cesaraugusta" t2="Tolosa"/>
+    <connection t1="Cesaraugusta" t2="Barcino"/>
+    <connection t1="Elusa" t2="Tolosa"/>
+    <connection t1="Elusa" t2="Augustoritum"/>
+    <connection t1="Elusa" t2="Burdigala"/>
+    <connection t1="Burdigala" t2="Namnetes"/>
+    <connection t1="Burdigala" t2="Alesia"/>
+    <connection t1="Burdigala" t2="Logdunum"/>
+    <connection t1="Burdigala" t2="Augustoritum"/>
+    <connection t1="Alesia" t2="Namnetes"/>
+    <connection t1="Alesia" t2="Logdunum"/>
+    <connection t1="Alesia" t2="Stabula"/>
+    <connection t1="Stabula" t2="Logdunum"/>
+    <connection t1="Stabula" t2="Vindonissa"/>
+    <connection t1="Stabula" t2="Cestra Regina"/>
+    <connection t1="Logdunum" t2="Augustoritum"/>
+    <connection t1="Logdunum" t2="Vindonissa"/>
+    <connection t1="Logdunum" t2="Nemausus"/>
+    <connection t1="Augustoritum" t2="Tolosa"/>
+    <connection t1="Augustoritum" t2="Narbo"/>
+    <connection t1="Augustoritum" t2="Nemausus"/>
+    <connection t1="Barcino" t2="Tolosa"/>
+    <connection t1="Barcino" t2="Narbo"/>
+    <connection t1="Narbo" t2="Tolosa"/>
+    <connection t1="Narbo" t2="Nemausus"/>
+    <connection t1="Narbo" t2="Massilia"/>
+    <connection t1="Nemausus" t2="Massilia"/>
+    <connection t1="Nemausus" t2="Vindonissa"/>
+    <connection t1="Nemausus" t2="Mediolanum"/>
+    <connection t1="Massilia" t2="Mediolanum"/>
+    <connection t1="Massilia" t2="Genua"/>
+    <connection t1="Cestra Regina" t2="Vindonissa"/>
+    <connection t1="Cestra Regina" t2="Veldidena"/>
+    <connection t1="Cestra Regina" t2="Lauriacum"/>
+    <connection t1="Vindonissa" t2="Veldidena"/>
+    <connection t1="Vindonissa" t2="Mediolanum"/>
+    <connection t1="Vindonissa" t2="Verona"/>
+    <connection t1="Mediolanum" t2="Verona"/>
+    <connection t1="Mediolanum" t2="Genua"/>
+    <connection t1="Genua" t2="Verona"/>
+    <connection t1="Genua" t2="Arretium"/>
+    <connection t1="Genua" t2="Ariminum"/>
+    <connection t1="Veldidena" t2="Lauriacum"/>
+    <connection t1="Veldidena" t2="Verona"/>
+    <connection t1="Veldidena" t2="Patavium"/>
+    <connection t1="Veldidena" t2="Aemona"/>
+    <connection t1="Arretium" t2="Ariminum"/>
+    <connection t1="Arretium" t2="Roma"/>
+    <connection t1="Arretium" t2="Salapia"/>
+    <connection t1="Ariminum" t2="Patavium"/>
+    <connection t1="Ariminum" t2="Salapia"/>
+    <connection t1="Ariminum" t2="Verona"/>
+    <connection t1="Roma" t2="Salapia"/>
+    <connection t1="Roma" t2="Capua"/>
+    <connection t1="Capua" t2="Salapia"/>
+    <connection t1="Capua" t2="Tarentum"/>
+    <connection t1="Capua" t2="Croton"/>
+    <connection t1="Tarentum" t2="Salapia"/>
+    <connection t1="Tarentum" t2="Croton"/>
+    <connection t1="Messana" t2="Lilybaeum"/>
+    <connection t1="Messana" t2="Syracuse"/>
+    <connection t1="Lilybaeum" t2="Syracuse"/>
+    <connection t1="Patavium" t2="Verona"/>
+    <connection t1="Patavium" t2="Aemona"/>
+    <connection t1="Patavium" t2="Senio"/>
+    <connection t1="Lauriacum" t2="Aemona"/>
+    <connection t1="Lauriacum" t2="Vindobona"/>
+    <connection t1="Aemona" t2="Vindobona"/>
+    <connection t1="Aemona" t2="Senio"/>
+    <connection t1="Aemona" t2="Sirmium"/>
+    <connection t1="Sirmium" t2="Vindobona"/>
+    <connection t1="Sirmium" t2="Senio"/>
+    <connection t1="Sirmium" t2="Aquincum"/>
+    <connection t1="Sirmium" t2="Singidinum"/>
+    <connection t1="Sirmium" t2="Sardica"/>
+    <connection t1="Sirmium" t2="Salonae"/>
+    <connection t1="Salonae" t2="Senio"/>
+    <connection t1="Salonae" t2="Sardica"/>
+    <connection t1="Salonae" t2="Pella"/>
+    <connection t1="Salonae" t2="Apollonia"/>
+    <connection t1="Aquincum" t2="Vindobona"/>
+    <connection t1="Aquincum" t2="Singidinum"/>
+    <connection t1="Aquincum" t2="Tibiscum"/>
+    <connection t1="Aquincum" t2="Napoca"/>
+    <connection t1="Napoca" t2="Tyras"/>
+    <connection t1="Napoca" t2="Tibiscum"/>
+    <connection t1="Napoca" t2="Sarmizegetusa"/>
+    <connection t1="Tibiscum" t2="Sarmizegetusa"/>
+    <connection t1="Tibiscum" t2="Singidinum"/>
+    <connection t1="Tibiscum" t2="Durostorum"/>
+    <connection t1="Sardica" t2="Singidinum"/>
+    <connection t1="Sardica" t2="Durostorum"/>
+    <connection t1="Sardica" t2="Pella"/>
+    <connection t1="Sardica" t2="Nicopolis"/>
+    <connection t1="Pella" t2="Nicopolis"/>
+    <connection t1="Pella" t2="Philippopolis"/>
+    <connection t1="Pella" t2="Thessalonica"/>
+    <connection t1="Pella" t2="Dodona"/>
+    <connection t1="Pella" t2="Apollonia"/>
+    <connection t1="Dodona" t2="Apollonia"/>
+    <connection t1="Dodona" t2="Thessalonica"/>
+    <connection t1="Dodona" t2="Larissa"/>
+    <connection t1="Dodona" t2="Delphi"/>
+    <connection t1="Larissa" t2="Thessalonica"/>
+    <connection t1="Larissa" t2="Delphi"/>
+    <connection t1="Larissa" t2="Athens"/>
+    <connection t1="Athens" t2="Delphi"/>
+    <connection t1="Athens" t2="Corinth"/>
+    <connection t1="Corinth" t2="Sparta"/>
+    <connection t1="Thessalonica" t2="Philippopolis"/>
+    <connection t1="Thessalonica" t2="Byzantium"/>
+    <connection t1="Thessalonica" t2="Odessus"/>
+    <connection t1="Odessus" t2="Byzantium"/>
+    <connection t1="Odessus" t2="Philippopolis"/>
+    <connection t1="Odessus" t2="Nicopolis"/>
+    <connection t1="Odessus" t2="Axiopolis"/>
+    <connection t1="Odessus" t2="Istropolis"/>
+    <connection t1="Nicopolis" t2="Philippopolis"/>
+    <connection t1="Nicopolis" t2="Axiopolis"/>
+    <connection t1="Nicopolis" t2="Durostorum"/>
+    <connection t1="Durostorum" t2="Axiopolis"/>
+    <connection t1="Durostorum" t2="Sarmizegetusa"/>
+    <connection t1="Durostorum" t2="Singidinum"/>
+    <connection t1="Istropolis" t2="Axiopolis"/>
+    <connection t1="Istropolis" t2="Sarmizegetusa"/>
+    <connection t1="Istropolis" t2="Tyras"/>
+    <connection t1="Sarmizegetusa" t2="Axiopolis"/>
+    <connection t1="Sarmizegetusa" t2="Tyras"/>
+    <connection t1="Tyras" t2="Olbia"/>
+    <connection t1="Olbia" t2="Tanais"/>
+    <connection t1="Tanais" t2="Azara"/>
+    <connection t1="Tanais" t2="Theodesia"/>
+    <connection t1="Azara" t2="Sinda"/>
+    <connection t1="Azara" t2="Majar"/>
+    <connection t1="Majar" t2="Sinda"/>
+    <connection t1="Majar" t2="Pityus"/>
+    <connection t1="Majar" t2="Armavira"/>
+    <connection t1="Majar" t2="Albana"/>
+    <connection t1="Majar" t2="Sarai"/>
+    <connection t1="Pityus" t2="Sinda"/>
+    <connection t1="Pityus" t2="Armavira"/>
+    <connection t1="Pityus" t2="Phasis"/>
+    <connection t1="Armavira" t2="Phasis"/>
+    <connection t1="Armavira" t2="Albana"/>
+    <connection t1="Armavira" t2="Artaxata"/>
+    <connection t1="Albana" t2="Sarai"/>
+    <connection t1="Albana" t2="Artaxata"/>
+    <connection t1="Albana" t2="Nexuana"/>
+    <connection t1="Albana" t2="Sanina"/>
+    <connection t1="Artaxata" t2="Phasis"/>
+    <connection t1="Artaxata" t2="Nexuana"/>
+    <connection t1="Artaxata" t2="Trapezus"/>
+    <connection t1="Artaxata" t2="Satala"/>
+    <connection t1="Artaxata" t2="Gazaca"/>
+    <connection t1="Trapezus" t2="Phasis"/>
+    <connection t1="Trapezus" t2="Satala"/>
+    <connection t1="Trapezus" t2="Melitene"/>
+    <connection t1="Trapezus" t2="Sinope"/>
+    <connection t1="Sinope" t2="Melitene"/>
+    <connection t1="Sinope" t2="Tavium"/>
+    <connection t1="Sinope" t2="Heraclea Pontica"/>
+    <connection t1="Heraclea Pontica" t2="Tavium"/>
+    <connection t1="Heraclea Pontica" t2="Pessinus"/>
+    <connection t1="Heraclea Pontica" t2="Nicaea"/>
+    <connection t1="Nicaea" t2="Pessinus"/>
+    <connection t1="Nicaea" t2="Pergamum"/>
+    <connection t1="Nicaea" t2="Sardis"/>
+    <connection t1="Sardis" t2="Pergamum"/>
+    <connection t1="Sardis" t2="Pessinus"/>
+    <connection t1="Sardis" t2="Halicarnassus"/>
+    <connection t1="Sardis" t2="Attalia"/>
+    <connection t1="Attalia" t2="Halicarnassus"/>
+    <connection t1="Attalia" t2="Pessinus"/>
+    <connection t1="Attalia" t2="Tavium"/>
+    <connection t1="Attalia" t2="Tarsus"/>
+    <connection t1="Tavium" t2="Pessinus"/>
+    <connection t1="Tavium" t2="Tarsus"/>
+    <connection t1="Tavium" t2="Melitene"/>
+    <connection t1="Melitene" t2="Tarsus"/>
+    <connection t1="Melitene" t2="Antioch"/>
+    <connection t1="Melitene" t2="Satala"/>
+    <connection t1="Melitene" t2="Amida"/>
+    <connection t1="Melitene" t2="Edessa"/>
+    <connection t1="Antioch" t2="Tarsus"/>
+    <connection t1="Antioch" t2="Edessa"/>
+    <connection t1="Antioch" t2="Emesa"/>
+    <connection t1="Antioch" t2="Sidon"/>
+    <connection t1="Antioch" t2="Damascus"/>
+    <connection t1="Amida" t2="Satala"/>
+    <connection t1="Amida" t2="Edessa"/>
+    <connection t1="Amida" t2="Hatra"/>
+    <connection t1="Amida" t2="Ninive"/>
+    <connection t1="Amida" t2="Gazaca"/>
+    <connection t1="Gazaca" t2="Ninive"/>
+    <connection t1="Gazaca" t2="Satala"/>
+    <connection t1="Gazaca" t2="Nexuana"/>
+    <connection t1="Gazaca" t2="Ctesiphon"/>
+    <connection t1="Gazaca" t2="Cyropolis"/>
+    <connection t1="Sanina" t2="Nexuana"/>
+    <connection t1="Sanina" t2="Cyropolis"/>
+    <connection t1="Cyropolis" t2="Nexuana"/>
+    <connection t1="Cyropolis" t2="Ctesiphon"/>
+    <connection t1="Cyropolis" t2="Ecbatana"/>
+    <connection t1="Ctesiphon" t2="Ecbatana"/>
+    <connection t1="Ctesiphon" t2="Ninive"/>
+    <connection t1="Ctesiphon" t2="Susa"/>
+    <connection t1="Ctesiphon" t2="Seleucia"/>
+    <connection t1="Susa" t2="Ecbatana"/>
+    <connection t1="Susa" t2="Seleucia"/>
+    <connection t1="Susa" t2="Babylon"/>
+    <connection t1="Susa" t2="Persepolis"/>
+    <connection t1="Babylon" t2="Seleucia"/>
+    <connection t1="Babylon" t2="Persepolis"/>
+    <connection t1="Babylon" t2="Teredon"/>
+    <connection t1="Babylon" t2="Vologesia"/>
+    <connection t1="Seleucia" t2="Vologesia"/>
+    <connection t1="Seleucia" t2="Euphrates"/>
+    <connection t1="Seleucia" t2="Palmyra"/>
+    <connection t1="Seleucia" t2="Ninive"/>
+    <connection t1="Seleucia" t2="Hatra"/>
+    <connection t1="Hatra" t2="Palmyra"/>
+    <connection t1="Hatra" t2="Ninive"/>
+    <connection t1="Hatra" t2="Edessa"/>
+    <connection t1="Hatra" t2="Emesa"/>
+    <connection t1="Emesa" t2="Palmyra"/>
+    <connection t1="Emesa" t2="Edessa"/>
+    <connection t1="Emesa" t2="Damascus"/>
+    <connection t1="Vologesia" t2="Teredon"/>
+    <connection t1="Vologesia" t2="Euphrates"/>
+    <connection t1="Vologesia" t2="Gerrha"/>
+    <connection t1="Gerrha" t2="Euphrates"/>
+    <connection t1="Gerrha" t2="Teredon"/>
+    <connection t1="Gerrha" t2="Thamea"/>
+    <connection t1="Palmyra" t2="Euphrates"/>
+    <connection t1="Palmyra" t2="Thamea"/>
+    <connection t1="Palmyra" t2="Damascus"/>
+    <connection t1="Palmyra" t2="Bostra"/>
+    <connection t1="Thamea" t2="Euphrates"/>
+    <connection t1="Thamea" t2="Bostra"/>
+    <connection t1="Thamea" t2="Petra"/>
+    <connection t1="Thamea" t2="Aelana"/>
+    <connection t1="Damascus" t2="Sidon"/>
+    <connection t1="Damascus" t2="Jerusalem"/>
+    <connection t1="Damascus" t2="Bostra"/>
+    <connection t1="Jerusalem" t2="Sidon"/>
+    <connection t1="Jerusalem" t2="Bostra"/>
+    <connection t1="Jerusalem" t2="Aelana"/>
+    <connection t1="Jerusalem" t2="Petra"/>
+    <connection t1="Jerusalem" t2="Pharan"/>
+    <connection t1="Petra" t2="Aelana"/>
+    <connection t1="Petra" t2="Bostra"/>
+    <connection t1="Memphis" t2="Pharan"/>
+    <connection t1="Memphis" t2="Alexandria"/>
+    <connection t1="Memphis" t2="Hermopolis"/>
+    <connection t1="Alexandria" t2="Hermopolis"/>
+    <connection t1="Alexandria" t2="Paraetonium"/>
+    <connection t1="Paraetonium" t2="Hermopolis"/>
+    <connection t1="Paraetonium" t2="Siwa"/>
+    <connection t1="Paraetonium" t2="Paliurus"/>
+    <connection t1="Paliurus" t2="Siwa"/>
+    <connection t1="Paliurus" t2="Cyrene"/>
+    <connection t1="Paliurus" t2="Berenice"/>
+    <connection t1="Berenice" t2="Cyrene"/>
+    <connection t1="Berenice" t2="Siwa"/>
+    <connection t1="Berenice" t2="Leptis Magna"/>
+    <connection t1="Leptis Magna" t2="Oea"/>
+    <connection t1="Oea" t2="Sabrata"/>
+    <connection t1="Sabrata" t2="Thenae"/>
+    <connection t1="Thenae" t2="Thapsus"/>
+    <connection t1="Thenae" t2="Capsa"/>
+    <connection t1="Thapsus" t2="Capsa"/>
+    <connection t1="Thapsus" t2="Carthago"/>
+    <connection t1="Thapsus" t2="Zama"/>
+    <connection t1="Zama" t2="Capsa"/>
+    <connection t1="Zama" t2="Theveste"/>
+    <connection t1="Zama" t2="Cirta"/>
+    <connection t1="Zama" t2="Igilgili"/>
+    <connection t1="Zama" t2="Hippo Regius"/>
+    <connection t1="Zama" t2="Carthago"/>
+    <connection t1="Hippo Regius" t2="Carthago"/>
+    <connection t1="Hippo Regius" t2="Igilgili"/>
+    <connection t1="Igilgili" t2="Cirta"/>
+    <connection t1="Igilgili" t2="Auzia"/>
+    <connection t1="Igilgili" t2="Cartenna"/>
+    <connection t1="Theveste" t2="Capsa"/>
+    <connection t1="Theveste" t2="Cirta"/>
+    <connection t1="Auzia" t2="Cirta"/>
+    <connection t1="Auzia" t2="Cartenna"/>
+    <connection t1="Auzia" t2="Siga"/>
+    <connection t1="Auzia" t2="Volubilis"/>
+    <connection t1="Siga" t2="Cartenna"/>
+    <connection t1="Siga" t2="Volubilis"/>
+    <connection t1="Siga" t2="Tingis"/>
+    <connection t1="Siga" t2="Banasa"/>
+    <connection t1="Banasa" t2="Tingis"/>
+    <connection t1="Banasa" t2="Volubilis"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <player name="Carthage" optional="false"/>
+    <player name="RomanRepublic" optional="false"/>
+    <player name="GreekCityStates" optional="false"/>
+    <player name="Macedonia" optional="false"/>
+    <player name="Egypt" optional="false"/>
+    <player name="Seleucid" optional="false"/>
+    <player name="Parthia" optional="false"/>
+    <player name="Numidia" optional="false"/>
+    <!--  RomanAlliance -->
+    <alliance player="RomanRepublic" alliance="RomanAlliance"/>
+    <alliance player="GreekCityStates" alliance="RomanAlliance"/>
+    <alliance player="Parthia" alliance="RomanAlliance"/>
+    <alliance player="Egypt" alliance="RomanAlliance"/>
+    <!-- AntiRomanAlliance -->
+    <alliance player="Carthage" alliance="AntiRomanAlliance"/>
+    <alliance player="Seleucid" alliance="AntiRomanAlliance"/>
+    <alliance player="Macedonia" alliance="AntiRomanAlliance"/>
+    <alliance player="Numidia" alliance="AntiRomanAlliance"/>
+  </playerList>
+  <unitList>
+    <unit name="archer"/>
+    <unit name="axeman"/>
+    <unit name="ballista"/>
+    <unit name="barbarian"/>
+    <unit name="bireme"/>
+    <unit name="cataphract"/>
+    <unit name="cavalry"/>
+    <unit name="chariot"/>
+    <unit name="city"/>
+    <unit name="hoplite"/>
+    <unit name="horsearcher"/>
+    <unit name="legionaire"/>
+    <unit name="onager"/>
+    <unit name="peltasts"/>
+    <unit name="slingers"/>
+    <unit name="spearman"/>
+    <unit name="swordman"/>
+    <unit name="trireme"/>
+    <unit name="velites"/>
+    <unit name="warelephant"/>
+    <unit name="fort"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="CarthageBid" delegate="bid" player="Carthage" maxRunCount="1"/>
+      <step name="CarthageBidPlace" delegate="placeBid" player="Carthage" maxRunCount="1"/>
+      <step name="RomanRepublicBid" delegate="bid" player="RomanRepublic" maxRunCount="1"/>
+      <step name="RomanRepublicBidPlace" delegate="placeBid" player="RomanRepublic" maxRunCount="1"/>
+      <step name="GreekCityStatesBid" delegate="bid" player="GreekCityStates" maxRunCount="1"/>
+      <step name="GreekCityStatesBidPlace" delegate="placeBid" player="GreekCityStates" maxRunCount="1"/>
+      <step name="MacedoniaBid" delegate="bid" player="Macedonia" maxRunCount="1"/>
+      <step name="MacedoniaBidPlace" delegate="placeBid" player="Macedonia" maxRunCount="1"/>
+      <step name="EgyptBid" delegate="bid" player="Egypt" maxRunCount="1"/>
+      <step name="EgyptBidPlace" delegate="placeBid" player="Egypt" maxRunCount="1"/>
+      <step name="SeleucidBid" delegate="bid" player="Seleucid" maxRunCount="1"/>
+      <step name="SeleucidBidPlace" delegate="placeBid" player="Seleucid" maxRunCount="1"/>
+      <step name="ParthiaBid" delegate="bid" player="Parthia" maxRunCount="1"/>
+      <step name="ParthiaBidPlace" delegate="placeBid" player="Parthia" maxRunCount="1"/>
+      <step name="NumidiaBid" delegate="bid" player="Numidia" maxRunCount="1"/>
+      <step name="NumidiaBidPlace" delegate="placeBid" player="Numidia" maxRunCount="1"/>
+      <!-- Carthage Game Sequence -->
+      <step name="CarthageCombatMove" delegate="move" player="Carthage"/>
+      <step name="CarthagePurchase" delegate="purchase" player="Carthage"/>
+      <step name="CarthageBattle" delegate="battle" player="Carthage"/>
+      <step name="CarthageNonCombatMove" delegate="move" player="Carthage" display="Non Combat Move"/>
+      <step name="CarthagePlace" delegate="place" player="Carthage"/>
+      <step name="CarthageEndTurn" delegate="endTurn" player="Carthage"/>
+      <!-- RomanRepublic Game Sequence -->
+      <step name="RomanRepublicCombatMove" delegate="move" player="RomanRepublic"/>
+      <step name="RomanRepublicPurchase" delegate="purchase" player="RomanRepublic"/>
+      <step name="RomanRepublicBattle" delegate="battle" player="RomanRepublic"/>
+      <step name="RomanRepublicNonCombatMove" delegate="move" player="RomanRepublic" display="Non Combat Move"/>
+      <step name="RomanRepublicPlace" delegate="place" player="RomanRepublic"/>
+      <step name="RomanRepublicEndTurn" delegate="endTurn" player="RomanRepublic"/>
+      <!-- GreekCityStates Game Sequence -->
+      <step name="GreekCityStatesCombatMove" delegate="move" player="GreekCityStates"/>
+      <step name="GreekCityStatesPurchase" delegate="purchase" player="GreekCityStates"/>
+      <step name="GreekCityStatesBattle" delegate="battle" player="GreekCityStates"/>
+      <step name="GreekCityStatesNonCombatMove" delegate="move" player="GreekCityStates" display="Non Combat Move"/>
+      <step name="GreekCityStatesPlace" delegate="place" player="GreekCityStates"/>
+      <step name="GreekCityStatesEndTurn" delegate="endTurn" player="GreekCityStates"/>
+      <!-- Macedonia Game Sequence -->
+      <step name="MacedoniaCombatMove" delegate="move" player="Macedonia"/>
+      <step name="MacedoniaPurchase" delegate="purchase" player="Macedonia"/>
+      <step name="MacedoniaBattle" delegate="battle" player="Macedonia"/>
+      <step name="MacedoniaNonCombatMove" delegate="move" player="Macedonia" display="Non Combat Move"/>
+      <step name="MacedoniaPlace" delegate="place" player="Macedonia"/>
+      <step name="MacedoniaEndTurn" delegate="endTurn" player="Macedonia"/>
+      <!-- Egypt Game Sequence -->
+      <step name="EgyptCombatMove" delegate="move" player="Egypt"/>
+      <step name="EgyptPurchase" delegate="purchase" player="Egypt"/>
+      <step name="EgyptBattle" delegate="battle" player="Egypt"/>
+      <step name="EgyptNonCombatMove" delegate="move" player="Egypt" display="Non Combat Move"/>
+      <step name="EgyptPlace" delegate="place" player="Egypt"/>
+      <step name="EgyptEndTurn" delegate="endTurn" player="Egypt"/>
+      <!-- Seleucid Game Sequence -->
+      <step name="SeleucidCombatMove" delegate="move" player="Seleucid"/>
+      <step name="SeleucidPurchase" delegate="purchase" player="Seleucid"/>
+      <step name="SeleucidBattle" delegate="battle" player="Seleucid"/>
+      <step name="SeleucidNonCombatMove" delegate="move" player="Seleucid" display="Non Combat Move"/>
+      <step name="SeleucidPlace" delegate="place" player="Seleucid"/>
+      <step name="SeleucidEndTurn" delegate="endTurn" player="Seleucid"/>
+      <!-- Parthia Game Sequence -->
+      <step name="ParthiaCombatMove" delegate="move" player="Parthia"/>
+      <step name="ParthiaPurchase" delegate="purchase" player="Parthia"/>
+      <step name="ParthiaBattle" delegate="battle" player="Parthia"/>
+      <step name="ParthiaNonCombatMove" delegate="move" player="Parthia" display="Non Combat Move"/>
+      <step name="ParthiaPlace" delegate="place" player="Parthia"/>
+      <step name="ParthiaEndTurn" delegate="endTurn" player="Parthia"/>
+      <!-- Numidia Game Sequence -->
+      <step name="NumidiaCombatMove" delegate="move" player="Numidia"/>
+      <step name="NumidiaPurchase" delegate="purchase" player="Numidia"/>
+      <step name="NumidiaBattle" delegate="battle" player="Numidia"/>
+      <step name="NumidiaNonCombatMove" delegate="move" player="Numidia" display="Non Combat Move"/>
+      <step name="NumidiaPlace" delegate="place" player="Numidia"/>
+      <step name="NumidiaEndTurn" delegate="endTurn" player="Numidia"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyArcher">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="archer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAxeman">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="axeman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBallista">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="ballista" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBarbarian">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="barbarian" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBireme">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="bireme" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCataphract">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="cataphract" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCavalry">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="cavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyChariot">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="chariot" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCity">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="city" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFort">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="fort" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHoplite">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="hoplite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHorsearcher">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="horsearcher" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyLegionaire">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="legionaire" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyOnager">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="onager" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyPeltasts">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="peltasts" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySlingers">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="slingers" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySpearman">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="spearman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySwordman">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="swordman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTrireme">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="trireme" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyVelites">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="velites" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyWarelephant">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="warelephant" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="MacedoniaProduction">
+      <frontierRules name="buyPeltasts"/>
+      <frontierRules name="buySwordman"/>
+      <frontierRules name="buyHoplite"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <productionFrontier name="CarthageProduction">
+      <frontierRules name="buySpearman"/>
+      <frontierRules name="buySwordman"/>
+      <frontierRules name="buyHoplite"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyWarelephant"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <productionFrontier name="GreekCityStatesProduction">
+      <frontierRules name="buySlingers"/>
+      <frontierRules name="buyArcher"/>
+      <frontierRules name="buyHoplite"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <productionFrontier name="RomanRepublicProduction">
+      <frontierRules name="buyVelites"/>
+      <frontierRules name="buyLegionaire"/>
+      <frontierRules name="buyBallista"/>
+      <frontierRules name="buyOnager"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyFort"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <productionFrontier name="EgyptProduction">
+      <frontierRules name="buySpearman"/>
+      <frontierRules name="buyAxeman"/>
+      <frontierRules name="buyArcher"/>
+      <frontierRules name="buyChariot"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <productionFrontier name="SeleucidProduction">
+      <frontierRules name="buyPeltasts"/>
+      <frontierRules name="buyLegionaire"/>
+      <frontierRules name="buyHoplite"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyCataphract"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <productionFrontier name="ParthiaProduction">
+      <frontierRules name="buySpearman"/>
+      <frontierRules name="buyArcher"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyHorsearcher"/>
+      <frontierRules name="buyCataphract"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <productionFrontier name="NumidiaProduction">
+      <frontierRules name="buySpearman"/>
+      <frontierRules name="buyArcher"/>
+      <frontierRules name="buySwordman"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyBireme"/>
+      <frontierRules name="buyTrireme"/>
+      <frontierRules name="buyCity"/>
+    </productionFrontier>
+    <playerProduction player="Macedonia" frontier="MacedoniaProduction"/>
+    <playerProduction player="Carthage" frontier="CarthageProduction"/>
+    <playerProduction player="GreekCityStates" frontier="GreekCityStatesProduction"/>
+    <playerProduction player="RomanRepublic" frontier="RomanRepublicProduction"/>
+    <playerProduction player="Egypt" frontier="EgyptProduction"/>
+    <playerProduction player="Seleucid" frontier="SeleucidProduction"/>
+    <playerProduction player="Parthia" frontier="ParthiaProduction"/>
+    <playerProduction player="Numidia" frontier="NumidiaProduction"/>
+  </production>
+  <technology>
+    <technologies>
+      <techname name="archer:"/>
+      <techname name="axeman:"/>
+      <techname name="ballista:"/>
+      <techname name="barbarian:"/>
+      <techname name="cataphract:"/>
+      <techname name="cavalry:"/>
+      <techname name="chariot:"/>
+      <techname name="fort:"/>
+      <techname name="hoplite:"/>
+      <techname name="horsearcher:"/>
+      <techname name="legionaire:"/>
+      <techname name="onager:"/>
+      <techname name="peltasts:"/>
+      <techname name="slingers:"/>
+      <techname name="spearman:"/>
+      <techname name="swordman:"/>
+      <techname name="velites:"/>
+      <techname name="warelephant:"/>
+    </technologies>
+    <playerTech player="Carthage">
+      <category name="Carthage Technology">
+        <tech name="archer:"/>
+        <tech name="axeman:"/>
+        <tech name="ballista:"/>
+        <tech name="barbarian:"/>
+        <tech name="cataphract:"/>
+        <tech name="chariot:"/>
+        <tech name="fort:"/>
+        <tech name="horsearcher:"/>
+        <tech name="legionaire:"/>
+        <tech name="onager:"/>
+        <tech name="peltasts:"/>
+        <tech name="slingers:"/>
+        <tech name="velites:"/>
+      </category>
+    </playerTech>
+    <playerTech player="RomanRepublic">
+      <category name="RomanRepublic Technology">
+        <tech name="archer:"/>
+        <tech name="axeman:"/>
+        <tech name="barbarian:"/>
+        <tech name="cataphract:"/>
+        <tech name="chariot:"/>
+        <tech name="hoplite:"/>
+        <tech name="horsearcher:"/>
+        <tech name="peltasts:"/>
+        <tech name="slingers:"/>
+        <tech name="spearman:"/>
+        <tech name="swordman:"/>
+        <tech name="warelephant:"/>
+      </category>
+    </playerTech>
+    <playerTech player="GreekCityStates">
+      <category name="GreekCityStates Technology">
+        <tech name="axeman:"/>
+        <tech name="ballista:"/>
+        <tech name="barbarian:"/>
+        <tech name="cataphract:"/>
+        <tech name="chariot:"/>
+        <tech name="fort:"/>
+        <tech name="horsearcher:"/>
+        <tech name="legionaire:"/>
+        <tech name="onager:"/>
+        <tech name="peltasts:"/>
+        <tech name="spearman:"/>
+        <tech name="swordman:"/>
+        <tech name="velites:"/>
+        <tech name="warelephant:"/>
+      </category>
+    </playerTech>
+    <playerTech player="Macedonia">
+      <category name="Macedonia Technology">
+        <tech name="archer:"/>
+        <tech name="axeman:"/>
+        <tech name="ballista:"/>
+        <tech name="barbarian:"/>
+        <tech name="cataphract:"/>
+        <tech name="chariot:"/>
+        <tech name="fort:"/>
+        <tech name="horsearcher:"/>
+        <tech name="legionaire:"/>
+        <tech name="onager:"/>
+        <tech name="slingers:"/>
+        <tech name="spearman:"/>
+        <tech name="velites:"/>
+        <tech name="warelephant:"/>
+      </category>
+    </playerTech>
+    <playerTech player="Egypt">
+      <category name="Egypt Technology">
+        <tech name="ballista:"/>
+        <tech name="barbarian:"/>
+        <tech name="cataphract:"/>
+        <tech name="cavalry:"/>
+        <tech name="fort:"/>
+        <tech name="hoplite:"/>
+        <tech name="horsearcher:"/>
+        <tech name="legionaire:"/>
+        <tech name="onager:"/>
+        <tech name="peltasts:"/>
+        <tech name="slingers:"/>
+        <tech name="swordman:"/>
+        <tech name="velites:"/>
+        <tech name="warelephant:"/>
+      </category>
+    </playerTech>
+    <playerTech player="Seleucid">
+      <category name="Seleucid Technology">
+        <tech name="archer:"/>
+        <tech name="axeman:"/>
+        <tech name="ballista:"/>
+        <tech name="barbarian:"/>
+        <tech name="chariot:"/>
+        <tech name="fort:"/>
+        <tech name="horsearcher:"/>
+        <tech name="onager:"/>
+        <tech name="slingers:"/>
+        <tech name="spearman:"/>
+        <tech name="swordman:"/>
+        <tech name="velites:"/>
+        <tech name="warelephant:"/>
+      </category>
+    </playerTech>
+    <playerTech player="Parthia">
+      <category name="Parthia Technology">
+        <tech name="axeman:"/>
+        <tech name="ballista:"/>
+        <tech name="barbarian:"/>
+        <tech name="chariot:"/>
+        <tech name="fort:"/>
+        <tech name="hoplite:"/>
+        <tech name="legionaire:"/>
+        <tech name="onager:"/>
+        <tech name="peltasts:"/>
+        <tech name="slingers:"/>
+        <tech name="swordman:"/>
+        <tech name="velites:"/>
+        <tech name="warelephant:"/>
+      </category>
+    </playerTech>
+    <playerTech player="Numidia">
+      <category name="Numidia Technology">
+        <tech name="axeman:"/>
+        <tech name="ballista:"/>
+        <tech name="barbarian:"/>
+        <tech name="cataphract:"/>
+        <tech name="chariot:"/>
+        <tech name="fort:"/>
+        <tech name="hoplite:"/>
+        <tech name="horsearcher:"/>
+        <tech name="legionaire:"/>
+        <tech name="onager:"/>
+        <tech name="peltasts:"/>
+        <tech name="slingers:"/>
+        <tech name="velites:"/>
+        <tech name="warelephant:"/>
+      </category>
+    </playerTech>
+  </technology>
+  <attatchmentList>
+    <attatchment name="techAttatchment" attatchTo="Carthage" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="false"/>
+            <option name="axeman:" value="false"/>
+            <option name="ballista:" value="false"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="false"/>
+            <option name="cavalry:" value="true"/>
+            <option name="chariot:" value="false"/>
+            <option name="fort:" value="false"/>
+            <option name="hoplite:" value="true"/>
+            <option name="horsearcher:" value="false"/>
+            <option name="legionaire:" value="false"/>
+            <option name="onager:" value="false"/>
+            <option name="peltasts:" value="false"/>
+            <option name="slingers:" value="false"/>
+            <option name="spearman:" value="true"/>
+            <option name="swordman:" value="true"/>
+            <option name="velites:" value="false"/>
+            <option name="warelephant:" value="true"/> -->
+    </attatchment>
+    <attatchment name="techAttatchment" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="false"/>
+            <option name="axeman:" value="false"/>
+            <option name="ballista:" value="true"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="false"/>
+            <option name="cavalry:" value="true"/>
+            <option name="chariot:" value="false"/>
+            <option name="fort:" value="true"/>
+            <option name="hoplite:" value="false"/>
+            <option name="horsearcher:" value="false"/>
+            <option name="legionaire:" value="true"/>
+            <option name="onager:" value="true"/>
+            <option name="peltasts:" value="false"/>
+            <option name="slingers:" value="false"/>
+            <option name="spearman:" value="false"/>
+            <option name="swordman:" value="false"/>
+            <option name="velites:" value="true"/>
+            <option name="warelephant:" value="false"/> -->
+    </attatchment>
+    <attatchment name="techAttatchment" attatchTo="GreekCityStates" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="true"/>
+            <option name="axeman:" value="false"/>
+            <option name="ballista:" value="false"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="false"/>
+            <option name="cavalry:" value="true"/>
+            <option name="chariot:" value="false"/>
+            <option name="fort:" value="false"/>
+            <option name="hoplite:" value="true"/>
+            <option name="horsearcher:" value="false"/>
+            <option name="legionaire:" value="false"/>
+            <option name="onager:" value="false"/>
+            <option name="peltasts:" value="false"/>
+            <option name="slingers:" value="true"/>
+            <option name="spearman:" value="false"/>
+            <option name="swordman:" value="false"/>
+            <option name="velites:" value="false"/>
+            <option name="warelephant:" value="false"/> -->
+    </attatchment>
+    <attatchment name="techAttatchment" attatchTo="Macedonia" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="false"/>
+            <option name="axeman:" value="false"/>
+            <option name="ballista:" value="false"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="false"/>
+            <option name="cavalry:" value="true"/>
+            <option name="chariot:" value="false"/>
+            <option name="fort:" value="false"/>
+            <option name="hoplite:" value="true"/>
+            <option name="horsearcher:" value="false"/>
+            <option name="legionaire:" value="false"/>
+            <option name="onager:" value="false"/>
+            <option name="peltasts:" value="true"/>
+            <option name="slingers:" value="false"/>
+            <option name="spearman:" value="false"/>
+            <option name="swordman:" value="true"/>
+            <option name="velites:" value="false"/>
+            <option name="warelephant:" value="false"/> -->
+    </attatchment>
+    <attatchment name="techAttatchment" attatchTo="Egypt" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="true"/>
+            <option name="axeman:" value="true"/>
+            <option name="ballista:" value="false"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="false"/>
+            <option name="cavalry:" value="false"/>
+            <option name="chariot:" value="true"/>
+            <option name="fort:" value="false"/>
+            <option name="hoplite:" value="false"/>
+            <option name="horsearcher:" value="false"/>
+            <option name="legionaire:" value="false"/>
+            <option name="onager:" value="false"/>
+            <option name="peltasts:" value="false"/>
+            <option name="slingers:" value="false"/>
+            <option name="spearman:" value="true"/>
+            <option name="swordman:" value="false"/>
+            <option name="velites:" value="false"/>
+            <option name="warelephant:" value="false"/> -->
+    </attatchment>
+    <attatchment name="techAttatchment" attatchTo="Seleucid" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="false"/>
+            <option name="axeman:" value="false"/>
+            <option name="ballista:" value="false"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="true"/>
+            <option name="cavalry:" value="true"/>
+            <option name="chariot:" value="false"/>
+            <option name="fort:" value="false"/>
+            <option name="hoplite:" value="true"/>
+            <option name="horsearcher:" value="false"/>
+            <option name="legionaire:" value="true"/>
+            <option name="onager:" value="false"/>
+            <option name="peltasts:" value="true"/>
+            <option name="slingers:" value="false"/>
+            <option name="spearman:" value="false"/>
+            <option name="swordman:" value="false"/>
+            <option name="velites:" value="false"/>
+            <option name="warelephant:" value="false"/> -->
+    </attatchment>
+    <attatchment name="techAttatchment" attatchTo="Parthia" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="true"/>
+            <option name="axeman:" value="false"/>
+            <option name="ballista:" value="false"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="true"/>
+            <option name="cavalry:" value="true"/>
+            <option name="chariot:" value="false"/>
+            <option name="fort:" value="false"/>
+            <option name="hoplite:" value="false"/>
+            <option name="horsearcher:" value="true"/>
+            <option name="legionaire:" value="false"/>
+            <option name="onager:" value="false"/>
+            <option name="peltasts:" value="false"/>
+            <option name="slingers:" value="false"/>
+            <option name="spearman:" value="true"/>
+            <option name="swordman:" value="false"/>
+            <option name="velites:" value="false"/>
+            <option name="warelephant:" value="false"/> -->
+    </attatchment>
+    <attatchment name="techAttatchment" attatchTo="Numidia" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+      <option name="techCost" value="0"/>
+      <!--
+            <option name="archer:" value="true"/>
+            <option name="axeman:" value="false"/>
+            <option name="ballista:" value="false"/>
+            <option name="barbarian:" value="false"/>
+            <option name="cataphract:" value="false"/>
+            <option name="cavalry:" value="true"/>
+            <option name="chariot:" value="false"/>
+            <option name="fort:" value="false"/>
+            <option name="hoplite:" value="false"/>
+            <option name="horsearcher:" value="false"/>
+            <option name="legionaire:" value="false"/>
+            <option name="onager:" value="false"/>
+            <option name="peltasts:" value="false"/>
+            <option name="slingers:" value="false"/>
+            <option name="spearman:" value="true"/>
+            <option name="swordman:" value="true"/>
+            <option name="velites:" value="false"/>
+            <option name="warelephant:" value="false"/> -->
+    </attatchment>
+    <!-- Unit Attatchment -->
+    <attatchment name="unitAttatchment" attatchTo="archer" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="isTwoHit" value="true"/>
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="requiresUnits" value="city"/>
+      <option name="isParatroop" value="true"/>
+      <option name="isMechanized" value="true"/>
+      <option name="takeUnitControl" value="true"/>
+      <option name="giveUnitControl" value="true"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="axeman" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="requiresUnits" value="city"/>
+      <option name="isInfantry" value="true"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="ballista" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="0"/>
+      <option name="artillery" value="true"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="barbarian" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <!--<option name="artillerySupportable" value="true"/>-->
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="cataphract" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="true"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="cavalry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="chariot" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="4"/>
+      <option name="artillery" value="true"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="hoplite" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="horsearcher" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="legionaire" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="canProduceUnits" value="true"/>
+      <option name="canProduceXUnits" value="1"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="onager" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="true"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="peltasts" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="slingers" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="spearman" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="swordman" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="velites" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="warelephant" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="4"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="hitPoints" value="2"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="bireme" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="3"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="trireme" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="6"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <option name="requiresUnits" value="city"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="city" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attatchment>
+    <attatchment name="unitAttatchment" attatchTo="fort" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="4"/>
+      <option name="hitPoints" value="2"/>
+      <!--<option name="isConstruction" value="true"/>
+             <option name="constructionType" value="fort"/>
+             <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
+             <option name="maxConstructionsPerTypePerTerr" value="1"/>-->
+      <option name="requiresUnits" value="city"/>
+      <option name="requiresUnits" value="legionaire"/>
+    </attatchment>
+    <!-- Territory Attatchment -->
+    <attatchment name="territoryAttatchment" attatchTo="Sparta" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="GreekCityStates"/>
+      <option name="victoryCity" value="true"/>
+      <option name="occupiedTerrOf" value="RomanRepublic"/>
+      <option name="isImpassible" value="true"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Roma" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="9"/>
+      <option name="capital" value="RomanRepublic"/>
+      <option name="victoryCity" value="false"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Carthago" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Carthage"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Alexandria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="9"/>
+      <option name="capital" value="Egypt"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Thessalonica" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="Macedonia"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Antioch" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="11"/>
+      <option name="capital" value="Seleucid"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Persepolis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="Parthia"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cirta" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="capital" value="Numidia"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Athens" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Susa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Hatra" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Oea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tanais" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Pella" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Veldidena" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Croton" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Siwa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Barcino" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sirmium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Halicarnassus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cestra Regina" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Arretium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Memphis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Aquincum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Corinth" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Euphrates" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Melitene" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Larissa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Brigantium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Siga" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Albana" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Byzantium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Jerusalem" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Elusa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Pergamum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Hermopolis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Thenae" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Theveste" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Pax Julia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Majar" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tolosa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Salmantica" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Pessinus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Berenice" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Damascus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Petra" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Vindonissa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Edessa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Salonae" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Napoca" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cartenna" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Babylon" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sarmizegetusa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Heraclea Pontica" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tavium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Salamis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Volubilis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Caralis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Phasis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sinope" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sanina" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Ninive" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Verona" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Thapsus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sabrata" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Axiopolis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Theodesia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Palantia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Thamea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Delphi" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cale" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Amida" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Trapezus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Nexuana" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Armavira" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sardis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tibiscum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tarraco" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Banasa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Gerrha" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Aleria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Messana" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Philippopolis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Lauriacum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Mediolanum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Castulo" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Narbo" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Carthago Nova" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cyrene" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Toletum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Massilia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tarsus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Vindobona" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tyras" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Hatra" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Vologesia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Syracuse" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Capua" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Auzia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Odessus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Logdunum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Stabula" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Palmyra" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Salapia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cydonia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Hispatis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Acci" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Seleucia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Ctesiphon" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Bostra" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Senio" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sinda" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Istropolis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Gades" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Pompaelo" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Igilgili" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Satala" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sardica" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Ecbatana" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Singidinum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Capsa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Durostorum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Palma" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Lilybaeum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Genua" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tarentum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sarai" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Rhodos" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Apollonia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cyropolis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Zama" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Paraetonium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Nicaea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Alesia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Hippo Regius" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Gazaca" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Leptis Magna" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Olisipo" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Sidon" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="9"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Dodona" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Artaxata" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Ariminum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Emesa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Nemausus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Valentia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Teredon" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Patavium" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Emerita Augusta" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Paliurus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Pharan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Attalia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Azara" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Tingis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Nicopolis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Olbia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Melita" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Cesaraugusta" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Pityus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Aemona" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Aelana" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Corduba" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Namnetes" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Lucus Augusti" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Scallabis" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Burdigala" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attatchment>
+    <attatchment name="territoryAttatchment" attatchTo="Augustoritum" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attatchment>
+    <attatchment name="supportAttachment_Warelephant" attatchTo="warelephant" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="archer:axeman:ballista:barbarian:cataphract:cavalry:chariot:hoplite:horsearcher:legionaire:onager:peltasts:slingers:spearman:swordman:velites"/>
+      <option name="faction" value="allied"/>
+      <option name="side" value="offence:defence"/>
+      <option name="dice" value="strength"/>
+      <option name="bonus" value="1"/>
+      <option name="number" value="2"/>
+      <option name="bonusType" value="elephant"/>
+      <option name="impArtTech" value="false"/>
+      <option name="players" value="Carthage:Seleucid:Macedonia:Numidia:RomanRepublic:GreekCityStates:Parthia:Egypt"/>
+    </attatchment>
+    <attatchment name="conditionAttachmentAntiRomanVictory8" attatchTo="Carthage" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+      <option name="gameProperty" value="8 Capital Victory"/>
+      <option name="alliedOwnershipTerritories" value="Sparta:Thessalonica:Alexandria:Roma:Antioch:Carthago:Cirta:Persepolis" count="8"/>
+      <option name="rounds" value="1:2"/>
+      <option name="conditionType" value="XOR"/>
+    </attatchment>
+    <attatchment name="conditionAttachmentRomanVictory8" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+      <option name="gameProperty" value="8 Capital Victory"/>
+      <option name="alliedOwnershipTerritories" value="Sparta:Thessalonica:Alexandria:Roma:Antioch:Carthago:Cirta:Persepolis" count="8"/>
+    </attatchment>
+    <attatchment name="conditionAttachmentAntiRomanVictory7" attatchTo="Carthage" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+      <option name="gameProperty" value="7 Capital Victory"/>
+      <option name="alliedOwnershipTerritories" value="Sparta:Thessalonica:Alexandria:Roma:Antioch:Carthago:Cirta:Persepolis" count="7"/>
+    </attatchment>
+    <attatchment name="conditionAttachmentRomanVictory7" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+      <option name="gameProperty" value="7 Capital Victory"/>
+      <option name="alliedOwnershipTerritories" value="Sparta:Thessalonica:Alexandria:Roma:Antioch:Carthago:Cirta:Persepolis" count="7"/>
+    </attatchment>
+    <attatchment name="conditionAttachmentAntiRomanVictory6" attatchTo="Carthage" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+      <option name="gameProperty" value="6 Capital Victory"/>
+      <option name="alliedOwnershipTerritories" value="Sparta:Thessalonica:Alexandria:Roma:Antioch:Carthago:Cirta:Persepolis" count="6"/>
+    </attatchment>
+    <attatchment name="conditionAttachmentRomanVictory6" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+      <option name="gameProperty" value="6 Capital Victory"/>
+      <option name="alliedOwnershipTerritories" value="Sparta:Thessalonica:Alexandria:Roma:Antioch:Carthago:Cirta:Persepolis" count="6"/>
+    </attatchment>
+    <attatchment name="triggerAttachmentAntiRomanVictory8" attatchTo="Carthage" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+      <option name="conditions" value="conditionAttachmentAntiRomanVictory8"/>
+      <option name="victory" value="ANTIROMANALLIANCE_VICTORY8"/>
+      <option name="players" value="Carthage:Macedonia:Seleucid:Numidia"/>
+    </attatchment>
+    <attatchment name="triggerAttachmentRomanVictory8" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+      <option name="conditions" value="conditionAttachmentRomanVictory8"/>
+      <option name="victory" value="ROMANALLIANCE_VICTORY8"/>
+      <option name="players" value="RomanRepublic:GreekCityStates:Egypt:Parthia"/>
+    </attatchment>
+    <attatchment name="triggerAttachmentAntiRomanVictory7" attatchTo="Carthage" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+      <option name="conditions" value="conditionAttachmentAntiRomanVictory7"/>
+      <option name="victory" value="ANTIROMANALLIANCE_VICTORY7"/>
+      <option name="players" value="Carthage:Macedonia:Seleucid:Numidia"/>
+    </attatchment>
+    <attatchment name="triggerAttachmentRomanVictory7" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+      <option name="conditions" value="conditionAttachmentRomanVictory7"/>
+      <option name="victory" value="ROMANALLIANCE_VICTORY7"/>
+      <option name="players" value="RomanRepublic:GreekCityStates:Egypt:Parthia"/>
+    </attatchment>
+    <attatchment name="triggerAttachmentAntiRomanVictory6" attatchTo="Carthage" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+      <option name="conditions" value="conditionAttachmentAntiRomanVictory6"/>
+      <option name="victory" value="ANTIROMANALLIANCE_VICTORY6"/>
+      <option name="players" value="Carthage:Macedonia:Seleucid:Numidia"/>
+    </attatchment>
+    <attatchment name="triggerAttachmentRomanVictory6" attatchTo="RomanRepublic" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+      <option name="conditions" value="conditionAttachmentRomanVictory6"/>
+      <option name="victory" value="ROMANALLIANCE_VICTORY6"/>
+      <option name="players" value="RomanRepublic:GreekCityStates:Egypt:Parthia"/>
+    </attatchment>
+  </attatchmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- GreekCityStates Owned Territories -->
+      <territoryOwner territory="Athens" owner="GreekCityStates"/>
+      <territoryOwner territory="Rhodos" owner="GreekCityStates"/>
+      <territoryOwner territory="Delphi" owner="GreekCityStates"/>
+      <territoryOwner territory="Sparta" owner="GreekCityStates"/>
+      <territoryOwner territory="Pergamum" owner="GreekCityStates"/>
+      <territoryOwner territory="Syracuse" owner="GreekCityStates"/>
+      <!-- Carthage Owned Territories -->
+      <territoryOwner territory="Carthago" owner="Carthage"/>
+      <territoryOwner territory="Thapsus" owner="Carthage"/>
+      <territoryOwner territory="Melita" owner="Carthage"/>
+      <territoryOwner territory="Lilybaeum" owner="Carthage"/>
+      <territoryOwner territory="Caralis" owner="Carthage"/>
+      <territoryOwner territory="Aleria" owner="Carthage"/>
+      <territoryOwner territory="Palma" owner="Carthage"/>
+      <territoryOwner territory="Carthago Nova" owner="Carthage"/>
+      <territoryOwner territory="Corduba" owner="Carthage"/>
+      <territoryOwner territory="Acci" owner="Carthage"/>
+      <territoryOwner territory="Gades" owner="Carthage"/>
+      <territoryOwner territory="Hispatis" owner="Carthage"/>
+      <!-- Parthia Owned Territories -->
+      <territoryOwner territory="Susa" owner="Parthia"/>
+      <territoryOwner territory="Ctesiphon" owner="Parthia"/>
+      <territoryOwner territory="Ecbatana" owner="Parthia"/>
+      <territoryOwner territory="Cyropolis" owner="Parthia"/>
+      <territoryOwner territory="Persepolis" owner="Parthia"/>
+      <!-- RomanRepublic Owned Territories -->
+      <territoryOwner territory="Roma" owner="RomanRepublic"/>
+      <territoryOwner territory="Capua" owner="RomanRepublic"/>
+      <territoryOwner territory="Salapia" owner="RomanRepublic"/>
+      <territoryOwner territory="Arretium" owner="RomanRepublic"/>
+      <territoryOwner territory="Ariminum" owner="RomanRepublic"/>
+      <territoryOwner territory="Tarentum" owner="RomanRepublic"/>
+      <territoryOwner territory="Croton" owner="RomanRepublic"/>
+      <territoryOwner territory="Messana" owner="RomanRepublic"/>
+      <!-- Macedonia Owned Territories -->
+      <territoryOwner territory="Thessalonica" owner="Macedonia"/>
+      <territoryOwner territory="Corinth" owner="Macedonia"/>
+      <territoryOwner territory="Larissa" owner="Macedonia"/>
+      <territoryOwner territory="Dodona" owner="Macedonia"/>
+      <territoryOwner territory="Pella" owner="Macedonia"/>
+      <territoryOwner territory="Philippopolis" owner="Macedonia"/>
+      <!-- Seleucid Owned Territories -->
+      <territoryOwner territory="Antioch" owner="Seleucid"/>
+      <territoryOwner territory="Sardis" owner="Seleucid"/>
+      <territoryOwner territory="Attalia" owner="Seleucid"/>
+      <territoryOwner territory="Tarsus" owner="Seleucid"/>
+      <territoryOwner territory="Edessa" owner="Seleucid"/>
+      <territoryOwner territory="Hatra" owner="Seleucid"/>
+      <territoryOwner territory="Seleucia" owner="Seleucid"/>
+      <territoryOwner territory="Damascus" owner="Seleucid"/>
+      <territoryOwner territory="Emesa" owner="Seleucid"/>
+      <!-- Egypt Owned Territories -->
+      <territoryOwner territory="Alexandria" owner="Egypt"/>
+      <territoryOwner territory="Memphis" owner="Egypt"/>
+      <territoryOwner territory="Hermopolis" owner="Egypt"/>
+      <territoryOwner territory="Pharan" owner="Egypt"/>
+      <territoryOwner territory="Jerusalem" owner="Egypt"/>
+      <territoryOwner territory="Sidon" owner="Egypt"/>
+      <territoryOwner territory="Salamis" owner="Egypt"/>
+      <!-- Numidia Owned Territories -->
+      <territoryOwner territory="Cirta" owner="Numidia"/>
+      <territoryOwner territory="Capsa" owner="Numidia"/>
+      <territoryOwner territory="Theveste" owner="Numidia"/>
+      <territoryOwner territory="Zama" owner="Numidia"/>
+      <territoryOwner territory="Hippo Regius" owner="Numidia"/>
+      <territoryOwner territory="Igilgili" owner="Numidia"/>
+      <territoryOwner territory="Siwa" owner="Numidia"/>
+      <territoryOwner territory="Paliurus" owner="Numidia"/>
+      <territoryOwner territory="Berenice" owner="Numidia"/>
+      <territoryOwner territory="Leptis Magna" owner="Numidia"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- GreekCityStates Unit Placements -->
+      <unitPlacement unitType="city" territory="Sparta" quantity="1" owner="GreekCityStates"/>
+      <unitPlacement unitType="hoplite" territory="Sparta" quantity="6" owner="GreekCityStates"/>
+      <unitPlacement unitType="slingers" territory="Sparta" quantity="3" owner="GreekCityStates"/>
+      <unitPlacement unitType="cavalry" territory="Athens" quantity="1" owner="GreekCityStates"/>
+      <unitPlacement unitType="hoplite" territory="Athens" quantity="5" owner="GreekCityStates"/>
+      <unitPlacement unitType="slingers" territory="Athens" quantity="3" owner="GreekCityStates"/>
+      <unitPlacement unitType="archer" territory="Athens" quantity="2" owner="GreekCityStates"/>
+      <unitPlacement unitType="hoplite" territory="Delphi" quantity="2" owner="GreekCityStates"/>
+      <unitPlacement unitType="slingers" territory="Delphi" quantity="3" owner="GreekCityStates"/>
+      <unitPlacement unitType="archer" territory="Delphi" quantity="1" owner="GreekCityStates"/>
+      <unitPlacement unitType="hoplite" territory="Pergamum" quantity="3" owner="GreekCityStates"/>
+      <unitPlacement unitType="slingers" territory="Pergamum" quantity="4" owner="GreekCityStates"/>
+      <unitPlacement unitType="archer" territory="Pergamum" quantity="2" owner="GreekCityStates"/>
+      <unitPlacement unitType="hoplite" territory="Syracuse" quantity="5" owner="GreekCityStates"/>
+      <unitPlacement unitType="slingers" territory="Syracuse" quantity="4" owner="GreekCityStates"/>
+      <unitPlacement unitType="cavalry" territory="Syracuse" quantity="2" owner="GreekCityStates"/>
+      <unitPlacement unitType="hoplite" territory="Rhodos" quantity="1" owner="GreekCityStates"/>
+      <unitPlacement unitType="slingers" territory="Rhodos" quantity="1" owner="GreekCityStates"/>
+      <unitPlacement unitType="bireme" territory="SZ 67" quantity="3" owner="GreekCityStates"/>
+      <unitPlacement unitType="trireme" territory="SZ 67" quantity="2" owner="GreekCityStates"/>
+      <!-- Carthage Unit Placements -->
+      <unitPlacement unitType="cavalry" territory="Carthago" quantity="3" owner="Carthage"/>
+      <unitPlacement unitType="city" territory="Carthago" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="hoplite" territory="Carthago" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Carthago" quantity="4" owner="Carthage"/>
+      <unitPlacement unitType="warelephant" territory="Carthago" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="warelephant" territory="Lilybaeum" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Lilybaeum" quantity="8" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Thapsus" quantity="3" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Caralis" quantity="3" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Melita" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Aleria" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Palma" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Carthago Nova" quantity="3" owner="Carthage"/>
+      <unitPlacement unitType="swordman" territory="Carthago Nova" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Corduba" quantity="4" owner="Carthage"/>
+      <unitPlacement unitType="swordman" territory="Corduba" quantity="3" owner="Carthage"/>
+      <unitPlacement unitType="cavalry" territory="Corduba" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Hispatis" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="swordman" territory="Hispatis" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="swordman" territory="Acci" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Gades" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="swordman" territory="Gades" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="SZ 14" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="SZ 32" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="trireme" territory="SZ 32" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="SZ 36" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="trireme" territory="SZ 36" quantity="1" owner="Carthage"/>
+      <!-- Parthia Unit Placements -->
+      <unitPlacement unitType="spearman" territory="Persepolis" quantity="4" owner="Parthia"/>
+      <unitPlacement unitType="archer" territory="Persepolis" quantity="2" owner="Parthia"/>
+      <unitPlacement unitType="city" territory="Persepolis" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="cataphract" territory="Persepolis" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="cavalry" territory="Persepolis" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="cavalry" territory="Ctesiphon" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="spearman" territory="Ctesiphon" quantity="7" owner="Parthia"/>
+      <unitPlacement unitType="horsearcher" territory="Ctesiphon" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="archer" territory="Ctesiphon" quantity="3" owner="Parthia"/>
+      <unitPlacement unitType="cataphract" territory="Ctesiphon" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="cavalry" territory="Susa" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="cataphract" territory="Susa" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="spearman" territory="Susa" quantity="7" owner="Parthia"/>
+      <unitPlacement unitType="horsearcher" territory="Susa" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="archer" territory="Susa" quantity="3" owner="Parthia"/>
+      <unitPlacement unitType="spearman" territory="Ecbatana" quantity="4" owner="Parthia"/>
+      <unitPlacement unitType="horsearcher" territory="Ecbatana" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="archer" territory="Ecbatana" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="spearman" territory="Cyropolis" quantity="3" owner="Parthia"/>
+      <unitPlacement unitType="horsearcher" territory="Cyropolis" quantity="2" owner="Parthia"/>
+      <unitPlacement unitType="archer" territory="Cyropolis" quantity="1" owner="Parthia"/>
+      <unitPlacement unitType="bireme" territory="SZ 86" quantity="1" owner="Parthia"/>
+      <!-- RomanRepublic Unit Placements -->
+      <unitPlacement unitType="cavalry" territory="Roma" quantity="2" owner="RomanRepublic"/>
+      <unitPlacement unitType="city" territory="Roma" quantity="1" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Roma" quantity="4" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Roma" quantity="5" owner="RomanRepublic"/>
+      <unitPlacement unitType="ballista" territory="Roma" quantity="1" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Arretium" quantity="3" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Arretium" quantity="4" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Salapia" quantity="2" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Salapia" quantity="3" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Ariminum" quantity="2" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Ariminum" quantity="3" owner="RomanRepublic"/>
+      <unitPlacement unitType="ballista" territory="Ariminum" quantity="1" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Capua" quantity="3" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Capua" quantity="4" owner="RomanRepublic"/>
+      <unitPlacement unitType="cavalry" territory="Capua" quantity="1" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Tarentum" quantity="2" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Tarentum" quantity="1" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Croton" quantity="2" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Croton" quantity="3" owner="RomanRepublic"/>
+      <unitPlacement unitType="fort" territory="Messana" quantity="4" owner="RomanRepublic"/>
+      <unitPlacement unitType="legionaire" territory="Messana" quantity="4" owner="RomanRepublic"/>
+      <unitPlacement unitType="velites" territory="Messana" quantity="5" owner="RomanRepublic"/>
+      <unitPlacement unitType="bireme" territory="SZ 28" quantity="2" owner="RomanRepublic"/>
+      <unitPlacement unitType="trireme" territory="SZ 28" quantity="2" owner="RomanRepublic"/>
+      <unitPlacement unitType="bireme" territory="SZ 44" quantity="1" owner="RomanRepublic"/>
+      <!-- Macedonia Unit Placements -->
+      <unitPlacement unitType="cavalry" territory="Thessalonica" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="city" territory="Thessalonica" quantity="1" owner="Macedonia"/>
+      <unitPlacement unitType="hoplite" territory="Thessalonica" quantity="3" owner="Macedonia"/>
+      <unitPlacement unitType="peltasts" territory="Thessalonica" quantity="4" owner="Macedonia"/>
+      <unitPlacement unitType="swordman" territory="Thessalonica" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="hoplite" territory="Larissa" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="peltasts" territory="Larissa" quantity="5" owner="Macedonia"/>
+      <unitPlacement unitType="cavalry" territory="Larissa" quantity="1" owner="Macedonia"/>
+      <unitPlacement unitType="swordman" territory="Larissa" quantity="1" owner="Macedonia"/>
+      <unitPlacement unitType="hoplite" territory="Corinth" quantity="5" owner="Macedonia"/>
+      <unitPlacement unitType="peltasts" territory="Corinth" quantity="4" owner="Macedonia"/>
+      <unitPlacement unitType="cavalry" territory="Corinth" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="swordman" territory="Corinth" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="hoplite" territory="Dodona" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="peltasts" territory="Dodona" quantity="4" owner="Macedonia"/>
+      <unitPlacement unitType="hoplite" territory="Pella" quantity="1" owner="Macedonia"/>
+      <unitPlacement unitType="peltasts" territory="Pella" quantity="3" owner="Macedonia"/>
+      <unitPlacement unitType="cavalry" territory="Pella" quantity="1" owner="Macedonia"/>
+      <unitPlacement unitType="peltasts" territory="Philippopolis" quantity="4" owner="Macedonia"/>
+      <unitPlacement unitType="cavalry" territory="Philippopolis" quantity="1" owner="Macedonia"/>
+      <unitPlacement unitType="hoplite" territory="Philippopolis" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="bireme" territory="SZ 70" quantity="2" owner="Macedonia"/>
+      <unitPlacement unitType="trireme" territory="SZ 70" quantity="1" owner="Macedonia"/>
+      <!-- Egypt Unit Placements -->
+      <unitPlacement unitType="chariot" territory="Alexandria" quantity="2" owner="Egypt"/>
+      <unitPlacement unitType="city" territory="Alexandria" quantity="1" owner="Egypt"/>
+      <unitPlacement unitType="spearman" territory="Alexandria" quantity="4" owner="Egypt"/>
+      <unitPlacement unitType="axeman" territory="Alexandria" quantity="3" owner="Egypt"/>
+      <unitPlacement unitType="archer" territory="Alexandria" quantity="2" owner="Egypt"/>
+      <unitPlacement unitType="chariot" territory="Memphis" quantity="1" owner="Egypt"/>
+      <unitPlacement unitType="spearman" territory="Memphis" quantity="5" owner="Egypt"/>
+      <unitPlacement unitType="axeman" territory="Memphis" quantity="2" owner="Egypt"/>
+      <unitPlacement unitType="archer" territory="Memphis" quantity="1" owner="Egypt"/>
+      <unitPlacement unitType="spearman" territory="Hermopolis" quantity="2" owner="Egypt"/>
+      <unitPlacement unitType="axeman" territory="Hermopolis" quantity="4" owner="Egypt"/>
+      <unitPlacement unitType="archer" territory="Hermopolis" quantity="3" owner="Egypt"/>
+      <unitPlacement unitType="spearman" territory="Jerusalem" quantity="5" owner="Egypt"/>
+      <unitPlacement unitType="axeman" territory="Jerusalem" quantity="2" owner="Egypt"/>
+      <unitPlacement unitType="chariot" territory="Jerusalem" quantity="1" owner="Egypt"/>
+      <unitPlacement unitType="spearman" territory="Sidon" quantity="6" owner="Egypt"/>
+      <unitPlacement unitType="axeman" territory="Sidon" quantity="3" owner="Egypt"/>
+      <unitPlacement unitType="chariot" territory="Sidon" quantity="2" owner="Egypt"/>
+      <unitPlacement unitType="spearman" territory="Salamis" quantity="2" owner="Egypt"/>
+      <unitPlacement unitType="bireme" territory="SZ 57" quantity="3" owner="Egypt"/>
+      <unitPlacement unitType="trireme" territory="SZ 57" quantity="1" owner="Egypt"/>
+      <unitPlacement unitType="trireme" territory="SZ 58" quantity="1" owner="Egypt"/>
+      <!-- Seleucid Unit Placements -->
+      <unitPlacement unitType="cavalry" territory="Antioch" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="city" territory="Antioch" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Antioch" quantity="4" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Antioch" quantity="6" owner="Seleucid"/>
+      <unitPlacement unitType="legionaire" territory="Antioch" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="cataphract" territory="Antioch" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="cavalry" territory="Seleucia" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Seleucia" quantity="5" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Seleucia" quantity="5" owner="Seleucid"/>
+      <unitPlacement unitType="legionaire" territory="Seleucia" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="cataphract" territory="Seleucia" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Sardis" quantity="4" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Sardis" quantity="3" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Tarsus" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Tarsus" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Attalia" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Attalia" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Edessa" quantity="3" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Edessa" quantity="3" owner="Seleucid"/>
+      <unitPlacement unitType="legionaire" territory="Edessa" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="cavalry" territory="Edessa" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Hatra" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="cavalry" territory="Hatra" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="cataphract" territory="Hatra" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Emesa" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Emesa" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="legionaire" territory="Emesa" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="hoplite" territory="Damascus" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="peltasts" territory="Damascus" quantity="3" owner="Seleucid"/>
+      <unitPlacement unitType="legionaire" territory="Damascus" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="cavalry" territory="Damascus" quantity="2" owner="Seleucid"/>
+      <unitPlacement unitType="bireme" territory="SZ 61" quantity="1" owner="Seleucid"/>
+      <unitPlacement unitType="trireme" territory="SZ 61" quantity="1" owner="Seleucid"/>
+      <!-- Numidia Unit Placements -->
+      <unitPlacement unitType="cavalry" territory="Cirta" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Cirta" quantity="5" owner="Numidia"/>
+      <unitPlacement unitType="swordman" territory="Cirta" quantity="3" owner="Numidia"/>
+      <unitPlacement unitType="archer" territory="Cirta" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Zama" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="archer" territory="Zama" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="cavalry" territory="Zama" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Capsa" quantity="3" owner="Numidia"/>
+      <unitPlacement unitType="cavalry" territory="Hippo Regius" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Hippo Regius" quantity="3" owner="Numidia"/>
+      <unitPlacement unitType="archer" territory="Hippo Regius" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Theveste" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="cavalry" territory="Theveste" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Igilgili" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="cavalry" territory="Igilgili" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Siwa" quantity="4" owner="Numidia"/>
+      <unitPlacement unitType="archer" territory="Siwa" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Paliurus" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="cavalry" territory="Paliurus" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Berenice" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="cavalry" territory="Berenice" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="spearman" territory="Leptis Magna" quantity="3" owner="Numidia"/>
+      <unitPlacement unitType="city" territory="Leptis Magna" quantity="1" owner="Numidia"/>
+      <unitPlacement unitType="cavalry" territory="Leptis Magna" quantity="2" owner="Numidia"/>
+      <unitPlacement unitType="bireme" territory="SZ 29" quantity="2" owner="Numidia"/>
+      <!-- Neutral Unit Placements -->
+      <unitPlacement unitType="cavalry" territory="Cartenna" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Cartenna" quantity="1"/>
+      <unitPlacement unitType="archer" territory="Cartenna" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Siga" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Banasa" quantity="1"/>
+      <unitPlacement unitType="archer" territory="Banasa" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Tingis" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Tingis" quantity="1"/>
+      <unitPlacement unitType="archer" territory="Tingis" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Auzia" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Volubilis" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Thenae" quantity="2"/>
+      <unitPlacement unitType="archer" territory="Thenae" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Sabrata" quantity="1"/>
+      <unitPlacement unitType="archer" territory="Sabrata" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Oea" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Cyrene" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Cyrene" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Paraetonium" quantity="3"/>
+      <unitPlacement unitType="spearman" territory="Aelana" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Petra" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Petra" quantity="2"/>
+      <unitPlacement unitType="axeman" territory="Petra" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Bostra" quantity="4"/>
+      <unitPlacement unitType="archer" territory="Bostra" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Palmyra" quantity="4"/>
+      <unitPlacement unitType="cavalry" territory="Palmyra" quantity="3"/>
+      <unitPlacement unitType="spearman" territory="Thamea" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Euphrates" quantity="4"/>
+      <unitPlacement unitType="spearman" territory="Gerrha" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Vologesia" quantity="3"/>
+      <unitPlacement unitType="spearman" territory="Teredon" quantity="4"/>
+      <unitPlacement unitType="spearman" territory="Babylon" quantity="7"/>
+      <unitPlacement unitType="archer" territory="Babylon" quantity="3"/>
+      <unitPlacement unitType="spearman" territory="Ninive" quantity="5"/>
+      <unitPlacement unitType="archer" territory="Ninive" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Gazaca" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Gazaca" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Amida" quantity="4"/>
+      <unitPlacement unitType="archer" territory="Amida" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Melitene" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Melitene" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Satala" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Satala" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Tavium" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Tavium" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Pessinus" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Halicarnassus" quantity="5"/>
+      <unitPlacement unitType="archer" territory="Halicarnassus" quantity="3"/>
+      <unitPlacement unitType="spearman" territory="Cydonia" quantity="2"/>
+      <unitPlacement unitType="archer" territory="Cydonia" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Nicaea" quantity="4"/>
+      <unitPlacement unitType="spearman" territory="Heraclea Pontica" quantity="3"/>
+      <unitPlacement unitType="spearman" territory="Sinope" quantity="5"/>
+      <unitPlacement unitType="archer" territory="Sinope" quantity="3"/>
+      <unitPlacement unitType="axeman" territory="Sinope" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Trapezus" quantity="4"/>
+      <unitPlacement unitType="archer" territory="Trapezus" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Phasis" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Phasis" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Phasis" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Artaxata" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Artaxata" quantity="3"/>
+      <unitPlacement unitType="spearman" territory="Nexuana" quantity="1"/>
+      <unitPlacement unitType="archer" territory="Nexuana" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Sanina" quantity="4"/>
+      <unitPlacement unitType="archer" territory="Sanina" quantity="2"/>
+      <unitPlacement unitType="spearman" territory="Albana" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Albana" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Albana" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Armavira" quantity="7"/>
+      <unitPlacement unitType="archer" territory="Armavira" quantity="1"/>
+      <unitPlacement unitType="spearman" territory="Pityus" quantity="4"/>
+      <unitPlacement unitType="axeman" territory="Majar" quantity="2"/>
+      <unitPlacement unitType="swordman" territory="Majar" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Sinda" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Sarai" quantity="5"/>
+      <unitPlacement unitType="swordman" territory="Azara" quantity="1"/>
+      <unitPlacement unitType="barbarian" territory="Azara" quantity="2"/>
+      <unitPlacement unitType="archer" territory="Tanais" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Tanais" quantity="4"/>
+      <unitPlacement unitType="swordman" territory="Olbia" quantity="2"/>
+      <unitPlacement unitType="axeman" territory="Olbia" quantity="2"/>
+      <unitPlacement unitType="swordman" territory="Theodesia" quantity="3"/>
+      <unitPlacement unitType="axeman" territory="Theodesia" quantity="1"/>
+      <unitPlacement unitType="barbarian" territory="Theodesia" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Tyras" quantity="2"/>
+      <unitPlacement unitType="archer" territory="Tyras" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Istropolis" quantity="4"/>
+      <unitPlacement unitType="swordman" territory="Sarmizegetusa" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Sarmizegetusa" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Axiopolis" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Axiopolis" quantity="2"/>
+      <unitPlacement unitType="swordman" territory="Odessus" quantity="3"/>
+      <unitPlacement unitType="axeman" territory="Odessus" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Byzantium" quantity="4"/>
+      <unitPlacement unitType="axeman" territory="Byzantium" quantity="2"/>
+      <unitPlacement unitType="archer" territory="Byzantium" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Nicopolis" quantity="2"/>
+      <unitPlacement unitType="archer" territory="Nicopolis" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Durostorum" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Sardica" quantity="2"/>
+      <unitPlacement unitType="barbarian" territory="Sardica" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Apollonia" quantity="4"/>
+      <unitPlacement unitType="archer" territory="Apollonia" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Salonae" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Salonae" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Senio" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Sirmium" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Sirmium" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Singidinum" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Singidinum" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Singidinum" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Tibiscum" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Tibiscum" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Napoca" quantity="2"/>
+      <unitPlacement unitType="swordman" territory="Aquincum" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Aquincum" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Vindobona" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Vindobona" quantity="4"/>
+      <unitPlacement unitType="swordman" territory="Lauriacum" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Lauriacum" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Aemona" quantity="2"/>
+      <unitPlacement unitType="axeman" territory="Aemona" quantity="1"/>
+      <unitPlacement unitType="archer" territory="Aemona" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Patavium" quantity="4"/>
+      <unitPlacement unitType="axeman" territory="Patavium" quantity="5"/>
+      <unitPlacement unitType="archer" territory="Patavium" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Veldidena" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Veldidena" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Cestra Regina" quantity="4"/>
+      <unitPlacement unitType="axeman" territory="Cestra Regina" quantity="5"/>
+      <unitPlacement unitType="barbarian" territory="Cestra Regina" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Vindonissa" quantity="1"/>
+      <unitPlacement unitType="archer" territory="Vindonissa" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Verona" quantity="3"/>
+      <unitPlacement unitType="axeman" territory="Verona" quantity="2"/>
+      <unitPlacement unitType="swordman" territory="Mediolanum" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Mediolanum" quantity="4"/>
+      <unitPlacement unitType="swordman" territory="Genua" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Genua" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Massilia" quantity="4"/>
+      <unitPlacement unitType="archer" territory="Massilia" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Nemausus" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Nemausus" quantity="4"/>
+      <unitPlacement unitType="swordman" territory="Logdunum" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Logdunum" quantity="3"/>
+      <unitPlacement unitType="barbarian" territory="Logdunum" quantity="2"/>
+      <unitPlacement unitType="axeman" territory="Stabula" quantity="2"/>
+      <unitPlacement unitType="barbarian" territory="Stabula" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Alesia" quantity="2"/>
+      <unitPlacement unitType="barbarian" territory="Alesia" quantity="3"/>
+      <unitPlacement unitType="axeman" territory="Namnetes" quantity="3"/>
+      <unitPlacement unitType="barbarian" territory="Namnetes" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Burdigala" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Burdigala" quantity="2"/>
+      <unitPlacement unitType="barbarian" territory="Burdigala" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Augustoritum" quantity="2"/>
+      <unitPlacement unitType="swordman" territory="Narbo" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Narbo" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Tolosa" quantity="2"/>
+      <unitPlacement unitType="axeman" territory="Tolosa" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Elusa" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Elusa" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Pompaelo" quantity="2"/>
+      <unitPlacement unitType="archer" territory="Pompaelo" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Cesaraugusta" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Cesaraugusta" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Barcino" quantity="3"/>
+      <unitPlacement unitType="axeman" territory="Barcino" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Barcino" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Tarraco" quantity="3"/>
+      <unitPlacement unitType="axeman" territory="Tarraco" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Valentia" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Valentia" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Valentia" quantity="2"/>
+      <unitPlacement unitType="swordman" territory="Castulo" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Castulo" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Toletum" quantity="4"/>
+      <unitPlacement unitType="cavalry" territory="Palantia" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Salmantica" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Salmantica" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Lucus Augusti" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Brigantium" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Cale" quantity="3"/>
+      <unitPlacement unitType="swordman" territory="Olisipo" quantity="3"/>
+      <unitPlacement unitType="archer" territory="Olisipo" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Olisipo" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Scallabis" quantity="1"/>
+      <unitPlacement unitType="axeman" territory="Scallabis" quantity="1"/>
+      <unitPlacement unitType="cavalry" territory="Scallabis" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Emerita Augusta" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Emerita Augusta" quantity="1"/>
+      <unitPlacement unitType="swordman" territory="Pax Julia" quantity="3"/>
+      <unitPlacement unitType="cavalry" territory="Pax Julia" quantity="1"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Macedonia" resource="PUs" quantity="29"/>
+      <resourceGiven player="GreekCityStates" resource="PUs" quantity="34"/>
+      <resourceGiven player="Carthage" resource="PUs" quantity="53"/>
+      <resourceGiven player="RomanRepublic" resource="PUs" quantity="43"/>
+      <resourceGiven player="Egypt" resource="PUs" quantity="47"/>
+      <resourceGiven player="Parthia" resource="PUs" quantity="30"/>
+      <resourceGiven player="Seleucid" resource="PUs" quantity="55"/>
+      <resourceGiven player="Numidia" resource="PUs" quantity="17"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <property name="Battleships repair at beginning of round" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Battleships repair at end of round" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="RomanRepublic bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Macedonia bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Egypt bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Seleucid bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Carthage bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Parthia bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="GreekCityStates bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Numidia bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="8 Capital Victory" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="7 Capital Victory" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="6 Capital Victory" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Triggered Victory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- Unit Placement Restrictions are restrictions on the placement of units: unitPlacementRestrictions, unitPlacementOnlyAllowedIn, canOnlyBePlacedInTerritoryValuedAtX, requiresUnits, -->
+    <property name="Unit Placement Restrictions" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Battleships repair at end of round" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="270BC" editable="false"/>
+    <!-- notes appear in the notes menu in the main screen, format as html -->
+    <property name="notes" value="         &lt;html&gt;         &lt;body bgcolor=&quot;776644&quot; align=&quot;center&quot;&gt;         &lt;h1 style=&quot;font-size:250%;color:red&quot; &gt;270BC &lt;/h1&gt; &lt;br&gt; &lt;br&gt;         &lt;b&gt; Created by: Doctor Che &lt;/b&gt; &lt;br&gt;         &lt;br&gt;Make yourself an empire around the Mediterranean Ocean (the known world),         &lt;br&gt;in the era when Hellenes, Romans and Phoenicians ruled. Choose from a arsenal of         &lt;br&gt;legionaires, hoplites, onagers, cataphracts, triremes, warelephants and many more.         &lt;br&gt;Territory names are based on cities at the time given or         &lt;br&gt;take 500 years (not easy finding names for all).         &lt;br&gt;         &lt;br&gt;         &lt;table border=&quot;1&quot;bgcolor=&quot;444444&quot;&gt;         &lt;tr&gt;         &lt;th style=&quot;font-size:120%;color:red&quot;colspan=&quot;2&quot;&gt;Alliances&lt;/th&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;th bgcolor=&quot;DD0000&quot;&gt;RomanAlliance&lt;/th&gt;         &lt;th bgcolor=&quot;CCBBAA&quot;&gt;AntiRomanAlliance&lt;/th&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td bgcolor=&quot;DD0000&quot;&gt;RomanRepublic&lt;/td&gt;         &lt;td bgcolor=&quot;CCBBAA&quot;&gt;Carthage&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td bgcolor=&quot;DD0000&quot;&gt;GreekCityStates&lt;/td&gt;         &lt;td bgcolor=&quot;CCBBAA&quot;&gt;Macedonia&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td bgcolor=&quot;DD0000&quot;&gt;Egypt&lt;/td&gt;         &lt;td bgcolor=&quot;CCBBAA&quot;&gt;Seleucid&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td bgcolor=&quot;DD0000&quot;&gt;Parthia&lt;/td&gt;         &lt;td bgcolor=&quot;CCBBAA&quot;&gt;Numidia&lt;/td&gt;         &lt;/tr&gt;         &lt;/table&gt;         &lt;br&gt;         Unit size should be 87.5%.&lt;br&gt;         &lt;br&gt;         &lt;br&gt;         &lt;b&gt; Units Stat:&lt;/b&gt;&lt;br&gt;         &lt;br&gt;         &lt;table border=&quot;1&quot;bgcolor=&quot;7744AA&quot;&gt;         &lt;tr&gt;         &lt;th&gt;Unit name&lt;/th&gt;         &lt;th&gt;cost&lt;/th&gt;         &lt;th&gt;att&lt;/th&gt;         &lt;th&gt;def&lt;/th&gt;         &lt;th&gt;move&lt;/th&gt;         &lt;th&gt;tCost &lt;/th&gt;         &lt;th&gt;tCap&lt;/th&gt;         &lt;th&gt;artSup&lt;/th&gt;         &lt;th&gt;art&lt;/th&gt;         &lt;th&gt;blitz&lt;/th&gt;         &lt;th&gt;2Hit&lt;/th&gt;         &lt;th&gt;notes&lt;/th&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;archer&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;axeman&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;ballista&lt;/td&gt;         &lt;td&gt;5&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;barbarian&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;bireme&lt;/td&gt;         &lt;td&gt;7&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;cataphract&lt;/td&gt;         &lt;td&gt;7&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;cavalry&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;chariot&lt;/td&gt;         &lt;td&gt;6&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;city&lt;/td&gt;         &lt;td&gt;15&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;factory&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;fort&lt;/td&gt;         &lt;td&gt;6&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;0&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;normal placement with city, &lt;br&gt;1 per territory per turn with legionaire&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;hoplite&lt;/td&gt;         &lt;td&gt;5&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;horsearcher&lt;/td&gt;         &lt;td&gt;6&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;legionaire&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;onager&lt;/td&gt;         &lt;td&gt;7&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;peltasts&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;slingers&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;spearman&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;swordman&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;trireme&lt;/td&gt;         &lt;td&gt;12&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;6&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;td&gt;velites&lt;/td&gt;         &lt;td&gt;3&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;/tr&gt;         &lt;tr bgcolor=&quot;77AA11&quot;&gt;         &lt;td&gt;warelephant&lt;/td&gt;         &lt;td&gt;14&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;2&lt;/td&gt;         &lt;td&gt;1&lt;/td&gt;         &lt;td&gt;4&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;&lt;/td&gt;         &lt;td&gt;true&lt;/td&gt;         &lt;td&gt;provides +1/+1 to up to 2 other units&lt;/td&gt;         &lt;/tr&gt;         &lt;tr&gt;         &lt;th&gt;Unit name&lt;/th&gt;         &lt;th&gt;cost&lt;/th&gt;         &lt;th&gt;att&lt;/th&gt;         &lt;th&gt;def&lt;/th&gt;         &lt;th&gt;move&lt;/th&gt;         &lt;th&gt;tCost &lt;/th&gt;         &lt;th&gt;tCap&lt;/th&gt;         &lt;th&gt;artSup&lt;/th&gt;         &lt;th&gt;art&lt;/th&gt;         &lt;th&gt;blitz&lt;/th&gt;         &lt;th&gt;2Hit&lt;/th&gt;         &lt;th&gt;notes&lt;/th&gt;         &lt;/tr&gt;         &lt;/table&gt;         &lt;br&gt;         &lt;br&gt;         For more Triplea maps visit this website&lt;br&gt;         http://gormeirik.googlepages.com/tripleamaps         &lt;br&gt;         &lt;br&gt;Modified by Veqryn and Cernel.         &lt;br&gt;Map Reliefs and Sounds by Hepster and Veqryn.         &lt;br&gt;         &lt;/html&gt;          "/>
+  </propertyList>
+</game>

@@ -1,11 +1,12 @@
 bot_user: "bot"
 bot_folder: "/home/{{ bot_user }}"
+bot_version: "{{ version }}"
 
 # The location where we will install the bot binaries
-bot_install_home: "{{ bot_folder }}/{{ version }}"
+bot_install_home: "{{ bot_folder }}/{{ bot_version }}"
 
 # The location of the jar executable that we will run to launch the bot server.
-bot_jar: "{{ bot_install_home }}/triplea-game-headless-{{ version }}.jar"
+bot_jar: "{{ bot_install_home }}/bin/triplea-game-headless-{{ bot_version }}.jar"
 
 # A folder where the bot server will find maps.
 bot_maps_folder: "{{ bot_folder }}/maps"
@@ -13,10 +14,10 @@ bot_maps_folder: "{{ bot_folder }}/maps"
 # The URI of the lobby that the bot would connect to.
 bot_lobby_uri: "{{ lobby_uri }}"
 
-bot_max_memory: "176m"
+bot_max_memory: "196m"
 
 # Each bot number matches a bot instance that will be deployed and started.
-bot_numbers: ["01", "02", "03", "04", "05"]
+bot_numbers: ["01", "02", "03", "04" ]
 
 # Bot prefix we expect to be overriden in inventory.
 # We deploy bots to multiple server, to keep the host numbers unique, there is a prefix.
@@ -24,12 +25,9 @@ bot_numbers: ["01", "02", "03", "04", "05"]
 # EG: with bot_prefix = 1, and bot_number=01, the bot number in the bot name will be '101'.
 bot_prefix: ""
 
-# Using latest flag indicates we should use assets that are built locally. False indicates we
-# will download assets for a target version.
-using_latest: true
-
-# Download URL for grabbing bot artifacts, not used if using_latest is false.
-zip_download: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/triplea-game-headless-{{ version }}.zip"
+# Download URL for grabbing bot artifacts, used only in production release builds, prerelease
+# builds use a locally built artifact.
+zip_download: "https://github.com/triplea-game/triplea/releases/download/{{ bot_version }}/triplea-game-headless-{{ bot_version }}.zip"
 
 # Name of the bot server, this will typically be overriden in inventory. The final name of the bot host is
 # concatenation of the "Bot" the "bot name", and the "bot number" with prefix.
@@ -42,3 +40,7 @@ bot_run_args:
   triplea.name: "Bot{{ bot_prefix }}${BOT_NUMBER}_{{ bot_name }}"
   triplea.lobby.uri: "{{ bot_lobby_uri }}"
   triplea.map.folder: "{{ bot_maps_folder }}"
+
+# When set to true, all maps on the bot server will be updated (overwritten).
+update_maps: false
+

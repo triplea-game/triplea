@@ -1,25 +1,33 @@
-[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
-[![Build Status](https://travis-ci.com/triplea-game/triplea.svg?branch=master)](https://travis-ci.com/triplea-game/triplea)
-[![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
-[![Maintainability](https://api.codeclimate.com/v1/badges/fa814ed45202485a92bf/maintainability)](https://codeclimate.com/github/triplea-game/triplea/maintainability)
-
-## [Download and install TripleA](http://triplea-game.org/download/)
+## [Download TripleA](http://triplea-game.org/download/)
 TripleA is a free to play, volunteer run, 100% open source gaming community.
 
-![screenshot from 2018-02-08 22-58-33](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
+  - ***[Forums: Discussion, Questions & Help](https://forums.triplea-game.org/category/10/help-questions)***
+  - ***[Bug Tracker](https://github.com/triplea-game/triplea/issues/new)***
+  - ***[Developer Setup Guide](/docs/development/README.md)***
+    - [![Maintainability](https://api.codeclimate.com/v1/badges/fa814ed45202485a92bf/maintainability)](https://codeclimate.com/github/triplea-game/triplea/maintainability)
 
-  - ***Contact-us***:
-    - [Forums: Questions & Help](https://forums.triplea-game.org/category/10/help-questions)
-    - [Bug Tracker](https://github.com/triplea-game/triplea/issues/new)
-  - ***Technical Documentation***:
-    - Map Making, Admin, and Developer Docs are on the [wiki](https://github.com/triplea-game/triplea/wiki)
+![Game Board Screenshot](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
-## License
+## About TripleA
+
+TripleA is a fan created (2002), open source strategy and board game engine where you can play Axis and
+Allies style rules on community created maps. TripleA has a well-developed AI and an active lobby for live
+multiplayer games. Over 100 user-created maps are available via in-game download.
+
+In TripleA you can recreate World War 2 with the Axis pushing through to Moscow and the Allies desperately
+fighting back. Or recreate Napoleon's march across Europe, or Rome defeating the Carthaginian Empire,
+or Sauron conquering Middle Earth! If you have ever played a game where you push little plastic
+pieces around, roll dice and conquer the lands of your enemy, you will be able to jump right into TripleA!
+
+![europe](https://user-images.githubusercontent.com/12397753/132109225-71e6c02d-425e-4b8d-9537-7ac66baebbfd.jpeg)
+![middle-earth](https://user-images.githubusercontent.com/12397753/132109223-14a0aa2e-a950-4a5e-9937-3c4b52211cd9.jpeg)
+
+## License [![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
 
 This project is licensed under the terms of the
 [GNU General Public License v3.0 with additional permissions](/LICENSE).
 
-Copyright (C) 2001-2019 TripleA contributors.
+Copyright (C) 2001-2021 TripleA contributors.
 
 This program is free software; you can redistribute it and/or modify it under the terms
 of the GNU General Public License as published by the Free Software Foundation; either

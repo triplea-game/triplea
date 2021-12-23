@@ -1,0 +1,160 @@
+#!/bin/bash
+
+set -eu
+
+ENVIRONMENT_VAGRANT=vagrant
+ENVIRONMENT_PRERELEASE=prerelease
+ENVIRONMENT_PRODUCTION=production
+
+DEPLOY_TYPE_FULL=full
+DEPLOY_TYPE_MINIMAL=minimal
+
+
+# This script orchestrates deployments via ansible. If a prerelease deployment is done then
+# fresh artifacts are built and deployed.
+
+function usage() {
+  echo "usage: $0 [options]"
+  echo ""
+  echo "Examples:"
+  echo "$0 --environment $ENVIRONMENT_VAGRANT"
+  echo "$0 --environment $ENVIRONMENT_PRERELEASE --deploy-type $DEPLOY_TYPE_MINIMAL"
+  echo ""
+  echo "[options]"
+  echo "  --environment [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRERELEASE|$ENVIRONMENT_PRODUCTION]"
+  echo "      The target environment for the deployment."
+  echo "         $ENVIRONMENT_VAGRANT is an environment that can be launched locally via a VM"
+  echo "  --deploy-type [$DEPLOY_TYPE_MINIMAL|$DEPLOY_TYPE_FULL]"
+  echo "      Defaults to '$DEPLOY_TYPE_FULL'"
+  echo "      $DEPLOY_TYPE_FULL: deployment will do the entire setup"
+  echo "      $DEPLOY_TYPE_MINIMAL: minimum deployment needed to deploy updated code and configs"
+  echo "  --tags [ansible tags]"
+  echo "      Defaults to the empty set"
+  echo "      Any tags that should be passed to ansible"
+  exit 1
+}
+
+DEPLOY_TYPE="$DEPLOY_TYPE_FULL"
+ENVIRONMENT=""
+TAGS=""
+
+if [[ $# -eq 0 ]]; then
+  usage
+fi
+
+
+while [[ $# -gt 1 ]]; do
+  key="$1"
+
+  case $key in
+    --environment)
+      ENVIRONMENT="$2"
+      if [[ "$ENVIRONMENT" != "$ENVIRONMENT_PRERELEASE" \
+         && "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" \
+         && "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]]; then
+        echo "Error, invalid value for --environment:  $ENVIRONMENT"
+        usage
+      fi
+      shift # past argument
+      shift # past value
+      ;;
+    --deploy-type)
+      DEPLOY_TYPE="$2"
+      if [[ "$DEPLOY_TYPE" != "$DEPLOY_TYPE_MINIMAL" \
+         && "$DEPLOY_TYPE" != "$DEPLOY_TYPE_FULL" ]]; then
+        echo "Error, invalid value for --deploy-type:  $DEPLOY_TYPE"
+        usage
+      fi
+      shift # past argument
+      shift # past value
+      ;;
+    --tags)
+      TAGS="$2"
+      if [[ "$TAGS" =~ " " ]]; then
+        echo "Error, invalid value for --tags:  TAGS"
+        echo "Tags must not contain spaces, use comma to delimit tags"
+        exit 1
+      fi
+      shift # past argument
+      shift # past value
+      ;;
+    *)
+      echo "Error, unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+if [ -z "$ENVIRONMENT" ]; then
+  echo "Missing arg: --environment"
+  usage
+fi
+
+ANSIBLE_ARG_TAGS=""
+if [[ "$DEPLOY_TYPE" == "$DEPLOY_TYPE_MINIMAL" && -n "${TAGS:-}" ]]; then
+  ANSIBLE_ARG_TAGS="--tags $TAGS,deploy"
+elif [[ -n "${TAGS:-}" ]]; then
+  ANSIBLE_ARG_TAGS="--tags $TAGS"
+fi
+
+# If we are deploying to non-vagrant environment then we will need
+# an ansible vault passphrase value to decrypt secrets.
+ANSIBLE_ARG_VAULT_PASSWORD=""
+if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
+  VAULT_PASSWORD_FILE="vault_password"
+  if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
+    echo "Error: file: $VAULT_PASSWORD_FILE must exist"
+    exit 1
+  fi
+
+  ANSIBLE_ARG_VAULT_PASSWORD="--vault-password-file $VAULT_PASSWORD_FILE"
+
+  # Decrypt SSH key and add it to ssh agent
+  # Once available to SSH agent, when making SSH connections
+  # this key will be offered by SSH for authentication.
+  # This allows ansible to SSH to target servers and run
+  # deployment commands. We assume servers have been created
+  # with the corresponding public key already installed.
+  ansible-vault view \
+    --vault-password-file="$VAULT_PASSWORD_FILE" \
+    ansible_ssh_key.ed25519 \
+  | ssh-add -
+fi
+
+# Parse version number from product.properties
+VERSION=$(sed 's/.*=\s*//' "$(find .. -path "*/src/main/*" -name "product.properties")")
+
+# If we are deploying to production then we will download artifacts by version number
+# Otherwise we need to build the artifacts that we will be deploying
+if [ "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" ]; then
+  .include/build_latest_artifacts "$VERSION"
+fi
+
+# Do not execute release tasks unless we are deploying to production.
+# For example a release task would be to download an artifact and
+# a prerelease task would be to upload an artifact
+SKIP_TAGS=release
+if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
+  SKIP_TAGS=prerelease
+fi
+
+# Install mitogen
+# Mitogen offers improved command pipelining and faster ansible execution
+# The mitogen execution strategy is configured in 'ansible.cfg'
+# See: https://mitogen.networkgenomics.com/ansible_detailed.html
+"$(dirname "$0")/.include/install-mitogen"
+
+
+# Run deployment
+ansible-playbook \
+  --extra-vars "version=$VERSION" \
+  --skip-tags $SKIP_TAGS \
+   --inventory ansible/inventory/$ENVIRONMENT \
+   $ANSIBLE_ARG_VAULT_PASSWORD $ANSIBLE_ARG_TAGS ansible/site.yml
+
+# Do Cleanup
+if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
+  echo "Cleanup, removing old kernel patches.."
+  ansible -i ansible/inventory/$ENVIRONMENT all --become-user=root -m shell -a \
+    "sudo apt autoremove -y"
+fi

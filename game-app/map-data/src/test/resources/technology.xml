@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<game>
+    <technology>
+        <technologies>
+            <techname name="armour"/>
+            <techname name="tracer_rounds"/>
+            <techname name="creeping_barrage" tech="improvedArtillerySupport"/>
+        </technologies>
+        <playerTech player="USA">
+            <category name="Land">
+                <tech name="counter_battery_fire"/>
+                <tech name="mobile_warfare"/>
+                <tech name="factory_electrification"/>
+            </category>
+            <category name="Sea">
+                <tech name="antiSubmarine_warfare"/>
+            </category>
+            <category name="Air">
+                <tech name="radio"/>
+            </category>
+        </playerTech>
+        <playerTech player="UK">
+            <category name="Land">
+                <tech name="mobile_warfare"/>
+                <tech name="factory_electrification"/>
+            </category>
+            <category name="Sea">
+                <tech name="antiSubmarine_warfare"/>
+                <tech name="aircraftCarrier"/>
+            </category>
+            <category name="Air">
+                <tech name="airTraffic_control"/>
+                <tech name="strategic_bombing"/>
+                <tech name="radio"/>
+            </category>
+        </playerTech>
+    </technology>
+</game>
