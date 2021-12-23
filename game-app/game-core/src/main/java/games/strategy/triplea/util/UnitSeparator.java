@@ -33,7 +33,7 @@ public class UnitSeparator {
     @Builder.Default @Nullable final Map<Unit, Collection<Unit>> dependents = null;
     /** whether to categorize by movement */
     @Builder.Default final boolean movement = false;
-    /** whether to categorize by movement for air units only*/
+    /** whether to categorize by movement for air units only */
     @Builder.Default final boolean movementForAirUnitsOnly = false;
     /** whether to categorize by transport cost */
     @Builder.Default final boolean transportCost = false;
@@ -94,8 +94,8 @@ public class UnitSeparator {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (separatorCategories.movement
           || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))
-          || (separatorCategories.movementForAirUnitsOnly && isRelevantAirUnit(current))
-      ) {
+          || (separatorCategories.movementForAirUnitsOnly
+              && isAirWithHitPointsRemaining(current))) {
         unitMovement = current.getMovementLeft();
       }
       int unitTransportCost = -1;
@@ -134,7 +134,7 @@ public class UnitSeparator {
     return new TreeSet<>(categories.keySet());
   }
 
-  private static boolean isRelevantAirUnit(final Unit unit) {
+  private static boolean isAirWithHitPointsRemaining(final Unit unit) {
     return UnitAttachment.get(unit.getType()).getIsAir()
         && UnitAttachment.get(unit.getType()).getHitPoints() > 1;
   }

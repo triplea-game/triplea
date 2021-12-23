@@ -22,6 +22,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,28 +123,28 @@ public class CasualtySelector {
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
             : sortedTargetsToPickFrom.size());
 
-    CasualtyDetails casualtySelection =
+    final CasualtyDetails casualtySelection =
         hitsRemaining >= totalHitpoints
-            || allTargetsOneTypeOneHitPoint(
-            sortedTargetsToPickFrom,
-            dependents,
-            Properties.getPartialAmphibiousRetreat(data.getProperties()))
+                || allTargetsOneTypeOneHitPoint(
+                    sortedTargetsToPickFrom,
+                    dependents,
+                    Properties.getPartialAmphibiousRetreat(data.getProperties()))
             ? new CasualtyDetails(defaultCasualties, true)
             : tripleaPlayer.selectCasualties(
-            sortedTargetsToPickFrom,
-            dependents,
-            hitsRemaining,
-            text,
-            dice,
-            player,
-            combatValue.getFriendUnits(),
-            combatValue.getEnemyUnits(),
-            false,
-            List.of(),
-            defaultCasualties,
-            battleId,
-            battlesite,
-            allowMultipleHitsPerUnit);
+                sortedTargetsToPickFrom,
+                dependents,
+                hitsRemaining,
+                text,
+                dice,
+                player,
+                combatValue.getFriendUnits(),
+                combatValue.getEnemyUnits(),
+                false,
+                List.of(),
+                defaultCasualties,
+                battleId,
+                battlesite,
+                allowMultipleHitsPerUnit);
 
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       final boolean isUnitWithMarineBonusAndWasAmphibiousKilled =
@@ -156,17 +157,17 @@ public class CasualtySelector {
                   unit -> unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious());
       if (isUnitWithMarineBonusAndWasAmphibiousKilled
           || isUnitWithMarineBonusAndWasAmphibiousDamaged) {
-        casualtySelection =
-            casualtySelection.ensureUnitsWithPositiveMarineBonusAreTakenLast(
-                sortedTargetsToPickFrom);
+        casualtySelection.ensureUnitsWithPositiveMarineBonusAreKilledLast(sortedTargetsToPickFrom);
       }
     }
 
-    if (casualtySelection.getKilled().stream().anyMatch(Matches.unitIsAir())
-        || casualtySelection.getDamaged().stream().anyMatch(Matches.unitIsAir())) {
-      casualtySelection =
-          casualtySelection.ensureAirUnitsWithLessMovementAreTakenFirst(sortedTargetsToPickFrom);
-    }
+    casualtySelection.ensureUnitsAreKilledFirst(
+        sortedTargetsToPickFrom, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
+
+    casualtySelection.ensureUnitsAreDamagedFirst(
+        sortedTargetsToPickFrom,
+        Matches.unitIsAir(),
+        Comparator.comparing(Unit::getMovementLeft).reversed());
 
     final List<Unit> damaged = casualtySelection.getDamaged();
     final List<Unit> killed = casualtySelection.getKilled();
@@ -301,8 +302,8 @@ public class CasualtySelector {
   }
 
   /**
-   * Checks if the given targets are all of one category as defined by
-   * <code>UnitSeparator.categorize</code> and if they are not multiple hit units.
+   * Checks if the given targets are all of one category as defined by <code>
+   * UnitSeparator.categorize</code> and if they are not multiple hit units.
    *
    * @param targets a collection of target units
    * @param dependents map of dependent units for target units

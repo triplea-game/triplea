@@ -54,7 +54,7 @@ public class EngineImageLoader {
     }
   }
 
-  protected Path createPathToImage(final String... path) {
+  private Path createPathToImage(final String... path) {
     Path imageFilePath = Path.of(ASSETS_FOLDER);
     for (final String pathPart : path) {
       imageFilePath = imageFilePath.resolve(pathPart);

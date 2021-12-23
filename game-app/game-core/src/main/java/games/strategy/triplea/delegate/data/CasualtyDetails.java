@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.data;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.UnitOwner;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,81 +53,48 @@ public class CasualtyDetails extends CasualtyList {
   }
 
   /**
-   * Ensure that any killed or damaged air units have less movement than others of the same type
-   *
-   * @param units should be a superset of the union of killed and damaged.
+   * replaces the units in <code>killed</code> that match the <code>matcher</code> by the same
+   * number of units in <code>targets</code> that match the <code>matcher</code> and are first
+   * according to <code>shouldBeKilledFirst</code>
    */
-  public CasualtyDetails ensureAirUnitsWithLessMovementAreTakenFirst(final Collection<Unit> units) {
-    return this.ensureUnitsAreTakenFirst(
-        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
-  }
-
-  private CasualtyDetails ensureUnitsAreTakenFirst(
+  public void ensureUnitsAreKilledFirst(
       final Collection<Unit> targets,
       final Predicate<Unit> matcher,
-      final Comparator<Unit> comparator) {
+      final Comparator<Unit> shouldBeKilledFirst) {
 
     final Map<UnitOwner, List<Unit>> targetsGroupedByOwnerAndType =
         targets.stream().collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
 
-    final List<Unit> killed =
-        ensureUnitsAreTakenFirst(
-            comparator,
+    final List<Unit> killedWithCorrectOrder =
+        ensureUnitsAreKilledFirst(
+            shouldBeKilledFirst,
             targetsGroupedByOwnerAndType,
             getKilled().stream()
                 .filter(matcher)
                 .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList())));
 
-    final List<Unit> damaged = new ArrayList<>();
+    killed.addAll(
+        killedWithCorrectOrder.stream()
+            .filter(unit -> !killed.contains(unit))
+            .collect(Collectors.toList()));
 
-    final Map<UnitOwner, List<Unit>> oldTargetUnitsToTakeHits =
-        getDamaged().stream()
+    killed.removeAll(
+        killed.stream()
             .filter(matcher)
-            .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()))
-        ;
-
-    for(final Map.Entry<UnitOwner, List<Unit>> oldTargetUnitsOfOneOwnerAndType :
-        oldTargetUnitsToTakeHits.entrySet()) {
-      final List<Unit> allTargetUnitsOfOwnerAndTypeThatCanTakeHits = new ArrayList<>(
-          targetsGroupedByOwnerAndType.get(oldTargetUnitsOfOneOwnerAndType.getKey()));
-
-      allTargetUnitsOfOwnerAndTypeThatCanTakeHits.sort(comparator.reversed());
-
-
-      int hitsToRedistributeToUnit;
-      final Iterator<Unit> unitIterator = allTargetUnitsOfOwnerAndTypeThatCanTakeHits.iterator();
-      for(int hitsToRedistribute = oldTargetUnitsOfOneOwnerAndType.getValue().size();
-          hitsToRedistribute > 0;
-          hitsToRedistribute -= hitsToRedistributeToUnit){
-        final Unit unit = unitIterator.next();
-
-        hitsToRedistributeToUnit =
-            Math.min(unit.hitsUnitCanTakeHitWithoutBeingKilled(),hitsToRedistribute);
-
-        for(int i = 0; i < hitsToRedistributeToUnit; ++i) {
-          damaged.add(unit);
-        }
-      }
-    }
-
-    // copy over the killed and damaged that don't match the matcher
-    killed.addAll(getKilled().stream().filter(Predicate.not(matcher)).collect(Collectors.toList()));
-    damaged.addAll(
-        getDamaged().stream().filter(Predicate.not(matcher)).collect(Collectors.toList()));
-
-    return new CasualtyDetails(killed, damaged, this.getAutoCalculated());
+            .filter(unit -> !killedWithCorrectOrder.contains(unit))
+            .collect(Collectors.toList()));
   }
 
   /**
-   * sort all of the units of the same owner/type by the comparator and then take the top N units
-   * (where N is the number of oldUnits)
+   * sort all of the units of the same owner/type by the shouldBeKilledFirst and then take the top N
+   * units (where N is the number of oldUnits)
    *
    * <p>Every key in oldUnitsGroupedByOwnerAndType should be in allUnitsGroupedByOwnerAndType and
    * the values of oldUnitsGroupedByOwnerAndType should be a subset of the values in
    * allUnitsGroupedByOwnerAndType
    */
-  private List<Unit> ensureUnitsAreTakenFirst(
-      final Comparator<Unit> comparator,
+  private List<Unit> ensureUnitsAreKilledFirst(
+      final Comparator<Unit> shouldBeKilledFirst,
       final Map<UnitOwner, List<Unit>> allUnitsGroupedByOwnerAndType,
       final Map<UnitOwner, List<Unit>> oldUnitsGroupedByOwnerAndType) {
 
@@ -136,22 +102,110 @@ public class CasualtyDetails extends CasualtyList {
         .flatMap(
             entry ->
                 allUnitsGroupedByOwnerAndType.get(entry.getKey()).stream()
-                    .sorted(comparator)
+                    .sorted(shouldBeKilledFirst)
                     .limit(entry.getValue().size()))
         .collect(Collectors.toList());
   }
 
   /**
-   * Ensure that any killed or damaged air units have less movement than others of the same type
+   * replaces the entries in <code>damaged</code> that match the <code>matcher</code> by the same
+   * number of entries in <code>targets</code> that match the <code>matcher</code> and are first
+   * according to <code>shouldBeKilledFirst</code>
+   */
+  public void ensureUnitsAreDamagedFirst(
+      final Collection<Unit> targets,
+      final Predicate<Unit> matcher,
+      final Comparator<Unit> shouldTakeHitsFirst) {
+
+    final Map<UnitOwner, List<Unit>> targetsGroupedByOwnerAndType =
+        targets.stream().collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
+
+    final List<Unit> targetsHitWithCorrectOrder = new ArrayList<>();
+
+    final Map<UnitOwner, List<Unit>> oldTargetsToTakeHits =
+        getDamaged().stream()
+            .filter(matcher)
+            .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
+
+    for (final Map.Entry<UnitOwner, List<Unit>> oldTargetsOfOneOwnerAndType :
+        oldTargetsToTakeHits.entrySet()) {
+      final List<Unit> allTargetsOfOwnerAndTypeThatCanTakeHits =
+          new ArrayList<>(targetsGroupedByOwnerAndType.get(oldTargetsOfOneOwnerAndType.getKey()));
+
+      redistributeHits(
+          oldTargetsOfOneOwnerAndType.getValue(),
+          allTargetsOfOwnerAndTypeThatCanTakeHits,
+          shouldTakeHitsFirst,
+          targetsHitWithCorrectOrder);
+    }
+
+    damaged.addAll(
+        targetsHitWithCorrectOrder.stream()
+            .filter(unit -> !damaged.contains(unit))
+            .collect(Collectors.toList()));
+
+    damaged.removeAll(
+        damaged.stream()
+            .filter(matcher)
+            .filter(unit -> !targetsHitWithCorrectOrder.contains(unit))
+            .collect(Collectors.toList()));
+  }
+
+  /**
+   * redistributes the hits from <code>unitsWithHitsBeforeRedistribution</code> among <code>
+   * unitsThatCanTakeHits</code> accourding to which units <code>shouldTakeHitsFirst</code>
+   *
+   * @param targetsWithHitsBeforeRedistribution contains a unit once for each hit it should take
+   *     without considering which units should take hits first
+   * @param targets are the units among which the hits should be distributed
+   * @param shouldTakeHitsFirst determines which units should take hits first
+   * @param targetsHitWithCorrectOrder collects units that correctly take hits, containing a unit
+   *     once for each hit it should take
+   */
+  private static void redistributeHits(
+      final List<Unit> targetsWithHitsBeforeRedistribution,
+      final List<Unit> targets,
+      final Comparator<Unit> shouldTakeHitsFirst,
+      final List<Unit> targetsHitWithCorrectOrder) {
+    final Unit firstUnit = targetsWithHitsBeforeRedistribution.get(0);
+    final var owner = firstUnit.getOwner();
+    final var type = firstUnit.getType();
+
+    final Predicate<Unit> sameOwnerAndTypeAndHit =
+        (Unit unit) ->
+            unit.getOwner().equals(owner) && unit.getType().equals(type) && unit.getHits() > 0;
+
+    targets.sort(shouldTakeHitsFirst);
+
+    // have allTargetsOfOwnerAndTypeThatCanTakeHits in sort order
+    // collect the hits that are currently distributed to oldTargetsOfOneOwnerAndType
+    int hitsToRedistributeToUnit;
+    final Iterator<Unit> unitIterator = targets.iterator();
+    for (int hitsToRedistribute = targetsWithHitsBeforeRedistribution.size();
+        hitsToRedistribute > 0;
+        hitsToRedistribute -= hitsToRedistributeToUnit) {
+      final Unit unit = unitIterator.next();
+
+      hitsToRedistributeToUnit =
+          Math.min(unit.hitsUnitCanTakeHitWithoutBeingKilled(), hitsToRedistribute);
+
+      for (int i = 0; i < hitsToRedistributeToUnit; ++i) {
+        targetsHitWithCorrectOrder.add(unit);
+      }
+    }
+  }
+
+  /**
+   * Ensure that any killed or damaged units have no better marine effect than others of the same
+   * type
    *
    * @param units should be a superset of the union of killed and damaged.
    */
-  public CasualtyDetails ensureUnitsWithPositiveMarineBonusAreTakenLast(
-      final Collection<Unit> units) {
-    return this.ensureUnitsAreTakenFirst(
-        units,
-        unit -> unit.getUnitAttachment().getIsMarine() != 0,
-        (unit1, unit2) -> {
+  public void ensureUnitsWithPositiveMarineBonusAreKilledLast(final Collection<Unit> units) {
+    final Predicate<Unit> isMarine = unit -> unit.getUnitAttachment().getIsMarine() != 0;
+
+    final Comparator<Unit> positiveMarineEffectFirstNegativeMarineEffectLast =
+        (Unit unit1, Unit unit2) -> {
           // wasAmphibious marines should be removed last if marine bonus is positive, otherwise
           // should be removed first
           if (unit1.getUnitAttachment().getIsMarine() > 0) {
@@ -159,6 +213,8 @@ public class CasualtyDetails extends CasualtyList {
           } else {
             return Boolean.compare(unit2.getWasAmphibious(), unit1.getWasAmphibious());
           }
-        });
+        };
+
+    ensureUnitsAreKilledFirst(units, isMarine, positiveMarineEffectFirstNegativeMarineEffectLast);
   }
 }

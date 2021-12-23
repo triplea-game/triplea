@@ -30,14 +30,11 @@ import javax.swing.JScrollPane;
  * <p>1. construct a {@code CasualtySelection} object e.g. {@code final var casualtySelection = new
  * CasualtySelection([...]);}
  *
- * <p>2. call {@code showModelDialog} e.g.
- * {@code final CasualtyDetails selectedCasualties =
- *    casualtySelection.showModalDialog().orElse(null);}
+ * <p>2. call {@code showModelDialog} e.g. {@code final CasualtyDetails selectedCasualties =
+ * casualtySelection.showModalDialog().orElse(null);}
  */
-
 public class CasualtySelection {
-  @VisibleForTesting
-  public UnitChooser chooser;
+  @VisibleForTesting public UnitChooser chooser;
 
   private final int hitsToTake;
   private final GamePlayer player;
@@ -47,16 +44,17 @@ public class CasualtySelection {
 
   private final JOptionPane optionPane;
 
-  public CasualtySelection(final Collection<Unit> selectFrom,
-                           final Map<Unit, Collection<Unit>> dependents,
-                           final int hitsToTake,
-                           final String title,
-                           final GamePlayer player,
-                           final CasualtyList defaultCasualties,
-                           final boolean allowMultipleHitsPerUnit,
-                           final UiContext uiContext,
-                           final Component dialogParent,
-                           final boolean isEditMode) {
+  public CasualtySelection(
+      final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents,
+      final int hitsToTake,
+      final String title,
+      final GamePlayer player,
+      final CasualtyList defaultCasualties,
+      final boolean allowMultipleHitsPerUnit,
+      final UiContext uiContext,
+      final Component dialogParent,
+      final boolean isEditMode) {
     this.hitsToTake = hitsToTake;
     this.player = player;
 
@@ -70,8 +68,7 @@ public class CasualtySelection {
             selectFrom,
             defaultCasualties,
             dependents,
-            Properties.getPartialAmphibiousRetreat(
-                player.getData().getProperties()),
+            Properties.getPartialAmphibiousRetreat(player.getData().getProperties()),
             movementForAirUnitsOnly,
             allowMultipleHitsPerUnit,
             uiContext);
@@ -83,28 +80,22 @@ public class CasualtySelection {
       chooser.setMax(hitsToTake);
     }
 
-          final JScrollPane chooserScrollPane = new JScrollPane(chooser);
+    final JScrollPane chooserScrollPane = new JScrollPane(chooser);
     chooserScrollPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-    optionPane = new JOptionPane(
-        chooserScrollPane,
-        JOptionPane.PLAIN_MESSAGE,
-        JOptionPane.OK_CANCEL_OPTION,
-        null,
-        null, // options,
-        JOptionPane.OK_OPTION);
+    optionPane =
+        new JOptionPane(chooserScrollPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
     dialog = optionPane.createDialog(dialogParent, player.getName() + " select casualties");
   }
 
   /**
-   * @return the CasualtyDetails that describe which casualties the player selected
-   * or null iff something went weirdly wrong
+   * @return the CasualtyDetails that describe which casualties the player selected or empty iff
+   *     something went weirdly wrong
    */
-
   public Optional<CasualtyDetails> showModalDialog() {
     final JScrollPane chooserScrollPane = (JScrollPane) optionPane.getMessage();
-    chooserScrollPane.setFont(BattleDisplay.getPlayerComponent(player)
-        .getFont().deriveFont(Font.BOLD, 14));
+    chooserScrollPane.setFont(
+        BattleDisplay.getPlayerComponent(player).getFont().deriveFont(Font.BOLD, 14));
     final Dimension size = chooserScrollPane.getPreferredSize();
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availHeight = screenResolution.height - 130;
@@ -115,11 +106,8 @@ public class CasualtySelection {
                 availWidth,
                 size.width
                     + (size.height > availHeight
-                    ? chooserScrollPane
-                    .getVerticalScrollBar()
-                    .getPreferredSize()
-                    .width
-                    : 0)),
+                        ? chooserScrollPane.getVerticalScrollBar().getPreferredSize().width
+                        : 0)),
             Math.min(availHeight, size.height)));
 
     dialog.setVisible(true);
@@ -134,32 +122,28 @@ public class CasualtySelection {
     final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
     if (!isEditMode && (killed.size() + damaged.size() != hitsToTake)) {
       JOptionPane.showMessageDialog(
-        dialog.getParent(),
-        "Wrong number of casualties selected",
-        player.getName() + " select casualties",
-        JOptionPane.ERROR_MESSAGE);
+          dialog /*.getParent()*/,
+          "Wrong number of casualties selected",
+          player.getName() + " select casualties",
+          JOptionPane.ERROR_MESSAGE);
 
-        return Optional.empty();
+      return Optional.empty();
     }
 
     return Optional.of(new CasualtyDetails(killed, damaged, false));
   }
 
   /**
-   * This method determines whether the system should let the player choose
-   * how to distribute hits between units of the same owner and type
-   * differentiating by the movement points left.
+   * This method determines whether the system should let the player choose how to distribute hits
+   * between units of the same owner and type differentiating by the movement points left.
    *
-   * This is only considered to be the case if there are
-   * - air units
-   * - that can take damage without bing killed
-   *   (i.e. that have more than one hitpoint left) and
-   * - that have different movement points left.
+   * <p>This is only considered to be the case if there are - air units - that can take damage
+   * without bing killed (i.e. that have more than one hitpoint left) and - that have different
+   * movement points left.
    *
    * @param units among which the hits have to distributed
    * @return {@code true} iff the system should let the player choose
    */
-
   static boolean playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(
       final Collection<Unit> units) {
     final Map<UnitOwner, List<Unit>> unitsGroupedByOwnerAndType =
@@ -172,8 +156,7 @@ public class CasualtySelection {
       final Iterator<Unit> unitsOfSameOwnerAndType =
           unitsGroupedByOwnerAndType.get(ownerAndType).iterator();
 
-      final BigDecimal movementOfFirstUnit =
-          unitsOfSameOwnerAndType.next().getMovementLeft();
+      final BigDecimal movementOfFirstUnit = unitsOfSameOwnerAndType.next().getMovementLeft();
 
       while (unitsOfSameOwnerAndType.hasNext()) {
         final Unit next = unitsOfSameOwnerAndType.next();

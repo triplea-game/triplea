@@ -11,8 +11,8 @@ import java.util.List;
 /** A collection of units either killed or damaged during a battle. */
 public class CasualtyList implements Serializable {
   private static final long serialVersionUID = 6501752134047891398L;
-  private final List<Unit> killed;
-  private final List<Unit> damaged;
+  final List<Unit> killed;
+  final List<Unit> damaged;
 
   /**
    * Creates a new CasualtyList.

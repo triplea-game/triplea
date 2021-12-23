@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import static games.strategy.triplea.image.UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -87,6 +88,8 @@ public class BattleDisplay extends JPanel {
   private static final int MY_WIDTH = 100;
   private static final int MY_HEIGHT = 100;
 
+  @VisibleForTesting
+  final JButton actionButton = new JButton();
   private final GamePlayer defender;
   private final GamePlayer attacker;
 
@@ -97,7 +100,6 @@ public class BattleDisplay extends JPanel {
   private final MapPanel mapPanel;
   private final UiContext uiContext;
 
-  private final JButton actionButton = new JButton();
   private final BattleModel defenderModel;
   private final BattleModel attackerModel;
   private BattleStepsPanel steps;
@@ -551,9 +553,11 @@ public class BattleDisplay extends JPanel {
                   casualtyDetails.set(selectedCasualties);
                   dicePanel.removeAll();
                   continueLatch.countDown();
+                  actionButton.setAction(nullAction);
+                  actionButton.setEnabled(false);
+                } else {
+                  actionButton.setEnabled(true);
                 }
-
-                actionButton.setAction(nullAction);
               }
           });
     });
