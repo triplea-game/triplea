@@ -35,6 +35,7 @@ public final class MutableProperty<T> {
     };
   }
 
+  @SuppressWarnings("UnnecessaryLambda")
   private static ThrowingConsumer<String, Exception> noStringSetter() {
     return value -> {
       throw new UnsupportedOperationException("No String Setter has been defined!");

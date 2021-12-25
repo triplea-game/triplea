@@ -18,6 +18,7 @@ class ModeratorsTabModel {
   @VisibleForTesting static final String REMOVE_MOD_BUTTON_TEXT = "Remove Mod";
   @VisibleForTesting static final String MAKE_ADMIN_BUTTON_TEXT = "Make Admin";
 
+  @SuppressWarnings("UnnecessaryLambda")
   private static final Function<Long, String> dateTimeFormatter =
       epochMillis ->
           DateTimeFormatterUtil.formatEpochMilli(

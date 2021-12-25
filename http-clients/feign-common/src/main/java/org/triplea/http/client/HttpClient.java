@@ -3,6 +3,7 @@ package org.triplea.http.client;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
+import com.google.errorprone.annotations.FormatMethod;
 import feign.Feign;
 import feign.Logger;
 import feign.Request;
@@ -12,15 +13,15 @@ import feign.codec.Decoder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 
 /**
  * Builds http feign clients, each feign interface class should have a static {@code newClient}
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  * @param <ClientTypeT> The feign client interface, should be an interface type that has feign
  *     annotations on it.
  */
-@Slf4j
+@Log
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
@@ -71,21 +72,18 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
                     : super.logAndRebufferResponse(configKey, logLevel, response, elapsedTime);
               }
 
+              @FormatMethod
               @Override
               protected void log(
                   final String configKey, final String format, final Object... args) {
                 final String logMessage = String.format(format, args);
-                log.trace(configKey + ": " + logMessage);
+                if (!logMessage.contains(LobbyWatcherClient.KEEP_ALIVE_PATH)) {
+                  log.info(configKey + ": " + logMessage);
+                }
               }
             })
         .logLevel(Logger.Level.BASIC)
-        .options(
-            new Request.Options(
-                DEFAULT_CONNECT_TIMEOUT_MS,
-                TimeUnit.MILLISECONDS,
-                DEFAULT_READ_TIME_OUT_MS,
-                TimeUnit.MILLISECONDS,
-                true))
+        .options(new Request.Options(DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIME_OUT_MS))
         .target(classType, hostUri.toString());
   }
 
@@ -101,13 +99,12 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
     throw Optional.ofNullable(response.body())
         .map(
             body -> {
-              try (BufferedReader reader =
-                  new BufferedReader(body.asReader(StandardCharsets.UTF_8))) {
+              try (BufferedReader reader = new BufferedReader(body.asReader())) {
                 final String errorMessageBody = reader.lines().collect(Collectors.joining("\n"));
                 return new HttpInteractionException(
                     response.status(), firstLine + "\n" + errorMessageBody);
               } catch (final IOException e) {
-                log.info("An additional error occurred when decoding response", e);
+                log.log(Level.INFO, "An additional error occurred when decoding response", e);
                 return new HttpInteractionException(response.status(), firstLine);
               }
             })

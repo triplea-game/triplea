@@ -26,3 +26,7 @@ dependencies {
     testImplementation project(":lib:swing-lib-test-support")
     testImplementation project(":lib:test-common")
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.errorprone.check("UnnecessaryLambda", net.ltgt.gradle.errorprone.CheckSeverity.OFF)
+}

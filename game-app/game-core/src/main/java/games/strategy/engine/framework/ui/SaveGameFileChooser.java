@@ -45,12 +45,13 @@ public final class SaveGameFileChooser extends JFileChooser {
   }
 
   private static String formatGameName(final String gameName) {
+    @SuppressWarnings("JavaTimeDefaultTimeZone")
     final ZonedDateTime now = ZonedDateTime.now();
     return new StringJoiner("-")
         .add(String.valueOf(now.getYear()))
         .add(String.valueOf(now.getMonthValue()))
         .add(String.valueOf(now.getDayOfMonth()))
-        .add(gameName.replaceAll(" ", "-") + GameDataFileUtils.getExtension())
+        .add(gameName.replace(" ", "-") + GameDataFileUtils.getExtension())
         .toString();
   }
 }

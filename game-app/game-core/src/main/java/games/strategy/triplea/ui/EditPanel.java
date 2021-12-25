@@ -75,6 +75,9 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.util.Triple;
 
 class EditPanel extends ActionPanel {
+  public static final String ACTION_LABEL_COULD_NOT_PERFORM_EDIT = "Could not perform edit";
+  public static final String ACTION_LABEL_CHANGE_UNIT_HIT_DAMAGE = "Change Unit Hit Damage";
+  public static final String ACTION_LABEL_CHANGE_UNIT_BOMBING_DAMAGE = "Change Unit Bombing Damage";
   private static final long serialVersionUID = 5043639777373556106L;
   private final TripleAFrame frame;
   private final Action performMoveAction;
@@ -223,6 +226,7 @@ class EditPanel extends ActionPanel {
         }
       };
 
+  @SuppressWarnings("UnnecessaryLambda")
   private final MouseOverUnitListener mouseOverUnitListener =
       (units, territory) -> {
         if (!isActive() || currentAction != null) {
@@ -241,7 +245,7 @@ class EditPanel extends ActionPanel {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   "No TerritoryAttachment for " + territory + ".",
-                  "Could not perform edit",
+                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                   JOptionPane.ERROR_MESSAGE);
               return;
             }
@@ -260,7 +264,7 @@ class EditPanel extends ActionPanel {
                 JOptionPane.showMessageDialog(
                     getTopLevelAncestor(),
                     result,
-                    "Could not perform edit",
+                    ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                     JOptionPane.ERROR_MESSAGE);
               }
             }
@@ -298,7 +302,7 @@ class EditPanel extends ActionPanel {
                 JOptionPane.showMessageDialog(
                     getTopLevelAncestor(),
                     result,
-                    "Could not perform edit",
+                    ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                     JOptionPane.ERROR_MESSAGE);
               }
             }
@@ -516,7 +520,7 @@ class EditPanel extends ActionPanel {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   result,
-                  "Could not perform edit",
+                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                   JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
@@ -624,7 +628,7 @@ class EditPanel extends ActionPanel {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   result,
-                  "Could not perform edit",
+                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                   JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
@@ -692,14 +696,14 @@ class EditPanel extends ActionPanel {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   result,
-                  "Could not perform edit",
+                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                   JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
           }
         };
     changeUnitHitDamageAction =
-        new AbstractAction("Change Unit Hit Damage") {
+        new AbstractAction(ACTION_LABEL_CHANGE_UNIT_HIT_DAMAGE) {
           private static final long serialVersionUID = 1835547345902760810L;
 
           @Override
@@ -750,7 +754,7 @@ class EditPanel extends ActionPanel {
             final IndividualUnitPanel unitPanel =
                 new IndividualUnitPanel(
                     currentDamageMap,
-                    "Change Unit Hit Damage",
+                    ACTION_LABEL_CHANGE_UNIT_HIT_DAMAGE,
                     getMap().getUiContext(),
                     -1,
                     true,
@@ -761,7 +765,7 @@ class EditPanel extends ActionPanel {
                 JOptionPane.showOptionDialog(
                     getTopLevelAncestor(),
                     scroll,
-                    "Change Unit Hit Damage",
+                    ACTION_LABEL_CHANGE_UNIT_HIT_DAMAGE,
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE,
                     null,
@@ -781,14 +785,14 @@ class EditPanel extends ActionPanel {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   result,
-                  "Could not perform edit",
+                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                   JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
           }
         };
     changeUnitBombingDamageAction =
-        new AbstractAction("Change Unit Bombing Damage") {
+        new AbstractAction(ACTION_LABEL_CHANGE_UNIT_BOMBING_DAMAGE) {
           private static final long serialVersionUID = 6975869192911780860L;
 
           @Override
@@ -842,7 +846,7 @@ class EditPanel extends ActionPanel {
             final IndividualUnitPanel unitPanel =
                 new IndividualUnitPanel(
                     currentDamageMap,
-                    "Change Unit Bombing Damage",
+                    ACTION_LABEL_CHANGE_UNIT_BOMBING_DAMAGE,
                     getMap().getUiContext(),
                     -1,
                     true,
@@ -853,7 +857,7 @@ class EditPanel extends ActionPanel {
                 JOptionPane.showOptionDialog(
                     getTopLevelAncestor(),
                     scroll,
-                    "Change Unit Bombing Damage",
+                    ACTION_LABEL_CHANGE_UNIT_BOMBING_DAMAGE,
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE,
                     null,
@@ -873,7 +877,7 @@ class EditPanel extends ActionPanel {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   result,
-                  "Could not perform edit",
+                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                   JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
@@ -945,7 +949,7 @@ class EditPanel extends ActionPanel {
                   JOptionPane.showMessageDialog(
                       getTopLevelAncestor(),
                       result,
-                      "Could not perform edit",
+                      ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
                       JOptionPane.ERROR_MESSAGE);
                 }
               }
