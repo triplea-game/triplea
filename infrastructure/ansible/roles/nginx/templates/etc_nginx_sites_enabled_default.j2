@@ -15,7 +15,6 @@ server {
     ssl_certificate {{ cert }} 
     ssl_certificate_key {{ cert_key }}
 
-    ssl on;
     ssl_protocols  TLSv1.2 TLSv1.3;
     ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
     ssl_prefer_server_ciphers on;
