@@ -1,6 +1,5 @@
 package org.triplea.http.client.lobby.moderator.toolbox.words;
 
-import feign.FeignException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
