@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpInteractionException;
 
 /** Http client class for fetching the list of bad words and adding and removing them. */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -37,7 +36,7 @@ public class ToolboxBadWordsClient {
   /**
    * Returns list of bad words present in the bad words table.
    *
-   * @throws HttpInteractionException thrown if there are any HTTP errors or a non-200 return code.
+   * @throws feign.FeignException thrown if there are any HTTP errors or a non-200 return code.
    */
   public List<String> getBadWords() {
     return client.getBadWords(authenticationHeaders);

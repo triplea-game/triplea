@@ -160,7 +160,7 @@ public final class HttpClientTesting {
     givenServer500(wireMockServer, expectedRequestPath, requestType);
     final URI hostUri = configureWireMock(wireMockServer);
 
-    assertThrows(HttpInteractionException.class, () -> serviceCall.apply(hostUri));
+    assertThrows(FeignException.class, () -> serviceCall.apply(hostUri));
   }
 
   private static URI configureWireMock(final WireMockServer wireMockServer) {

@@ -1,6 +1,7 @@
 package org.triplea.http.client.github;
 
 import com.google.common.annotations.VisibleForTesting;
+import feign.FeignException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +13,6 @@ import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpInteractionException;
 
 /** Can be used to interact with github's webservice API. */
 @Slf4j
@@ -129,7 +129,7 @@ public class GithubApiClient {
     final Map<String, Object> tokens = buildAuthorizationHeaders();
     try {
       return Optional.of(githubApiFeignClient.getLatestRelease(tokens, org, repo).getTagName());
-    } catch (final HttpInteractionException e) {
+    } catch (final FeignException e) {
       log.info("No data received from server for latest engine version", e);
       return Optional.empty();
     }
