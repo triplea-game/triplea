@@ -24,17 +24,6 @@ class BadWordsControllerIntegrationTest extends ControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings({"Convert2MethodRef", "unchecked"})
-  void mustBeAuthorized() {
-    assertNotAuthorized(
-        ControllerIntegrationTest.NOT_MODERATORS,
-        apiKey -> ToolboxBadWordsClient.newClient(localhost, apiKey),
-        client -> client.getBadWords(),
-        client -> client.addBadWord("bad-word"),
-        client -> client.removeBadWord("bad-word"));
-  }
-
-  @Test
   void badRequests() {
     assertBadRequest(() -> client.addBadWord(""));
     assertBadRequest(() -> client.removeBadWord(""));
